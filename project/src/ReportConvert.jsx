@@ -70,7 +70,7 @@ function JTConvertLeadCapture({ reportType, reportSummary }) {
   const send = async () => {
     if (!canSend) return;
     setSending(true); setErr('');
-    const endpoint = (window.JT_DATA.integrations && window.JT_DATA.integrations.formspreeReport) || '';
+    const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     const payload = {
       _subject: `[JT 리포트 결과 요청] ${reportType} · ${name}`,
       구분: 'REPORT_LEAD',
@@ -83,13 +83,14 @@ function JTConvertLeadCapture({ reportType, reportSummary }) {
     };
     if (window.gtag) window.gtag('event', 'report_lead_submit', { reportType });
     try {
-      if (endpoint && endpoint.includes('formspree.io') && !endpoint.includes('REPLACE_WITH')) {
-        const res = await fetch(endpoint, {
+      if (w3fKey && !w3fKey.includes('REPLACE')) {
+        const res = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: {'Content-Type': 'application/json', Accept: 'application/json'},
-          body: JSON.stringify(payload),
+          body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, from_name: name || '홈페이지 리포트 접수', replyto: email || '', ...payload }),
         });
-        if (!res.ok) throw new Error('fail');
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.success) throw new Error('fail');
       } else {
         // Fallback: mailto
         const body = Object.entries(payload).map(([k,v]) => `${k}: ${v}`).join('\n');
@@ -310,7 +311,7 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
     if (!canSend) return;
     setSending(true);
     if (window.gtag) window.gtag('event', 'report_pdf_request', { reportType });
-    const endpoint = (window.JT_DATA.integrations && window.JT_DATA.integrations.formspreeReport) || '';
+    const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     const payload = {
       _subject: `[JT 리포트 PDF 요청] ${reportType}`,
       구분: 'REPORT_PDF',
@@ -320,8 +321,8 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
       접수시각: new Date().toLocaleString('ko-KR'),
     };
     try {
-      if (endpoint && endpoint.includes('formspree.io') && !endpoint.includes('REPLACE_WITH')) {
-        await fetch(endpoint, {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'}, body: JSON.stringify(payload)});
+      if (w3fKey && !w3fKey.includes('REPLACE')) {
+        await fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'}, body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, replyto: email || '', ...payload })});
       }
     } catch(_){}
     setTimeout(() => {

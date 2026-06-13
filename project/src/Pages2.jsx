@@ -197,7 +197,7 @@ function JTBooking({ setRoute }) {
     if (!canSubmit || submitting) return;
     setSubmitting(true);
     setSubmitError('');
-    const endpoint = (window.JT_DATA.integrations && window.JT_DATA.integrations.formspreeBooking) || '';
+    const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     const payload = {
       _subject: `[JT 상담예약] ${form.topic} · ${form.urgency} · ${form.name}`,
       구분: 'BOOKING',
@@ -214,15 +214,16 @@ function JTBooking({ setRoute }) {
     // GA4 이벤트 발송
     if (window.gtag) window.gtag('event', 'booking_submit', { topic: form.topic, urgency: form.urgency, channel: form.channel });
     try {
-      if (endpoint && endpoint.includes('formspree.io') && !endpoint.includes('REPLACE_WITH')) {
-        const res = await fetch(endpoint, {
+      if (w3fKey && !w3fKey.includes('REPLACE')) {
+        const res = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, from_name: form.name || '홈페이지 상담 접수', replyto: form.email || '', ...payload }),
         });
-        if (!res.ok) throw new Error('submit_failed');
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.success) throw new Error('submit_failed');
       } else {
-        // Fallback: Formspree 미설정 시 mailto로 열기
+        // Fallback: 키 미설정 시 mailto로 열기
         const body = Object.entries(payload).map(([k,v]) => `${k}: ${v}`).join('\n');
         window.location.href = `mailto:${window.JT_DATA.firm.email}?subject=${encodeURIComponent(payload._subject)}&body=${encodeURIComponent(body)}`;
       }

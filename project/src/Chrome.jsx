@@ -186,6 +186,7 @@ function JTFooter({ setRoute }) {
           </div>
           <div className="jt-footer__addr">
             {D.address}<br />
+            {D.representative && <>대표 {D.representative} · 사업자등록번호 {D.businessNumber}<br /></>}
             T. <a href={`tel:${D.phone}`}>{D.phone}</a><br />
             E. <a href={`mailto:${D.email}`}>{D.email}</a>
           </div>

@@ -18,36 +18,31 @@ window.JT_DATA = {
     kakaoMapUrl: 'https://place.map.kakao.com/1776119720',
     naverMapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20310',
     googleMapUrl: 'https://www.google.com/maps/search/?api=1&query=%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20310%201312%ED%98%B8',
-    // 배포 전 채워야 할 값들
-    businessNumber: '',             // 사업자등록번호 (000-00-00000)
-    licenseNumber: '',              // 세무사 등록번호
-    representative: '',             // 대표자 성명
+    businessNumber: '699-10-01720', // 사업자등록번호
+    licenseNumber: '',              // 세무사 등록번호 (추후 기재)
+    representative: '이현준',        // 대표자 성명
     businessHours: '평일 09:00–18:00',
     responseSla: '초기 응답 24h 이내',
   },
 
-  // 외부 서비스 연동 ─ 배포 전 실제 엔드포인트로 교체
+  // 외부 서비스 연동
   integrations: {
-    // Formspree: https://formspree.io 가입 → 양식 ID 발급 → "xxxxxxx" 부분에 붙여넣기
-    // 상담 예약 폼 제출 시 jttax@jttax.co.kr 로 자동 메일 발송
-    formspreeBooking: 'https://formspree.io/f/REPLACE_WITH_BOOKING_FORM_ID',
-    // JT 리포트(양도세·경정·종소세) 결과 + 응답자 연락처를 세무사에게 자동 메일 발송
-    formspreeReport: 'https://formspree.io/f/REPLACE_WITH_REPORT_FORM_ID',
-    // GA4 측정 ID (G-XXXXXXXXXX). 배포 전 교체
+    // Web3Forms — 상담폼·JT리포트 접수가 jttax@jttax.co.kr 로 자동 발송됨 (무료, 사실상 무제한)
+    // web3forms.com 에서 이메일로 발급받은 Access Key
+    web3formsKey: 'c3a5ab0f-c275-4434-a4ba-bda8500378fa',
+    // GA4 측정 ID는 index.html 에 직접 삽입되어 있음
     ga4MeasurementId: '',
-    // 네이버 서치어드바이저 사이트 인증 메타 토큰 (string) — 배포 후 교체
     naverSiteVerification: '',
-    // 구글 서치콘솔 사이트 인증 메타 토큰 — 배포 후 교체
     googleSiteVerification: '',
   },
 
   // SEO & 메타
   seo: {
-    siteUrl: 'https://jttax.co.kr',
+    siteUrl: 'https://www.jttax.co.kr',
     titleDefault: '제이티 세무법인 — JT TAX CORP.',
     titleTemplate: '%s | 제이티 세무법인',
     description: '前 송파세무서장 김기복 회장이 이끄는 세무법인. 양도·상속·증여, 세무조사 대응, 법인 기장, 세금 컨설팅, 경정청구. 강남 소재, 초기 응답 24시간 기준.',
-    ogImage: '/assets/og-image.png',
+    ogImage: 'https://www.jttax.co.kr/project/assets/og-image.png',
     keywords: '세무법인, 강남 세무사, 양도소득세, 상속세, 증여세, 세무조사, 경정청구, 법인 기장, 세무 컨설팅, 국세청 출신, 제이티 세무회계',
     pageMeta: {
       home:     { title: '제이티 세무법인 — 근거 위에서, 끝까지', desc: '前 송파세무서장 김기복 회장이 이끄는 세무법인. 양도·상속·증여·세무조사·경정청구.' },
