@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Disallow: /customer_simulation.html
+Disallow: /screenshots/
+
+# 네이버·다음·구글 검색엔진 허용
+User-agent: Yeti
+Allow: /
+
+User-agent: Daumoa
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://www.jttax.co.kr/sitemap.xml
