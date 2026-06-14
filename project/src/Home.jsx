@@ -467,3 +467,41 @@ function JTChannels({ setRoute }) {
 
 }
 window.JTChannels = JTChannels;
+
+// ============ FAQ (자주 묻는 질문) ============
+function JTFaq({ setRoute }) {
+  const items = window.JT_DATA.faq || [];
+  const [open, setOpen] = useStateHome(0);
+  if (!items.length) return null;
+  return (
+    <section className="jt-section">
+      <div className="jt-section__head reveal">
+        <div className="jt-kicker">FAQ · 자주 묻는 질문</div>
+        <h2 className="jt-h2">궁금한 점을<br />먼저 풀어드립니다.</h2>
+      </div>
+      <div style={{ borderTop: '1px solid var(--border-1)' }}>
+        {items.map((it, i) =>
+          <div key={i} className="reveal" style={{ borderBottom: '1px solid var(--border-1)' }} data-delay={Math.min(i, 4)}>
+            <button
+              aria-expanded={open === i}
+              onClick={() => setOpen(open === i ? -1 : i)}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 16, justifyContent: 'space-between', background: 'none', border: 0, textAlign: 'left', padding: '24px 4px', cursor: 'pointer', font: 'inherit', color: 'var(--fg-1)' }}>
+              <span style={{ display: 'flex', gap: 14, alignItems: 'baseline' }}>
+                <span style={{ fontFamily: 'var(--font-sans-en)', fontSize: 13, color: 'var(--fg-3)' }}>{String(i + 1).padStart(2, '0')}</span>
+                <span style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em' }}>{it.q}</span>
+              </span>
+              <span className="jt-arrow" style={{ fontSize: 22, lineHeight: 1, color: 'var(--fg-2)', flexShrink: 0 }}>{open === i ? '−' : '+'}</span>
+            </button>
+            {open === i &&
+              <p style={{ margin: 0, padding: '0 4px 28px 44px', fontSize: 16, lineHeight: 1.75, color: 'var(--fg-2)' }}>{it.a}</p>
+            }
+          </div>
+        )}
+      </div>
+      <div className="reveal" style={{ marginTop: 36, display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ color: 'var(--fg-2)', fontSize: 15 }}>더 궁금한 점이 있으신가요?</span>
+        <button className="jt-btn jt-btn--primary" onClick={() => setRoute('booking')}>무료 상담 신청 <span className="jt-arrow">→</span></button>
+      </div>
+    </section>);
+}
+window.JTFaq = JTFaq;
