@@ -87,37 +87,14 @@ function JTContact({ setRoute }) {
             </div>
           </div>
           <div className="jt-map__canvas">
-            <div className="jt-map__grid"></div>
-            <svg className="jt-map__roads" viewBox="0 0 600 480" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-              {/* 강남대로 세로 */}
-              <rect x="285" y="0" width="30" height="480" fill="#c9c9c9" />
-              <line x1="300" y1="0" x2="300" y2="480" stroke="#fff" strokeWidth="1" strokeDasharray="8 8" />
-              {/* 테헤란로 가로 */}
-              <rect x="0" y="220" width="600" height="24" fill="#c9c9c9" />
-              <line x1="0" y1="232" x2="600" y2="232" stroke="#fff" strokeWidth="1" strokeDasharray="8 8" />
-              {/* 부속 도로 */}
-              <rect x="0" y="80" width="600" height="10" fill="#e5e5e5" />
-              <rect x="0" y="360" width="600" height="10" fill="#e5e5e5" />
-              <rect x="120" y="0" width="10" height="480" fill="#e5e5e5" />
-              <rect x="460" y="0" width="10" height="480" fill="#e5e5e5" />
-              {/* 라벨 */}
-              <text x="316" y="30" fontFamily="Inter, sans-serif" fontSize="10" fill="#6b6b6b" letterSpacing="1.2">강남대로 · GANGNAM-DAERO</text>
-              <text x="16" y="216" fontFamily="Inter, sans-serif" fontSize="10" fill="#6b6b6b" letterSpacing="1.2">테헤란로 · TEHERAN-RO</text>
-              <text x="316" y="460" fontFamily="Inter, sans-serif" fontSize="10" fill="#9a9a9a" letterSpacing="1.2">↓ 양재 方面</text>
-              <text x="316" y="14" fontFamily="Inter, sans-serif" fontSize="10" fill="#9a9a9a" letterSpacing="1.2">↑ 신논현 方面</text>
-              {/* 지하철 아이콘 */}
-              <circle cx="300" cy="232" r="9" fill="#000" />
-              <text x="300" y="236" fontFamily="Inter, sans-serif" fontSize="9" fill="#fff" textAnchor="middle" fontWeight="700">강남</text>
-              <circle cx="130" cy="232" r="8" fill="#000" />
-              <text x="130" y="236" fontFamily="Inter, sans-serif" fontSize="8" fill="#fff" textAnchor="middle" fontWeight="700">신논현</text>
-            </svg>
-            <div className="jt-map__pin" style={{left: '54%', top: '38%'}}>
-              <div className="jt-map__pin__label">제이티 세무법인</div>
-              <div className="jt-map__pin__dot"></div>
-            </div>
-            <div style={{position: 'absolute', bottom: 16, right: 16, fontFamily: 'var(--font-sans-en)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-3)'}}>
-              MAP · SCHEMATIC ONLY
-            </div>
+            <iframe
+              title="제이티 세무법인 위치 지도"
+              src={`https://www.google.com/maps?q=${encodeURIComponent(D.address)}&z=17&hl=ko&output=embed`}
+              style={{width: '100%', height: '100%', minHeight: 460, border: 0, display: 'block'}}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
           </div>
         </div>
       </section>
