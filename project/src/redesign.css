@@ -169,7 +169,7 @@
 .jt-sithero::before {
   content: "JT"; position: absolute; right: -2%; bottom: -24%; z-index: 0;
   font-family: var(--font-display-kr); font-size: min(38vw, 480px); line-height: 1;
-  letter-spacing: -0.04em; color: rgba(18,18,18,.022); pointer-events: none; user-select: none;
+  letter-spacing: -0.04em; color: rgba(18,18,18,.042); pointer-events: none; user-select: none;
 }
 .jt-sithero > * { position: relative; z-index: 1; }
 /* CTA(검정면): 고스트 JT 화이트 */
@@ -274,3 +274,30 @@
 @media (max-width: 760px) {
   .jt-matrix { grid-template-columns: 1fr 1fr; }
 }
+
+/* ═════════ 배경 강화 — 정밀 라인 그리드(A) + 고스트 모노그램(B) ═════════ */
+/* A) 전역 미세 컬럼 그리드 — 라이트 영역에만 은은히(다크 섹션엔 multiply로 사라짐) */
+.jt-app::before {
+  content: ""; position: fixed; inset: 0; z-index: 8999; pointer-events: none;
+  background-image: repeating-linear-gradient(90deg,
+    rgba(18,18,18,0.030) 0, rgba(18,18,18,0.030) 1px, transparent 1px, transparent 116px);
+  mix-blend-mode: multiply;
+}
+@media (max-width: 640px) {
+  .jt-app::before { background-image: repeating-linear-gradient(90deg,
+    rgba(18,18,18,0.028) 0, rgba(18,18,18,0.028) 1px, transparent 1px, transparent 84px); }
+}
+
+/* B) 고스트 모노그램 — 주요 섹션에 추가 (히어로/CTA는 기존 + 강화됨) */
+.jt-ident::before {
+  content: "JT"; position: absolute; left: -2%; top: -30%; z-index: 0;
+  font-family: var(--font-display-kr); font-size: min(34vw, 420px); line-height: 1;
+  letter-spacing: -0.04em; color: rgba(18,18,18,.03); pointer-events: none; user-select: none;
+}
+.jt-pullquote { position: relative; overflow: hidden; }
+.jt-pullquote::before {
+  content: "JT"; position: absolute; right: -1%; bottom: -32%; z-index: 0;
+  font-family: var(--font-display-kr); font-size: min(32vw, 380px); line-height: 1;
+  letter-spacing: -0.04em; color: rgba(18,18,18,.03); pointer-events: none; user-select: none;
+}
+.jt-pullquote__inner { position: relative; z-index: 1; }
