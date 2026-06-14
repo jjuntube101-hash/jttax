@@ -36,6 +36,7 @@ const JT_SITUATIONS = [
 
 // ============ Hero — 상황별 진입 ============
 function JTHero({ setRoute }) {
+  const w = typeof window !== 'undefined' ? window.innerWidth : 1200;
   const pick = (s) => {
     if (s.topic) {try {sessionStorage.setItem('jt_preferred_topic', s.topic);} catch (e) {}}
     setRoute('booking');
@@ -52,7 +53,7 @@ function JTHero({ setRoute }) {
         <p className="jt-sithero__sub">세금은 상황마다 답이 다릅니다. 가장 가까운 상황을 고르시면, 그에 맞는 절차와
 담당 전문가로 바로 안내해 드립니다.</p>
       </div>
-      <div className="jt-sits">
+      <div className="jt-sits" style={{ gridTemplateColumns: w <= 640 ? '1fr' : (w <= 960 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)') }}>
         {JT_SITUATIONS.map((s) => <div
             key={s.num}
             className={`jt-sit reveal ${s.general ? 'jt-sit--general' : ''}`}
@@ -248,6 +249,7 @@ window.JTStats = JTStats;
 function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
   const all = window.JT_DATA.services;
   const list = variant === 'list';
+  const mobile = typeof window !== 'undefined' && window.innerWidth <= 760;
   return (
     <section className="jt-section">
       <div className="jt-section__head jt-section__head--split reveal">
@@ -276,7 +278,7 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
         )}
         </ul> :
 
-      <div className="jt-services">
+      <div className="jt-services" style={{ gridTemplateColumns: mobile ? '1fr' : 'repeat(2, 1fr)' }}>
           {all.slice(0, 4).map((s, i) =>
         <article
           key={s.num}
@@ -308,12 +310,12 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
           }
             </article>
         )}
-          <article className="jt-service reveal" data-delay="4" onClick={() => setRoute('services')} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gridColumn: 'span 2', minHeight: 220 }}>
+          <article className="jt-service reveal" data-delay="4" onClick={() => setRoute('services')} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gridColumn: mobile ? 'auto' : 'span 2', minHeight: 220 }}>
             <header className="jt-service__head">
               <span>{all[4].num} · {all[4].en}</span>
               <span className="jt-arrow">→</span>
             </header>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'end' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap: 32, alignItems: 'end' }}>
               <div>
                 <h3 className="jt-service__title">{all[4].kr}</h3>
                 <p className="jt-service__desc">{all[4].desc}</p>
