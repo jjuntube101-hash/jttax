@@ -420,7 +420,10 @@ function JTTeamPreview({ setRoute }) {
       <div className="jt-team-preview">
         {profiles.map((p, i) =>
         <article key={p.code} className={`jt-team-preview__card reveal ${i === 0 ? 'is-lead' : ''}`} data-delay={Math.min(i, 3)}>
-            <div className="jt-team-preview__avatar">{p.code}</div>
+            <div className="jt-team-preview__avatar" style={{ position: 'relative', overflow: 'hidden' }}>
+              {p.photo && <img src={p.photo} alt={p.kr} onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
+              {p.code}
+            </div>
             <div className="jt-team-preview__role">{p.role}</div>
             <h3 className="jt-team-preview__name">{p.kr}</h3>
             <div className="jt-team-preview__focus">{p.focus}</div>

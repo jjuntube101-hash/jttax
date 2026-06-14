@@ -163,7 +163,10 @@ function JTAboutTeam({ D, setRoute }) {
       {/* ===== 회장 (featured) ===== */}
       <article className="jt-team-feature reveal">
         <div className="jt-team-feature__head">
-          <div className="jt-team-feature__avatar">{D.chairman.name.slice(-1)}</div>
+          <div className="jt-team-feature__avatar" style={{ position: 'relative', overflow: 'hidden' }}>
+            {D.chairman.photo && <img src={D.chairman.photo} alt={D.chairman.name} onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
+            {D.chairman.name.slice(-1)}
+          </div>
           <div className="jt-team-feature__intro">
             <div className="jt-team-feature__role">{D.chairman.role}</div>
             <h3 className="jt-team-feature__name">
@@ -210,7 +213,10 @@ function JTAboutTeam({ D, setRoute }) {
         {D.partners.map((p) =>
         <article key={p.name} className="jt-team-card reveal">
             <div className="jt-team-card__head">
-              <div className="jt-team-card__avatar">{p.initials}</div>
+              <div className="jt-team-card__avatar" style={{ position: 'relative', overflow: 'hidden' }}>
+                {p.photo && <img src={p.photo} alt={p.name} onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
+                {p.initials}
+              </div>
               <div className="jt-team-card__role">{p.role}</div>
             </div>
             <h3 className="jt-team-card__name">
