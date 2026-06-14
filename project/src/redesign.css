@@ -169,7 +169,7 @@
 .jt-sithero::before {
   content: "JT"; position: absolute; right: -2%; bottom: -24%; z-index: 0;
   font-family: var(--font-display-kr); font-size: min(38vw, 480px); line-height: 1;
-  letter-spacing: -0.04em; color: rgba(18,18,18,.042); pointer-events: none; user-select: none;
+  letter-spacing: -0.04em; color: rgba(18,18,18,.062); pointer-events: none; user-select: none;
 }
 .jt-sithero > * { position: relative; z-index: 1; }
 /* CTA(검정면): 고스트 JT 화이트 */
@@ -177,7 +177,7 @@
 .jt-cta::before {
   content: "JT"; position: absolute; right: -1%; bottom: -22%; z-index: 0;
   font-family: var(--font-display-kr); font-size: min(40vw, 480px); line-height: 1;
-  letter-spacing: -0.04em; color: rgba(255,255,255,.045); pointer-events: none; user-select: none;
+  letter-spacing: -0.04em; color: rgba(255,255,255,.07); pointer-events: none; user-select: none;
 }
 .jt-cta__inner { position: relative; z-index: 1; }
 /* 정체성 밴드: 라디얼 깊이 */
@@ -292,12 +292,12 @@
 .jt-ident::before {
   content: "JT"; position: absolute; left: -2%; top: -30%; z-index: 0;
   font-family: var(--font-display-kr); font-size: min(34vw, 420px); line-height: 1;
-  letter-spacing: -0.04em; color: rgba(18,18,18,.03); pointer-events: none; user-select: none;
+  letter-spacing: -0.04em; color: rgba(18,18,18,.052); pointer-events: none; user-select: none;
 }
 .jt-pullquote { position: relative; overflow: hidden; }
 .jt-pullquote::before {
   content: "JT"; position: absolute; right: -1%; bottom: -32%; z-index: 0;
   font-family: var(--font-display-kr); font-size: min(32vw, 380px); line-height: 1;
-  letter-spacing: -0.04em; color: rgba(18,18,18,.03); pointer-events: none; user-select: none;
+  letter-spacing: -0.04em; color: rgba(18,18,18,.052); pointer-events: none; user-select: none;
 }
 .jt-pullquote__inner { position: relative; z-index: 1; }
