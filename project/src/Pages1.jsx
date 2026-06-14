@@ -213,7 +213,7 @@ function JTAboutTeam({ D, setRoute }) {
         {D.partners.map((p) =>
         <article key={p.name} className="jt-team-card reveal">
             <div className="jt-team-card__head">
-              <div className="jt-team-card__avatar" style={{ position: 'relative', overflow: 'hidden' }}>
+              <div className="jt-team-card__avatar" style={{ position: 'relative', overflow: 'hidden', width: 104, height: 104, flexShrink: 0 }}>
                 {p.photo && <img src={p.photo} alt={p.name} onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
                 {p.initials}
               </div>
