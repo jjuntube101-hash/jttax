@@ -149,7 +149,7 @@ function JTBooking({ setRoute }) {
             <div className="jt-kicker">REQUEST RECEIVED — #{Math.floor(100000 + Math.random() * 900000)}</div>
             <h2 className="jt-h2">상담 접수가 완료되었습니다.</h2>
             <p className="jt-body">
-              영업일 기준 <b>24시간 이내</b>에 담당 세무사가 <b>{form.channel === '이메일' ? form.email : form.phone || '기재하신 연락처'}</b>로 직접 연락드립니다.<br/>
+              영업일 기준 <b>24시간 이내</b>에 담당 세무사가 <b>기재해 주신 연락처</b>로 직접 연락드립니다.<br/>
               세무조사 긴급 건은 업무시간 내 즉시 대응됩니다.
             </p>
             <div style={{display: 'flex', gap: 12, flexWrap: 'wrap'}}>
