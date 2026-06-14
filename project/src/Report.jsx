@@ -82,7 +82,7 @@ function JTReportCta({ setRoute }) {
         <button className="jt-btn jt-btn--primary" onClick={() => setRoute && setRoute('booking')}>
           상담 예약 <span className="jt-arrow">→</span>
         </button>
-        <a className="jt-btn jt-btn--ghost" href={window.JT_DATA.firm.kakaoChatUrl} target="_blank" rel="noopener">
+        <a className="jt-btn jt-btn--ghost" href={window.jtKakaoUrl()} target="_blank" rel="noopener">
           카톡 상담
         </a>
       </div>

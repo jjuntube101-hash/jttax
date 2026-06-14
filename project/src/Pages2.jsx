@@ -38,7 +38,7 @@ function JTContact({ setRoute }) {
               </li>
               <li>
                 <span className="jt-map__key">KakaoTalk</span>
-                <span className="jt-map__val"><a href={D.kakaoChatUrl} target="_blank" rel="noopener">{D.kakaoSearchId}</a><br/><small style={{color: 'var(--fg-3)'}}>카카오톡에서 검색 후 채널 추가</small></span>
+                <span className="jt-map__val"><a href={window.jtKakaoUrl()} target="_blank" rel="noopener">{D.kakaoSearchId}</a><br/><small style={{color: 'var(--fg-3)'}}>카카오톡에서 검색 후 채널 추가</small></span>
               </li>
               <li>
                 <span className="jt-map__key">Subway</span>
@@ -58,7 +58,7 @@ function JTContact({ setRoute }) {
                 상담 예약 <span className="jt-arrow">→</span>
               </button>
               <a className="jt-btn jt-btn--outline" href={`tel:${D.phone}`}>전화상담</a>
-              <a className="jt-btn jt-btn--outline" href={D.kakaoChatUrl} target="_blank" rel="noopener">카톡 상담</a>
+              <a className="jt-btn jt-btn--outline" href={window.jtKakaoUrl()} target="_blank" rel="noopener">카톡 상담</a>
             </div>
             <div style={{marginTop: 20}}>
               <div style={{
@@ -249,7 +249,7 @@ function JTBooking({ setRoute }) {
       </section>
 
       <section className="jt-section">
-        <a href={window.JT_DATA.firm.kakaoChatUrl} target="_blank" rel="noopener"
+        <a href={window.jtKakaoUrl()} target="_blank" rel="noopener"
           onClick={() => { if (window.gtag) window.gtag('event', 'booking_kakao_top'); }}
           style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap',
             background: '#FEE500', color: '#191919', padding: '16px 22px', marginBottom: 36, borderRadius: 4, textDecoration: 'none'}}>
@@ -409,7 +409,7 @@ function JTBooking({ setRoute }) {
               <button className="jt-btn jt-btn--primary jt-btn--lg" disabled={!canSubmit || submitting} onClick={submitBooking} style={{opacity: (canSubmit && !submitting) ? 1 : .4, cursor: (canSubmit && !submitting) ? 'pointer' : 'not-allowed', marginLeft: 'auto'}}>
                 {submitting ? '전송 중...' : <>상담 접수 제출 <span className="jt-arrow">→</span></>}
               </button>
-              <a className="jt-btn jt-btn--outline" href={window.JT_DATA.firm.kakaoChatUrl} target="_blank" rel="noopener" style={{flexBasis: '100%', textAlign: 'center', marginTop: 8}}>
+              <a className="jt-btn jt-btn--outline" href={window.jtKakaoUrl()} target="_blank" rel="noopener" style={{flexBasis: '100%', textAlign: 'center', marginTop: 8}}>
                 폼 제출이 번거로우시면 카카오톡으로 바로 문의 →
               </a>
             </div>

@@ -456,7 +456,7 @@ function JTChannels({ setRoute }) {
             <div className="jt-channels__big">{window.JT_DATA.firm.email}</div>
             <div className="jt-channels__sub">자료 첨부 가능 · 영업일 기준 24h 내 회신</div>
           </a>
-          <a className="jt-channels__card" href={window.JT_DATA.firm.kakaoChatUrl} target="_blank" rel="noopener">
+          <a className="jt-channels__card" href={window.jtKakaoUrl()} target="_blank" rel="noopener">
             <div className="jt-channels__label">카카오톡 채널</div>
             <div className="jt-channels__big">{window.JT_DATA.firm.kakaoSearchId}</div>
             <div className="jt-channels__sub">1:1 채팅 상담 · 자료 전송 가능 · 영업일 24h 내 회신</div>

@@ -44,7 +44,7 @@ function JTConvertBanner({ setRoute, urgent }) {
           }}>
             무료 15분 검토 예약 →
           </button>
-          <a className="jt-btn jt-btn--ghostOnDark" href={window.JT_DATA.firm.kakaoChatUrl} target="_blank" rel="noopener"
+          <a className="jt-btn jt-btn--ghostOnDark" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
             onClick={() => { if (window.gtag) window.gtag('event', 'report_cta_banner_kakao', { urgent }); }}>
             카톡으로 결과 전송
           </a>

@@ -1,6 +1,13 @@
 /* global React */
 const { useEffect, useState } = React;
 
+// 카톡 상담 링크 — 모바일은 1:1 채팅 바로 열기, PC는 채널 홈으로(로그인 에러 화면 회피)
+window.jtKakaoUrl = function () {
+  const D = window.JT_DATA.firm;
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test((typeof navigator !== 'undefined' && navigator.userAgent) || '');
+  return isMobile ? D.kakaoChatUrl : (D.kakaoChannelUrl || D.kakaoChatUrl);
+};
+
 // ============ Scroll reveal hook ============
 function useReveal() {
   useEffect(() => {
