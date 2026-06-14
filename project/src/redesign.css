@@ -372,3 +372,8 @@
   .jt-page-hero__mark { width: 200px; right: -24px; bottom: -36px; }
   .jt-page-hero h1 { font-size: clamp(30px, 8.5vw, 42px); }
 }
+
+/* 컨테이너 여백 — 모바일 이중 여백 방지(리포트·고지 섹션) */
+@media (max-width: 760px) {
+  .jt-container { padding: 0 20px; }
+}
