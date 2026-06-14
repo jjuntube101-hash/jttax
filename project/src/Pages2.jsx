@@ -188,7 +188,7 @@ function JTBooking({ setRoute }) {
   }
 
   const canNext1 = form.topic;
-  const canNext2 = form.name && form.email && form.phone;
+  const canNext2 = form.name && form.phone;
   const canSubmit = form.consent;
   const [submitting, setSubmitting] = useStatePg2(false);
   const [submitError, setSubmitError] = useStatePg2('');
@@ -205,7 +205,7 @@ function JTBooking({ setRoute }) {
       긴급도: form.urgency,
       성명: form.name,
       회사: form.company || '—',
-      이메일: form.email,
+      이메일: form.email || '—',
       연락처: form.phone,
       선호채널: form.channel,
       문의내용: form.msg || '—',
@@ -249,6 +249,16 @@ function JTBooking({ setRoute }) {
       </section>
 
       <section className="jt-section">
+        <a href={window.JT_DATA.firm.kakaoChatUrl} target="_blank" rel="noopener"
+          onClick={() => { if (window.gtag) window.gtag('event', 'booking_kakao_top'); }}
+          style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap',
+            background: '#FEE500', color: '#191919', padding: '16px 22px', marginBottom: 36, borderRadius: 4, textDecoration: 'none'}}>
+          <span style={{display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700, fontSize: 16, lineHeight: 1.4}}>
+            <span style={{fontSize: 20}} aria-hidden="true">💬</span>
+            폼 작성이 번거로우세요? <b>카카오톡으로 1:1 바로 상담</b>하세요.
+          </span>
+          <span style={{fontWeight: 800, whiteSpace: 'nowrap'}}>카톡 상담 →</span>
+        </a>
         <div className="jt-stepper">
           <div className={`jt-stepper__step ${step >= 1 ? (step > 1 ? 'is-done' : 'is-active') : ''}`}>
             <div className="jt-stepper__num">1</div>
@@ -334,12 +344,12 @@ function JTBooking({ setRoute }) {
                 <input value={form.company} onChange={set('company')} placeholder="법인 건은 법인명을 기재해 주세요" />
               </div>
               <div className="jt-field">
-                <label>이메일 <em>REQUIRED</em></label>
-                <input type="email" value={form.email} onChange={set('email')} required placeholder="name@company.com" />
-              </div>
-              <div className="jt-field">
                 <label>연락처 <em>REQUIRED</em></label>
                 <input value={form.phone} onChange={set('phone')} required placeholder="010-0000-0000" />
+              </div>
+              <div className="jt-field">
+                <label>이메일 <em>선택</em></label>
+                <input type="email" value={form.email} onChange={set('email')} placeholder="(선택) name@company.com" />
               </div>
               <div className="jt-field jt-field--full">
                 <label>선호 연락 방법</label>
@@ -374,7 +384,7 @@ function JTBooking({ setRoute }) {
                   ['Urgency', form.urgency],
                   ['Name', form.name],
                   ['Company', form.company || '—'],
-                  ['Email', form.email],
+                  ['Email', form.email || '—'],
                   ['Phone', form.phone],
                   ['Channel', form.channel],
                   ['Message', form.msg || '—'],
