@@ -300,15 +300,15 @@ function JTServicesPage({ setRoute }) {
       <section className="jt-section">
         <div style={{ borderTop: '2px solid var(--fg-1)' }}>
           {services.map((s, i) =>
-          <div key={s.num} className="jt-service-detail reveal" data-delay={Math.min(i, 4)}>
-              <div className="jt-service-detail__num">
+          <div key={s.num} className="jt-service-detail reveal" data-delay={Math.min(i, 4)} style={{ display: 'block', padding: '40px 0' }}>
+              <div className="jt-service-detail__num" style={{ marginBottom: 14 }}>
                 {s.num}
                 <small>{s.en}</small>
               </div>
-              <div className="jt-service-detail__body">
+              <div className="jt-service-detail__body" style={{ maxWidth: '100%' }}>
                 <h3>{s.kr}</h3>
                 <p style={{ fontSize: 17, color: 'var(--fg-1)', fontWeight: 500, marginBottom: 16 }}>{s.short}</p>
-                <p>{s.desc}</p>
+                <p style={{ maxWidth: '100%' }}>{s.desc}</p>
                 <button className="jt-btn jt-btn--outline" style={{ marginTop: 24 }} onClick={() => {
                 try {sessionStorage.setItem('jt_preferred_topic', s.kr);} catch (_) {}
                 setRoute('booking');
@@ -316,7 +316,7 @@ function JTServicesPage({ setRoute }) {
                   이 분야 상담 예약 <span className="jt-arrow">→</span>
                 </button>
               </div>
-              <div className="jt-service-detail__side">
+              <div className="jt-service-detail__side" style={{ marginTop: 24 }}>
                 <ul>
                   {s.points.map((p) =>
                 <li key={p.b}>
