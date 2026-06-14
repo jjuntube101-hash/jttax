@@ -361,7 +361,7 @@ function JTInsightsPreview({ setRoute, limit }) {
       </div>
       <ul className="jt-insights">
         {items.map((a, i) =>
-        <li key={a.title} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => setRoute('insights')}>
+        <li key={a.title} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => { if (a.slug) { window.location.href = '/insights/' + a.slug + '.html'; } else { setRoute('insights'); } }}>
             <span className="jt-insights__num">{String(i + 1).padStart(2, '0')}</span>
             <span className="jt-insights__title">{a.title}</span>
             <span className="jt-insights__tag">{a.tag}</span>

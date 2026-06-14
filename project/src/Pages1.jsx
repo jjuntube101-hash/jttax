@@ -360,7 +360,7 @@ function JTInsightsPage({ setRoute }) {
       <section className="jt-section">
         <ul className="jt-insights">
           {items.map((a, i) =>
-          <li key={a.title} className="jt-insights__row reveal" data-delay={Math.min(i, 4)}>
+          <li key={a.title} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => { if (a.slug) { window.location.href = '/insights/' + a.slug + '.html'; } }} style={{ cursor: 'pointer' }}>
               <span className="jt-insights__num">{String(i + 1).padStart(2, '0')}</span>
               <span className="jt-insights__title">{a.title}</span>
               <span className="jt-insights__tag">{a.tag}</span>
@@ -369,9 +369,6 @@ function JTInsightsPage({ setRoute }) {
             </li>
           )}
         </ul>
-        <p style={{ marginTop: 48, fontSize: 13, color: 'var(--fg-3)', textAlign: 'center' }}>
-          본 목록은 플레이스홀더입니다. 실제 칼럼은 업로드 후 순차 게시됩니다.
-        </p>
       </section>
     </>);
 
