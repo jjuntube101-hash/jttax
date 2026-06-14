@@ -249,15 +249,13 @@ function JTBooking({ setRoute }) {
       </section>
 
       <section className="jt-section">
-        <a href={window.jtKakaoUrl()} target="_blank" rel="noopener"
-          onClick={() => { if (window.gtag) window.gtag('event', 'booking_kakao_top'); }}
-          style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap',
-            background: '#FEE500', color: '#191919', padding: '16px 22px', marginBottom: 36, borderRadius: 4, textDecoration: 'none'}}>
-          <span style={{display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700, fontSize: 16, lineHeight: 1.4}}>
-            <span style={{fontSize: 20}} aria-hidden="true">💬</span>
-            폼 작성이 번거로우세요? <b>카카오톡으로 1:1 바로 상담</b>하세요.
+        <a className="jt-kakao-cta" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
+          onClick={() => { if (window.gtag) window.gtag('event', 'booking_kakao_top'); }}>
+          <span className="jt-kakao-cta__msg">
+            <span aria-hidden="true" style={{fontSize: 20, flexShrink: 0}}>💬</span>
+            <span>폼 작성이 번거로우세요? <b>카카오톡으로 1:1 바로 상담</b>하세요.</span>
           </span>
-          <span style={{fontWeight: 800, whiteSpace: 'nowrap'}}>카톡 상담 →</span>
+          <span className="jt-kakao-cta__go">카톡 상담 →</span>
         </a>
         <div className="jt-stepper">
           <div className={`jt-stepper__step ${step >= 1 ? (step > 1 ? 'is-done' : 'is-active') : ''}`}>

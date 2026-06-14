@@ -64,6 +64,7 @@ window.useCountUp = useCountUp;
 function JTNav({ route, setRoute }) {
   const [scrolled, setScrolled] = useState(false);
   const [svcOpen, setSvcOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const closeTimer = React.useRef(null);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -80,7 +81,7 @@ function JTNav({ route, setRoute }) {
   };
   const services = (window.JT_DATA && window.JT_DATA.services) || [];
   return (
-    <header className={`jt-nav ${scrolled ? 'jt-nav--scrolled' : ''}`}>
+    <header className={`jt-nav ${scrolled ? 'jt-nav--scrolled' : ''} ${menuOpen ? 'jt-nav--menu-open' : ''}`}>
       <a className="jt-nav__brand" onClick={() => setRoute('home')}>
         <img src="project/assets/logo_symbol.png" alt="" />
         <span>제이티 세무법인</span>
@@ -121,10 +122,22 @@ function JTNav({ route, setRoute }) {
       </nav>
       <div className="jt-nav__cta">
         <span className="jt-nav__phone">T. {window.JT_DATA.firm.phone}</span>
-        <button className="jt-btn jt-btn--primary jt-btn--sm" onClick={() => setRoute('booking')}>
+        <button className="jt-btn jt-btn--primary jt-btn--sm jt-nav__book" onClick={() => setRoute('booking')}>
           상담 예약 <span className="jt-arrow">→</span>
         </button>
+        <button className="jt-nav__burger" aria-label="메뉴" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+          <span></span><span></span><span></span>
+        </button>
       </div>
+      {menuOpen && (
+        <div className="jt-navmenu">
+          {[['about', '회사소개'], ['services', '업무분야'], ['report', 'JT 리포트'], ['insights', '인사이트'], ['contact', '오시는 길']].map(([r, l]) => (
+            <a key={r} className={route === r ? 'is-active' : ''} onClick={() => { setRoute(r); setMenuOpen(false); }}>{l}</a>
+          ))}
+          <a className="jt-navmenu__phone" href={`tel:${window.JT_DATA.firm.phone}`}>T. {window.JT_DATA.firm.phone}</a>
+          <button className="jt-btn jt-btn--primary" onClick={() => { setRoute('booking'); setMenuOpen(false); }}>상담 예약 <span className="jt-arrow">→</span></button>
+        </div>
+      )}
     </header>
   );
 }

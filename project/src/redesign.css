@@ -320,3 +320,55 @@
   .jt-map { grid-template-columns: 1fr; }
   .jt-form { grid-template-columns: 1fr; }
 }
+
+/* ═════════ 모바일 친화: 네비 햄버거 메뉴 · 카톡 배너 · 여백/타이포 ═════════ */
+/* 카톡 상담 배너 */
+.jt-kakao-cta {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  background: #FEE500; color: #191919; padding: 16px 22px; margin-bottom: 36px;
+  border-radius: 4px; text-decoration: none;
+}
+.jt-kakao-cta__msg { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; line-height: 1.45; }
+.jt-kakao-cta__msg b { font-weight: 800; }
+.jt-kakao-cta__go { font-weight: 800; white-space: nowrap; }
+
+/* 네비 햄버거 (기본 숨김 → 모바일 노출) */
+.jt-nav__burger { display: none; }
+.jt-navmenu { display: none; }
+
+@media (max-width: 760px) {
+  /* 네비: 상단 예약버튼 숨기고 햄버거 노출 (예약은 하단 고정바 + 메뉴에 제공) */
+  .jt-nav__book { display: none; }
+  .jt-nav__burger {
+    display: inline-flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 44px; height: 40px; padding: 0 11px; border: 1px solid var(--border-2);
+    background: transparent; cursor: pointer; border-radius: 4px;
+  }
+  .jt-nav__burger span { display: block; height: 2px; background: var(--fg-1); transition: transform .2s, opacity .2s; }
+  .jt-nav--menu-open .jt-nav__burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .jt-nav--menu-open .jt-nav__burger span:nth-child(2) { opacity: 0; }
+  .jt-nav--menu-open .jt-nav__burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .jt-navmenu {
+    display: flex; flex-direction: column;
+    position: absolute; left: 0; right: 0; top: 100%;
+    background: var(--bg-1); border-bottom: 1px solid var(--border-1);
+    padding: 6px 20px 22px; box-shadow: 0 18px 36px -18px rgba(0,0,0,.28);
+  }
+  .jt-navmenu a { padding: 16px 2px; font-size: 17px; font-weight: 500; color: var(--fg-1); text-decoration: none; border-bottom: 1px solid var(--border-1); cursor: pointer; }
+  .jt-navmenu a.is-active { color: var(--jt-amber); }
+  .jt-navmenu__phone { font-family: var(--font-sans-en); color: var(--fg-2); }
+  .jt-navmenu .jt-btn { margin-top: 18px; justify-content: center; }
+
+  /* 카톡 배너 — 세로 정렬로 글자 깨짐 방지 */
+  .jt-kakao-cta { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px 18px; }
+  .jt-kakao-cta__msg { font-size: 15px; align-items: flex-start; }
+
+  /* 섹션 여백·타이포 모바일 축소 */
+  .jt-section { padding: 56px 20px; }
+  .jt-section__head { margin-bottom: 36px; }
+  .jt-section__head--split { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .jt-h2 { font-size: 30px; }
+  .jt-page-hero { padding: 92px 20px 52px; }
+  .jt-page-hero__mark { width: 200px; right: -24px; bottom: -36px; }
+  .jt-page-hero h1 { font-size: clamp(30px, 8.5vw, 42px); }
+}
