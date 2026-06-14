@@ -39,7 +39,7 @@ function JTLegal({ kind, setRoute }) {
       <h3>5. 처리 위탁</h3>
       <p>원활한 서비스 운영을 위해 다음 업무를 위탁할 수 있습니다. 위탁 계약 시 개인정보 보호 관련 조항을 명시합니다.</p>
       <ul>
-        <li>웹사이트 호스팅 · 이메일 전송 (Formspree 등)</li>
+        <li>웹사이트 호스팅 (GitHub Pages) · 상담 접수 이메일 전송 (Web3Forms)</li>
         <li>웹사이트 이용 분석 (Google Analytics · 익명 집계)</li>
       </ul>
 
