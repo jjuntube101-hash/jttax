@@ -122,6 +122,8 @@ function JTBooking({ setRoute }) {
   });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target && e.target.type === 'checkbox' ? e.target.checked : e.target.value });
   const [done, setDone] = useStatePg2(false);
+  const [submitting, setSubmitting] = useStatePg2(false);
+  const [submitError, setSubmitError] = useStatePg2('');
   window.useReveal();
 
   const topics = [
@@ -167,8 +169,6 @@ function JTBooking({ setRoute }) {
   const canNext1 = form.topic;
   const canNext2 = form.name && form.phone;
   const canSubmit = form.consent;
-  const [submitting, setSubmitting] = useStatePg2(false);
-  const [submitError, setSubmitError] = useStatePg2('');
 
   const submitBooking = async () => {
     if (!canSubmit || submitting) return;
