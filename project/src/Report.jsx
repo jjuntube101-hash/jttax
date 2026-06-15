@@ -122,7 +122,6 @@ function JTReportHub({ setRoute, setSubRoute }) {
     { tag: 'AI ASSISTANT', kr: 'AI 세무 길잡이', d: '상황을 평범한 말로 입력하면, 맞는 분야와 다음 절차로 안내합니다.', star: true },
     { tag: 'LEGACY', kr: '상속·증여세 시뮬레이터', d: '자산을 입력하면 예상 세액과 공제 분해를 한눈에.', star: true },
     { tag: 'CONSULTING', kr: '법인 전환 시뮬레이터', d: '매출 구간별 개인 vs 법인 세부담을 비교합니다.', star: true },
-    { tag: 'LEGACY', kr: '양도소득세 계산기', d: '검증된 계산 엔진으로 1세대1주택·장기보유특별공제·중과를 반영한 추정 세액.', live: true, sub: 'cgt' },
     { tag: 'AUDIT', kr: '세무조사 위험도 진단', d: '쟁점 노출도를 점수로 보고, 대비 포인트를 정리합니다.' },
     { tag: 'BOOKKEEPING', kr: '4대보험·실수령 계산기', d: '급여에서 공제·실수령액을 즉시 계산합니다.' },
   ];
@@ -149,12 +148,37 @@ function JTReportHub({ setRoute, setSubRoute }) {
         </div>
       </section>
 
+      {/* 대표 라이브 도구 — 양도세 계산기 */}
+      <section className="jt-section" style={{paddingTop: 0, paddingBottom: 0}}>
+        <div className="jt-container">
+          <div className="jt-report-feature reveal">
+            <div>
+              <span className="jt-report-feature__live">
+                <span className="jt-report-feature__dot" aria-hidden="true"></span>
+                NOW LIVE · 무료 계산기
+              </span>
+              <h2>이 집 팔면 양도세,<br/>얼마 나올까요?</h2>
+              <p className="jt-report-feature__d">검증된 계산 엔진이 1세대1주택 비과세·일시적2주택·입주권·장기보유특별공제·중과세까지 반영해 추정 양도소득세를 계산합니다. 로그인 없이, 5분이면 충분합니다.</p>
+              <div className="jt-report-feature__meta">
+                <span>로그인 불필요</span>
+                <span>입력값은 브라우저에만</span>
+                <span>결과 → 바로 상담 연결</span>
+              </div>
+            </div>
+            <div className="jt-report-feature__cta">
+              <button className="jt-btn jt-btn--primary" onClick={() => setSubRoute('cgt')}>양도세 계산하기 →</button>
+              <span className="jt-report-feature__sub">약 5분 · 자산유형별 맞춤 질문</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 준비 중 도구 미리보기 */}
       <section className="jt-section jt-report-grid">
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
-            <h2>세금 도구함</h2>
-            <p>‘지금 사용 가능’ 도구는 바로 쓸 수 있습니다. ★는 다음 공개 예정.</p>
+            <h2>곧 열릴 도구</h2>
+            <p>★ 표시는 가장 먼저 공개될 도구입니다. 준비되는 동안에도 담당 세무사가 직접 분석해 드립니다.</p>
           </div>
           <div className="jt-report-grid__cards">
             {planned.map((r, i) => (
