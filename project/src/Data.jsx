@@ -120,7 +120,7 @@ window.JT_DATA = {
     { code: 'KGB', photo: 'project/assets/team-kgb.jpg', role: '회장', kr: '김기복 세무사', focus: '국세 행정 39년 · 세무조사·조세불복 자문', career: '前 송파세무서장 · 서울지방국세청 감사관 · 국세청 법인세과' },
     { code: 'KMS', photo: 'project/assets/team-kms.jpg', role: '대표세무사', kr: '김민석 세무사', focus: '재산세제 · 조세불복 · 주식평가', career: '제53회 세무사 · 공인중개사 · 국민대 공법학' },
     { code: 'LHJ', photo: 'project/assets/team-lhj.jpg', role: '대표세무사', kr: '이현준 세무사', focus: '공무원학원 세법 강의 · 가상자산 세제 · 자문', career: '해커스공무원 세법 강사 · 동남보건대 겸임교수 · 성균관대 EMBA' },
-    { code: 'KGH', role: '대표세무사', kr: '김가환 세무사', focus: '법인 회계·기장 · 결산 실무', career: '수원대 회계학과 · 법인 회계 실무 경력' },
+    { code: 'KGH', photo: 'project/assets/team-kgh.jpg', role: '대표세무사', kr: '김가환 세무사', focus: '법인 회계·기장 · 결산 실무', career: '수원대 회계학과 · 법인 회계 실무 경력' },
   ],
 
   // 서비스 5개 분야
@@ -284,6 +284,7 @@ window.JT_DATA = {
         initials: '金',
         role: 'MANAGING PARTNER · 대표세무사',
         name: '김가환',
+        photo: 'project/assets/team-kgh.jpg',
         titleKr: '법인 회계·기장 · 결산 실무',
         summary: '실무 경리·회계 경험을 바탕으로 법인 기장·결산 실무를 책임지는 대표세무사입니다.',
         education: [
