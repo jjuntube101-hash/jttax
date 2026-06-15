@@ -273,6 +273,53 @@ function formatWon(n) {
   return `${n.toLocaleString()}원`;
 }
 
+/* 상담 요청 시 담당 세무사에게 전달할 상세 — 고객 입력 전체 + 계산 결과 + 자동 분석 */
+function buildReportDetail(answers, calc, commentary) {
+  const L = [];
+  L.push('■ 고객 입력 정보');
+  CGT_QS.forEach(q => {
+    const v = answers[q.id];
+    if (v === undefined || v === null || v === '') return;
+    let val = v;
+    if (q.opts) { const o = q.opts.find(x => x[0] === v); if (o) val = o[1]; }
+    else if (q.numeric) val = formatWon(Number(v));
+    const qlabel = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
+    L.push('  · ' + qlabel + ': ' + val);
+  });
+  L.push('');
+  L.push('■ 계산 결과' + (calc.precise ? ' (검증 엔진 정밀계산)' : ' (간이 추정)'));
+  L.push('  · 양도차익: ' + formatWon(calc.capGain));
+  if (calc.nonTaxableMsg) L.push('  · 비과세 판정: ' + calc.nonTaxableMsg);
+  L.push('  · 과세대상(비과세 반영 후): ' + formatWon(calc.taxableAfter));
+  L.push('  · 장기보유특별공제: ' + formatWon(calc.ltDeduction) + ' (' + Math.round((calc.ltRate || 0) * 100) + '%)');
+  L.push('  · 과세표준: ' + formatWon(calc.taxBase));
+  L.push('  · 산출세액: ' + formatWon(calc.baseTax));
+  L.push('  · 지방소득세: ' + formatWon(calc.localTax));
+  L.push('  · 총 세부담: ' + formatWon(calc.totalTax) + ' (실효세율 ' + (calc.effectiveRate || 0).toFixed(1) + '%)');
+  const notes = [calc.shortTermNote, calc.multiHouseNote, calc.ipjuCaveat, calc.landCaveat, calc.replCaveat, calc.deadlineWarn].filter(Boolean);
+  const ew = calc.engineWarnings || [];
+  if (notes.length || ew.length) {
+    L.push('');
+    L.push('■ 특이사항·경고');
+    notes.forEach(n => L.push('  · ' + n));
+    ew.forEach(w => L.push('  · [엔진경고] ' + w));
+  }
+  if (calc.timingTip || calc.orderTip) {
+    L.push('');
+    L.push('■ 절세 가능성');
+    if (calc.timingTip) L.push('  · 양도시점: ' + calc.timingTip);
+    if (calc.orderTip) L.push('  · 처분순서: ' + calc.orderTip);
+  }
+  L.push('');
+  L.push('■ 자동 분석');
+  if (commentary.headline) L.push('  요약: ' + commentary.headline);
+  (commentary.cautions || []).forEach(c => L.push('  · [주의] ' + c.title + ': ' + c.detail));
+  (commentary.saving_ideas || []).forEach(s => L.push('  · [절세] ' + s.title + ': ' + s.detail));
+  const fu = commentary.followup || [];
+  if (fu.length) { L.push('  추가 확인 필요 자료:'); fu.forEach(f => L.push('    - ' + f)); }
+  return L.join('\n');
+}
+
 /* ────────────────────────────────────────────────────────────────
    단계별계산 표시 단위 보정.
    엔진의 CalcStep.amount는 항목에 따라 원·년·%·채·세대로 의미가 다른데
@@ -1094,6 +1141,7 @@ cautions 3개, saving_ideas 2~3개.`;
           reportType="양도소득세 간이 계산"
           reportTag="LEGACY"
           reportSummary={`총 세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
+          reportDetail={buildReportDetail(answers, calc, commentary)}
           urgent={calc.shortTermNote !== null}
         />
 

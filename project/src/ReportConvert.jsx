@@ -56,7 +56,7 @@ function JTConvertBanner({ setRoute, urgent }) {
 window.JTConvertBanner = JTConvertBanner;
 
 // ===== 2. 리드 캡처 (이메일로 결과 받기) =====
-function JTConvertLeadCapture({ reportType, reportSummary }) {
+function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
   const [email, setEmail] = useCvtState('');
   const [name, setName] = useCvtState('');
   const [phone, setPhone] = useCvtState('');
@@ -79,6 +79,7 @@ function JTConvertLeadCapture({ reportType, reportSummary }) {
       이메일: email,
       연락처: phone,
       진단요약: reportSummary || '(요약 없음)',
+      상세입력_및_분석: reportDetail || '(상세 없음)',
       접수시각: new Date().toLocaleString('ko-KR'),
     };
     if (window.gtag) window.gtag('event', 'report_lead_submit', { reportType });
@@ -363,11 +364,11 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
 window.JTConvertPdfGate = JTConvertPdfGate;
 
 // ===== 통합 랩퍼 =====
-function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, urgent }) {
+function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, urgent }) {
   return (
     <>
       <JTConvertBanner setRoute={setRoute} urgent={urgent} />
-      <JTConvertLeadCapture reportType={reportType} reportSummary={reportSummary} />
+      <JTConvertLeadCapture reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} />
       <JTConvertPrecedents reportTag={reportTag} />
       <JTConvertTimeSlots setRoute={setRoute} urgent={urgent} />
       <JTConvertPdfGate reportType={reportType} reportSummary={reportSummary} />
