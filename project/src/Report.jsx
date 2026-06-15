@@ -122,7 +122,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
     { tag: 'AI ASSISTANT', kr: 'AI 세무 길잡이', d: '상황을 평범한 말로 입력하면, 맞는 분야와 다음 절차로 안내합니다.', star: true },
     { tag: 'LEGACY', kr: '상속·증여세 시뮬레이터', d: '자산을 입력하면 예상 세액과 공제 분해를 한눈에.', star: true },
     { tag: 'CONSULTING', kr: '법인 전환 시뮬레이터', d: '매출 구간별 개인 vs 법인 세부담을 비교합니다.', star: true },
-    { tag: 'LEGACY', kr: '양도소득세 계산기', d: '1세대 1주택·장기보유특별공제를 반영한 추정 세액.' },
+    { tag: 'LEGACY', kr: '양도소득세 계산기', d: '검증된 계산 엔진으로 1세대1주택·장기보유특별공제·중과를 반영한 추정 세액.', live: true, sub: 'cgt' },
     { tag: 'AUDIT', kr: '세무조사 위험도 진단', d: '쟁점 노출도를 점수로 보고, 대비 포인트를 정리합니다.' },
     { tag: 'BOOKKEEPING', kr: '4대보험·실수령 계산기', d: '급여에서 공제·실수령액을 즉시 계산합니다.' },
   ];
@@ -131,11 +131,11 @@ function JTReportHub({ setRoute, setSubRoute }) {
       {/* 히어로 */}
       <section className="jt-section jt-report-hero">
         <div className="jt-container">
-          <div className="jt-eyebrow reveal">JT TAX CORP. · REPORT · COMING SOON</div>
+          <div className="jt-eyebrow reveal">JT TAX CORP. · REPORT</div>
           <h1 className="jt-report-hero__title reveal">
             <span>세금을</span> <span>다루는</span> <span>도구,</span>
             <br/>
-            <span className="is-accent">곧 공개됩니다.</span>
+            <span className="is-accent">하나씩 열립니다.</span>
           </h1>
           <p className="jt-report-hero__sub reveal">
             국세 행정 39년의 회장과 세무사가 직접 설계하는 인터랙티브 세금 도구함.<br/>
@@ -153,19 +153,28 @@ function JTReportHub({ setRoute, setSubRoute }) {
       <section className="jt-section jt-report-grid">
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
-            <h2>준비 중인 도구</h2>
-            <p>★ 표시는 가장 먼저 공개될 도구입니다.</p>
+            <h2>세금 도구함</h2>
+            <p>‘지금 사용 가능’ 도구는 바로 쓸 수 있습니다. ★는 다음 공개 예정.</p>
           </div>
           <div className="jt-report-grid__cards">
             {planned.map((r, i) => (
-              <article key={r.kr} className="jt-report-soon reveal" style={{transitionDelay: `${i * 70}ms`}}>
+              <article
+                key={r.kr}
+                className={`jt-report-soon reveal${r.live ? ' is-live' : ''}`}
+                style={{transitionDelay: `${i * 70}ms`, cursor: r.live ? 'pointer' : 'default'}}
+                onClick={r.live ? () => setSubRoute(r.sub) : undefined}
+              >
                 <div className="jt-report-soon__top">
                   <span className="jt-tag">{r.tag}</span>
-                  <span className="jt-report-soon__badge">{r.star ? '우선 공개' : '준비 중'}</span>
+                  <span className="jt-report-soon__badge">{r.live ? '지금 사용 가능' : (r.star ? '우선 공개' : '준비 중')}</span>
                 </div>
                 <h3>{r.kr}{r.star && <span className="jt-report-soon__star" aria-hidden="true"> ★</span>}</h3>
                 <p className="jt-report-soon__d">{r.d}</p>
-                <div className="jt-report-soon__foot">COMING SOON</div>
+                <div className="jt-report-soon__foot">
+                  {r.live
+                    ? <button className="jt-btn jt-btn--primary" onClick={(e) => { e.stopPropagation(); setSubRoute(r.sub); }}>지금 계산하기 →</button>
+                    : 'COMING SOON'}
+                </div>
               </article>
             ))}
           </div>
