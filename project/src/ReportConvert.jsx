@@ -12,7 +12,7 @@
 const { useState: useCvtState, useMemo: useCvtMemo } = React;
 
 // ===== 1. 검토 배너 =====
-function JTConvertBanner({ setRoute, urgent }) {
+function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDetail, kakaoSummary }) {
   return (
     <div className={`jt-convert-banner ${urgent ? 'jt-convert-banner--urgent' : ''}`} style={{
       background: urgent ? '#1a0e0e' : '#0B0B0F',
@@ -45,7 +45,34 @@ function JTConvertBanner({ setRoute, urgent }) {
             무료 15분 검토 예약 →
           </button>
           <a className="jt-btn jt-btn--ghostOnDark" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
-            onClick={() => { if (window.gtag) window.gtag('event', 'report_cta_banner_kakao', { urgent }); }}>
+            onClick={() => {
+              if (window.gtag) window.gtag('event', 'report_cta_banner_kakao', { urgent });
+              // ① 결과 요약을 클립보드에 복사 (고객이 카톡 채팅창에 붙여넣기)
+              try { if (kakaoSummary && navigator.clipboard) navigator.clipboard.writeText(kakaoSummary).catch(function(){}); } catch (_e) {}
+              // ② 담당 세무사에게 고객 입력·결과·분석 자동 전송 (연락처 미수집 — 카톡으로 응대)
+              try {
+                var w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
+                if (w3fKey && w3fKey.indexOf('REPLACE') < 0 && reportDetail) {
+                  fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                    body: JSON.stringify({
+                      access_key: w3fKey,
+                      subject: '[JT 리포트 카톡연결] ' + (reportType || '양도소득세'),
+                      from_name: '홈페이지 리포트(카톡 연결)',
+                      구분: 'KAKAO_연결',
+                      리포트유형: reportType || '',
+                      진단요약: reportSummary || '',
+                      상세입력_및_분석: reportDetail || '',
+                      접수시각: new Date().toLocaleString('ko-KR'),
+                      비고: '고객이 결과 후 카카오톡 채널로 연결 — 연락처 미수집(카톡으로 응대). 같은 시각 카톡 문의와 대조 바람.',
+                    }),
+                  }).catch(function(){});
+                }
+              } catch (_e) {}
+              // ③ 안내 (카톡은 target=_blank로 새 탭에서 열림)
+              setTimeout(function(){ try { window.alert('계산 결과를 담당 세무사에게 전달했습니다.\n결과 요약이 복사되었으니, 카카오톡 채팅창에 붙여넣기(Ctrl+V) 하시면 더 정확히 상담받으실 수 있습니다.'); } catch (_e) {} }, 80);
+            }}>
             카톡으로 결과 전송
           </a>
         </div>
@@ -364,10 +391,10 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
 window.JTConvertPdfGate = JTConvertPdfGate;
 
 // ===== 통합 랩퍼 =====
-function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, urgent }) {
+function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, kakaoSummary, urgent }) {
   return (
     <>
-      <JTConvertBanner setRoute={setRoute} urgent={urgent} />
+      <JTConvertBanner setRoute={setRoute} urgent={urgent} reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} kakaoSummary={kakaoSummary} />
       <JTConvertLeadCapture reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} />
       <JTConvertPrecedents reportTag={reportTag} />
       <JTConvertTimeSlots setRoute={setRoute} urgent={urgent} />

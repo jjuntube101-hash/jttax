@@ -320,6 +320,27 @@ function buildReportDetail(answers, calc, commentary) {
   return L.join('\n');
 }
 
+/* 카톡 전송용 간결 요약 — 고객 입력 + 추정 결과 (채팅창에 붙여넣기 좋게) */
+function buildKakaoSummary(answers, calc) {
+  const L = ['[JT택스랩 양도세 계산 — 상담 요청]', '', '▶ 입력'];
+  CGT_QS.forEach(q => {
+    if (q.id === 'context') return;
+    const v = answers[q.id];
+    if (v === undefined || v === null || v === '') return;
+    let val = v;
+    if (q.opts) { const o = q.opts.find(x => x[0] === v); if (o) val = o[1]; }
+    else if (q.numeric) val = formatWon(Number(v));
+    const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
+    L.push('· ' + ql + ': ' + val);
+  });
+  if (answers.context) L.push('· 추가: ' + answers.context);
+  L.push('', '▶ 추정 결과');
+  if (calc.nonTaxableMsg) L.push('· ' + calc.nonTaxableMsg);
+  L.push('· 총 세부담: ' + formatWon(calc.totalTax) + ' (과세표준 ' + formatWon(calc.taxBase) + ')');
+  L.push('', '상담 부탁드립니다.');
+  return L.join('\n');
+}
+
 /* ────────────────────────────────────────────────────────────────
    단계별계산 표시 단위 보정.
    엔진의 CalcStep.amount는 항목에 따라 원·년·%·채·세대로 의미가 다른데
@@ -1142,6 +1163,7 @@ cautions 3개, saving_ideas 2~3개.`;
           reportTag="LEGACY"
           reportSummary={`총 세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
           reportDetail={buildReportDetail(answers, calc, commentary)}
+          kakaoSummary={buildKakaoSummary(answers, calc)}
           urgent={calc.shortTermNote !== null}
         />
 
