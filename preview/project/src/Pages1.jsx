@@ -364,17 +364,9 @@ function JTInsightsPage({ setRoute }) {
       </section>
 
       <section className="jt-section">
-        <ul className="jt-insights">
-          {items.map((a, i) =>
-          <li key={a.title} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => { if (a.slug) { window.location.href = '/insights/' + a.slug + '.html'; } }} style={{ cursor: 'pointer' }}>
-              <span className="jt-insights__num">{String(i + 1).padStart(2, '0')}</span>
-              <span className="jt-insights__title">{a.title}</span>
-              <span className="jt-insights__tag">{a.tag}</span>
-              <span className="jt-insights__date">{a.date}</span>
-              <span className="jt-arrow">→</span>
-            </li>
-          )}
-        </ul>
+        <div className="jt-icards jt-icards--3">
+          {items.map((a, i) => { const Card = window.JTInsightCard; return <Card key={a.slug || a.title} a={a} i={i} />; })}
+        </div>
       </section>
     </>);
 

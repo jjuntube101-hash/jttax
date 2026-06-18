@@ -647,3 +647,26 @@
   .jt-sit.reveal, .jt-brandmoment__logo.reveal{ transform: none !important; }
   .jt-sithero::before{ animation: none !important; }
 }
+
+/* ===================================================================
+   인사이트 카드 (표 → 카드: 카테고리 칩 + 제목 + 요약 + 읽기)
+   =================================================================== */
+.jt-icards{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.jt-icards--3{ grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 960px){ .jt-icards, .jt-icards--3{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px){ .jt-icards, .jt-icards--3{ grid-template-columns: 1fr; } }
+.jt-icard{
+  display: flex; flex-direction: column; padding: 30px 30px 26px;
+  border: 1px solid var(--border-1); background: var(--bg-1); cursor: pointer; min-height: 210px;
+  transition: border-color .2s, transform .25s var(--ease-out), box-shadow .25s;
+}
+.jt-icard:hover{ border-color: #000; transform: translateY(-5px); box-shadow: 0 24px 48px -26px rgba(0,0,0,.42); }
+.jt-icard:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
+.jt-icard__top{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+.jt-icard__cat{ font-family: var(--font-sans-en); font-size: 10.5px; letter-spacing: .14em; font-weight: 700; color: #000; border: 1px solid var(--border-2); padding: 4px 10px; text-transform: uppercase; white-space: nowrap; }
+.jt-icard__date{ font-family: var(--font-sans-en); font-size: 12px; color: var(--fg-3); letter-spacing: .04em; white-space: nowrap; }
+.jt-icard__title{ font-size: 19px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.4; margin: 0 0 12px; color: var(--fg-1); }
+.jt-icard__excerpt{ font-size: 14px; color: var(--fg-2); line-height: 1.7; margin: 0 0 22px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.jt-icard__go{ margin-top: auto; font-size: 13px; font-weight: 700; color: #000; display: inline-flex; align-items: center; gap: 8px; }
+.jt-icard__go .jt-arrow{ transition: transform .2s; }
+.jt-icard:hover .jt-icard__go .jt-arrow{ transform: translateX(4px); }

@@ -371,6 +371,25 @@ function JTQuote() {
 window.JTQuote = JTQuote;
 
 // ============ Insights list (home preview) ============
+// 인사이트 카드 (홈·목록 공용)
+function JTInsightCard({ a, i }) {
+  const cat = String(a.tag || '인사이트').split('·').pop().trim();
+  const go = () => { if (a.slug) window.location.href = '/insights/' + a.slug + '.html'; };
+  return (
+    <article className="jt-icard reveal" data-delay={Math.min(i, 5)} role="button" tabIndex={0}
+      onClick={go} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }}>
+      <div className="jt-icard__top">
+        <span className="jt-icard__cat">{cat}</span>
+        <span className="jt-icard__date">{a.date}</span>
+      </div>
+      <h3 className="jt-icard__title">{a.title}</h3>
+      {a.excerpt && <p className="jt-icard__excerpt">{a.excerpt}</p>}
+      <span className="jt-icard__go">읽기 <span className="jt-arrow">→</span></span>
+    </article>);
+
+}
+window.JTInsightCard = JTInsightCard;
+
 function JTInsightsPreview({ setRoute, limit }) {
   const items = window.JT_DATA.insights.slice(0, limit || 4);
   return (
@@ -382,17 +401,9 @@ function JTInsightsPreview({ setRoute, limit }) {
         </div>
         <a className="jt-link" onClick={() => setRoute('insights')}>전체 보기 →</a>
       </div>
-      <ul className="jt-insights">
-        {items.map((a, i) =>
-        <li key={a.title} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => { if (a.slug) { window.location.href = '/insights/' + a.slug + '.html'; } else { setRoute('insights'); } }}>
-            <span className="jt-insights__num">{String(i + 1).padStart(2, '0')}</span>
-            <span className="jt-insights__title">{a.title}</span>
-            <span className="jt-insights__tag">{a.tag}</span>
-            <span className="jt-insights__date">{a.date}</span>
-            <span className="jt-arrow">→</span>
-          </li>
-        )}
-      </ul>
+      <div className="jt-icards">
+        {items.map((a, i) => <JTInsightCard key={a.slug || a.title} a={a} i={i} />)}
+      </div>
     </section>);
 
 }
