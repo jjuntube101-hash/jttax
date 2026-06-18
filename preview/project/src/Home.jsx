@@ -55,8 +55,9 @@ function JTHero({ setRoute }) {
 담당 전문가로 바로 안내해 드립니다.</p>
       </div>
       <div className="jt-sits" style={{ gridTemplateColumns: w <= 640 ? '1fr' : (w <= 960 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)') }}>
-        {JT_SITUATIONS.map((s) => <div
+        {JT_SITUATIONS.map((s, i) => <div
             key={s.num}
+            data-delay={Math.min(i, 5)}
             className={`jt-sit reveal ${s.general ? 'jt-sit--general' : ''}`}
             role="button"
             tabIndex={0}

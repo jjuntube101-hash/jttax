@@ -611,3 +611,37 @@
 .jt-pullquote__avatar img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; filter: grayscale(1); }
 /* 그레인 더 강하게 */
 .jt-app::after{ opacity: .72 !important; }
+
+/* ===================================================================
+   모션 패키지 — 동영상 대신 '움직이는' 임팩트 (절제·모노톤·reduced-motion 가드)
+   =================================================================== */
+@keyframes jt-rise { from { opacity: 0; transform: translateY(36px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+
+/* (1) 히어로 로드 진입 — 위에서부터 순차 등장(키커→타이틀→서브) */
+.jt-sithero .jt-kicker{ animation: jt-rise .7s var(--ease-out) both; }
+.jt-sithero__title{ animation: jt-rise 1s .1s var(--ease-out) both; }
+.jt-sithero__sub{ animation: jt-rise .9s .26s var(--ease-out) both; }
+
+/* (2) 전역 스크롤 reveal 고급화 — 떠오르며 또렷해짐(블러업). transition-delay(data-delay)는 보존 */
+.reveal{ filter: blur(9px); transition-property: opacity, transform, filter !important; transition-duration: .85s !important; transition-timing-function: var(--ease-out) !important; }
+.reveal.is-visible{ filter: blur(0); }
+.reveal[data-delay="5"]{ transition-delay: .5s; }
+
+/* (3) 상황 카드 — 시차로 하나씩 떠오름 (data-delay 0~5) */
+.jt-sit.reveal{ transform: translateY(40px) scale(.98); }
+.jt-sit.reveal.is-visible{ transform: none; }
+
+/* (4) 브랜드 모먼트 로고 — 스케일·블러로 '각인'되며 등장 */
+.jt-brandmoment__logo.reveal{ transform: translateY(34px) scale(.92); }
+.jt-brandmoment__logo.reveal.is-visible{ transform: none; }
+
+/* (5) 히어로 고스트 JT — 은은히 숨쉬는 모션(살아있는 느낌) */
+@keyframes jt-breathe { 0%,100% { transform: scale(1); opacity: .085; } 50% { transform: scale(1.05); opacity: .12; } }
+.jt-sithero::before{ animation: jt-breathe 10s ease-in-out infinite; transform-origin: 82% 78%; }
+
+@media (prefers-reduced-motion: reduce){
+  .jt-sithero .jt-kicker, .jt-sithero__title, .jt-sithero__sub{ animation: none !important; }
+  .reveal{ filter: none !important; }
+  .jt-sit.reveal, .jt-brandmoment__logo.reveal{ transform: none !important; }
+  .jt-sithero::before{ animation: none !important; }
+}
