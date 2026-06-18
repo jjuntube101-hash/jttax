@@ -545,3 +545,30 @@
 .jt-nav__brand img{ height: 40px !important; width: auto; }
 /* footer: 정식 Primary 화이트 락업(세로형) 사용 */
 .jt-footer__brand img{ filter: none !important; height: 78px !important; width: auto; opacity: 1 !important; }
+
+/* ===================================================================
+   피드백 2 — 한 줄 대형 타이틀 · 로고 강조(>슬로건) · 배경 질감
+   =================================================================== */
+/* (1) "지금, 어떤 상황이신가요?" 한 줄 + 대형, 중앙 정렬 */
+.jt-sithero__inner{ text-align: center; }
+.jt-sithero .jt-kicker{ display: inline-flex; align-items: center; justify-content: center; }
+.jt-sithero__title{
+  white-space: nowrap !important;
+  font-size: clamp(28px, 7.2vw, 102px) !important;
+  max-width: none !important; line-height: 1.02 !important;
+  margin-left: auto !important; margin-right: auto !important;
+}
+.jt-sithero__sub{ margin-left: auto !important; margin-right: auto !important; }
+
+/* (2) 브랜드 모먼트: 로고를 주역으로(각인), 슬로건은 보조 */
+.jt-brandmoment__logo{ height: clamp(200px, 32vw, 460px) !important; margin-bottom: clamp(22px,3vw,40px) !important; }
+.jt-brandmoment__slogan{ font-size: clamp(24px, 3.6vw, 52px) !important; color: rgba(255,255,255,.9) !important; }
+.jt-brandmoment__sub{ color: rgba(255,255,255,.55) !important; }
+
+/* (3) 배경 질감 — 정밀 컬럼 그리드 강화 + 그레인 톤다운
+       (라이트 영역에만; 다크 섹션은 multiply로 자동 소거 → 브랜드모먼트/푸터 깨끗) */
+.jt-app::before{
+  background-image: repeating-linear-gradient(90deg,
+    rgba(0,0,0,0.05) 0, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 100px) !important;
+}
+.jt-app::after{ opacity: .3 !important; }
