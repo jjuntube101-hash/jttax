@@ -441,3 +441,21 @@
   .jt-services { grid-template-columns: 1fr !important; }
   .jt-insights__row { grid-template-columns: 1fr !important; }
 }
+
+/* ===================================================================
+   PHASE A — 한글 줄바꿈 안전화 + 섹션 제목 디스플레이 서체 통일
+   =================================================================== */
+/* 한글은 어절 단위로만 줄바꿈(단어 중간 끊김 방지). 명시도 0(:where)이라 기존 규칙 안 깨짐 */
+:where(h1,h2,h3,h4,.jt-h1,.jt-h2,.jt-h3,.jt-display-h2,p,li,dt,dd,blockquote){ word-break: keep-all; }
+:where(h1,h2,h3,h4,.jt-h1,.jt-h2,.jt-h3,.jt-display-h2){ text-wrap: balance; }
+:where(p,li,dd,blockquote){ text-wrap: pretty; }
+/* 영문·번호·이메일 등은 keep-all 제외(좁은 화면 넘침 방지) */
+.jt-channels__big, .en-caps, .mono, .jt-nav__phone, .jt-map__val a { word-break: normal; overflow-wrap: anywhere; }
+
+/* 섹션 헤드라인 전용 디스플레이 서체(.jt-h2엔 전역 적용 안 하고, 이 클래스를 단 곳만) */
+.jt-display-h2{
+  font-family: var(--font-display-kr);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}

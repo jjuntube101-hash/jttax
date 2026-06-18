@@ -83,7 +83,7 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
       <section className="jt-section">
         <div className="jt-section__head reveal">
           <div className="jt-kicker">CREDENTIALS · 근거의 벽</div>
-          <h2 className="jt-h2">감이 아니라, 이력으로.</h2>
+          <h2 className="jt-h2 jt-display-h2">감이 아니라, 이력으로.</h2>
         </div>
         <div className="jt-matrix reveal">
           <div className="jt-matrix__cell">
@@ -112,7 +112,7 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
       <section className="jt-section">
         <div className="jt-section__head reveal">
           <div className="jt-kicker">PHILOSOPHY · 업무 원칙</div>
-          <h2 className="jt-h2">세 가지 원칙으로 일합니다.</h2>
+          <h2 className="jt-h2 jt-display-h2">세 가지 원칙으로 일합니다.</h2>
         </div>
         <div className="jt-philosophy">
           {D.philosophy.map((p, i) =>
@@ -128,7 +128,7 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
       <section className="jt-section">
         <div className="jt-section__head reveal">
           <div className="jt-kicker">HISTORY · 연혁</div>
-          <h2 className="jt-h2">짧지만 밀도 있는 시간.</h2>
+          <h2 className="jt-h2 jt-display-h2">짧지만 밀도 있는 시간.</h2>
         </div>
         <ul className="jt-timeline">
           {D.timeline.map((e, i) =>

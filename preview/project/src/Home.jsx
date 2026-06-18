@@ -105,7 +105,7 @@ function JTProof({ setRoute }) {
       <div className="jt-section__head jt-section__head--split reveal">
         <div>
           <div className="jt-kicker">PRECEDENTS · 공개 판례·참고자료</div>
-          <h2 className="jt-h2">세법은 기록되어 있고,<br />결정은 공개되어 있습니다.</h2>
+          <h2 className="jt-h2 jt-display-h2">세법은 기록되어 있고,<br />결정은 공개되어 있습니다.</h2>
         </div>
         <div className="jt-proof__note">
           아래는 <strong>당사 수임 실적이 아닌</strong>, 국세법령정보시스템·국세청 통계·국세기본법에서 발췌한 공개 자료입니다.<br />귀하 사안의 적용 가능성은 개별 검토가 필요합니다.
@@ -179,7 +179,7 @@ function JTAuthority() {
     <section className="jt-authority">
       <div className="jt-section__head reveal">
         <div className="jt-kicker">CREDENTIALS · 이력으로 증명</div>
-        <h2 className="jt-h2">기관이 자문을 구하고,<br />공무원이 배우는 전문성.</h2>
+        <h2 className="jt-h2 jt-display-h2">기관이 자문을 구하고,<br />공무원이 배우는 전문성.</h2>
       </div>
       <div className="jt-authority__grid">
         <div className="jt-authority__card reveal">
@@ -261,7 +261,7 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
           onKeyDown={(e) => {if (e.key === 'Enter' || e.key === ' ') {e.preventDefault();setRoute('services');}}}>
           
           <div className="jt-kicker">SERVICES · 업무분야</div>
-          <h2 className="jt-h2">근거에 기반한<br />다섯 개 전문 영역.</h2>
+          <h2 className="jt-h2 jt-display-h2">근거에 기반한<br />다섯 개 전문 영역.</h2>
         </div>
         <a className="jt-link" onClick={() => setRoute('services')}>전체 업무분야 →</a>
       </div>
@@ -357,7 +357,7 @@ function JTInsightsPreview({ setRoute, limit }) {
       <div className="jt-section__head jt-section__head--split reveal">
         <div>
           <div className="jt-kicker">INSIGHTS · 최근 글</div>
-          <h2 className="jt-h2">실무에 바로 쓰는 해설.</h2>
+          <h2 className="jt-h2 jt-display-h2">실무에 바로 쓰는 해설.</h2>
         </div>
         <a className="jt-link" onClick={() => setRoute('insights')}>전체 보기 →</a>
       </div>
@@ -413,7 +413,7 @@ function JTTeamPreview({ setRoute }) {
       <div className="jt-section__head jt-section__head--split reveal">
         <div>
           <div className="jt-kicker">TEAM · 담당 세무사</div>
-          <h2 className="jt-h2">회장 1인과 대표세무사 3인,<br />각자의 전문 영역.</h2>
+          <h2 className="jt-h2 jt-display-h2">회장 1인과 대표세무사 3인,<br />각자의 전문 영역.</h2>
         </div>
         <a className="jt-link" onClick={() => setRoute('about', 'team')}>전체 구성원 보기 →</a>
       </div>
@@ -448,7 +448,7 @@ function JTChannels({ setRoute }) {
       <div className="jt-channels__inner">
         <div className="reveal">
           <div className="jt-kicker">CHANNELS · 편한 방식으로</div>
-          <h2 className="jt-h2">전화가 부담스러우면,<br />카톡·이메일로도 됩니다.</h2>
+          <h2 className="jt-h2 jt-display-h2">전화가 부담스러우면,<br />카톡·이메일로도 됩니다.</h2>
         </div>
         <div className="jt-channels__grid reveal" data-delay="1">
           <a className="jt-channels__card" href={`tel:${window.JT_DATA.firm.phone}`}>
@@ -482,7 +482,7 @@ function JTFaq({ setRoute }) {
     <section className="jt-section">
       <div className="jt-section__head reveal">
         <div className="jt-kicker">FAQ · 자주 묻는 질문</div>
-        <h2 className="jt-h2">궁금한 점을<br />먼저 풀어드립니다.</h2>
+        <h2 className="jt-h2 jt-display-h2">궁금한 점을<br />먼저 풀어드립니다.</h2>
       </div>
       <div style={{ borderTop: '1px solid var(--border-1)' }}>
         {items.map((it, i) =>
