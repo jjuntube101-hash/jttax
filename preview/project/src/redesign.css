@@ -616,11 +616,13 @@
    모션 패키지 — 동영상 대신 '움직이는' 임팩트 (절제·모노톤·reduced-motion 가드)
    =================================================================== */
 @keyframes jt-rise { from { opacity: 0; transform: translateY(36px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+/* 과감한 타이틀 등장 — 멀리서 + 강한 블러 + 살짝 확대 (영화 타이틀) */
+@keyframes jt-title-in { 0% { opacity: 0; transform: translateY(92px) scale(.94); filter: blur(24px); } 100% { opacity: 1; transform: none; filter: blur(0); } }
 
-/* (1) 히어로 로드 진입 — 위에서부터 순차 등장(키커→타이틀→서브) */
-.jt-sithero .jt-kicker{ animation: jt-rise .7s var(--ease-out) both; }
-.jt-sithero__title{ animation: jt-rise 1s .1s var(--ease-out) both; }
-.jt-sithero__sub{ animation: jt-rise .9s .26s var(--ease-out) both; }
+/* (1) 히어로 로드 진입 — 키커 → 대형 타이틀(과감) → 서브, 시차 크게 */
+.jt-sithero .jt-kicker{ animation: jt-rise .8s var(--ease-out) both; }
+.jt-sithero__title{ animation: jt-title-in 1.35s .18s cubic-bezier(.16,1,.3,1) both; }
+.jt-sithero__sub{ animation: jt-rise 1s .62s var(--ease-out) both; }
 
 /* (2) 전역 스크롤 reveal 고급화 — 떠오르며 또렷해짐(블러업). transition-delay(data-delay)는 보존 */
 .reveal{ filter: blur(9px); transition-property: opacity, transform, filter !important; transition-duration: .85s !important; transition-timing-function: var(--ease-out) !important; }
