@@ -592,3 +592,22 @@
    =================================================================== */
 .jt-sithero{ padding-bottom: clamp(84px, 10vw, 132px) !important; }  /* 카드와 브랜드모먼트 사이 숨 공간 */
 .jt-app::after{ opacity: .5 !important; }                            /* 그레인 더 세게 */
+
+/* ===================================================================
+   피드백 5 — 줄바꿈 전수(상속) + disclaimer 보정 + 회장 사진 아바타 + 그레인↑
+   =================================================================== */
+/* word-break는 상속 속성 → 루트에 1회 = div/span 포함 모든 한글에 적용 */
+.jt-app{ word-break: keep-all; }
+/* 영문/숫자/긴 토큰만 예외(overflow 방지) */
+.jt-app :where(.en-caps, .mono, .jt-channels__big, .jt-nav__phone){ word-break: normal; overflow-wrap: anywhere; }
+.jt-app a[href^="mailto:"], .jt-app a[href^="tel:"]{ word-break: normal; overflow-wrap: anywhere; }
+/* 공개자료 disclaimer: mono·우측정렬 → 본문 sans·좌측·가독 폭 */
+.jt-proof__note{
+  font-family: var(--font-sans-kr) !important; text-align: left !important;
+  max-width: 460px !important; letter-spacing: 0 !important; font-size: 12.5px !important; line-height: 1.7 !important;
+}
+/* 회장 인용 아바타: 'JT' 글자 → 실제 사진(흑백). 사진 실패 시 'JT' 폴백 노출 */
+.jt-pullquote__avatar{ position: relative; overflow: hidden; }
+.jt-pullquote__avatar img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; filter: grayscale(1); }
+/* 그레인 더 강하게 */
+.jt-app::after{ opacity: .72 !important; }

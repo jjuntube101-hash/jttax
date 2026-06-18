@@ -360,7 +360,7 @@ function JTQuote() {
         <span className="jt-pullquote__mark">“</span>
         <p className="jt-pullquote__p">공무에 종사했던 시절, 가장 자주 본 장면은<br />‘미리 물었더라면’으로 시작하는 뒤늦은 문의였습니다.</p>
         <div className="jt-pullquote__by">
-          <div className="jt-pullquote__avatar">JT</div>
+          <div className="jt-pullquote__avatar">JT<img src="project/assets/team-kgb.jpg" alt="김기복 회장" onError={(e) => { e.currentTarget.style.display = 'none'; }} /></div>
           <div><b>김기복 회장</b> · 前 송파세무서장</div>
         </div>
       </div>
