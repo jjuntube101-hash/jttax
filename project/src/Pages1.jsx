@@ -83,7 +83,7 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
       <section className="jt-section">
         <div className="jt-section__head reveal">
           <div className="jt-kicker">CREDENTIALS · 근거의 벽</div>
-          <h2 className="jt-h2">감이 아니라, 이력으로.</h2>
+          <h2 className="jt-h2 jt-display-h2">이력이 곧,<br />우리의 자기소개입니다.</h2>
         </div>
         <div className="jt-matrix reveal">
           <div className="jt-matrix__cell">
@@ -112,7 +112,7 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
       <section className="jt-section">
         <div className="jt-section__head reveal">
           <div className="jt-kicker">PHILOSOPHY · 업무 원칙</div>
-          <h2 className="jt-h2">세 가지 원칙으로 일합니다.</h2>
+          <h2 className="jt-h2 jt-display-h2">세 가지 원칙으로 일합니다.</h2>
         </div>
         <div className="jt-philosophy">
           {D.philosophy.map((p, i) =>
@@ -128,7 +128,7 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
       <section className="jt-section">
         <div className="jt-section__head reveal">
           <div className="jt-kicker">HISTORY · 연혁</div>
-          <h2 className="jt-h2">짧지만 밀도 있는 시간.</h2>
+          <h2 className="jt-h2 jt-display-h2">짧지만 밀도 있는 시간.</h2>
         </div>
         <ul className="jt-timeline">
           {D.timeline.map((e, i) =>
@@ -364,17 +364,9 @@ function JTInsightsPage({ setRoute }) {
       </section>
 
       <section className="jt-section">
-        <ul className="jt-insights">
-          {items.map((a, i) =>
-          <li key={a.title} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => { if (a.slug) { window.location.href = '/insights/' + a.slug + '.html'; } }} style={{ cursor: 'pointer' }}>
-              <span className="jt-insights__num">{String(i + 1).padStart(2, '0')}</span>
-              <span className="jt-insights__title">{a.title}</span>
-              <span className="jt-insights__tag">{a.tag}</span>
-              <span className="jt-insights__date">{a.date}</span>
-              <span className="jt-arrow">→</span>
-            </li>
-          )}
-        </ul>
+        <div className="jt-icards jt-icards--3">
+          {items.map((a, i) => { const Card = window.JTInsightCard; return <Card key={a.slug || a.title} a={a} i={i} />; })}
+        </div>
       </section>
     </>);
 

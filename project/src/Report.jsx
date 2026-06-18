@@ -214,7 +214,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
       {/* CTA */}
       <section className="jt-section jt-report-cta-band">
         <div className="jt-container">
-          <h2 className="reveal">도구 공개 전, 먼저 상담받고 싶으신가요?</h2>
+          <h2 className="reveal jt-display-h2">리포트 공개 전, 먼저 상담받으시겠어요?</h2>
           <p className="reveal">前 송파세무서장 회장과 대표세무사가 직접 사안을 살핍니다.</p>
           <div className="jt-report-cta-band__btns reveal">
             <button className="jt-btn jt-btn--primary" onClick={() => setRoute('booking')}>상담 예약 <span className="jt-arrow">→</span></button>

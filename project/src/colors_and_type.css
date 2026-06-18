@@ -18,44 +18,42 @@
 @import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap");
 
 :root {
-  /* ---------- Brand palette — Warm Light direction (post-feedback) ---------- */
-  /* The CI guide is preserved as historical reference, but the live site now
-     uses a warm cream base + deep warm charcoal ink for a softer, friendlier
-     impression while keeping the original sharp-edge / monochrome character. */
-  /* ---------- Brand palette — Monochrome (logo 흰색+검정) ---------- */
-  --jt-black:       #121212;   /* Primary ink — near-black (로고 검정면) */
-  --jt-white:       #FCFCFB;   /* Page bg — near-white (로고 흰면) */
-  --jt-gray:        #3F3F3E;   /* Secondary gray */
+  /* ---------- Brand palette — CI Monochrome (HEAZ 가이드 정색) ----------
+     CI 정색만 사용: Black #000000 / White #ffffff / Gray #4b4b4b. 무채색 외 금지.
+     (이전 'Warm Light' 크림/차콜 방향은 CI 위반이라 제거하고 순중립 모노톤으로 정렬.) */
+  --jt-black:       #000000;   /* Primary ink (CI Black) */
+  --jt-white:       #ffffff;   /* Page white (CI White) */
+  --jt-gray:        #4b4b4b;   /* Secondary gray (CI Gray) */
 
-  /* ---------- Neutral ramp — pure neutral grays ---------- */
-  --jt-ink-900:     #0A0A0A;
-  --jt-ink-800:     #121212;   /* primary ink */
-  --jt-ink-700:     #2A2A2A;
-  --jt-ink-600:     #3F3F3E;   /* body */
-  --jt-ink-500:     #6F6F6D;   /* secondary text */
-  --jt-ink-400:     #9A9A98;   /* muted */
-  --jt-ink-300:     #CFCFCC;   /* divider strong */
-  --jt-ink-200:     #E5E5E2;   /* divider */
-  --jt-ink-100:     #EAEAE7;   /* surface raised */
-  --jt-ink-050:     #F4F4F2;   /* subtle surface */
+  /* ---------- Neutral ramp — CI 3색에서 재유도 (순중립) ---------- */
+  --jt-ink-900:     #000000;   /* 순흑 — 디스플레이/앵커 */
+  --jt-ink-800:     #141414;   /* primary ink/text */
+  --jt-ink-700:     #2e2e2e;
+  --jt-ink-600:     #4b4b4b;   /* CI Gray — body/secondary */
+  --jt-ink-500:     #6e6e6e;   /* muted (≈4.8:1 on #fff) */
+  --jt-ink-400:     #9a9a9a;   /* muted-2 */
+  --jt-ink-300:     #cccccc;   /* divider strong */
+  --jt-ink-200:     #e4e4e4;   /* divider */
+  --jt-ink-100:     #ededed;   /* surface raised */
+  --jt-ink-050:     #f5f5f5;   /* subtle surface */
 
-  /* ---------- Accent — monochrome (검정), 강조는 그레이 하이라이트 ---------- */
-  --jt-accent:      #121212;
-  --jt-accent-soft: #E2E2DF;
+  /* ---------- Accent — monochrome only (CI: 지정색 외 금지, 앰버 사용 안 함) ---------- */
+  --jt-accent:      #141414;
+  --jt-accent-soft: #e8e8e8;
 
-  /* ---------- Dark anchor (검정면 — CTA 포인트) ---------- */
-  --jt-darkbg:      #141414;
-  --jt-darkbg-2:    #262626;
+  /* ---------- Dark anchor (CI Black 면 — CTA/푸터/브랜드모먼트 강조) ---------- */
+  --jt-darkbg:      #000000;
+  --jt-darkbg-2:    #1a1a1a;
 
   /* ---------- Semantic foreground ---------- */
   --fg-1:           var(--jt-ink-800);     /* primary text */
   --fg-2:           var(--jt-ink-600);     /* secondary text / captions */
-  --fg-3:           var(--jt-ink-500);     /* muted / metadata (raised from -400 for legibility) */
-  --fg-inverse:     #FAFAF8;
+  --fg-3:           var(--jt-ink-500);     /* muted / metadata */
+  --fg-inverse:     #ffffff;
   --fg-link:        var(--jt-ink-800);
 
   /* ---------- Semantic background ---------- */
-  --bg-1:           #FCFCFB;               /* page — near-white */
+  --bg-1:           #ffffff;               /* page — white */
   --bg-2:           var(--jt-ink-050);     /* subtle surface */
   --bg-3:           var(--jt-ink-100);     /* divider / well */
   --bg-inverse:     var(--jt-darkbg);

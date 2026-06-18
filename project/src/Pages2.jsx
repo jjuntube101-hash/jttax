@@ -229,7 +229,7 @@ function JTBooking({ setRoute }) {
         <a className="jt-kakao-cta" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
           onClick={() => { if (window.gtag) window.gtag('event', 'booking_kakao_top'); }}>
           <span className="jt-kakao-cta__msg">
-            <span aria-hidden="true" style={{fontSize: 20, flexShrink: 0}}>💬</span>
+            <span aria-hidden="true" style={{flexShrink: 0, display: 'inline-flex'}}>{React.createElement(window.JTIcon, { name: 'chat' })}</span>
             <span>폼 작성이 번거로우세요? <b>카카오톡으로 1:1 바로 상담</b>하세요.</span>
           </span>
           <span className="jt-kakao-cta__go">카톡 상담 →</span>

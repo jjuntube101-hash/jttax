@@ -17,21 +17,26 @@ function JTSitIcon({ name }) {
       return <svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="m15 9-3.4 1.6L10 14l3.4-1.6z" /></svg>;
     case 'chat': // 일반 상담 — 말풍선
       return <svg {...p}><path d="M5 5h14v10H9l-4 3.5z" /><path d="M9 9h6M9 11.5h4" /></svg>;
+    case 'phone': // 전화
+      return <svg {...p}><path d="M5 4h3l1.6 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.6V19a2 2 0 0 1-2 2A15 15 0 0 1 4 6a2 2 0 0 1 1-2z" /></svg>;
+    case 'mail': // 이메일
+      return <svg {...p}><rect x="3" y="5" width="18" height="14" rx="1.5" /><path d="m3.5 6.5 8.5 6 8.5-6" /></svg>;
     default:
       return null;
   }
 }
 window.JTSitIcon = JTSitIcon;
+window.JTIcon = JTSitIcon;
 
 // ============ 상황별 진입 카드 (히어로) ============
 // 6개 = 서비스 5분야 + 일반상담. topic은 booking/services 분야 자동선택 키와 매칭.
 const JT_SITUATIONS = [
-{ ico: '🏠', num: '01', sit: '집·재산을 팔거나, 물려주거나 받는다', t: '양도·상속·증여', d: '시점이 곧 금액입니다. 신고 전 절세 구간과 이전 구조를 먼저 설계합니다.', topic: '양도·상속·증여' },
-{ ico: '🏢', num: '02', sit: '법인·개인사업체 운영 중', t: '법인·개인 사업 운영', d: '매월 결산이 12월 결산을 만듭니다. 기장·신고부터 법인 구조까지.', topic: '기장·세금 신고' },
-{ ico: '📋', num: '03', sit: '세무서에서 연락이 왔다', t: '세무조사 대응', d: '첫 답변이 결과를 가릅니다. 39년 국세 경력이 통지 단계부터 함께합니다.', topic: '세무조사 대응' },
-{ ico: '↩️', num: '04', sit: '이미 낸 세금이 억울하다', t: '경정·환급', d: '5년 이내면 늦지 않았습니다. 과오납 세금을 돌려받을 권리를 검토합니다.', topic: '경정청구' },
-{ ico: '🧭', num: '05', sit: '큰 결정을 앞두고 있다', t: '세금 컨설팅', d: '법인 전환·지분 재구성 전, 여러 시나리오의 총 부담을 수치로 비교합니다.', topic: '세금 종합 컨설팅' },
-{ ico: '💬', num: '06', sit: '어디에 속하는지 모르겠다', t: '일반 상담', d: '괜찮습니다. 상황만 말씀해 주시면 담당 분야와 다음 절차를 안내합니다.', topic: '', general: true }];
+{ ico: 'home', num: '01', sit: '집·재산을 팔거나, 물려주거나 받는다', t: '양도·상속·증여', d: '시점이 곧 금액입니다. 신고 전 절세 구간과 이전 구조를 먼저 설계합니다.', topic: '양도·상속·증여' },
+{ ico: 'corp', num: '02', sit: '법인·개인사업체 운영 중', t: '법인·개인 사업 운영', d: '매월 결산이 12월 결산을 만듭니다. 기장·신고부터 법인 구조까지.', topic: '기장·세금 신고' },
+{ ico: 'audit', num: '03', sit: '세무서에서 연락이 왔다', t: '세무조사 대응', d: '첫 답변이 결과를 가릅니다. 39년 국세 경력이 통지 단계부터 함께합니다.', topic: '세무조사 대응' },
+{ ico: 'refund', num: '04', sit: '이미 낸 세금이 억울하다', t: '경정·환급', d: '5년 이내면 늦지 않았습니다. 과오납 세금을 돌려받을 권리를 검토합니다.', topic: '경정청구' },
+{ ico: 'consult', num: '05', sit: '큰 결정을 앞두고 있다', t: '세금 컨설팅', d: '법인 전환·지분 재구성 전, 여러 시나리오의 총 부담을 수치로 비교합니다.', topic: '세금 종합 컨설팅' },
+{ ico: 'chat', num: '06', sit: '어디에 속하는지 모르겠다', t: '일반 상담', d: '괜찮습니다. 상황만 말씀해 주시면 담당 분야와 다음 절차를 안내합니다.', topic: '', general: true }];
 
 
 // ============ Hero — 상황별 진입 ============
@@ -44,25 +49,22 @@ function JTHero({ setRoute }) {
   return (
     <section className="jt-sithero">
       <div className="jt-sithero__inner">
-        <div className="jt-sithero__greet">
-          <span className="jt-sithero__greet-wave" aria-hidden="true">👋</span>
-          <span><b>반갑습니다.</b> 세금 앞에서 혼자 고민하지 않도록, <b>제이티 세무법인</b>이 곁에 있겠습니다.</span>
-        </div>
         <div className="jt-kicker">WHERE TO START · 상황별 안내</div>
         <h1 className="jt-sithero__title">지금, 어떤 상황이신가요?</h1>
         <p className="jt-sithero__sub">세금은 상황마다 답이 다릅니다. 가장 가까운 상황을 고르시면, 그에 맞는 절차와
 담당 전문가로 바로 안내해 드립니다.</p>
       </div>
       <div className="jt-sits" style={{ gridTemplateColumns: w <= 640 ? '1fr' : (w <= 960 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)') }}>
-        {JT_SITUATIONS.map((s) => <div
+        {JT_SITUATIONS.map((s, i) => <div
             key={s.num}
+            data-delay={Math.min(i, 5)}
             className={`jt-sit reveal ${s.general ? 'jt-sit--general' : ''}`}
             role="button"
             tabIndex={0}
             onClick={() => pick(s)}
             onKeyDown={(e) => {if (e.key === 'Enter' || e.key === ' ') {e.preventDefault();pick(s);}}}>
             <div className="jt-sit__top">
-              <div className="jt-sit__ico" aria-hidden="true">{s.ico}</div>
+              <div className="jt-sit__ico" aria-hidden="true"><JTSitIcon name={s.ico} /></div>
               <span className="jt-sit__num">{s.num}</span>
             </div>
             <div className="jt-sit__sit">{s.sit}</div>
@@ -76,6 +78,25 @@ function JTHero({ setRoute }) {
 
 }
 window.JTHero = JTHero;
+
+// ============ Brand Moment — 로고 + 슬로건 (다크 앵커) ============
+function JTBrandMoment() {
+  return (
+    <section className="jt-brandmoment" aria-label="제이티 세무법인">
+      <div className="jt-brandmoment__inner">
+        <img className="jt-brandmoment__logo reveal" src="project/assets/logo_primary_white.png" alt="제이티 세무법인 · JT TAX CORP." />
+        <h2 className="jt-brandmoment__slogan">
+          <span className="reveal" data-delay="1">근거 위에서,</span>{' '}
+          <span className="reveal" data-delay="2">끝까지.</span>
+        </h2>
+        <p className="jt-brandmoment__sub reveal" data-delay="3">
+          세금은 감이 아니라 근거로 다툽니다. 신고 한 건부터 불복 한 건까지 — 기록과 법령 위에서 끝까지 함께합니다.
+        </p>
+      </div>
+    </section>);
+
+}
+window.JTBrandMoment = JTBrandMoment;
 
 // ============ Hook Ticker (infinite marquee) ============
 function JTTicker() {
@@ -105,7 +126,7 @@ function JTProof({ setRoute }) {
       <div className="jt-section__head jt-section__head--split reveal">
         <div>
           <div className="jt-kicker">PRECEDENTS · 공개 판례·참고자료</div>
-          <h2 className="jt-h2">세법은 기록되어 있고,<br />결정은 공개되어 있습니다.</h2>
+          <h2 className="jt-h2 jt-display-h2">세법은 기록되어 있고,<br />결정은 공개되어 있습니다.</h2>
         </div>
         <div className="jt-proof__note">
           아래는 <strong>당사 수임 실적이 아닌</strong>, 국세법령정보시스템·국세청 통계·국세기본법에서 발췌한 공개 자료입니다.<br />귀하 사안의 적용 가능성은 개별 검토가 필요합니다.
@@ -179,7 +200,7 @@ function JTAuthority() {
     <section className="jt-authority">
       <div className="jt-section__head reveal">
         <div className="jt-kicker">CREDENTIALS · 이력으로 증명</div>
-        <h2 className="jt-h2">기관이 자문을 구하고,<br />공무원이 배우는 전문성.</h2>
+        <h2 className="jt-h2 jt-display-h2">기관이 자문을 구하고,<br />공무원이 배우는 전문성.</h2>
       </div>
       <div className="jt-authority__grid">
         <div className="jt-authority__card reveal">
@@ -261,7 +282,7 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
           onKeyDown={(e) => {if (e.key === 'Enter' || e.key === ' ') {e.preventDefault();setRoute('services');}}}>
           
           <div className="jt-kicker">SERVICES · 업무분야</div>
-          <h2 className="jt-h2">근거에 기반한<br />다섯 개 전문 영역.</h2>
+          <h2 className="jt-h2 jt-display-h2">근거에 기반한<br />다섯 개 전문 영역.</h2>
         </div>
         <a className="jt-link" onClick={() => setRoute('services')}>전체 업무분야 →</a>
       </div>
@@ -340,7 +361,7 @@ function JTQuote() {
         <span className="jt-pullquote__mark">“</span>
         <p className="jt-pullquote__p">공무에 종사했던 시절, 가장 자주 본 장면은<br />‘미리 물었더라면’으로 시작하는 뒤늦은 문의였습니다.</p>
         <div className="jt-pullquote__by">
-          <div className="jt-pullquote__avatar">JT</div>
+          <div className="jt-pullquote__avatar">JT<img src="project/assets/team-kgb.jpg" alt="김기복 회장" onError={(e) => { e.currentTarget.style.display = 'none'; }} /></div>
           <div><b>김기복 회장</b> · 前 송파세무서장</div>
         </div>
       </div>
@@ -350,6 +371,25 @@ function JTQuote() {
 window.JTQuote = JTQuote;
 
 // ============ Insights list (home preview) ============
+// 인사이트 카드 (홈·목록 공용)
+function JTInsightCard({ a, i }) {
+  const cat = String(a.tag || '인사이트').split('·').pop().trim();
+  const go = () => { if (a.slug) window.location.href = '/insights/' + a.slug + '.html'; };
+  return (
+    <article className="jt-icard reveal" data-delay={Math.min(i, 5)} role="button" tabIndex={0}
+      onClick={go} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }}>
+      <div className="jt-icard__top">
+        <span className="jt-icard__cat">{cat}</span>
+        <span className="jt-icard__date">{a.date}</span>
+      </div>
+      <h3 className="jt-icard__title">{a.title}</h3>
+      {a.excerpt && <p className="jt-icard__excerpt">{a.excerpt}</p>}
+      <span className="jt-icard__go">읽기 <span className="jt-arrow">→</span></span>
+    </article>);
+
+}
+window.JTInsightCard = JTInsightCard;
+
 function JTInsightsPreview({ setRoute, limit }) {
   const items = window.JT_DATA.insights.slice(0, limit || 4);
   return (
@@ -357,21 +397,13 @@ function JTInsightsPreview({ setRoute, limit }) {
       <div className="jt-section__head jt-section__head--split reveal">
         <div>
           <div className="jt-kicker">INSIGHTS · 최근 글</div>
-          <h2 className="jt-h2">실무에 바로 쓰는 해설.</h2>
+          <h2 className="jt-h2 jt-display-h2">실무에 바로 쓰는 해설.</h2>
         </div>
         <a className="jt-link" onClick={() => setRoute('insights')}>전체 보기 →</a>
       </div>
-      <ul className="jt-insights">
-        {items.map((a, i) =>
-        <li key={a.title} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => { if (a.slug) { window.location.href = '/insights/' + a.slug + '.html'; } else { setRoute('insights'); } }}>
-            <span className="jt-insights__num">{String(i + 1).padStart(2, '0')}</span>
-            <span className="jt-insights__title">{a.title}</span>
-            <span className="jt-insights__tag">{a.tag}</span>
-            <span className="jt-insights__date">{a.date}</span>
-            <span className="jt-arrow">→</span>
-          </li>
-        )}
-      </ul>
+      <div className="jt-icards">
+        {items.map((a, i) => <JTInsightCard key={a.slug || a.title} a={a} i={i} />)}
+      </div>
     </section>);
 
 }
@@ -413,7 +445,7 @@ function JTTeamPreview({ setRoute }) {
       <div className="jt-section__head jt-section__head--split reveal">
         <div>
           <div className="jt-kicker">TEAM · 담당 세무사</div>
-          <h2 className="jt-h2">회장 1인과 대표세무사 3인,<br />각자의 전문 영역.</h2>
+          <h2 className="jt-h2 jt-display-h2">회장 1인과 대표세무사 3인,<br />각자의 전문 영역.</h2>
         </div>
         <a className="jt-link" onClick={() => setRoute('about', 'team')}>전체 구성원 보기 →</a>
       </div>
@@ -448,7 +480,7 @@ function JTChannels({ setRoute }) {
       <div className="jt-channels__inner">
         <div className="reveal">
           <div className="jt-kicker">CHANNELS · 편한 방식으로</div>
-          <h2 className="jt-h2">전화가 부담스러우면,<br />카톡·이메일로도 됩니다.</h2>
+          <h2 className="jt-h2 jt-display-h2">전화가 부담스러우면,<br />카톡·이메일로도 됩니다.</h2>
         </div>
         <div className="jt-channels__grid reveal" data-delay="1">
           <a className="jt-channels__card" href={`tel:${window.JT_DATA.firm.phone}`}>
@@ -482,7 +514,7 @@ function JTFaq({ setRoute }) {
     <section className="jt-section">
       <div className="jt-section__head reveal">
         <div className="jt-kicker">FAQ · 자주 묻는 질문</div>
-        <h2 className="jt-h2">궁금한 점을<br />먼저 풀어드립니다.</h2>
+        <h2 className="jt-h2 jt-display-h2">궁금한 점을<br />먼저 풀어드립니다.</h2>
       </div>
       <div style={{ borderTop: '1px solid var(--border-1)' }}>
         {items.map((it, i) =>

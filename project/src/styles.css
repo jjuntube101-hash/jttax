@@ -122,14 +122,14 @@
 }
 .jt-section--inverse h1, .jt-section--inverse h2,
 .jt-section--inverse h3, .jt-section--inverse p { color: var(--fg-inverse) !important; }
-.jt-section--inverse .jt-kicker { color: rgba(251,246,236,.65) !important; }
-.jt-section--inverse .jt-body--muted { color: rgba(251,246,236,.75) !important; }
+.jt-section--inverse .jt-kicker { color: rgba(255,255,255,.65) !important; }
+.jt-section--inverse .jt-body--muted { color: rgba(255,255,255,.75) !important; }
 .jt-section--inverse .jt-link { color: var(--fg-inverse) !important; border-color: var(--fg-inverse) !important; }
 .jt-quote p { color: var(--fg-inverse) !important; }
-.jt-quote span { color: rgba(251,246,236,.7) !important; }
-.jt-quote footer { border-top-color: rgba(251,246,236,.25) !important; }
+.jt-quote span { color: rgba(255,255,255,.7) !important; }
+.jt-quote footer { border-top-color: rgba(255,255,255,.25) !important; }
 .jt-quote__avatar { background: var(--fg-inverse) !important; color: var(--jt-darkbg) !important; }
-.jt-quote__mark { color: rgba(251,246,236,.3) !important; }
+.jt-quote__mark { color: rgba(255,255,255,.3) !important; }
 
 /* — CTA band (was pure black) — warm dark, raised contrast — */
 .jt-cta {
@@ -138,7 +138,7 @@
 }
 .jt-cta__inner h2,
 .jt-cta__body { color: var(--fg-inverse) !important; }
-.jt-cta__body { color: rgba(251,246,236,.82) !important; }
+.jt-cta__body { color: rgba(255,255,255,.82) !important; }
 
 /* — CHANNELS (다크 → 따뜻한 라이트로) — feedback: 검은 배경/회색 글씨 안 보임 */
 .jt-channels {
@@ -164,24 +164,27 @@
   border-top-color: var(--border-1) !important;
 }
 
-/* — FOOTER (다크 → 라이트) — feedback: 검은 배경/회색 글씨 — */
+/* — FOOTER — CI 다크 앵커(검정면 + 흰 로고/흰 글씨). 프리미엄 마감 + 시각 리듬 — */
 .jt-footer {
-  background: var(--bg-2) !important;
-  color: var(--fg-1) !important;
-  border-top: 1px solid var(--border-1);
+  background: var(--jt-darkbg) !important;   /* #000 */
+  color: var(--fg-inverse) !important;
+  border-top: 1px solid rgba(255,255,255,.12);
 }
-.jt-footer__brand img { filter: none !important; opacity: 1; }
+/* Phase G에서 logo_symbol_white.png로 교체 예정 — 현재는 검정 심볼을 흰색 반전 */
+.jt-footer__brand img { filter: invert(1) !important; opacity: 1; }
+.jt-footer__brand span { color: var(--fg-inverse) !important; }
 .jt-footer__addr {
-  color: var(--fg-2) !important;
-  font-size: 14px !important;            /* feedback: 회색 작은 글씨 안 보임 → 한 단계 키움 */
+  color: rgba(255,255,255,.72) !important;
+  font-size: 14px !important;
 }
-.jt-footer__addr a:hover { color: var(--fg-1) !important; }
-.jt-footer__col h4 { color: var(--fg-3) !important; }
-.jt-footer__col a { color: var(--fg-1) !important; }
-.jt-footer__col a:hover { opacity: .65; }
+.jt-footer__addr a { color: rgba(255,255,255,.72) !important; }
+.jt-footer__addr a:hover { color: #fff !important; }
+.jt-footer__col h4 { color: rgba(255,255,255,.5) !important; }
+.jt-footer__col a { color: rgba(255,255,255,.85) !important; }
+.jt-footer__col a:hover { color: #fff !important; opacity: 1; }
 .jt-footer__bar {
-  border-top-color: var(--border-1) !important;
-  color: var(--fg-3) !important;         /* raised from rgba(255,255,255,.5) */
+  border-top-color: rgba(255,255,255,.16) !important;
+  color: rgba(255,255,255,.5) !important;
 }
 
 /* — PAGE HERO (was pure black) — */
@@ -202,11 +205,11 @@
   color: var(--fg-inverse) !important;
   border-color: var(--jt-darkbg) !important;
 }
-.jt-service--dark .jt-service__head { color: rgba(251,246,236,.6) !important; }
-.jt-service--dark .jt-service__desc { color: rgba(251,246,236,.78) !important; }
-.jt-service--dark .jt-service__list { border-top-color: rgba(251,246,236,.22) !important; }
-.jt-service--dark .jt-service__list li { color: rgba(251,246,236,.88) !important; }
-.jt-service--dark .jt-tick { color: rgba(251,246,236,.55) !important; }
+.jt-service--dark .jt-service__head { color: rgba(255,255,255,.6) !important; }
+.jt-service--dark .jt-service__desc { color: rgba(255,255,255,.78) !important; }
+.jt-service--dark .jt-service__list { border-top-color: rgba(255,255,255,.22) !important; }
+.jt-service--dark .jt-service__list li { color: rgba(255,255,255,.88) !important; }
+.jt-service--dark .jt-tick { color: rgba(255,255,255,.55) !important; }
 
 /* — Team cards (dark featured + featured-block) — */
 .jt-team__card--featured,
@@ -259,7 +262,7 @@
 .jt-report-cta .jt-btn--ghost {
   background: transparent !important;
   color: var(--fg-inverse) !important;
-  border-color: rgba(251,246,236,.45) !important;
+  border-color: rgba(255,255,255,.45) !important;
 }
 
 /* — Stat numbers / borders (#000 → ink-800) — */

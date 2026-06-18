@@ -8,8 +8,8 @@
   --jt-espresso-fg: #FAFAF8;
   --jt-espresso-fg2: rgba(250,250,248,.74);
   --jt-espresso-line: rgba(250,250,248,.16);
-  --jt-amber:       var(--jt-accent, #B07B3A);
-  --jt-amber-soft:  var(--jt-accent-soft, #E8D5B5);
+  --jt-amber:       var(--jt-accent);
+  --jt-amber-soft:  var(--jt-accent-soft);
 }
 
 /* tonal layers */
@@ -241,10 +241,10 @@
   display: inline-flex; align-items: center; gap: 9px;
   font-family: var(--font-sans-en); text-transform: uppercase;
   letter-spacing: 0.16em; font-size: 12px; font-weight: 700;
-  color: #B07B3A; margin-bottom: 18px;
+  color: var(--fg-2); margin-bottom: 18px;
 }
 .jt-report-feature__dot {
-  width: 8px; height: 8px; border-radius: 999px; background: #B07B3A;
+  width: 8px; height: 8px; border-radius: 999px; background: var(--jt-ink-900);
   animation: jtFeatPulse 2.2s var(--ease-out) infinite;
 }
 @keyframes jtFeatPulse {
@@ -440,4 +440,245 @@
   .jt-service-detail__body p { max-width: 100% !important; }
   .jt-services { grid-template-columns: 1fr !important; }
   .jt-insights__row { grid-template-columns: 1fr !important; }
+}
+
+/* ===================================================================
+   PHASE A — 한글 줄바꿈 안전화 + 섹션 제목 디스플레이 서체 통일
+   =================================================================== */
+/* 한글은 어절 단위로만 줄바꿈(단어 중간 끊김 방지). 명시도 0(:where)이라 기존 규칙 안 깨짐 */
+:where(h1,h2,h3,h4,.jt-h1,.jt-h2,.jt-h3,.jt-display-h2,p,li,dt,dd,blockquote){ word-break: keep-all; }
+:where(h1,h2,h3,h4,.jt-h1,.jt-h2,.jt-h3,.jt-display-h2){ text-wrap: balance; }
+:where(p,li,dd,blockquote){ text-wrap: pretty; }
+/* 영문·번호·이메일 등은 keep-all 제외(좁은 화면 넘침 방지) */
+.jt-channels__big, .en-caps, .mono, .jt-nav__phone, .jt-map__val a { word-break: normal; overflow-wrap: anywhere; }
+
+/* 섹션 헤드라인 전용 디스플레이 서체(.jt-h2엔 전역 적용 안 하고, 이 클래스를 단 곳만) */
+.jt-display-h2{
+  font-family: var(--font-display-kr);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+/* ===================================================================
+   PHASE B — 통일 모노톤 라인 아이콘(이모지 대체)
+   =================================================================== */
+.jt-sit__ico{ font-size: 0; }              /* 이모지 폰트크기 잔재 무력화 */
+.jt-sit__ico svg{ width: 26px; height: 26px; color: var(--fg-1); display: block; }
+.jt-sit:hover .jt-sit__ico svg{ color: var(--jt-ink-900); }
+.jt-mcta__ico svg{ width: 22px; height: 22px; display: block; }
+.jt-mcta__ico{ display: inline-flex; }
+
+/* ===================================================================
+   PHASE C — Brand Moment (로고+슬로건 다크 앵커, CI quiet zone)
+   =================================================================== */
+.jt-brandmoment{
+  background: #000; color: #fff;
+  padding: clamp(80px, 13vw, 168px) 24px;
+  text-align: center; position: relative; overflow: hidden;
+}
+/* CI: 로고는 복잡한 패턴/이미지 위 금지 → 텍스처 억제(정숙 영역) */
+.jt-brandmoment::before, .jt-brandmoment::after{ content: none !important; background: none !important; }
+.jt-brandmoment__inner{ max-width: 1000px; margin: 0 auto; }
+.jt-brandmoment__logo{
+  height: clamp(120px, 17vw, 220px); width: auto;
+  margin: 0 auto clamp(28px, 4vw, 48px); display: block;
+}
+.jt-brandmoment__slogan{
+  font-family: var(--font-display-kr); font-weight: 400;
+  font-size: clamp(44px, 8vw, 112px); line-height: 1.02; letter-spacing: -0.035em;
+  color: #fff; margin: 0; word-break: keep-all;
+}
+.jt-brandmoment__slogan .reveal{ display: inline-block; }
+.jt-brandmoment__sub{
+  margin: clamp(26px, 3.5vw, 40px) auto 0; max-width: 46ch;
+  color: rgba(255,255,255,.62); font-size: clamp(15px, 1.7vw, 19px); line-height: 1.75;
+}
+
+/* reveal 안전망(중요): 모션 비선호/JS 미동작 시에도 콘텐츠 보이게 */
+@media (prefers-reduced-motion: reduce){
+  .reveal{ opacity: 1 !important; transform: none !important; }
+}
+
+/* ===================================================================
+   피드백 반영 — 히어로 후킹↑ · 카드 클릭 어포던스↑ · 로고 각인↑
+   =================================================================== */
+/* (1) 히어로 타이틀 대형화: "지금, 어떤 상황이신가요?"가 주역 */
+.jt-sithero__title{
+  font-size: clamp(46px, 8.4vw, 108px) !important;
+  line-height: 0.98 !important; letter-spacing: -0.04em !important;
+  max-width: 13em !important; margin-top: 8px !important;
+}
+.jt-sithero__sub{ font-size: clamp(16px, 1.5vw, 19px) !important; max-width: 560px; }
+
+/* (2) 히어로 JT 마크 — 크고 또렷하게(각인) */
+.jt-sithero::before{
+  background-size: min(48vw, 660px) auto !important;
+  opacity: .08 !important; right: -90px !important; bottom: -70px !important;
+}
+
+/* (3) 상황 카드: '클릭하는 거구나'가 즉시 보이도록 — 하단에 원형 화살표 액션 */
+.jt-sit{ border-width: 1.5px !important; }
+.jt-sit:hover{
+  border-color: #000 !important; transform: translateY(-5px) !important;
+  box-shadow: 0 26px 52px -26px rgba(0,0,0,.42) !important;
+}
+.jt-sit:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
+.jt-sit__t{ font-size: 23px !important; }
+.jt-sit__go{
+  color: #000 !important; font-weight: 700 !important;
+  font-family: var(--font-sans-kr) !important; font-size: 13.5px !important; letter-spacing: 0 !important;
+  margin-top: 18px !important; padding-top: 15px; border-top: 1px solid var(--border-1);
+  justify-content: space-between;
+}
+.jt-sit__go .jt-arrow{
+  width: 28px; height: 28px; border-radius: 50%; background: #000; color: #fff;
+  display: inline-grid; place-items: center; font-size: 13px; flex-shrink: 0; transition: transform .2s;
+}
+.jt-sit:hover .jt-sit__go .jt-arrow{ transform: translateX(3px); }
+
+/* (4) 브랜드 모먼트 로고 — 크게(각인) */
+.jt-brandmoment{ padding-top: clamp(96px,14vw,190px) !important; padding-bottom: clamp(96px,14vw,190px) !important; }
+.jt-brandmoment__logo{ height: clamp(150px, 24vw, 300px) !important; }
+
+/* (5) ★CI 로고 교정 — nav: 정식 Secondary(가로) 락업 사용 */
+.jt-nav__brand img{ height: 44px !important; width: auto; }
+@media (max-width: 600px){ .jt-nav__brand img{ height: 38px !important; } }
+
+/* ===================================================================
+   피드백 3 — 세로줄 제거(거슬림) → 프리미엄 그레인 + 고스트 JT, 타이틀 정중앙
+   =================================================================== */
+/* 배경: 거슬리는 세로 라인 그리드 제거. 2026 프리미엄 벤치마크 = 미세 필름 그레인 */
+.jt-app::before{ background-image: none !important; }
+.jt-app::after{ opacity: .3 !important; }
+/* 히어로 고스트 JT 모노그램을 텍스처의 주역으로(로고 활용↑) */
+.jt-sithero::before{ opacity: .09 !important; }
+
+/* 타이틀 정중앙 — 760px 박스를 넘쳐 우측으로 쏠리던 현상 교정 */
+.jt-sithero__inner{ max-width: 1240px !important; }
+.jt-sithero__title{
+  width: 100% !important; text-align: center !important;
+  font-size: clamp(28px, 7vw, 98px) !important;
+}
+/* footer: 정식 Primary 화이트 락업(세로형) 사용 */
+.jt-footer__brand img{ filter: none !important; height: 78px !important; width: auto; opacity: 1 !important; }
+
+/* ===================================================================
+   피드백 2 — 한 줄 대형 타이틀 · 로고 강조(>슬로건) · 배경 질감
+   =================================================================== */
+/* (1) "지금, 어떤 상황이신가요?" 한 줄 + 대형, 중앙 정렬 */
+.jt-sithero__inner{ text-align: center; }
+.jt-sithero .jt-kicker{ display: inline-flex; align-items: center; justify-content: center; }
+.jt-sithero__title{
+  white-space: nowrap !important;
+  font-size: clamp(28px, 7.2vw, 102px) !important;
+  max-width: none !important; line-height: 1.02 !important;
+  margin-left: auto !important; margin-right: auto !important;
+}
+.jt-sithero__sub{ margin-left: auto !important; margin-right: auto !important; }
+
+/* (2) 브랜드 모먼트: 로고를 주역으로(각인), 슬로건은 보조 */
+.jt-brandmoment__logo{ height: clamp(200px, 32vw, 460px) !important; margin-bottom: clamp(22px,3vw,40px) !important; }
+.jt-brandmoment__slogan{ font-size: clamp(24px, 3.6vw, 52px) !important; color: rgba(255,255,255,.9) !important; }
+.jt-brandmoment__sub{ color: rgba(255,255,255,.55) !important; }
+
+/* (3) 배경 질감 — 정밀 컬럼 그리드 강화 + 그레인 톤다운
+       (라이트 영역에만; 다크 섹션은 multiply로 자동 소거 → 브랜드모먼트/푸터 깨끗) */
+.jt-app::before{ background-image: none !important; }  /* 세로줄 제거(피드백) — 이전 그리드 강화 취소 */
+.jt-app::after{ opacity: .3 !important; }
+
+/* ===================================================================
+   피드백 4 — 히어로 카드↔다음 섹션 여백 + 그레인 강화
+   =================================================================== */
+.jt-sithero{ padding-bottom: clamp(84px, 10vw, 132px) !important; }  /* 카드와 브랜드모먼트 사이 숨 공간 */
+.jt-app::after{ opacity: .5 !important; }                            /* 그레인 더 세게 */
+
+/* ===================================================================
+   피드백 5 — 줄바꿈 전수(상속) + disclaimer 보정 + 회장 사진 아바타 + 그레인↑
+   =================================================================== */
+/* word-break는 상속 속성 → 루트에 1회 = div/span 포함 모든 한글에 적용 */
+.jt-app{ word-break: keep-all; }
+/* 영문/숫자/긴 토큰만 예외(overflow 방지) */
+.jt-app :where(.en-caps, .mono, .jt-channels__big, .jt-nav__phone){ word-break: normal; overflow-wrap: anywhere; }
+.jt-app a[href^="mailto:"], .jt-app a[href^="tel:"]{ word-break: normal; overflow-wrap: anywhere; }
+/* 공개자료 disclaimer: mono·우측정렬 → 본문 sans·좌측·가독 폭 */
+.jt-proof__note{
+  font-family: var(--font-sans-kr) !important; text-align: left !important;
+  max-width: 460px !important; letter-spacing: 0 !important; font-size: 12.5px !important; line-height: 1.7 !important;
+}
+/* 회장 인용 아바타: 'JT' 글자 → 실제 사진(흑백). 사진 실패 시 'JT' 폴백 노출 */
+.jt-pullquote__avatar{ position: relative; overflow: hidden; }
+.jt-pullquote__avatar img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; filter: grayscale(1); }
+/* 그레인 더 강하게 */
+.jt-app::after{ opacity: .72 !important; }
+
+/* ===================================================================
+   모션 패키지 — 동영상 대신 '움직이는' 임팩트 (절제·모노톤·reduced-motion 가드)
+   =================================================================== */
+@keyframes jt-rise { from { opacity: 0; transform: translateY(36px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+/* 과감한 타이틀 등장 — 멀리서 + 강한 블러 + 살짝 확대 (영화 타이틀) */
+@keyframes jt-title-in { 0% { opacity: 0; transform: translateY(92px) scale(.94); filter: blur(24px); } 100% { opacity: 1; transform: none; filter: blur(0); } }
+
+/* (1) 히어로 로드 진입 — 키커 → 대형 타이틀(과감) → 서브, 시차 크게 */
+.jt-sithero .jt-kicker{ animation: jt-rise .8s var(--ease-out) both; }
+.jt-sithero__title{ animation: jt-title-in 1.35s .18s cubic-bezier(.16,1,.3,1) both; }
+.jt-sithero__sub{ animation: jt-rise 1s .62s var(--ease-out) both; }
+
+/* (2) 전역 스크롤 reveal 고급화 — 떠오르며 또렷해짐(블러업). transition-delay(data-delay)는 보존 */
+.reveal{ transition-property: opacity, transform !important; transition-duration: .8s !important; transition-timing-function: var(--ease-out) !important; }
+.reveal[data-delay="5"]{ transition-delay: .5s; }
+
+/* (3) 상황 카드 — 시차로 하나씩 떠오름 (data-delay 0~5) */
+.jt-sit.reveal{ transform: translateY(40px) scale(.98); }
+.jt-sit.reveal.is-visible{ transform: none; }
+
+/* (4) 브랜드 모먼트 로고 — 스케일·블러로 '각인'되며 등장 */
+.jt-brandmoment__logo.reveal{ transform: translateY(34px) scale(.92); }
+.jt-brandmoment__logo.reveal.is-visible{ transform: none; }
+
+/* (5) 히어로 고스트 JT — 은은히 숨쉬는 모션(살아있는 느낌) */
+@keyframes jt-breathe { 0%,100% { transform: scale(1); opacity: .085; } 50% { transform: scale(1.05); opacity: .12; } }
+.jt-sithero::before{ animation: jt-breathe 10s ease-in-out infinite; transform-origin: 82% 78%; }
+
+@media (prefers-reduced-motion: reduce){
+  .jt-sithero .jt-kicker, .jt-sithero__title, .jt-sithero__sub{ animation: none !important; }
+  .reveal{ filter: none !important; }
+  .jt-sit.reveal, .jt-brandmoment__logo.reveal{ transform: none !important; }
+  .jt-sithero::before{ animation: none !important; }
+}
+
+/* ===================================================================
+   인사이트 카드 (표 → 카드: 카테고리 칩 + 제목 + 요약 + 읽기)
+   =================================================================== */
+.jt-icards{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.jt-icards--3{ grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 960px){ .jt-icards, .jt-icards--3{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px){ .jt-icards, .jt-icards--3{ grid-template-columns: 1fr; } }
+.jt-icard{
+  display: flex; flex-direction: column; padding: 30px 30px 26px;
+  border: 1px solid var(--border-1); background: var(--bg-1); cursor: pointer; min-height: 210px;
+  transition: border-color .2s, transform .25s var(--ease-out), box-shadow .25s;
+}
+.jt-icard:hover{ border-color: #000; transform: translateY(-5px); box-shadow: 0 24px 48px -26px rgba(0,0,0,.42); }
+.jt-icard:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
+.jt-icard__top{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+.jt-icard__cat{ font-family: var(--font-sans-en); font-size: 10.5px; letter-spacing: .14em; font-weight: 700; color: #000; border: 1px solid var(--border-2); padding: 4px 10px; text-transform: uppercase; white-space: nowrap; }
+.jt-icard__date{ font-family: var(--font-sans-en); font-size: 12px; color: var(--fg-3); letter-spacing: .04em; white-space: nowrap; }
+.jt-icard__title{ font-size: 19px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.4; margin: 0 0 12px; color: var(--fg-1); }
+.jt-icard__excerpt{ font-size: 14px; color: var(--fg-2); line-height: 1.7; margin: 0 0 22px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.jt-icard__go{ margin-top: auto; font-size: 13px; font-weight: 700; color: #000; display: inline-flex; align-items: center; gap: 8px; }
+.jt-icard__go .jt-arrow{ transition: transform .2s; }
+.jt-icard:hover .jt-icard__go .jt-arrow{ transform: translateX(4px); }
+
+/* ===================================================================
+   내부 페이지도 과감한 진입 모션 (회사소개·업무분야·리포트·인사이트·오시는길·상담)
+   =================================================================== */
+.jt-page-hero{ overflow: hidden; }
+.jt-page-hero__crumb{ animation: jt-rise .75s var(--ease-out) both; }
+.jt-page-hero h1{ animation: jt-title-in 1.2s .12s cubic-bezier(.16,1,.3,1) both; }
+.jt-page-hero__sub{ animation: jt-rise 1s .44s var(--ease-out) both; }
+/* 페이지 헤더의 고스트 심볼도 은은히 살아있게 */
+.jt-page-hero__mark{ animation: jt-breathe 11s ease-in-out infinite; transform-origin: 80% 30%; }
+@media (prefers-reduced-motion: reduce){
+  .jt-page-hero__crumb, .jt-page-hero h1, .jt-page-hero__sub, .jt-page-hero__mark{ animation: none !important; }
 }
