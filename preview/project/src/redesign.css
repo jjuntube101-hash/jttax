@@ -459,3 +459,12 @@
   letter-spacing: -0.03em;
   line-height: 1.12;
 }
+
+/* ===================================================================
+   PHASE B — 통일 모노톤 라인 아이콘(이모지 대체)
+   =================================================================== */
+.jt-sit__ico{ font-size: 0; }              /* 이모지 폰트크기 잔재 무력화 */
+.jt-sit__ico svg{ width: 26px; height: 26px; color: var(--fg-1); display: block; }
+.jt-sit:hover .jt-sit__ico svg{ color: var(--jt-ink-900); }
+.jt-mcta__ico svg{ width: 22px; height: 22px; display: block; }
+.jt-mcta__ico{ display: inline-flex; }

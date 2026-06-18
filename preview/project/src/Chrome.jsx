@@ -146,16 +146,17 @@ window.JTNav = JTNav;
 // ============ Mobile Sticky CTA Bar (전화·카톡·예약) ============
 function JTMobileCta({ setRoute, route }) {
   const D = window.JT_DATA.firm;
+  const Icon = window.JTSitIcon;
   // 예약/리포트 내부에서는 숨김 (중복 방지)
   if (route === 'booking') return null;
   return (
     <div className="jt-mcta" role="navigation" aria-label="빠른 상담">
       <a className="jt-mcta__btn" href={`tel:${D.phone}`} onClick={() => window.gtag && window.gtag('event', 'mcta_call')}>
-        <span className="jt-mcta__ico" aria-hidden="true">☏</span>
+        <span className="jt-mcta__ico" aria-hidden="true">{Icon ? <Icon name="phone" /> : '☏'}</span>
         <span>전화</span>
       </a>
       <a className="jt-mcta__btn" href={D.kakaoChatUrl} target="_blank" rel="noopener" onClick={() => window.gtag && window.gtag('event', 'mcta_kakao')}>
-        <span className="jt-mcta__ico" aria-hidden="true">💬</span>
+        <span className="jt-mcta__ico" aria-hidden="true">{Icon ? <Icon name="chat" /> : '💬'}</span>
         <span>카톡</span>
       </a>
       <button className="jt-mcta__btn jt-mcta__btn--primary" onClick={() => { if (window.gtag) window.gtag('event', 'mcta_booking'); setRoute('booking'); }}>

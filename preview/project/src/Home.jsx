@@ -17,21 +17,26 @@ function JTSitIcon({ name }) {
       return <svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="m15 9-3.4 1.6L10 14l3.4-1.6z" /></svg>;
     case 'chat': // 일반 상담 — 말풍선
       return <svg {...p}><path d="M5 5h14v10H9l-4 3.5z" /><path d="M9 9h6M9 11.5h4" /></svg>;
+    case 'phone': // 전화
+      return <svg {...p}><path d="M5 4h3l1.6 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.6V19a2 2 0 0 1-2 2A15 15 0 0 1 4 6a2 2 0 0 1 1-2z" /></svg>;
+    case 'mail': // 이메일
+      return <svg {...p}><rect x="3" y="5" width="18" height="14" rx="1.5" /><path d="m3.5 6.5 8.5 6 8.5-6" /></svg>;
     default:
       return null;
   }
 }
 window.JTSitIcon = JTSitIcon;
+window.JTIcon = JTSitIcon;
 
 // ============ 상황별 진입 카드 (히어로) ============
 // 6개 = 서비스 5분야 + 일반상담. topic은 booking/services 분야 자동선택 키와 매칭.
 const JT_SITUATIONS = [
-{ ico: '🏠', num: '01', sit: '집·재산을 팔거나, 물려주거나 받는다', t: '양도·상속·증여', d: '시점이 곧 금액입니다. 신고 전 절세 구간과 이전 구조를 먼저 설계합니다.', topic: '양도·상속·증여' },
-{ ico: '🏢', num: '02', sit: '법인·개인사업체 운영 중', t: '법인·개인 사업 운영', d: '매월 결산이 12월 결산을 만듭니다. 기장·신고부터 법인 구조까지.', topic: '기장·세금 신고' },
-{ ico: '📋', num: '03', sit: '세무서에서 연락이 왔다', t: '세무조사 대응', d: '첫 답변이 결과를 가릅니다. 39년 국세 경력이 통지 단계부터 함께합니다.', topic: '세무조사 대응' },
-{ ico: '↩️', num: '04', sit: '이미 낸 세금이 억울하다', t: '경정·환급', d: '5년 이내면 늦지 않았습니다. 과오납 세금을 돌려받을 권리를 검토합니다.', topic: '경정청구' },
-{ ico: '🧭', num: '05', sit: '큰 결정을 앞두고 있다', t: '세금 컨설팅', d: '법인 전환·지분 재구성 전, 여러 시나리오의 총 부담을 수치로 비교합니다.', topic: '세금 종합 컨설팅' },
-{ ico: '💬', num: '06', sit: '어디에 속하는지 모르겠다', t: '일반 상담', d: '괜찮습니다. 상황만 말씀해 주시면 담당 분야와 다음 절차를 안내합니다.', topic: '', general: true }];
+{ ico: 'home', num: '01', sit: '집·재산을 팔거나, 물려주거나 받는다', t: '양도·상속·증여', d: '시점이 곧 금액입니다. 신고 전 절세 구간과 이전 구조를 먼저 설계합니다.', topic: '양도·상속·증여' },
+{ ico: 'corp', num: '02', sit: '법인·개인사업체 운영 중', t: '법인·개인 사업 운영', d: '매월 결산이 12월 결산을 만듭니다. 기장·신고부터 법인 구조까지.', topic: '기장·세금 신고' },
+{ ico: 'audit', num: '03', sit: '세무서에서 연락이 왔다', t: '세무조사 대응', d: '첫 답변이 결과를 가릅니다. 39년 국세 경력이 통지 단계부터 함께합니다.', topic: '세무조사 대응' },
+{ ico: 'refund', num: '04', sit: '이미 낸 세금이 억울하다', t: '경정·환급', d: '5년 이내면 늦지 않았습니다. 과오납 세금을 돌려받을 권리를 검토합니다.', topic: '경정청구' },
+{ ico: 'consult', num: '05', sit: '큰 결정을 앞두고 있다', t: '세금 컨설팅', d: '법인 전환·지분 재구성 전, 여러 시나리오의 총 부담을 수치로 비교합니다.', topic: '세금 종합 컨설팅' },
+{ ico: 'chat', num: '06', sit: '어디에 속하는지 모르겠다', t: '일반 상담', d: '괜찮습니다. 상황만 말씀해 주시면 담당 분야와 다음 절차를 안내합니다.', topic: '', general: true }];
 
 
 // ============ Hero — 상황별 진입 ============
@@ -62,7 +67,7 @@ function JTHero({ setRoute }) {
             onClick={() => pick(s)}
             onKeyDown={(e) => {if (e.key === 'Enter' || e.key === ' ') {e.preventDefault();pick(s);}}}>
             <div className="jt-sit__top">
-              <div className="jt-sit__ico" aria-hidden="true">{s.ico}</div>
+              <div className="jt-sit__ico" aria-hidden="true"><JTSitIcon name={s.ico} /></div>
               <span className="jt-sit__num">{s.num}</span>
             </div>
             <div className="jt-sit__sit">{s.sit}</div>
