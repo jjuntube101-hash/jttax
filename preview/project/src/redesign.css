@@ -541,8 +541,9 @@
 .jt-brandmoment{ padding-top: clamp(96px,14vw,190px) !important; padding-bottom: clamp(96px,14vw,190px) !important; }
 .jt-brandmoment__logo{ height: clamp(150px, 24vw, 300px) !important; }
 
-/* (5) ★CI 로고 교정 — nav: 정식 심볼 단독 사용(대체폰트 워드마크 제거) */
-.jt-nav__brand img{ height: 40px !important; width: auto; }
+/* (5) ★CI 로고 교정 — nav: 정식 Secondary(가로) 락업 사용 */
+.jt-nav__brand img{ height: 44px !important; width: auto; }
+@media (max-width: 600px){ .jt-nav__brand img{ height: 38px !important; } }
 /* footer: 정식 Primary 화이트 락업(세로형) 사용 */
 .jt-footer__brand img{ filter: none !important; height: 78px !important; width: auto; opacity: 1 !important; }
 

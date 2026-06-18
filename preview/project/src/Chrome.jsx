@@ -83,7 +83,7 @@ function JTNav({ route, setRoute }) {
   return (
     <header className={`jt-nav ${scrolled ? 'jt-nav--scrolled' : ''} ${menuOpen ? 'jt-nav--menu-open' : ''}`}>
       <a className="jt-nav__brand" onClick={() => setRoute('home')} aria-label="제이티 세무법인 홈">
-        <img src="project/assets/logo_symbol.png" alt="제이티 세무법인" />
+        <img src="project/assets/logo_secondary.png" alt="제이티 세무법인" />
       </a>
       <nav className="jt-nav__links">
         <a className={route === 'about' ? 'active' : ''} onClick={() => setRoute('about')}>회사소개</a>
