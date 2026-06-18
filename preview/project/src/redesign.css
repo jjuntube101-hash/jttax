@@ -586,3 +586,9 @@
        (라이트 영역에만; 다크 섹션은 multiply로 자동 소거 → 브랜드모먼트/푸터 깨끗) */
 .jt-app::before{ background-image: none !important; }  /* 세로줄 제거(피드백) — 이전 그리드 강화 취소 */
 .jt-app::after{ opacity: .3 !important; }
+
+/* ===================================================================
+   피드백 4 — 히어로 카드↔다음 섹션 여백 + 그레인 강화
+   =================================================================== */
+.jt-sithero{ padding-bottom: clamp(84px, 10vw, 132px) !important; }  /* 카드와 브랜드모먼트 사이 숨 공간 */
+.jt-app::after{ opacity: .5 !important; }                            /* 그레인 더 세게 */
