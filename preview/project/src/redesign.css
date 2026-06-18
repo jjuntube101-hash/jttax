@@ -584,8 +584,5 @@
 
 /* (3) 배경 질감 — 정밀 컬럼 그리드 강화 + 그레인 톤다운
        (라이트 영역에만; 다크 섹션은 multiply로 자동 소거 → 브랜드모먼트/푸터 깨끗) */
-.jt-app::before{
-  background-image: repeating-linear-gradient(90deg,
-    rgba(0,0,0,0.05) 0, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 100px) !important;
-}
+.jt-app::before{ background-image: none !important; }  /* 세로줄 제거(피드백) — 이전 그리드 강화 취소 */
 .jt-app::after{ opacity: .3 !important; }
