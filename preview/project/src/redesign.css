@@ -499,3 +499,49 @@
 @media (prefers-reduced-motion: reduce){
   .reveal{ opacity: 1 !important; transform: none !important; }
 }
+
+/* ===================================================================
+   피드백 반영 — 히어로 후킹↑ · 카드 클릭 어포던스↑ · 로고 각인↑
+   =================================================================== */
+/* (1) 히어로 타이틀 대형화: "지금, 어떤 상황이신가요?"가 주역 */
+.jt-sithero__title{
+  font-size: clamp(46px, 8.4vw, 108px) !important;
+  line-height: 0.98 !important; letter-spacing: -0.04em !important;
+  max-width: 13em !important; margin-top: 8px !important;
+}
+.jt-sithero__sub{ font-size: clamp(16px, 1.5vw, 19px) !important; max-width: 560px; }
+
+/* (2) 히어로 JT 마크 — 크고 또렷하게(각인) */
+.jt-sithero::before{
+  background-size: min(48vw, 660px) auto !important;
+  opacity: .08 !important; right: -90px !important; bottom: -70px !important;
+}
+
+/* (3) 상황 카드: '클릭하는 거구나'가 즉시 보이도록 — 하단에 원형 화살표 액션 */
+.jt-sit{ border-width: 1.5px !important; }
+.jt-sit:hover{
+  border-color: #000 !important; transform: translateY(-5px) !important;
+  box-shadow: 0 26px 52px -26px rgba(0,0,0,.42) !important;
+}
+.jt-sit:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
+.jt-sit__t{ font-size: 23px !important; }
+.jt-sit__go{
+  color: #000 !important; font-weight: 700 !important;
+  font-family: var(--font-sans-kr) !important; font-size: 13.5px !important; letter-spacing: 0 !important;
+  margin-top: 18px !important; padding-top: 15px; border-top: 1px solid var(--border-1);
+  justify-content: space-between;
+}
+.jt-sit__go .jt-arrow{
+  width: 28px; height: 28px; border-radius: 50%; background: #000; color: #fff;
+  display: inline-grid; place-items: center; font-size: 13px; flex-shrink: 0; transition: transform .2s;
+}
+.jt-sit:hover .jt-sit__go .jt-arrow{ transform: translateX(3px); }
+
+/* (4) 브랜드 모먼트 로고 — 크게(각인) */
+.jt-brandmoment{ padding-top: clamp(96px,14vw,190px) !important; padding-bottom: clamp(96px,14vw,190px) !important; }
+.jt-brandmoment__logo{ height: clamp(150px, 24vw, 300px) !important; }
+
+/* (5) ★CI 로고 교정 — nav: 정식 심볼 단독 사용(대체폰트 워드마크 제거) */
+.jt-nav__brand img{ height: 40px !important; width: auto; }
+/* footer: 정식 Primary 화이트 락업(세로형) 사용 */
+.jt-footer__brand img{ filter: none !important; height: 78px !important; width: auto; opacity: 1 !important; }

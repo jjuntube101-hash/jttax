@@ -49,10 +49,6 @@ function JTHero({ setRoute }) {
   return (
     <section className="jt-sithero">
       <div className="jt-sithero__inner">
-        <div className="jt-sithero__greet">
-          <span className="jt-sithero__greet-wave" aria-hidden="true">👋</span>
-          <span><b>반갑습니다.</b> 세금 앞에서 혼자 고민하지 않도록, <b>제이티 세무법인</b>이 곁에 있겠습니다.</span>
-        </div>
         <div className="jt-kicker">WHERE TO START · 상황별 안내</div>
         <h1 className="jt-sithero__title">지금, 어떤 상황이신가요?</h1>
         <p className="jt-sithero__sub">세금은 상황마다 답이 다릅니다. 가장 가까운 상황을 고르시면, 그에 맞는 절차와

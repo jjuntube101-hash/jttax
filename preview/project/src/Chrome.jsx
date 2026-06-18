@@ -82,9 +82,8 @@ function JTNav({ route, setRoute }) {
   const services = (window.JT_DATA && window.JT_DATA.services) || [];
   return (
     <header className={`jt-nav ${scrolled ? 'jt-nav--scrolled' : ''} ${menuOpen ? 'jt-nav--menu-open' : ''}`}>
-      <a className="jt-nav__brand" onClick={() => setRoute('home')}>
-        <img src="project/assets/logo_symbol.png" alt="" />
-        <span>제이티 세무법인</span>
+      <a className="jt-nav__brand" onClick={() => setRoute('home')} aria-label="제이티 세무법인 홈">
+        <img src="project/assets/logo_symbol.png" alt="제이티 세무법인" />
       </a>
       <nav className="jt-nav__links">
         <a className={route === 'about' ? 'active' : ''} onClick={() => setRoute('about')}>회사소개</a>
@@ -202,8 +201,7 @@ function JTFooter({ setRoute }) {
       <div className="jt-footer__grid">
         <div>
           <div className="jt-footer__brand">
-            <img src="project/assets/logo_symbol.png" alt="" />
-            <span>제이티 세무법인</span>
+            <img src="project/assets/logo_primary_white.png" alt="제이티 세무법인 · JT TAX CORP." />
           </div>
           <div className="jt-footer__addr">
             {D.address}<br />
