@@ -83,7 +83,7 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
       <section className="jt-section">
         <div className="jt-section__head reveal">
           <div className="jt-kicker">CREDENTIALS · 근거의 벽</div>
-          <h2 className="jt-h2 jt-display-h2">감이 아니라, 이력으로.</h2>
+          <h2 className="jt-h2 jt-display-h2">이력이 곧,<br />우리의 자기소개입니다.</h2>
         </div>
         <div className="jt-matrix reveal">
           <div className="jt-matrix__cell">
