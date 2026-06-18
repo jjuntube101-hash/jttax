@@ -625,8 +625,7 @@
 .jt-sithero__sub{ animation: jt-rise 1s .62s var(--ease-out) both; }
 
 /* (2) 전역 스크롤 reveal 고급화 — 떠오르며 또렷해짐(블러업). transition-delay(data-delay)는 보존 */
-.reveal{ filter: blur(9px); transition-property: opacity, transform, filter !important; transition-duration: .85s !important; transition-timing-function: var(--ease-out) !important; }
-.reveal.is-visible{ filter: blur(0); }
+.reveal{ transition-property: opacity, transform !important; transition-duration: .8s !important; transition-timing-function: var(--ease-out) !important; }
 .reveal[data-delay="5"]{ transition-delay: .5s; }
 
 /* (3) 상황 카드 — 시차로 하나씩 떠오름 (data-delay 0~5) */
