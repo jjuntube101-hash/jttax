@@ -468,3 +468,34 @@
 .jt-sit:hover .jt-sit__ico svg{ color: var(--jt-ink-900); }
 .jt-mcta__ico svg{ width: 22px; height: 22px; display: block; }
 .jt-mcta__ico{ display: inline-flex; }
+
+/* ===================================================================
+   PHASE C — Brand Moment (로고+슬로건 다크 앵커, CI quiet zone)
+   =================================================================== */
+.jt-brandmoment{
+  background: #000; color: #fff;
+  padding: clamp(80px, 13vw, 168px) 24px;
+  text-align: center; position: relative; overflow: hidden;
+}
+/* CI: 로고는 복잡한 패턴/이미지 위 금지 → 텍스처 억제(정숙 영역) */
+.jt-brandmoment::before, .jt-brandmoment::after{ content: none !important; background: none !important; }
+.jt-brandmoment__inner{ max-width: 1000px; margin: 0 auto; }
+.jt-brandmoment__logo{
+  height: clamp(120px, 17vw, 220px); width: auto;
+  margin: 0 auto clamp(28px, 4vw, 48px); display: block;
+}
+.jt-brandmoment__slogan{
+  font-family: var(--font-display-kr); font-weight: 400;
+  font-size: clamp(44px, 8vw, 112px); line-height: 1.02; letter-spacing: -0.035em;
+  color: #fff; margin: 0; word-break: keep-all;
+}
+.jt-brandmoment__slogan .reveal{ display: inline-block; }
+.jt-brandmoment__sub{
+  margin: clamp(26px, 3.5vw, 40px) auto 0; max-width: 46ch;
+  color: rgba(255,255,255,.62); font-size: clamp(15px, 1.7vw, 19px); line-height: 1.75;
+}
+
+/* reveal 안전망(중요): 모션 비선호/JS 미동작 시에도 콘텐츠 보이게 */
+@media (prefers-reduced-motion: reduce){
+  .reveal{ opacity: 1 !important; transform: none !important; }
+}

@@ -31,9 +31,9 @@
   <meta name="twitter:image" content="https://www.jttax.co.kr/project/assets/og-image.png">
 
   <!-- Favicon & App Icons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="project/assets/favicon32.png?v=102">
-  <link rel="icon" type="image/png" sizes="16x16" href="project/assets/favicon16.png?v=102">
-  <link rel="apple-touch-icon" sizes="180x180" href="project/assets/appletouchicon.png?v=102">
+  <link rel="icon" type="image/png" sizes="32x32" href="project/assets/favicon32.png?v=103">
+  <link rel="icon" type="image/png" sizes="16x16" href="project/assets/favicon16.png?v=103">
+  <link rel="apple-touch-icon" sizes="180x180" href="project/assets/appletouchicon.png?v=103">
   <link rel="manifest" href="manifest.json">
 
   <!-- 구조화 데이터 (JSON-LD) — 검색엔진에 비즈니스 정보를 제공 -->
@@ -108,8 +108,8 @@
   <!-- 세액계산 엔진(검증된 jt-tax-engine) 주소 — JT 리포트 계산기가 호출 -->
   <script>window.JT_ENGINE_BASE = 'https://jt-tax-engine.fly.dev';</script>
 
-  <link rel="stylesheet" href="project/src/styles.css?v=102">
-  <link rel="stylesheet" href="project/src/redesign.css?v=102">
+  <link rel="stylesheet" href="project/src/styles.css?v=103">
+  <link rel="stylesheet" href="project/src/redesign.css?v=103">
 </head>
 <body>
   <div id="root"></div>
@@ -118,17 +118,17 @@
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-  <script type="text/babel" src="project/src/Data.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/Chrome.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/Home.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/Pages1.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/Pages2.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/Legal.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/Report.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/ReportConvert.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/ReportAppeal.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/ReportCGT.jsx?v=102"></script>
-  <script type="text/babel" src="project/src/ReportIncome.jsx?v=102"></script>
+  <script type="text/babel" src="project/src/Data.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/Chrome.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/Home.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/Pages1.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/Pages2.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/Legal.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/Report.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/ReportConvert.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/ReportAppeal.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/ReportCGT.jsx?v=103"></script>
+  <script type="text/babel" src="project/src/ReportIncome.jsx?v=103"></script>
 
   <script type="text/babel">
     const { useState, useEffect } = React;
@@ -221,6 +221,7 @@
             {route === 'home' && (
               <div>
                 <JTHero setRoute={setRoute} />
+                <JTBrandMoment />
                 <JTCreds />
                 <JTAuthority />
                 <JTServicesGrid setRoute={setRoute} detailOpen={detailOpen} setDetailOpen={setDetailOpen} variant={tweaks.servicesLayout} />

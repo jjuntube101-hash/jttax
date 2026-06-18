@@ -82,6 +82,25 @@ function JTHero({ setRoute }) {
 }
 window.JTHero = JTHero;
 
+// ============ Brand Moment — 로고 + 슬로건 (다크 앵커) ============
+function JTBrandMoment() {
+  return (
+    <section className="jt-brandmoment" aria-label="제이티 세무법인">
+      <div className="jt-brandmoment__inner">
+        <img className="jt-brandmoment__logo reveal" src="project/assets/logo_primary_white.png" alt="제이티 세무법인 · JT TAX CORP." />
+        <h2 className="jt-brandmoment__slogan">
+          <span className="reveal" data-delay="1">근거 위에서,</span>{' '}
+          <span className="reveal" data-delay="2">끝까지.</span>
+        </h2>
+        <p className="jt-brandmoment__sub reveal" data-delay="3">
+          세금은 감이 아니라 근거로 다툽니다. 신고 한 건부터 불복 한 건까지 — 기록과 법령 위에서 끝까지 함께합니다.
+        </p>
+      </div>
+    </section>);
+
+}
+window.JTBrandMoment = JTBrandMoment;
+
 // ============ Hook Ticker (infinite marquee) ============
 function JTTicker() {
   const hooks = window.JT_DATA.hooks || [];
