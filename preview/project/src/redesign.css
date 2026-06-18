@@ -670,3 +670,16 @@
 .jt-icard__go{ margin-top: auto; font-size: 13px; font-weight: 700; color: #000; display: inline-flex; align-items: center; gap: 8px; }
 .jt-icard__go .jt-arrow{ transition: transform .2s; }
 .jt-icard:hover .jt-icard__go .jt-arrow{ transform: translateX(4px); }
+
+/* ===================================================================
+   내부 페이지도 과감한 진입 모션 (회사소개·업무분야·리포트·인사이트·오시는길·상담)
+   =================================================================== */
+.jt-page-hero{ overflow: hidden; }
+.jt-page-hero__crumb{ animation: jt-rise .75s var(--ease-out) both; }
+.jt-page-hero h1{ animation: jt-title-in 1.2s .12s cubic-bezier(.16,1,.3,1) both; }
+.jt-page-hero__sub{ animation: jt-rise 1s .44s var(--ease-out) both; }
+/* 페이지 헤더의 고스트 심볼도 은은히 살아있게 */
+.jt-page-hero__mark{ animation: jt-breathe 11s ease-in-out infinite; transform-origin: 80% 30%; }
+@media (prefers-reduced-motion: reduce){
+  .jt-page-hero__crumb, .jt-page-hero h1, .jt-page-hero__sub, .jt-page-hero__mark{ animation: none !important; }
+}
