@@ -544,6 +544,22 @@
 /* (5) ★CI 로고 교정 — nav: 정식 Secondary(가로) 락업 사용 */
 .jt-nav__brand img{ height: 44px !important; width: auto; }
 @media (max-width: 600px){ .jt-nav__brand img{ height: 38px !important; } }
+
+/* ===================================================================
+   피드백 3 — 세로줄 제거(거슬림) → 프리미엄 그레인 + 고스트 JT, 타이틀 정중앙
+   =================================================================== */
+/* 배경: 거슬리는 세로 라인 그리드 제거. 2026 프리미엄 벤치마크 = 미세 필름 그레인 */
+.jt-app::before{ background-image: none !important; }
+.jt-app::after{ opacity: .3 !important; }
+/* 히어로 고스트 JT 모노그램을 텍스처의 주역으로(로고 활용↑) */
+.jt-sithero::before{ opacity: .09 !important; }
+
+/* 타이틀 정중앙 — 760px 박스를 넘쳐 우측으로 쏠리던 현상 교정 */
+.jt-sithero__inner{ max-width: 1240px !important; }
+.jt-sithero__title{
+  width: 100% !important; text-align: center !important;
+  font-size: clamp(28px, 7vw, 98px) !important;
+}
 /* footer: 정식 Primary 화이트 락업(세로형) 사용 */
 .jt-footer__brand img{ filter: none !important; height: 78px !important; width: auto; opacity: 1 !important; }
 
