@@ -72,6 +72,7 @@ const GIFT_QS = [
   },
   {
     id: 'reAddress',
+    tier: 'quick',
     section: '부동산 정보',
     q: '부동산 주소를 입력해 주세요. (공동주택은 동·호까지)',
     sub: '도로명주소에 동·호수까지 입력해 주세요. 입력하신 주소로 공시가격을 조회해 드립니다. 시가(최근 실거래가·감정가)를 알고 계시면 아래 「평가액」 칸에 직접 입력하셔도 됩니다.',
@@ -243,12 +244,12 @@ const GIFT_QS = [
   {
     id: 'debtObjective',
     section: '부담부증여',
-    q: '그 채무는 객관적으로 입증되나요? (채무부담계약서·이자지급·채권자확인 등)',
-    sub: '⚠️ 배우자·직계존비속 간 부담부증여는 원칙적으로 채무 인수를 인정하지 않고, 객관적 입증서류가 있어야 인정됩니다(상증법 §47③). 미입증 시 전액 증여로 과세될 수 있습니다.',
+    q: '받는 분이 떠안는 그 빚, 증빙 서류가 있나요?',
+    sub: '⚠️ 가족 간(배우자·부모·자녀) 빚 넘기기는 서류로 증명돼야 인정됩니다(상증법 §47③). 증명이 안 되면 빚을 뺀 게 아니라 전체를 증여한 것으로 보아 세금이 더 나올 수 있어요.',
     showIf: (a) => a.isBurdened === 'yes',
     opts: [
-      ['objective', '네, 입증서류가 있습니다 (금융기관 대출·임대차계약 등)', '채무 인정 → 양도세 분리'],
-      ['subjective', '아니오/사적 채무입니다', '⚠️ 채무 불인정 가능 → 전액 증여 과세'],
+      ['objective', '네, 은행 대출이거나 전세계약서·차용증으로 보여줄 수 있어요', '채무 인정 → 양도세 분리'],
+      ['subjective', '아니오, 가족끼리 말로 한 빚이에요', '⚠️ 채무 불인정 가능 → 전액 증여 과세'],
     ],
   },
   {
@@ -578,7 +579,7 @@ function JTReportGift({ setRoute, onBack }) {
     const nonResident = answers.isResident === 'no';
     return (
       <div className="jt-container">
-        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : '증여세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
+        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
               ⚠️ 비거주자 증여는 증여재산공제 배제 등 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
@@ -689,7 +690,7 @@ function JTReportGift({ setRoute, onBack }) {
 
           <JTReportConvert
             setRoute={setRoute}
-            reportType={isBurdened ? '부담부증여 통합 계산' : '증여세 간이 계산'}
+            reportType={isBurdened ? '부담부증여 통합 계산' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')}
             reportTag="LEGACY"
             reportSummary={`총 세부담 ${formatWon(calc.totalTax)}${isBurdened ? ' (부담부)' : ' / 과세표준 ' + formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
             reportDetail={buildGiftDetail(answers, calc, commentary)}
