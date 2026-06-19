@@ -60,7 +60,7 @@ const GIFT_QS = [
     id: 'reAddress',
     section: '부동산 정보',
     q: '부동산 주소를 입력해 주세요. (공동주택은 동·호까지)',
-    sub: '예: 서울시 성북구 정릉로 305 102동 601호. 주소로 공시가격을 조회합니다. 시가(최근 실거래·감정가)를 아시면 아래 평가액 칸에 직접 입력하세요.',
+    sub: '도로명주소에 동·호수까지 입력해 주세요. 입력하신 주소로 공시가격을 조회해 드립니다. 시가(최근 실거래가·감정가)를 알고 계시면 아래 「평가액」 칸에 직접 입력하셔도 됩니다.',
     showIf: (a) => a.assetType === 'realestate',
     freeform: true,
     optional: true,
@@ -307,12 +307,22 @@ function mapAnswersToBurdenedGift(a) {
 
 async function callGiftEngine(body, endpoint) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
-  const res = await fetch(base + endpoint, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error('engine ' + res.status);
-  return res.json();
+  // 엔진이 비용절감용 scale-to-zero라 한동안 안 쓰면 잠듦 → 첫 호출이 깨우는 동안 실패/지연될 수 있어 재시도(콜드스타트 대비)
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(base + endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error('engine ' + res.status);
+      return await res.json();
+    } catch (e) {
+      lastErr = e;
+      if (attempt < 2) await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));  // 1.5초·3초 대기 후 재시도
+    }
+  }
+  throw lastErr;
 }
 
 /* 주소→공시가격 조회 (기존 /v1/lookup/price · 실패 시 graceful) */
@@ -394,6 +404,13 @@ function JTReportGift({ setRoute, onBack }) {
   const [report, setReport] = useGiftState(null);
   const [err, setErr] = useGiftState(null);
   const [lookupState, setLookupState] = useGiftState({ loading: false, result: null, err: null });
+
+  // 엔진 미리 깨우기(scale-to-zero 콜드스타트 대비) — 사용자가 문항을 입력하는 동안 엔진을 워밍해 두면
+  // 결과 단계에서 정밀계산(단계별 법조문 포함)이 바로 나옴. fire-and-forget.
+  React.useEffect(() => {
+    const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
+    if (base) { fetch(base + '/health', { method: 'GET' }).catch(function () {}); }
+  }, []);
 
   const visibleQs = GIFT_QS.filter(q => !q.showIf || q.showIf(answers));
   const total = visibleQs.length;
