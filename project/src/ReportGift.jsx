@@ -602,7 +602,7 @@ function JTReportGift({ setRoute, onBack }) {
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
                 <strong>관계·금액만으로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
-                거주자 여부 · 10년 내 사전증여(합산) · 부담부(빚도 함께 넘김) · 세대생략(손주 증여) · 혼인·출산 공제.
+                10년 내 사전증여(합산) · 부담부(빚도 함께 넘김) · 세대생략(손주 증여) · 혼인·출산 공제.
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
             </div>

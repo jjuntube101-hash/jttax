@@ -131,7 +131,7 @@ const CGT_QS = [
     sub: '1세대 1주택 거주기간 공제용. 대체주택은 「1년 이상 거주」가 비과세 필수 요건이라 전입일을 꼭 입력하세요(시행령 §156의2⑤). 전입신고 후 실제 거주를 시작한 날. 거주하지 않았으면 비워두세요.',
     date: true,
     optional: true,
-    showIf: (a) => a.assetType === 'house_1' || a.assetType === 'house_2' || a.assetType === 'replacement',
+    showIf: (a) => a.assetType === 'house_1' || a.assetType === 'house_2' || a.assetType === 'house_3' || a.assetType === 'replacement',
   },
   // ───────── 주택 상황 ─────────
   {
@@ -359,7 +359,7 @@ function formatStepValue(name, amount) {
   if (/미해당|미적용/.test(label) && amount === 0) return '해당 없음';  // '중과 미해당'(0) 등은 %p보다 먼저
   if (/중과(?!가산)/.test(label) && amount !== 0) return `+${amount}%p`;  // 다주택·비사업용 토지 중과(가산율, %p). '중과가산'(금액)·'중과 미해당'(0) 제외
   if (/주택수|임대주택/.test(label)) return `${amount}채`;   // 주택수·임대주택 제외(잔여 주택수)
-  if (/세대/.test(label)) return `${amount}세대`;            // 세대 판정
+  if (/세대\s*판정/.test(label)) return `${amount}세대`;     // 양도세 '세대 판정'(주택수)만 — '세대생략 할증'(상속, 금액) 오매칭 방지
   return formatWon(amount);                                   // 그 외 = 금액(원)
 }
 
