@@ -90,17 +90,6 @@ const GIFT_QS = [
     money: true,
     placeholder: '예: 800,000,000',
   },
-  {
-    id: 'acqPrice',
-    section: '부동산 정보',
-    q: '증여하는 분이 이 부동산을 처음 취득한 가액은? (부담부증여 시 양도세 계산용 · 선택)',
-    sub: '부담부증여(빚도 함께 넘김)일 때 증여자의 양도세를 계산하는 데 필요합니다. 순수증여면 비워두세요.',
-    showIf: (a) => a.assetType === 'realestate',
-    numeric: true,
-    money: true,
-    optional: true,
-    placeholder: '예: 400,000,000 (순수증여면 비움)',
-  },
   // ── 현금 경로 ──
   {
     id: 'giftValueCash',
@@ -143,16 +132,17 @@ const GIFT_QS = [
     section: '당사자',
     q: '받는 분(수증자)의 나이는? (만 나이)',
     sub: '만 19세 미만이면 미성년자로, 직계비속 증여공제가 2천만원으로 줄어듭니다.',
+    showIf: (a) => a.relationship === '직계비속',
     numeric: true,
     placeholder: '예: 30',
   },
-  // ── 세대생략 (직계비속·기타친족일 때) ──
+  // ── 세대생략 (직계비속 손자녀일 때만 — §57① 직계비속 한정) ──
   {
     id: 'genSkip',
     section: '특수 상황',
     q: '세대를 건너뛴 증여인가요? (예: 할아버지 → 손자)',
-    sub: '자녀를 건너뛰고 손자녀 등에게 증여하면 산출세액의 30%(미성년+20억 초과는 40%)가 할증됩니다(상증법 §57).',
-    showIf: (a) => a.relationship === '직계비속' || a.relationship === '기타친족',
+    sub: '자녀를 건너뛰고 손자녀 등에게 증여하면 산출세액의 30%(미성년+20억 초과는 40%)가 할증됩니다(상증법 §57①).',
+    showIf: (a) => a.relationship === '직계비속',
     opts: [
       ['yes', '네 (손자녀 등 세대생략)', '30%/40% 할증'],
       ['no', '아니오 (자녀 등 직접 증여)', '할증 없음'],
@@ -163,7 +153,7 @@ const GIFT_QS = [
     section: '특수 상황',
     q: '건너뛴 그 자녀(받는 분의 부모)가 이미 사망했나요?',
     sub: '대습(代襲) — 자녀가 먼저 사망해 손자녀가 받는 경우엔 세대생략 할증이 면제됩니다(§57① 단서).',
-    showIf: (a) => a.genSkip === 'yes',
+    showIf: (a) => a.genSkip === 'yes' && a.relationship === '직계비속',
     opts: [
       ['yes', '네, 사망했습니다 (대습)', '할증 면제'],
       ['no', '아니오, 생존해 있습니다', '할증 적용'],
@@ -218,24 +208,6 @@ const GIFT_QS = [
     optional: true,
     placeholder: '예: 50,000,000 (모르면 비움)',
   },
-  // ── 증여취득세 중과 (부동산 주택일 때) ──
-  {
-    id: 'doneeHouseCount',
-    section: '취득세',
-    q: '받는 분(수증자)이 이미 보유한 주택은 몇 채인가요? (증여취득세 중과 판정용)',
-    sub: '조정대상지역 + 시가표준액 3억 이상 주택을 증여받으면 취득세가 중과(12%)될 수 있습니다(지방세법 §11).',
-    showIf: (a) => a.assetType === 'realestate' && (a.reType === '공동주택' || a.reType === '개별주택'),
-    numeric: true,
-    optional: true,
-    placeholder: '예: 0',
-  },
-  {
-    id: 'regulatedArea',
-    section: '취득세',
-    q: '증여 대상 주택이 조정대상지역에 있나요?',
-    showIf: (a) => a.assetType === 'realestate' && (a.reType === '공동주택' || a.reType === '개별주택'),
-    opts: [['yes', '네, 조정대상지역', '다주택 중과 가능(12%)'], ['no', '아니오/모름', '기본 3.5%']],
-  },
   // ── 부담부증여 (부동산) ──
   {
     id: 'isBurdened',
@@ -258,6 +230,17 @@ const GIFT_QS = [
     placeholder: '예: 400,000,000',
   },
   {
+    id: 'acqPrice',
+    section: '부담부증여',
+    q: '증여하는 분이 이 부동산을 처음 취득한 가액은? (증여자 양도세 계산용 · 선택)',
+    sub: '받는 분이 인수한 채무(유상 양도분)에 대한 증여자의 양도차익을 계산합니다(소득세법 §97). 모르면 비워두셔도 됩니다.',
+    showIf: (a) => a.isBurdened === 'yes',
+    numeric: true,
+    money: true,
+    optional: true,
+    placeholder: '예: 400,000,000',
+  },
+  {
     id: 'debtObjective',
     section: '부담부증여',
     q: '그 채무는 객관적으로 입증되나요? (채무부담계약서·이자지급·채권자확인 등)',
@@ -277,6 +260,13 @@ const GIFT_QS = [
     numeric: true,
     optional: true,
     placeholder: '예: 0',
+  },
+  {
+    id: 'regulatedArea',
+    section: '부담부증여',
+    q: '증여 대상 주택이 조정대상지역에 있나요? (취득세 중과 판정용)',
+    showIf: (a) => a.isBurdened === 'yes' && (a.reType === '공동주택' || a.reType === '개별주택'),
+    opts: [['yes', '네, 조정대상지역', '다주택 중과 가능'], ['no', '아니오/모름', '기본 세율']],
   },
   {
     id: 'context',
@@ -331,19 +321,24 @@ function mapAnswersToBurdenedGift(a) {
 
 async function callGiftEngine(body, endpoint) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
-  // 엔진이 비용절감용 scale-to-zero라 한동안 안 쓰면 잠듦 → 첫 호출이 깨우는 동안 실패/지연될 수 있어 재시도(콜드스타트 대비)
+  // 엔진이 비용절감용 scale-to-zero라 한동안 안 쓰면 잠듦. 첫 호출은 부팅을 기다리며 수십 초 걸리거나
+  // 부팅 중 503을 반환할 수 있음 → 콜드스타트를 확실히 넘기도록 넉넉히 재시도(누적 ~34초). 한 번 깨면 응답 <1초.
+  const delays = [1000, 2000, 3000, 4000, 6000, 8000, 10000]; // 재시도 간 대기(초)
   let lastErr;
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt <= delays.length; attempt++) {
     try {
+      const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      const to = ctrl ? setTimeout(() => ctrl.abort(), 25000) : null;  // 한 시도가 영원히 멈추지 않게
       const res = await fetch(base + endpoint, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined,
       });
+      if (to) clearTimeout(to);
       if (!res.ok) throw new Error('engine ' + res.status);
       return await res.json();
     } catch (e) {
       lastErr = e;
-      if (attempt < 2) await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));  // 1.5초·3초 대기 후 재시도
+      if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt]));
     }
   }
   throw lastErr;
@@ -572,7 +567,7 @@ function JTReportGift({ setRoute, onBack }) {
     return (
       <div className="jt-container">
         <JTReportShell title="증여세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LEGACY">
-          <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…</div>
+          <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
     );
@@ -593,6 +588,13 @@ function JTReportGift({ setRoute, onBack }) {
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : (calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : '추정 총 세부담 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
+
+          {!calc.precise && !calc.engineErr && (
+            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
+              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다. 단계별(법조문 근거) 계산은 정밀 모드에서 나옵니다 —
+              <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
+            </div>
+          )}
 
           {report.quick && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
