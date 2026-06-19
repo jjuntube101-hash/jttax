@@ -31,10 +31,23 @@ function giftDeduction(relationship, isMinor) {
     default: return 0; // 비친족
   }
 }
+/* 큰 금액을 한글 단위(억·만)로 — 0이 많은 숫자 가독성 보조. 예: 800000000 → "8억원" */
+function koreanAmount(raw) {
+  const n = Number(raw) || 0;
+  if (n <= 0) return '';
+  const units = [[1_0000_0000_0000, '조'], [1_0000_0000, '억'], [1_0000, '만'], [1, '']];
+  let rest = n, s = '';
+  for (const [u, label] of units) {
+    const q = Math.floor(rest / u);
+    if (q > 0) { s += q.toLocaleString('ko-KR') + label + ' '; rest -= q * u; }
+  }
+  return s.trim() + '원';
+}
 
 const GIFT_QS = [
   {
     id: 'assetType',
+    tier: 'quick',
     section: '무엇을 증여하나요',
     q: '증여하는 재산이 무엇인가요?',
     sub: '부동산은 주소를 넣으면 공시가격을 조회해 드립니다(시가가 있으면 직접 입력). 현금·예금은 금액을 바로 입력하세요.',
@@ -46,6 +59,7 @@ const GIFT_QS = [
   // ── 부동산 경로 ──
   {
     id: 'reType',
+    tier: 'quick',
     section: '부동산 정보',
     q: '어떤 부동산인가요?',
     showIf: (a) => a.assetType === 'realestate',
@@ -67,11 +81,13 @@ const GIFT_QS = [
   },
   {
     id: 'giftValue',
+    tier: 'quick',
     section: '부동산 정보',
     q: '증여재산 평가액은 얼마인가요? (시가 우선, 없으면 공시가격 · 원)',
     sub: '상증법은 시가(유사매매·감정가)를 우선하고, 없으면 공시가격으로 평가합니다(§60·§61). 단독주택·토지·꼬마빌딩은 공시가격이 시가와 차이가 클 수 있어 감정평가를 권장합니다.',
     showIf: (a) => a.assetType === 'realestate',
     numeric: true,
+    money: true,
     placeholder: '예: 800,000,000',
   },
   {
@@ -81,31 +97,35 @@ const GIFT_QS = [
     sub: '부담부증여(빚도 함께 넘김)일 때 증여자의 양도세를 계산하는 데 필요합니다. 순수증여면 비워두세요.',
     showIf: (a) => a.assetType === 'realestate',
     numeric: true,
+    money: true,
     optional: true,
     placeholder: '예: 400,000,000 (순수증여면 비움)',
   },
   // ── 현금 경로 ──
   {
     id: 'giftValueCash',
+    tier: 'quick',
     section: '증여 금액',
     q: '증여하는 금액은 얼마인가요? (원)',
     showIf: (a) => a.assetType === 'cash',
     numeric: true,
+    money: true,
     placeholder: '예: 100,000,000',
   },
   // ── 공통: 당사자 ──
   {
     id: 'isResident',
     section: '당사자',
-    q: '재산을 받는 분(수증자)이 거주자(국내에 주소·183일 이상 거소)인가요?',
-    sub: '비거주자는 증여재산공제(§53)가 적용되지 않는 등 계산이 크게 달라집니다. 현재 계산기는 거주자 기준이며, 비거주자는 상담으로 안내해 드립니다.',
+    q: '재산을 받는 분이 한국에 사는 분인가요?',
+    sub: '세법상 「거주자」(국내에 주소를 두거나 1년에 183일 이상 국내 거주) 여부입니다. 외국에 사는 비거주자는 증여재산공제(§53)가 적용되지 않는 등 계산이 크게 달라져, 상담으로 안내해 드립니다.',
     opts: [
-      ['yes', '네, 거주자입니다', '증여재산공제 적용'],
-      ['no', '아니오, 비거주자입니다', '⚠️ 공제 배제 등 별도 검토 — 상담 권장'],
+      ['yes', '네, 한국에 삽니다 (거주자)', '증여재산공제 적용'],
+      ['no', '아니오, 외국에 삽니다 (비거주자)', '⚠️ 공제 배제 등 별도 검토 — 상담 권장'],
     ],
   },
   {
     id: 'relationship',
+    tier: 'quick',
     section: '당사자',
     q: '증여하는 분과 받는 분은 어떤 관계인가요? (받는 분 기준)',
     sub: '관계에 따라 10년 합산 증여재산공제가 달라집니다 — 배우자 6억 / 직계존비속 5천만(미성년 2천만) / 기타친족 1천만 / 그 외 0 (상증법 §53).',
@@ -119,6 +139,7 @@ const GIFT_QS = [
   },
   {
     id: 'doneeAge',
+    tier: 'quick',
     section: '당사자',
     q: '받는 분(수증자)의 나이는? (만 나이)',
     sub: '만 19세 미만이면 미성년자로, 직계비속 증여공제가 2천만원으로 줄어듭니다.',
@@ -183,6 +204,7 @@ const GIFT_QS = [
     sub: '10년 내 받은 증여재산가액의 합계를 입력하세요. (여러 건을 정확히 나누려면 상담에서 도와드립니다.)',
     showIf: (a) => a.priorGiftHas === 'yes',
     numeric: true,
+    money: true,
     placeholder: '예: 100,000,000',
   },
   {
@@ -192,6 +214,7 @@ const GIFT_QS = [
     sub: '사전증여 당시 공제받은 금액. §28·§58 한도 계산을 정확히 합니다. 모르면 비워두세요.',
     showIf: (a) => a.priorGiftHas === 'yes',
     numeric: true,
+    money: true,
     optional: true,
     placeholder: '예: 50,000,000 (모르면 비움)',
   },
@@ -231,6 +254,7 @@ const GIFT_QS = [
     q: '받는 분이 인수하는 채무액은? (원)',
     showIf: (a) => a.isBurdened === 'yes',
     numeric: true,
+    money: true,
     placeholder: '예: 400,000,000',
   },
   {
@@ -404,6 +428,9 @@ function JTReportGift({ setRoute, onBack }) {
   const [report, setReport] = useGiftState(null);
   const [err, setErr] = useGiftState(null);
   const [lookupState, setLookupState] = useGiftState({ loading: false, result: null, err: null });
+  // 빠른 계산 먼저: 'quick'(필수 5문항→즉시 예상세액) → '더 정확히' → 'detail'(사전증여·부담부·세대생략 등)
+  const [phase, setPhase] = useGiftState('quick');
+  const [quickReport, setQuickReport] = useGiftState(null);
 
   // 엔진 미리 깨우기(scale-to-zero 콜드스타트 대비) — 사용자가 문항을 입력하는 동안 엔진을 워밍해 두면
   // 결과 단계에서 정밀계산(단계별 법조문 포함)이 바로 나옴. fire-and-forget.
@@ -412,7 +439,11 @@ function JTReportGift({ setRoute, onBack }) {
     if (base) { fetch(base + '/health', { method: 'GET' }).catch(function () {}); }
   }, []);
 
-  const visibleQs = GIFT_QS.filter(q => !q.showIf || q.showIf(answers));
+  const allVisible = GIFT_QS.filter(q => !q.showIf || q.showIf(answers));
+  // quick 단계 = tier:'quick' 문항만 / detail 단계 = 나머지(상세) 문항만
+  const visibleQs = phase === 'quick'
+    ? allVisible.filter(q => q.tier === 'quick')
+    : allVisible.filter(q => q.tier !== 'quick');
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
@@ -518,15 +549,24 @@ function JTReportGift({ setRoute, onBack }) {
         };
       }
 
-      setReport({ calc, commentary, isBurdened });
+      const rep = { calc, commentary, isBurdened, quick: phase === 'quick' };
+      setReport(rep);
+      if (phase === 'quick') setQuickReport(rep);
     } catch (e) {
       console.error(e);
       setErr(e.message || '계산 중 오류가 발생했습니다.');
     } finally { setLoading(false); }
   };
 
+  // '더 정확히 계산하기' — 빠른 결과에서 상세 단계로 진입
+  const goDetail = () => { setReport(null); setPhase('detail'); setStep(0); };
+
   const goNext = () => { if (isLast) runAnalysis(); else setStep(s => s + 1); };
-  const goPrev = () => { if (safeStep === 0) onBack(); else setStep(s => s - 1); };
+  const goPrev = () => {
+    if (safeStep > 0) { setStep(s => s - 1); return; }
+    if (phase === 'detail') { setPhase('quick'); setStep(0); setReport(quickReport); return; }  // 상세 첫 문항에서 뒤로 → 빠른 결과로
+    onBack();
+  };
 
   if (loading) {
     return (
@@ -550,9 +590,19 @@ function JTReportGift({ setRoute, onBack }) {
             </div>
           )}
           <div className="jt-report-result__grade jt-grade-mid">
-            <div className="jt-report-result__grade-label">{calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : '추정 총 세부담 · 간이'}</div>
+            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : (calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : '추정 총 세부담 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
+
+          {report.quick && (
+            <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
+              <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
+                <strong>관계·금액만으로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
+                거주자 여부 · 10년 내 사전증여(합산) · 부담부(빚도 함께 넘김) · 세대생략(손주 증여) · 혼인·출산 공제.
+              </p>
+              <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
+            </div>
+          )}
 
           {isBurdened ? (
             <section className="jt-report-result__section">
@@ -652,7 +702,7 @@ function JTReportGift({ setRoute, onBack }) {
   // 입력 화면
   return (
     <div className="jt-container">
-      <JTReportShell title="증여세 계산" subtitle="관계·금액·특수상황으로 예상 증여세를 계산합니다." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
+      <JTReportShell title="증여세 계산" subtitle={phase === 'quick' ? '관계·금액만 입력하면 예상 증여세를 바로 보여드려요.' : '사전증여·부담부 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
           <h2>{cur.q}</h2>
@@ -668,6 +718,9 @@ function JTReportGift({ setRoute, onBack }) {
             <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
               value={answers[cur.id] ? Number(answers[cur.id]).toLocaleString('ko-KR') : ''}
               onChange={(e) => setAns(cur.id, e.target.value.replace(/[^0-9]/g, ''))} />
+          )}
+          {cur.numeric && cur.money && Number(answers[cur.id]) > 0 && (
+            <div style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: 'var(--accent,#2a6d4f)' }}>= {koreanAmount(answers[cur.id])}</div>
           )}
 
           {cur.date && (
@@ -721,7 +774,7 @@ function JTReportGift({ setRoute, onBack }) {
 
         <div className="jt-report-q__nav">
           <button className="jt-btn jt-btn--ghost" onClick={goPrev}>{safeStep === 0 ? '← 허브' : '← 이전'}</button>
-          <button className="jt-btn jt-btn--primary" onClick={goNext} disabled={!canNext()}>{isLast ? '결과 보기 →' : '다음 →'}</button>
+          <button className="jt-btn jt-btn--primary" onClick={goNext} disabled={!canNext()}>{isLast ? (phase === 'quick' ? '빠른 결과 보기 →' : '결과 보기 →') : '다음 →'}</button>
         </div>
       </JTReportShell>
     </div>
