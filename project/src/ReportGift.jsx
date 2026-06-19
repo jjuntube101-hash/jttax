@@ -345,14 +345,15 @@ async function callGiftEngine(body, endpoint) {
   throw lastErr;
 }
 
-/* 주소→공시가격 조회 (기존 /v1/lookup/price · 실패 시 graceful) */
-async function lookupOfficialPrice(address, kind) {
+/* 주소→상증법 평가 조회 (/v1/lookup/valuation: ①기준값 §15③ 시가 + ②실거래범위 + ③공시하한 §61).
+   외부 API(VWORLD) 장애·해외리전 차단 시 success:false(manual_input_required)로 graceful 폴백. */
+async function lookupValuation(address, taxType, evalDate) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
-  const res = await fetch(base + '/v1/lookup/price', {
+  const res = await fetch(base + '/v1/lookup/valuation', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ address, housing_kind: kind || '공동주택' }),
+    body: JSON.stringify({ address, tax_type: taxType || '증여', eval_date: evalDate || '' }),
   });
-  if (!res.ok) throw new Error('lookup ' + res.status);
+  if (!res.ok) throw new Error('valuation ' + res.status);
   return res.json();
 }
 
@@ -466,10 +467,10 @@ function JTReportGift({ setRoute, onBack }) {
     if (!answers.reAddress) return;
     setLookupState({ loading: true, result: null, err: null });
     try {
-      const r = await lookupOfficialPrice(answers.reAddress, answers.reType);
+      const r = await lookupValuation(answers.reAddress, '증여', answers.giftDate);
       setLookupState({ loading: false, result: r, err: null });
     } catch (e) {
-      setLookupState({ loading: false, result: null, err: '주소 조회를 할 수 없습니다. 평가액을 직접 입력해 주세요.' });
+      setLookupState({ loading: false, result: null, err: '주소 자동조회를 할 수 없습니다. 아래 「평가액」 칸에 직접 입력해 주세요.' });
     }
   };
 
@@ -754,25 +755,65 @@ function JTReportGift({ setRoute, onBack }) {
             </div>
           )}
 
-          {/* 주소 평가 보조 패널 (reAddress 질문에서만) */}
-          {cur.id === 'reAddress' && (
+          {/* 주소 평가 보조 패널 (reAddress 질문에서만) — ①기준값(§15③ 시가) + ②실거래범위 + ③공시하한(§61) */}
+          {cur.id === 'reAddress' && (() => {
+            const R = lookupState.result;
+            const base = R && R.기준값 || {};
+            const range = R && R.실거래_범위 || {};
+            const floor = R && R.공시하한 || {};
+            return (
             <div style={{ marginTop: 12, padding: '12px 14px', background: 'var(--bg-1,#f7f5f0)', borderRadius: 8 }}>
               <button className="jt-btn jt-btn--ghost" disabled={!answers.reAddress || lookupState.loading}
-                onClick={doLookup}>{lookupState.loading ? '조회 중…' : '주소로 공시가격 조회'}</button>
-              {lookupState.result && lookupState.result.valuations && lookupState.result.valuations.length > 0 && (
+                onClick={doLookup}>{lookupState.loading ? '조회 중… (최초 10~30초 소요)' : '주소로 시가·공시가격 조회'}</button>
+
+              {/* 성공: ① 기준값 + ② 실거래 범위 + ③ 공시하한 */}
+              {R && R.success && (
                 <div style={{ marginTop: 10 }}>
-                  {lookupState.result.valuations.map((vv, i) => (
-                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0' }}>
-                      <span>{vv.valuation_type} {vv.as_of_year && `(${vv.as_of_year})`}: <strong>{formatWon(vv.amount)}</strong></span>
-                      <button className="jt-btn jt-btn--ghost" style={{ fontSize: 12 }} onClick={() => setAns('giftValue', String(vv.amount))}>이 금액 사용</button>
+                  <div style={{ padding: '10px 12px', background: '#fff', borderRadius: 8, border: '1px solid var(--line,#e6e2d8)' }}>
+                    <div style={{ fontSize: 12, opacity: 0.7 }}>① 신고 기준값 — {base.방법}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
+                      <strong style={{ fontSize: 18 }}>{formatWon(base.금액_원)}</strong>
+                      <button className="jt-btn jt-btn--primary" style={{ fontSize: 13 }}
+                        onClick={() => setAns('giftValue', String(base.금액_원))}>이 금액 사용</button>
                     </div>
+                    {base.선택거래 && (
+                      <div style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>
+                        선택 실거래: {base.선택거래.거래일} · 전용 {base.선택거래.전용면적_m2}㎡ · {formatWon(base.선택거래.거래가_원)}
+                      </div>
+                    )}
+                  </div>
+                  {range.건수 > 0 && (
+                    <div style={{ marginTop: 8, fontSize: 13 }}>
+                      ② 같은 단지·평형 실거래 <strong>{range.건수}건</strong>: {formatWon(range.최저_원)} ~ {formatWon(range.최고_원)}
+                      {range.최신 && <span style={{ opacity: 0.7 }}> (최신 {range.최신.거래일})</span>}
+                    </div>
+                  )}
+                  {floor.금액_원 != null && (
+                    <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85 }}>
+                      ③ 공시가격(법정 하한 §61): {formatWon(floor.금액_원)}
+                    </div>
+                  )}
+                  {(R.warnings || []).map((w, i) => (
+                    <p key={i} style={{ fontSize: 12, color: '#b97d2a', marginTop: 6 }}>⚠ {w}</p>
                   ))}
-                  <p style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}>※ 시가(유사매매·감정가)가 있으면 우선합니다(§60). 공시가격은 보충적 평가(§61)입니다. 최종 평가액은 홈택스·담당 세무사 확인이 필요합니다.</p>
+                  <p style={{ fontSize: 12, opacity: 0.7, marginTop: 8 }}>※ {R.면책 || R.disclaimer}</p>
                 </div>
               )}
+
+              {/* 조회 결과 자동평가 불가(manual_input_required) — 친절 폴백 + ①②③ 설명 */}
+              {R && !R.success && (
+                <div style={{ marginTop: 10, fontSize: 13 }}>
+                  <p style={{ color: '#b97d2a', margin: 0 }}>ℹ 주소 자동평가는 현재 준비 중입니다. 아래 「평가액」 칸에 시가(유사매매·감정가) 또는 공시가격을 직접 입력해 주세요.</p>
+                  <p style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}>
+                    참고 — 상증법 평가는 ① <strong>시가(유사매매사례가액 §15③)</strong>를 우선하고, 없으면 ③ <strong>공시가격(§61, 법정 하한)</strong>으로 평가합니다. 같은 단지·평형의 ② 최근 실거래는 홈택스 '유사매매사례가액 조회'에서 확인하실 수 있습니다.
+                  </p>
+                </div>
+              )}
+
               {lookupState.err && <p style={{ fontSize: 13, color: '#d14e3a', marginTop: 8 }}>{lookupState.err}</p>}
             </div>
-          )}
+            );
+          })()}
         </div>
 
         <div className="jt-report-q__nav">
