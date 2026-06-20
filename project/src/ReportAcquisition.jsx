@@ -22,16 +22,17 @@ function acqKoreanAmount(raw) {
 
 /* 단계별 '세율' 항목은 엔진이 만분율 정수(×10000)로 반환 → %로 표시(예: 1200→12%, 233→2.33%, 100→1%).
    그 외 항목(과세표준·본세·교육세·감면·총세액)은 금액(원). 공유 formatStepValue는 양도세 전용이라 취득세 세율을 오표시(만분율을 원으로). */
-function acqFormatStepValue(name, amount) {
+function acqFormatStepValue(name, amount, note) {
   if (typeof amount !== 'number') return amount;
   const label = String(name || '').replace(/^\d+\.\s*/, '');
-  if (/주택수/.test(label)) return amount + '채';                 // '주택수 판정' = 보유 채수
   if (/세율/.test(label)) {
     if (amount === 0) return /중과/.test(label) ? '해당 없음' : '0%';
     return (Math.round(amount) / 100) + '%';
   }
-  // 취득유형·부동산유형·중과유예·1세대1주택특례 등 금액 0의 단순 마커 행은 '—'(통화 오표시 방지)
-  if (amount === 0 && !/과세표준|취득세|교육세|농어촌|감면|세액|가액|공제|부담/.test(label)) return '—';
+  if (/주택수/.test(label)) return amount > 0 ? amount + '채' : '—';   // 비주택(0채)은 대시
+  if (amount < 0) return '− ' + formatWon(-amount);                    // 감면 등 음수 = 통일 포맷
+  // 금액 0이면서 구간·판정·유형·유예·특례 마커이거나 비고가 해당없음/무주택/비주택이면 '—'(통화 오표시 방지)
+  if (amount === 0 && (/구간|판정|유형|유예|특례/.test(label) || /해당\s*없음|무주택|비주택/.test(String(note || '')))) return '—';
   return formatWon(amount);
 }
 
@@ -54,11 +55,13 @@ const ACQ_QS = [
     tier: 'quick',
     section: '무엇을 취득',
     q: '취득한 부동산은 무엇인가요?',
-    sub: '주택인지 아닌지에 따라 세율·중과·감면이 완전히 다릅니다. 실제 살던 주거용 오피스텔은 「주택」으로 보아 비과세·중과 판정을 받을 수 있으니, 해당되면 「추가 사항」이나 상담에서 알려주세요.',
+    sub: '주택인지 아닌지에 따라 세율·중과·감면이 완전히 다릅니다. 실제 살던 주거용 오피스텔은 「주택」으로 보아 주택 수·중과 판정을 받을 수 있으니 해당되면 상담에서 알려주세요. 분양권·조합원입주권은 「권리」라서 취득 단계엔 취득세가 없고, 준공·잔금 때 주택분 취득세가 따로 나옵니다.',
     opts: [
       ['주택', '주택 (아파트·빌라·단독)', '1~3% 기본 · 다주택·조정지역 중과 가능'],
       ['상가', '상가·오피스텔·건물 (비주택)', '4% 단일'],
-      ['토지', '토지', '4% 단일'],
+      ['토지', '토지', '4% (농지 3%·상속농지 2.3%)'],
+      ['분양권', '분양권 (아파트 등 청약 당첨)', '취득 단계 비대상 (0원) · 준공·잔금 시 부과'],
+      ['입주권', '조합원입주권 (재개발·재건축)', '권리 취득 비대상 (0원) · 준공 시 별도'],
     ],
   },
   {
@@ -75,7 +78,7 @@ const ACQ_QS = [
     tier: 'quick',
     section: '주택 수',
     q: '취득 후 보유하게 되는 주택은 모두 몇 채인가요? (이 주택 포함)',
-    sub: '취득세 다주택 중과는 「취득 결과 보유 주택 수」로 판정합니다. 조정대상지역은 2주택 8%·3주택 이상 12%, 비조정지역은 3주택 8%·4주택 이상 12%로 중과됩니다(지방세법 §13의2).',
+    sub: '취득세 다주택 중과는 「취득 결과 보유 주택 수」로 판정합니다. 조정대상지역은 2주택 8%·3주택 이상 12%, 비조정지역은 3주택 8%·4주택 이상 12%로 중과됩니다(지방세법 §13의2). 분양권·입주권·주거용 오피스텔도 주택 수에 포함될 수 있어요 — 헷갈리면 상담에서 정확히 봐드립니다.',
     showIf: (a) => a.propertyType === '주택' && a.acquisitionType === '매매',
     opts: [
       ['1', '1채 (이 집뿐)', '기본세율 1~3%'],
@@ -118,7 +121,7 @@ const ACQ_QS = [
     id: 'standardValue',
     section: '시가표준액',
     q: '이 주택의 시가표준액은 얼마인가요? (증여 중과 판정용 · 원)',
-    sub: '증여 취득세 중과(조정대상지역 12%)는 「시가표준액 3억원 이상」일 때 적용됩니다. 시가표준액(공시가격 등)을 알면 넣어 주세요. 모르면 비워두셔도 됩니다.',
+    sub: '앞에서 넣은 「시가」와 달리, 시가표준액은 정부가 매년 정하는 공시가격이에요(보통 시세보다 낮음). 증여 취득세 중과(조정대상지역 12%)를 이 공시가격 3억원 기준으로 따져서 따로 여쭤봅니다. 모르면 비워두세요 — 앞 금액으로 대신 판단합니다.',
     showIf: (a) => a.acquisitionType === '증여' && a.propertyType === '주택',
     numeric: true, money: true, optional: true,
     placeholder: '예: 400,000,000',
@@ -147,7 +150,7 @@ function mapAnswersToAcquisition(a) {
   const body = {
     property_value: Number(a.propertyValue) || 0,
     acquisition_type: { '매매': '유상취득', '증여': '증여', '상속': '상속', '신축': '원시취득' }[a.acquisitionType] || '유상취득',
-    property_type: isHousing ? '주택' : (a.propertyType === '토지' ? '토지' : '상가사무실'),
+    property_type: isHousing ? '주택' : (a.propertyType === '토지' ? '토지' : a.propertyType === '분양권' ? '분양권' : a.propertyType === '입주권' ? '조합원입주권' : '상가사무실'),
     is_housing: isHousing,
   };
   if (isHousing && Number(a.exclusiveArea) > 0) body.exclusive_area = Number(a.exclusiveArea);
@@ -180,9 +183,9 @@ function fallbackAcqTax(a) {
   else if (a.acquisitionType === '상속') rate = isHousing ? 0.0316 : 0.0316; // 상속 2.8%+교육세
   else if (a.acquisitionType === '신축') rate = 0.0316;
   else if (!isHousing) rate = 0.046;                                         // 비주택 4%+교육세
-  else { // 주택 매매(기본, 중과 제외 간이)
+  else { // 주택 매매(기본, 중과·감면 미반영 간이)
     if (v <= 600_000_000) rate = 0.011;
-    else if (v <= 900_000_000) rate = 0.022;
+    else if (v <= 900_000_000) rate = (v * 2 / 300_000_000 - 3) / 100 + 0.001; // §11①8호나목 슬라이딩(1~3%)+교육세 근사
     else rate = 0.033;
   }
   return Math.round(v * rate);
@@ -191,6 +194,7 @@ function fallbackAcqTax(a) {
 function buildAcqDetail(answers, calc, commentary) {
   const L = ['■ 고객 입력 정보'];
   ACQ_QS.forEach(q => {
+    if (q.showIf && !q.showIf(answers)) return;   // 취득유형 변경 시 잔존 답변 누설 방지
     const val = answers[q.id];
     if (val === undefined || val === null || val === '') return;
     let v = val;
@@ -222,6 +226,7 @@ function buildAcqKakao(answers, calc) {
   const L = ['[JT택스랩 취득세 계산 — 상담 요청]', '', '▶ 입력'];
   ACQ_QS.forEach(q => {
     if (q.id === 'context') return;
+    if (q.showIf && !q.showIf(answers)) return;   // 잔존 답변 누설 방지
     const val = answers[q.id];
     if (val === undefined || val === null || val === '') return;
     let v = val;
@@ -357,6 +362,12 @@ function JTReportAcquisition({ setRoute, onBack }) {
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
 
+          {report.quick && calc.totalTax > 0 && calc.appliedRate && calc.appliedRate !== '-' && (
+            <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: 14, color: 'var(--jt-ink-700,#444)' }}>
+              {answers.acquisitionType} · {formatWon(Number(answers.propertyValue) || 0)} · {answers.propertyType} 기준, 적용세율 약 <strong>{calc.appliedRate}</strong>로 계산했어요.
+            </p>
+          )}
+
           {!report.quick && answers.acquisitionType === '상속' && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               무주택 1가구가 1주택을 상속받으면 <strong>0.8% 특례세율</strong>(지방세법 §15①)이 적용될 수 있습니다. 현재 계산은 일반 상속 <strong>2.8%</strong> 기준이니, 해당되면 상담에서 확인하세요.
@@ -384,7 +395,9 @@ function JTReportAcquisition({ setRoute, onBack }) {
                   ? '증여 주택이 조정대상지역이고 시가표준액 3억원 이상이면 12%로 중과돼요(일반 3.5%의 3배 이상). 「더 정확히 계산하기」에서 조정지역·시가표준액을 입력해 확인하세요.'
                   : answers.acquisitionType === '상속'
                   ? '무주택 가구가 1주택을 상속받으면 0.8% 특례세율이 적용될 수 있어요(현재는 일반 2.8% 기준).'
-                  : '전용면적(85㎡ 초과 시 농어촌특별세) · 조정대상지역 다주택 중과 · 생애최초 감면.'}
+                  : answers.acquisitionType === '신축'
+                  ? '신축(원시취득)은 보통 표준세율 2.8%예요. 큰 평형(85㎡ 초과)이면 농어촌특별세가 조금 더 붙습니다.'
+                  : '큰 평형(85㎡ 초과)이면 세금이 조금 늘고, 생애최초면 최대 200만원 줄어요. 조정지역·주택 수에 따라 중과될 수도 있으니 확인해보세요.'}
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
             </div>
@@ -419,7 +432,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
               <table className="jt-report-calc">
                 <tbody>
                   {calc.steps.map((s, i) => (
-                    <tr key={i}><th>{s['항목']}{s['조문'] ? ` · ${acqFmtArticle(s['조문'])}` : ''}</th><td>{acqFormatStepValue(s['항목'], s['금액'])}</td></tr>
+                    <tr key={i}><th>{s['항목']}{s['조문'] ? ` · ${acqFmtArticle(s['조문'])}` : ''}</th><td>{acqFormatStepValue(s['항목'], s['금액'], s['비고'])}</td></tr>
                   ))}
                 </tbody>
               </table>
