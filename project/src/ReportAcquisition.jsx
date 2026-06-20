@@ -25,10 +25,13 @@ function acqKoreanAmount(raw) {
 function acqFormatStepValue(name, amount) {
   if (typeof amount !== 'number') return amount;
   const label = String(name || '').replace(/^\d+\.\s*/, '');
+  if (/주택수/.test(label)) return amount + '채';                 // '주택수 판정' = 보유 채수
   if (/세율/.test(label)) {
     if (amount === 0) return /중과/.test(label) ? '해당 없음' : '0%';
     return (Math.round(amount) / 100) + '%';
   }
+  // 취득유형·부동산유형·중과유예·1세대1주택특례 등 금액 0의 단순 마커 행은 '—'(통화 오표시 방지)
+  if (amount === 0 && !/과세표준|취득세|교육세|농어촌|감면|세액|가액|공제|부담/.test(label)) return '—';
   return formatWon(amount);
 }
 
@@ -121,6 +124,14 @@ const ACQ_QS = [
     placeholder: '예: 400,000,000',
   },
   {
+    id: 'giftOneHouseException',
+    section: '1세대 1주택 증여',
+    q: '증여하는 분이 이 주택 1채만 가진 1세대 1주택자이고, 받는 분이 배우자·자녀·부모인가요?',
+    sub: '이 경우 조정대상지역이라도 증여 취득세 12% 중과에서 제외되어 일반 3.5%가 적용됩니다(지방세법 §13의2② 단서). 부모→자녀 1주택 증여가 대표적입니다.',
+    showIf: (a) => a.acquisitionType === '증여' && a.propertyType === '주택' && a.isRegulatedArea === 'yes',
+    opts: [['yes', '네, 1세대 1주택자가 가족에게 증여', '12% 중과 제외 (3.5%)'], ['no', '아니오 / 모름', '12% 중과 적용']],
+  },
+  {
     id: 'context',
     section: '추가 사항',
     q: '추가로 알려주실 내용이 있나요? (선택)',
@@ -132,29 +143,30 @@ const ACQ_QS = [
 
 function mapAnswersToAcquisition(a) {
   const isHousing = a.propertyType === '주택';
+  const isPurchase = a.acquisitionType === '매매';   // 유상거래(매매)만 다주택 중과·생애최초 감면 대상
   const body = {
     property_value: Number(a.propertyValue) || 0,
     acquisition_type: { '매매': '유상취득', '증여': '증여', '상속': '상속', '신축': '원시취득' }[a.acquisitionType] || '유상취득',
-    property_type: isHousing ? '주택' : (a.propertyType === '토지' ? '토지' : '상가'),
+    property_type: isHousing ? '주택' : (a.propertyType === '토지' ? '토지' : '상가사무실'),
     is_housing: isHousing,
   };
-  if (isHousing) {
+  if (isHousing && Number(a.exclusiveArea) > 0) body.exclusive_area = Number(a.exclusiveArea);
+  // 다주택 중과(지§13의2①)·생애최초 감면(지특법§36의3)·조정지역은 '매매(유상거래)'만 적용.
+  //   취득유형을 바꿔도 잔존 답변(주택수·조정·감면)이 신축·증여·상속에 새지 않도록 매매로 게이트.
+  if (isHousing && isPurchase) {
     body.housing_count = Number(a.housingCount) || 1;
-    if (Number(a.exclusiveArea) > 0) body.exclusive_area = Number(a.exclusiveArea);
     if (a.isRegulatedArea === 'yes') body.is_regulated_area = true;
-    // 생애최초 감면(지특법 §36의3): reduction_type을 보내야 엔진이 감면 적용(boolean 플래그만으론 미적용).
-    // 신혼부부 첫 집도 §36의3로 흡수(§36의2 신혼부부 50% 경감은 2020.12.31 일몰 만료).
-    // ※ 300만(1호) 분기는 '아파트 제외'+가액요건이라 면적만으론 자동판정 불가 → 보수적 200만(2호) 기본, 300만은 상담.
-    if (a.reduction === 'first' || a.reduction === 'newlywed') {
-      body.reduction_type = '생애최초';
-      body.is_first_home_buyer = true;
-    }
+    // 생애최초 감면(§36의3): reduction_type을 보내야 적용. 신혼부부 첫 집도 §36의3 흡수(§36의2는 2020 일몰).
+    //   300만(1호)은 '아파트 제외'+가액요건이라 면적만으론 자동판정 불가 → 보수적 200만(2호) 기본, 300만은 상담.
+    if (a.reduction === 'first') { body.reduction_type = '생애최초'; body.is_first_home_buyer = true; }
   }
-  if (a.acquisitionType === '증여' && Number(a.standardValue) > 0) body.standard_value = Number(a.standardValue);
-  // 증여 취득세 중과(지방세법 §13의2②): 조정대상지역 + 시가표준액 3억원 이상 주택 → 12%
-  if (a.acquisitionType === '증여' && isHousing && a.isRegulatedArea === 'yes') {
-    const std = Number(a.standardValue) || Number(a.propertyValue) || 0;
-    if (std >= 300_000_000) body.gift_regulated_over_3b = true;
+  // 증여 취득세: 시가표준액 + 조정 12% 중과(지§13의2②). 단 1세대1주택자→배우자·직계존비속 증여는 12% 제외(② 단서).
+  if (a.acquisitionType === '증여') {
+    if (Number(a.standardValue) > 0) body.standard_value = Number(a.standardValue);
+    if (isHousing && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes') {
+      const std = Number(a.standardValue) || Number(a.propertyValue) || 0;
+      if (std >= 300_000_000) body.gift_regulated_over_3b = true;
+    }
   }
   return body;
 }
@@ -348,6 +360,12 @@ function JTReportAcquisition({ setRoute, onBack }) {
           {!report.quick && answers.acquisitionType === '상속' && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               무주택 1가구가 1주택을 상속받으면 <strong>0.8% 특례세율</strong>(지방세법 §15①)이 적용될 수 있습니다. 현재 계산은 일반 상속 <strong>2.8%</strong> 기준이니, 해당되면 상담에서 확인하세요.
+            </div>
+          )}
+
+          {answers.propertyType === '토지' && (
+            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
+              현재 계산은 <strong>일반 토지 4%</strong> 기준입니다. <strong>농지(전·답·과수원)</strong>는 유상취득 3%·상속 2.3%로 세율이 다르니, 농지라면 상담에서 정확히 확인하세요(지방세법 §11①1호·7호).
             </div>
           )}
 
