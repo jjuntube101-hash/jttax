@@ -20,6 +20,18 @@ function acqKoreanAmount(raw) {
   return s.trim() + '원';
 }
 
+/* 단계별 '세율' 항목은 엔진이 만분율 정수(×10000)로 반환 → %로 표시(예: 1200→12%, 233→2.33%, 100→1%).
+   그 외 항목(과세표준·본세·교육세·감면·총세액)은 금액(원). 공유 formatStepValue는 양도세 전용이라 취득세 세율을 오표시(만분율을 원으로). */
+function acqFormatStepValue(name, amount) {
+  if (typeof amount !== 'number') return amount;
+  const label = String(name || '').replace(/^\d+\.\s*/, '');
+  if (/세율/.test(label)) {
+    if (amount === 0) return /중과/.test(label) ? '해당 없음' : '0%';
+    return (Math.round(amount) / 100) + '%';
+  }
+  return formatWon(amount);
+}
+
 const ACQ_QS = [
   {
     id: 'acquisitionType',
@@ -30,7 +42,7 @@ const ACQ_QS = [
     opts: [
       ['매매', '사서 취득 (매매·분양)', '유상취득 — 주택 1~3%(중과 8·12%)·비주택 4%'],
       ['증여', '증여로 받음', '증여 취득 — 주택 3.5%(조정 3억↑ 12%)'],
-      ['상속', '상속으로 받음', '상속 취득 — 주택 2.8%(무주택 0.8%)'],
+      ['상속', '상속으로 받음', '상속 취득 — 주택 2.8% (1주택 특례 0.8%은 상담)'],
       ['신축', '새로 지음 (원시취득)', '원시취득 2.8%'],
     ],
   },
@@ -60,12 +72,13 @@ const ACQ_QS = [
     tier: 'quick',
     section: '주택 수',
     q: '취득 후 보유하게 되는 주택은 모두 몇 채인가요? (이 주택 포함)',
-    sub: '취득세 다주택 중과는 「취득 결과 보유 주택 수」로 판정합니다. 조정대상지역 2주택·3주택 이상은 8~12%로 중과될 수 있습니다(지방세법 §13의2).',
+    sub: '취득세 다주택 중과는 「취득 결과 보유 주택 수」로 판정합니다. 조정대상지역은 2주택 8%·3주택 이상 12%, 비조정지역은 3주택 8%·4주택 이상 12%로 중과됩니다(지방세법 §13의2).',
     showIf: (a) => a.propertyType === '주택' && a.acquisitionType === '매매',
     opts: [
       ['1', '1채 (이 집뿐)', '기본세율 1~3%'],
-      ['2', '2채', '조정지역이면 8% 중과 가능'],
-      ['3', '3채 이상', '8~12% 중과 가능'],
+      ['2', '2채', '조정지역 8% 중과 · 비조정 일반세율'],
+      ['3', '3채', '조정 12% · 비조정 8% 중과'],
+      ['4', '4채 이상', '조정·비조정 모두 12% 중과'],
     ],
   },
 
@@ -91,12 +104,11 @@ const ACQ_QS = [
     id: 'reduction',
     section: '감면',
     q: '취득세 감면 대상에 해당하나요?',
-    sub: '생애최초 주택 구입(소득·가액 요건 충족 시 최대 200만 감면)이나 신혼부부 등 감면이 있습니다(지방세특례제한법). 정확한 요건은 상담에서 확인합니다.',
+    sub: '생애최초로 집을 사면(본인·배우자 모두 무주택, 취득가액 12억 이하, 미성년 제외) 취득세를 최대 200만원까지 감면받습니다(지방세특례제한법 §36의3, 2028년 말까지). 신혼부부가 처음 사는 집도 여기에 포함됩니다. 작은 빌라·도시형생활주택·다가구주택이나 인구감소지역 주택은 300만원까지 가능하니 상담에서 확인하세요.',
     showIf: (a) => a.propertyType === '주택' && a.acquisitionType === '매매',
     opts: [
       ['none', '해당 없음', '감면 없음'],
-      ['first', '생애최초 주택 구입', '최대 200만 감면(소형주택은 300만)'],
-      ['newlywed', '신혼부부 감면 대상', '감면 적용'],
+      ['first', '생애최초 주택 구입 (신혼부부 첫 집 포함)', '최대 200만원 감면'],
     ],
   },
   {
@@ -130,8 +142,13 @@ function mapAnswersToAcquisition(a) {
     body.housing_count = Number(a.housingCount) || 1;
     if (Number(a.exclusiveArea) > 0) body.exclusive_area = Number(a.exclusiveArea);
     if (a.isRegulatedArea === 'yes') body.is_regulated_area = true;
-    if (a.reduction === 'first') body.is_first_home_buyer = true;
-    else if (a.reduction === 'newlywed') body.is_newlywed = true;
+    // 생애최초 감면(지특법 §36의3): reduction_type을 보내야 엔진이 감면 적용(boolean 플래그만으론 미적용).
+    // 신혼부부 첫 집도 §36의3로 흡수(§36의2 신혼부부 50% 경감은 2020.12.31 일몰 만료).
+    // ※ 300만(1호) 분기는 '아파트 제외'+가액요건이라 면적만으론 자동판정 불가 → 보수적 200만(2호) 기본, 300만은 상담.
+    if (a.reduction === 'first' || a.reduction === 'newlywed') {
+      body.reduction_type = '생애최초';
+      body.is_first_home_buyer = true;
+    }
   }
   if (a.acquisitionType === '증여' && Number(a.standardValue) > 0) body.standard_value = Number(a.standardValue);
   // 증여 취득세 중과(지방세법 §13의2②): 조정대상지역 + 시가표준액 3억원 이상 주택 → 12%
@@ -328,6 +345,12 @@ function JTReportAcquisition({ setRoute, onBack }) {
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
 
+          {!report.quick && answers.acquisitionType === '상속' && (
+            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
+              무주택 1가구가 1주택을 상속받으면 <strong>0.8% 특례세율</strong>(지방세법 §15①)이 적용될 수 있습니다. 현재 계산은 일반 상속 <strong>2.8%</strong> 기준이니, 해당되면 상담에서 확인하세요.
+            </div>
+          )}
+
           {!calc.precise && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
               정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>(대략 세율)으로 보여드립니다. 다주택 중과·감면·농특세 등 정밀 계산은 엔진 계산에서 반영됩니다 —
@@ -338,8 +361,12 @@ function JTReportAcquisition({ setRoute, onBack }) {
           {report.quick && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
-                <strong>기본 정보로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
-                전용면적(85㎡ 농특세) · 조정대상지역 · 생애최초·신혼부부 감면.
+                <strong>기본 정보로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 크게 달라질 수 있어요 —<br />
+                {answers.acquisitionType === '증여'
+                  ? '증여 주택이 조정대상지역이고 시가표준액 3억원 이상이면 12%로 중과돼요(일반 3.5%의 3배 이상). 「더 정확히 계산하기」에서 조정지역·시가표준액을 입력해 확인하세요.'
+                  : answers.acquisitionType === '상속'
+                  ? '무주택 가구가 1주택을 상속받으면 0.8% 특례세율이 적용될 수 있어요(현재는 일반 2.8% 기준).'
+                  : '전용면적(85㎡ 초과 시 농어촌특별세) · 조정대상지역 다주택 중과 · 생애최초 감면.'}
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
             </div>
@@ -374,7 +401,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
               <table className="jt-report-calc">
                 <tbody>
                   {calc.steps.map((s, i) => (
-                    <tr key={i}><th>{s['항목']}{s['조문'] ? ` · ${acqFmtArticle(s['조문'])}` : ''}</th><td>{formatStepValue(s['항목'], s['금액'])}</td></tr>
+                    <tr key={i}><th>{s['항목']}{s['조문'] ? ` · ${acqFmtArticle(s['조문'])}` : ''}</th><td>{acqFormatStepValue(s['항목'], s['금액'])}</td></tr>
                   ))}
                 </tbody>
               </table>
