@@ -50,7 +50,7 @@ const INHERITANCE_QS = [
     tier: 'quick',
     section: '상속재산',
     q: '고인이 남긴 재산은 모두 얼마인가요? (원)',
-    sub: '부동산·예금·주식 등을 합한 금액입니다(빚을 빼기 전 총액). 사망보험금·퇴직금은 뒤에서 따로 여쭤보니 여기엔 넣지 마세요(중복 합산 방지). 부동산은 시가(없으면 공시가격)로 평가합니다. 대략적인 금액이어도 괜찮아요 — 빠른 예상부터 보여드립니다.',
+    sub: '부동산·예금·주식 등을 합한 금액입니다(빚을 빼기 전 총액). 사망보험금·퇴직금, 그리고 10년 내 사전증여한 재산은 뒤에서 따로 여쭤보고 자동 합산하니 여기엔 넣지 마세요(중복 합산 방지). 부동산은 시가(없으면 공시가격)로 평가하는데, 어느 값을 넣느냐에 따라 세액이 수천만 원 달라질 수 있어 정확한 평가는 상담에서 확인해 드립니다. 대략적인 금액이어도 괜찮아요 — 빠른 예상부터 보여드립니다.',
     numeric: true,
     money: true,
     placeholder: '예: 2,000,000,000',
@@ -104,7 +104,7 @@ const INHERITANCE_QS = [
     id: 'funeralExpenses',
     section: '공제 항목',
     q: '장례비용은 얼마나 드셨나요? (원)',
-    sub: '장례비는 최소 500만원~최대 1,000만원까지 공제됩니다(봉안시설·자연장지는 별도 500만원 한도). 증빙이 없어도 500만원은 인정됩니다. 모르면 비워두세요.',
+    sub: '실제 장례비를 봉안시설·자연장지 비용까지 합산해 한 칸에 입력하세요. 합산 최소 500만원~최대 1,500만원까지 공제됩니다(상증령 §9②). 증빙이 없어도 500만원은 인정됩니다. 모르면 비워두세요.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 10,000,000',
   },
@@ -112,7 +112,7 @@ const INHERITANCE_QS = [
     id: 'netFinancialAssets',
     section: '공제 항목',
     q: '예금·주식 등 순금융재산은 얼마인가요? (원)',
-    sub: '상속재산 중 금융재산(예금·적금·주식·펀드 등)에서 금융채무를 뺀 금액입니다. 금융재산상속공제(최대 2억)가 적용됩니다(상증법 §22). 위 총재산에 포함해 입력하시고, 그중 금융재산 부분을 여기에 적어주세요.',
+    sub: '상속재산 중 금융재산(예금·적금·주식·펀드 등)에서 금융기관 빚을 뺀 금액입니다. 금융재산상속공제(최대 2억)가 적용됩니다(상증법 §22). 이 금액은 위 「총재산」에 이미 포함된 것이며, 추가로 더하지 않고 공제 계산에만 씁니다(중복 가산 아님). 예) 예금 5억 + 주식 1억 − 대출 1억 = 순금융재산 5억. 모르면 비워두셔도 공제만 못 받을 뿐 세액이 틀리지 않습니다.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 500,000,000',
   },
@@ -136,7 +136,7 @@ const INHERITANCE_QS = [
     id: 'hasCohabitationHouse',
     section: '동거주택',
     q: '고인과 10년 이상 함께 산 자녀(직계비속)가 그 집을 상속받나요?',
-    sub: '상속개시일까지 10년 이상 계속 동거하며 1세대1주택을 유지한 직계비속(또는 그 배우자)이 무주택자 등으로서 그 주택을 상속받으면 동거주택상속공제(최대 6억)를 받을 수 있습니다(상증법 §23의2).',
+    sub: '아래를 모두 충족할 때만 「예」를 고르세요(상증법 §23의2). ①상속개시일까지 10년 이상 계속 한 집에서 동거(상속인이 미성년인 기간 제외) ②그 기간 내내 1세대가 1주택만 보유 ③상속받는 직계비속(또는 그 배우자)이 상속개시일 현재 무주택. 요건이 까다로워 미충족 상태로 공제받으면 추후 추징·가산세 위험이 큽니다. 하나라도 애매하면 「아니오」를 고르고 상담에서 확인하세요. 공제는 최대 6억입니다.',
     opts: [
       ['yes', '네, 해당됩니다', '동거주택상속공제(최대 6억)'],
       ['no', '아니오 / 해당 없음', ''],
@@ -345,7 +345,7 @@ function JTReportInheritance({ setRoute, onBack }) {
       const spouseDed = answers.hasSpouse === 'yes' && answers.spouseActual !== 'zero' ? 500_000_000
                        : (answers.hasSpouse === 'yes' ? 500_000_000 : 0);
       const debts = Number(answers.debts) || 0;
-      const funeral = Math.min(Math.max(Number(answers.funeralExpenses) || 0, 5_000_000), 10_000_000);
+      const funeral = Math.min(Math.max(Number(answers.funeralExpenses) || 0, 5_000_000), 15_000_000);
       const grossInh = estate + (Number(answers.insuranceAmount) || 0) + (Number(answers.retirementPay) || 0);
       const taxableBase = Math.max(grossInh - debts - funeral - lumpSum - spouseDed, 0);
       const baseTax = calcInhBaseTax(taxableBase);
