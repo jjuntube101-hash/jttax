@@ -123,6 +123,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
     { tag: 'LEGACY', kr: '증여세 계산기', d: '관계·금액·부담부증여(빚도 함께 넘기는 증여)까지 검증 엔진으로 계산. 부동산은 주소로 공시가격을 조회합니다.', live: true, sub: 'gift' },
     { tag: 'LEGACY', kr: '상속세 계산기', d: '총 상속재산·배우자·자녀에 채무·장례비·금융재산·동거주택 공제와 10년 내 사전증여 합산까지 검증 엔진으로 계산합니다.', live: true, sub: 'inheritance' },
     { tag: 'LEGACY', kr: '취득세 계산기', d: '집·상가·토지를 살 때(매매·증여·상속·신축) 내는 취득세를 다주택 중과·조정지역·생애최초 감면·농어촌특별세·지방교육세까지 검증 엔진으로 계산합니다.', live: true, sub: 'acquisition' },
+    { tag: 'LEGACY', kr: '재산세 계산기', d: '집·건물·토지를 보유할 때 매년 내는 재산세를 공시가격·1세대1주택 특례·도시지역분·지방교육세·세부담 상한까지 검증 엔진으로 계산합니다.', live: true, sub: 'property' },
     { tag: 'CONSULTING', kr: '법인 전환 시뮬레이터', d: '매출 구간별 개인 vs 법인 세부담을 비교합니다.', star: true },
     { tag: 'AUDIT', kr: '세무조사 위험도 진단', d: '쟁점 노출도를 점수로 보고, 대비 포인트를 정리합니다.' },
     { tag: 'BOOKKEEPING', kr: '4대보험·실수령 계산기', d: '급여에서 공제·실수령액을 즉시 계산합니다.' },
@@ -261,6 +262,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'gift' && <JTReportGift setRoute={setRoute} onBack={back} />}
       {subRoute === 'inheritance' && <JTReportInheritance setRoute={setRoute} onBack={back} />}
       {subRoute === 'acquisition' && <JTReportAcquisition setRoute={setRoute} onBack={back} />}
+      {subRoute === 'property' && <JTReportProperty setRoute={setRoute} onBack={back} />}
     </div>
   );
 }

@@ -174,6 +174,28 @@ const CGT_QS = [
     optional: true,
     showIf: (a) => a.assetType === 'house_2' && a.otherHouseSource === 'inherited',
   },
+  // ───────── 주택+입주권/분양권 동시보유 (§89② 일시적 특례) ─────────
+  {
+    id: 'houseConcurrentRight',
+    section: '함께 보유한 권리',
+    q: '이 집을 파는 지금, 조합원입주권이나 분양권을 함께 보유하고 계신가요?',
+    sub: '집과 입주권(또는 분양권)을 함께 가진 채 그 집을 팔면, 1세대1주택 비과세가 원칙적으로 막힙니다(소법 §89②). 다만 「일시적으로」 겹친 경우(집 산 지 1년 후에 권리를 얻고, 권리 얻은 날부터 3년 안에 집을 팖)에는 비과세됩니다(시행령 §156의2③·§156의3②). 세법 판단은 마시고 사실만 골라 주세요.',
+    showIf: (a) => a.assetType === 'house_1',
+    opts: [
+      ['none', '아니오 — 입주권·분양권 없음', '일반 1세대1주택 비과세 판정'],
+      ['occupancy', '네 — 조합원입주권을 함께 보유', '§89② 적용 — 일시적 요건 자동 판정(시행령 §156의2③)'],
+      ['presale', '네 — 분양권을 함께 보유', '§89② 적용 — 일시적 요건 자동 판정(시행령 §156의3②)'],
+    ],
+  },
+  {
+    id: 'houseRightAcqDate',
+    section: '함께 보유한 권리',
+    q: '그 입주권(또는 분양권)을 언제 취득하셨나요?',
+    sub: '입주권은 「관리처분계획 인가일」, 분양권은 「분양계약일」을 넣으세요. 지금 파는 집을 산 지 1년이 지난 뒤에 이 권리를 얻었고, 권리 얻은 날부터 3년 안에 집을 팔면 일시적 특례로 비과세됩니다(시행령 §156의2③·§156의3②). 날짜만 넣으면 자동 판정합니다. 모르면 비워두면 보수적으로 과세 계산합니다. (예: 20240601)',
+    date: true,
+    optional: true,
+    showIf: (a) => a.assetType === 'house_1' && (a.houseConcurrentRight === 'occupancy' || a.houseConcurrentRight === 'presale'),
+  },
   // ───────── 입주권 상황 (조합원입주권 비과세 사실관계) ─────────
   {
     id: 'ipjuOtherHouse',
@@ -296,7 +318,7 @@ function buildReportDetail(answers, calc, commentary) {
   L.push('  · 산출세액: ' + formatWon(calc.baseTax));
   L.push('  · 지방소득세: ' + formatWon(calc.localTax));
   L.push('  · 총 세부담: ' + formatWon(calc.totalTax) + ' (실효세율 ' + (calc.effectiveRate || 0).toFixed(1) + '%)');
-  const notes = [calc.shortTermNote, calc.multiHouseNote, calc.ipjuCaveat, calc.landCaveat, calc.replCaveat, calc.deadlineWarn].filter(Boolean);
+  const notes = [calc.shortTermNote, calc.multiHouseNote, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, calc.deadlineWarn].filter(Boolean);
   const ew = calc.engineWarnings || [];
   if (notes.length || ew.length) {
     L.push('');
@@ -470,6 +492,12 @@ function mapAnswersToTransfer(answers) {
       body.new_house_acquisition_date = answers.newHouseDate;
     }
   }
+  // 주택(1채) 양도 + 입주권/분양권 동시보유 §89② 일시적 특례 (시령§156의2③·§156의3②)
+  // 집과 권리를 함께 가진 채 그 집 양도 → 비과세 배제(과세). 단 일시적(1년경과·3년이내)이면 엔진이 비과세 자동 판정.
+  if (assetType === 'house_1' && answers.houseConcurrentRight && answers.houseConcurrentRight !== 'none') {
+    body.held_right_type = answers.houseConcurrentRight === 'occupancy' ? '입주권' : '분양권';
+    if (answers.houseRightAcqDate) body.right_acquisition_date = answers.houseRightAcqDate;  // 일시적 1·3년 기산
+  }
   return body;
 }
 
@@ -598,6 +626,16 @@ function JTReportCGT({ setRoute, onBack }) {
         }
       }
 
+      // 주택(1채)+입주권/분양권 동시보유 §89② 일시적 특례 안내
+      const hasConcurrentRight = assetType === 'house_1'
+        && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale');
+      let concurrentRightCaveat = null;
+      if (hasConcurrentRight && !answers.houseRightAcqDate) {
+        const rk = answers.houseConcurrentRight === 'occupancy' ? '조합원입주권' : '분양권';
+        const art = answers.houseConcurrentRight === 'occupancy' ? '시행령 §156의2③' : '시행령 §156의3②';
+        concurrentRightCaveat = `집과 ${rk}을(를) 함께 보유한 채 이 집을 팔면 1세대1주택 비과세가 원칙적으로 배제됩니다(소법 §89②). ${rk} 취득일(입주권=관리처분계획 인가일·분양권=분양계약일)을 입력하시면 일시적 특례(${art}: 집 산 지 1년 후 권리 취득 + 권리 취득 3년 내 집 양도) 비과세 여부를 자동 판정합니다.`;
+      }
+
       // 입주권: 비과세 판정 사실관계에 따른 안내(엔진 판정 보조 설명)
       const isOccupancy = assetType === 'occupancy_orig' || assetType === 'occupancy_succ';
       let ipjuCaveat = null;
@@ -651,10 +689,10 @@ function JTReportCGT({ setRoute, onBack }) {
       // 1세대1주택 비과세 (12억 이하)
       let nonTaxableMsg = null;
       let taxable = capGain;
-      if (is1House && sold <= 1_200_000_000 && years >= 2) {
+      if (is1House && sold <= 1_200_000_000 && years >= 2 && !hasConcurrentRight) {
         nonTaxableMsg = '1세대 1주택 · 양도가 12억 이하 · 2년 이상 보유 요건을 모두 충족하시면 원칙적으로 비과세 대상입니다.';
         taxable = 0;
-      } else if (is1House && sold > 1_200_000_000 && years >= 2) {
+      } else if (is1House && sold > 1_200_000_000 && years >= 2 && !hasConcurrentRight) {
         // 12억 초과분만 과세
         const taxableRatio = (sold - 1_200_000_000) / sold;
         taxable = Math.round(capGain * taxableRatio);
@@ -722,6 +760,7 @@ function JTReportCGT({ setRoute, onBack }) {
         landCaveat,
         ipjuCaveat,
         replCaveat,
+        concurrentRightCaveat,
         acquiredDate: answers.acquiredDate || '',
         transferDate: answers.transferDate || new Date().toISOString().slice(0, 10),
         holdYears: years,
@@ -1027,9 +1066,10 @@ cautions 3개, saving_ideas 2~3개.`;
           {calc.shortTermNote && <p style={{marginTop: 12, fontWeight: 500}}>{calc.shortTermNote}</p>}
           {calc.landCaveat && <p style={{marginTop: 12, fontWeight: 500}}>{calc.landCaveat}</p>}
           {calc.ipjuCaveat && <p style={{marginTop: 12, fontWeight: 500}}>{calc.ipjuCaveat}</p>}
+          {calc.concurrentRightCaveat && <p style={{marginTop: 12, fontWeight: 500}}>{calc.concurrentRightCaveat}</p>}
           {calc.replCaveat && <p style={{marginTop: 12, fontWeight: 500}}>{calc.replCaveat}</p>}
           {Array.isArray(calc.engineWarnings) && calc.engineWarnings
-            .filter(w => w && ![calc.ipjuCaveat, calc.replCaveat, calc.landCaveat, calc.multiHouseNote, calc.shortTermNote]
+            .filter(w => w && ![calc.ipjuCaveat, calc.concurrentRightCaveat, calc.replCaveat, calc.landCaveat, calc.multiHouseNote, calc.shortTermNote]
               .some(c => c && (c.includes(w) || w.includes(c))))
             .map((w, i) => (
               <p key={`ew${i}`} style={{marginTop: 12, fontWeight: 500, color: 'var(--color-text-warning, #854F0B)'}}>⚠️ {w}</p>
