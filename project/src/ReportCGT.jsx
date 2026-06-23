@@ -964,16 +964,21 @@ cautions 3개, saving_ideas 2~3개.`;
         const isOwnOccupied2 = (answers.moveInDate ? yearsBetween(answers.moveInDate, answers.transferDate) : 0) >= 2;
         const is1House2 = assetType2 === 'house_1';
         const isAdjusted2 = answers.adjustedZone === 'yes';
+        // §89② 가드: 주택+입주권/분양권 동시보유는 1세대1주택 비과세 배제(1차 폴백과 동일 — 과다비과세 방지)
+        const hasConcurrentRight2 = is1House2
+          && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale');
 
         // 기본 계산만 재실행 (runAnalysis 본문의 로직 요약)
         let taxable2 = capGain2;
         let nonTaxableMsg2 = null;
-        if (is1House2 && sold2 <= 1_200_000_000 && years2 >= 2) {
+        if (is1House2 && sold2 <= 1_200_000_000 && years2 >= 2 && !hasConcurrentRight2) {
           nonTaxableMsg2 = '1세대 1주택 · 양도가 12억 이하 · 2년 이상 보유 요건 충족 시 원칙적 비과세.';
           taxable2 = 0;
-        } else if (is1House2 && sold2 > 1_200_000_000 && years2 >= 2) {
+        } else if (is1House2 && sold2 > 1_200_000_000 && years2 >= 2 && !hasConcurrentRight2) {
           taxable2 = Math.round(capGain2 * ((sold2 - 1_200_000_000) / sold2));
           nonTaxableMsg2 = '12억 초과분 안분 과세.';
+        } else if (hasConcurrentRight2) {
+          nonTaxableMsg2 = '주택과 입주권·분양권을 함께 보유한 상태에서 그 주택을 양도하면 1세대1주택 비과세가 배제됩니다(소법 §89②). 일시적 보유 등 정밀 판정은 상담으로 확인하세요.';
         }
         const ltRate2 = calcLtDeductionRate(years2, isOwnOccupied2, is1House2);
         const afterLt2 = Math.max(taxable2 - Math.round(taxable2 * ltRate2), 0);
