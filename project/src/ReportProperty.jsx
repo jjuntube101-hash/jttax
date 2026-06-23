@@ -117,14 +117,20 @@ function mapAnswersToProperty(a) {
   return body;
 }
 
-/* 간이 폴백(엔진 미응답 시) — 대략 세율. 정밀은 엔진. */
+/* 간이 폴백(엔진 미응답 시) — 대략 세율. 정밀은 엔진. 폴백은 보수적(과대=안전): 누진 토지는 상한율 근사. */
 function fallbackPropTax(a) {
   const v = Number(a.standardValue) || 0;
   const kind = a.propertyKind;
   let ratio, rate;
-  if (kind === '주택') { ratio = a.isOneHouse === 'yes' ? 0.44 : 0.60; rate = 0.0025; }
+  if (kind === '주택') { ratio = a.isOneHouse === 'yes' ? 0.44 : 0.60; rate = a.isOneHouse === 'yes' ? 0.0015 : 0.0025; }
   else if (kind === '건축물') { ratio = 0.70; rate = 0.0025; }
-  else { ratio = 0.70; rate = 0.003; }                          // 토지(대략)
+  else { // 토지 — 종류별(종합/별도는 누진 상한율로 과대 보정, 분리는 정확율). 종류불문 0.3% 단일이 종합합산 과소 유발하던 결함 수정
+    ratio = 0.70;
+    if (a.landType === '별도합산') rate = 0.004;        // 0.2~0.4% → 상한 근사
+    else if (a.landType === '분리전답') rate = 0.0007;  // 전·답·과수원·목장·임야 0.07%
+    else if (a.landType === '분리기타') rate = 0.002;   // 공장용지 등 기타분리 0.2%
+    else rate = 0.005;                                  // 종합합산 0.2~0.5% → 상한 근사(과소 방지)
+  }
   const base = v * ratio;
   const main = base * rate;
   const edu = main * 0.2;
@@ -321,12 +327,12 @@ function JTReportProperty({ setRoute, onBack }) {
           {report.quick && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
-                <strong>기본 정보로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
+                <strong>기본 정보로 낸 빠른 예상치예요.</strong> 더 정확히 하면 세액이 달라질 수 있어요. <strong>도시지역분(0.14%)은 「도시지역」으로 가정해 이미 포함</strong>했으니, 비도시지역이면 그만큼 줄어듭니다 —<br />
                 {answers.propertyKind === '주택'
-                  ? '도시지역 여부(도시지역분 0.14%)·여러 채 합산 등. 1세대1주택이면 낮은 공정비율(43~45%)이 반영됐어요 — 공시 9억 이하면 세율 특례까지, 9억 초과면 공정비율만 적용됩니다.'
+                  ? '여러 채 합산 등. 1세대1주택이면 낮은 공정비율(43~45%)이 반영됐어요 — 공시 9억 이하면 세율 특례까지, 9억 초과면 공정비율만 적용됩니다.'
                   : answers.propertyKind === '토지'
-                  ? '토지 종류(종합/별도/분리)·도시지역분·세부담 상한(전년세액).'
-                  : '도시지역분(0.14%)·세부담 상한(전년세액).'}
+                  ? '토지 종류(종합/별도/분리)·세부담 상한(전년세액).'
+                  : '세부담 상한(전년세액).'}
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
             </div>

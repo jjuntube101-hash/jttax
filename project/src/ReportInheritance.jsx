@@ -340,10 +340,11 @@ function JTReportInheritance({ setRoute, onBack }) {
     setLoading(true); setErr(null);
     try {
       const estate = Number(answers.estateValue) || 0;
-      // 간이 폴백: 일괄공제 5억 + 배우자공제(있으면 최소 5억, 보수적) + 채무·장례 차감
-      const lumpSum = 500_000_000;
-      const spouseDed = answers.hasSpouse === 'yes' && answers.spouseActual !== 'zero' ? 500_000_000
-                       : (answers.hasSpouse === 'yes' ? 500_000_000 : 0);
+      // 간이 폴백: 일괄공제 5억 + 배우자 최소공제 5억 + 채무·장례 차감
+      // 배우자 단독상속(자녀 0)은 일괄공제 배제 → 기초공제 2억만(상증법 §21②) — 과소추정 방지
+      const childCount = Number(answers.numChildren) || 0;
+      const lumpSum = (answers.hasSpouse === 'yes' && childCount === 0) ? 200_000_000 : 500_000_000;
+      const spouseDed = answers.hasSpouse === 'yes' ? 500_000_000 : 0;
       const debts = Number(answers.debts) || 0;
       const funeral = Math.min(Math.max(Number(answers.funeralExpenses) || 0, 5_000_000), 15_000_000);
       const grossInh = estate + (Number(answers.insuranceAmount) || 0) + (Number(answers.retirementPay) || 0);
@@ -381,7 +382,7 @@ function JTReportInheritance({ setRoute, onBack }) {
           cautions: [
             { title: '신고기한 6개월', detail: '상속개시일(사망일)이 속한 달의 말일부터 6개월 이내에 신고·납부해야 합니다. 늦으면 가산세가 붙습니다(상증법 §67).' },
             { title: '사전증여 합산', detail: '상속 전 10년(상속인) 이내 증여한 재산은 상속재산에 합산됩니다(§13). 누락하면 추징·가산세 위험이 큽니다.' },
-            { title: '배우자상속공제', detail: '배우자가 실제 상속받는 금액(최대 30억)까지 공제되어 절세 효과가 큽니다. 상속재산 분할 방식에 따라 세액이 크게 달라집니다(§19).' },
+            { title: '배우자상속공제', detail: '배우자가 실제 상속받는 금액(최대 30억)까지 공제되어 절세 효과가 큽니다(§19). 표시 세액은 별도 입력이 없으면 배우자가 법정상속분을 모두 상속받는다고 가정한 값이라, 배우자가 적게 상속받으면 세액이 늘어날 수 있습니다.' },
           ],
           saving_ideas: [
             { title: '배우자 상속분 조정', detail: '배우자상속공제 한도(법정상속분·30억) 내에서 배우자 상속분을 늘리면 1차 상속세를 줄일 수 있습니다(단, 2차 상속까지 함께 설계해야 합니다).' },

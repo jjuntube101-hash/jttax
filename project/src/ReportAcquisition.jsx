@@ -174,15 +174,22 @@ function mapAnswersToAcquisition(a) {
   return body;
 }
 
-/* 간이 폴백(엔진 미응답 시) — 대략 합산세율. 정밀은 엔진. */
+/* 간이 폴백(엔진 미응답 시) — 대략 합산세율. 정밀은 엔진. 폴백은 보수적(과대=안전) 원칙. */
 function fallbackAcqTax(a) {
   const v = Number(a.propertyValue) || 0;
+  // 분양권·입주권 권리 취득은 취득 단계 취득세 비대상(지법 §7①) — 준공·잔금 시 그 주택분 별도 부과
+  if (a.propertyType === '분양권' || a.propertyType === '입주권') return 0;
   const isHousing = a.propertyType === '주택';
   let rate;
-  if (a.acquisitionType === '증여') rate = isHousing ? 0.04 : 0.04;          // 주택 증여 3.5%+교육세
-  else if (a.acquisitionType === '상속') rate = isHousing ? 0.0316 : 0.0316; // 상속 2.8%+교육세
+  if (a.acquisitionType === '증여') {
+    // 조정대상지역 + 시가표준 3억 이상 주택 무상취득 = 12% 중과(지법 §13의2②, 1세대1주택 단서 제외)
+    const std = Number(a.standardValue) || v;
+    rate = (isHousing && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes' && std >= 300_000_000)
+      ? 0.128 : 0.04;   // 중과 12%+교육세 0.4% (보수적 상향) / 일반 증여 3.5%+교육세
+  }
+  else if (a.acquisitionType === '상속') rate = 0.0316; // 상속 2.8%+교육세
   else if (a.acquisitionType === '신축') rate = 0.0316;
-  else if (!isHousing) rate = 0.046;                                         // 비주택 4%+교육세
+  else if (!isHousing) rate = 0.046;                    // 비주택 4%+교육세
   else { // 주택 매매(기본, 중과·감면 미반영 간이)
     if (v <= 600_000_000) rate = 0.011;
     else if (v <= 900_000_000) rate = (v * 2 / 300_000_000 - 3) / 100 + 0.001; // §11①8호나목 슬라이딩(1~3%)+교육세 근사
@@ -366,6 +373,12 @@ function JTReportAcquisition({ setRoute, onBack }) {
             <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: 14, color: 'var(--jt-ink-700,#444)' }}>
               {answers.acquisitionType} · {formatWon(Number(answers.propertyValue) || 0)} · {answers.propertyType} 기준, 적용세율 약 <strong>{calc.appliedRate}</strong>로 계산했어요.
             </p>
+          )}
+
+          {(answers.propertyType === '분양권' || answers.propertyType === '입주권') && (
+            <div style={{ background: '#f0f7f3', borderLeft: '4px solid #2a6d4f', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
+              {answers.propertyType}은 <strong>권리를 살 때 취득세가 부과되지 않습니다(0원)</strong> — 지방세법 §7①상 취득세 과세대상(부동산등)에 미포함. 나중에 <strong>준공·잔금으로 그 주택을 취득하는 시점에 그 주택분 취득세</strong>가 부과됩니다(입주권은 정비사업에 따라 §7⑯ 별도 발생). 매매가 전체에 주택 취득세를 매기지 않습니다.
+            </div>
           )}
 
           {!report.quick && answers.acquisitionType === '상속' && (

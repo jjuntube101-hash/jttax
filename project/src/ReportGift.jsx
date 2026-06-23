@@ -588,13 +588,20 @@ function JTReportGift({ setRoute, onBack }) {
             </div>
           )}
           <div className="jt-report-result__grade jt-grade-mid">
-            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : (calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : '추정 총 세부담 · 간이')}</div>
-            <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
+            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : (calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : (calc.engineErr ? '엔진 연결 실패 — 재시도 필요' : '추정 총 세부담 · 간이'))}</div>
+            <div className="jt-report-result__grade-val" style={calc.engineErr ? { fontSize: 22 } : undefined}>{calc.engineErr ? '정밀 계산 필요' : formatWon(calc.totalTax)}</div>
           </div>
+
+          {calc.engineErr && (
+            <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
+              부담부증여는 <strong>증여세 + 양도세 + 취득세</strong>가 함께 발생해 간이 계산으로는 정확히 추정할 수 없습니다(<strong>0원이 아닙니다</strong>). 정밀 엔진 연결이 지연됐으니 잠시 후 다시 시도하거나 상담을 권합니다.
+              <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
+            </div>
+          )}
 
           {!calc.precise && !calc.engineErr && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다. 단계별(법조문 근거) 계산은 정밀 모드에서 나옵니다 —
+              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다. <strong>세대생략(손주 증여) 할증·10년 내 사전증여 합산</strong>은 간이추정에서 누락돼 실제보다 적게 나올 수 있으니 정밀 계산을 권합니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
             </div>
           )}
