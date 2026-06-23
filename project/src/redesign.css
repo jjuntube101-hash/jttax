@@ -229,6 +229,38 @@
 }
 .jt-report-soon__note { margin-top: 32px; text-align: center; font-size: 14px; color: var(--fg-3); }
 
+/* ───────── JT 리포트 · 라이브 6종 계산기 그리드 (지금 쓸 수 있는) ───────── */
+.jt-report-live-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 920px) { .jt-report-live-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .jt-report-live-grid { grid-template-columns: 1fr; } }
+.jt-report-live {
+  background: var(--bg-1); border: 1px solid var(--border-1); border-top: 3px solid var(--jt-ink-800);
+  padding: 24px 24px 20px; display: flex; flex-direction: column; min-height: 208px;
+  cursor: pointer; outline: none;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.jt-report-live:hover, .jt-report-live:focus-visible {
+  transform: translateY(-3px); box-shadow: 0 14px 32px rgba(18,18,18,.10); border-color: var(--jt-ink-800);
+}
+.jt-report-live__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.jt-report-live__cat {
+  font-size: 12px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--bg-1); background: var(--jt-ink-800); border-radius: 999px; padding: 4px 12px;
+}
+.jt-report-live__badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-sans-en); font-size: 10px; letter-spacing: .16em; color: var(--fg-3); font-weight: 700;
+}
+.jt-report-live__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--jt-ink-800); }
+.jt-report-live h3 { font-size: 21px; font-weight: 700; letter-spacing: -.025em; margin: 0 0 10px; color: var(--fg-1); }
+.jt-report-live__d { font-size: 13.5px; line-height: 1.62; color: var(--fg-2); margin: 0; flex: 1; }
+.jt-report-live__foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-1); }
+.jt-report-live__cta { font-weight: 700; font-size: 15px; color: var(--jt-ink-800); }
+.jt-report-live__cta .jt-arrow { display: inline-block; transition: transform .18s ease; }
+.jt-report-live:hover .jt-report-live__cta .jt-arrow { transform: translateX(4px); }
+.jt-report-grid--soon { padding-top: 4px; }
+.jt-report-grid--soon .jt-report-soon { opacity: .9; }
+
 /* ───────── JT 리포트 · 대표 라이브 도구 (양도세 계산기) — 라이트(상단 다크 히어로와 대비) ───────── */
 .jt-report-feature {
   background: var(--bg-1); color: var(--fg-1);
