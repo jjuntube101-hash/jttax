@@ -50,9 +50,10 @@ const INC_QS = [
   },
   {
     id: 'financialIncome',
+    tier: 'quick',
     section: '금융소득',
     q: '이자·배당 소득이 있나요? 연 합계 금액 (원)',
-    sub: '예금이자·주식배당 등 1년 합계. 연 2,000만원을 넘으면 종합과세됩니다(소득세법 §14③). 이 경우 본 계산은 비교과세(소§62)를 적용하지 않아 실제보다 세금이 다소 높게 나올 수 있고, 배당은 가산·배당세액공제로도 달라질 수 있어 — 금융소득이 크면 상담에서 정확히 확인하세요. 없으면 0.',
+    sub: '예금이자·주식배당 등 1년 합계. 연 2,000만원을 넘으면 종합과세되며 비교과세(소득세법 §62)로 계산합니다. 배당 비중이 크면 가산·배당세액공제로 결과가 달라질 수 있어 상담을 권합니다. 사업·근로 없이 금융소득만 있어도 여기에 넣으면 계산됩니다. 없으면 0.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 0 (없으면 0)',
   },
@@ -349,7 +350,7 @@ function JTReportIncome({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="종합소득세 계산기" subtitle={phase === 'quick' ? '사업·근로 소득만 넣으면 예상 종합소득세를 바로 계산해요.' : '부양가족·공제 항목까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
+      <JTReportShell title="종합소득세 계산기" subtitle={phase === 'quick' ? '사업·근로·금융 소득을 넣으면 예상 종합소득세를 바로 계산해요.' : '부양가족·공제 항목까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>
