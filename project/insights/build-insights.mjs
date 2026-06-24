@@ -15,6 +15,7 @@
 import { readFile, writeFile, readdir, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { writeSitemap } from '../_shared/build-sitemap.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url)); // project/insights
 const PROJECT = join(__dirname, '..');                     // project
@@ -186,28 +187,10 @@ async function writeArticlePages(arts) {
   console.log(`✓ 글 페이지 ${arts.length}건 생성 → /insights/`);
 }
 
-// ────────────── sitemap 갱신 ──────────────
-async function updateSitemap(arts) {
-  const today = new Date().toISOString().slice(0, 10);
-  const staticUrls = [
-    { loc: `${SITE}/`,          p: '1.0', f: 'weekly' },
-    { loc: `${SITE}/#services`, p: '0.9', f: 'monthly' },
-    { loc: `${SITE}/#team`,     p: '0.8', f: 'monthly' },
-    { loc: `${SITE}/#about`,    p: '0.7', f: 'monthly' },
-    { loc: `${SITE}/#report`,   p: '0.9', f: 'weekly' },
-    { loc: `${SITE}/#insights`, p: '0.9', f: 'weekly' },
-    { loc: `${SITE}/#contact`,  p: '0.7', f: 'monthly' },
-    { loc: `${SITE}/#booking`,  p: '0.9', f: 'monthly' },
-  ];
-  const articleUrls = arts.map(a => ({
-    loc: `${SITE}/insights/${a.slug}.html`, p: '0.8', f: 'monthly', lastmod: a.dateISO,
-  }));
-  const all = [...staticUrls, ...articleUrls];
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${all.map(u =>
-    `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${u.lastmod || today}</lastmod>\n    <changefreq>${u.f}</changefreq>\n    <priority>${u.p}</priority>\n  </url>`
-  ).join('\n')}\n</urlset>\n`;
-  await writeFile(SITEMAP_PATH, xml);
-  console.log(`✓ sitemap.xml 갱신 (${all.length} URL)`);
+// ────────────── sitemap 갱신 (공유 모듈 — 인사이트+계산기 자동 열거, 해시 URL 제외) ──────────────
+async function updateSitemap() {
+  const n = await writeSitemap(REPO_ROOT, SITE);
+  console.log(`✓ sitemap.xml 갱신 (${n} URL)`);
 }
 
 // ────────────── main ──────────────
