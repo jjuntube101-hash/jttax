@@ -130,13 +130,13 @@ function JTReportHub({ setRoute, setSubRoute }) {
   // 사업자·법인 도구 (라이브) — 부동산 6종과 별도 분리
   const bizTools = [
     { kr: '종합소득세 계산기', cat: '종소세', d: '사업·프리랜서·근로 소득을 합산해 내 종합소득세를 검증 엔진으로 계산합니다. 인적공제·자녀·연금저축 세액공제까지 반영해요.', sub: 'income', cta: '계산하기' },
+    { kr: '4대보험·실수령 계산기', cat: '급여', d: '세전 월 급여만 넣으면 국민연금·건강보험·장기요양·고용보험과 세금을 떼고 실수령액을 즉시 계산합니다(2026 요율).', sub: 'insurance', cta: '계산하기' },
     { kr: '법인 전환 시뮬레이터', cat: '법인', d: '개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세) 세부담을 검증 엔진으로 바로 비교합니다.', sub: 'corporate', cta: '비교하기' },
   ];
   // 곧 열릴 도구
   const soon = [
     { tag: 'AI ASSISTANT', kr: 'AI 세무 길잡이', d: '상황을 평범한 말로 입력하면, 맞는 분야와 다음 절차로 안내합니다.', star: true },
     { tag: 'AUDIT', kr: '세무조사 위험도 진단', d: '쟁점 노출도를 점수로 보고, 대비 포인트를 정리합니다.' },
-    { tag: 'BOOKKEEPING', kr: '4대보험·실수령 계산기', d: '급여에서 공제·실수령액을 즉시 계산합니다.' },
   ];
   return (
     <>
@@ -197,10 +197,10 @@ function JTReportHub({ setRoute, setSubRoute }) {
       <section className="jt-section jt-report-grid">
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
-            <h2>사업자·법인을 위한 도구</h2>
-            <p>프리랜서·개인사업자라면 — 내 종합소득세부터, 법인 전환이 유리한지까지 직접 계산해 보세요.</p>
+            <h2>내 소득세·급여 계산기</h2>
+            <p>직장인·프리랜서·개인사업자라면 — 종합소득세·실수령액부터, 법인 전환이 유리한지까지 직접 계산해 보세요.</p>
           </div>
-          <div className="jt-report-biz">
+          <div className="jt-report-live-grid">
             {bizTools.map((r, i) => (
               <article
                 key={r.sub}
@@ -305,6 +305,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'property' && <JTReportProperty setRoute={setRoute} onBack={back} />}
       {subRoute === 'comprehensive' && <JTReportComprehensive setRoute={setRoute} onBack={back} />}
       {subRoute === 'corporate' && <JTReportCorporate setRoute={setRoute} onBack={back} />}
+      {subRoute === 'insurance' && <JTReportInsurance setRoute={setRoute} onBack={back} />}
     </div>
   );
 }
