@@ -114,17 +114,17 @@
 <body>
   <div id="root"></div>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-  <script type="text/babel" src="project/src/Data.jsx?v=20"></script>
-  <script type="text/babel" src="project/src/Chrome.jsx?v=20"></script>
+  <script type="text/babel" src="project/src/Data.jsx?v=21"></script>
+  <script type="text/babel" src="project/src/Chrome.jsx?v=22"></script>
   <script type="text/babel" src="project/src/Home.jsx?v=20"></script>
   <script type="text/babel" src="project/src/Pages1.jsx?v=20"></script>
   <script type="text/babel" src="project/src/Pages2.jsx?v=20"></script>
   <script type="text/babel" src="project/src/Legal.jsx?v=20"></script>
-  <script type="text/babel" src="project/src/Report.jsx?v=29"></script>
+  <script type="text/babel" src="project/src/Report.jsx?v=32"></script>
   <script type="text/babel" src="project/src/ReportConvert.jsx?v=20"></script>
   <script type="text/babel" src="project/src/ReportAppeal.jsx?v=20"></script>
   <script type="text/babel" src="project/src/ReportCGT.jsx?v=27"></script>
@@ -140,6 +140,34 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
+    // ============ 해시 라우터 (#/route/sub) — 계산기 딥링크·공유·뒤로가기 ============
+    // 형식: '#/' 홈 · '#/report' 허브 · '#/report/cgt' 양도세 계산기 · '#/services' 등
+    // '#/' 로 시작하는 해시만 라우터로 인식 → 회사소개 탭(#team)·인사이트 등 레거시 해시와 충돌 없음.
+    const JTRouter = {
+      parse() {
+        try {
+          const raw = window.location.hash || '';
+          if (!raw.indexOf || raw.indexOf('#/') !== 0) return { router: false, route: '', sub: '' };
+          const parts = raw.replace(/^#\//, '').split('/').filter(Boolean);
+          return { router: true, route: parts[0] || 'home', sub: parts[1] || '' };
+        } catch (e) { return { router: false, route: '', sub: '' }; }
+      },
+      build(route, sub) {
+        if (!route || route === 'home') return '#/';
+        return '#/' + route + (sub && sub !== 'hub' ? '/' + sub : '');
+      },
+      set(route, sub) {
+        try {
+          const target = this.build(route, sub);
+          if (window.location.hash !== target) window.location.hash = target;
+        } catch (e) {}
+      },
+    };
+    window.JTRouter = JTRouter;
+
+    const JT_KNOWN_ROUTES = ['home', 'services', 'team', 'about', 'insights', 'report', 'contact', 'booking', 'privacy', 'terms'];
+    const jtNormRoute = (r) => (JT_KNOWN_ROUTES.indexOf(r) >= 0 ? r : 'home'); // 모르는 페이지 키 → 홈 (깨진 링크 방어)
+
     const TWEAK_DEFAULTS = {
       "servicesLayout": "grid",
       "showQuote": true,
@@ -147,8 +175,12 @@
     };
 
     function App() {
-      const savedRoute = (typeof localStorage !== 'undefined' && localStorage.getItem('jt_route')) || 'home';
-      const [route, setRouteRaw] = useState(savedRoute);
+      const initRoute = (() => {
+        const r = JTRouter.parse();
+        if (r.router && r.route) return jtNormRoute(r.route);
+        try { return jtNormRoute(localStorage.getItem('jt_route') || 'home'); } catch (e) { return 'home'; }
+      })();
+      const [route, setRouteRaw] = useState(initRoute);
       const [aboutTab, setAboutTab] = useState(() => {
         try {
           const h = (window.location.hash || '').replace('#', '');
@@ -164,18 +196,36 @@
         if (name === 'team') {
           setAboutTab('team');
           setRouteRaw('about');
+          JTRouter.set('about');
           return;
         }
         if (name === 'about') {
           setAboutTab(tab === 'team' ? 'team' : 'company');
         }
         setRouteRaw(name);
+        JTRouter.set(name);
       }, []);
 
       useEffect(() => {
         try { localStorage.setItem('jt_route', route); } catch (e) {}
         window.scrollTo({ top: 0, behavior: 'instant' });
       }, [route]);
+
+      // 브라우저 뒤로/앞으로 → 해시 재해석해 route 동기화 (idempotent)
+      useEffect(() => {
+        const onHash = () => {
+          const r = JTRouter.parse();
+          if (r.router && r.route) setRouteRaw(jtNormRoute(r.route));
+        };
+        window.addEventListener('hashchange', onHash);
+        return () => window.removeEventListener('hashchange', onHash);
+      }, []);
+
+      // 최초 진입 시 URL이 라우터 해시가 아니면(localStorage 복원/맨주소) 현재 route를 URL에 반영
+      useEffect(() => {
+        const r = JTRouter.parse();
+        if (!r.router) JTRouter.set(route);
+      }, []);
 
       useEffect(() => {
         const handler = (e) => {

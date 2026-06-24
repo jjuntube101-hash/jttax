@@ -271,15 +271,49 @@ function JTReportHub({ setRoute, setSubRoute }) {
 window.JTReportHub = JTReportHub;
 
 // ============ 라우터 (허브 ↔ 각 진단) ============
+const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance'];
+const jtNormSub = (s) => (JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : 'hub'); // 모르는 계산기 키 → 허브 (깨진 공유링크 방어)
+
 function JTReportPage({ setRoute }) {
-  const [subRoute, setSubRoute] = useReportState(() => {
-    try { return localStorage.getItem('jt_report_sub') || 'hub'; } catch (e) { return 'hub'; }
+  const [subRoute, setSubRouteRaw] = useReportState(() => {
+    try {
+      const r = window.JTRouter && window.JTRouter.parse();
+      if (r && r.router && r.route === 'report' && r.sub) return jtNormSub(r.sub);
+      return jtNormSub(localStorage.getItem('jt_report_sub') || 'hub');
+    } catch (e) { return 'hub'; }
   });
+
+  // setSubRoute = 상태 + URL 해시(#/report/cgt) 동기화 → 계산기 딥링크·공유·북마크·뒤로가기
+  const setSubRoute = (s) => {
+    setSubRouteRaw(s);
+    try { if (window.JTRouter) window.JTRouter.set('report', s); } catch (e) {}
+  };
 
   useReportEffect(() => {
     try { localStorage.setItem('jt_report_sub', subRoute); } catch (e) {}
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [subRoute]);
+
+  // 브라우저 뒤로/앞으로 → 해시 재해석해 subRoute 동기화 (idempotent)
+  useReportEffect(() => {
+    const onHash = () => {
+      try {
+        const r = window.JTRouter.parse();
+        if (r.router && r.route === 'report') setSubRouteRaw(jtNormSub(r.sub || 'hub'));
+      } catch (e) {}
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  // 최초 진입: localStorage 복원으로 들어온 계산기를 URL에도 반영 (URL=상태 일치)
+  useReportEffect(() => {
+    try {
+      const r = window.JTRouter && window.JTRouter.parse();
+      const hashSub = (r && r.router && r.route === 'report') ? (r.sub || 'hub') : null;
+      if (subRoute && subRoute !== 'hub' && hashSub !== subRoute) window.JTRouter.set('report', subRoute);
+    } catch (e) {}
+  }, []);
 
   // Reveal: 리포트 페이지 내부는 단순화 — 진입 즉시 모두 visible (검게 고정되는 이슈 회피)
   useReportEffect(() => {

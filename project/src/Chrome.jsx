@@ -167,30 +167,49 @@ function JTMobileCta({ setRoute, route }) {
 window.JTMobileCta = JTMobileCta;
 
 // ============ SEO 동적 메타 업데이트 ============
+let __jtLastGaPath = null; // GA4 page_view 중복 발화 방지(같은 path는 1회만) — apply() 직접호출 + hashchange 동시 발화 흡수
 function useSeoMeta(route) {
   useEffect(() => {
-    const meta = (window.JT_DATA.seo && window.JT_DATA.seo.pageMeta && window.JT_DATA.seo.pageMeta[route]) || {};
-    const seo = window.JT_DATA.seo;
-    const title = meta.title ? `${meta.title} | ${window.JT_DATA.firm.nameKr}` : seo.titleDefault;
-    const desc = meta.desc || seo.description;
-    document.title = title;
-    const setMeta = (name, content, attr = 'name') => {
-      let el = document.querySelector(`meta[${attr}="${name}"]`);
-      if (!el) {
-        el = document.createElement('meta');
-        el.setAttribute(attr, name);
-        document.head.appendChild(el);
+    const apply = () => {
+      const seo = window.JT_DATA.seo;
+      // 현재 화면 키 = route, 단 계산기는 해시(#/report/cgt)의 sub까지 반영 → 'report:cgt'
+      let key = route, sub = '';
+      try {
+        const r = window.JTRouter && window.JTRouter.parse();
+        if (r && r.router && r.route) { key = r.route; sub = r.sub; }
+      } catch (e) {}
+      let metaKey = key;
+      if (key === 'report' && sub && sub !== 'hub') metaKey = 'report:' + sub;
+      const meta = (seo.pageMeta && (seo.pageMeta[metaKey] || seo.pageMeta[key])) || {};
+      const title = meta.title ? `${meta.title} | ${window.JT_DATA.firm.nameKr}` : seo.titleDefault;
+      const desc = meta.desc || seo.description;
+      document.title = title;
+      const setMeta = (name, content, attr = 'name') => {
+        let el = document.querySelector(`meta[${attr}="${name}"]`);
+        if (!el) {
+          el = document.createElement('meta');
+          el.setAttribute(attr, name);
+          document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+      };
+      setMeta('description', desc);
+      setMeta('og:title', title, 'property');
+      setMeta('og:description', desc, 'property');
+      const hashPath = (window.JTRouter ? window.JTRouter.build(key, sub) : (key === 'home' ? '#/' : '#/' + key));
+      setMeta('og:url', `${seo.siteUrl}/${hashPath === '#/' ? '' : hashPath}`, 'property');
+      setMeta('twitter:title', title);
+      setMeta('twitter:description', desc);
+      // GA4 page_view — 계산기 단위 측정(/report/cgt). path가 바뀔 때만 1회(중복 발화 방지).
+      const gaPath = '/' + metaKey.replace(':', '/');
+      if (window.gtag && gaPath !== __jtLastGaPath) {
+        __jtLastGaPath = gaPath;
+        window.gtag('event', 'page_view', { page_path: gaPath, page_title: title });
       }
-      el.setAttribute('content', content);
     };
-    setMeta('description', desc);
-    setMeta('og:title', title, 'property');
-    setMeta('og:description', desc, 'property');
-    setMeta('og:url', `${seo.siteUrl}/${route === 'home' ? '' : '#' + route}`, 'property');
-    setMeta('twitter:title', title);
-    setMeta('twitter:description', desc);
-    // GA4 page_view
-    if (window.gtag) window.gtag('event', 'page_view', { page_path: '/' + route, page_title: title });
+    apply();
+    window.addEventListener('hashchange', apply);
+    return () => window.removeEventListener('hashchange', apply);
   }, [route]);
 }
 window.useSeoMeta = useSeoMeta;
