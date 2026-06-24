@@ -261,6 +261,17 @@
 .jt-report-grid--soon { padding-top: 4px; }
 .jt-report-grid--soon .jt-report-soon { opacity: .9; }
 
+/* ───────── JT 리포트 · 사업자/법인 도구 (법인 전환 시뮬레이터) ───────── */
+.jt-report-biz { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 22px; align-items: stretch; }
+@media (max-width: 760px) { .jt-report-biz { grid-template-columns: 1fr; } }
+.jt-report-biz__note {
+  background: var(--bg-1); border: 1px solid var(--border-1); border-left: 3px solid var(--jt-ink-800);
+  padding: 26px 28px; display: flex; flex-direction: column; justify-content: center; border-radius: 4px;
+}
+.jt-report-biz__note h4 { font-size: 16px; font-weight: 700; margin: 0 0 10px; color: var(--fg-1); letter-spacing: -.02em; }
+.jt-report-biz__note p { font-size: 13.5px; line-height: 1.68; color: var(--fg-2); margin: 0 0 8px; }
+.jt-report-biz__note p:last-child { margin-bottom: 0; }
+
 /* ───────── JT 리포트 · 대표 라이브 도구 (양도세 계산기) — 라이트(상단 다크 히어로와 대비) ───────── */
 .jt-report-feature {
   background: var(--bg-1); color: var(--fg-1);
