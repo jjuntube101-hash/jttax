@@ -129,7 +129,8 @@ function JTReportHub({ setRoute, setSubRoute }) {
   ];
   // 사업자·법인 도구 (라이브) — 부동산 6종과 별도 분리
   const bizTools = [
-    { kr: '법인 전환 시뮬레이터', cat: '법인', d: '개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세) 세부담을 검증 엔진으로 바로 비교합니다.', sub: 'corporate' },
+    { kr: '종합소득세 계산기', cat: '종소세', d: '사업·프리랜서·근로 소득을 합산해 내 종합소득세를 검증 엔진으로 계산합니다. 인적공제·자녀·연금저축 세액공제까지 반영해요.', sub: 'income', cta: '계산하기' },
+    { kr: '법인 전환 시뮬레이터', cat: '법인', d: '개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세) 세부담을 검증 엔진으로 바로 비교합니다.', sub: 'corporate', cta: '비교하기' },
   ];
   // 곧 열릴 도구
   const soon = [
@@ -197,7 +198,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
             <h2>사업자·법인을 위한 도구</h2>
-            <p>개인사업자라면 — 법인으로 바꾸면 세금이 줄어들까? 직접 비교해 보세요.</p>
+            <p>프리랜서·개인사업자라면 — 내 종합소득세부터, 법인 전환이 유리한지까지 직접 계산해 보세요.</p>
           </div>
           <div className="jt-report-biz">
             {bizTools.map((r, i) => (
@@ -216,15 +217,10 @@ function JTReportHub({ setRoute, setSubRoute }) {
                 <h3>{r.kr}</h3>
                 <p className="jt-report-live__d">{r.d}</p>
                 <div className="jt-report-live__foot">
-                  <span className="jt-report-live__cta">비교하기 <span className="jt-arrow">→</span></span>
+                  <span className="jt-report-live__cta">{r.cta || '계산하기'} <span className="jt-arrow">→</span></span>
                 </div>
               </article>
             ))}
-            <div className="jt-report-biz__note reveal">
-              <h4>왜 비교가 필요한가요?</h4>
-              <p>개인사업자는 이익이 커질수록 <strong>종합소득세(최고 45%)</strong>가 무거워집니다. 법인은 <strong>법인세(10~25%)</strong>로 세율이 낮지만, 이익을 대표가 가져가려면 급여·배당에 다시 세금이 붙습니다.</p>
-              <p>이익과 대표 연봉만 넣으면 <strong>개인 vs 법인</strong> 세부담을 바로 비교해, 전환을 검토할 출발점을 잡아 드립니다.</p>
-            </div>
           </div>
         </div>
       </section>
