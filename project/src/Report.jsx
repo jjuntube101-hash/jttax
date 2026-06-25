@@ -145,12 +145,12 @@ function JTReportHub({ setRoute, setSubRoute }) {
         <div className="jt-container">
           <div className="jt-eyebrow reveal">JT TAX CORP. · REPORT</div>
           <h1 className="jt-report-hero__title reveal">
-            <span>부동산</span> <span>세금,</span>
+            <span>내</span> <span>세금,</span>
             <br/>
             <span className="is-accent">직접 계산해 보세요.</span>
           </h1>
           <p className="jt-report-hero__sub reveal">
-            양도·증여·상속·취득·재산세·종합부동산세 — <strong>6가지 부동산 세금</strong>을 검증된 계산 엔진으로 바로 계산합니다.<br/>
+            양도·상속·증여·취득·재산·종부의 부동산 세금부터 <strong>종합소득세·실수령·법인 전환까지</strong> — 검증된 계산 엔진으로 바로 계산합니다.<br/>
             국세 행정 39년의 회장과 세무사가 직접 설계했습니다.
           </p>
           <div className="jt-report-hero__meta reveal">

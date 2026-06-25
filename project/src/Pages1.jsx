@@ -225,6 +225,17 @@ function JTAboutTeam({ D, setRoute }) {
             <div className="jt-team-card__title-kr">{p.titleKr}</div>
             {p.summary && <p className="jt-team-card__summary">{p.summary}</p>}
 
+            {p.scope && p.scope.length > 0 &&
+          <div className="jt-team-card__block">
+                <div className="jt-team-card__block-head">전문 업무범위</div>
+                <ul className="jt-team-card__books">
+                  {p.scope.map((s, i) =>
+              <li key={i}>{s}</li>
+              )}
+                </ul>
+              </div>
+          }
+
             {p.education && p.education.length > 0 &&
           <div className="jt-team-card__block">
                 <div className="jt-team-card__block-head">학력</div>

@@ -595,7 +595,7 @@
 .jt-app::before{ background-image: none !important; }
 .jt-app::after{ opacity: .3 !important; }
 /* 히어로 고스트 JT 모노그램을 텍스처의 주역으로(로고 활용↑) */
-.jt-sithero::before{ opacity: .09 !important; }
+.jt-sithero::before{ opacity: .15 !important; }
 
 /* 타이틀 정중앙 — 760px 박스를 넘쳐 우측으로 쏠리던 현상 교정 */
 .jt-sithero__inner{ max-width: 1240px !important; }
@@ -724,4 +724,168 @@
 .jt-page-hero__mark{ animation: jt-breathe 11s ease-in-out infinite; transform-origin: 80% 30%; }
 @media (prefers-reduced-motion: reduce){
   .jt-page-hero__crumb, .jt-page-hero h1, .jt-page-hero__sub, .jt-page-hero__mark{ animation: none !important; }
+}
+
+/* ===================================================================
+   히어로 상황 카드 — 긴장 한 줄(hook) 복원 (다이어트 유지: 짧은 회색 한 줄)
+   =================================================================== */
+.jt-sit__hook{
+  margin-top: 6px;
+  font-size: clamp(13px, 1.25vw, 14.5px);
+  line-height: 1.5;
+  color: var(--fg-2, #4b4b4b);
+}
+.jt-sit--general .jt-sit__hook{ color: var(--fg-3, #6b6b6b); }
+
+/* ===================================================================
+   JT 리포트(플랫폼형) — 계산 엔진 차별화 + 계산→상담→관리 퍼널. 로고 락업 강조.
+   =================================================================== */
+.jt-platform{
+  padding: clamp(74px, 9vw, 130px) 24px;
+  text-align: center;
+  background: var(--bg-1, #fff);
+  border-top: 1px solid var(--border-1);
+  border-bottom: 1px solid var(--border-1);
+}
+.jt-platform__inner{ max-width: 980px; margin: 0 auto; }
+.jt-platform .jt-kicker{
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: clamp(18px, 2.4vw, 30px);
+}
+.jt-platform__title{
+  font-family: var(--font-sans-kr);
+  font-weight: 800; letter-spacing: -0.02em; line-height: 1.14;
+  font-size: clamp(25px, 4.6vw, 56px);
+  color: var(--fg-1, #141414);
+  margin: 0 0 clamp(22px, 2.8vw, 34px);
+}
+.jt-platform__line{ display: block; }
+.jt-platform__line--brand{
+  display: flex; align-items: center; justify-content: center; gap: .4em;
+  margin-top: .14em;
+}
+.jt-platform__logo{ height: clamp(30px, 5vw, 58px); width: auto; display: block; }
+.jt-platform__sub{
+  max-width: 720px; margin: 0 auto clamp(30px, 3.6vw, 46px);
+  font-size: clamp(15px, 1.5vw, 18px); line-height: 1.78; color: var(--fg-2);
+}
+.jt-platform__sub strong{ color: var(--fg-1); font-weight: 700; }
+.jt-platform__steps{
+  list-style: none; margin: 0 auto clamp(30px, 3.6vw, 46px); padding: 0;
+  display: flex; justify-content: center; gap: clamp(16px, 3vw, 48px); flex-wrap: wrap;
+  max-width: 760px;
+}
+.jt-platform__steps li{
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  flex: 0 1 190px;
+}
+.jt-platform__step-n{
+  font-family: var(--font-sans-en); font-size: 11.5px; letter-spacing: .14em;
+  color: var(--fg-1); opacity: .42;
+}
+.jt-platform__step-t{ font-size: clamp(15px, 1.6vw, 18px); font-weight: 700; color: var(--fg-1); }
+.jt-platform__step-d{ font-size: 13px; color: var(--fg-2); }
+.jt-platform__cta{
+  display: flex; align-items: center; justify-content: center; gap: 22px; flex-wrap: wrap;
+}
+.jt-platform__link{ cursor: pointer; }
+@media (max-width: 560px){
+  .jt-platform__steps{ flex-direction: column; gap: 18px; align-items: stretch; }
+  .jt-platform__steps li{ flex-direction: row; justify-content: center; gap: 10px; }
+}
+
+/* ===================================================================
+   브랜드 모먼트 — 진짜 벡터 draw-on (정품 .ai → 인라인 SVG, 획별 stroke 트레이스)
+   심볼→한글→영문 순으로 외곽선이 그려진 뒤 채워짐 → 글로우 플래시 → 호흡.
+   모노톤·CSS only·기하 무왜곡(정품 경로)·reduced-motion 가드.
+   =================================================================== */
+.jt-brandmoment__logowrap{
+  position: relative; display: inline-block;
+  margin: 0 auto clamp(28px, 4vw, 48px);
+}
+.jt-brandmoment__logowrap.reveal{ opacity: 1 !important; }        /* draw가 reveal */
+.jt-bm-logosvg{
+  display: block; margin: 0; overflow: visible;
+  height: clamp(168px, 27vw, 372px); width: auto;
+}
+/* 기본(그리기 전): 외곽선만, 채움 0 */
+.jt-bm-logosvg path{
+  fill: #fff; fill-opacity: 0;
+  stroke: #fff; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke;
+}
+@keyframes jt-bm-stroke   { to { stroke-dashoffset: 0; } }
+@keyframes jt-bm-fillin   { to { fill-opacity: 1; } }
+@keyframes jt-bm-strokeout{ to { stroke-opacity: 0; } }
+
+/* 심볼(2) → 한글(7) → 영문(10) 순차 외곽선 트레이스 + 채움 + 외곽선 소거 */
+.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--symbol path{
+  animation: jt-bm-stroke .85s ease-out both, jt-bm-fillin .45s .72s both, jt-bm-strokeout .3s 1.05s both;
+}
+.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--korean path{
+  animation: jt-bm-stroke .72s .32s ease-out both, jt-bm-fillin .4s .98s both, jt-bm-strokeout .3s 1.3s both;
+}
+.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--latin path{
+  animation: jt-bm-stroke .72s .52s ease-out both, jt-bm-fillin .4s 1.16s both, jt-bm-strokeout .3s 1.5s both;
+}
+
+/* 다 그려진 직후 '확' 빛남 → 정지 시 은은한 호흡 (로고 전체 글로우) */
+@keyframes jt-bm-logo-flash{
+  0%   { filter: brightness(1)   drop-shadow(0 0 0 rgba(255,255,255,0)); }
+  30%  { filter: brightness(1.5) drop-shadow(0 0 70px rgba(255,255,255,.8)); }
+  100% { filter: brightness(1)   drop-shadow(0 0 0 rgba(255,255,255,0)); }
+}
+@keyframes jt-bm-logo-aura{
+  0%,100% { filter: drop-shadow(0 0 4px rgba(255,255,255,.05)); }
+  50%     { filter: drop-shadow(0 0 38px rgba(255,255,255,.3)); }
+}
+.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-logosvg{
+  animation: jt-bm-logo-flash 1.0s 1.5s both, jt-bm-logo-aura 5.5s ease-in-out 2.5s infinite;
+}
+
+/* 슬로건: 아주 크게서 '쾅' + 착지 되튐 — 로고 그려진 뒤 순차 */
+@keyframes jt-bm-slam{
+  0%   { opacity: 0; transform: scale(1.62) translateY(10px); filter: blur(22px); letter-spacing: .2em; }
+  60%  { opacity: 1; transform: scale(.965) translateY(0);    filter: blur(0);     letter-spacing: -0.05em; }
+  80%  { transform: scale(1.015); }
+  100% { opacity: 1; transform: scale(1);     filter: blur(0);  letter-spacing: -0.035em; }
+}
+.jt-brandmoment__slogan .reveal.is-visible{
+  animation: jt-bm-slam 1.05s cubic-bezier(.2,.85,.2,1.12) both;
+}
+.jt-brandmoment__slogan .reveal[data-delay="1"].is-visible{ animation-delay: 1.7s; }
+.jt-brandmoment__slogan .reveal[data-delay="2"].is-visible{ animation-delay: 2.0s; }
+
+/* 스포트라이트 플레어 — 로고 그려지는 동안 빛이 차오르고, 정지 시 호흡 (빛만, 패턴 아님) */
+.jt-brandmoment::before{
+  content: '' !important;
+  background: radial-gradient(closest-side, rgba(255,255,255,.12), rgba(255,255,255,.04) 46%, transparent 72%) !important;
+  position: absolute; left: 50%; top: 40%;
+  width: min(1200px, 130vw); height: min(1000px, 130vh);
+  transform: translate(-50%, -50%) scale(.6);
+  z-index: 0; pointer-events: none; opacity: 0;
+}
+.jt-brandmoment__inner{ position: relative; z-index: 1; }     /* 콘텐츠를 스포트라이트 위로 */
+@keyframes jt-bm-flare{
+  0%   { opacity: 0;  transform: translate(-50%,-50%) scale(.5); }
+  60%  { opacity: 1;  transform: translate(-50%,-50%) scale(1.12); }
+  100% { opacity: .5; transform: translate(-50%,-50%) scale(1); }
+}
+@keyframes jt-bm-flare-breathe{
+  0%,100% { opacity: .4; transform: translate(-50%,-50%) scale(1); }
+  50%     { opacity: .8; transform: translate(-50%,-50%) scale(1.08); }
+}
+.jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before{
+  animation: jt-bm-flare 1.7s ease-out both, jt-bm-flare-breathe 7s ease-in-out 1.7s infinite;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--symbol path,
+  .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--korean path,
+  .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--latin path,
+  .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-logosvg,
+  .jt-brandmoment__slogan .reveal.is-visible,
+  .jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before{ animation: none !important; }
+  .jt-bm-logosvg path{ fill-opacity: 1 !important; stroke-opacity: 0 !important; stroke-dashoffset: 0 !important; }
+  .jt-brandmoment::before{ opacity: .45 !important; transform: translate(-50%,-50%) scale(1) !important; }
 }

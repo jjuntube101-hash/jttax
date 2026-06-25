@@ -116,7 +116,7 @@ function JTBooking({ setRoute }) {
     } catch(_){ return ''; }
   })();
   const [form, setForm] = useStatePg2({
-    topic: preferredTopic, urgency: preferredSlot ? '긴급' : '일반',
+    topic: preferredTopic,
     name: '', company: '', email: '', phone: '',
     channel: '전화', msg: preferredSlot ? `희망 상담 시간: ${preferredSlot}\n\n` : '', consent: false,
   });
@@ -153,7 +153,7 @@ function JTBooking({ setRoute }) {
               세무조사 긴급 건은 업무시간 내 즉시 대응됩니다.
             </p>
             <div style={{display: 'flex', gap: 12, flexWrap: 'wrap'}}>
-              <button className="jt-btn jt-btn--primary" onClick={() => { setDone(false); setStep(1); setForm({ topic: '', urgency: '일반', name: '', company: '', email: '', phone: '', channel: '전화', msg: '', consent: false }); }}>
+              <button className="jt-btn jt-btn--primary" onClick={() => { setDone(false); setStep(1); setForm({ topic: '', name: '', company: '', email: '', phone: '', channel: '전화', msg: '', consent: false }); }}>
                 새 문의 작성
               </button>
               <button className="jt-btn jt-btn--outline" onClick={() => setRoute('home')}>
@@ -176,10 +176,9 @@ function JTBooking({ setRoute }) {
     setSubmitError('');
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     const payload = {
-      _subject: `[JT 상담예약] ${form.topic} · ${form.urgency} · ${form.name}`,
+      _subject: `[JT 상담예약] ${form.topic} · ${form.name}`,
       구분: 'BOOKING',
       문의분야: form.topic,
-      긴급도: form.urgency,
       성명: form.name,
       회사: form.company || '—',
       이메일: form.email || '—',
@@ -189,7 +188,7 @@ function JTBooking({ setRoute }) {
       접수시각: new Date().toLocaleString('ko-KR'),
     };
     // GA4 이벤트 발송
-    if (window.gtag) window.gtag('event', 'booking_submit', { topic: form.topic, urgency: form.urgency, channel: form.channel });
+    if (window.gtag) window.gtag('event', 'booking_submit', { topic: form.topic, channel: form.channel });
     try {
       if (w3fKey && !w3fKey.includes('REPLACE')) {
         const res = await fetch('https://api.web3forms.com/submit', {
@@ -284,18 +283,6 @@ function JTBooking({ setRoute }) {
               ))}
             </div>
 
-            <div style={{marginTop: 40}}>
-              <div className="jt-field">
-                <label>긴급도 <em>URGENCY</em></label>
-                <div className="jt-chips">
-                  {['일반', '조사 통지 받음', '마감 임박', '기타 긴급'].map((u) => (
-                    <button key={u} type="button" className={`jt-chip ${form.urgency === u ? 'is-active' : ''}`} onClick={() => setForm({...form, urgency: u})}>
-                      {u}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
 
             <div style={{marginTop: 56, display: 'flex', justifyContent: 'flex-end', gap: 12}}>
               <button className="jt-btn jt-btn--primary jt-btn--lg" disabled={!canNext1} onClick={() => setStep(2)} style={{opacity: canNext1 ? 1 : .4, cursor: canNext1 ? 'pointer' : 'not-allowed'}}>
@@ -356,7 +343,6 @@ function JTBooking({ setRoute }) {
               <dl style={{margin: 0, display: 'grid', gridTemplateColumns: '140px 1fr', gap: '18px 24px'}}>
                 {[
                   ['Topic', form.topic],
-                  ['Urgency', form.urgency],
                   ['Name', form.name],
                   ['Company', form.company || '—'],
                   ['Email', form.email || '—'],

@@ -131,7 +131,7 @@ window.JT_DATA = {
     { code: 'KGB', photo: 'project/assets/team-kgb.jpg', role: '회장', kr: '김기복 세무사', focus: '국세 행정 39년 · 세무조사·조세불복 자문', career: '前 송파세무서장 · 서울지방국세청 감사관 · 국세청 법인세과' },
     { code: 'KMS', photo: 'project/assets/team-kms.jpg', role: '대표세무사', kr: '김민석 세무사', focus: '재산세제 · 조세불복 · 주식평가', career: '제53회 세무사 · 공인중개사 · 국민대 공법학' },
     { code: 'LHJ', photo: 'project/assets/team-lhj.jpg', role: '대표세무사', kr: '이현준 세무사', focus: '공무원학원 세법 강의 · 가상자산 세제 · 자문', career: '해커스공무원 세법 강사 · 동남보건대 겸임교수 · 성균관대 EMBA' },
-    { code: 'KGH', photo: 'project/assets/team-kgh.jpg', role: '대표세무사', kr: '김가환 세무사', focus: '법인 회계·기장 · 결산 실무', career: '수원대 회계학과 · 법인 회계 실무 경력' },
+    { code: 'KGH', photo: 'project/assets/team-kgh.jpg', role: '대표세무사', kr: '김가환 세무사', focus: '법인·개인 결산 조정 · 기장 실무', career: '수원대 회계학과 · 법인 회계 실무 경력' },
   ],
 
   // 서비스 5개 분야
@@ -241,6 +241,13 @@ window.JT_DATA = {
         photo: 'project/assets/team-kms.jpg',
         titleKr: '재산세제 · 조세불복 · 주식평가',
         summary: '국민대 공법학 전공의 법학적 시각으로 재산세제와 조세불복 실무를 다룹니다. 부동산 보유세 검토·경정청구, 주식평가 및 기업진단을 전문으로 합니다.',
+        scope: [
+          '상속세·증여세 신고 및 사전 자산 이전 설계',
+          '양도소득세 검토 (비과세 요건·다주택)',
+          '조세불복(이의신청·심판청구) 및 경정청구',
+          '비상장주식 평가·기업진단',
+          '부동산 보유세(재산세·종합부동산세) 검토',
+        ],
         education: [
           { y: '졸업', t: '국민대학교 공법학과' },
           { y: '졸업', t: '경주고등학교' },
@@ -266,6 +273,12 @@ window.JT_DATA = {
         photo: 'project/assets/team-lhj.jpg',
         titleKr: '공무원학원 세법 강사 · 대학 겸임교수 · 가상자산 세제',
         summary: '해커스공무원 세법 강사, 동남보건대학교 세무회계학과 겸임교수. 세법 기본서·구조노트·가상자산 과세 가이드의 저자입니다.',
+        scope: [
+          '가상자산(코인) 과세 자문 및 신고',
+          '신종업종(크리에이터·플랫폼 사업자) 세무',
+          '세법 리스크 진단·세무 자문',
+          '종합소득세 신고 및 절세 설계',
+        ],
         education: [
           { y: '졸업', t: '성균관대학교 경영전문대학원(EMBA) 석사' },
           { y: '졸업', t: '경복고등학교' },
@@ -296,8 +309,14 @@ window.JT_DATA = {
         role: 'MANAGING PARTNER · 대표세무사',
         name: '김가환',
         photo: 'project/assets/team-kgh.jpg',
-        titleKr: '법인 회계·기장 · 결산 실무',
-        summary: '실무 경리·회계 경험을 바탕으로 법인 기장·결산 실무를 책임지는 대표세무사입니다.',
+        titleKr: '법인·개인 결산 조정 · 기장 실무',
+        summary: '법인과 개인사업자의 결산·세무조정, 기장 실무를 책임지는 대표세무사입니다. 정확한 결산이 절세의 출발점입니다.',
+        scope: [
+          '법인 결산 및 세무조정',
+          '개인사업자 결산·종합소득세 신고',
+          '월별 기장·장부 작성 및 관리',
+          '부가가치세 신고',
+        ],
         education: [
           { y: '졸업', t: '수원대학교 회계학과' },
           { y: '졸업', t: '서문여자고등학교' },
