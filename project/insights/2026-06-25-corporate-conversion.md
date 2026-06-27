@@ -9,7 +9,7 @@ author: "제이티 세무법인"
 
 ## 들어가며
 
-"사업이 잘되면 법인으로 바꿔라"는 말, 반은 맞고 반은 함정입니다. 법인세율이 개인 소득세율보다 낮은 건 사실이지만, 법인 통장의 돈을 내 돈처럼 쓰려면 세금이 한 번 더 붙습니다. 개인사업자와 법인 중 어느 쪽이 유리한지는 '세율'이 아니라 '내 숫자'로 따져야 합니다. 판단의 뼈대와, 직접 비교하는 법까지 정리합니다.
+"사업이 잘되면 법인으로 바꿔라"는 말, 반은 맞고 반은 함정입니다. 법인세율이 개인 소득세율보다 낮은 건 사실이지만, 법인 통장의 돈을 내 돈처럼 쓰려면 세금이 한 번 더 붙습니다. 개인사업자와 법인 중 어느 쪽이 유리한지는 '세율'이 아니라 '내 숫자'로 따져야 합니다. 판단의 뼈대와, 직접 비교하는 법까지 정리합니다. 어느 쪽이 유리한지는 사람마다 다르지만, 다행히 내 경우는 두 숫자만 넣으면 5초 만에 확인할 수 있습니다.
 
 ## 세율 구조부터 다르다
 
@@ -77,6 +77,13 @@ author: "제이티 세무법인"
 
 머릿속 추측 대신 숫자로 보면 가장 빠릅니다. 제이티 세무법인 홈페이지의 [법인 전환 시뮬레이터](/#/report/corporate)는 단 두 가지 숫자로 개인과 법인의 세부담을 즉시 비교합니다.
 
+<div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
+<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
+<div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">법인 전환 시뮬레이터</div>
+<div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">작년 사업 이익과 대표 연봉, 두 숫자만 넣으면<br/>개인(종합소득세)과 법인(법인세＋대표 급여) 세부담을 즉시 비교</div>
+<a href="/#/report/corporate" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">내 세금 5초 만에 비교하기 →</a>
+</div>
+
 - **① 작년 사업 이익을 넣습니다.** 매출이 아니라 비용을 뺀 '이익'(사업소득금액)입니다. 종합소득세 신고서의 소득금액을 그대로 옮겨 적으면 됩니다.
 - **② 대표 연봉을 정해 넣습니다.** 법인으로 바꾸면 대표도 회사에서 월급을 받습니다. 그만큼은 법인의 비용으로 빠지고 대표 개인에게는 근로소득세가 매겨집니다.
 - **③ 두 세부담을 나란히 봅니다.** '개인 유지 시 종합소득세'와 '법인 전환 시 법인세 + 대표 급여 근로소득세'를 한자리에서 비교해 줍니다.
@@ -107,3 +114,10 @@ author: "제이티 세무법인"
 ## 마치며
 
 법인 전환은 "세율이 낮으니 무조건 이득"이 아니라, 내 이익 규모·생활비로 빼는 금액·향후 계획을 모두 넣어야 답이 나옵니다. 먼저 [법인 전환 시뮬레이터](/#/report/corporate)로 내 숫자를 비교해 윤곽을 잡고, 'A안과 B안 중 무엇이 맞는지' 헷갈리는 지점은 제이티 세무법인과의 상담으로 매듭짓는 것을 권합니다.
+
+<div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
+<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
+<div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">법인 전환 시뮬레이터</div>
+<div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">작년 사업 이익과 대표 연봉, 두 숫자만 넣으면<br/>개인(종합소득세)과 법인(법인세＋대표 급여) 세부담을 즉시 비교</div>
+<a href="/#/report/corporate" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">내 세금 5초 만에 비교하기 →</a>
+</div>
