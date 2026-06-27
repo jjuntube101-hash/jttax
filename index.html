@@ -111,8 +111,8 @@
   <!-- 세액계산 엔진(검증된 jt-tax-engine) 주소 — JT 리포트 계산기가 호출 -->
   <script>window.JT_ENGINE_BASE = 'https://jt-tax-engine.fly.dev';</script>
 
-  <link rel="stylesheet" href="project/src/styles.css?v=20">
-  <link rel="stylesheet" href="project/src/redesign.css?v=22">
+  <link rel="stylesheet" href="project/src/styles.css?v=21">
+  <link rel="stylesheet" href="project/src/redesign.css?v=28">
 </head>
 <body>
   <div id="root"></div>
@@ -123,9 +123,9 @@
 
   <script type="text/babel" src="project/src/Data.jsx?v=22"></script>
   <script type="text/babel" src="project/src/Chrome.jsx?v=22"></script>
-  <script type="text/babel" src="project/src/Home.jsx?v=20"></script>
-  <script type="text/babel" src="project/src/Pages1.jsx?v=20"></script>
-  <script type="text/babel" src="project/src/Pages2.jsx?v=20"></script>
+  <script type="text/babel" src="project/src/Home.jsx?v=27"></script>
+  <script type="text/babel" src="project/src/Pages1.jsx?v=21"></script>
+  <script type="text/babel" src="project/src/Pages2.jsx?v=21"></script>
   <script type="text/babel" src="project/src/Legal.jsx?v=20"></script>
   <script type="text/babel" src="project/src/Report.jsx?v=33"></script>
   <script type="text/babel" src="project/src/ReportConvert.jsx?v=20"></script>
@@ -174,8 +174,8 @@
 
     const TWEAK_DEFAULTS = {
       "servicesLayout": "grid",
-      "showQuote": true,
-      "showProof": true
+      "showQuote": false,
+      "showProof": false
     };
 
     function App() {
@@ -285,6 +285,7 @@
                 <JTBrandMoment />
                 <JTCreds />
                 <JTStats />
+                <JTReportHome setRoute={setRoute} />
                 <JTServicesGrid setRoute={setRoute} detailOpen={detailOpen} setDetailOpen={setDetailOpen} variant={tweaks.servicesLayout} />
                 <JTTeamPreview setRoute={setRoute} />
                 {tweaks.showQuote && <JTQuote />}
