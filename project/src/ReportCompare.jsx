@@ -55,8 +55,8 @@ const CMP_QS = [
   {
     id: 'recipient', section: '받는 사람',
     q: '누구에게 넘기려 하나요?',
-    sub: '가장 흔한 경우는 자녀입니다. 받는 사람에 따라 증여공제·세율이 달라집니다.',
-    opts: [['child', '자녀에게', '직계비속'], ['spouse', '배우자에게', '']],
+    sub: '받는 사람에 따라 증여공제·세율이 달라집니다. 미성년 자녀는 증여공제가 5천만 → 2천만으로 줄어 증여세가 늘어납니다.',
+    opts: [['child_adult', '자녀에게 (성년)', '만 19세 이상'], ['child_minor', '자녀에게 (미성년)', '만 19세 미만'], ['spouse', '배우자에게', '']],
   },
   {
     id: 'hasSpouse', section: '상속 비교용',
@@ -182,6 +182,7 @@ function JTReportCompare({ setRoute, onBack }) {
         acquisition_price: clamp(answers.acquisitionPrice),
         owner_housing_count: clamp(answers.housingCount) || 1,
         relationship: answers.recipient === 'spouse' ? '배우자' : '직계존속',
+        recipient_age: answers.recipient === 'child_minor' ? 10 : 30,   // 미성년(만19세 미만)→엔진이 §53②단서 2천만 공제 적용
         has_spouse: answers.hasSpouse !== 'no',
         num_children: clamp(answers.numChildren),   // 필수 입력(0 허용) — 침묵 기본값 제거
         other_estate_value: clamp(answers.otherEstate),
@@ -267,7 +268,7 @@ function JTReportCompare({ setRoute, onBack }) {
                 </div>
 
                 <div style={{ marginTop: 12, fontSize: 13, lineHeight: 1.6, color: '#b8860b' }}>※ <strong>세금(세액)만 비교한 추정</strong>입니다. 금액이 가장 적은 방법이 곧 정답은 아니에요 — 방법마다 「세금 외」 함정(증여 이월과세·매매 증여추정·상속 시점 등)과 실행가능성·자금 사정이 있어, 이 숫자만으로 결정하면 안 됩니다.</div>
-                <div style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.65, color: '#8a6d3b' }}>· <strong>매매(양도세)</strong>는 입력하신 보유기간 기준이며 <strong>비조정대상지역</strong>으로 가정했습니다(조정지역이면 중과될 수 있어요).<br/>· <strong>증여공제</strong>는 <strong>성년 자녀</strong> 기준입니다(미성년 자녀면 공제가 5천만→2천만으로 줄어 증여세가 늘어요).</div>
+                <div style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.65, color: '#8a6d3b' }}>· <strong>매매(양도세)</strong>는 입력하신 보유기간 기준이며 <strong>비조정대상지역</strong>으로 가정했습니다(조정지역이면 중과될 수 있어요).</div>
               </div>
 
               {/* 🔒 프리미엄 게이트 (옵션 B) — 세목별 상세·2차효과 설명·맞춤 전략은 상담에서 */}
