@@ -167,33 +167,33 @@ function JTReportHub({ setRoute, setSubRoute }) {
         </div>
       </section>
 
-      {/* ★ 프리미엄 전략 도구 — 단순 계산을 넘어, 절세 전략 (핵심 차별화) */}
-      <section className="jt-section jt-report-grid" style={{ background: 'linear-gradient(180deg,#15140f 0%,#1c1a13 100%)', borderTop: '1px solid rgba(176,123,58,.28)', borderBottom: '1px solid rgba(176,123,58,.28)' }}>
+      {/* ★ 프리미엄 전략 도구 — 밝은 골드 톤(검정 히어로·흰 무료섹션 사이에서 돋보이게) */}
+      <section className="jt-section jt-report-grid" style={{ background: 'linear-gradient(180deg,#f6efe0 0%,#fcf9f3 100%)', borderTop: '3px solid #c9a25e' }}>
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(176,123,58,.16)', border: '1px solid rgba(176,123,58,.4)', color: '#d9a85a', fontSize: 12.5, fontWeight: 800, letterSpacing: '.04em', marginBottom: 14 }}>★ JT 절세 전략 도구</div>
-            <h2 style={{ color: '#fff' }}>단일 계산을 넘어, 「가장 유리한 길」을 찾습니다</h2>
-            <p style={{ color: 'rgba(255,255,255,.68)' }}>증여·양도·상속·취득세를 <strong style={{ color: '#e9c890' }}>한 번에 비교·최적화</strong> — 다른 곳에서 못 하는 멀티세목 전략입니다. 숫자는 무료로 보여드리고, 「안전하게 절세하는 실제 전략」은 국세청 출신 세무사가 직접 설계합니다.</p>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 14px', borderRadius: 999, background: 'rgba(176,123,58,.14)', border: '1px solid rgba(176,123,58,.5)', color: '#8a6224', fontSize: 12.5, fontWeight: 800, letterSpacing: '.04em', marginBottom: 14 }}>★ JT 절세 전략 도구 · 프리미엄</div>
+            <h2>단일 계산을 넘어, 「가장 유리한 길」을 찾습니다</h2>
+            <p>증여·양도·상속·취득세를 <strong style={{ color: '#8a6224' }}>한 번에 비교·최적화</strong> — 다른 곳에서 못 하는 멀티세목 전략입니다. 숫자는 무료로 보여드리고, 「안전하게 절세하는 실제 전략」은 국세청 출신 세무사가 직접 설계합니다.</p>
           </div>
           <div className="jt-report-live-grid">
             {premium.map((r, i) => (
               <article
                 key={r.sub}
                 className="jt-report-live reveal"
-                style={{ background: 'linear-gradient(155deg,#262219 0%,#19170f 100%)', border: '1px solid rgba(176,123,58,.5)', boxShadow: '0 10px 34px rgba(0,0,0,.4)', transitionDelay: `${i * 60}ms`, cursor: 'pointer' }}
+                style={{ background: '#fff', border: '1.5px solid rgba(176,123,58,.55)', borderTop: '4px solid #c9a25e', boxShadow: '0 12px 30px rgba(140,100,40,.16)', transitionDelay: `${i * 60}ms`, cursor: 'pointer' }}
                 onClick={() => setSubRoute(r.sub)}
                 role="button" tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSubRoute(r.sub); } }}
               >
                 <div className="jt-report-live__top">
-                  <span style={{ color: '#d9a85a', fontWeight: 800, fontSize: 12, letterSpacing: '.05em' }}>절세 전략</span>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#d9a85a', fontSize: 11.5, fontWeight: 700 }}><span style={{ width: 6, height: 6, borderRadius: 999, background: '#d9a85a' }} />세무사 상담 연계</span>
+                  <span style={{ color: '#8a6224', fontWeight: 800, fontSize: 12, letterSpacing: '.05em' }}>절세 전략</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#8a6224', fontSize: 11.5, fontWeight: 700 }}><span style={{ width: 6, height: 6, borderRadius: 999, background: '#c9a25e' }} />세무사 상담 연계</span>
                 </div>
-                <h3 style={{ color: '#fff' }}>{r.kr}</h3>
-                <div style={{ color: '#e9c890', fontSize: 12.5, fontWeight: 700, marginTop: -4, marginBottom: 8 }}>{r.tagline}</div>
-                <p className="jt-report-live__d" style={{ color: 'rgba(255,255,255,.72)' }}>{r.d}</p>
+                <h3>{r.kr}</h3>
+                <div style={{ color: '#a07a32', fontSize: 12.5, fontWeight: 700, marginTop: -4, marginBottom: 8 }}>{r.tagline}</div>
+                <p className="jt-report-live__d">{r.d}</p>
                 <div className="jt-report-live__foot">
-                  <span className="jt-report-live__cta" style={{ color: '#d9a85a' }}>전략 보기 <span className="jt-arrow">→</span></span>
+                  <span className="jt-report-live__cta" style={{ color: '#8a6224' }}>전략 보기 <span className="jt-arrow">→</span></span>
                 </div>
               </article>
             ))}
