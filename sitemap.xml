@@ -79,6 +79,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/acquisition-tax-rate-guide.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/burdened-gift.html</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -86,6 +92,18 @@
   </url>
   <url>
     <loc>https://www.jttax.co.kr/insights/capital-gains-tax-traps.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/comprehensive-income-tax-2026.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/comprehensive-real-estate-tax-2026.html</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -145,6 +163,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/net-salary-2026.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/one-house-cgt-exemption.html</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -152,6 +176,12 @@
   </url>
   <url>
     <loc>https://www.jttax.co.kr/insights/property-holding-tax-june1.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/property-tax-2026-calculation.html</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
