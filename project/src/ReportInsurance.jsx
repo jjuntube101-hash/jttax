@@ -41,8 +41,8 @@ const INS_QS = [
   {
     id: 'children',
     section: '부양가족',
-    q: '그중 13세 이상 자녀는 몇 명인가요?',
-    sub: '13세 이상~20세 이하 자녀 수(자녀세액공제, 소득세법 §59의2 · 2026.4.21 시행 13세 상향). 12세 이하는 대상 아님. 세금에만 반영됩니다. 없으면 0.',
+    q: `그중 ${window.jtLaw('childTaxCredit.minAge', 13)}세 이상 자녀는 몇 명인가요?`,
+    sub: `${window.jtLaw('childTaxCredit.minAge', 13)}세 이상~${window.jtLaw('childTaxCredit.maxAge', 20)}세 이하 자녀 수(자녀세액공제, 소득세법 §59의2 · 2026.4.21 시행 ${window.jtLaw('childTaxCredit.minAge', 13)}세 상향). ${window.jtLaw('childTaxCredit.minAge', 13) - 1}세 이하는 대상 아님. 세금에만 반영됩니다. 없으면 0.`,
     numeric: true, optional: true,
     placeholder: '예: 0 (없으면 0)',
   },
