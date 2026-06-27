@@ -112,7 +112,7 @@
   <script>window.JT_ENGINE_BASE = 'https://jt-tax-engine.fly.dev';</script>
 
   <link rel="stylesheet" href="project/src/styles.css?v=21">
-  <link rel="stylesheet" href="project/src/redesign.css?v=28">
+  <link rel="stylesheet" href="project/src/redesign.css?v=34">
 </head>
 <body>
   <div id="root"></div>
@@ -123,7 +123,7 @@
 
   <script type="text/babel" src="project/src/Data.jsx?v=22"></script>
   <script type="text/babel" src="project/src/Chrome.jsx?v=22"></script>
-  <script type="text/babel" src="project/src/Home.jsx?v=27"></script>
+  <script type="text/babel" src="project/src/Home.jsx?v=29"></script>
   <script type="text/babel" src="project/src/Pages1.jsx?v=21"></script>
   <script type="text/babel" src="project/src/Pages2.jsx?v=21"></script>
   <script type="text/babel" src="project/src/Legal.jsx?v=20"></script>
@@ -281,16 +281,15 @@
           <main className="jt-main">
             {route === 'home' && (
               <div>
-                <JTHero setRoute={setRoute} />
                 <JTBrandMoment />
+                <JTHero setRoute={setRoute} />
                 <JTCreds />
-                <JTStats />
                 <JTReportHome setRoute={setRoute} />
-                <JTServicesGrid setRoute={setRoute} detailOpen={detailOpen} setDetailOpen={setDetailOpen} variant={tweaks.servicesLayout} />
-                <JTTeamPreview setRoute={setRoute} />
+                <JTTeaserBand kicker="SERVICES · 업무분야" title="근거에 기반한 다섯 개 전문 영역." sub={window.JT_DATA.services.map(s => s.kr).join('   ·   ')} ctaLabel="전체 업무분야 보기" onGo={() => setRoute('services')} />
+                <JTTeaserBand kicker="TEAM · 담당 세무사" title="회장 1인과 대표세무사 3인." sub="국세 행정 39년의 회장과 분야별 대표세무사가 각자의 전문 영역에서 직접 맡습니다." ctaLabel="전문가 소개 보기" onGo={() => setRoute('about', 'team')} />
                 {tweaks.showQuote && <JTQuote />}
                 {tweaks.showProof !== false && <JTProof setRoute={setRoute} />}
-                <JTInsightsPreview setRoute={setRoute} limit={4} />
+                <JTInsightsPreview setRoute={setRoute} limit={3} />
                 <JTChannels setRoute={setRoute} />
                 <JTFaq setRoute={setRoute} />
                 <JTCta setRoute={setRoute} />
@@ -307,6 +306,10 @@
             {route === 'terms' && <div><JTLegal kind="terms" setRoute={setRoute} /></div>}
           </main>
           <JTFooter setRoute={setRoute} />
+          <svg className="jt-logomark-fix" viewBox="138 201 156 102" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0V-83.221L-17.231-65.99H-42.95V-98.204L9.612-98.174 32.154-75.119 32.213 0Z" transform="matrix(1,0,0,-1,182.414,203.14209)" />
+            <path d="M0 0-48.285-.03-70.827-23.085-70.887-98.204H-38.673V-49.563L-56.021-32.215H0Z" transform="matrix(1,0,0,-1,291.8127,203.14209)" />
+          </svg>
           <JTMobileCta setRoute={setRoute} route={route} />
 
           {editMode && (

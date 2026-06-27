@@ -814,33 +814,32 @@
   stroke: #fff; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round;
   stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke;
 }
+/* 심볼(2) → 한글(7) → 영문(10) 순차 외곽선 트레이스 + 채움 + 외곽선 소거 — ★1회만(진입 시) */
 @keyframes jt-bm-stroke   { to { stroke-dashoffset: 0; } }
 @keyframes jt-bm-fillin   { to { fill-opacity: 1; } }
 @keyframes jt-bm-strokeout{ to { stroke-opacity: 0; } }
-
-/* 심볼(2) → 한글(7) → 영문(10) 순차 외곽선 트레이스 + 채움 + 외곽선 소거 */
 .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--symbol path{
   animation: jt-bm-stroke .85s ease-out both, jt-bm-fillin .45s .72s both, jt-bm-strokeout .3s 1.05s both;
 }
 .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--korean path{
   animation: jt-bm-stroke .72s .32s ease-out both, jt-bm-fillin .4s .98s both, jt-bm-strokeout .3s 1.3s both;
 }
-.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--latin path{
+.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--latin  path{
   animation: jt-bm-stroke .72s .52s ease-out both, jt-bm-fillin .4s 1.16s both, jt-bm-strokeout .3s 1.5s both;
 }
 
-/* 다 그려진 직후 '확' 빛남 → 정지 시 은은한 호흡 (로고 전체 글로우) */
+/* 다 그려진 직후 한 번 '확' → 이후 '은은한 글로우 펄스' (로고는 그대로, 빛만 ~3.4초마다 번짐, 재드로 X) */
 @keyframes jt-bm-logo-flash{
   0%   { filter: brightness(1)   drop-shadow(0 0 0 rgba(255,255,255,0)); }
-  30%  { filter: brightness(1.5) drop-shadow(0 0 70px rgba(255,255,255,.8)); }
+  30%  { filter: brightness(1.4) drop-shadow(0 0 60px rgba(255,255,255,.7)); }
   100% { filter: brightness(1)   drop-shadow(0 0 0 rgba(255,255,255,0)); }
 }
-@keyframes jt-bm-logo-aura{
-  0%,100% { filter: drop-shadow(0 0 4px rgba(255,255,255,.05)); }
-  50%     { filter: drop-shadow(0 0 38px rgba(255,255,255,.3)); }
+@keyframes jt-bm-logo-pulse{
+  0%,100% { filter: brightness(1)    drop-shadow(0 0 5px  rgba(255,255,255,.10)); }
+  45%     { filter: brightness(1.25) drop-shadow(0 0 52px rgba(255,255,255,.65)); }
 }
 .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-logosvg{
-  animation: jt-bm-logo-flash 1.0s 1.5s both, jt-bm-logo-aura 5.5s ease-in-out 2.5s infinite;
+  animation: jt-bm-logo-flash 1.0s 1.5s both, jt-bm-logo-pulse 3s ease-in-out 2.4s infinite;
 }
 
 /* 슬로건: 아주 크게서 '쾅' + 착지 되튐 — 로고 그려진 뒤 순차 */
@@ -889,3 +888,39 @@
   .jt-bm-logosvg path{ fill-opacity: 1 !important; stroke-opacity: 0 !important; stroke-dashoffset: 0 !important; }
   .jt-brandmoment::before{ opacity: .45 !important; transform: translate(-50%,-50%) scale(1) !important; }
 }
+
+/* ===================================================================
+   상시 노출 로고마크 — 좌하단 고정 JT 심볼 (은은·배경 따라 자동 대비)
+   difference 블렌드로 다크/라이트 어디서나 보임. 모바일은 sticky CTA 충돌 방지로 숨김.
+   =================================================================== */
+.jt-logomark-fix{
+  position: fixed; left: clamp(16px, 2.2vw, 28px); bottom: clamp(14px, 2vw, 22px);
+  z-index: 40; pointer-events: none;
+  width: clamp(30px, 3.4vw, 44px); height: auto;
+  fill: #808080; opacity: .6;   /* 투명 SVG·은은한 회색 — 라이트/다크 양쪽서 보임, 박스 없음 */
+}
+@media (max-width: 820px){ .jt-logomark-fix{ display: none; } }
+
+/* ===================================================================
+   티저 밴드 — 홈 하단 임팩트 요약(큰 헤드라인 + 한 줄 요약 + 더보기 → 페이지)
+   카드 그리드 대신 짧고 강한 밴드. 클릭=페이지 이동.
+   =================================================================== */
+.jt-teaser{
+  padding: clamp(64px, 9vw, 116px) 24px;
+  border-top: 1px solid var(--border-1);
+}
+.jt-teaser__inner{ max-width: 1100px; margin: 0 auto; cursor: pointer; }
+.jt-teaser .jt-kicker{ margin-bottom: 16px; }
+.jt-teaser__h{
+  font-family: var(--font-sans-kr); font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.1;
+  font-size: clamp(28px, 5vw, 60px); color: var(--fg-1);
+  margin: 0 0 18px; word-break: keep-all;
+}
+.jt-teaser__sub{
+  font-size: clamp(15px, 1.6vw, 19px); line-height: 1.6; color: var(--fg-2);
+  margin: 0 0 24px; max-width: 840px; word-break: keep-all;
+}
+.jt-teaser__more{ font-size: 15px; font-weight: 700; }
+.jt-teaser__inner:hover .jt-teaser__more,
+.jt-teaser__inner:focus-visible .jt-teaser__more{ text-decoration: underline; }

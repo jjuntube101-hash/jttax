@@ -159,6 +159,22 @@ function JTReportHome({ setRoute }) {
 }
 window.JTReportHome = JTReportHome;
 
+// ============ 티저 밴드 (홈 요약 → 더보기 페이지) ============
+function JTTeaserBand({ kicker, title, sub, ctaLabel, onGo }) {
+  return (
+    <section className="jt-teaser">
+      <div className="jt-teaser__inner reveal" role="link" tabIndex={0}
+        onClick={onGo}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onGo(); } }}>
+        <div className="jt-kicker">{kicker}</div>
+        <h2 className="jt-teaser__h">{title}</h2>
+        <p className="jt-teaser__sub">{sub}</p>
+        <span className="jt-link jt-teaser__more">{ctaLabel} <span className="jt-arrow">→</span></span>
+      </div>
+    </section>);
+}
+window.JTTeaserBand = JTTeaserBand;
+
 // ============ Hook Ticker (infinite marquee) ============
 function JTTicker() {
   const hooks = window.JT_DATA.hooks || [];
@@ -374,9 +390,11 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
           {all.slice(0, 4).map((s, i) =>
         <article
           key={s.num}
-          className={`jt-service reveal ${detailOpen === i ? 'is-open' : ''}`}
+          className="jt-service reveal"
           data-delay={Math.min(i, 4)}
-          onClick={() => setDetailOpen(detailOpen === i ? null : i)}>
+          role="link" tabIndex={0}
+          onClick={() => setRoute('services')}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRoute('services'); } }}>
           
               <header className="jt-service__head">
                 <span>{s.num} · {s.en}</span>
@@ -576,7 +594,7 @@ window.JTChannels = JTChannels;
 
 // ============ FAQ (자주 묻는 질문) ============
 function JTFaq({ setRoute }) {
-  const items = window.JT_DATA.faq || [];
+  const items = (window.JT_DATA.faq || []).slice(0, 4);
   const [open, setOpen] = useStateHome(-1);
   if (!items.length) return null;
   return (
