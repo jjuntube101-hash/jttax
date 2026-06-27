@@ -130,6 +130,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
   // 사업자·법인 도구 (라이브) — 부동산 6종과 별도 분리
   const bizTools = [
     { kr: '종합소득세 계산기', cat: '종소세', d: '사업·프리랜서·근로 소득을 합산해 내 종합소득세를 검증 엔진으로 계산합니다. 인적공제·자녀·연금저축 세액공제까지 반영해요.', sub: 'income', cta: '계산하기' },
+    { kr: '부가가치세 계산기', cat: '부가세', d: '일반·간이과세자 매출·매입만 넣으면 낼 부가세(또는 환급액)를 바로 계산합니다. 신용카드·매입세액 공제와 신고기한까지 안내해요.', sub: 'vat', cta: '계산하기' },
     { kr: '4대보험·실수령 계산기', cat: '급여', d: '세전 월 급여만 넣으면 국민연금·건강보험·장기요양·고용보험과 세금을 떼고 실수령액을 즉시 계산합니다(2026 요율).', sub: 'insurance', cta: '계산하기' },
     { kr: '법인 전환 시뮬레이터', cat: '법인', d: '개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세) 세부담을 검증 엔진으로 바로 비교합니다.', sub: 'corporate', cta: '비교하기' },
   ];
@@ -271,7 +272,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
 window.JTReportHub = JTReportHub;
 
 // ============ 라우터 (허브 ↔ 각 진단) ============
-const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance'];
+const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance'];
 const jtNormSub = (s) => (JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : 'hub'); // 모르는 계산기 키 → 허브 (깨진 공유링크 방어)
 
 function JTReportPage({ setRoute }) {
@@ -340,6 +341,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'comprehensive' && <JTReportComprehensive setRoute={setRoute} onBack={back} />}
       {subRoute === 'corporate' && <JTReportCorporate setRoute={setRoute} onBack={back} />}
       {subRoute === 'insurance' && <JTReportInsurance setRoute={setRoute} onBack={back} />}
+      {subRoute === 'vat' && <JTReportVat setRoute={setRoute} onBack={back} />}
     </div>
   );
 }
