@@ -118,13 +118,16 @@ window.JTReportShell = JTReportShell;
 
 // ============ 허브 랜딩 ============
 function JTReportHub({ setRoute, setSubRoute }) {
-  // 지금 쓸 수 있는 라이브 6종 (부동산 세금) — 동등 그리드
+  // ★ JT 절세 전략 도구 (프리미엄·핵심 차별화) — 여러 세금을 엮어 「가장 유리한 길」 탐색 + 세무사 상담 연계
+  const premium = [
+    { kr: '처분방법 비교', tagline: '증여 vs 매매 vs 상속', d: '집·자산을 자녀에게 「팔까(매매)·증여할까·상속할까」 — 세 방법의 세금(증여·양도·상속·취득세)을 같은 부동산 기준으로 한 번에 비교하고, 가장 유리한 길을 찾습니다.', sub: 'compare' },
+    { kr: '부담부증여 최적화', tagline: '채무비율 시뮬레이션', d: '자녀·배우자에게 부동산을 증여할 때 「빚(전세·대출)을 얼마나 끼우면」 세금이 최소인지 — 채무비율별 총세금을 시뮬레이션해 절세 여력을 보여줍니다.', sub: 'burden' },
+  ];
+  // 무료 부동산 세금 계산기 (단일 세목) — 동등 그리드
   const live = [
     { kr: '양도소득세', cat: '양도', d: '집·부동산을 팔 때 — 1세대1주택 비과세·일시적2주택·입주권·장기보유특별공제·다주택 중과까지 검증 엔진으로 계산합니다.', sub: 'cgt' },
     { kr: '증여세', cat: '증여', d: '관계·금액·부담부증여(빚도 함께 넘기는 증여)까지. 부동산은 주소로 공시가격을 조회합니다.', sub: 'gift' },
     { kr: '상속세', cat: '상속', d: '배우자·자녀 공제, 채무·장례비·금융재산공제와 10년 내 사전증여 합산까지 계산합니다.', sub: 'inheritance' },
-    { kr: '처분방법 비교', cat: '자산이전', d: '집·자산을 자녀에게 「팔까(매매)·증여할까·상속할까」 — 세 방법의 세금(증여세·양도세·상속세·취득세)을 같은 부동산 기준으로 한 번에 비교합니다.', sub: 'compare' },
-    { kr: '부담부증여 최적화', cat: '자산이전', d: '자녀·배우자에게 부동산을 증여할 때 「빚(전세·대출)을 얼마나 끼우면」 세금이 최소인지 — 채무비율별 총세금(증여·양도·취득세)을 시뮬레이션해 절세 여력을 보여줍니다.', sub: 'burden' },
     { kr: '취득세', cat: '취득', d: '살 때(매매·증여·상속·신축) — 다주택 중과·조정지역·생애최초 감면·농특세·지방교육세까지.', sub: 'acquisition' },
     { kr: '재산세', cat: '보유', d: '집·건물·토지 보유 시 매년 — 공시가격·1세대1주택 특례·도시지역분·세부담 상한까지.', sub: 'property' },
     { kr: '종합부동산세', cat: '보유', d: '6월 1일 기준 주택 공시 합계 — 1세대1주택 12억·연령·보유 세액공제·다주택 중과·재산세 공제까지.', sub: 'comprehensive' },
@@ -164,11 +167,45 @@ function JTReportHub({ setRoute, setSubRoute }) {
         </div>
       </section>
 
-      {/* 지금 쓸 수 있는 라이브 6종 (부동산 세금) */}
+      {/* ★ 프리미엄 전략 도구 — 단순 계산을 넘어, 절세 전략 (핵심 차별화) */}
+      <section className="jt-section jt-report-grid" style={{ background: 'linear-gradient(180deg,#15140f 0%,#1c1a13 100%)', borderTop: '1px solid rgba(176,123,58,.28)', borderBottom: '1px solid rgba(176,123,58,.28)' }}>
+        <div className="jt-container">
+          <div className="jt-report-grid__head reveal">
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(176,123,58,.16)', border: '1px solid rgba(176,123,58,.4)', color: '#d9a85a', fontSize: 12.5, fontWeight: 800, letterSpacing: '.04em', marginBottom: 14 }}>★ JT 절세 전략 도구</div>
+            <h2 style={{ color: '#fff' }}>단일 계산을 넘어, 「가장 유리한 길」을 찾습니다</h2>
+            <p style={{ color: 'rgba(255,255,255,.68)' }}>증여·양도·상속·취득세를 <strong style={{ color: '#e9c890' }}>한 번에 비교·최적화</strong> — 다른 곳에서 못 하는 멀티세목 전략입니다. 숫자는 무료로 보여드리고, 「안전하게 절세하는 실제 전략」은 국세청 출신 세무사가 직접 설계합니다.</p>
+          </div>
+          <div className="jt-report-live-grid">
+            {premium.map((r, i) => (
+              <article
+                key={r.sub}
+                className="jt-report-live reveal"
+                style={{ background: 'linear-gradient(155deg,#262219 0%,#19170f 100%)', border: '1px solid rgba(176,123,58,.5)', boxShadow: '0 10px 34px rgba(0,0,0,.4)', transitionDelay: `${i * 60}ms`, cursor: 'pointer' }}
+                onClick={() => setSubRoute(r.sub)}
+                role="button" tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSubRoute(r.sub); } }}
+              >
+                <div className="jt-report-live__top">
+                  <span style={{ color: '#d9a85a', fontWeight: 800, fontSize: 12, letterSpacing: '.05em' }}>절세 전략</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#d9a85a', fontSize: 11.5, fontWeight: 700 }}><span style={{ width: 6, height: 6, borderRadius: 999, background: '#d9a85a' }} />세무사 상담 연계</span>
+                </div>
+                <h3 style={{ color: '#fff' }}>{r.kr}</h3>
+                <div style={{ color: '#e9c890', fontSize: 12.5, fontWeight: 700, marginTop: -4, marginBottom: 8 }}>{r.tagline}</div>
+                <p className="jt-report-live__d" style={{ color: 'rgba(255,255,255,.72)' }}>{r.d}</p>
+                <div className="jt-report-live__foot">
+                  <span className="jt-report-live__cta" style={{ color: '#d9a85a' }}>전략 보기 <span className="jt-arrow">→</span></span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 무료 부동산 세금 계산기 (단일 세목) */}
       <section className="jt-section jt-report-grid">
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
-            <h2>지금 무료로 쓸 수 있는 계산기</h2>
+            <h2>무료 부동산 세금 계산기</h2>
             <p>검증 엔진 · 로그인 없이 약 5분 · 결과로 바로 담당 세무사 상담</p>
           </div>
           <div className="jt-report-live-grid">
@@ -200,7 +237,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
       <section className="jt-section jt-report-grid">
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
-            <h2>내 소득세·급여 계산기</h2>
+            <h2>무료 소득세·급여 계산기</h2>
             <p>직장인·프리랜서·개인사업자라면 — 종합소득세·실수령액부터, 법인 전환이 유리한지까지 직접 계산해 보세요.</p>
           </div>
           <div className="jt-report-live-grid">
