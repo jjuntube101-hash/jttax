@@ -67,8 +67,8 @@ const CMP_QS = [
   {
     id: 'numChildren', section: '상속 비교용',
     q: '자녀는 몇 명인가요?',
-    sub: '상속 시 상속인 수와 공제에 영향을 줍니다.',
-    numeric: true, optional: true, placeholder: '예: 2',
+    sub: '상속 방법의 세금에 큰 영향을 줍니다 — 자녀가 많을수록 배우자 상속공제가 줄어 상속세가 늘어납니다. 자녀가 없으면 0을 넣어 주세요.',
+    numeric: true, allowZero: true, placeholder: '예: 2 (없으면 0)',
   },
   {
     id: 'otherEstate', section: '상속 비교용',
@@ -162,7 +162,13 @@ function JTReportCompare({ setRoute, onBack }) {
   const canNext = () => {
     if (!cur) return false;
     if (cur.freeform) return true;
-    if (cur.numeric) { if (cur.optional) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
+    if (cur.numeric) {
+      if (cur.optional) return true;
+      const raw = answers[cur.id];
+      if (raw === '' || raw === undefined || raw === null) return false;   // 빈칸=미상태(차단). '0'은 통과 — 미상태 vs 0 구분
+      const v = Number(raw);
+      return !isNaN(v) && (cur.allowZero ? v >= 0 : v > 0);
+    }
     return !!answers[cur.id];
   };
 
@@ -177,15 +183,17 @@ function JTReportCompare({ setRoute, onBack }) {
         owner_housing_count: clamp(answers.housingCount) || 1,
         relationship: answers.recipient === 'spouse' ? '배우자' : '직계존속',
         has_spouse: answers.hasSpouse !== 'no',
-        num_children: clamp(answers.numChildren) || (answers.recipient === 'spouse' ? 0 : 1),
+        num_children: clamp(answers.numChildren),   // 필수 입력(0 허용) — 침묵 기본값 제거
         other_estate_value: clamp(answers.otherEstate),
         property_type: '주택',
       };
       // 보유연수 → 취득일 산정 (매매 양도세의 최대 변수: 장특공제·단기세율)
-      const hy = clamp(answers.holdingYears);
-      if (hy > 0) {
-        const d = new Date(); d.setFullYear(d.getFullYear() - hy);
-        body.acquisition_date = d.toISOString().slice(0, 10);
+      // ★ raw 양수 그대로(반올림 금지 — 1년 미만 단기보유가 10년 기본값으로 둔갑 방지), 상한 100년, 명시 패딩(ISO slice 손상 방지)
+      const hyRaw = Math.min(100, Math.max(0, Number(answers.holdingYears) || 0));
+      if (hyRaw > 0) {
+        const d = new Date(); d.setMonth(d.getMonth() - Math.round(hyRaw * 12));
+        const pad = (x) => String(x).padStart(2, '0');
+        body.acquisition_date = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
       }
 
       let calc = { precise: false };
@@ -247,7 +255,8 @@ function JTReportCompare({ setRoute, onBack }) {
                     </div>
                   ))}
                 </div>
-                <div style={{ marginTop: 12, fontSize: 13, lineHeight: 1.6, color: '#b8860b' }}>※ <strong>세금(세액)만 비교한 추정</strong>입니다. 금액이 가장 적은 방법이 곧 정답은 아니에요 — 방법마다 「세금 외」 함정(증여 이월과세·매매 증여추정·상속 시점 등)과 실행가능성·자금 사정이 있어, 이 숫자만으로 결정하면 안 됩니다. 매매(양도세)는 입력하신 보유기간 기준이며 <strong>비조정대상지역</strong>으로 가정했습니다(조정지역이면 중과될 수 있어요).</div>
+                <div style={{ marginTop: 12, fontSize: 13, lineHeight: 1.6, color: '#b8860b' }}>※ <strong>세금(세액)만 비교한 추정</strong>입니다. 금액이 가장 적은 방법이 곧 정답은 아니에요 — 방법마다 「세금 외」 함정(증여 이월과세·매매 증여추정·상속 시점 등)과 실행가능성·자금 사정이 있어, 이 숫자만으로 결정하면 안 됩니다.</div>
+                <div style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.65, color: '#8a6d3b' }}>· <strong>매매(양도세)</strong>는 입력하신 보유기간 기준이며 <strong>비조정대상지역</strong>으로 가정했습니다(조정지역이면 중과될 수 있어요).<br/>· <strong>상속</strong>은 「현재 재산 기준 약 10년 뒤 사망」을 가정한 추정이라, 실제 사망 시점·사전증여 합산(10년)에 따라 크게 달라집니다.<br/>· <strong>증여공제</strong>는 <strong>성년 자녀</strong> 기준입니다(미성년 자녀면 공제가 5천만→2천만으로 줄어 증여세가 늘어요).</div>
               </div>
 
               {/* 🔒 프리미엄 게이트 (옵션 B) — 세목별 상세·2차효과 설명·맞춤 전략은 상담에서 */}
