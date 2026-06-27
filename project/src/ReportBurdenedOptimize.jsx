@@ -179,7 +179,7 @@ function JTReportBurden({ setRoute, onBack }) {
       try {
         const j = await callOptimizeEng(body);
         const c = j && j.calc;
-        if (c && Array.isArray(c['시뮬레이션결과']) && c['시뮬레이션결과'].length) {
+        if (c && Array.isArray(c['시뮬레이션결과']) && c['시뮬레이션결과'].length && (c['채무없는경우세액'] || 0) > 0) {
           calc.noDebt = c['채무없는경우세액'] || 0;
           calc.optTotal = c['최적총세부담'] || 0;   // 🔒 상담 리드캡처에만
           calc.optRatio = c['최적채무비율'] || 0;    // 🔒 상담 리드캡처에만
@@ -258,7 +258,7 @@ function JTReportBurden({ setRoute, onBack }) {
                 <section className="jt-report-result__section" style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '14px 18px' }}>
                   <p style={{ margin: '0 0 8px', fontWeight: 800, fontSize: 14, color: '#8a6d3b' }}>⚠️ 부담부증여, 이건 꼭 아셔야 합니다</p>
                   {calc.warnings.map((w, i) => (
-                    <p key={i} style={{ margin: '0 0 8px', fontSize: 13, lineHeight: 1.6, color: '#6b5524' }}>· {String(w).replace(/최적 채무비율\s*\(\s*\d+\s*%\s*\)/g, '이론적 최저 채무비율')}</p>
+                    <p key={i} style={{ margin: '0 0 8px', fontSize: 13, lineHeight: 1.6, color: '#6b5524' }}>· {String(w).replace(/최적\s*채무\s*비율\s*\(?\s*\d+(?:\.\d+)?\s*%\s*\)?/g, '이론적 최저 채무비율')}</p>
                   ))}
                 </section>
               )}
