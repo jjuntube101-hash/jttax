@@ -201,13 +201,13 @@ const GIFT_QS = [
   {
     id: 'priorGiftDed',
     section: '사전증여 이력',
-    q: '그때 적용받은 증여재산공제는? (모르면 비워두기 · 선택)',
-    sub: '사전증여 당시 적용받은 공제(예: 직계존비속 5천만·기타친족 1천만 등). 합산 시 이미 낸 증여세를 빼주는 한도(상증법 §58 납부세액공제) 계산에 쓰입니다. 모르면 비워도 됩니다 — 그 경우 0으로 보아 공제가 다소 적게 잡힐 수 있습니다.',
+    q: '그때 적용받은 증여재산공제는? (모르면 비우면 관계별 기본공제로 추정 · 선택)',
+    sub: '사전증여 당시 적용받은 공제(예: 직계존비속 5천만·기타친족 1천만 등). 합산 시 이미 낸 증여세를 빼주는 한도(상증법 §58 납부세액공제) 계산에 쓰입니다. ⚠️ 0으로 두면 이 사전증여세액공제가 과다 산정돼 현재 증여세가 실제보다 적게 나올 수 있어, 비워두면 0이 아니라 관계별 기본공제로 추정해 드립니다. 사전증여 당시 혼인·출산공제 등으로 공제가 더 컸다면 정확한 값을 입력하세요.',
     showIf: (a) => a.priorGiftHas === 'yes',
     numeric: true,
     money: true,
     optional: true,
-    placeholder: '예: 50,000,000 (모르면 비움)',
+    placeholder: '예: 50,000,000 (모르면 비우면 기본공제 추정)',
   },
   // ── 부담부증여 (부동산) ──
   {
@@ -282,6 +282,22 @@ const GIFT_QS = [
 /* ── 답변 → 엔진 요청 빌더 ───────────────────────────────────────── */
 function giftAmount(a) { return Number(a.giftValue || a.giftValueCash) || 0; }
 
+/* 사전증여 당시 공제액(deduction_used)을 산정한다. 입력값이 있으면 그대로,
+   비어 있으면 0이 아니라 관계기반 기본공제로 추정한다.
+   이유: deduction_used가 작을수록(=0) 사전증여 deemed 증여세산출세액이 커져 상증법 §58
+   납부세액공제가 과다 산정되고, 그만큼 현재 증여세가 실제보다 낮아진다(침묵 0 기본값이 세금을
+   낮추는 쪽). 빈칸을 관계별 기본공제(§53: 직계존속 5천만 등)로 추정하면 가장 흔한 동일인
+   재증여에서 실제와 일치하고, 어긋나더라도 세금을 낮추지 않는 보수적 방향이 된다. 공제는
+   사전증여가액을 넘을 수 없어 캡한다. 사용자가 0을 명시 입력하면(비친족 등) 그 값을 존중한다.
+   근거: 상증법 §58①(납부세액공제=증여 당시 증여세산출세액) · §53(증여재산공제). */
+function priorGiftDeductionUsed(a, priorValue) {
+  const provided = a.priorGiftDed != null && String(a.priorGiftDed).trim() !== '';
+  if (provided) return { used: Number(a.priorGiftDed) || 0, estimated: false };
+  const rel = a.relationship || '직계존속';
+  const isMinor = (Number(a.doneeAge) || 30) < 19;
+  return { used: Math.min(giftDeduction(rel, isMinor), priorValue), estimated: true };
+}
+
 function mapAnswersToGift(a) {
   const body = {
     value: giftAmount(a),
@@ -294,9 +310,10 @@ function mapAnswersToGift(a) {
     childbirth_deduction: a.childbirthDed === 'yes',
   };
   if (a.priorGiftHas === 'yes' && Number(a.priorGiftValue) > 0) {
+    const priorValue = Number(a.priorGiftValue) || 0;
     body.gift_history = [{
-      value: Number(a.priorGiftValue) || 0,
-      deduction_used: Number(a.priorGiftDed) || 0,
+      value: priorValue,
+      deduction_used: priorGiftDeductionUsed(a, priorValue).used,
       is_generation_skip: false,
       is_minor: false,
     }];
@@ -579,6 +596,10 @@ function JTReportGift({ setRoute, onBack }) {
   if (report) {
     const { calc, commentary, isBurdened } = report;
     const nonResident = answers.isResident === 'no';
+    // 사전증여 공제를 입력하지 않아 관계기반 기본공제로 추정 적용한 경우 → 결과화면에 캐비엇 노출
+    const priorDedEstimated = !isBurdened && calc.precise &&
+      answers.priorGiftHas === 'yes' && Number(answers.priorGiftValue) > 0 &&
+      priorGiftDeductionUsed(answers, Number(answers.priorGiftValue) || 0).estimated;
     return (
       <div className="jt-container">
         <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
@@ -653,6 +674,11 @@ function JTReportGift({ setRoute, onBack }) {
                 </tbody>
               </table>
               {calc.nonTaxableMsg && <p style={{ marginTop: 10 }}>{calc.nonTaxableMsg}</p>}
+              {priorDedEstimated && (
+                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginTop: 12, borderRadius: 8, fontSize: 13, lineHeight: 1.6 }}>
+                  ※ 사전증여 당시 공제액을 입력하지 않아 <strong>관계별 기본공제(직계존속 5천만 등)로 추정</strong>해 납부세액공제(§58)를 계산했습니다. 실제 당시 공제액이 이와 다르면(혼인·출산공제로 더 컸던 경우 등) 세액이 달라질 수 있으니, 정확한 값을 입력하거나 상담으로 확인하세요.
+                </div>
+              )}
               {(answers.marriageDed === 'yes' && answers.childbirthDed === 'yes') && (
                 <p style={{ fontSize: 13, opacity: 0.85, marginTop: 8 }}>※ 혼인·출산 증여공제는 <strong>합쳐서 1억원이 한도</strong>입니다(§53의2③).</p>
               )}

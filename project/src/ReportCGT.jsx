@@ -1067,6 +1067,9 @@ cautions 3개, saving_ideas 2~3개.`;
           )}
           <p>{commentary.headline}</p>
           {calc.nonTaxableMsg && <p style={{marginTop: 12, fontWeight: 500}}>{calc.nonTaxableMsg}</p>}
+          {(answers.assetType === 'house_1' || answers.assetType === 'house_2') && !answers.moveInDate && calc.totalTax > 0 && (
+            <p style={{marginTop: 12, fontWeight: 500, color: '#b8860b'}}>⚠️ 「전입(거주 시작)일」을 입력하지 않아 <strong>거주기간이 0년</strong>으로 계산됐습니다. 실제로 그 집에 사셨다면 전입일을 입력해 보세요 — 조정대상지역 1세대1주택(또는 일시적 2주택)의 <strong>거주 2년 비과세 요건</strong>이나 <strong>장기보유특별공제의 거주공제(보유+거주 최대 80%)</strong>가 적용돼 세금이 크게 줄 수 있습니다.</p>
+          )}
           {calc.multiHouseNote && <p style={{marginTop: 12, fontWeight: 500}}>{calc.multiHouseNote}</p>}
           {calc.shortTermNote && <p style={{marginTop: 12, fontWeight: 500}}>{calc.shortTermNote}</p>}
           {calc.landCaveat && <p style={{marginTop: 12, fontWeight: 500}}>{calc.landCaveat}</p>}

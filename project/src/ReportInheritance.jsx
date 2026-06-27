@@ -168,6 +168,7 @@ const INHERITANCE_QS = [
     sub: '여러 건이면 합산 금액을 입력하세요. 증여 당시의 평가액 기준입니다.',
     showIf: (a) => a.priorGiftHas === 'yes',
     numeric: true, money: true, optional: true,
+    requiredIf: (a) => a.priorGiftHas === 'yes',   // '있음' 선택 시 금액 필수 — 빈칸 방치로 §13 가산 누락(세금 과소) 방지
     placeholder: '예: 100,000,000',
   },
   {
@@ -329,7 +330,8 @@ function JTReportInheritance({ setRoute, onBack }) {
   const canNext = () => {
     if (cur.freeform) return true;
     if (cur.numeric) {
-      if (cur.optional) return true;
+      const mustFill = cur.requiredIf && cur.requiredIf(answers);   // 조건부 필수(예: 사전증여 '있음' 시 금액)
+      if (cur.optional && !mustFill) return true;
       const v = Number(answers[cur.id]);
       return !isNaN(v) && v > 0;
     }
