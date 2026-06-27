@@ -124,6 +124,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
     { kr: '증여세', cat: '증여', d: '관계·금액·부담부증여(빚도 함께 넘기는 증여)까지. 부동산은 주소로 공시가격을 조회합니다.', sub: 'gift' },
     { kr: '상속세', cat: '상속', d: '배우자·자녀 공제, 채무·장례비·금융재산공제와 10년 내 사전증여 합산까지 계산합니다.', sub: 'inheritance' },
     { kr: '처분방법 비교', cat: '자산이전', d: '집·자산을 자녀에게 「팔까(매매)·증여할까·상속할까」 — 세 방법의 세금(증여세·양도세·상속세·취득세)을 같은 부동산 기준으로 한 번에 비교합니다.', sub: 'compare' },
+    { kr: '부담부증여 최적화', cat: '자산이전', d: '자녀·배우자에게 부동산을 증여할 때 「빚(전세·대출)을 얼마나 끼우면」 세금이 최소인지 — 채무비율별 총세금(증여·양도·취득세)을 시뮬레이션해 절세 여력을 보여줍니다.', sub: 'burden' },
     { kr: '취득세', cat: '취득', d: '살 때(매매·증여·상속·신축) — 다주택 중과·조정지역·생애최초 감면·농특세·지방교육세까지.', sub: 'acquisition' },
     { kr: '재산세', cat: '보유', d: '집·건물·토지 보유 시 매년 — 공시가격·1세대1주택 특례·도시지역분·세부담 상한까지.', sub: 'property' },
     { kr: '종합부동산세', cat: '보유', d: '6월 1일 기준 주택 공시 합계 — 1세대1주택 12억·연령·보유 세액공제·다주택 중과·재산세 공제까지.', sub: 'comprehensive' },
@@ -273,7 +274,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
 window.JTReportHub = JTReportHub;
 
 // ============ 라우터 (허브 ↔ 각 진단) ============
-const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare'];
+const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden'];
 const jtNormSub = (s) => (JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : 'hub'); // 모르는 계산기 키 → 허브 (깨진 공유링크 방어)
 
 function JTReportPage({ setRoute }) {
@@ -344,6 +345,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'insurance' && <JTReportInsurance setRoute={setRoute} onBack={back} />}
       {subRoute === 'vat' && <JTReportVat setRoute={setRoute} onBack={back} />}
       {subRoute === 'compare' && <JTReportCompare setRoute={setRoute} onBack={back} />}
+      {subRoute === 'burden' && <JTReportBurden setRoute={setRoute} onBack={back} />}
     </div>
   );
 }
