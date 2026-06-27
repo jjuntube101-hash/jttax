@@ -149,13 +149,13 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
       <p style={{color: '#5a5a5a', fontSize: 14, marginBottom: 20}}>
         진단 결과와 함께 귀하 사안에 맞는 추가 질문·확인 포인트를 정리해 24시간 이내 회신드립니다. 수임·판매 목적으로 사용되지 않습니다.
       </p>
-      <div style={{display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 12}}>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: 10, marginBottom: 12}}>
         <input type="text" placeholder="성명 *" value={name} onChange={e => setName(e.target.value)}
-          style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14}}/>
+          style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14, minWidth: 0, width: '100%'}}/>
         <input type="tel" placeholder="연락처 *" value={phone} onChange={e => setPhone(e.target.value)}
-          style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14}}/>
+          style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14, minWidth: 0, width: '100%'}}/>
         <input type="email" placeholder="이메일 *" value={email} onChange={e => setEmail(e.target.value)}
-          style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14}}/>
+          style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14, minWidth: 0, width: '100%'}}/>
       </div>
       <label style={{display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 13, color: '#5a5a5a', marginBottom: 16, cursor: 'pointer'}}>
         <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} style={{marginTop: 3}}/>
@@ -242,7 +242,7 @@ function JTConvertPrecedents({ reportTag }) {
       <p style={{color: '#666', fontSize: 13, marginTop: -4, marginBottom: 24, lineHeight: 1.6}}>
         ※ 아래는 <strong>당사 수임 실적이 아니며</strong>, 유사 사안의 <strong>공개된 조세심판원 결정·법원 판례·국세청 발표</strong>에서 발췌한 참고자료입니다. 귀하의 사안에 그대로 적용되지 않을 수 있습니다.
       </p>
-      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 16}}>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%, 320px),1fr))', gap: 16}}>
         {cases.map((c, i) => (
           <div key={i} style={{border: '1px solid rgba(0,0,0,0.1)', padding: 26, background: '#fff'}}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8, flexWrap: 'wrap'}}>
@@ -299,7 +299,7 @@ function JTConvertTimeSlots({ setRoute, urgent }) {
           {urgent ? '● 당일 예약 가능' : '● 실시간 반영 · 원하는 시간을 선택해 예약으로 이동'}
         </span>
       </div>
-      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 16, marginTop: 20}}>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%, 260px),1fr))', gap: 16, marginTop: 20}}>
         {slots.map((d, di) => (
           <div key={di} style={{border: '1px solid rgba(0,0,0,0.1)', padding: 20, background: '#fff'}}>
             <div style={{fontFamily: 'ui-monospace,monospace', fontSize: 11, letterSpacing: '0.14em', color: '#5a5a5a'}}>{d.day}</div>
