@@ -230,10 +230,7 @@ function JTReportCompare({ setRoute, onBack }) {
   if (report) {
     const { calc } = report;
     const sc = calc.scenarios || {};
-    const methods = ['증여', '매매', '상속'];
-    const rows = [
-      ['증여세', '증여세'], ['양도세', '양도세'], ['상속세', '상속세'], ['취득세', '취득세'],
-    ];
+    const cmpTotal = (m) => cmpWon((sc[m] || {})['총세부담']);
     return (
       <div className="jt-container">
         <JTReportShell title="처분방법 비교 결과" subtitle="증여 vs 매매 vs 상속 — 예상 세금(세액만 비교)" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
@@ -244,19 +241,33 @@ function JTReportCompare({ setRoute, onBack }) {
             </div>
           ) : (
             <>
-              {/* 헤드라인 — '최적' 단정 없이 중립적으로 */}
+              {/* 헤드라인 — '지금 넘기면(증여·매매)' vs '안 주고 기다리면(상속 기준선)' */}
               <div className="jt-report-result__grade jt-grade-mid">
-                <div className="jt-report-result__grade-label">세 가지 방법의 예상 세금 (세액만 비교)</div>
-                <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap', marginTop: 10 }}>
-                  {methods.map(m => (
-                    <div key={m} style={{ flex: '1 1 140px', minWidth: 130, background: 'rgba(255,255,255,.5)', borderRadius: 10, padding: '12px 10px' }}>
+                <div className="jt-report-result__grade-label">예상 세금 (세액만 비교)</div>
+
+                {/* ① 지금 실행하는 방법 — 증여·매매 */}
+                <div style={{ fontSize: 12.5, fontWeight: 700, opacity: 0.78, marginTop: 12, marginBottom: 6, textAlign: 'left' }}>지금 넘기면</div>
+                <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+                  {['증여', '매매'].map(m => (
+                    <div key={m} style={{ flex: '1 1 140px', minWidth: 130, background: 'rgba(255,255,255,.6)', borderRadius: 10, padding: '12px 10px' }}>
                       <div style={{ fontSize: 13, opacity: 0.8 }}>{m}</div>
-                      <div style={{ fontSize: 19, fontWeight: 800, marginTop: 4 }}>{cmpWon((sc[m] || {})['총세부담'])}</div>
+                      <div style={{ fontSize: 19, fontWeight: 800, marginTop: 4 }}>{cmpTotal(m)}</div>
                     </div>
                   ))}
                 </div>
+
+                {/* ② 안 주고 기다리는 경우 — 상속(비교 기준선, 사망 전제) */}
+                <div style={{ fontSize: 12.5, fontWeight: 700, opacity: 0.62, marginTop: 14, marginBottom: 6, textAlign: 'left' }}>안 주고 기다리면 <span style={{ fontWeight: 400 }}>· 상속 (비교 기준선)</span></div>
+                <div style={{ background: 'rgba(255,255,255,.28)', border: '1px dashed rgba(0,0,0,.22)', borderRadius: 10, padding: '12px 14px', textAlign: 'left' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>
+                    <span style={{ fontSize: 13, opacity: 0.75 }}>상속 (사망 시 한 번에 이전)</span>
+                    <span style={{ fontSize: 19, fontWeight: 800 }}>{cmpTotal('상속')}</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: '#8a6d3b', marginTop: 5, lineHeight: 1.55 }}>＊ 상속은 <strong>사망을 전제</strong>로 해 시점을 정할 수 없어요. 「현재 재산 기준 <strong>약 10년 뒤</strong>」를 가정한 추정이며, 실제 사망 시점·사전증여 합산(10년)·자산가치 변동에 따라 크게 달라집니다.</div>
+                </div>
+
                 <div style={{ marginTop: 12, fontSize: 13, lineHeight: 1.6, color: '#b8860b' }}>※ <strong>세금(세액)만 비교한 추정</strong>입니다. 금액이 가장 적은 방법이 곧 정답은 아니에요 — 방법마다 「세금 외」 함정(증여 이월과세·매매 증여추정·상속 시점 등)과 실행가능성·자금 사정이 있어, 이 숫자만으로 결정하면 안 됩니다.</div>
-                <div style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.65, color: '#8a6d3b' }}>· <strong>매매(양도세)</strong>는 입력하신 보유기간 기준이며 <strong>비조정대상지역</strong>으로 가정했습니다(조정지역이면 중과될 수 있어요).<br/>· <strong>상속</strong>은 「현재 재산 기준 약 10년 뒤 사망」을 가정한 추정이라, 실제 사망 시점·사전증여 합산(10년)에 따라 크게 달라집니다.<br/>· <strong>증여공제</strong>는 <strong>성년 자녀</strong> 기준입니다(미성년 자녀면 공제가 5천만→2천만으로 줄어 증여세가 늘어요).</div>
+                <div style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.65, color: '#8a6d3b' }}>· <strong>매매(양도세)</strong>는 입력하신 보유기간 기준이며 <strong>비조정대상지역</strong>으로 가정했습니다(조정지역이면 중과될 수 있어요).<br/>· <strong>증여공제</strong>는 <strong>성년 자녀</strong> 기준입니다(미성년 자녀면 공제가 5천만→2천만으로 줄어 증여세가 늘어요).</div>
               </div>
 
               {/* 🔒 프리미엄 게이트 (옵션 B) — 세목별 상세·2차효과 설명·맞춤 전략은 상담에서 */}
