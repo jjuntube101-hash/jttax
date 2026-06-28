@@ -58,12 +58,32 @@ const COMP_QS = [
     placeholder: '예: 8',
   },
   {
+    id: 'ownership',
+    section: '명의 (단독 / 부부 공동)',
+    q: '이 주택의 명의는 어떻게 되어 있나요?',
+    sub: '부부 공동명의 1주택은 부부가 각자 공제(각 9억, 합 18억)를 받아(종부세법 §8①) 단독명의(12억)보다 유리할 수 있습니다. 다만 1세대1주택 연령·보유 세액공제는 공동명의 1주택자 특례(§10의2) 신청 시 받을 수 있어, 둘 중 유리한 쪽을 자동 비교해 드립니다.',
+    showIf: (a) => a.housingCount === 'one',
+    opts: [
+      ['single', '단독명의', '1세대1주택 공제 12억'],
+      ['joint', '부부 공동명의', '각 9억(합 18억) vs 특례 12억 자동 비교'],
+    ],
+  },
+  {
+    id: 'ownShare',
+    section: '본인 지분율',
+    q: '부부 공동명의 중 본인 지분율은 몇 %인가요?',
+    sub: '본인이 가진 지분 비율입니다. 보통 50%이며, 나머지는 배우자 지분으로 계산합니다. 비워두면 50%로 봅니다.',
+    showIf: (a) => a.housingCount === 'one' && a.ownership === 'joint',
+    numeric: true, optional: true,
+    placeholder: '예: 50',
+  },
+  {
     id: 'context',
     section: '추가 사항',
     q: '추가로 알려주실 내용이 있나요? (선택)',
-    sub: '부부 공동명의, 합산배제 임대주택, 일시적 2주택·상속주택·지방 저가주택(1세대1주택 특례), 토지 종부세 등 특수한 사정이 있으면 적어주세요. 상담 시 참고합니다.',
+    sub: '합산배제 임대주택, 일시적 2주택·상속주택·지방 저가주택(1세대1주택 특례), 토지 종부세 등 특수한 사정이 있으면 적어주세요. 상담 시 참고합니다.',
     freeform: true, optional: true,
-    placeholder: '예: 부부 공동명의 / 임대사업자 등록 주택 / 상속주택 보유',
+    placeholder: '예: 임대사업자 등록 주택 / 상속주택 보유',
   },
 ];
 
@@ -78,17 +98,18 @@ function mapAnswersToComprehensive(a) {
   if (a.housingCount === 'one') {
     if (Number(a.ownerAge) > 0) body.owner_age = Number(a.ownerAge);
     if (Number(a.holdingYears) > 0) body.holding_years = Number(a.holdingYears);
+    // 부부 공동명의 1주택 → 본인 지분율 전달(엔진이 §8① 지분별 vs §10의2 특례 비교)
+    if (a.ownership === 'joint') {
+      let pct = Number(a.ownShare) > 0 ? Number(a.ownShare) : 50;   // 기본 50%
+      pct = Math.min(99, Math.max(1, pct));                          // 0<지분<1 보장(공동명의 비교 유효)
+      body.ownership_share = pct / 100;
+    }
   }
   return body;
 }
 
-/* 간이 폴백(엔진 미응답 시) — 종부세법 §9① 누진세율(3주택↑ 중과표) 전체 반영.
-   재산세공제(§9③)·1세대1주택 세액공제(§9⑥⑧)는 미반영 → 실제보다 '높게' 나오는 보수적 상향(안전 방향). 정밀은 엔진. */
-function fallbackCompTax(a) {
-  const total = Number(a.totalValue) || 0;
-  const isOne = a.housingCount === 'one';
-  const is3 = a.housingCount === 'three';
-  const deduction = isOne ? 1_200_000_000 : 900_000_000;
+/* 종부세 주택분 산출세액(간이) — 공시합계·공제·공정비율 60%·누진세율(3주택↑ 중과표). */
+function _compGrossTax(total, deduction, is3) {
   const base = Math.max(0, total - deduction) * 0.60;   // 공정시장가액비율 60%
   if (base <= 0) return 0;
   // [한도, 세율, 누진공제] — 2주택↓ §9①1호 / 3주택↑ §9①2호 중과(12억 초과부터 상향)
@@ -97,7 +118,31 @@ function fallbackCompTax(a) {
     : [[300_000_000, 0.005, 0], [600_000_000, 0.007, 600_000], [1_200_000_000, 0.010, 2_400_000], [2_500_000_000, 0.013, 6_000_000], [5_000_000_000, 0.015, 11_000_000], [9_400_000_000, 0.020, 36_000_000], [Infinity, 0.027, 101_800_000]];
   let gross = 0;
   for (let i = 0; i < brk.length; i++) { if (base <= brk[i][0]) { gross = base * brk[i][1] - brk[i][2]; break; } }
-  return Math.round(Math.max(0, gross) * 1.20);   // + 농어촌특별세 20%
+  return Math.max(0, gross);
+}
+
+/* 간이 폴백(엔진 미응답 시) — 재산세공제(§9③)는 미반영 → 실제보다 '높게' 나오는 보수적 상향(안전 방향). 정밀은 엔진. */
+function fallbackCompTax(a) {
+  const total = Number(a.totalValue) || 0;
+  const isOne = a.housingCount === 'one';
+  const is3 = a.housingCount === 'three';
+  // 수정 260628(COMP-A-02): 1세대1주택 연령·보유 세액공제(§9⑥⑧, 합산 80% 한도) — 종전 미반영으로 고령·장기보유 과대.
+  const age = Number(a.ownerAge) || 0;
+  const hold = Number(a.holdingYears) || 0;
+  const ageCr = age >= 70 ? 0.4 : age >= 65 ? 0.3 : age >= 60 ? 0.2 : 0;
+  const holdCr = hold >= 15 ? 0.5 : hold >= 10 ? 0.4 : hold >= 5 ? 0.2 : 0;
+  const credit = isOne ? Math.min(ageCr + holdCr, 0.8) : 0;
+  // 수정 260628(COMP-B-01): 부부 공동명의 1주택 → §8① 지분별(각 9억, 세액공제 없음) vs §10의2 특례(12억+세액공제) 중 유리한 쪽.
+  if (isOne && a.ownership === 'joint') {
+    let pct = Number(a.ownShare) > 0 ? Number(a.ownShare) : 50;
+    pct = Math.min(99, Math.max(1, pct));
+    const s = pct / 100;
+    const routeA = _compGrossTax(total * s, 900_000_000, false) + _compGrossTax(total * (1 - s), 900_000_000, false);
+    const routeB = _compGrossTax(total, 1_200_000_000, false) * (1 - credit);
+    return Math.round(Math.min(routeA, routeB) * 1.20);   // + 농어촌특별세 20%
+  }
+  const gross = _compGrossTax(total, isOne ? 1_200_000_000 : 900_000_000, is3) * (1 - credit);
+  return Math.round(gross * 1.20);   // + 농어촌특별세 20%
 }
 
 function buildCompDetail(answers, calc, commentary) {
@@ -122,6 +167,14 @@ function buildCompDetail(answers, calc, commentary) {
     L.push('  · 농어촌특별세(종부세의 20%): ' + formatWon(calc.ruralTax));
   }
   L.push('  · 총 납부세액: ' + formatWon(calc.totalTax));
+  if (calc.joint && calc.joint['적용']) {
+    const j = calc.joint;
+    const selfPct = Math.round((j['본인지분'] || 0.5) * 100);
+    L.push('', '■ 부부 공동명의 비교 (본인 ' + selfPct + '% · 배우자 ' + (100 - selfPct) + '%)');
+    L.push('  · ① 지분별 과세(각 9억 · §8①): ' + formatWon(j['지분별과세_8조1항']));
+    L.push('  · ② 공동명의 특례(12억+세액공제 · §10의2): ' + formatWon(j['공동명의특례_10조의2']));
+    L.push('  · 적용 결과(유리한 쪽): ' + (j['선택경로'] || '') + ' = ' + formatWon(calc.totalTax));
+  }
   const ew = calc.engineWarnings || [];
   if (ew.length) { L.push('', '■ 경고'); ew.forEach(w => L.push('  · ' + w)); }
   L.push('', '■ 자동 분석');
@@ -211,6 +264,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
           const cr = c['세액공제율'] || {};
           calc.ageCreditRate = cr['연령']; calc.holdingCreditRate = cr['보유']; calc.combinedCreditRate = cr['합산'];
           calc.steps = c['단계별계산'] || []; calc.engineWarnings = c['경고사항'] || [];
+          calc.joint = c['공동명의'] || null;   // 부부 공동명의 비교(선택경로·양 경로 세액)
           calc.precise = true; calc.engineVer = ej.version && ej.version.engine;
         }
       } catch (e) { console.warn('종부세 엔진 연결 실패 — 간이 추정 유지', e); }
@@ -256,7 +310,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="종합부동산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LEGACY">
+        <JTReportShell title="종합부동산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -267,7 +321,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
     const { calc, commentary } = report;
     return (
       <div className="jt-container">
-        <JTReportShell title="종합부동산세 계산 결과" subtitle={calc.precise ? '종부세 정밀 계산' : '종부세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
+        <JTReportShell title="종합부동산세 계산 결과" subtitle={calc.precise ? '종부세 정밀 계산' : '종부세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 종부세(연간, 농특세 포함)' : (calc.precise ? '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '연간 추정 납부세액 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
@@ -311,13 +365,38 @@ function JTReportComprehensive({ setRoute, onBack }) {
                   <tr><th><strong>연간 총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
                 </tbody>
               </table>
-              {calc.netTax === 0 && (
+              {calc.netTax === 0 && !calc.joint && (
                 <div style={{ background: '#f0f7f3', padding: '10px 16px', marginTop: 10, borderRadius: 8, fontSize: 14 }}>
                   공시가격 합계가 공제({hasCredit ? '1세대1주택 12억' : '9억'})보다 작거나 같아 <strong>종부세가 부과되지 않습니다</strong>(종부세법 §8).
                 </div>
               )}
             </section>
           )}
+
+          {calc.precise && calc.joint && calc.joint['적용'] && (() => {
+            const j = calc.joint;
+            const selfPct = Math.round((j['본인지분'] || 0.5) * 100);
+            const pickShare = (j['선택경로'] || '').indexOf('지분별') >= 0;
+            const rowSel = (sel) => (sel ? { fontWeight: 700, color: 'var(--accent,#2a6d4f)' } : {});
+            return (
+              <section className="jt-report-result__section" style={{ background: '#f0f7f3', borderLeft: '4px solid #2a6d4f', padding: '14px 18px', borderRadius: 8 }}>
+                <h3 style={{ marginTop: 0 }}>부부 공동명의 비교 (본인 {selfPct}% · 배우자 {100 - selfPct}%)</h3>
+                <p style={{ margin: '0 0 10px', fontSize: 14, lineHeight: 1.6 }}>
+                  부부 공동명의 1주택은 ① <strong>지분별 과세</strong>(각자 9억 공제 · 종부세법 §8①)와 ② <strong>공동명의 1주택자 특례</strong>(1세대1주택자로 보아 12억 공제 + 연령·보유 세액공제 · §10의2 신청) 중 <strong>유리한 쪽</strong>으로 계산했습니다.
+                </p>
+                <table className="jt-report-calc">
+                  <tbody>
+                    <tr style={rowSel(pickShare)}><th>① 지분별 과세 (각 9억 · §8①){pickShare ? ' ✓ 선택' : ''}</th><td>{formatWon(j['지분별과세_8조1항'])}</td></tr>
+                    <tr style={rowSel(!pickShare)}><th>② 공동명의 특례 (12억+세액공제 · §10의2){!pickShare ? ' ✓ 선택' : ''}</th><td>{formatWon(j['공동명의특례_10조의2'])}</td></tr>
+                    <tr><th><strong>적용 결과 (유리한 쪽, 농특세 포함)</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
+                  </tbody>
+                </table>
+                <p style={{ margin: '10px 0 0', fontSize: 13, opacity: 0.8 }}>
+                  ※ 특례(②)는 과세기준일 현재 부부가 그 1주택 외 다른 주택이 없을 때 9.16~9.30 신청 시 적용됩니다(§10의2①②). 실제 신청·적용 여부는 상담으로 확인하세요.
+                </p>
+              </section>
+            );
+          })()}
 
           {calc.precise && calc.steps && calc.steps.length > 0 && (
             <section className="jt-report-result__section">
@@ -378,7 +457,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="종합부동산세 계산" subtitle={phase === 'quick' ? '주택수·공시가격 합계만 넣으면 예상 종부세를 바로 보여드려요.' : '1세대1주택 연령·보유 세액공제까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
+      <JTReportShell title="종합부동산세 계산" subtitle={phase === 'quick' ? '주택수·공시가격 합계만 넣으면 예상 종부세를 바로 보여드려요.' : '1세대1주택 연령·보유 세액공제까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>
