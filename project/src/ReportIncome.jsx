@@ -49,11 +49,20 @@ const INC_QS = [
     placeholder: '예: 1 (없으면 0)',
   },
   {
-    id: 'financialIncome',
+    id: 'interestIncome',
     tier: 'quick',
     section: '금융소득',
-    q: '이자·배당 소득이 있나요? 연 합계 금액 (원)',
-    sub: '예금이자·주식배당 등 1년 합계. 연 2,000만원을 넘으면 종합과세되며 비교과세(소득세법 §62)로 계산합니다. 배당 비중이 크면 가산·배당세액공제로 결과가 달라질 수 있어 상담을 권합니다. 사업·근로 없이 금융소득만 있어도 여기에 넣으면 계산됩니다. 없으면 0.',
+    q: '이자소득이 있나요? 연 합계 금액 (원)',
+    sub: '예금·적금·채권 이자 등 1년 합계. 이자+배당이 연 2,000만원을 넘으면 종합과세됩니다(소득세법 §62 비교과세). 사업·근로 없이 금융소득만 있어도 계산됩니다. 없으면 0.',
+    numeric: true, money: true, optional: true,
+    placeholder: '예: 0 (없으면 0)',
+  },
+  {
+    id: 'dividendIncome',
+    tier: 'quick',
+    section: '금융소득',
+    q: '배당소득이 있나요? 연 합계 금액 (원)',
+    sub: '주식·펀드 배당 등 1년 합계. 국내 법인 배당은 Gross-up 가산 후 배당세액공제로 상쇄됩니다(§17③·§56). 이자+배당이 2,000만원을 넘으면 종합과세. 외국 배당 등 특수한 경우는 상담에서 확인하세요. 없으면 0.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 0 (없으면 0)',
   },
@@ -191,7 +200,9 @@ function JTReportIncome({ setRoute, onBack }) {
       const clamp = (x) => Math.max(0, Math.round(Number(x) || 0));
       const biz = clamp(answers.businessIncome);
       const salary = clamp(answers.salaryIncome);
-      const fin = clamp(answers.financialIncome);
+      const interest = clamp(answers.interestIncome);
+      const dividend = clamp(answers.dividendIncome);
+      const fin = interest + dividend;   // 이자+배당 합계(2천만 종합과세 임계 판정·유효성 체크)
       const np = clamp(answers.nationalPension);
       const ps = clamp(answers.pensionSavings);
       const irp = clamp(answers.irp);
@@ -211,7 +222,9 @@ function JTReportIncome({ setRoute, onBack }) {
           business_revenue: biz, business_expenses: 0,
           salary_income: salary,
           is_salary_earner: salary > 0,    // 근로소득 있으면 근로자(표준공제 13만·§59), 없으면 사업자(7만)
-          interest_income: fin,            // 이자+배당 합계(2천만 종합과세 임계 합산 기준)
+          interest_income: interest,       // 이자소득(분리)
+          dividend_income: dividend,       // 배당소득(분리) — §17③ Gross-up·§56 배당세액공제 (수정 260629 INCOME-R2-03)
+          is_dividend_grossup: dividend > 0,   // 국내법인 배당 가정(대부분 Gross-up 대상). 외국배당 등은 상담
           spouse, dependents: deps, children_count: kids,
           national_pension: np,
           pension_savings: ps,
