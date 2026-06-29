@@ -62,6 +62,7 @@ const CMP_QS = [
     id: 'hasSpouse', section: '상속 비교용',
     q: '지금 소유자에게 배우자가 있나요?',
     sub: '상속 방법을 비교하려면 필요해요. 배우자가 있으면 배우자 상속공제(최소 5억)가 적용됩니다.',
+    showIf: (a) => a.recipient !== 'spouse',   // 받는사람=배우자면 배우자 존재 확정 → 질문 스킵 (COMPARE-R2-04 모순 방지)
     opts: [['yes', '네, 있습니다', '배우자공제 적용'], ['no', '아니오', '']],
   },
   {
@@ -153,9 +154,11 @@ function JTReportCompare({ setRoute, onBack }) {
     if (base) { fetch(base + '/health', { method: 'GET' }).catch(function () {}); }
   }, []);
 
-  const total = CMP_QS.length;
+  // showIf 거르기(COMPARE-R2-04): recipient=배우자면 hasSpouse 질문 스킵. acquisition/inheritance 위저드와 동일 패턴.
+  const visibleQ = CMP_QS.filter(q => !q.showIf || q.showIf(answers));
+  const total = visibleQ.length;
   const safeStep = Math.min(step, total - 1);
-  const cur = CMP_QS[safeStep];
+  const cur = visibleQ[safeStep];
   const isLast = safeStep === total - 1;
   const setAns = (id, v) => setAnswers(a => ({ ...a, [id]: v }));
 
@@ -183,7 +186,7 @@ function JTReportCompare({ setRoute, onBack }) {
         owner_housing_count: clamp(answers.housingCount) || 1,
         relationship: answers.recipient === 'spouse' ? '배우자' : '직계존속',
         recipient_age: answers.recipient === 'child_minor' ? 10 : 30,   // 미성년(만19세 미만)→엔진이 §53②단서 2천만 공제 적용
-        has_spouse: answers.hasSpouse !== 'no',
+        has_spouse: answers.recipient === 'spouse' ? true : answers.hasSpouse !== 'no',   // 받는사람=배우자면 소유자에게 배우자 존재 확정 (COMPARE-R2-04 모순입력 차단)
         num_children: clamp(answers.numChildren),   // 필수 입력(0 허용) — 침묵 기본값 제거
         other_estate_value: clamp(answers.otherEstate),
         property_type: '주택',
@@ -201,12 +204,17 @@ function JTReportCompare({ setRoute, onBack }) {
       try {
         const j = await callCompareEng(body);
         const c = j && j.calc;
-        if (c && c['시나리오별']) {
-          calc.scenarios = c['시나리오별'];   // {증여, 매매, 상속}
+        const scv = c && c['시나리오별'];
+        // 수정 260628(COMPARE-R2-01): 빈 dict·부분 0원을 '정밀'로 신뢰하지 않음. 처분비교는 취득세(양수)가 늘 포함되어 정상 시 총세부담>0 — 0원/누락은 계산실패 신호(지법 §11①). 3시나리오 모두 유효할 때만 precise.
+        const allValid = scv && ['증여', '매매', '상속'].every(m => scv[m] && Number(scv[m]['총세부담']) > 0);
+        if (allValid) {
+          calc.scenarios = scv;   // {증여, 매매, 상속}
           // ★ c['최적방법']·c['절세액'] 은 의도적으로 사용하지 않음(판단 라벨 억제)
           calc.engineWarnings = c['경고사항'] || [];
           calc.precise = true;
           calc.engineVer = j.version && j.version.engine;
+        } else if (scv) {
+          console.warn('처분비교 시나리오 불완전(0원/누락) — 정밀 미채택', scv);
         }
       } catch (e) { console.warn('처분비교 엔진 연결 실패', e); calc.engineErr = true; }
 
@@ -221,7 +229,7 @@ function JTReportCompare({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="처분방법 비교" subtitle="증여·매매·상속 세금을 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LEGACY">
+        <JTReportShell title="처분방법 비교" subtitle="증여·매매·상속 세금을 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />증여·매매·상속 세 가지 방법의 예상 세금을 각각 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -234,7 +242,7 @@ function JTReportCompare({ setRoute, onBack }) {
     const cmpTotal = (m) => cmpWon((sc[m] || {})['총세부담']);
     return (
       <div className="jt-container">
-        <JTReportShell title="처분방법 비교 결과" subtitle="증여 vs 매매 vs 상속 — 예상 세금(세액만 비교)" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
+        <JTReportShell title="처분방법 비교 결과" subtitle="증여 vs 매매 vs 상속 — 예상 세금(세액만 비교)" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           {!calc.precise ? (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               <strong>정밀 계산이 필요합니다.</strong> 정밀 엔진 연결이 지연됐습니다. 잘못된 세액을 안내하지 않기 위해 결과를 표시하지 않았어요. 잠시 후 다시 시도하거나 상담을 권합니다.
@@ -242,6 +250,13 @@ function JTReportCompare({ setRoute, onBack }) {
             </div>
           ) : (
             <>
+              {/* 수정 260628(COMPARE-R2-02): 엔진 경고사항(시나리오 가정·계산 알림) 화면 노출 */}
+              {calc.engineWarnings && calc.engineWarnings.length > 0 && (
+                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
+                  <strong>확인이 필요한 점</strong>
+                  <ul style={{ margin: '8px 0 0', paddingLeft: 18 }}>{calc.engineWarnings.map((w, i) => <li key={i} style={{ marginBottom: 4 }}>{w}</li>)}</ul>
+                </div>
+              )}
               {/* 헤드라인 — '지금 넘기면(증여·매매)' vs '안 주고 기다리면(상속 기준선)' */}
               <div className="jt-report-result__grade jt-grade-mid">
                 <div className="jt-report-result__grade-label">예상 세금 (세액만 비교)</div>
@@ -315,7 +330,7 @@ function JTReportCompare({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="처분방법 비교" subtitle="같은 부동산, 증여·매매·상속 중 세금이 어떻게 다른지 한눈에 비교합니다." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
+      <JTReportShell title="처분방법 비교" subtitle="같은 부동산, 증여·매매·상속 중 세금이 어떻게 다른지 한눈에 비교합니다." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>

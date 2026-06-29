@@ -323,7 +323,8 @@ function mapAnswersToGift(a) {
 
 function mapAnswersToBurdenedGift(a) {
   const isHouse = a.reType === '공동주택' || a.reType === '개별주택';
-  const propertyType = a.reType === '토지' ? '토지' : (a.reType === '상가' ? '오피스텔' : '주택');
+  // 수정 260628(GIFT-R2-04): 상가를 '오피스텔'로 오매핑하던 것을 '상가' enum 직접 전달(비주택 양도·취득세 정상 과세, 소법 §89①3호 비과세 배제).
+  const propertyType = a.reType === '토지' ? '토지' : (a.reType === '상가' ? '상가' : '주택');
   const body = {
     property_value: giftAmount(a),
     debt_assumed: Number(a.debtAssumed) || 0,
@@ -334,6 +335,9 @@ function mapAnswersToBurdenedGift(a) {
     property_type: propertyType,
     is_regulated_area: isHouse && a.regulatedArea === 'yes',
     donor_other_house_count: Number(a.donorHouseCount) || 0,
+    // 수정 260628(GIFT-R2-01): 세대생략 할증 플래그 누락 보정(§57). 일반 매퍼와 동일 전달.
+    is_generation_skip: a.genSkip === 'yes',
+    donor_child_deceased: a.childDeceased === 'yes',
   };
   return body;
 }
@@ -383,7 +387,7 @@ function buildGiftDetail(answers, calc, commentary) {
     if (v === undefined || v === null || v === '') return;
     let val = v;
     if (q.opts) { const o = q.opts.find(x => x[0] === v); if (o) val = o[1]; }
-    else if (q.numeric) val = formatWon(Number(v));
+    else if (q.numeric) val = q.money ? formatWon(Number(v)) : Number(v).toLocaleString('ko-KR');
     const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
     L.push('  · ' + ql + ': ' + val);
   });
@@ -422,7 +426,7 @@ function buildGiftKakao(answers, calc) {
     if (v === undefined || v === null || v === '') return;
     let val = v;
     if (q.opts) { const o = q.opts.find(x => x[0] === v); if (o) val = o[1]; }
-    else if (q.numeric) val = formatWon(Number(v));
+    else if (q.numeric) val = q.money ? formatWon(Number(v)) : Number(v).toLocaleString('ko-KR');
     const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
     L.push('· ' + ql + ': ' + val);
   });
@@ -505,13 +509,14 @@ function JTReportGift({ setRoute, onBack }) {
         try {
           const ej = await callGiftEngine(mapAnswersToBurdenedGift(answers), '/v1/calc/burdened-gift');
           const c = ej && ej.calc;
-          if (c) {
+          // 수정 260628(GIFT-R2-02): 엔진 오류바디/부분응답을 precise로 신뢰하지 않음(세액0 거짓표시 방지).
+          if (c && !c['오류'] && c['총세부담'] != null && c['증여세'] != null && c['양도세'] != null && c['취득세'] != null) {
             calc.giftTax = c['증여세']; calc.transferTax = c['양도세']; calc.acqTax = c['취득세'];
             calc.totalTax = c['총세부담']; calc.debtRatio = c['채무비율']; calc.debtRecognized = c['채무인정여부'];
             calc.engineWarnings = c['경고사항'] || [];
             calc.steps = (c['원본결과'] && c['원본결과'].steps_summary) || c['단계별계산'] || [];
             calc.precise = true; calc.engineVer = ej.version && ej.version.engine;
-          }
+          } else if (c) { calc.engineErr = true; console.warn('부담부증여 엔진 응답 무결성 실패', c); }
         } catch (e) { calc.engineErr = true; }
       } else {
         // 일반증여: 간이 폴백
@@ -529,7 +534,8 @@ function JTReportGift({ setRoute, onBack }) {
         try {
           const ej = await callGiftEngine(mapAnswersToGift(answers), '/v1/calc/gift');
           const c = ej && ej.calc;
-          if (c) {
+          // 수정 260628(GIFT-R2-02): 엔진 오류바디/부분응답 검증 — 미충족 시 간이폴백 유지.
+          if (c && !c['오류'] && c['과세표준'] != null && c['산출세액'] != null && c['세액'] != null) {
             calc.taxBase = c['과세표준']; calc.calcTax = c['산출세액'];
             calc.genSkipSurcharge = c['세대생략할증'] || 0; calc.filingCredit = c['신고세액공제'] || 0;
             calc.totalTax = c['세액'];
@@ -586,7 +592,7 @@ function JTReportGift({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="증여세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LEGACY">
+        <JTReportShell title="증여세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -602,7 +608,7 @@ function JTReportGift({ setRoute, onBack }) {
       priorGiftDeductionUsed(answers, Number(answers.priorGiftValue) || 0).estimated;
     return (
       <div className="jt-container">
-        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
+        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
               ⚠️ 비거주자 증여는 증여재산공제 배제 등 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
@@ -740,7 +746,7 @@ function JTReportGift({ setRoute, onBack }) {
   // 입력 화면
   return (
     <div className="jt-container">
-      <JTReportShell title="증여세 계산" subtitle={phase === 'quick' ? '관계·금액만 입력하면 예상 증여세를 바로 보여드려요.' : '사전증여·부담부 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
+      <JTReportShell title="증여세 계산" subtitle={phase === 'quick' ? '관계·금액만 입력하면 예상 증여세를 바로 보여드려요.' : '사전증여·부담부 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
           <h2>{cur.q}</h2>

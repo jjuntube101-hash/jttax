@@ -77,7 +77,9 @@ const INHERITANCE_QS = [
       ['1', '1명', ''],
       ['2', '2명', ''],
       ['3', '3명', ''],
-      ['4', '4명 이상', ''],
+      ['4', '4명', ''],
+      ['5', '5명', ''],
+      ['6', '6명 이상', ''],
     ],
   },
 
@@ -184,6 +186,17 @@ const INHERITANCE_QS = [
     ],
   },
   {
+    id: 'priorGiftMinor',
+    section: '사전증여',
+    q: '증여받은 분이 증여 당시 미성년자(만 19세 미만)였나요?',
+    sub: '미성년 자녀·손자녀가 직계존속(고인)에게서 증여받았다면 증여재산공제가 2천만원으로 줄어듭니다(상증법 §53②단서). 이미 낸 증여세 계산에 반영됩니다.',
+    showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftRelation === '직계비속',
+    opts: [
+      ['no', '아니오 (성년이었음)', '증여공제 5천만'],
+      ['yes', '네, 미성년이었습니다', '증여공제 2천만'],
+    ],
+  },
+  {
     id: 'spouseActual',
     section: '배우자 상속',
     q: '배우자가 실제로 재산을 상속받으시나요?',
@@ -225,9 +238,12 @@ function mapAnswersToInheritance(a) {
     // gift_history(사실입력) 경로 — 엔진이 §58 증여세 산출세액을 자동도출해 §28 증여세액공제를 정상 반영.
     // (prior_gift_values만 보내면 §13 가산만 되고 §28 공제가 0이 되어 상속세가 과대추정됨)
     const pv = Number(a.priorGiftValue);
+    // 수정 260628(INHERITANCE-R2-05): 미성년 직계비속이 직계존속(고인)에게서 수증 시 증여재산공제 2천만(상증법 §53②단서). 성년 5천만.
+    const isMinorGift = a.priorGiftMinor === 'yes' && a.priorGiftRelation === '직계비속';
     const dedByRel = { '배우자': 600000000, '직계비속': 50000000, '기타': 10000000 };
-    const ded = Math.min(dedByRel[a.priorGiftRelation] != null ? dedByRel[a.priorGiftRelation] : 50000000, pv);
-    body.gift_history = [{ value: pv, deduction_used: ded, is_heir: true }];
+    const baseDed = isMinorGift ? 20000000 : (dedByRel[a.priorGiftRelation] != null ? dedByRel[a.priorGiftRelation] : 50000000);
+    const ded = Math.min(baseDed, pv);
+    body.gift_history = [{ value: pv, deduction_used: ded, is_heir: true, is_minor: isMinorGift }];
   }
   if (a.spouseActual === 'zero') body.spouse_no_inheritance = true;
   return body;
@@ -346,11 +362,15 @@ function JTReportInheritance({ setRoute, onBack }) {
       // 배우자 단독상속(자녀 0)은 일괄공제 배제 → 기초공제 2억만(상증법 §21②) — 과소추정 방지
       const childCount = Number(answers.numChildren) || 0;
       const lumpSum = (answers.hasSpouse === 'yes' && childCount === 0) ? 200_000_000 : 500_000_000;
-      const spouseDed = answers.hasSpouse === 'yes' ? 500_000_000 : 0;
       const debts = Number(answers.debts) || 0;
       const funeral = Math.min(Math.max(Number(answers.funeralExpenses) || 0, 5_000_000), 15_000_000);
       const grossInh = estate + (Number(answers.insuranceAmount) || 0) + (Number(answers.retirementPay) || 0);
-      const taxableBase = Math.max(grossInh - debts - funeral - lumpSum - spouseDed, 0);
+      // 수정 260628(INH-A-01): 배우자공제를 법정상속분 기반 근사(종전 5억 고정 → 과대). 배우자 단독 1.0 / 배우자+자녀N 1.5/(1.5+N), 최소 5억·한도 30억(상증법 §19). 엔진 일치(자녀2 → 0.4286).
+      // 수정 260628(INHERITANCE-R2-03): 배우자공제 한도 base는 채무 차감 후(상증법 시행령 §17① — 자산총액 − 공과금·채무, 장례비는 미차감).
+      const spouseShare = answers.hasSpouse === 'yes' ? (childCount > 0 ? 1.5 / (1.5 + childCount) : 1.0) : 0;
+      const spouseBase = Math.max(grossInh - debts, 0);
+      const spouseDed = answers.hasSpouse === 'yes' ? Math.min(Math.max(Math.round(spouseBase * spouseShare), 500_000_000), 3_000_000_000) : 0;
+      const taxableBase = Math.floor(Math.max(grossInh - debts - funeral - lumpSum - spouseDed, 0) / 1000) * 1000; // 과세표준 천원 미만 절사(상증법 §25) — 엔진 일치 (INHERITANCE-R2-03 잔차 제거)
       const baseTax = calcInhBaseTax(taxableBase);
       const filingCredit = Math.round(baseTax * 0.03);
       let calc = {
@@ -361,7 +381,8 @@ function JTReportInheritance({ setRoute, onBack }) {
       try {
         const ej = await callInhEngine(mapAnswersToInheritance(answers));
         const c = ej && ej.calc;
-        if (c) {
+        // 수정 260628(INHERITANCE-R2-01): 엔진이 오류바디를 HTTP 200으로 흘릴 때 partial-response 오염('세액 0원·상속세 없음' 거짓 표시) 방지 — 필수키 무결성 검증 후에만 정밀 채택.
+        if (c && !c['오류'] && !c['error'] && c['과세표준'] != null && c['산출세액'] != null && c['세액'] != null) {
           calc.taxBase = c['과세표준']; calc.calcTax = c['산출세액'];
           calc.totalTax = c['세액'];
           calc.deductions = c['주요공제'] || {};
@@ -369,6 +390,8 @@ function JTReportInheritance({ setRoute, onBack }) {
           calc.engineWarnings = c['경고사항'] || [];
           calc.precise = true; calc.engineVer = ej.version && ej.version.engine;
           calc.nonTaxableMsg = (c['세액'] === 0) ? '공제 범위 내로 납부할 상속세가 없습니다.' : null;
+        } else if (c) {
+          console.warn('상속 엔진 응답 무결성 실패(오류바디/필수키 누락) — 간이 추정 유지', c);
         }
       } catch (e) { console.warn('상속 엔진 연결 실패 — 간이 추정 유지', e); }
 
@@ -414,7 +437,7 @@ function JTReportInheritance({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="상속세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LEGACY">
+        <JTReportShell title="상속세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -426,7 +449,7 @@ function JTReportInheritance({ setRoute, onBack }) {
     const nonResident = answers.isResident === 'no';
     return (
       <div className="jt-container">
-        <JTReportShell title="상속세 계산 결과" subtitle={calc.precise ? '상속세 정밀 계산' : '상속세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
+        <JTReportShell title="상속세 계산 결과" subtitle={calc.precise ? '상속세 정밀 계산' : '상속세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
               ⚠️ 비거주자 상속은 국내 재산만 과세되고 일괄공제 등이 배제되어 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
@@ -530,7 +553,7 @@ function JTReportInheritance({ setRoute, onBack }) {
   // 입력 화면
   return (
     <div className="jt-container">
-      <JTReportShell title="상속세 계산" subtitle={phase === 'quick' ? '총재산·가족만 입력하면 예상 상속세를 바로 보여드려요.' : '공제·사전증여 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
+      <JTReportShell title="상속세 계산" subtitle={phase === 'quick' ? '총재산·가족만 입력하면 예상 상속세를 바로 보여드려요.' : '공제·사전증여 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
           <h2>{cur.q}</h2>

@@ -42,6 +42,14 @@ const CORP_QS = [
     placeholder: '예: 2 (없으면 0)',
   },
   {
+    id: 'children',
+    section: '부양가족',
+    q: '그 중 13세 이상 자녀는 몇 명인가요? (자녀세액공제)',
+    sub: '13세 이상 자녀는 자녀세액공제(1명 25만·2명 55만·3명+ 55만+초과 1명당 40만, 소법 §59의2)가 개인·법인 대표 양쪽 소득세에서 차감됩니다. 위 부양가족 중 13세 이상 자녀만. 없으면 0.',
+    numeric: true, optional: true,
+    placeholder: '예: 1 (없으면 0)',
+  },
+  {
     id: 'dividend',
     section: '잔여이익 배당',
     q: '법인에 남는 이익(법인세 낸 뒤)을 배당으로 가져가실 계획인가요?',
@@ -160,16 +168,18 @@ function JTReportCorporate({ setRoute, onBack }) {
       const salary = Math.min(Math.round(Number(answers.ownerSalary) || 0), income);   // 급여는 이익 초과 불가
       const spouse = answers.spouse === 'yes';
       const deps = Number(answers.dependents) || 0;
+      const kids = Number(answers.children) || 0;   // 수정 260628(CORPORATE-R2-01): 13세 이상 자녀세액공제(§59의2) 개인·법인대표 대칭 반영
       let calc = { precise: false };
       try {
         const [pj, cj, sj] = await Promise.all([
           // 개인사업자 → 근로자 아님: 표준세액공제 7만(소§59의4) 적용되도록 is_salary_earner=false
-          callCorpEng('/v1/calc/income', { business_revenue: income, business_expenses: 0, spouse, dependents: deps, is_salary_earner: false }),
+          callCorpEng('/v1/calc/income', { business_revenue: income, business_expenses: 0, spouse, dependents: deps, children_count: kids, is_salary_earner: false }),
           callCorpEng('/v1/calc/corporate', { net_income: Math.max(income - salary, 0) }),
-          salary > 0 ? callCorpEng('/v1/calc/income', { salary_income: salary, spouse, dependents: deps }) : Promise.resolve(null),
+          salary > 0 ? callCorpEng('/v1/calc/income', { salary_income: salary, spouse, dependents: deps, children_count: kids }) : Promise.resolve(null),
         ]);
         const pc = pj && pj.calc, cc = cj && cj.calc, sc = sj && sj.calc;
-        if (pc && cc) {
+        // 수정 260628(CORPORATE-R2-02): 빈/부분 응답 오염 방지 — 개인 총세부담 양수 검증(법인세는 0 정상).
+        if (pc && cc && Number(pc['총세부담']) > 0) {
           calc.indivTotal = pc['총세부담'] || 0;
           calc.corpTax = cc['총납부세액'] || 0;
           calc.salaryTax = (sc && sc['총세부담']) || 0;

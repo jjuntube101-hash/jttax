@@ -185,14 +185,22 @@ function fallbackAcqTax(a) {
     // 조정대상지역 + 시가표준 3억 이상 주택 무상취득 = 12% 중과(지법 §13의2②, 1세대1주택 단서 제외)
     const std = Number(a.standardValue) || v;
     rate = (isHousing && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes' && std >= 300_000_000)
-      ? 0.128 : 0.04;   // 중과 12%+교육세 0.4% (보수적 상향) / 일반 증여 3.5%+교육세
+      ? 0.124 : 0.038;  // 증여 중과 12%+교육세(2%×20%=0.4%)=12.4% / 일반 증여 3.5%+교육세((3.5%−2%)×20%=0.3%)=3.8% (수정 260628 ACQ-A-03, 지§151①1호)
   }
-  else if (a.acquisitionType === '상속') rate = 0.0316; // 상속 2.8%+교육세
-  else if (a.acquisitionType === '신축') rate = 0.0316;
+  else if (a.acquisitionType === '상속') rate = 0.0296; // 상속 2.8%+교육세((2.8%−2%)×20%=0.16%)=2.96% (수정 260628 ACQ-A-02, 지§151①1호)
+  else if (a.acquisitionType === '신축') rate = 0.0296; // 원시취득 2.8%+교육세 0.16%=2.96%
   else if (!isHousing) rate = 0.046;                    // 비주택 4%+교육세
-  else { // 주택 매매(기본, 중과·감면 미반영 간이)
-    if (v <= 600_000_000) rate = 0.011;
-    else if (v <= 900_000_000) rate = (v * 2 / 300_000_000 - 3) / 100 + 0.001; // §11①8호나목 슬라이딩(1~3%)+교육세 근사
+  else { // 주택 매매(기본). 수정 260628(ACQ-A-01): 다주택 중과(§13의2) 반영 — 종전 미반영으로 8%중과 케이스 -69% 과소.
+    const hc = Number(a.housingCount) || 1;
+    const reg = a.isRegulatedArea === 'yes';
+    if ((reg && hc >= 3) || (!reg && hc >= 4)) rate = 0.124;        // 12% 중과 + 교육세 0.4% (조정3주택+/비조정4주택+)
+    else if ((reg && hc === 2) || (!reg && hc === 3)) rate = 0.084; // 8% 중과 + 교육세 0.4% (조정2주택/비조정3주택) — 엔진 800M=67,200,000 일치
+    else if (v <= 600_000_000) rate = 0.011;
+    else if (v <= 900_000_000) {
+      // 6~9억 슬라이딩 본세율: §11①8호나목 단서 — 소수점 다섯째자리에서 반올림→넷째자리 (수정 260628 ACQ-A-04)
+      const base6_9 = Math.round((v * 2 / 300_000_000 - 3) / 100 * 10000) / 10000;
+      rate = base6_9 * 1.1; // 본세 + 지방교육세(본세율×50%×20%=본세율×10%, §151①1호) (ACQ-B-01)
+    }
     else rate = 0.033;
   }
   return Math.round(v * rate);
@@ -322,7 +330,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
         commentary = {
           headline: '취득세는 취득 원인·주택 수·조정지역에 따라 세율이 크게 달라집니다.',
           cautions: [
-            { title: '신고기한 60일', detail: '취득일부터 60일 이내(증여는 취득일이 속한 달 말일부터 3개월)에 신고·납부해야 합니다. 늦으면 가산세가 붙습니다(지방세법 §20).' },
+            { title: '취득세 신고·납부 기한', detail: '유상취득(매매)은 취득일부터 60일, 증여 등 무상취득은 취득일이 속한 달 말일부터 3개월, 상속은 상속개시일이 속한 달 말일부터 6개월(외국에 주소를 둔 상속인이 있으면 9개월) 이내에 신고·납부해야 합니다. 기한 말일이 토요일·공휴일·대체공휴일이면 그 다음 날까지입니다. 늦으면 가산세가 붙습니다(지방세법 §20①, 지방세기본법 §24).' },
             { title: '다주택 중과', detail: '조정대상지역 2주택 8%·3주택 이상 12%까지 중과될 수 있어, 보유 주택 수를 정확히 확인해야 합니다(§13의2).' },
             { title: '농어촌특별세·지방교육세', detail: '취득세 외에 지방교육세(취득세의 일부)와, 85㎡ 초과 주택은 농어촌특별세가 추가됩니다.' },
           ],
@@ -352,7 +360,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="취득세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LEGACY">
+        <JTReportShell title="취득세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -363,7 +371,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
     const { calc, commentary } = report;
     return (
       <div className="jt-container">
-        <JTReportShell title="취득세 계산 결과" subtitle={calc.precise ? '취득세 정밀 계산' : '취득세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
+        <JTReportShell title="취득세 계산 결과" subtitle={calc.precise ? '취득세 정밀 계산' : '취득세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 취득세(총액)' : (calc.precise ? '총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '추정 납부세액 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
@@ -477,7 +485,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
           )}
 
           <p style={{ fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 }}>
-            본 계산은 입력 정보와 현행 지방세법을 기준으로 한 예상액입니다. 실제 세액은 과세표준(시가표준액)·주택 수·중과·감면 요건에 따라 달라질 수 있으며, 신고기한은 취득일부터 60일(증여는 취득일이 속한 달 말일부터 3개월)입니다. 정확한 신고는 담당 세무사 확인이 필요합니다.
+            본 계산은 입력 정보와 현행 지방세법을 기준으로 한 예상액입니다. 실제 세액은 과세표준(시가표준액)·주택 수·중과·감면 요건에 따라 달라질 수 있으며, 신고기한은 유상취득 60일·증여 등 무상취득 3개월(취득일이 속한 달 말일부터)·상속 6개월(상속개시일이 속한 달 말일부터, 외국 거주 상속인이 있으면 9개월)이고, 기한 말일이 공휴일이면 그 다음 날까지입니다. 정확한 신고는 담당 세무사 확인이 필요합니다.
           </p>
 
           <JTReportConvert
@@ -496,7 +504,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
+      <JTReportShell title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
           <h2>{cur.q}</h2>

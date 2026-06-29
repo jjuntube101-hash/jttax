@@ -106,11 +106,18 @@ const VAT_QS = [
   },
   // ── 공통 (개인 일반 + 간이) ──
   {
+    id: 'priorSupplyOver10', section: '공제',
+    q: '직전 연도 공급가액(사업장 기준)이 10억원을 초과하나요?',
+    sub: '개인 일반과세자는 직전 연도 공급가액이 10억원을 초과하면 신용카드 매출세액공제 대상에서 제외됩니다(부가법 §46①1호가목·시행령 §88③ 사업장 기준). 간이과세자는 해당 없음.',
+    showIf: (a) => a.businessType === '일반과세자' && a.isCorporate !== 'yes',
+    opts: [['no', '아니오 (10억원 이하)', '카드공제 대상'], ['yes', '네, 10억원 초과', '카드공제 제외']],
+  },
+  {
     id: 'creditCardSales', section: '공제',
     q: '신용카드·현금영수증 매출은 얼마인가요? (원)',
-    sub: '개인사업자(일반·간이 모두)는 카드·현금영수증으로 받은 매출의 1.3%를 세액공제받습니다(부가법 §46, 2026년까지 연 1천만원 한도). 법인·직전연도 매출 10억원 초과 개인은 제외돼요. 전체 매출 중 카드/현금영수증 비중을 넣어 주세요. 없으면 0.',
+    sub: '개인사업자(일반·간이 모두)는 카드·현금영수증 매출의 1.3%(2026.12.31까지, 2027.1.1부터 1%)를 세액공제받습니다(부가법 §46, 한도 연 1천만원·2027.1.1부터 500만원). 법인·직전연도 공급가액 10억원 초과 개인(사업장 기준)은 제외돼요. 전체 매출 중 카드/현금영수증 비중을 넣어 주세요. 없으면 0.',
     numeric: true, money: true, optional: true,
-    showIf: (a) => (a.businessType === '일반과세자' && a.isCorporate !== 'yes') || a.businessType === '간이과세자',
+    showIf: (a) => (a.businessType === '일반과세자' && a.isCorporate !== 'yes' && a.priorSupplyOver10 !== 'yes') || a.businessType === '간이과세자',   // 수정 260628(VAT-R2-06): 10억 초과 개인 카드공제 제외(§46①1가)
     placeholder: '예: 50,000,000 (없으면 0)',
   },
   // ── 공통 ──
@@ -233,7 +240,7 @@ function JTReportVat({ setRoute, onBack }) {
         sales_amount: clamp(answers.salesAmount),
         purchase_amount: purchaseAmt,
         purchase_vat_paid: Math.round(purchaseAmt * 0.1),   // 매입세액 = 과세 매입액 × 10%
-        credit_card_sales: ((bt === '일반과세자' && !isCorp) || bt === '간이과세자') ? clamp(answers.creditCardSales) : 0,   // §46 신용카드 공제 — 개인 일반 + 간이 대상(§46①1호나목)
+        credit_card_sales: ((bt === '일반과세자' && !isCorp && answers.priorSupplyOver10 !== 'yes') || bt === '간이과세자') ? clamp(answers.creditCardSales) : 0,   // §46 신용카드 공제 — 개인 일반(직전 공급가 10억↓) + 간이 대상. 수정 260628(VAT-R2-06)
         sales_supply_price: clamp(answers.supplyPrice),
         simplified_value_sector: answers.simplifiedSector || '도소매업',
         simplified_input_supply: clamp(answers.simplifiedInput),
@@ -243,7 +250,8 @@ function JTReportVat({ setRoute, onBack }) {
       try {
         const j = await callVatEng(body);
         const c = j && j.calc;
-        if (c) {
+        // 수정 260628(VAT-R2-01): 엔진 오류바디/부분응답을 precise로 신뢰하지 않음(납부세액0 거짓표시 방지).
+        if (c && !c['오류'] && (c['납부세액'] != null || c['환급세액'] != null || c['비과세여부'])) {
           calc.businessType = c['사업자유형'];
           calc.netTax = c['납부세액'] || 0;
           calc.isRefund = !!c['환급여부'];
@@ -257,8 +265,8 @@ function JTReportVat({ setRoute, onBack }) {
           calc.periodType = body.period_type;
           calc.precise = true;
           calc.engineVer = j.version && j.version.engine;
-          // §69 간이과세자 납부의무 면제 (공급대가 4,800만원 미만) — 엔진이 납부세액 0 반환, 프론트는 명확히 안내
-          calc.simplifiedExempt = (bt === '간이과세자' && clamp(answers.supplyPrice) > 0 && clamp(answers.supplyPrice) < 48000000);
+          // §69 간이과세자 납부의무 면제. 수정 260628(VAT-R2-03): 프론트 독자 판정 제거 — 엔진 납부세액 0 신호로만 면제 라벨(§64 재고납부세액이 있으면 netTax>0 → 면제 제외·실액 표시, §69① 단서 준수).
+          calc.simplifiedExempt = (calc.netTax === 0 && answers.businessType === '간이과세자' && clamp(answers.supplyPrice) > 0 && clamp(answers.supplyPrice) < 48000000);
         }
       } catch (e) { console.warn('부가세 엔진 연결 실패', e); calc.engineErr = true; }
 
@@ -313,7 +321,7 @@ function JTReportVat({ setRoute, onBack }) {
             <>
               <div className={'jt-report-result__grade ' + ((calc.isRefund || calc.simplifiedExempt) ? 'jt-grade-good' : 'jt-grade-mid')}>
                 <div className="jt-report-result__grade-label">{calc.simplifiedExempt ? '납부의무 면제 (간이과세자)' : ((calc.isRefund ? '예상 환급세액' : '예상 납부세액') + ' (' + calc.businessType + ')')}</div>
-                <div className="jt-report-result__grade-val">{vatWon(calc.simplifiedExempt ? 0 : (calc.isRefund ? calc.refund : calc.netTax))}</div>
+                <div className="jt-report-result__grade-val">{vatWon(calc.isRefund ? calc.refund : calc.netTax)}</div>
                 {calc.simplifiedExempt ? (
                   <div style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.6 }}>1년 공급대가가 <strong>4,800만원 미만</strong>이라 부가가치세 <strong>납부의무가 면제</strong>됩니다(부가법 §69). <strong>신고는 해야 하지만 낼 세금은 0원</strong>이에요. 신고·납부 기한은 <strong>{deadline}</strong>.</div>
                 ) : (

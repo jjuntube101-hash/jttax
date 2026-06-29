@@ -19,7 +19,7 @@ window.JT_REPORTS = [
   },
   {
     id: 'cgt',
-    tag: 'LEGACY',
+    tag: 'LIVE',
     kr: '양도소득세 간이 계산',
     en: 'Capital Gains Estimate',
     minutes: 5,

@@ -27,16 +27,19 @@ function calcBaseTax(taxBase) {
 }
 
 // 장기보유특별공제율
-function calcLtDeductionRate(years, isOwnOccupied, is1House) {
+// 수정 260627(V2-5): 표2 거주공제는 '거주연수' 기준이어야 한다. 종전 거주율도 years(보유)로 계산해
+// 보유>거주인 경우 거주공제 과다(예 보유10·거주2 → 80% 산정, 실제 48%) → 세액 과소. residenceYears 인자 분리.
+function calcLtDeductionRate(years, residenceYears, isOwnOccupied, is1House) {
   if (years < 3) return 0;
-  // 1세대1주택 실거주(2년 이상): 보유+거주 각 최대 40%, 합계 최대 80%
+  // 1세대1주택 실거주(2년 이상): 보유 연4% + 거주 연4%, 합계 최대 80% (소§95② 표2)
   if (is1House && isOwnOccupied) {
     const holdRate = Math.min(Math.floor(years), 10) * 0.04;
-    const liveRate = Math.min(Math.floor(years), 10) * 0.04;
+    const liveRate = Math.min(Math.floor(residenceYears || 0), 10) * 0.04;
     return Math.min(holdRate + liveRate, 0.80);
   }
-  // 일반(3년~15년+): 연 2%, 최대 30%
-  const rate = Math.min(Math.floor(years) - 2, 13) * 0.02 + 0.06;
+  // 일반(3년~15년+): 3년 6%, 이후 연 2%p, 최대 30% (소§95② 표1)
+  // 수정 260627: 종전 `floor(years)-2`는 전 구간 +2%p 과다(3년→8%, 11년→24%). 정답은 `-3`(3년→6%, 11년→22%).
+  const rate = (Math.min(Math.floor(years), 15) - 3) * 0.02 + 0.06;
   return Math.min(rate, 0.30);
 }
 
@@ -312,13 +315,13 @@ function buildReportDetail(answers, calc, commentary) {
   L.push('■ 계산 결과' + (calc.precise ? ' (검증 엔진 정밀계산)' : ' (간이 추정)'));
   L.push('  · 양도차익: ' + formatWon(calc.capGain));
   if (calc.nonTaxableMsg) L.push('  · 비과세 판정: ' + calc.nonTaxableMsg);
-  L.push('  · 과세대상(비과세 반영 후): ' + formatWon(calc.taxableAfter));
+  L.push('  · 과세대상(비과세 반영 후): ' + formatWon(calc.taxableAfter1House));
   L.push('  · 장기보유특별공제: ' + formatWon(calc.ltDeduction) + ' (' + Math.round((calc.ltRate || 0) * 100) + '%)');
   L.push('  · 과세표준: ' + formatWon(calc.taxBase));
   L.push('  · 산출세액: ' + formatWon(calc.baseTax));
   L.push('  · 지방소득세: ' + formatWon(calc.localTax));
   L.push('  · 총 세부담: ' + formatWon(calc.totalTax) + ' (실효세율 ' + (calc.effectiveRate || 0).toFixed(1) + '%)');
-  const notes = [calc.shortTermNote, calc.multiHouseNote, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, calc.deadlineWarn].filter(Boolean);
+  const notes = [calc.shortTermNote, calc.multiHouseNote, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, calc.acqZoneCaveat, calc.deadlineWarn].filter(Boolean);
   const ew = calc.engineWarnings || [];
   if (notes.length || ew.length) {
     L.push('');
@@ -378,6 +381,7 @@ function formatStepValue(name, amount) {
   // 실제 값이 %인 항목은 '장특공제율'류만. '단기양도세율·분양권세율·세율(기본)'은 amount가 산출세액(원)이므로 % 금지.
   if (/공제율|장특.*율/.test(label)) return `${amount}%`;       // 장특공제율(보유+거주율 합계)만 %
   // 그 외 '세율'·'세액' 등 amount가 원 단위인 항목은 금액으로 (아래 기본 formatWon 처리)
+  if (/비교|vs/i.test(label)) return '—';  // 수정 260628(CGT-R2-02): '중과 vs 단기 비교' 마커 행(금액 0, 근거는 비고) — '0원' 오해 방지
   if (/미해당|미적용/.test(label) && amount === 0) return '해당 없음';  // '중과 미해당'(0) 등은 %p보다 먼저
   if (/중과(?!가산)/.test(label) && amount !== 0) return `+${amount}%p`;  // 다주택·비사업용 토지 중과(가산율, %p). '중과가산'(금액)·'중과 미해당'(0) 제외
   if (/주택수|임대주택/.test(label)) return `${amount}채`;   // 주택수·임대주택 제외(잔여 주택수)
@@ -400,13 +404,20 @@ function isValidISODate(v) {
   return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
 }
 
-// 두 날짜(YYYY-MM-DD) 사이 연수. 빈 값은 오늘로 대체. 음수 방지.
+// 두 날짜(YYYY-MM-DD) 사이 연수(만연수 + 잔여비율). 빈 값은 오늘로 대체. 음수 방지.
+// 수정 260628(LT-R2-02): 엔진 _years_between과 동일한 달력 만연수 기반. 종전 일수/365.25 근사는
+// 정확히 N주년 양도에서 N 미달(3주년→2.998)로 floor가 1 작아져 장특·비과세·단기 경계가 어긋났음.
 function yearsBetween(fromStr, toStr) {
-  const today = new Date().toISOString().slice(0, 10);
-  const d1 = new Date((fromStr || today) + 'T00:00:00');
-  const d2 = new Date((toStr || today) + 'T00:00:00');
-  if (isNaN(d1) || isNaN(d2)) return 0;
-  return Math.max((d2 - d1) / (365.25 * 24 * 3600 * 1000), 0);
+  const today = isoDate(new Date());
+  const a = new Date((fromStr || today) + 'T00:00:00');
+  const b = new Date((toStr || today) + 'T00:00:00');
+  if (isNaN(a) || isNaN(b) || b <= a) return 0;
+  let y = b.getFullYear() - a.getFullYear();
+  const anniv = new Date(a); anniv.setFullYear(a.getFullYear() + y);
+  if (anniv > b) { y -= 1; anniv.setFullYear(a.getFullYear() + y); }   // 응당일 미도달 → 만연수 -1
+  const next = new Date(a); next.setFullYear(a.getFullYear() + y + 1);
+  const frac = next > anniv ? (b - anniv) / (next - anniv) : 0;        // 잔여 비율(표시·시나리오용 소수)
+  return Math.max(y + frac, 0);
 }
 
 // 7문항 답변 → transfer_tax 요청 본문 (물건속성·시나리오 매핑)
@@ -420,7 +431,7 @@ function mapAnswersToTransfer(answers) {
                        ? (answers.nonHouseType === 'land' ? '토지' : '상가')  // 업무용 오피스텔=상가(주거용 아님)
                      : '주택';  // house_1/2/3 · replacement(대체주택) → 주택
   const housingCount = housingMap[assetType] || 1;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = isoDate(new Date());
   const acqDate = answers.acquiredDate || today;            // 취득일(필수)
   const transferDate = answers.transferDate || today;       // 양도일(미입력=오늘)
   // assetType 전환 시 잔존(stale)한 다른 경로 답변이 엔진에 잘못 전달되지 않도록 적용 자산유형 가드
@@ -521,7 +532,8 @@ async function callEngineBody(body) {
    각 시점 세액을 엔진으로 계산·비교 (입력 추가 없음).
    ================================================================ */
 function addYears(d, y) { const n = new Date(d); n.setFullYear(n.getFullYear() + y); return n; }
-function isoDate(d) { return d.toISOString().slice(0, 10); }
+// 로컬(KST) 기준 YYYY-MM-DD. 수정 260627: toISOString()은 UTC라 KST 새벽 -1일 → 시점최적화 2주년 후보일이 하루 당겨져 비과세/세율 경계가 어긋남(V3-1).
+function isoDate(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 
 function buildScenarioDates(answers) {
   if (!answers.acquiredDate) return [];
@@ -561,7 +573,7 @@ async function computeScenarios(answers) {
 function JTReportCGT({ setRoute, onBack }) {
   const [step, setStep] = useCgtState(0);
   // 양도일은 세액을 크게 좌우(2026.5.10 다주택 중과 복원 전후) → 오늘 날짜로 미리 채워 명시
-  const [answers, setAnswers] = useCgtState(() => ({ transferDate: new Date().toISOString().slice(0, 10) }));
+  const [answers, setAnswers] = useCgtState(() => ({ transferDate: isoDate(new Date()) }));
   const [loading, setLoading] = useCgtState(false);
   const [report, setReport] = useCgtState(null);
   const [err, setErr] = useCgtState(null);
@@ -587,7 +599,7 @@ function JTReportCGT({ setRoute, onBack }) {
       const valid = isValidISODate(v);                  // 실제 존재하는 YYYY-MM-DD
       if (cur.optional) return v === '' || valid;       // 선택: 비우거나 유효한 날짜
       if (!valid) return false;                         // 필수: 유효한 날짜
-      const today = new Date().toISOString().slice(0, 10);
+      const today = isoDate(new Date());
       return cur.allowFuture ? true : v <= today;       // 취득일은 미래 불허
     }
     return !!answers[cur.id];
@@ -649,7 +661,7 @@ function JTReportCGT({ setRoute, onBack }) {
             } else if (answers.ipjuOtherHouseDetail === 'one_house' && answers.ipjuOtherHouseDate) {
               // 「3년 이내」 = 취득일+3년 당일까지 포함 (엔진과 동일 날짜 직접비교 — 만연수 부동소수 불일치 방지)
               const od = answers.ipjuOtherHouseDate;            // YYYY-MM-DD
-              const tdStr = answers.transferDate || new Date().toISOString().slice(0, 10);
+              const tdStr = answers.transferDate || isoDate(new Date());
               const [oy, om, odd] = od.split('-').map(Number);
               let deadline = `${oy + 3}-${String(om).padStart(2, '0')}-${String(odd).padStart(2, '0')}`;
               if (om === 2 && odd === 29) {  // 2/29 취득 → 3년 후 비윤년이면 3/1로 보정
@@ -687,28 +699,36 @@ function JTReportCGT({ setRoute, onBack }) {
       }
 
       // 1세대1주택 비과세 (12억 이하)
+      // 수정 260628(V2R2-01): 조정지역 취득 1주택은 거주 2년 요건 필요(시령§154①). 폴백이 거주 미검사로
+      // 과세 대상을 0원(완전비과세)으로 표시하던 과소 버그 차단. residenceOk 미충족 시 taxable=capGain(과세) 유지.
       let nonTaxableMsg = null;
       let taxable = capGain;
-      if (is1House && sold <= 1_200_000_000 && years >= 2 && !hasConcurrentRight) {
+      const residenceOk = answers.adjustedZone !== 'yes' || residenceYears >= 2;
+      if (is1House && sold <= 1_200_000_000 && years >= 2 && residenceOk && !hasConcurrentRight) {
         nonTaxableMsg = '1세대 1주택 · 양도가 12억 이하 · 2년 이상 보유 요건을 모두 충족하시면 원칙적으로 비과세 대상입니다.';
         taxable = 0;
-      } else if (is1House && sold > 1_200_000_000 && years >= 2 && !hasConcurrentRight) {
+      } else if (is1House && sold > 1_200_000_000 && years >= 2 && residenceOk && !hasConcurrentRight) {
         // 12억 초과분만 과세
         const taxableRatio = (sold - 1_200_000_000) / sold;
         taxable = Math.round(capGain * taxableRatio);
         nonTaxableMsg = '1세대 1주택이지만 양도가 12억 초과분에 대해서만 과세됩니다 (안분 계산).';
+      } else if (is1House && years >= 2 && !residenceOk && !hasConcurrentRight) {
+        // 조정지역 취득 1주택 거주 2년 미충족 → 비과세 배제(전액 과세). 취득 당시 비조정이면 비과세 가능(상담).
+        nonTaxableMsg = '조정대상지역 취득 1주택의 2년 거주 요건 미충족으로 과세로 계산했습니다. 취득 당시 비조정지역이었다면 비과세가 될 수 있어 상담 확인을 권합니다.';
       }
 
-      // 장기보유특별공제
-      const ltRate = calcLtDeductionRate(years, isOwnOccupied, is1House);
+      // 장기보유특별공제 + 단기/중과 (소득세법 §95②·§104·§104⑦)
+      // 수정 260627(V2-2): 다주택 중과는 2026.5.10 양도부터 복원 → 양도일 게이트 추가(종전: 무조건 가산해 5.9 이전에도 과다).
+      //                    중과 적용 시 장특공제 배제(엔진 동일)하도록 ltRate=0 후 과세표준 재산정.
+      const basicDeduction = 2_500_000;
+      const heavyRestored = (answers.transferDate || isoDate(new Date())) >= '2026-05-10';
+      const isHeavyCgt = isHouse && isAdjusted && (is2House || is3House) && heavyRestored;
+      let ltRate = calcLtDeductionRate(years, residenceYears, isOwnOccupied, is1House);
+      if (isHeavyCgt) ltRate = 0;  // 다주택 중과 → 장특 배제
       const ltDeduction = Math.round(taxable * ltRate);
       const afterLt = Math.max(taxable - ltDeduction, 0);
+      const taxBase = Math.max(Math.floor((afterLt - basicDeduction) / 1000) * 1000, 0);  // 천원미만 절사(엔진 truncate_base 정합, 소§92)
 
-      // 기본공제 250만원
-      const basicDeduction = 2_500_000;
-      const taxBase = Math.max(afterLt - basicDeduction, 0);
-
-      // 단기양도 중과세 (소득세법 §104) + 다주택자 중과세 + 분양권
       let baseTax;
       let shortTermNote = null;
       if (isPresale) {
@@ -717,18 +737,38 @@ function JTReportCGT({ setRoute, onBack }) {
         baseTax = Math.round(taxBase * rate);
         shortTermNote = `분양권·입주권 양도 · ${(rate * 100).toFixed(0)}% 단일세율이 적용됩니다.`;
       } else if (years < 1) {
-        baseTax = Math.round(taxBase * 0.70);
-        shortTermNote = '보유 1년 미만 단기양도 · 70% 중과세율이 적용됩니다.';
+        // 수정 260628(R2-01·소§104⑦ 후단): 조정 다주택 단기는 단기세액과 중과세액 중 큰 값(max).
+        const shortTax = Math.round(taxBase * 0.70);
+        if (isHeavyCgt) {
+          const surcharge = is3House ? 0.30 : 0.20;
+          baseTax = Math.max(shortTax, calcBaseTax(taxBase) + Math.round(taxBase * surcharge));
+          shortTermNote = `보유 1년 미만 + 조정 다주택 — 단기 70%와 중과(+${(surcharge * 100).toFixed(0)}%p) 중 큰 세액(소§104⑦ 후단·장특 배제, 간이 추정).`;
+        } else {
+          baseTax = shortTax;
+          shortTermNote = '보유 1년 미만 단기양도 · 70% 중과세율이 적용됩니다.';
+        }
       } else if (years < 2 && isHouse) {
-        baseTax = Math.round(taxBase * 0.60);
-        shortTermNote = '주택 단기양도(1~2년) · 60% 중과세율이 적용됩니다.';
-      } else if (isHouse && isAdjusted && (is2House || is3House)) {
-        // 다주택자 + 조정대상지역 중과세: 기본세율 + 20%p(2주택) / +30%p(3주택 이상)
+        const shortTax = Math.round(taxBase * 0.60);
+        if (isHeavyCgt) {
+          const surcharge = is3House ? 0.30 : 0.20;
+          baseTax = Math.max(shortTax, calcBaseTax(taxBase) + Math.round(taxBase * surcharge));
+          shortTermNote = `주택 1~2년 + 조정 다주택 — 단기 60%와 중과(+${(surcharge * 100).toFixed(0)}%p) 중 큰 세액(소§104⑦ 후단·장특 배제, 간이 추정).`;
+        } else {
+          baseTax = shortTax;
+          shortTermNote = '주택 단기양도(1~2년) · 60% 중과세율이 적용됩니다.';
+        }
+      } else if (isHeavyCgt) {
+        // 다주택자 + 조정대상지역 중과(2026.5.10 복원): 기본세율 + 20%p(2주택)/+30%p(3주택+)·장특 배제
         const surcharge = is3House ? 0.30 : 0.20;
-        const basicTax = calcBaseTax(taxBase);
-        const surchargeTax = Math.round(taxBase * surcharge);
-        baseTax = basicTax + surchargeTax;
-        shortTermNote = `조정대상지역 ${is3House ? '3주택 이상' : '2주택'} — 다주택 중과(+${(surcharge * 100).toFixed(0)}%p)는 2026.5.10 양도부터 복원됩니다(그 전 양도는 중과 배제·기본세율). 위 「양도 시점」 비교로 확인하세요. 단, 2026.5.9까지 계약금을 수수한 주택 등은 유예가 연장될 수 있어 양도 시점 법령 확인이 필요합니다.`;
+        baseTax = calcBaseTax(taxBase) + Math.round(taxBase * surcharge);
+        shortTermNote = `조정대상지역 ${is3House ? '3주택 이상' : '2주택'} 다주택 중과(+${(surcharge * 100).toFixed(0)}%p)·장기보유공제 배제가 2026.5.10 양도부터 복원 적용됩니다. (간이 추정 — 정밀 결과는 엔진 연결 시)`;
+      } else if (isHouse && isAdjusted && (is2House || is3House) && !heavyRestored) {
+        // 2026.5.9 이전 양도: 다주택 중과 유예 → 기본세율(장특 유지)
+        baseTax = calcBaseTax(taxBase);
+        shortTermNote = '조정대상지역 다주택이나 2026.5.9 이전 양도는 중과 유예로 기본세율이 적용됩니다(2026.5.10부터 +20/30%p 복원).';
+      } else if (isLand && (answers.landUse === 'non_business' || answers.landUse === 'unsure')) {
+        // 수정 260628(CGT-R2-LAND-01): 비사업용 토지 +10%p 중과(소§104①8호). 폴백 누락으로 ~5천만 과소·landCaveat 모순.
+        baseTax = calcBaseTax(taxBase) + Math.round(taxBase * 0.10);
       } else {
         baseTax = calcBaseTax(taxBase);
       }
@@ -762,7 +802,7 @@ function JTReportCGT({ setRoute, onBack }) {
         replCaveat,
         concurrentRightCaveat,
         acquiredDate: answers.acquiredDate || '',
-        transferDate: answers.transferDate || new Date().toISOString().slice(0, 10),
+        transferDate: answers.transferDate || isoDate(new Date()),
         holdYears: years,
         residenceYears,
         effectiveRate: capGain > 0 ? (totalTax / capGain * 100) : 0,
@@ -777,9 +817,10 @@ function JTReportCGT({ setRoute, onBack }) {
           calc.taxBase = c['과세표준'];
           calc.ltDeduction = c['장기보유특별공제'];
           const ltsd = c['장특공제율'];
-          if (ltsd && ltsd['합계']) {
+          if (ltsd) {
+            // 엔진 장특공제율로 동기화: '16.0%'→0.16, '-'(미적용·중과배제)→0. 비과세 시 폴백 잔존 라벨(12%·0원) 제거(R2-01).
             const pct = parseFloat(String(ltsd['합계']).replace('%', ''));
-            if (!isNaN(pct)) calc.ltRate = pct / 100;  // 계산 내역 공제율%를 엔진값(보유+거주)으로 일치
+            calc.ltRate = isNaN(pct) ? 0 : pct / 100;
           }
           calc.basicDeduction = c['기본공제'];
           calc.baseTax = c['세액'];
@@ -802,6 +843,16 @@ function JTReportCGT({ setRoute, onBack }) {
           // 대체주택 replCaveat: 엔진이 과세 판정 시 '사후요건 추징' 안내는 모순 → 과세 사유 안내로 교체
           if (assetType === 'replacement' && !c['비과세여부']) {
             calc.replCaveat = '대체주택 비과세 요건(시행령 §156의2⑤: 사업시행인가일 이후 취득·1년 이상 거주·신축 완공 전 또는 완공 후 3년 내 양도)을 충족하지 못해 과세로 계산했습니다. 정확한 적용은 상담으로 확인하세요.';
+          }
+          // V1-1(260627·사용자 승인=경고 강화): regulated_at_acquisition을 '현재 조정'으로 보수 간주(L440)하므로,
+          // 취득 당시 비조정→이후 조정지정된 1주택자가 거주요건 미충족으로 과세 표시될 수 있다. 엔진 비과세 경고는
+          // '비조정 가정' 시에만 나와 과세 사용자는 못 보므로(적대검증 V1-1), 과세된 1주택(12억이하·2년보유·현재조정)에
+          // '취득당시 비조정이면 비과세 가능' 안내를 프론트가 상시 노출한다.
+          if (is1House && answers.adjustedZone === 'yes' && !c['비과세여부'] && years >= 2) {
+            // 수정 260628(V1-NEW-01): 12억 가격 게이트 제거 — §154① 거주요건 면제는 가격 무관. 고가는 안분 효과 명시.
+            calc.acqZoneCaveat = sold <= 1_200_000_000
+              ? '입력하신 「현재 조정대상지역」을 「취득 당시에도 조정」으로 보아 거주 2년 요건을 적용해 과세로 계산했습니다. 만약 취득 당시에는 비조정지역이었다면(이후 조정대상지역으로 지정) 거주요건이 면제되어 1세대 1주택 비과세가 될 수 있습니다(시행령 §154①). 취득 당시 조정대상지역 지정 여부를 상담으로 확인하세요.'
+              : '입력하신 「현재 조정대상지역」을 「취득 당시에도 조정」으로 보아 거주 2년 요건을 적용해 전액 과세로 계산했습니다. 취득 당시 비조정지역이었다면(이후 조정 지정) 거주요건이 면제되어 12억 초과분만 과세되는 1세대1주택 안분 비과세가 적용될 수 있습니다(시행령 §154①·§160). 취득 당시 조정대상지역 지정 여부를 상담으로 확인하세요.';
           }
           // 특례로 비과세된 2주택은 "다주택 비과세 대상 아님" 안내가 모순 → 제거
           if (c['비과세여부']) calc.multiHouseNote = null;
@@ -969,21 +1020,41 @@ cautions 3개, saving_ideas 2~3개.`;
           && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale');
 
         // 기본 계산만 재실행 (runAnalysis 본문의 로직 요약)
+        const residenceYears2 = answers.moveInDate ? yearsBetween(answers.moveInDate, answers.transferDate) : 0;
+        const residenceOk2 = answers.adjustedZone !== 'yes' || residenceYears2 >= 2;  // 수정 260628(V2R2-01): 조정 거주 2년 요건
         let taxable2 = capGain2;
         let nonTaxableMsg2 = null;
-        if (is1House2 && sold2 <= 1_200_000_000 && years2 >= 2 && !hasConcurrentRight2) {
+        if (is1House2 && sold2 <= 1_200_000_000 && years2 >= 2 && residenceOk2 && !hasConcurrentRight2) {
           nonTaxableMsg2 = '1세대 1주택 · 양도가 12억 이하 · 2년 이상 보유 요건 충족 시 원칙적 비과세.';
           taxable2 = 0;
-        } else if (is1House2 && sold2 > 1_200_000_000 && years2 >= 2 && !hasConcurrentRight2) {
+        } else if (is1House2 && sold2 > 1_200_000_000 && years2 >= 2 && residenceOk2 && !hasConcurrentRight2) {
           taxable2 = Math.round(capGain2 * ((sold2 - 1_200_000_000) / sold2));
           nonTaxableMsg2 = '12억 초과분 안분 과세.';
+        } else if (is1House2 && years2 >= 2 && !residenceOk2 && !hasConcurrentRight2) {
+          // 수정 260628(C-CARRY-01): 2차 폴백에도 조정 1주택 거주미충족 안내(간이 calc와 문구 통일).
+          nonTaxableMsg2 = '조정대상지역 취득 1주택의 2년 거주 요건 미충족으로 과세로 계산했습니다. 취득 당시 비조정지역이었다면 비과세가 될 수 있어 상담 확인을 권합니다.';
         } else if (hasConcurrentRight2) {
           nonTaxableMsg2 = '주택과 입주권·분양권을 함께 보유한 상태에서 그 주택을 양도하면 1세대1주택 비과세가 배제됩니다(소법 §89②). 일시적 보유 등 정밀 판정은 상담으로 확인하세요.';
         }
-        const ltRate2 = calcLtDeductionRate(years2, isOwnOccupied2, is1House2);
+        // 수정 260627(V2-3): 2차폴백도 단기(70/60)·분양권·다주택중과(2026.5.10+) 분기 반영 (종전 calcBaseTax만 → 단기/중과 과소).
+        const isPresale2 = assetType2 === 'presale';
+        const isHouse2x = is1House2 || assetType2 === 'house_2' || assetType2 === 'house_3';
+        const is2or3House2 = assetType2 === 'house_2' || assetType2 === 'house_3';
+        const heavy2 = isHouse2x && isAdjusted2 && is2or3House2 && (answers.transferDate || isoDate(new Date())) >= '2026-05-10';
+        let ltRate2 = calcLtDeductionRate(years2, residenceYears2, isOwnOccupied2, is1House2);
+        if (heavy2) ltRate2 = 0;  // 중과 → 장특 배제
         const afterLt2 = Math.max(taxable2 - Math.round(taxable2 * ltRate2), 0);
-        const taxBase2 = Math.max(afterLt2 - 2_500_000, 0);
-        const baseTax2 = calcBaseTax(taxBase2);
+        const taxBase2 = Math.max(Math.floor((afterLt2 - 2_500_000) / 1000) * 1000, 0);  // 천원미만 절사(엔진 정합)
+        let baseTax2;
+        // 수정 260628(R2-01·소§104⑦ 후단): 조정 다주택 단기는 단기와 중과 중 큰 세액(max).
+        const surcharge2 = assetType2 === 'house_3' ? 0.30 : 0.20;
+        const heavyTax2 = () => calcBaseTax(taxBase2) + Math.round(taxBase2 * surcharge2);
+        if (isPresale2) baseTax2 = Math.round(taxBase2 * (years2 < 1 ? 0.70 : 0.60));
+        else if (years2 < 1) baseTax2 = heavy2 ? Math.max(Math.round(taxBase2 * 0.70), heavyTax2()) : Math.round(taxBase2 * 0.70);
+        else if (years2 < 2 && isHouse2x) baseTax2 = heavy2 ? Math.max(Math.round(taxBase2 * 0.60), heavyTax2()) : Math.round(taxBase2 * 0.60);
+        else if (heavy2) baseTax2 = heavyTax2();
+        else if (assetType2 === 'commercial' && answers.nonHouseType === 'land' && (answers.landUse === 'non_business' || answers.landUse === 'unsure')) baseTax2 = calcBaseTax(taxBase2) + Math.round(taxBase2 * 0.10);  // 비사업용 토지 +10%p(CGT-R2-LAND-01)
+        else baseTax2 = calcBaseTax(taxBase2);
         const totalTax2 = Math.round(baseTax2 * 1.10);
 
         const multiHouseNote2 = (assetType2 === 'house_2' || assetType2 === 'house_3')
@@ -1031,7 +1102,7 @@ cautions 3개, saving_ideas 2~3개.`;
         <p style={{maxWidth: 580, margin: '12px auto', lineHeight: 1.7, opacity: 0.85}}>{report.message}</p>
         <div style={{marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center'}}>
           <button className="jt-btn jt-btn--primary" onClick={() => setRoute && setRoute('booking')}>상담 예약 <span className="jt-arrow">→</span></button>
-          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setStep(0); setAnswers({}); }}>다시 계산</button>
+          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setStep(0); setAnswers({ transferDate: isoDate(new Date()) }); }}>다시 계산</button>
         </div>
       </div>
     );
@@ -1044,7 +1115,7 @@ cautions 3개, saving_ideas 2~3개.`;
         <div className="jt-report-result__head">
           <button className="jt-report-shell__back" onClick={onBack}>← JT 리포트 허브</button>
           <div className="jt-report-result__meta">
-            <span className="jt-tag">LEGACY</span>
+            <span className="jt-tag">{calc.precise ? '정밀계산' : '간이추정'}</span>
             <span>양도소득세 간이 계산 · {new Date().toLocaleDateString('ko-KR')}</span>
           </div>
         </div>
@@ -1057,7 +1128,7 @@ cautions 3개, saving_ideas 2~3개.`;
           <p style={{fontSize: 13, opacity: 0.75, marginTop: 8, marginBottom: 12, letterSpacing: '0.02em'}}>
             {calc.precise
               ? `※ 검증된 세무 엔진(${calc.engineVer || 'jt-tax-engine'})으로 계산 — 입력한 취득일·양도일·전입일로 보유기간·거주기간·2년 비과세 요건·장기보유특별공제·중과·비과세를 정밀 반영하고 단계별 법조문 근거를 제공합니다.`
-              : '※ 주요 변수만 반영한 간이 추정. 실제 세액은 취득시기·감면·특례 등에 따라 달라집니다.'}
+              : '⚠️ 정밀 계산 엔진에 일시적으로 연결하지 못해 간이 추정치를 표시합니다 — 실제 세액과 다를 수 있으니 참고용으로만 보시고, 잠시 후 다시 시도하거나 상담으로 정확히 확인하세요. (단기·중과·감면·특례·조정지역 지정일 등은 미세 반영)'}
           </p>
           {calc.acquiredDate && (
             <p style={{fontSize: 13, opacity: 0.85, marginTop: 4, marginBottom: 10}}>
@@ -1076,6 +1147,7 @@ cautions 3개, saving_ideas 2~3개.`;
           {calc.ipjuCaveat && <p style={{marginTop: 12, fontWeight: 500}}>{calc.ipjuCaveat}</p>}
           {calc.concurrentRightCaveat && <p style={{marginTop: 12, fontWeight: 500}}>{calc.concurrentRightCaveat}</p>}
           {calc.replCaveat && <p style={{marginTop: 12, fontWeight: 500}}>{calc.replCaveat}</p>}
+          {calc.acqZoneCaveat && <p style={{marginTop: 12, fontWeight: 500, color: 'var(--color-text-warning, #854F0B)'}}>⚠️ {calc.acqZoneCaveat}</p>}
           {Array.isArray(calc.engineWarnings) && calc.engineWarnings
             .filter(w => w && ![calc.ipjuCaveat, calc.concurrentRightCaveat, calc.replCaveat, calc.landCaveat, calc.multiHouseNote, calc.shortTermNote]
               .some(c => c && (c.includes(w) || w.includes(c))))
@@ -1216,7 +1288,7 @@ cautions 3개, saving_ideas 2~3개.`;
         />
 
         <div className="jt-report-result__foot">
-          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setStep(0); setAnswers({}); }}>다시 계산</button>
+          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setStep(0); setAnswers({ transferDate: isoDate(new Date()) }); }}>다시 계산</button>
           <button className="jt-btn jt-btn--ghost" onClick={() => window.print()}>PDF / 인쇄</button>
         </div>
       </div>
@@ -1254,7 +1326,7 @@ cautions 3개, saving_ideas 2~3개.`;
         stepIdx={safeStep}
         stepTotal={total}
         onBack={goPrev}
-        tag="LEGACY"
+        tag="LIVE"
       >
         <div className="jt-report-q">
           {cur.section && (

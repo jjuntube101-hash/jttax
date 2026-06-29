@@ -187,13 +187,14 @@ function JTReportInsurance({ setRoute, onBack }) {
           health_insurance: (ins.health + ins.longTerm + ins.employment) * 12,
         });
         const c = j && j.calc;
-        if (c) {
+        // 수정 260628(INSURANCE-R2-02): 엔진 오류바디/부분응답 검증(세금0 거짓표시·경고 은폐 방지).
+        if (c && !c['오류'] && c['결정세액'] != null) {
           calc.taxYear = c['결정세액'] || 0;
           calc.localYear = c['지방소득세'] || 0;
           calc.taxMonthly = Math.round(calc.taxYear / 12);
           calc.localMonthly = Math.round(calc.localYear / 12);
           calc.precise = true;
-        }
+        } else if (c) { calc.taxErr = true; calc.taxMonthly = 0; calc.localMonthly = 0; console.warn('4대보험 세금 엔진 응답 무결성 실패', c); }
       } catch (e) { console.warn('4대보험 세금 엔진 연결 실패', e); calc.taxErr = true; calc.taxMonthly = 0; calc.localMonthly = 0; }
 
       calc.net = monthly - ins.total - (calc.taxMonthly || 0) - (calc.localMonthly || 0);

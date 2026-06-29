@@ -29,6 +29,12 @@ const BURDEN_QS = [
     numeric: true, money: true, placeholder: '예: 1,500,000,000',
   },
   {
+    id: 'assetType', section: '대상 부동산',
+    q: '어떤 종류의 부동산인가요?',
+    sub: '주택이 아니면(토지·상가) 1세대1주택 양도세 비과세가 적용되지 않아 채무 인수분 양도세가 크게 달라집니다(소법 §89①3호).',
+    opts: [['house', '주택 (아파트·빌라·단독)', ''], ['officetel', '오피스텔', '주거용이면 주택 취급'], ['land', '토지', '비과세 없음'], ['commercial', '상가·건물', '비과세 없음']],
+  },
+  {
     id: 'acquisitionPrice', section: '대상 부동산',
     q: '증여하는 분(예: 부모님)이 그 집을 살 때 얼마였나요? (취득가, 원)',
     sub: '부담부증여에서 「채무 인수분」은 유상양도로 보아 증여자에게 양도세가 나옵니다. 그 양도세 계산에 취득가가 꼭 필요합니다.',
@@ -39,6 +45,12 @@ const BURDEN_QS = [
     q: '그 부동산을 보유한 지 몇 년 됐나요?',
     sub: '채무 인수분(유상양도)의 양도세에 가장 중요합니다 — 오래 보유했을수록 장기보유특별공제로 양도세가 줄어, 최적 채무비율이 달라집니다.',
     numeric: true, placeholder: '예: 10',
+  },
+  {
+    id: 'donorHouseCount', section: '증여하는 분',
+    q: '증여하는 분이 이 부동산 외에 보유한 주택은 몇 채인가요?',
+    sub: '채무 인수분(유상양도)의 양도세는 증여자의 보유 주택 수에 좌우됩니다 — 1주택이면 비과세 가능하지만, 다주택이면 비과세 배제·중과로 절세 효과가 크게 줄거나 사라집니다(소법 §89·§104⑦).',
+    opts: [['0', '이 부동산이 유일 (다른 주택 없음)', '1세대1주택 비과세 가능'], ['1', '1채 더 있음 (총 2주택)', '비과세 배제 가능'], ['2', '2채 이상 더 (총 3주택+)', '중과 가능']],
   },
   {
     id: 'recipient', section: '받는 사람',
@@ -159,18 +171,21 @@ function JTReportBurden({ setRoute, onBack }) {
       const clamp = (x) => Math.max(0, Math.round(Number(x) || 0));
       if (clamp(answers.propertyValue) <= 0) { setErr('부동산 시세를 입력해 주세요.'); setLoading(false); return; }
       if (clamp(answers.acquisitionPrice) <= 0) { setErr('증여자의 취득가를 입력해 주세요.'); setLoading(false); return; }
+      // 수정 260628(BURDEN-R2-01): 자산유형 매핑(주택 외 토지·상가는 §89 비과세 배제). (BURDEN-R2-02): 증여자 보유 주택수 전송(다주택 비과세 배제·중과 — 엔진 optimize_burdened_gift donor param 노출 필요).
+      const assetTypeMap = { house: '주택', officetel: '오피스텔', land: '토지', commercial: '상가' };
       const body = {
         property_value: clamp(answers.propertyValue),
         acquisition_price: clamp(answers.acquisitionPrice),
         relationship: answers.recipient === 'spouse' ? '배우자' : '직계존속',
         donee_age: answers.recipient === 'child_minor' ? 10 : 30,
         is_regulated_area: answers.adjustedZone === 'yes',
-        property_type: '주택',
+        property_type: assetTypeMap[answers.assetType] || '주택',
+        donor_other_house_count: Number(answers.donorHouseCount) || 0,
       };
-      // 보유연수 → 취득일 (채무 인수분 양도세의 장특공제·단기세율)
+      // 보유연수 → 취득일 (채무 인수분 양도세의 장특공제·단기세율). 수정 260628(BURDEN-R2-04): 월감산 롤오버/로컬타임존 경계오차 → 연감산으로 정수 경계 안정화.
       const hyRaw = Math.min(100, Math.max(0, Number(answers.holdingYears) || 0));
       if (hyRaw > 0) {
-        const d = new Date(); d.setMonth(d.getMonth() - Math.round(hyRaw * 12));
+        const d = new Date(); d.setFullYear(d.getFullYear() - Math.round(hyRaw));
         const pad = (x) => String(x).padStart(2, '0');
         body.acquisition_date = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
       }
@@ -202,7 +217,7 @@ function JTReportBurden({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="부담부증여 최적화" subtitle="채무비율별 세금을 시뮬레이션 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LEGACY">
+        <JTReportShell title="부담부증여 최적화" subtitle="채무비율별 세금을 시뮬레이션 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />채무비율 0~100%의 총세금(증여세+양도세+취득세)을 모두 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -217,7 +232,7 @@ function JTReportBurden({ setRoute, onBack }) {
     const baseMax = calc.noDebt || (teaser[0] && teaser[0]['총세부담']) || 1;
     return (
       <div className="jt-container">
-        <JTReportShell title="부담부증여 최적화 결과" subtitle="채무를 끼울 때 절세 여력 (세액 기준)" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
+        <JTReportShell title="부담부증여 최적화 결과" subtitle="채무를 끼울 때 절세 여력 (세액 기준)" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           {!calc.precise ? (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               <strong>정밀 계산이 필요합니다.</strong> 정밀 엔진 연결이 지연됐습니다. 잘못된 세액을 안내하지 않기 위해 결과를 표시하지 않았어요. 잠시 후 다시 시도하거나 상담을 권합니다.
@@ -306,7 +321,7 @@ function JTReportBurden({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="부담부증여 최적화" subtitle="자녀·배우자에게 부동산을 증여할 때, 채무를 얼마나 끼우면 세금이 줄어드는지 계산합니다." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
+      <JTReportShell title="부담부증여 최적화" subtitle="자녀·배우자에게 부동산을 증여할 때, 채무를 얼마나 끼우면 세금이 줄어드는지 계산합니다." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>

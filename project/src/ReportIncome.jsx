@@ -219,7 +219,8 @@ function JTReportIncome({ setRoute, onBack }) {
         };
         const j = await callIncomeEng(body);
         const c = j && j.calc;
-        if (c) {
+        // 수정 260628(INCOME-R2-01): 엔진 오류바디/부분응답 검증(세액0 거짓표시 방지).
+        if (c && !c['오류'] && c['과세표준'] != null && c['총세부담'] != null) {
           calc.taxBase = c['과세표준'] || 0;
           calc.calculated = c['산출세액'] || 0;
           calc.determined = c['결정세액'] || 0;
@@ -231,7 +232,7 @@ function JTReportIncome({ setRoute, onBack }) {
           calc.engineWarnings = c['경고사항'] || [];
           calc.precise = true;
           calc.engineVer = j.version && j.version.engine;
-        }
+        } else if (c) { calc.engineErr = true; console.warn('종소세 엔진 응답 무결성 실패', c); }
       } catch (e) { console.warn('종소세 엔진 연결 실패', e); calc.engineErr = true; }
 
       const rep = { calc, quick: (targetPhase || phase) === 'quick' };
@@ -271,6 +272,13 @@ function JTReportIncome({ setRoute, onBack }) {
             </div>
           ) : (
             <>
+              {/* 수정 260628(INCOME-R2-02): 엔진 경고사항 화면 노출(가정·계산 알림) */}
+              {calc.engineWarnings && calc.engineWarnings.length > 0 && (
+                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
+                  <strong>확인이 필요한 점</strong>
+                  <ul style={{ margin: '8px 0 0', paddingLeft: 18 }}>{calc.engineWarnings.map((w, i) => <li key={i} style={{ marginBottom: 4 }}>{w}</li>)}</ul>
+                </div>
+              )}
               <div className="jt-report-result__grade jt-grade-mid">
                 <div className="jt-report-result__grade-label">1년치 예상 종합소득세 (추정)</div>
                 <div className="jt-report-result__grade-val">{formatWon(calc.total)}</div>

@@ -121,10 +121,31 @@ function mapAnswersToProperty(a) {
 function fallbackPropTax(a) {
   const v = Number(a.standardValue) || 0;
   const kind = a.propertyKind;
+  // 수정 260628(PROP-A-01/B-01): 주택을 단일세율 → 4단계 누진(§111①3호 일반 / §111의2 1주택특례). 종전 0.15/0.25% 단일은 구간별 과소/과대.
+  // ⚠️ 일몰 가드 필요(PROPERTY-R2-03): §111의2 특례세율 2026.12.28 일몰 / §109①2호 1주택 누진비율 2026년도 한정 — 2027+ 재확인.
+  if (kind === '주택') {
+    const oneHouse = a.isOneHouse === 'yes';
+    // 공정시장가액비율 §109①2호(2026년도 1세대1주택 누진, 시행 2026.6.1): 3억↓ 43% / 3억~6억 44% / 6억↑ 45%. 일반(다주택) 60%. (수정 260628 PROPERTY-R2-01/02 — 종전 0.45 단일은 6억↓ 과대)
+    const ratio = oneHouse ? (v <= 300_000_000 ? 0.43 : v <= 600_000_000 ? 0.44 : 0.45) : 0.60;
+    const tb = v * ratio;
+    // 1주택 특례세율(§111의2)은 공시 9억 이하만. 9억 초과 1주택은 일반 누진(§111①3호). (PROP-A-01 오라클: 10억 1주택=일반 0.4%·ratio 45%, 총 2,034,000 일치)
+    const special = oneHouse && v <= 900_000_000;
+    const main = special
+      ? (tb <= 60_000_000 ? tb * 0.0005
+        : tb <= 150_000_000 ? 30_000 + (tb - 60_000_000) * 0.001
+        : tb <= 300_000_000 ? 120_000 + (tb - 150_000_000) * 0.002
+        : 420_000 + (tb - 300_000_000) * 0.0035)
+      : (tb <= 60_000_000 ? tb * 0.001
+        : tb <= 150_000_000 ? 60_000 + (tb - 60_000_000) * 0.0015
+        : tb <= 300_000_000 ? 195_000 + (tb - 150_000_000) * 0.0025
+        : 570_000 + (tb - 300_000_000) * 0.004);
+    const edu = main * 0.2;
+    const urban = (a.isUrbanArea !== 'no') ? tb * 0.0014 : 0;
+    return Math.round(main + edu + urban);
+  }
   let ratio, rate;
-  if (kind === '주택') { ratio = a.isOneHouse === 'yes' ? 0.44 : 0.60; rate = a.isOneHouse === 'yes' ? 0.0015 : 0.0025; }
-  else if (kind === '건축물') { ratio = 0.70; rate = 0.0025; }
-  else { // 토지 — 종류별(종합/별도는 누진 상한율로 과대 보정, 분리는 정확율). 종류불문 0.3% 단일이 종합합산 과소 유발하던 결함 수정
+  if (kind === '건축물') { ratio = 0.70; rate = 0.0025; }
+  else { // 토지 — 종류별(종합/별도는 누진 상한율로 과대 보정, 분리는 정확율)
     ratio = 0.70;
     if (a.landType === '별도합산') rate = 0.004;        // 0.2~0.4% → 상한 근사
     else if (a.landType === '분리전답') rate = 0.0007;  // 전·답·과수원·목장·임야 0.07%
@@ -294,7 +315,7 @@ function JTReportProperty({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="재산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LEGACY">
+        <JTReportShell title="재산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -305,7 +326,7 @@ function JTReportProperty({ setRoute, onBack }) {
     const { calc, commentary } = report;
     return (
       <div className="jt-container">
-        <JTReportShell title="재산세 계산 결과" subtitle={calc.precise ? '재산세 정밀 계산' : '재산세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LEGACY">
+        <JTReportShell title="재산세 계산 결과" subtitle={calc.precise ? '재산세 정밀 계산' : '재산세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 재산세(연간 총액)' : (calc.precise ? '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '연간 추정 납부세액 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
@@ -428,7 +449,7 @@ function JTReportProperty({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LEGACY">
+      <JTReportShell title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>
