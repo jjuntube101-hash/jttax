@@ -526,8 +526,9 @@ function JTReportComprehensive({ setRoute, onBack }) {
           )}
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="number" inputMode="numeric" placeholder={cur.placeholder || ''}
-                value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
+              <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
+                value={answers[cur.id] ? (cur.money ? Number(answers[cur.id]).toLocaleString('ko-KR') : answers[cur.id]) : ''}
+                onChange={e => setAns(cur.id, cur.money ? e.target.value.replace(/[^0-9]/g, '') : e.target.value.replace(/[^0-9.]/g, ''))} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {compKoreanAmountOrWon(Number(answers[cur.id]))}</div>
               )}
