@@ -283,11 +283,31 @@ function JTReportAcquisition({ setRoute, onBack }) {
   const [err, setErr] = useAcqState(null);
   const [phase, setPhase] = useAcqState('quick');
   const [quickReport, setQuickReport] = useAcqState(null);
+  const [laddr, setLaddr] = useAcqState('');
+  const [lbusy, setLbusy] = useAcqState(false);
+  const [linfo, setLinfo] = useAcqState(null);
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
     if (base) { fetch(base + '/health', { method: 'GET' }).catch(function () {}); }
   }, []);
+
+  const doAddrLookup = async () => {
+    if (!laddr.trim()) return;
+    setLbusy(true); setLinfo(null);
+    try {
+      const r = await window.jtLookupHousePrice(laddr.trim());
+      if (r) {
+        setAns('standardValue', String(r.amount));
+        const kindLabel = r.kind === '공동주택' ? '아파트·연립·다세대' : '단독·다가구주택';
+        setLinfo({ ok: true, msg: `${r.year ? r.year + '년 ' : ''}공시가격(시가표준액) ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).` });
+      } else {
+        setLinfo({ ok: false, msg: '이 주소의 공시가격을 찾지 못했어요(상가·오피스텔·신축 등). 직접 입력하거나 비워두세요.' });
+      }
+    } catch (e) {
+      setLinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 직접 입력하거나 비워두세요.' });
+    } finally { setLbusy(false); }
+  };
 
   const allVisible = ACQ_QS.filter(q => !q.showIf || q.showIf(answers));
   const visibleQs = phase === 'quick' ? allVisible.filter(q => q.tier === 'quick') : allVisible.filter(q => q.tier !== 'quick');
@@ -513,6 +533,27 @@ function JTReportAcquisition({ setRoute, onBack }) {
           {cur.freeform && (
             <textarea className="jt-report-q__textarea" maxLength={cur.id === 'context' ? 200 : 120}
               placeholder={cur.placeholder || ''} value={answers[cur.id] || ''} onChange={(e) => setAns(cur.id, e.target.value)} />
+          )}
+          {cur.id === 'standardValue' && (
+            <div style={{ background: 'var(--bg-1,#f7f5f0)', border: '1px solid #dfe3dc', borderRadius: 10, padding: '14px 16px', marginBottom: 14 }}>
+              <div style={{ fontWeight: 600, marginBottom: 6 }}>🔎 주소로 시가표준액 자동조회 <span style={{ fontWeight: 400, opacity: 0.7, fontSize: 13 }}>(선택 — 아파트·빌라·단독주택)</span></div>
+              <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8, lineHeight: 1.55 }}>증여받는 주택 주소를 넣으면 국토교통부 공시가격(시가표준액)을 찾아 아래 칸에 채워드려요. 모르면 비워두셔도 됩니다.</p>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
+                  placeholder="예: 서울 종로구 자하문로36길 16-14"
+                  value={laddr} onChange={e => setLaddr(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter' && !lbusy) doAddrLookup(); }} />
+                <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={lbusy || !laddr.trim()} onClick={doAddrLookup}>
+                  {lbusy ? '조회 중…' : '공시가격 조회'}
+                </button>
+              </div>
+              {linfo && (
+                <div style={{ marginTop: 10, fontSize: 13.5, lineHeight: 1.55, padding: '9px 12px', borderRadius: 8,
+                  background: linfo.ok ? '#eaf5ee' : '#fff7ea', borderLeft: '4px solid ' + (linfo.ok ? '#2a6d4f' : '#d08b00') }}>
+                  {linfo.msg}
+                </div>
+              )}
+            </div>
           )}
           {cur.numeric && (
             <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}

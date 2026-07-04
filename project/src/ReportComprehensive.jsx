@@ -229,11 +229,38 @@ function JTReportComprehensive({ setRoute, onBack }) {
   const [err, setErr] = useCompState(null);
   const [phase, setPhase] = useCompState('quick');
   const [quickReport, setQuickReport] = useCompState(null);
+  const [laddr, setLaddr] = useCompState('');
+  const [lbusy, setLbusy] = useCompState(false);
+  const [linfo, setLinfo] = useCompState(null);
+  const [addedCount, setAddedCount] = useCompState(0);
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
     if (base) { fetch(base + '/health', { method: 'GET' }).catch(function () {}); }
   }, []);
+
+  // 종부세는 여러 채 합계 → 주소 1건 조회할 때마다 공시가격을 합계에 '누적' 더함
+  const doAddrLookup = async () => {
+    if (!laddr.trim()) return;
+    setLbusy(true); setLinfo(null);
+    try {
+      const r = await window.jtLookupHousePrice(laddr.trim());
+      if (r) {
+        const prev = Number(answers.totalValue) || 0;
+        const next = prev + r.amount;
+        setAns('totalValue', String(next));
+        const n = addedCount + 1; setAddedCount(n);
+        const kindLabel = r.kind === '공동주택' ? '아파트·연립·다세대' : '단독·다가구주택';
+        setLinfo({ ok: true, msg: `${kindLabel} 공시가격 ${formatWon(r.amount)}을 합계에 더했어요. 현재 합계 ${formatWon(next)} (주택 ${n}채 반영). 여러 채면 다음 주소를 이어서 조회하세요.` });
+        setLaddr('');
+      } else {
+        setLinfo({ ok: false, msg: '이 주소의 공시가격을 찾지 못했어요(상가·오피스텔·신축 등). 직접 더해 입력해 주세요.' });
+      }
+    } catch (e) {
+      setLinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 직접 입력해 주세요.' });
+    } finally { setLbusy(false); }
+  };
+  const resetAddr = () => { setAns('totalValue', ''); setAddedCount(0); setLinfo(null); setLaddr(''); };
 
   const allVisible = COMP_QS.filter(q => !q.showIf || q.showIf(answers));
   const visibleQs = phase === 'quick' ? allVisible.filter(q => q.tier === 'quick') : allVisible.filter(q => q.tier !== 'quick');
@@ -475,6 +502,28 @@ function JTReportComprehensive({ setRoute, onBack }) {
             </div>
           )}
 
+          {cur.id === 'totalValue' && (
+            <div style={{ background: 'var(--bg-1,#f7f5f0)', border: '1px solid #dfe3dc', borderRadius: 10, padding: '14px 16px', marginBottom: 14 }}>
+              <div style={{ fontWeight: 600, marginBottom: 6 }}>🔎 주소로 공시가격 자동 합산 <span style={{ fontWeight: 400, opacity: 0.7, fontSize: 13 }}>(선택 — 아파트·빌라·단독주택)</span></div>
+              <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8, lineHeight: 1.55 }}>보유 주택 주소를 넣고 조회하면 공시가격을 아래 합계에 더해드려요. <strong>여러 채면 한 채씩 주소를 넣어 조회를 반복</strong>하면 자동으로 합산됩니다.</p>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
+                  placeholder="예: 서울 종로구 자하문로36길 16-14"
+                  value={laddr} onChange={e => setLaddr(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter' && !lbusy) doAddrLookup(); }} />
+                <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={lbusy || !laddr.trim()} onClick={doAddrLookup}>
+                  {lbusy ? '조회 중…' : '합계에 추가'}
+                </button>
+              </div>
+              {linfo && (
+                <div style={{ marginTop: 10, fontSize: 13.5, lineHeight: 1.55, padding: '9px 12px', borderRadius: 8,
+                  background: linfo.ok ? '#eaf5ee' : '#fff7ea', borderLeft: '4px solid ' + (linfo.ok ? '#2a6d4f' : '#d08b00') }}>
+                  {linfo.msg}
+                  {addedCount > 0 && <div style={{ marginTop: 6 }}><button className="jt-btn jt-btn--ghost" style={{ padding: '4px 10px', fontSize: 13 }} onClick={resetAddr}>합계 초기화</button></div>}
+                </div>
+              )}
+            </div>
+          )}
           {cur.numeric && (
             <div>
               <input className="jt-report-q__input" type="number" inputMode="numeric" placeholder={cur.placeholder || ''}
