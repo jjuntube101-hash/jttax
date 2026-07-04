@@ -494,6 +494,13 @@ function JTReportGift({ setRoute, onBack }) {
     } catch (e) {
       setLookupState({ loading: false, result: null, err: '주소 자동조회를 할 수 없습니다. 아래 「평가액」 칸에 직접 입력해 주세요.' });
     }
+    // 부담부증여 취득세 중과 판정용 — 조정대상지역 자동선택 (주택만, region 획득)
+    if (answers.reType === '공동주택' || answers.reType === '개별주택') {
+      try {
+        const pr = await window.jtLookupPublicPrice(answers.reAddress, answers.reType);
+        if (pr && pr.region) setAns('regulatedArea', pr.region.is_adjusted_area ? 'yes' : 'no');
+      } catch (e) { /* region 실패 시 질문 유지 */ }
+    }
   };
 
   const runAnalysis = async () => {
