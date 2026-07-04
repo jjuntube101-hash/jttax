@@ -245,16 +245,20 @@ if (typeof window !== 'undefined' && !window.jtLookupPublicPrice) {
     return res.json();
   };
   window.jtLookupHousePrice = async function (address) {
+    // 공시가격(주택)을 공동→개별 순으로 찾되, region(지역규제)은 조회 성공/실패와 무관하게 확보
+    let lastRegion = null;
     for (const kind of ['공동주택', '개별주택']) {
       try {
         const r = await window.jtLookupPublicPrice(address, kind);
+        if (r && r.region) lastRegion = r.region;
         const v = (r && r.valuations && r.valuations[0]) || null;
         if (r && !r.manual_input_required && v && Number(v.amount) > 0) {
-          return { amount: Number(v.amount), year: v.as_of_year || '', kind };
+          return { amount: Number(v.amount), year: v.as_of_year || '', kind, region: r.region || lastRegion };
         }
       } catch (e) { /* 다음 종류 시도 */ }
     }
-    return null;
+    // 공시가격을 못 찾아도(상가·오피스텔 등) 지역규제 판별은 유효 → region만이라도 반환
+    return lastRegion ? { amount: 0, region: lastRegion } : null;
   };
 }
 
@@ -296,10 +300,22 @@ function JTReportProperty({ setRoute, onBack }) {
     setLbusy(true); setLinfo(null);
     try {
       const r = await window.jtLookupHousePrice(laddr.trim());
-      if (r) {
+      if (r && r.amount > 0) {
         setAns('standardValue', String(r.amount));
         const kindLabel = r.kind === '공동주택' ? '아파트·연립·다세대' : '단독·다가구주택';
-        setLinfo({ ok: true, msg: `${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}). 아래 값이 맞는지 확인하고 다음으로 진행하세요.` });
+        let msg = `${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).`;
+        // 도시지역 자동선택(근사) — 주소 기준. 재산세 도시지역분(0.14%) 판정용
+        const reg = r.region;
+        if (reg && reg.urban_area_likely === true) { setAns('isUrbanArea', 'yes'); msg += ` ${reg.sigungu || '해당 지역'}은 도시지역으로 자동판단했어요(다르면 뒤 단계에서 수정).`; }
+        else if (reg && reg.urban_area_likely === false) { setAns('isUrbanArea', 'no'); msg += ' 비도시지역으로 자동판단했어요(다르면 수정).'; }
+        msg += ' 값이 맞는지 확인하고 다음으로 진행하세요.';
+        setLinfo({ ok: true, msg });
+      } else if (r && r.region) {
+        // 공시가격은 못 찾았지만 지역판별은 됨
+        const reg = r.region;
+        if (reg.urban_area_likely === true) setAns('isUrbanArea', 'yes');
+        else if (reg.urban_area_likely === false) setAns('isUrbanArea', 'no');
+        setLinfo({ ok: false, msg: '이 주소의 공시가격은 찾지 못했어요(상가·오피스텔·신축 등). 공시가격은 직접 입력하시고, 도시지역 여부는 자동판단했어요.' });
       } else {
         setLinfo({ ok: false, msg: '이 주소의 공시가격을 찾지 못했어요(상가·오피스텔·신축 등은 미수록일 수 있어요). 공시가격을 직접 입력해 주세요.' });
       }

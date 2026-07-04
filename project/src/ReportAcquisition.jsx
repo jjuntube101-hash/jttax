@@ -297,10 +297,19 @@ function JTReportAcquisition({ setRoute, onBack }) {
     setLbusy(true); setLinfo(null);
     try {
       const r = await window.jtLookupHousePrice(laddr.trim());
-      if (r) {
+      const applyRegulated = (reg) => {
+        if (!reg) return '';
+        setAns('isRegulatedArea', reg.is_adjusted_area ? 'yes' : 'no');
+        return reg.is_adjusted_area
+          ? ` ${reg.sigungu || '해당 지역'}은 조정대상지역으로 자동선택했어요(${reg.adjusted_as_of} 기준 — 취득 시점 기준으로 다시 확인하세요).`
+          : ` ${reg.sigungu || '해당 지역'}은 비조정지역으로 자동판단했어요(다르면 뒤에서 수정).`;
+      };
+      if (r && r.amount > 0) {
         setAns('standardValue', String(r.amount));
         const kindLabel = r.kind === '공동주택' ? '아파트·연립·다세대' : '단독·다가구주택';
-        setLinfo({ ok: true, msg: `${r.year ? r.year + '년 ' : ''}공시가격(시가표준액) ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).` });
+        setLinfo({ ok: true, msg: `${r.year ? r.year + '년 ' : ''}공시가격(시가표준액) ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).` + applyRegulated(r.region) });
+      } else if (r && r.region) {
+        setLinfo({ ok: false, msg: '이 주소의 공시가격은 못 찾았어요(상가·오피스텔·신축 등). 시가표준액은 직접 입력하세요.' + applyRegulated(r.region) });
       } else {
         setLinfo({ ok: false, msg: '이 주소의 공시가격을 찾지 못했어요(상가·오피스텔·신축 등). 직접 입력하거나 비워두세요.' });
       }
