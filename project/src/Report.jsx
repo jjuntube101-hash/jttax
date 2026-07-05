@@ -134,6 +134,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
   ];
   // 사업자·법인 도구 (라이브) — 부동산 6종과 별도 분리
   const bizTools = [
+    { kr: '청년창업 세액감면 진단', cat: '창업감면', d: '만 34세 이하(병역 시 최대 40세)가 정해진 업종·지역에서 창업하면 5년간 소득·법인세 최대 100% 감면. 업종코드·주소만 넣으면 감면 가능여부와 감면율을 자동 판정합니다(조특법 §6).', sub: 'youthstartup', cta: '감면 진단하기' },
     { kr: '종합소득세 계산기', cat: '종소세', d: '사업·프리랜서·근로 소득을 합산해 내 종합소득세를 검증 엔진으로 계산합니다. 인적공제·자녀·연금저축 세액공제까지 반영해요.', sub: 'income', cta: '계산하기' },
     { kr: '부가가치세 계산기', cat: '부가세', d: '일반·간이과세자 매출·매입만 넣으면 낼 부가세(또는 환급액)를 바로 계산합니다. 신용카드·매입세액 공제와 신고기한까지 안내해요.', sub: 'vat', cta: '계산하기' },
     { kr: '4대보험·실수령 계산기', cat: '급여', d: '세전 월 급여만 넣으면 국민연금·건강보험·장기요양·고용보험과 세금을 떼고 실수령액을 즉시 계산합니다(2026 요율).', sub: 'insurance', cta: '계산하기' },
@@ -311,7 +312,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
 window.JTReportHub = JTReportHub;
 
 // ============ 라우터 (허브 ↔ 각 진단) ============
-const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden'];
+const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup'];
 const jtNormSub = (s) => (JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : 'hub'); // 모르는 계산기 키 → 허브 (깨진 공유링크 방어)
 
 function JTReportPage({ setRoute }) {
@@ -383,6 +384,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'vat' && <JTReportVat setRoute={setRoute} onBack={back} />}
       {subRoute === 'compare' && <JTReportCompare setRoute={setRoute} onBack={back} />}
       {subRoute === 'burden' && <JTReportBurden setRoute={setRoute} onBack={back} />}
+      {subRoute === 'youthstartup' && <JTReportYouthStartup setRoute={setRoute} onBack={back} />}
     </div>
   );
 }
