@@ -365,6 +365,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     const isElig = calc.status === 'eligible';
     const isInelig = calc.status === 'ineligible' && !isProspective;
     const RECO_ICON = { ok: '✅', warn: '⚠️', info: '💡' };
+    const myAreaIdx = (isProspective && regionInfo) ? (calc.area === '과밀억제권역' ? 2 : calc.area === '수도권' ? 1 : 0) : -1;
     return (
       <div className="jt-container">
         <JTReportShell title="청년창업 세액감면 진단 결과" subtitle="조세특례제한법 §6 자동판정" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="NEW">
@@ -372,11 +373,23 @@ function JTReportYouthStartup({ setRoute, onBack }) {
           <div style={{ background: meta.bg, border: `1.5px solid ${meta.color}`, borderRadius: 14, padding: '20px 22px', marginBottom: 18, textAlign: 'center' }}>
             <div style={{ display: 'inline-block', padding: '4px 14px', borderRadius: 999, background: meta.color, color: '#fff', fontWeight: 800, fontSize: 13.5, marginBottom: 10 }}>{isProspective ? '감면받는 법' : meta.label}</div>
             {isProspective ? (
-              <div>
-                <div style={{ fontSize: 14, opacity: 0.75, marginBottom: 2 }}>요건을 갖춰 창업하면 최대</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: meta.color, lineHeight: 1.1 }}>{calc.best_case_rate}%</div>
-                <div style={{ fontSize: 13.5, opacity: 0.82, marginTop: 4 }}>청년 · 감면대상 업종 · 수도권 밖(또는 인구감소지역)에서 창업 시, 5년간 소득·법인세 감면</div>
-              </div>
+              regionInfo ? (
+                <div>
+                  <div style={{ fontSize: 13.5, opacity: 0.78, marginBottom: 2 }}>{((regionInfo.sido || '') + ' ' + (regionInfo.sigungu || '')).trim()} · {calc.area} 기준{calc.is_youth ? ' (청년)' : (calc.small_scale_applied ? ' (소규모)' : '')}</div>
+                  <div style={{ fontSize: 44, fontWeight: 800, color: meta.color, lineHeight: 1.1 }}>{calc.reduction_rate}%</div>
+                  {calc.reduction_rate < calc.best_case_rate ? (
+                    <div style={{ fontSize: 13.5, opacity: 0.85, marginTop: 6 }}>이 지역은 <strong>{calc.reduction_rate}%</strong>예요. 수도권 밖이나 인구감소지역(가평·연천·강화·옹진)에서 창업하면 <strong>최대 {calc.best_case_rate}%</strong>까지 받을 수 있어요 — 아래 비교표를 보세요.</div>
+                  ) : (
+                    <div style={{ fontSize: 13.5, opacity: 0.85, marginTop: 6 }}>가장 유리한 지역 구간이에요. 5년간 소득·법인세를 감면받습니다.</div>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <div style={{ fontSize: 14, opacity: 0.75, marginBottom: 2 }}>요건을 갖춰 창업하면 최대</div>
+                  <div style={{ fontSize: 44, fontWeight: 800, color: meta.color, lineHeight: 1.1 }}>{calc.best_case_rate}%</div>
+                  <div style={{ fontSize: 13.5, opacity: 0.82, marginTop: 4 }}>청년 · 감면대상 업종 · 수도권 밖(또는 인구감소지역)에서 창업 시, 5년간 감면. 아래에서 지역별 감면율을 확인하세요.</div>
+                </div>
+              )
             ) : !isInelig ? (
               <div>
                 <div style={{ fontSize: 14, opacity: 0.75, marginBottom: 2 }}>예상 감면율 (창업 후 5년)</div>
@@ -420,8 +433,8 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                 <thead><tr><th>창업 지역</th><th style={{ textAlign: 'right' }}>청년창업</th><th style={{ textAlign: 'right' }}>일반</th></tr></thead>
                 <tbody>
                   {calc.region_scenarios.map((s, i) => (
-                    <tr key={i}>
-                      <td>{s.label}{i === 0 ? <span style={{ marginLeft: 6, fontSize: 11, color: '#2a6d4f', fontWeight: 700 }}>가장 유리</span> : null}</td>
+                    <tr key={i} style={i === myAreaIdx ? { background: '#eaf5ee' } : null}>
+                      <td>{s.label}{i === 0 ? <span style={{ marginLeft: 6, fontSize: 11, color: '#2a6d4f', fontWeight: 700 }}>가장 유리</span> : null}{i === myAreaIdx ? <span style={{ marginLeft: 6, fontSize: 11, color: '#1d6bd8', fontWeight: 700 }}>← 입력하신 지역</span> : null}</td>
                       <td style={{ textAlign: 'right', fontWeight: 700, color: s.youth_rate >= 100 ? '#2a6d4f' : 'inherit' }}>{s.youth_rate}%</td>
                       <td style={{ textAlign: 'right' }}>{s.general_rate}%</td>
                     </tr>
