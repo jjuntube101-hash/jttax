@@ -267,7 +267,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     if (cur.freeform || cur.optional) return true;
     if (prospective && cur.optionalP) return true;
     if (cur.numeric) { const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
-    if (cur.dateInput) return !!answers[cur.id];
+    if (cur.dateInput) return /^\d{4}-\d{2}-\d{2}$/.test(answers[cur.id] || '');
     return !!answers[cur.id];
   };
 
@@ -542,7 +542,19 @@ function JTReportYouthStartup({ setRoute, onBack }) {
           )}
 
           {cur.dateInput && (
-            <input className="jt-report-q__input" type="date" value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
+            <div>
+              <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 1996-05-01 (숫자 8자리만 입력하면 자동으로 -가 붙어요)"
+                value={answers[cur.id] || ''}
+                onChange={e => {
+                  let v = e.target.value.replace(/[^0-9]/g, '').slice(0, 8);
+                  if (v.length > 6) v = v.slice(0, 4) + '-' + v.slice(4, 6) + '-' + v.slice(6);
+                  else if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
+                  setAns(cur.id, v);
+                }} />
+              {answers[cur.id] && !/^\d{4}-\d{2}-\d{2}$/.test(answers[cur.id]) && (
+                <div style={{ fontSize: 13, color: '#b07b3a', marginTop: 6 }}>연·월·일 8자리를 모두 입력해 주세요 (예: 19960501 → 1996-05-01).</div>
+              )}
+            </div>
           )}
 
           {/* 업종 조회 UI */}
