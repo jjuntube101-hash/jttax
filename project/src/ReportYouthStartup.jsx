@@ -68,7 +68,7 @@ const YS_QS = [
     q: '대표자가 이 법인의 최대주주(최대출자자)이자 지배주주인가요?',
     sub: '법인으로 창업한 경우, 대표자가 지배주주등이면서 해당 법인의 최대주주 또는 최대출자자여야 「청년창업중소기업」으로 인정됩니다(시행령 §5①2호). 이 요건을 감면기간 중 잃으면 감면율이 낮아집니다(§5②).',
     showIf: (a) => a.entityType === '법인',
-    opts: [['yes', '네, 최대주주이자 지배주주', ''], ['no', '아니오 / 잘 모름', '요건 확인 필요']],
+    opts: [['yes', '네, 최대주주이자 지배주주', '청년율 적용'], ['no', '아니오 (최대주주 아님)', '일반율'], ['unknown', '잘 모르겠어요', '확인 시 청년율 가능']],
   },
   {
     id: 'militaryYears', tier: 'detail', section: '병역', numeric: true, optional: true,
@@ -136,6 +136,13 @@ const YS_STATUS_META = {
   input_required: { label: '입력 필요', color: '#666', bg: '#f2f2f2' },
 };
 
+function ysValidDate(s) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return false;
+  const p = s.split('-').map(Number);
+  const dt = new Date(p[0], p[1] - 1, p[2]);
+  return dt.getFullYear() === p[0] && dt.getMonth() === p[1] - 1 && dt.getDate() === p[2];
+}
+
 async function callYouthEngine(body) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
   const delays = [1000, 2000, 3000, 4000, 6000, 8000, 10000];
@@ -165,7 +172,11 @@ function mapAnswersToYouth(a, industryMatch, region) {
   if (a.foundingDate) body.founding_date = a.foundingDate;
   if (a.birthDate) body.birth_date = a.birthDate;
   if (Number(a.militaryYears) > 0) body.military_years = Number(a.militaryYears);
-  if (a.entityType === '법인') body.is_largest_shareholder = a.isLargestShareholder === 'yes';
+  if (a.entityType === '법인') {
+    if (a.isLargestShareholder === 'yes') body.is_largest_shareholder = true;
+    else if (a.isLargestShareholder === 'no') body.is_largest_shareholder = false;
+    // 'unknown' 또는 미답변 → 필드 생략(None) → 엔진이 '요건 확인 필요(conditional)'로 처리
+  }
   if (industryMatch && industryMatch.nts_code) body.industry_code = industryMatch.nts_code;
   if (a.existingBusinessAdd === 'yes') body.has_existing_business_add = true;
   if (a.priorBusinessCode) body.prior_business_code = a.priorBusinessCode;
@@ -173,6 +184,7 @@ function mapAnswersToYouth(a, industryMatch, region) {
     body.is_overcrowding = !!region.is_overcrowding;
     body.is_sudogwon = !!region.is_sudogwon;
     body.is_depopulation = !!region.is_depopulation;
+    body.overcrowding_uncertain = !!region.overcrowding_uncertain;   // 과밀 부분지정(남양주·시흥·인천 경제자유구역 등)
     if (region.sigungu_code) body.sigungu_code = region.sigungu_code;
   }
   if (Number(a.annualRevenue) > 0) body.annual_revenue = Number(a.annualRevenue);
@@ -267,7 +279,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     if (cur.freeform || cur.optional) return true;
     if (prospective && cur.optionalP) return true;
     if (cur.numeric) { const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
-    if (cur.dateInput) return /^\d{4}-\d{2}-\d{2}$/.test(answers[cur.id] || '');
+    if (cur.dateInput) return ysValidDate(answers[cur.id]);
     return !!answers[cur.id];
   };
 
@@ -286,8 +298,8 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     try {
       const r = await window.jtLookupIndustry({ code: c });
       if (r && r.match) { setIndustryMatch(r.match); setAns('industryCode', r.match.nts_code); setIndCands(null); }
-      else setIndCands([]);
-    } catch (e) { /* noop */ } finally { setIndBusy(false); }
+      else { setIndustryMatch(null); setAns('industryCode', ''); setIndCands([]); }
+    } catch (e) { setIndustryMatch(null); setAns('industryCode', ''); } finally { setIndBusy(false); }
   };
   const pickIndustry = (m) => { setIndustryMatch(m); setAns('industryCode', m.nts_code); setIndCands(null); };
 
@@ -311,6 +323,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
         setRegionInfo(reg);
         const parts = [];
         if (reg.is_overcrowding) parts.push('수도권과밀억제권역');
+        else if (reg.overcrowding_uncertain) parts.push('수도권과밀억제권역 부분지정(법정동 확인 필요)');
         else if (reg.is_sudogwon && reg.is_depopulation) parts.push('수도권 인구감소지역');
         else if (reg.is_sudogwon) parts.push('수도권(과밀 외)');
         else parts.push('수도권 외 지역');
@@ -365,7 +378,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     const isElig = calc.status === 'eligible';
     const isInelig = calc.status === 'ineligible' && !isProspective;
     const RECO_ICON = { ok: '✅', warn: '⚠️', info: '💡' };
-    const myAreaIdx = (isProspective && regionInfo) ? (calc.area === '과밀억제권역' ? 2 : calc.area === '수도권' ? 1 : 0) : -1;
+    const myAreaIdx = (isProspective && regionInfo) ? ((calc.area === '과밀억제권역' || calc.area === '과밀_확인필요') ? 2 : calc.area === '수도권' ? 1 : 0) : -1;
     return (
       <div className="jt-container">
         <JTReportShell title="청년창업 세액감면 진단 결과" subtitle="조세특례제한법 §6 자동판정" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="NEW">
@@ -392,8 +405,8 @@ function JTReportYouthStartup({ setRoute, onBack }) {
               )
             ) : !isInelig ? (
               <div>
-                <div style={{ fontSize: 14, opacity: 0.75, marginBottom: 2 }}>예상 감면율 (창업 후 5년)</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: meta.color, lineHeight: 1.1 }}>{calc.reduction_rate}%</div>
+                <div style={{ fontSize: 14, opacity: 0.75, marginBottom: 2 }}>{calc.status === 'conditional' ? '요건 충족 시 예상 감면율 (확인 필요)' : '예상 감면율 (창업 후 5년)'}</div>
+                <div style={{ fontSize: 44, fontWeight: 800, color: meta.color, lineHeight: 1.1 }}>{(calc.status === 'conditional' && calc.best_if_confirmed != null) ? calc.best_if_confirmed : calc.reduction_rate}%</div>
                 <div style={{ fontSize: 13.5, opacity: 0.8, marginTop: 4 }}>
                   {calc.is_youth ? '청년창업중소기업' : (calc.small_scale_applied ? '소규모 창업 특례(§6⑥)' : '일반 창업중소기업')} · {calc.area}
                 </div>
@@ -564,8 +577,10 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                   else if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
                   setAns(cur.id, v);
                 }} />
-              {answers[cur.id] && !/^\d{4}-\d{2}-\d{2}$/.test(answers[cur.id]) && (
-                <div style={{ fontSize: 13, color: '#b07b3a', marginTop: 6 }}>연·월·일 8자리를 모두 입력해 주세요 (예: 19960501 → 1996-05-01).</div>
+              {answers[cur.id] && !ysValidDate(answers[cur.id]) && (
+                <div style={{ fontSize: 13, color: '#b07b3a', marginTop: 6 }}>
+                  {/^\d{4}-\d{2}-\d{2}$/.test(answers[cur.id]) ? '존재하지 않는 날짜예요. 연·월·일을 다시 확인해 주세요.' : '연·월·일 8자리를 모두 입력해 주세요 (예: 19960501 → 1996-05-01).'}
+                </div>
               )}
             </div>
           )}
@@ -574,8 +589,8 @@ function JTReportYouthStartup({ setRoute, onBack }) {
           {cur.custom === 'industry' && (
             <div>
               <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                <button className={'jt-btn ' + (indMode === 'name' ? 'jt-btn--primary' : 'jt-btn--ghost')} onClick={() => setIndMode('name')}>업종명으로 찾기</button>
-                <button className={'jt-btn ' + (indMode === 'code' ? 'jt-btn--primary' : 'jt-btn--ghost')} onClick={() => setIndMode('code')}>업종코드로 입력</button>
+                <button className={'jt-btn ' + (indMode === 'name' ? 'jt-btn--primary' : 'jt-btn--ghost')} onClick={() => { setIndMode('name'); setIndCands(null); }}>업종명으로 찾기</button>
+                <button className={'jt-btn ' + (indMode === 'code' ? 'jt-btn--primary' : 'jt-btn--ghost')} onClick={() => { setIndMode('code'); setIndCands(null); }}>업종코드로 입력</button>
               </div>
               {indMode === 'name' ? (
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
