@@ -73,10 +73,10 @@ const YS_QS = [
     opts: [['yes', '네, 최대주주이자 지배주주', '청년율 적용'], ['no', '아니오 (최대주주 아님)', '일반율'], ['unknown', '잘 모르겠어요', '확인 시 청년율 가능']],
   },
   {
-    id: 'militaryYears', tier: 'detail', section: '병역', numeric: true, optional: true,
-    q: '병역 이행기간이 있으면 몇 년인지 넣어주세요 (선택)',
-    sub: '군 복무 등 병역을 이행한 기간(최대 6년)은 창업 당시 나이에서 빼고 청년 여부를 판정합니다(시행령 §5①1호). 예를 들어 만 36세에 창업했어도 병역 2년을 마쳤다면 34세로 보아 청년으로 인정됩니다. 산업기능요원 등은 제외될 수 있으니(조심2021중6680) 상담에서 확인하세요.',
-    placeholder: '예: 2',
+    // 직원 피드백 #1·#2: 병역을 1차(quick)로 이동(청년판정에 직접 영향) + 입대일·전역일로 개월 자동계산
+    id: 'military', tier: 'quick', section: '병역', custom: 'military', optional: true, optionalP: true,
+    q: '병역을 이행하셨나요? (선택)',
+    sub: '군 복무 등 병역 이행기간(최대 6년)은 창업 당시 나이에서 빼고 청년 여부를 판정합니다(시행령 §5①1호). 입대일·전역일을 넣으면 개월 단위로 정확히 계산합니다. 예를 들어 만 36세에 창업했어도 병역 2년을 마쳤다면 34세로 보아 청년으로 인정됩니다. 병역 미해당이면 건너뛰세요. 산업기능요원 등은 제외될 수 있으니(조심2021중6680) 상담에서 확인하세요.',
   },
   {
     id: 'existingBusinessAdd', tier: 'detail', section: '기존 사업자 여부',
@@ -145,6 +145,15 @@ function ysValidDate(s) {
   return dt.getFullYear() === p[0] && dt.getMonth() === p[1] - 1 && dt.getDate() === p[2];
 }
 
+// 두 ISO 날짜 사이 만 개월수(병역 입대~전역). 일 미달 시 -1(만 개월).
+function ysMonthsBetween(a, b) {
+  const [ay, am, ad] = a.split('-').map(Number);
+  const [by, bm, bd] = b.split('-').map(Number);
+  let m = (by - ay) * 12 + (bm - am);
+  if (bd < ad) m -= 1;
+  return Math.max(0, m);
+}
+
 async function callYouthEngine(body) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
   const delays = [1000, 2000, 4000, 8000];
@@ -173,7 +182,13 @@ function mapAnswersToYouth(a, industryMatch, region) {
   if (a.mode === 'prospective') body.prospective = true;
   if (a.foundingDate) body.founding_date = a.foundingDate;
   if (a.birthDate) body.birth_date = a.birthDate;
-  if (Number(a.militaryYears) > 0) body.military_years = Number(a.militaryYears);
+  // 병역: 입대일·전역일 → 개월수 자동계산(military_months). 둘 다 유효할 때만, 최대 72개월(6년).
+  if (a.enlistDate && a.dischargeDate && ysValidDate(a.enlistDate) && ysValidDate(a.dischargeDate)) {
+    const mm = ysMonthsBetween(a.enlistDate, a.dischargeDate);
+    if (mm > 0) body.military_months = Math.min(mm, 72);
+  } else if (Number(a.militaryYears) > 0) {
+    body.military_years = Number(a.militaryYears);   // 하위호환(구 입력)
+  }
   if (a.entityType === '법인') {
     if (a.isLargestShareholder === 'yes') body.is_largest_shareholder = true;
     else if (a.isLargestShareholder === 'no') body.is_largest_shareholder = false;
@@ -199,7 +214,7 @@ function buildYSDetail(a, calc, industryMatch, region) {
   const L = ['■ 고객 입력 정보'];
   L.push('  · 창업일: ' + (a.foundingDate || '-'));
   L.push('  · 사업형태: ' + (a.entityType || '-'));
-  L.push('  · 대표자 생년월일: ' + (a.birthDate || '-') + (a.militaryYears ? ` (병역 ${a.militaryYears}년)` : ''));
+  L.push('  · 대표자 생년월일: ' + (a.birthDate || '-') + ((a.enlistDate && a.dischargeDate) ? ` (병역 ${a.enlistDate}~${a.dischargeDate})` : (a.militaryYears ? ` (병역 ${a.militaryYears}년)` : '')));
   if (industryMatch) L.push('  · 업종: ' + industryMatch.name + ' (KSIC ' + industryMatch.ksic5 + ', ' + (industryMatch.status === 'eligible' ? '감면대상' : industryMatch.status === 'review' ? '확인필요' : '대상아님') + ')');
   if (region) L.push('  · 창업지역: ' + (region.sigungu || '') + ' [' + calc.area + ']');
   if (a.businessType && a.businessType !== '신규창업') L.push('  · 창업유형: ' + a.businessType);
@@ -465,7 +480,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
             <h3>판정 단계별 결과</h3>
             <table className="jt-report-calc">
               <tbody>
-                {(calc.gates || []).map((g, i) => (
+                {(calc.gates || []).filter(g => !(report.quick && g.name === '창업정의')).map((g, i) => (
                   <tr key={i}>
                     <th style={{ width: '30%' }}>{g.name}</th>
                     <td>
@@ -662,6 +677,36 @@ function JTReportYouthStartup({ setRoute, onBack }) {
               {rinfo && (
                 <div style={{ marginTop: 10, fontSize: 13.5, lineHeight: 1.55, padding: '9px 12px', borderRadius: 8, background: rinfo.ok ? '#eaf5ee' : '#fff7ea', borderLeft: '4px solid ' + (rinfo.ok ? '#2a6d4f' : '#d08b00') }}>{rinfo.msg}</div>
               )}
+            </div>
+          )}
+
+          {/* 병역 — 입대일·전역일 (자동 개월 계산) */}
+          {cur.custom === 'military' && (
+            <div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {[['enlistDate', '입대일'], ['dischargeDate', '전역일']].map(([id, lbl]) => (
+                  <div key={id} style={{ flex: '1 1 150px' }}>
+                    <div style={{ fontSize: 12.5, opacity: 0.7, marginBottom: 4 }}>{lbl}</div>
+                    <input className="jt-report-q__input" style={{ margin: 0 }} type="text" inputMode="numeric" placeholder="예: 2015-03-02"
+                      value={answers[id] || ''}
+                      onChange={e => {
+                        let v = e.target.value.replace(/[^0-9]/g, '').slice(0, 8);
+                        if (v.length > 6) v = v.slice(0, 4) + '-' + v.slice(4, 6) + '-' + v.slice(6);
+                        else if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
+                        setAns(id, v);
+                      }} />
+                  </div>
+                ))}
+              </div>
+              {answers.enlistDate && answers.dischargeDate && ysValidDate(answers.enlistDate) && ysValidDate(answers.dischargeDate) && (() => {
+                const mm = ysMonthsBetween(answers.enlistDate, answers.dischargeDate);
+                const y = Math.floor(mm / 12);
+                return (
+                  <div style={{ marginTop: 10, fontSize: 13.5, padding: '9px 12px', borderRadius: 8, background: '#eaf5ee', borderLeft: '4px solid #2a6d4f' }}>
+                    병역 이행기간 <strong>{y ? y + '년 ' : ''}{mm % 12}개월</strong>{mm > 72 ? ' (최대 6년까지 인정)' : ''} — 이 기간을 창업 당시 나이에서 빼고 청년 여부를 판정합니다.
+                  </div>
+                );
+              })()}
             </div>
           )}
 

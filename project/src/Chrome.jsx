@@ -131,7 +131,7 @@ function JTNav({ route, setRoute }) {
             </div>
           )}
         </div>
-        <a className={route === 'report' ? 'active' : ''} onClick={() => setRoute('report')}>JT 리포트</a>
+        <a className={route === 'report' ? 'active' : ''} onClick={() => setRoute('report')}>세금 계산기</a>
         <a className={route === 'insights' ? 'active' : ''} onClick={() => setRoute('insights')}>인사이트</a>
         <a className={route === 'contact' ? 'active' : ''} onClick={() => setRoute('contact')}>오시는 길</a>
       </nav>
@@ -146,7 +146,7 @@ function JTNav({ route, setRoute }) {
       </div>
       {menuOpen && (
         <div className="jt-navmenu">
-          {[['about', '회사소개'], ['services', '업무분야'], ['report', 'JT 리포트'], ['insights', '인사이트'], ['contact', '오시는 길']].map(([r, l]) => (
+          {[['about', '회사소개'], ['services', '업무분야'], ['report', '세금 계산기'], ['insights', '인사이트'], ['contact', '오시는 길']].map(([r, l]) => (
             <a key={r} className={route === r ? 'is-active' : ''} onClick={() => { setRoute(r); setMenuOpen(false); }}>{l}</a>
           ))}
           <a className="jt-navmenu__phone" href={`tel:${window.JT_DATA.firm.phone}`} onClick={() => window.jtTrackCta('call', 'nav')}>T. {window.JT_DATA.firm.phone}</a>
@@ -249,7 +249,7 @@ function JTFooter({ setRoute }) {
           <h4>Company</h4>
           <a onClick={() => setRoute('about')}>회사소개</a>
           <a onClick={() => setRoute('about', 'team')}>전문가</a>
-          <a onClick={() => setRoute('report')}>JT 리포트</a>
+          <a onClick={() => setRoute('report')}>세금 계산기</a>
           <a onClick={() => setRoute('insights')}>인사이트</a>
         </div>
         <div className="jt-footer__col">
