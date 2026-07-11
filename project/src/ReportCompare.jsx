@@ -87,7 +87,7 @@ const CMP_QS = [
 
 async function callCompareEng(body) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
-  const delays = [1000, 2000, 3000, 4000, 6000, 8000, 10000];
+  const delays = [1000, 2000, 4000, 8000];
   let lastErr;
   for (let attempt = 0; attempt <= delays.length; attempt++) {
     try {
@@ -98,9 +98,9 @@ async function callCompareEng(body) {
         body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined,
       });
       if (to) clearTimeout(to);
-      if (!res.ok) throw new Error('engine ' + res.status);
+      if (!res.ok) { const _err = new Error('engine ' + res.status); _err.status = res.status; throw _err; }
       return await res.json();
-    } catch (e) { lastErr = e; if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt])); }
+    } catch (e) { lastErr = e; if (e && e.status >= 400 && e.status < 500) break; if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt])); }
   }
   throw lastErr;
 }
@@ -206,7 +206,9 @@ function JTReportCompare({ setRoute, onBack }) {
         const c = j && j.calc;
         const scv = c && c['시나리오별'];
         // 수정 260628(COMPARE-R2-01): 빈 dict·부분 0원을 '정밀'로 신뢰하지 않음. 처분비교는 취득세(양수)가 늘 포함되어 정상 시 총세부담>0 — 0원/누락은 계산실패 신호(지법 §11①). 3시나리오 모두 유효할 때만 precise.
-        const allValid = scv && ['증여', '매매', '상속'].every(m => scv[m] && Number(scv[m]['총세부담']) > 0);
+        // P1-4(코덱스): 공통 무결성 검증기로 오류·NaN·누락 거부. 처분비교는 취득세(양수)가 늘 포함되어
+        // 정상 시 총세부담>0이므로, 이 세목 한정 도메인 규칙으로 >0을 함께 확인(0원/빈응답=계산실패 신호).
+        const allValid = scv && ['증여', '매매', '상속'].every(m => window.jtValidCalc(scv[m], ['총세부담']) && Number(scv[m]['총세부담']) > 0);
         if (allValid) {
           calc.scenarios = scv;   // {증여, 매매, 상속}
           // ★ c['최적방법']·c['절세액'] 은 의도적으로 사용하지 않음(판단 라벨 억제)

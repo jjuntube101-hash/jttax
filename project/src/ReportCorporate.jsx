@@ -61,6 +61,19 @@ const CORP_QS = [
     ],
   },
   {
+    // P1-5(코덱스): 배당 종합과세는 그 해 이자·배당 '합계' 2천만원 기준. 새 배당만으로 판단하면 오류 →
+    // 기존 금융소득 없음을 확인받고, 미확인/있음이면 15.4% 확정 대신 종합과세 경고(오너 확정 260712: 확인만).
+    id: 'noOtherFinancialIncome',
+    section: '기존 금융소득',
+    q: '대표자에게 배당 외 다른 이자·배당소득이 있나요?',
+    sub: '배당소득세는 그 해 이자·배당소득 「합계」가 2,000만원을 넘으면 금융소득종합과세로 넘어가 세부담이 크게 달라집니다. 다른 이자·배당소득이 없어야 이 계산의 15.4% 분리과세 추정이 맞습니다. 있거나 잘 모르시면 정밀 계산으로 안내드립니다.',
+    showIf: (a) => a.dividend === 'dividend',
+    opts: [
+      ['none', '없음 — 배당 외 이자·배당소득 없음', '15.4% 분리과세 추정 가능'],
+      ['has', '있음 (또는 잘 모름)', '종합과세 가능 · 정밀계산 필요'],
+    ],
+  },
+  {
     id: 'context',
     section: '추가 사항',
     q: '추가로 알려주실 내용이 있나요? (선택)',
@@ -72,7 +85,7 @@ const CORP_QS = [
 
 async function callCorpEng(endpoint, body) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
-  const delays = [1000, 2000, 3000, 4000, 6000, 8000, 10000];
+  const delays = [1000, 2000, 4000, 8000];
   let lastErr;
   for (let attempt = 0; attempt <= delays.length; attempt++) {
     try {
@@ -83,9 +96,9 @@ async function callCorpEng(endpoint, body) {
         body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined,
       });
       if (to) clearTimeout(to);
-      if (!res.ok) throw new Error('engine ' + res.status);
+      if (!res.ok) { const _err = new Error('engine ' + res.status); _err.status = res.status; throw _err; }
       return await res.json();
-    } catch (e) { lastErr = e; if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt])); }
+    } catch (e) { lastErr = e; if (e && e.status >= 400 && e.status < 500) break; if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt])); }
   }
   throw lastErr;
 }
@@ -178,8 +191,9 @@ function JTReportCorporate({ setRoute, onBack }) {
           salary > 0 ? callCorpEng('/v1/calc/income', { salary_income: salary, spouse, dependents: deps, children_count: kids }) : Promise.resolve(null),
         ]);
         const pc = pj && pj.calc, cc = cj && cj.calc, sc = sj && sj.calc;
-        // 수정 260628(CORPORATE-R2-02): 빈/부분 응답 오염 방지 — 개인 총세부담 양수 검증(법인세는 0 정상).
-        if (pc && cc && Number(pc['총세부담']) > 0) {
+        // P1-4(코덱스): 정상 0원(소액 사업소득 종소세 0원)을 실패로 오판하지 않도록 '>0'이 아닌 공통 무결성 검증기 사용.
+        // 오류·부분 응답·NaN·필드누락은 거부하되 0원은 정상 인정.
+        if (window.jtValidCalc(pc, ['총세부담']) && window.jtValidCalc(cc, ['총납부세액'])) {
           calc.indivTotal = pc['총세부담'] || 0;
           calc.corpTax = cc['총납부세액'] || 0;
           calc.salaryTax = (sc && sc['총세부담']) || 0;
@@ -189,14 +203,17 @@ function JTReportCorporate({ setRoute, onBack }) {
           calc.indivRate = pc['적용세율']; calc.corpRate = cc['적용세율'];
           calc.engineWarnings = [];
           if (answers.dividend === 'dividend' && calc.retained > 0) {
-            // 연 2천만 이하만 분리과세(14%+지방1.4%=15.4%)로 단순추정 가능.
-            // 초과분은 금융소득종합과세(타소득 합산 누진) → 단순율은 과소추정되어 위험 → 수치 대신 경고.
-            if (calc.retained <= 20_000_000) {
+            // 연 2천만 이하 + 기존 금융소득 없음 확인 시에만 분리과세(14%+지방1.4%=15.4%)로 단순추정.
+            // 초과분 또는 기존 금융소득 미확인은 종합과세(타소득 합산 누진) → 수치 대신 경고(P1-5 코덱스).
+            const noOther = answers.noOtherFinancialIncome === 'none';
+            if (calc.retained <= 20_000_000 && noOther) {
               calc.dividendTax = Math.round(calc.retained * 0.154);
               calc.corpTotalWithDiv = calc.corpTotal + calc.dividendTax;
               calc.dividendComprehensive = false;
             } else {
               calc.dividendComprehensive = true;
+              // 2천만 이하이나 기존 이자·배당소득 미확인(합산 시 초과 가능) → '초과 확정'과 구분해 안내
+              calc.dividendUnconfirmed = (calc.retained <= 20_000_000 && !noOther);
             }
           }
           calc.precise = true; calc.engineVer = pj.version && pj.version.engine;
@@ -297,7 +314,9 @@ function JTReportCorporate({ setRoute, onBack }) {
                   {answers.dividend !== 'dividend'
                     ? '회사에 재투자(유보)하면 추가 세금 없이 법인이 유리합니다. 대표가 가져가려면 배당소득세가 추가됩니다.'
                     : calc.dividendComprehensive
-                      ? <>이를 <strong>배당으로 가져가면 「금융소득종합과세」 대상</strong>입니다(연 2,000만원 초과). 배당이 대표의 다른 소득과 합산돼 누진세율(최고 49.5%)로 과세되므로, 단순 15.4%보다 세부담이 <strong>크게 늘 수 있습니다</strong>. 배당 시 실제 세액은 <strong>별도 정밀 계산</strong>이 필요해, 본 화면에는 배당세를 합산하지 않았습니다.</>
+                      ? (calc.dividendUnconfirmed
+                          ? <>배당 잔여이익은 2,000만원 이하지만, <strong>대표자에게 다른 이자·배당소득이 있으면 합산 2,000만원을 넘어 「금융소득종합과세」</strong> 대상이 될 수 있습니다. 그 경우 15.4%보다 세부담이 커지므로, 단정된 15.4% 대신 <strong>별도 정밀 계산</strong>이 필요합니다(본 화면에는 배당세를 합산하지 않았습니다).</>
+                          : <>이를 <strong>배당으로 가져가면 「금융소득종합과세」 대상</strong>입니다(연 2,000만원 초과). 배당이 대표의 다른 소득과 합산돼 누진세율(최고 49.5%)로 과세되므로, 단순 15.4%보다 세부담이 <strong>크게 늘 수 있습니다</strong>. 배당 시 실제 세액은 <strong>별도 정밀 계산</strong>이 필요해, 본 화면에는 배당세를 합산하지 않았습니다.</>)
                       : <>이를 <strong>배당으로 가져가면 배당소득세 약 {formatWon(calc.dividendTax)}</strong>(2,000만원 이하 분리과세 15.4%)이 더 붙어, 법인 합계가 약 {formatWon(calc.corpTotalWithDiv)}이 됩니다.</>}
                 </p>
               </section>

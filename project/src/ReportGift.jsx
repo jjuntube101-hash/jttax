@@ -346,7 +346,7 @@ async function callGiftEngine(body, endpoint) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
   // 엔진이 비용절감용 scale-to-zero라 한동안 안 쓰면 잠듦. 첫 호출은 부팅을 기다리며 수십 초 걸리거나
   // 부팅 중 503을 반환할 수 있음 → 콜드스타트를 확실히 넘기도록 넉넉히 재시도(누적 ~34초). 한 번 깨면 응답 <1초.
-  const delays = [1000, 2000, 3000, 4000, 6000, 8000, 10000]; // 재시도 간 대기(초)
+  const delays = [1000, 2000, 4000, 8000]; // 재시도 간 대기(초)
   let lastErr;
   for (let attempt = 0; attempt <= delays.length; attempt++) {
     try {
@@ -357,10 +357,11 @@ async function callGiftEngine(body, endpoint) {
         body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined,
       });
       if (to) clearTimeout(to);
-      if (!res.ok) throw new Error('engine ' + res.status);
+      if (!res.ok) { const _err = new Error('engine ' + res.status); _err.status = res.status; throw _err; }
       return await res.json();
     } catch (e) {
       lastErr = e;
+      if (e && e.status >= 400 && e.status < 500) break;   // P2-1: 4xx(422 검증오류·429)는 재시도 금지
       if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt]));
     }
   }

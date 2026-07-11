@@ -297,7 +297,7 @@ function buildInhKakao(answers, calc) {
 async function callInhEngine(body) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
   // 엔진은 비용절감용 scale-to-zero — 첫 호출은 부팅 대기(수십 초)·503 가능 → 넉넉히 재시도.
-  const delays = [1000, 2000, 3000, 4000, 6000, 8000, 10000];
+  const delays = [1000, 2000, 4000, 8000];
   let lastErr;
   for (let attempt = 0; attempt <= delays.length; attempt++) {
     try {
@@ -308,10 +308,11 @@ async function callInhEngine(body) {
         body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined,
       });
       if (to) clearTimeout(to);
-      if (!res.ok) throw new Error('engine ' + res.status);
+      if (!res.ok) { const _err = new Error('engine ' + res.status); _err.status = res.status; throw _err; }
       return await res.json();
     } catch (e) {
       lastErr = e;
+      if (e && e.status >= 400 && e.status < 500) break;   // P2-1: 4xx(422 검증오류·429)는 재시도 금지
       if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt]));
     }
   }

@@ -91,16 +91,34 @@ function JTReportCta({ setRoute }) {
 }
 window.JTReportCta = JTReportCta;
 
+// ============ 공통 응답 무결성 검증기 (P1-4 코덱스) ============
+// 정상 0원(예: 사업소득 100만 종소세 0원)을 실패로 오판하지 않도록 '>0'이 아니라
+// ①객체 존재 ②오류필드 없음 ③필수 숫자키가 유한한 실수(≥0)인지로 판정한다.
+if (typeof window !== 'undefined' && !window.jtValidCalc) {
+  window.jtValidCalc = function (c, requiredKeys) {
+    if (!c || typeof c !== 'object') return false;
+    if (c.error || c.errors || c.detail) return false;               // 엔진 오류·부분 응답 거부
+    const keys = (requiredKeys && requiredKeys.length) ? requiredKeys : ['총세부담'];
+    return keys.every(function (k) {
+      const v = c[k];
+      return typeof v === 'number' && isFinite(v) && v >= 0;         // NaN·무한대·문자·누락 거부, 0은 정상
+    });
+  };
+}
+
 // ============ 공통 스텝 셸 (진단별 공용) ============
 function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag }) {
-  const pct = Math.round(((stepIdx + 1) / stepTotal) * 100);
+  // P2-2: 로딩·결과 화면은 stepIdx=stepTotal을 넘겨 진행률 100% 초과·"Step N+1/N"이 되던 것 클램프(0~100%)
+  const _tot = Math.max(1, stepTotal || 0);
+  const _stepNo = Math.max(0, Math.min(stepIdx + 1, _tot));
+  const pct = Math.max(0, Math.min(100, Math.round((_stepNo / _tot) * 100)));
   return (
     <div className="jt-report-shell">
       <div className="jt-report-shell__head">
         <button className="jt-report-shell__back" onClick={onBack}>← JT 리포트 허브</button>
         <div className="jt-report-shell__meta">
           <span className="jt-tag">{tag}</span>
-          <span>Step {stepIdx + 1} / {stepTotal}</span>
+          <span>Step {_stepNo} / {_tot}</span>
         </div>
       </div>
       <div className="jt-report-shell__bar"><div style={{width: `${pct}%`}} /></div>

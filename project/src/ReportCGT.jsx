@@ -522,7 +522,7 @@ async function callEngineBody(body) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error('engine ' + res.status);
+  if (!res.ok) { const _err = new Error('engine ' + res.status); _err.status = res.status; throw _err; }
   return res.json();
 }
 
