@@ -12,9 +12,9 @@ window.JT_DATA = {
     domain: 'jttax.co.kr',
     // 카카오톡 채널 (제이티 세무법인 · @제이티세무법인)
     kakaoSearchId: '@제이티세무법인',
-    kakaoChannelUrl: 'http://pf.kakao.com/_CcxlJG',
-    kakaoChatUrl: 'http://pf.kakao.com/_CcxlJG/chat',
-    kakaoFriendUrl: 'http://pf.kakao.com/_CcxlJG/friend',
+    kakaoChannelUrl: 'https://pf.kakao.com/_CcxlJG',
+    kakaoChatUrl: 'https://pf.kakao.com/_CcxlJG/chat',
+    kakaoFriendUrl: 'https://pf.kakao.com/_CcxlJG/friend',
     kakaoMapUrl: 'https://place.map.kakao.com/1776119720',
     naverMapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20310',
     googleMapUrl: 'https://www.google.com/maps/search/?api=1&query=%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20310%201312%ED%98%B8',
