@@ -162,7 +162,7 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
       <label style={{display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 13, color: '#5a5a5a', marginBottom: 16, cursor: 'pointer'}}>
         <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} style={{marginTop: 3}}/>
         <span>
-          상담 목적 개인정보 수집·이용에 동의합니다. (필수) · 수집 항목: 성명·연락처·이메일 / 보유기간: 상담 종료 후 1년 / 동의를 거부할 권리가 있습니다.
+          상담 목적 개인정보 수집·이용에 동의합니다. (필수) · 수집 항목: 성명·연락처·이메일 / 보유기간: 상담 종료 후 3년 / 동의를 거부할 권리가 있습니다.
         </span>
       </label>
       <div style={{display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap'}}>
@@ -384,7 +384,7 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
           </div>
           <label style={{display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 12, opacity: 0.7, cursor: 'pointer'}}>
             <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} style={{marginTop: 3}}/>
-            <span>개인정보(이메일) 수집에 동의합니다. 목적: 리포트 발송 · 보유기간: 발송 후 90일</span>
+            <span>개인정보(이메일) 수집에 동의합니다. 목적: 리포트 발송 · 보유기간: 발송 후 3년</span>
           </label>
         </>
       )}

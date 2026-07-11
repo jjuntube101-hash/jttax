@@ -215,6 +215,12 @@ function JTReportIncome({ setRoute, onBack }) {
         setLoading(false);
         return;
       }
+      // P1-1(코덱스): 자녀 수는 부양가족 수를 초과할 수 없음(자녀도 부양가족에 포함) — 엔진 422 전에 안내
+      if (kids > deps) {
+        setErr('자녀 수(' + kids + '명)가 부양가족 수(' + deps + '명)를 초과할 수 없습니다. 자녀도 부양가족 수에 포함해 입력해 주세요.');
+        setLoading(false);
+        return;
+      }
 
       let calc = { precise: false };
       try {

@@ -609,6 +609,12 @@ function JTReportCGT({ setRoute, onBack }) {
     setLoading(true);
     setErr(null);
     try {
+      // P1-1(코덱스): 취득일이 양도일보다 뒤일 수 없음(동일일 허용) — 엔진 422 전에 안내
+      if (answers.acquiredDate && answers.transferDate && answers.acquiredDate > answers.transferDate) {
+        setErr('취득일(' + answers.acquiredDate + ')이 양도일(' + answers.transferDate + ')보다 뒤일 수 없습니다. 날짜를 다시 확인해 주세요.');
+        setLoading(false);
+        return;
+      }
       const acquired = Number(answers.acquired) || 0;
       const sold = Number(answers.sold) || 0;
       const expenses = Number(answers.expenses) || 0;

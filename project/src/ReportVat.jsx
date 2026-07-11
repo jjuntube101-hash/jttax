@@ -231,6 +231,16 @@ function JTReportVat({ setRoute, onBack }) {
         const anySales = clamp(answers.salesAmount) + clamp(answers.supplyPrice) + clamp(answers.purchaseAmount);
         if (anySales <= 0) { setErr('매출 금액을 입력해 주세요.'); setLoading(false); return; }
       }
+      // P1-3(코덱스): 신용카드·현금영수증 매출(§46 공급대가=부가세 포함)은 전체 매출을 넘을 수 없음 — 엔진 422 전에 안내
+      const _card = clamp(answers.creditCardSales);
+      if (_card > 0) {
+        if (bt === '일반과세자' && _card > Math.round((clamp(answers.salesAmount) + clamp(answers.exportSales)) * 1.1)) {
+          setErr('신용카드·현금영수증 매출(부가세 포함)이 전체 매출을 초과합니다. 카드매출은 매출 공급가액의 약 1.1배 이하로 입력해 주세요.'); setLoading(false); return;
+        }
+        if (bt === '간이과세자' && clamp(answers.supplyPrice) > 0 && _card > clamp(answers.supplyPrice)) {
+          setErr('신용카드 매출이 연간 공급대가를 초과합니다.'); setLoading(false); return;
+        }
+      }
 
       const purchaseAmt = clamp(answers.purchaseAmount);
       const body = {

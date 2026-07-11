@@ -180,7 +180,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
           </p>
           <div className="jt-report-hero__meta reveal">
             <span>● 로그인 불필요</span>
-            <span>● 입력값은 브라우저에만 저장</span>
+            <span>● 입력값은 계산에만 사용 · 미저장</span>
             <span>● 결과로 바로 상담 연결</span>
           </div>
         </div>
