@@ -1,0 +1,4 @@
+# 인사이트 원고(.md)는 항상 LF 로 체크아웃한다.
+# build-insights.mjs 의 프론트매터/본문 파싱이 플랫폼(특히 Windows core.autocrlf=true)과
+# 무관하게 동일하게 동작하고, 재빌드 산출물이 byte-identical 을 유지하도록 보장한다.
+project/insights/*.md text eol=lf

@@ -28,14 +28,16 @@ const SITE = 'https://www.jttax.co.kr';
 
 // ────────────── 프론트매터 파서 ──────────────
 function parseFrontmatter(src) {
-  const m = src.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  // CRLF/CR 방어: 정규식과 값 파싱 모두 \r 를 허용/제거한다.
+  // (loadArticles 에서 src 를 이미 LF 로 정규화하지만, 단독 호출·미래 회귀 대비 이중 방어)
+  const m = src.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!m) return { meta: {}, body: src };
   const meta = {};
-  m[1].split('\n').forEach(line => {
+  m[1].split(/\r?\n/).forEach(line => {
     const i = line.indexOf(':');
     if (i < 0) return;
     const key = line.slice(0, i).trim();
-    let val = line.slice(i + 1).trim();
+    let val = line.slice(i + 1).trim().replace(/\r$/, '');
     if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
     meta[key] = val;
   });
@@ -71,7 +73,11 @@ async function loadArticles() {
     .filter(f => f.endsWith('.md') && !f.startsWith('README'));
   const arts = [];
   for (const f of files) {
-    const src = await readFile(join(INSIGHTS_SRC, f), 'utf8');
+    // 줄바꿈 정규화(CRLF/CR → LF): Windows(core.autocrlf=true) 워킹트리에서
+    // 체크아웃된 .md 는 CRLF 라 프론트매터·본문 파싱이 어긋난다. 여기서 한 번에 흡수해
+    // 플랫폼과 무관하게 동일한 HTML(byte-identical) 을 생성한다.
+    const raw = await readFile(join(INSIGHTS_SRC, f), 'utf8');
+    const src = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     const { meta, body } = parseFrontmatter(src);
     if (!meta.title || !meta.date) {
       console.warn(`[skip] ${f} — 프론트매터에 title/date 누락`);
@@ -103,8 +109,9 @@ async function updateDataJsx(arts) {
   const block = `  // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)\n  insights: [\n${jsonItems}\n  ],`;
   const re = /\/\/ 인사이트 칼럼[\s\S]*?insights:\s*\[[\s\S]*?\],/;
   if (!re.test(src)) {
-    console.error('[error] Data.jsx 의 insights 블록을 찾지 못함');
-    return;
+    // 침묵 실패 금지: 여기서 return 하면 Data.jsx 를 못 바꿨는데도 빌드가 "성공"으로 끝난다.
+    // throw 로 올려 main 의 try/catch 가 exit 1 로 실패 처리하게 한다.
+    throw new Error('Data.jsx 의 insights 블록(// 인사이트 칼럼 ... insights: [ ... ],)을 찾지 못했습니다. Data.jsx 구조가 변경됐는지 확인하세요.');
   }
   await writeFile(DATA_PATH, src.replace(re, block));
   console.log(`✓ Data.jsx insights ${arts.length}건 갱신`);
@@ -194,12 +201,22 @@ async function updateSitemap() {
 }
 
 // ────────────── main ──────────────
-const arts = await loadArticles();
-if (arts.length === 0) {
-  console.warn('⚠ 발행할 .md 글이 없습니다. Data.jsx/sitemap 변경을 건너뜁니다.');
-} else {
+try {
+  const arts = await loadArticles();
+  if (arts.length === 0) {
+    // 침묵 실패 방지 가드: insights/ 에는 항상 발행 글이 존재해야 한다.
+    // 0건이면 프론트매터 파싱 실패(줄바꿈 오염·title/date 누락)가 거의 확실하므로
+    // 종료코드 1 로 빌드를 실패시켜 CI/로컬에서 즉시 드러나게 한다.
+    console.error('✗ 발행 가능한 인사이트가 0건입니다 — .md 프론트매터 파싱 실패(줄바꿈 또는 title/date 누락) 가능성이 높습니다. 침묵 실패를 막기 위해 빌드를 실패 처리합니다.');
+    process.exit(1);
+  }
   await updateDataJsx(arts);
   await writeArticlePages(arts);
   await updateSitemap(arts);
   console.log(`\n✅ 빌드 완료 — 인사이트 ${arts.length}건 처리.`);
+} catch (e) {
+  // 어떤 단계(파싱·Data.jsx 치환·글 렌더·sitemap)든 예외가 나면 침묵하지 않고
+  // 명확히 실패(exit 1) 처리한다. 산출물이 일부만 갱신된 채 "성공"으로 끝나는 것을 차단.
+  console.error(`✗ 빌드 실패: ${e && e.message ? e.message : e}`);
+  process.exit(1);
 }

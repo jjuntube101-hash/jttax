@@ -21,7 +21,11 @@ export async function writeSitemap(repoRoot, site) {
     let files = [];
     try {
       files = (await readdir(join(repoRoot, d.dir))).filter(f => f.endsWith('.html'));
-    } catch (e) { /* 디렉토리 없으면 건너뜀 */ }
+    } catch (e) {
+      // 디렉토리 자체가 없을 때만(ENOENT) 조용히 건너뛴다. 그 외 오류(권한·IO)는
+      // 해당 섹션 URL 이 통째 누락되는 침묵 실패이므로 전파해 빌드를 실패시킨다.
+      if (e.code !== 'ENOENT') throw e;
+    }
     files.sort();
     for (const f of files) {
       // index.html은 canonical(디렉토리 URL)과 일치시킴
