@@ -1101,7 +1101,7 @@ cautions 3개, saving_ideas 2~3개.`;
         <h2>{report.title}</h2>
         <p style={{maxWidth: 580, margin: '12px auto', lineHeight: 1.7, opacity: 0.85}}>{report.message}</p>
         <div style={{marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center'}}>
-          <button className="jt-btn jt-btn--primary" onClick={() => setRoute && setRoute('booking')}>상담 예약 <span className="jt-arrow">→</span></button>
+          <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta && window.jtTrackCta('booking', 'report_cgt_result'); setRoute && setRoute('booking'); }}>상담 예약 <span className="jt-arrow">→</span></button>
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setStep(0); setAnswers({ transferDate: isoDate(new Date()) }); }}>다시 계산</button>
         </div>
       </div>

@@ -1,6 +1,23 @@
 <!doctype html>
 <html lang="ko">
 <head>
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
   <meta charset="utf-8">
   <title>청년창업 세액감면 계산기 — 대상·감면율 자동 진단 | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -87,7 +104,7 @@
       <p style="font-size:14px;color:#444;line-height:1.6;margin-bottom:14px;">업종·주소만 넣으면 감면 가능여부와 감면율을 즉시 확인. 정확한 신청·설계는 국세청 출신 세무사가 함께합니다.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
         <a href="/#/report/youthstartup" class="jt-btn jt-btn--primary">감면 진단하기 →</a>
-        <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener">카톡 상담</a>
+        <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_youthstartup')">카톡 상담</a>
       </div>
     </div>
   </main>

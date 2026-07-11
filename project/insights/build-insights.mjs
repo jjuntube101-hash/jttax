@@ -16,6 +16,7 @@ import { readFile, writeFile, readdir, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
+import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url)); // project/insights
 const PROJECT = join(__dirname, '..');                     // project
@@ -157,6 +158,7 @@ function renderArticlePage(a) {
   <meta property="article:author" content="${esc(a.author)}">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+${GA_HEAD_SNIPPET}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -192,8 +194,8 @@ function renderArticlePage(a) {
     </div>
 
     <div style="margin-top:48px;display:flex;gap:12px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary">상담 예약 →</a>
-      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener">카톡 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
+      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>
   </article>
 

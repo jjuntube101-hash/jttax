@@ -328,6 +328,7 @@ function JTServicesPage({ setRoute }) {
                 <p style={{ maxWidth: '100%' }}>{s.desc}</p>
                 <button className="jt-btn jt-btn--outline" style={{ marginTop: 24 }} onClick={() => {
                 try {sessionStorage.setItem('jt_preferred_topic', s.kr);} catch (_) {}
+                window.jtTrackCta('booking', 'services');
                 setRoute('booking');
               }}>
                   이 분야 상담 예약 <span className="jt-arrow">→</span>

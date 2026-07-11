@@ -15,6 +15,23 @@
   <meta property="og:locale" content="ko_KR">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"name":"양도소득세 계산기","url":"https://www.jttax.co.kr/calculators/capital-gains-tax.html"},{"@type":"ListItem","position":2,"name":"증여세 계산기","url":"https://www.jttax.co.kr/calculators/gift-tax.html"},{"@type":"ListItem","position":3,"name":"상속세 계산기","url":"https://www.jttax.co.kr/calculators/inheritance-tax.html"},{"@type":"ListItem","position":4,"name":"종합소득세 계산기","url":"https://www.jttax.co.kr/calculators/income-tax.html"},{"@type":"ListItem","position":5,"name":"부가가치세(VAT) 계산기","url":"https://www.jttax.co.kr/calculators/value-added-tax.html"},{"@type":"ListItem","position":6,"name":"법인 전환 시뮬레이터","url":"https://www.jttax.co.kr/calculators/incorporation-simulator.html"},{"@type":"ListItem","position":7,"name":"취득세 계산기","url":"https://www.jttax.co.kr/calculators/acquisition-tax.html"},{"@type":"ListItem","position":8,"name":"재산세 계산기","url":"https://www.jttax.co.kr/calculators/property-tax.html"},{"@type":"ListItem","position":9,"name":"종합부동산세 계산기","url":"https://www.jttax.co.kr/calculators/comprehensive-real-estate-tax.html"},{"@type":"ListItem","position":10,"name":"4대보험·실수령 계산기","url":"https://www.jttax.co.kr/calculators/net-salary.html"}]}</script>
   <style>
     .jt-ci-wrap{max-width:860px;margin:0 auto;padding:48px 24px 80px;color:#0B0B0F;}
@@ -93,7 +110,7 @@
     </div>
     <div style="margin-top:40px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/report" class="jt-btn jt-btn--primary">계산기 허브 열기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline">세무사 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_index')">세무사 상담</a>
     </div>
   </main>
   <footer style="margin-top:40px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;">

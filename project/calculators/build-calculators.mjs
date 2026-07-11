@@ -16,6 +16,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CALCULATORS } from './calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
+import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));   // project/calculators
 const REPO_ROOT = join(__dirname, '..', '..');               // 사이트 루트
@@ -97,6 +98,7 @@ ${c.related.map(r => `        <li><a href="/insights/${r.slug}.html">${esc(r.tit
   <meta name="twitter:description" content="${esc(c.metaDesc)}">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+${GA_HEAD_SNIPPET}
   <script type="application/ld+json">${JSON.stringify(appLd)}</script>
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
   <script type="application/ld+json">${JSON.stringify(crumbLd)}</script>
@@ -142,7 +144,7 @@ ${c.related.map(r => `        <li><a href="/insights/${r.slug}.html">${esc(r.tit
 
     <div class="jt-cc-cta">
       <a href="${appUrl}" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline">세무사 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
     <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
 
@@ -198,8 +200,8 @@ ${otherCalcs}
     </div>
 
     <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary">상담 예약 →</a>
-      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener">카톡 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
+      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_bottom')">카톡 상담</a>
     </div>
   </main>
 
@@ -243,6 +245,7 @@ function renderIndexPage() {
   <meta property="og:locale" content="ko_KR">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+${GA_HEAD_SNIPPET}
   <script type="application/ld+json">${JSON.stringify(itemsLd)}</script>
   <style>
     .jt-ci-wrap{max-width:860px;margin:0 auto;padding:48px 24px 80px;color:#0B0B0F;}
@@ -272,7 +275,7 @@ ${cards}
     </div>
     <div style="margin-top:40px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/report" class="jt-btn jt-btn--primary">계산기 허브 열기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline">세무사 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_index')">세무사 상담</a>
     </div>
   </main>
   <footer style="margin-top:40px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;">

@@ -18,6 +18,23 @@
   <meta name="twitter:description" content="개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세)의 세부담을 검증 엔진으로 바로 비교합니다.">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"법인 전환 시뮬레이터","url":"https://www.jttax.co.kr/calculators/incorporation-simulator.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"provider":{"@type":"Organization","name":"제이티 세무법인","url":"https://www.jttax.co.kr"},"description":"개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세)의 세부담을 검증 엔진으로 바로 비교합니다."}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"이익이 얼마부터 법인 전환이 유리한가요?","acceptedAnswer":{"@type":"Answer","text":"일률적인 기준은 없습니다. 이익 규모, 대표가 실제 가져갈 돈, 4대보험·관리비용에 따라 달라집니다. 시뮬레이터로 「세금」 차이를 먼저 확인하고, 세금 외 비용은 상담으로 점검하는 것을 권합니다."}},{"@type":"Question","name":"법인이 세금이 무조건 적나요?","acceptedAnswer":{"@type":"Answer","text":"법인세율 자체는 낮지만, 그 이익을 대표가 급여·배당으로 가져올 때 추가 세금이 붙습니다. 법인에 돈을 묶어 두는 것이 아니라면 단순 비교만으로 결론짓기 어렵습니다."}},{"@type":"Question","name":"대표 급여는 어떻게 잡아야 하나요?","acceptedAnswer":{"@type":"Answer","text":"급여를 높이면 법인세는 줄지만 근로소득세·4대보험이 늘고, 낮추면 반대입니다. 시뮬레이터에서 급여를 바꿔 가며 총 세부담이 가장 낮은 지점을 가늠해 볼 수 있습니다."}},{"@type":"Question","name":"세금 말고 또 무엇을 봐야 하나요?","acceptedAnswer":{"@type":"Answer","text":"4대보험 부담 변화, 가지급금·대표이사 자금 관리, 설립·기장·청산 비용, 대외 신용도 등을 함께 봐야 합니다. 이 부분은 사안별 차이가 커 상담을 권합니다."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.jttax.co.kr/"},{"@type":"ListItem","position":2,"name":"세금 계산기","item":"https://www.jttax.co.kr/calculators/"},{"@type":"ListItem","position":3,"name":"법인 전환 시뮬레이터","item":"https://www.jttax.co.kr/calculators/incorporation-simulator.html"}]}</script>
@@ -63,7 +80,7 @@
 
     <div class="jt-cc-cta">
       <a href="/#/report/corporate" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline">세무사 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
     <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
 
@@ -145,8 +162,8 @@
     </div>
 
     <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary">상담 예약 →</a>
-      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener">카톡 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
+      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_bottom')">카톡 상담</a>
     </div>
   </main>
 

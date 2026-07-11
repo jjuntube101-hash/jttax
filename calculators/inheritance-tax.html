@@ -18,6 +18,23 @@
   <meta name="twitter:description" content="상속재산과 가족 구성만 넣으면 예상 상속세를 검증 엔진으로 계산합니다. 일괄공제, 배우자상속공제, 금융재산공제, 10년 내 사전증여 합산까지 반영.">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"상속세 계산기","url":"https://www.jttax.co.kr/calculators/inheritance-tax.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"provider":{"@type":"Organization","name":"제이티 세무법인","url":"https://www.jttax.co.kr"},"description":"상속재산과 가족 구성만 넣으면 예상 상속세를 검증 엔진으로 계산합니다. 일괄공제, 배우자상속공제, 금융재산공제, 10년 내 사전증여 합산까지 반영."}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"상속재산이 얼마면 상속세를 안 내나요?","acceptedAnswer":{"@type":"Answer","text":"배우자가 있으면 일괄공제와 배우자공제만으로도 상당 규모까지 세금이 없을 수 있습니다. 다만 사전증여 합산·재산 구성에 따라 달라지므로, 계산기로 본인 상황을 확인하는 것이 정확합니다."}},{"@type":"Question","name":"배우자가 있으면 세금이 많이 줄어드나요?","acceptedAnswer":{"@type":"Answer","text":"배우자상속공제로 최소 5억원에서 최대 30억원까지 공제되어 세 부담이 크게 줄어듭니다. 배우자가 실제 얼마를 상속받느냐에 따라 공제액이 달라집니다."}},{"@type":"Question","name":"미리 증여하면 상속세를 줄일 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"10년(상속인 외는 5년) 이내 증여는 상속재산에 합산되므로 단기간의 증여만으로는 절세 효과가 제한적입니다. 장기 계획에 따른 분산 증여가 의미 있으며, 사안별 설계가 필요합니다."}},{"@type":"Question","name":"상속세 신고는 언제까지 하나요?","acceptedAnswer":{"@type":"Answer","text":"상속개시일(사망일)이 속한 달의 말일부터 6개월 이내에 신고·납부하는 것이 원칙입니다. 기한을 놓치면 가산세가 붙으므로 일정 관리가 중요합니다."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.jttax.co.kr/"},{"@type":"ListItem","position":2,"name":"세금 계산기","item":"https://www.jttax.co.kr/calculators/"},{"@type":"ListItem","position":3,"name":"상속세 계산기","item":"https://www.jttax.co.kr/calculators/inheritance-tax.html"}]}</script>
@@ -63,7 +80,7 @@
 
     <div class="jt-cc-cta">
       <a href="/#/report/inheritance" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline">세무사 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
     <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
 
@@ -146,8 +163,8 @@
     </div>
 
     <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary">상담 예약 →</a>
-      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener">카톡 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
+      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_bottom')">카톡 상담</a>
     </div>
   </main>
 

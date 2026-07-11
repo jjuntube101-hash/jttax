@@ -18,6 +18,23 @@
   <meta name="twitter:description" content="6월 1일 기준 보유 주택 공시가격 합계에 매기는 종합부동산세를 계산합니다. 1세대1주택 12억·일반 9억 공제, 연령·보유 세액공제, 다주택 중과까지 반영.">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"종합부동산세 계산기","url":"https://www.jttax.co.kr/calculators/comprehensive-real-estate-tax.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"provider":{"@type":"Organization","name":"제이티 세무법인","url":"https://www.jttax.co.kr"},"description":"6월 1일 기준 보유 주택 공시가격 합계에 매기는 종합부동산세를 계산합니다. 1세대1주택 12억·일반 9억 공제, 연령·보유 세액공제, 다주택 중과까지 반영."}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"집 한 채면 종부세를 안 내나요?","acceptedAnswer":{"@type":"Answer","text":"1세대 1주택자는 공시가격 합계 12억원까지 공제되어, 그 이하면 종부세가 없습니다. 12억원을 넘는 경우에도 연령·보유 세액공제로 부담이 줄어듭니다."}},{"@type":"Question","name":"종부세 공제 기준은 얼마인가요?","acceptedAnswer":{"@type":"Answer","text":"1세대 1주택은 12억원, 그 밖에는 9억원이 공제됩니다(공시가격 합계 기준). 공제를 넘는 금액에 대해서만 과세됩니다."}},{"@type":"Question","name":"고령자·장기보유 공제는 어떻게 받나요?","acceptedAnswer":{"@type":"Answer","text":"1세대 1주택자가 일정 연령 이상이거나 오래 보유한 경우 세액공제가 적용됩니다. 두 공제는 합산 한도 내에서 함께 받을 수 있습니다."}},{"@type":"Question","name":"종부세는 언제 내나요?","acceptedAnswer":{"@type":"Answer","text":"과세기준일은 6월 1일이고, 납부는 매년 12월에 합니다. 공시가격 합계와 보유 주택 수에 따라 대상 여부가 달라집니다."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.jttax.co.kr/"},{"@type":"ListItem","position":2,"name":"세금 계산기","item":"https://www.jttax.co.kr/calculators/"},{"@type":"ListItem","position":3,"name":"종합부동산세 계산기","item":"https://www.jttax.co.kr/calculators/comprehensive-real-estate-tax.html"}]}</script>
@@ -63,7 +80,7 @@
 
     <div class="jt-cc-cta">
       <a href="/#/report/comprehensive" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline">세무사 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
     <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
 
@@ -144,8 +161,8 @@
     </div>
 
     <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary">상담 예약 →</a>
-      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener">카톡 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
+      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_bottom')">카톡 상담</a>
     </div>
   </main>
 

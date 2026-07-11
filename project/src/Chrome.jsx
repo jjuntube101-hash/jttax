@@ -8,6 +8,22 @@ window.jtKakaoUrl = function () {
   return isMobile ? D.kakaoChatUrl : (D.kakaoChannelUrl || D.kakaoChatUrl);
 };
 
+// ============ GA4 상담 CTA 통일 계측 ============
+// 모든 상담 지점(PC·모바일)에서 표준 이벤트 cta_click 1개로 발화한다.
+//   channel : 'call' | 'kakao' | 'booking' | 'email'
+//   location: 'sticky' | 'nav' | 'hero' | 'channels' | 'contact' | 'footer' | 'cta_band'
+//             | 'proof' | 'faq' | 'home_report' | 'services' | 'booking_top' | 'booking_confirm'
+//             | 'report_hub' | 'report_result' | 'report_banner' | 'report_slots' ...
+// 기존 이벤트(mcta_* 등)는 과거 데이터 연속성을 위해 그대로 두고, cta_click을 추가 발화한다.
+// gtag 미로드 환경(로컬 실행·광고차단)에서는 조용히 무시 — 에러를 내지 않는다.
+window.jtTrackCta = function (channel, location, extra) {
+  try {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+    }
+  } catch (_e) {}
+};
+
 // ============ Scroll reveal hook ============
 function useReveal() {
   useEffect(() => {
@@ -121,7 +137,7 @@ function JTNav({ route, setRoute }) {
       </nav>
       <div className="jt-nav__cta">
         <span className="jt-nav__phone">T. {window.JT_DATA.firm.phone}</span>
-        <button className="jt-btn jt-btn--primary jt-btn--sm jt-nav__book" onClick={() => setRoute('booking')}>
+        <button className="jt-btn jt-btn--primary jt-btn--sm jt-nav__book" onClick={() => { window.jtTrackCta('booking', 'nav'); setRoute('booking'); }}>
           상담 예약 <span className="jt-arrow">→</span>
         </button>
         <button className="jt-nav__burger" aria-label="메뉴" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
@@ -133,8 +149,8 @@ function JTNav({ route, setRoute }) {
           {[['about', '회사소개'], ['services', '업무분야'], ['report', 'JT 리포트'], ['insights', '인사이트'], ['contact', '오시는 길']].map(([r, l]) => (
             <a key={r} className={route === r ? 'is-active' : ''} onClick={() => { setRoute(r); setMenuOpen(false); }}>{l}</a>
           ))}
-          <a className="jt-navmenu__phone" href={`tel:${window.JT_DATA.firm.phone}`}>T. {window.JT_DATA.firm.phone}</a>
-          <button className="jt-btn jt-btn--primary" onClick={() => { setRoute('booking'); setMenuOpen(false); }}>상담 예약 <span className="jt-arrow">→</span></button>
+          <a className="jt-navmenu__phone" href={`tel:${window.JT_DATA.firm.phone}`} onClick={() => window.jtTrackCta('call', 'nav')}>T. {window.JT_DATA.firm.phone}</a>
+          <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'nav'); setRoute('booking'); setMenuOpen(false); }}>상담 예약 <span className="jt-arrow">→</span></button>
         </div>
       )}
     </header>
@@ -150,15 +166,15 @@ function JTMobileCta({ setRoute, route }) {
   if (route === 'booking') return null;
   return (
     <div className="jt-mcta" role="navigation" aria-label="빠른 상담">
-      <a className="jt-mcta__btn" href={`tel:${D.phone}`} onClick={() => window.gtag && window.gtag('event', 'mcta_call')}>
+      <a className="jt-mcta__btn" href={`tel:${D.phone}`} onClick={() => { window.gtag && window.gtag('event', 'mcta_call'); window.jtTrackCta('call', 'sticky'); }}>
         <span className="jt-mcta__ico" aria-hidden="true">{Icon ? <Icon name="phone" /> : '☏'}</span>
         <span>전화</span>
       </a>
-      <a className="jt-mcta__btn" href={D.kakaoChatUrl} target="_blank" rel="noopener" onClick={() => window.gtag && window.gtag('event', 'mcta_kakao')}>
+      <a className="jt-mcta__btn" href={D.kakaoChatUrl} target="_blank" rel="noopener" onClick={() => { window.gtag && window.gtag('event', 'mcta_kakao'); window.jtTrackCta('kakao', 'sticky'); }}>
         <span className="jt-mcta__ico" aria-hidden="true">{Icon ? <Icon name="chat" /> : '💬'}</span>
         <span>카톡</span>
       </a>
-      <button className="jt-mcta__btn jt-mcta__btn--primary" onClick={() => { if (window.gtag) window.gtag('event', 'mcta_booking'); setRoute('booking'); }}>
+      <button className="jt-mcta__btn jt-mcta__btn--primary" onClick={() => { if (window.gtag) window.gtag('event', 'mcta_booking'); window.jtTrackCta('booking', 'sticky'); setRoute('booking'); }}>
         <span>상담 예약 →</span>
       </button>
     </div>
@@ -225,8 +241,8 @@ function JTFooter({ setRoute }) {
           <div className="jt-footer__addr">
             {D.address}<br />
             {D.representative && <>대표 {D.representative} · 사업자등록번호 {D.businessNumber}<br /></>}
-            T. <a href={`tel:${D.phone}`}>{D.phone}</a><br />
-            E. <a href={`mailto:${D.email}`}>{D.email}</a>
+            T. <a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'footer')}>{D.phone}</a><br />
+            E. <a href={`mailto:${D.email}`} onClick={() => window.jtTrackCta('email', 'footer')}>{D.email}</a>
           </div>
         </div>
         <div className="jt-footer__col">
@@ -246,9 +262,9 @@ function JTFooter({ setRoute }) {
         </div>
         <div className="jt-footer__col">
           <h4>Contact</h4>
-          <a onClick={() => setRoute('booking')}>상담 예약</a>
+          <a onClick={() => { window.jtTrackCta('booking', 'footer'); setRoute('booking'); }}>상담 예약</a>
           <a onClick={() => setRoute('contact')}>오시는 길</a>
-          <a href={`tel:${D.phone}`}>전화 문의</a>
+          <a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'footer')}>전화 문의</a>
         </div>
       </div>
       <div className="jt-footer__bar">

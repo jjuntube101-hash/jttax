@@ -18,6 +18,23 @@
   <meta name="twitter:description" content="집·부동산을 살 때(매매·증여·상속·신축) 내는 취득세를 계산합니다. 다주택 중과, 조정대상지역, 생애최초 감면, 농어촌특별세·지방교육세까지 반영.">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"취득세 계산기","url":"https://www.jttax.co.kr/calculators/acquisition-tax.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"provider":{"@type":"Organization","name":"제이티 세무법인","url":"https://www.jttax.co.kr"},"description":"집·부동산을 살 때(매매·증여·상속·신축) 내는 취득세를 계산합니다. 다주택 중과, 조정대상지역, 생애최초 감면, 농어촌특별세·지방교육세까지 반영."}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"집값에 따라 취득세율이 다른가요?","acceptedAnswer":{"@type":"Answer","text":"주택 매매는 가격 구간별로 1~3%의 기본세율이 적용됩니다. 여기에 주택 수·지역에 따른 중과, 생애최초 감면 등이 더해져 최종 세액이 정해집니다."}},{"@type":"Question","name":"2주택부터 무조건 중과인가요?","acceptedAnswer":{"@type":"Answer","text":"주택 수와 조정대상지역 여부에 따라 다릅니다. 비조정지역이거나 일시적 2주택 등 사정에 따라 중과가 적용되지 않을 수 있으므로 계산기로 확인하세요."}},{"@type":"Question","name":"생애최초 감면은 누가 받나요?","acceptedAnswer":{"@type":"Answer","text":"본인과 세대원이 과거 주택을 소유한 적이 없는 등 요건을 충족하면 감면 대상이 될 수 있습니다. 가격·면적 등 세부 요건이 있어, 해당 여부는 계산기와 상담으로 확인하는 것이 정확합니다."}},{"@type":"Question","name":"증여로 받은 부동산도 취득세가 있나요?","acceptedAnswer":{"@type":"Answer","text":"증여·상속으로 부동산을 취득해도 취득세가 부과되며, 매매와는 다른 세율이 적용됩니다. 증여 취득세는 조정대상지역·시가표준액에 따라 중과될 수 있습니다."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.jttax.co.kr/"},{"@type":"ListItem","position":2,"name":"세금 계산기","item":"https://www.jttax.co.kr/calculators/"},{"@type":"ListItem","position":3,"name":"취득세 계산기","item":"https://www.jttax.co.kr/calculators/acquisition-tax.html"}]}</script>
@@ -63,7 +80,7 @@
 
     <div class="jt-cc-cta">
       <a href="/#/report/acquisition" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline">세무사 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
     <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
 
@@ -144,8 +161,8 @@
     </div>
 
     <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary">상담 예약 →</a>
-      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener">카톡 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
+      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_bottom')">카톡 상담</a>
     </div>
   </main>
 

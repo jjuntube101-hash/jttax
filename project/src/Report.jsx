@@ -79,10 +79,10 @@ function JTReportCta({ setRoute }) {
         <p>정확한 검토는 JT 세무사와 20분 상담에서.</p>
       </div>
       <div className="jt-report-cta__btns">
-        <button className="jt-btn jt-btn--primary" onClick={() => setRoute && setRoute('booking')}>
+        <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'report_result'); setRoute && setRoute('booking'); }}>
           상담 예약 <span className="jt-arrow">→</span>
         </button>
-        <a className="jt-btn jt-btn--ghost" href={window.jtKakaoUrl()} target="_blank" rel="noopener">
+        <a className="jt-btn jt-btn--ghost" href={window.jtKakaoUrl()} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'report_result')}>
           카톡 상담
         </a>
       </div>
@@ -174,7 +174,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
           <div className="jt-report-grid__head reveal">
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 14px', borderRadius: 999, background: 'rgba(176,123,58,.14)', border: '1px solid rgba(176,123,58,.5)', color: '#8a6224', fontSize: 12.5, fontWeight: 800, letterSpacing: '.04em', marginBottom: 14 }}>★ JT 절세 전략 도구 · 프리미엄</div>
             <h2>단일 계산을 넘어, 「가장 유리한 길」을 찾습니다</h2>
-            <p>증여·양도·상속·취득세를 <strong style={{ color: '#8a6224' }}>한 번에 비교·최적화</strong> — 다른 곳에서 못 하는 멀티세목 전략입니다. 숫자는 무료로 보여드리고, 「안전하게 절세하는 실제 전략」은 국세청 출신 세무사가 직접 설계합니다.</p>
+            <p>증여·양도·상속·취득세를 <strong style={{ color: '#8a6224' }}>한 번에 비교·최적화</strong> — 여러 세목을 함께 설계하는 멀티세목 전략입니다. 숫자는 무료로 보여드리고, 「안전하게 절세하는 실제 전략」은 국세청 출신 세무사가 직접 설계합니다.</p>
           </div>
           <div className="jt-report-live-grid">
             {premium.map((r, i) => (
@@ -301,7 +301,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
           <h2 className="reveal jt-display-h2">리포트 공개 전, 먼저 상담받으시겠어요?</h2>
           <p className="reveal">前 송파세무서장 회장과 대표세무사가 직접 사안을 살핍니다.</p>
           <div className="jt-report-cta-band__btns reveal">
-            <button className="jt-btn jt-btn--primary" onClick={() => setRoute('booking')}>상담 예약 <span className="jt-arrow">→</span></button>
+            <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'report_hub'); setRoute('booking'); }}>상담 예약 <span className="jt-arrow">→</span></button>
             <button className="jt-btn jt-btn--ghost" onClick={() => setRoute('services')}>업무분야 보기</button>
           </div>
         </div>

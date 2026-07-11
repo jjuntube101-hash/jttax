@@ -40,6 +40,7 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
         <div style={{display: 'flex', gap: 10, flexWrap: 'wrap'}}>
           <button className="jt-btn jt-btn--onDark" onClick={() => {
             if (window.gtag) window.gtag('event', 'report_cta_banner_booking', { urgent });
+            window.jtTrackCta('booking', 'report_banner', { urgent });
             setRoute && setRoute('booking');
           }}>
             무료 15분 검토 예약 →
@@ -47,6 +48,7 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
           <a className="jt-btn jt-btn--ghostOnDark" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
             onClick={() => {
               if (window.gtag) window.gtag('event', 'report_cta_banner_kakao', { urgent });
+              window.jtTrackCta('kakao', 'report_banner', { urgent });
               // ① 결과 요약을 클립보드에 복사 (고객이 카톡 채팅창에 붙여넣기)
               try { if (kakaoSummary && navigator.clipboard) navigator.clipboard.writeText(kakaoSummary).catch(function(){}); } catch (_e) {}
               // ② 담당 세무사에게 고객 입력·결과·분석 자동 전송 (연락처 미수집 — 카톡으로 응대)
@@ -308,6 +310,7 @@ function JTConvertTimeSlots({ setRoute, urgent }) {
                 <button key={ti} className="jt-btn jt-btn--outline" style={{padding: '8px 14px', fontSize: 13, borderRadius: 0}}
                   onClick={() => {
                     if (window.gtag) window.gtag('event', 'report_cta_slot_click', { slot: `${d.day} ${t}` });
+                    window.jtTrackCta('booking', 'report_slots');
                     try { sessionStorage.setItem('jt_preferred_slot', `${d.day} ${t}`); } catch(_){}
                     setRoute && setRoute('booking');
                   }}>

@@ -18,6 +18,23 @@
   <meta name="twitter:description" content="일반·간이과세자의 매출·매입만 넣으면 낼 부가가치세(또는 환급액)를 검증 엔진으로 바로 계산합니다. 매입세액·신용카드 공제와 신고기한, 간이과세 납부면제까지 반영합니다.">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"부가가치세(VAT) 계산기","url":"https://www.jttax.co.kr/calculators/value-added-tax.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"provider":{"@type":"Organization","name":"제이티 세무법인","url":"https://www.jttax.co.kr"},"description":"일반·간이과세자의 매출·매입만 넣으면 낼 부가가치세(또는 환급액)를 검증 엔진으로 바로 계산합니다. 매입세액·신용카드 공제와 신고기한, 간이과세 납부면제까지 반영합니다."}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"부가가치세는 언제 신고하나요?","acceptedAnswer":{"@type":"Answer","text":"일반과세자는 1년에 두 번 확정신고합니다. 상반기(1~6월)분은 7월 25일까지, 하반기(7~12월)분은 다음 해 1월 25일까지입니다. 간이과세자는 1년치를 다음 해 1월 25일까지 한 번 신고합니다."}},{"@type":"Question","name":"일반과세자와 간이과세자는 무엇이 다른가요?","acceptedAnswer":{"@type":"Answer","text":"간이과세자는 연 매출이 일정 기준 미만인 소규모 사업자로, 업종별 부가가치율을 적용하는 간편한 방식으로 계산하고 환급이 없습니다. 일반과세자는 매출세액에서 매입세액을 빼서 계산하며 매입이 많으면 환급도 가능합니다."}},{"@type":"Question","name":"간이과세자는 세금을 안 내도 되나요?","acceptedAnswer":{"@type":"Answer","text":"1년 공급대가가 4,800만원 미만이면 납부의무가 면제됩니다(부가가치세법 §69). 다만 신고 자체는 해야 합니다. 4,800만원 이상이면 업종별 부가가치율로 계산한 부가세를 냅니다."}},{"@type":"Question","name":"매입세액 공제를 받으려면 어떻게 해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"세금계산서를 받거나 사업용 신용카드로 결제해야 매입세액(매입액의 10%)을 공제받습니다. 간이영수증이나 인건비, 면세 농수산물 매입은 공제 대상이 아닙니다."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.jttax.co.kr/"},{"@type":"ListItem","position":2,"name":"세금 계산기","item":"https://www.jttax.co.kr/calculators/"},{"@type":"ListItem","position":3,"name":"부가가치세(VAT) 계산기","item":"https://www.jttax.co.kr/calculators/value-added-tax.html"}]}</script>
@@ -63,7 +80,7 @@
 
     <div class="jt-cc-cta">
       <a href="/#/report/vat" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline">세무사 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
     <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
 
@@ -146,8 +163,8 @@
     </div>
 
     <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary">상담 예약 →</a>
-      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener">카톡 상담</a>
+      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
+      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_bottom')">카톡 상담</a>
     </div>
   </main>
 

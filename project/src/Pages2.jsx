@@ -30,15 +30,15 @@ function JTContact({ setRoute }) {
               </li>
               <li>
                 <span className="jt-map__key">Phone</span>
-                <span className="jt-map__val"><a href={`tel:${D.phone}`}>{D.phone}</a></span>
+                <span className="jt-map__val"><a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'contact')}>{D.phone}</a></span>
               </li>
               <li>
                 <span className="jt-map__key">Email</span>
-                <span className="jt-map__val"><a href={`mailto:${D.email}`}>{D.email}</a></span>
+                <span className="jt-map__val"><a href={`mailto:${D.email}`} onClick={() => window.jtTrackCta('email', 'contact')}>{D.email}</a></span>
               </li>
               <li>
                 <span className="jt-map__key">KakaoTalk</span>
-                <span className="jt-map__val"><a href={window.jtKakaoUrl()} target="_blank" rel="noopener">{D.kakaoSearchId}</a><br/><small style={{color: 'var(--fg-3)'}}>카카오톡에서 검색 후 채널 추가</small></span>
+                <span className="jt-map__val"><a href={window.jtKakaoUrl()} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'contact')}>{D.kakaoSearchId}</a><br/><small style={{color: 'var(--fg-3)'}}>카카오톡에서 검색 후 채널 추가</small></span>
               </li>
               <li>
                 <span className="jt-map__key">Subway</span>
@@ -54,11 +54,11 @@ function JTContact({ setRoute }) {
               </li>
             </ul>
             <div style={{marginTop: 32, display: 'flex', gap: 12, flexWrap: 'wrap'}}>
-              <button className="jt-btn jt-btn--primary" onClick={() => setRoute('booking')}>
+              <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'contact'); setRoute('booking'); }}>
                 상담 예약 <span className="jt-arrow">→</span>
               </button>
-              <a className="jt-btn jt-btn--outline" href={`tel:${D.phone}`}>전화상담</a>
-              <a className="jt-btn jt-btn--outline" href={window.jtKakaoUrl()} target="_blank" rel="noopener">카톡 상담</a>
+              <a className="jt-btn jt-btn--outline" href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'contact')}>전화상담</a>
+              <a className="jt-btn jt-btn--outline" href={window.jtKakaoUrl()} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'contact')}>카톡 상담</a>
             </div>
             <div style={{marginTop: 20}}>
               <div style={{
@@ -226,7 +226,7 @@ function JTBooking({ setRoute }) {
 
       <section className="jt-section">
         <a className="jt-kakao-cta" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
-          onClick={() => { if (window.gtag) window.gtag('event', 'booking_kakao_top'); }}>
+          onClick={() => { if (window.gtag) window.gtag('event', 'booking_kakao_top'); window.jtTrackCta('kakao', 'booking_top'); }}>
           <span className="jt-kakao-cta__msg">
             <span aria-hidden="true" style={{flexShrink: 0, display: 'inline-flex'}}>{React.createElement(window.JTIcon, { name: 'chat' })}</span>
             <span>폼 작성이 번거로우세요? <b>카카오톡으로 1:1 바로 상담</b>하세요.</span>
@@ -370,7 +370,7 @@ function JTBooking({ setRoute }) {
               <button className="jt-btn jt-btn--primary jt-btn--lg" disabled={!canSubmit || submitting} onClick={submitBooking} style={{opacity: (canSubmit && !submitting) ? 1 : .4, cursor: (canSubmit && !submitting) ? 'pointer' : 'not-allowed', marginLeft: 'auto'}}>
                 {submitting ? '전송 중...' : <>상담 접수 제출 <span className="jt-arrow">→</span></>}
               </button>
-              <a className="jt-btn jt-btn--outline" href={window.jtKakaoUrl()} target="_blank" rel="noopener" style={{flexBasis: '100%', textAlign: 'center', marginTop: 8}}>
+              <a className="jt-btn jt-btn--outline" href={window.jtKakaoUrl()} target="_blank" rel="noopener" style={{flexBasis: '100%', textAlign: 'center', marginTop: 8}} onClick={() => window.jtTrackCta('kakao', 'booking_confirm')}>
                 폼 제출이 번거로우시면 카카오톡으로 바로 문의 →
               </a>
             </div>

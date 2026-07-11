@@ -44,6 +44,7 @@ function JTHero({ setRoute }) {
   const w = typeof window !== 'undefined' ? window.innerWidth : 1200;
   const pick = (s) => {
     if (s.topic) {try {sessionStorage.setItem('jt_preferred_topic', s.topic);} catch (e) {}}
+    window.jtTrackCta('booking', 'hero');
     setRoute('booking');
   };
   return (
@@ -151,7 +152,7 @@ function JTReportHome({ setRoute }) {
         </ol>
         <div className="jt-platform__cta reveal" data-delay="4">
           <button className="jt-btn jt-btn--primary" onClick={() => setRoute('report')}>계산기 보러가기 <span className="jt-arrow">→</span></button>
-          <a className="jt-link jt-platform__link" onClick={() => setRoute('booking')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRoute('booking'); } }}>먼저 상담부터 →</a>
+          <a className="jt-link jt-platform__link" onClick={() => { window.jtTrackCta('booking', 'home_report'); setRoute('booking'); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.jtTrackCta('booking', 'home_report'); setRoute('booking'); } }}>먼저 상담부터 →</a>
         </div>
       </div>
     </section>);
@@ -238,7 +239,7 @@ function JTProof({ setRoute }) {
         ※ 본 내용은 공개된 조세심판원 결정·국세청 발표·국세기본법을 교육 목적으로 요약한 참고자료입니다. 법령 개정·사실관계에 따라 결론이 달라질 수 있으며, 특정 납세자에 대한 자문 의견이 아닙니다.
       </p>
       <div className="reveal" style={{ marginTop: 40, display: 'flex', justifyContent: 'flex-end' }}>
-        <a className="jt-link" onClick={() => setRoute('booking')}>내 사안 적용 여부 상담하기 →</a>
+        <a className="jt-link" onClick={() => { window.jtTrackCta('booking', 'proof'); setRoute('booking'); }}>내 사안 적용 여부 상담하기 →</a>
       </div>
     </section>);
 
@@ -253,7 +254,7 @@ function JTCreds() {
         <div className="jt-ident__head reveal">
           <div className="jt-kicker">WHY JT · 우리가 누구인가</div>
           <h2 className="jt-ident__h2">감이 아니라,<br /><em>이력으로</em> 증명합니다.</h2>
-          <p className="jt-ident__lead">대부분의 세무사는 신고를 대행합니다. 제이티는 그 세금을 <b>세 방향에서</b> 다뤄본 사람들입니다 — 집행하고, 가르치고, 설계합니다.</p>
+          <p className="jt-ident__lead">제이티는 세금을 <b>세 방향에서</b> 다뤄본 사람들입니다 — 집행하고, 가르치고, 설계합니다.</p>
         </div>
         <div className="jt-ident__grid">
           <div className="jt-ident__col reveal">
@@ -511,10 +512,10 @@ function JTCta({ setRoute }) {
             세무조사 통지, 상속 개시, 법인 설립, 경정청구 — 시점이 곧 금액이 되는 일입니다. 첫 의사결정을 함께 세우겠습니다. 상담은 무료입니다.
           </p>
           <div className="jt-row jt-row--gap-3">
-            <button className="jt-btn jt-btn--onDark jt-btn--lg" onClick={() => setRoute('booking')}>
+            <button className="jt-btn jt-btn--onDark jt-btn--lg" onClick={() => { window.jtTrackCta('booking', 'cta_band'); setRoute('booking'); }}>
               상담 예약 <span className="jt-arrow">→</span>
             </button>
-            <a className="jt-btn jt-btn--ghostOnDark jt-btn--lg" href={`tel:${window.JT_DATA.firm.phone}`}>
+            <a className="jt-btn jt-btn--ghostOnDark jt-btn--lg" href={`tel:${window.JT_DATA.firm.phone}`} onClick={() => window.jtTrackCta('call', 'cta_band')}>
               T. {window.JT_DATA.firm.phone}
             </a>
           </div>
@@ -570,17 +571,17 @@ function JTChannels({ setRoute }) {
           <h2 className="jt-h2 jt-display-h2">전화가 부담스러우면,<br />카톡·이메일로도 됩니다.</h2>
         </div>
         <div className="jt-channels__grid reveal" data-delay="1">
-          <a className="jt-channels__card" href={`tel:${window.JT_DATA.firm.phone}`}>
+          <a className="jt-channels__card" href={`tel:${window.JT_DATA.firm.phone}`} onClick={() => window.jtTrackCta('call', 'channels')}>
             <div className="jt-channels__label">전화 상담</div>
             <div className="jt-channels__big">{window.JT_DATA.firm.phone}</div>
             <div className="jt-channels__sub">평일 09:00–18:00 · 초기 응답 24h 이내</div>
           </a>
-          <a className="jt-channels__card" href={`mailto:${window.JT_DATA.firm.email}`}>
+          <a className="jt-channels__card" href={`mailto:${window.JT_DATA.firm.email}`} onClick={() => window.jtTrackCta('email', 'channels')}>
             <div className="jt-channels__label">이메일</div>
             <div className="jt-channels__big">{window.JT_DATA.firm.email}</div>
             <div className="jt-channels__sub">자료 첨부 가능 · 영업일 기준 24h 내 회신</div>
           </a>
-          <a className="jt-channels__card" href={window.jtKakaoUrl()} target="_blank" rel="noopener">
+          <a className="jt-channels__card" href={window.jtKakaoUrl()} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'channels')}>
             <div className="jt-channels__label">카카오톡 채널</div>
             <div className="jt-channels__big">{window.JT_DATA.firm.kakaoSearchId}</div>
             <div className="jt-channels__sub">1:1 채팅 상담 · 자료 전송 가능 · 영업일 24h 내 회신</div>
@@ -624,7 +625,7 @@ function JTFaq({ setRoute }) {
       </div>
       <div className="reveal" style={{ marginTop: 36, display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
         <span style={{ color: 'var(--fg-2)', fontSize: 15 }}>더 궁금한 점이 있으신가요?</span>
-        <button className="jt-btn jt-btn--primary" onClick={() => setRoute('booking')}>무료 상담 신청 <span className="jt-arrow">→</span></button>
+        <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'faq'); setRoute('booking'); }}>무료 상담 신청 <span className="jt-arrow">→</span></button>
       </div>
     </section>);
 }
