@@ -30,18 +30,20 @@ const YS_QS = [
     ],
   },
   {
+    // 직원 피드백: 사업형태(개인/법인)를 먼저 물어 흐름을 자연스럽게
+    id: 'entityType', tier: 'quick', section: '사업 형태',
+    q: '개인사업자인가요, 법인인가요?',
+    sub: '개인은 소득세, 법인은 법인세를 감면받습니다. 법인은 대표자가 지배주주이면서 최대주주(최대출자자)여야 「청년창업」으로 인정됩니다(시행령 §5①2호) — 정밀 단계에서 확인합니다.',
+    opts: [['개인', '개인사업자', '소득세 감면'], ['법인', '법인', '법인세 감면']],
+  },
+  {
     id: 'foundingDate', tier: 'quick', section: '창업 시기', dateInput: true,
+    datePlaceholder: '예: 2026-07-01 (숫자 8자리만 입력하면 -가 자동으로 붙어요)',
     q: '언제 창업하셨나요(또는 창업 예정일)?',
     qP: '창업 예정 시기가 대략 언제인가요? (아직 미정이면 건너뛰세요)',
     sub: '창업일이 2027년 12월 31일 이내여야 이 감면을 받을 수 있습니다(조특법 §6①). 또 2025년 12월 31일 이전 창업과 2026년 1월 1일 이후 창업은 감면율 체계가 다릅니다 — 2026년부터는 수도권·인구감소지역을 더 세밀하게 나눠 감면율을 정합니다. 사업자등록일(개인) 또는 법인설립일(법인)을 넣으세요.',
     subP: '아직 안 정하셨어도 괜찮아요. 2027년 12월 31일 이내에 창업하면 감면 대상입니다. 미정이면 건너뛰고 진행하세요 — 언제까지 창업해야 하는지 안내해 드릴게요.',
     optionalP: true,
-  },
-  {
-    id: 'entityType', tier: 'quick', section: '사업 형태',
-    q: '개인사업자인가요, 법인인가요?',
-    sub: '개인은 소득세, 법인은 법인세를 감면받습니다. 법인은 대표자가 지배주주이면서 최대주주(최대출자자)여야 「청년창업」으로 인정됩니다(시행령 §5①2호) — 정밀 단계에서 확인합니다.',
-    opts: [['개인', '개인사업자', '소득세 감면'], ['법인', '법인', '법인세 감면']],
   },
   {
     id: 'birthDate', tier: 'quick', section: '대표자 나이', dateInput: true,
@@ -569,7 +571,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
 
           {cur.dateInput && (
             <div>
-              <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 1996-05-01 (숫자 8자리만 입력하면 자동으로 -가 붙어요)"
+              <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.datePlaceholder || '예: 1996-05-01 (숫자 8자리만 입력하면 자동으로 -가 붙어요)'}
                 value={answers[cur.id] || ''}
                 onChange={e => {
                   let v = e.target.value.replace(/[^0-9]/g, '').slice(0, 8);
