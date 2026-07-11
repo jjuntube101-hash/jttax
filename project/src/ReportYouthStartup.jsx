@@ -538,7 +538,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
 
           <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
             <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); setIndustryMatch(null); setRegionInfo(null); }}>처음부터 다시</button>
-            <button className="jt-btn jt-btn--ghost" onClick={onBack}>← JT 리포트 허브</button>
+            <button className="jt-btn jt-btn--ghost" onClick={onBack}>← 세금 계산기</button>
           </div>
         </JTReportShell>
       </div>

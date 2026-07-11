@@ -115,7 +115,7 @@ function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, 
   return (
     <div className="jt-report-shell">
       <div className="jt-report-shell__head">
-        <button className="jt-report-shell__back" onClick={onBack}>← JT 리포트 허브</button>
+        <button className="jt-report-shell__back" onClick={onBack}>← 세금 계산기</button>
         <div className="jt-report-shell__meta">
           <span className="jt-tag">{tag}</span>
           <span>Step {_stepNo} / {_tot}</span>
@@ -168,14 +168,14 @@ function JTReportHub({ setRoute, setSubRoute }) {
       {/* 히어로 */}
       <section className="jt-section jt-report-hero">
         <div className="jt-container">
-          <div className="jt-eyebrow reveal">JT TAX CORP. · REPORT</div>
+          <div className="jt-eyebrow reveal">JT TAX CORP. · 세금 계산기</div>
           <h1 className="jt-report-hero__title reveal">
             <span>내</span> <span>세금,</span>
             <br/>
             <span className="is-accent">직접 계산해 보세요.</span>
           </h1>
           <p className="jt-report-hero__sub reveal">
-            양도·상속·증여·취득·재산·종부의 부동산 세금부터 <strong>종합소득세·실수령·법인 전환까지</strong> — 검증된 계산 엔진으로 바로 계산합니다.<br/>
+            양도·상속·증여·취득·재산·종부의 부동산 세금부터 <strong>종합소득세·실수령·법인 전환·청년창업 감면 진단까지</strong> — 검증된 계산 엔진으로 바로 계산합니다.<br/>
             국세 행정 39년의 회장과 세무사가 직접 설계했습니다.
           </p>
           <div className="jt-report-hero__meta reveal">

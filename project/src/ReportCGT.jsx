@@ -1119,7 +1119,7 @@ cautions 3개, saving_ideas 2~3개.`;
     return (
       <div className="jt-container jt-report-result">
         <div className="jt-report-result__head">
-          <button className="jt-report-shell__back" onClick={onBack}>← JT 리포트 허브</button>
+          <button className="jt-report-shell__back" onClick={onBack}>← 세금 계산기</button>
           <div className="jt-report-result__meta">
             <span className="jt-tag">{calc.precise ? '정밀계산' : '간이추정'}</span>
             <span>양도소득세 간이 계산 · {new Date().toLocaleDateString('ko-KR')}</span>
