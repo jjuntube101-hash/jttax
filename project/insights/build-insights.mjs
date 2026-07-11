@@ -72,6 +72,8 @@ async function loadArticles() {
   const files = (await readdir(INSIGHTS_SRC))
     .filter(f => f.endsWith('.md') && !f.startsWith('README'));
   const arts = [];
+  const skipped = [];          // ① title/date 파싱 실패 파일
+  const seenSlugs = new Map(); // ② slug → 파일명 (중복 감지)
   for (const f of files) {
     // 줄바꿈 정규화(CRLF/CR → LF): Windows(core.autocrlf=true) 워킹트리에서
     // 체크아웃된 .md 는 CRLF 라 프론트매터·본문 파싱이 어긋난다. 여기서 한 번에 흡수해
@@ -81,10 +83,18 @@ async function loadArticles() {
     const { meta, body } = parseFrontmatter(src);
     if (!meta.title || !meta.date) {
       console.warn(`[skip] ${f} — 프론트매터에 title/date 누락`);
+      skipped.push(f);
       continue;
     }
+    const slug = meta.slug || f.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '');
+    // ② slug 충돌 방지: 같은 slug 두 글은 /insights/<slug>.html 을 서로 덮어써
+    //    한 글이 조용히 유실된다. 충돌 시 빌드를 실패시킨다.
+    if (seenSlugs.has(slug)) {
+      throw new Error(`slug 충돌: '${slug}' 가 '${seenSlugs.get(slug)}' 와 '${f}' 에서 중복됩니다. 한 글의 /insights/${slug}.html 이 덮어써지니 파일명 또는 slug 프론트매터를 구분하세요.`);
+    }
+    seenSlugs.set(slug, f);
     arts.push({
-      slug: meta.slug || f.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, ''),
+      slug,
       title: meta.title,
       date: meta.date.replace(/-/g, '.'),
       dateISO: meta.date,
@@ -95,6 +105,11 @@ async function loadArticles() {
       html: mdToHtml(body),
       filename: f,
     });
+  }
+  // ① 부분 skip 침묵 실패 방지: insights/ 의 .md 는 모두 발행 가능해야 한다.
+  //    하나라도 파싱 실패(그 글이 조용히 누락)하면 나머지만 성공하지 않고 빌드를 실패시킨다.
+  if (skipped.length > 0) {
+    throw new Error(`프론트매터(title/date) 파싱 실패 ${skipped.length}건 — 해당 글이 발행에서 누락됩니다: ${skipped.join(', ')}`);
   }
   arts.sort((a, b) => b.dateISO.localeCompare(a.dateISO));
   return arts;
@@ -107,7 +122,10 @@ async function updateDataJsx(arts) {
     `    { slug: ${JSON.stringify(a.slug)}, tag: ${JSON.stringify(a.tag)}, date: ${JSON.stringify(a.date)}, title: ${JSON.stringify(a.title)}, excerpt: ${JSON.stringify(a.excerpt)} }`
   ).join(',\n');
   const block = `  // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)\n  insights: [\n${jsonItems}\n  ],`;
-  const re = /\/\/ 인사이트 칼럼[\s\S]*?insights:\s*\[[\s\S]*?\],/;
+  // ④ 배열 종료 앵커를 '\n  ],'(개행+2칸)로 고정한다. 종전 '[\s\S]*?\],' 는 title/excerpt
+  //    안의 ']' 바로 뒤 ','(예: "취득세[신설], …")에서 비탐욕 매칭이 조기 종료해 Data.jsx 를
+  //    손상시켰다. 항목 값은 한 줄(내부 개행 없음)이라 '\n  ],' 는 배열 종료에만 매칭된다.
+  const re = /\/\/ 인사이트 칼럼[\s\S]*?insights:\s*\[[\s\S]*?\n {2}\],/;
   if (!re.test(src)) {
     // 침묵 실패 금지: 여기서 return 하면 Data.jsx 를 못 바꿨는데도 빌드가 "성공"으로 끝난다.
     // throw 로 올려 main 의 try/catch 가 exit 1 로 실패 처리하게 한다.
