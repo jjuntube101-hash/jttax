@@ -134,6 +134,14 @@ function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, 
 }
 window.JTReportShell = JTReportShell;
 
+// ============ 세목 약자 배지 (Pretendard 타이포 · 모노톤 — 손그림 아이콘 대체) ============
+const JT_ABBR = {
+  cgt: '양도', gift: '증여', inheritance: '상속', acquisition: '취득', property: '재산',
+  comprehensive: '종부', income: '종소', vat: '부가', insurance: '급여', corporate: '법인',
+  youthstartup: '창업', compare: '비교', burden: '부담', appeal: '경정',
+};
+window.JT_ABBR = JT_ABBR;
+
 // ============ 허브 랜딩 ============
 function JTReportHub({ setRoute, setSubRoute }) {
   // ★ JT 절세 전략 도구 (프리미엄·핵심 차별화) — 여러 세금을 엮어 「가장 유리한 길」 탐색 + 세무사 상담 연계
@@ -144,19 +152,19 @@ function JTReportHub({ setRoute, setSubRoute }) {
   ];
   // 무료 부동산 세금 계산기 (단일 세목) — 동등 그리드
   const live = [
-    { kr: '양도소득세', cat: '양도', d: '집·부동산을 팔 때 — 1세대1주택 비과세·일시적2주택·입주권·장기보유특별공제·다주택 중과까지 검증 엔진으로 계산합니다.', sub: 'cgt' },
-    { kr: '증여세', cat: '증여', d: '관계·금액·부담부증여(빚도 함께 넘기는 증여)까지. 부동산은 주소로 공시가격을 조회합니다.', sub: 'gift' },
-    { kr: '상속세', cat: '상속', d: '배우자·자녀 공제, 채무·장례비·금융재산공제와 10년 내 사전증여 합산까지 계산합니다.', sub: 'inheritance' },
-    { kr: '취득세', cat: '취득', d: '살 때(매매·증여·상속·신축) — 다주택 중과·조정지역·생애최초 감면·농특세·지방교육세까지.', sub: 'acquisition' },
-    { kr: '재산세', cat: '보유', d: '집·건물·토지 보유 시 매년 — 공시가격·1세대1주택 특례·도시지역분·세부담 상한까지.', sub: 'property' },
-    { kr: '종합부동산세', cat: '보유', d: '6월 1일 기준 주택 공시 합계 — 1세대1주택 12억·연령·보유 세액공제·다주택 중과·재산세 공제까지.', sub: 'comprehensive' },
+    { kr: '양도소득세', cat: '양도', minutes: 5, questions: 6, d: '집·부동산을 팔 때 — 1세대1주택 비과세·일시적2주택·입주권·장기보유특별공제·다주택 중과까지 검증 엔진으로 계산합니다.', sub: 'cgt' },
+    { kr: '증여세', cat: '증여', minutes: 4, questions: 6, d: '관계·금액·부담부증여(빚도 함께 넘기는 증여)까지. 부동산은 주소로 공시가격을 조회합니다.', sub: 'gift' },
+    { kr: '상속세', cat: '상속', minutes: 5, questions: 7, d: '배우자·자녀 공제, 채무·장례비·금융재산공제와 10년 내 사전증여 합산까지 계산합니다.', sub: 'inheritance' },
+    { kr: '취득세', cat: '취득', minutes: 3, questions: 5, d: '살 때(매매·증여·상속·신축) — 다주택 중과·조정지역·생애최초 감면·농특세·지방교육세까지.', sub: 'acquisition' },
+    { kr: '재산세', cat: '보유', minutes: 3, questions: 4, d: '집·건물·토지 보유 시 매년 — 공시가격·1세대1주택 특례·도시지역분·세부담 상한까지.', sub: 'property' },
+    { kr: '종합부동산세', cat: '보유', minutes: 4, questions: 5, d: '6월 1일 기준 주택 공시 합계 — 1세대1주택 12억·연령·보유 세액공제·다주택 중과·재산세 공제까지.', sub: 'comprehensive' },
   ];
   // 사업자·법인 도구 (라이브) — 부동산 6종과 별도 분리
   const bizTools = [
-    { kr: '종합소득세 계산기', cat: '종소세', d: '사업·프리랜서·근로 소득을 합산해 내 종합소득세를 검증 엔진으로 계산합니다. 인적공제·자녀·연금저축 세액공제까지 반영해요.', sub: 'income', cta: '계산하기' },
-    { kr: '부가가치세 계산기', cat: '부가세', d: '일반·간이과세자 매출·매입만 넣으면 낼 부가세(또는 환급액)를 바로 계산합니다. 신용카드·매입세액 공제와 신고기한까지 안내해요.', sub: 'vat', cta: '계산하기' },
-    { kr: '4대보험·실수령 계산기', cat: '급여', d: '세전 월 급여만 넣으면 국민연금·건강보험·장기요양·고용보험과 세금을 떼고 실수령액을 즉시 계산합니다(2026 요율).', sub: 'insurance', cta: '계산하기' },
-    { kr: '법인 전환 시뮬레이터', cat: '법인', d: '개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세) 세부담을 검증 엔진으로 바로 비교합니다.', sub: 'corporate', cta: '비교하기' },
+    { kr: '종합소득세 계산기', cat: '종소세', minutes: 5, questions: 5, d: '사업·프리랜서·근로 소득을 합산해 내 종합소득세를 검증 엔진으로 계산합니다. 인적공제·자녀·연금저축 세액공제까지 반영해요.', sub: 'income', cta: '계산하기' },
+    { kr: '부가가치세 계산기', cat: '부가세', minutes: 3, questions: 4, d: '일반·간이과세자 매출·매입만 넣으면 낼 부가세(또는 환급액)를 바로 계산합니다. 신용카드·매입세액 공제와 신고기한까지 안내해요.', sub: 'vat', cta: '계산하기' },
+    { kr: '4대보험·실수령 계산기', cat: '급여', minutes: 2, questions: 3, d: '세전 월 급여만 넣으면 국민연금·건강보험·장기요양·고용보험과 세금을 떼고 실수령액을 즉시 계산합니다(2026 요율).', sub: 'insurance', cta: '계산하기' },
+    { kr: '법인 전환 시뮬레이터', cat: '법인', minutes: 4, questions: 4, d: '개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세) 세부담을 검증 엔진으로 바로 비교합니다.', sub: 'corporate', cta: '비교하기' },
   ];
   // 곧 열릴 도구
   const soon = [
@@ -205,14 +213,15 @@ function JTReportHub({ setRoute, setSubRoute }) {
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSubRoute(r.sub); } }}
               >
                 <div className="jt-report-live__top">
-                  <span style={{ color: '#8a6224', fontWeight: 800, fontSize: 12, letterSpacing: '.05em' }}>절세 전략</span>
+                  <span className="jt-report-live__icon" style={{ background: '#c9a25e', color: '#fff' }}>{JT_ABBR[r.sub]}</span>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#8a6224', fontSize: 11.5, fontWeight: 700 }}><span style={{ width: 6, height: 6, borderRadius: 999, background: '#c9a25e' }} />세무사 상담 연계</span>
                 </div>
+                <div style={{ color: '#8a6224', fontWeight: 800, fontSize: 11.5, letterSpacing: '.05em', marginBottom: 6 }}>절세 전략</div>
                 <h3>{r.kr}</h3>
                 <div style={{ color: '#a07a32', fontSize: 12.5, fontWeight: 700, marginTop: -4, marginBottom: 8 }}>{r.tagline}</div>
                 <p className="jt-report-live__d">{r.d}</p>
                 <div className="jt-report-live__foot">
-                  <span className="jt-report-live__cta" style={{ color: '#8a6224' }}>전략 보기 <span className="jt-arrow">→</span></span>
+                  <span className="jt-report-live__cta" style={{ background: '#b8863a', color: '#fff' }}>전략 보기 <span className="jt-arrow">→</span></span>
                 </div>
               </article>
             ))}
@@ -238,11 +247,15 @@ function JTReportHub({ setRoute, setSubRoute }) {
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSubRoute(r.sub); } }}
               >
                 <div className="jt-report-live__top">
-                  <span className="jt-report-live__cat">{r.cat}</span>
+                  <span className="jt-report-live__icon">{JT_ABBR[r.sub]}</span>
                   <span className="jt-report-live__badge"><span className="jt-report-live__dot" aria-hidden="true"></span>LIVE</span>
                 </div>
                 <h3>{r.kr} 계산기</h3>
                 <p className="jt-report-live__d">{r.d}</p>
+                <div className="jt-report-live__meta">
+                  <span className="jt-report-live__chip">약 {r.minutes}분</span>
+                  <span className="jt-report-live__chip">{r.questions}문항</span>
+                </div>
                 <div className="jt-report-live__foot">
                   <span className="jt-report-live__cta">계산하기 <span className="jt-arrow">→</span></span>
                 </div>
@@ -270,11 +283,15 @@ function JTReportHub({ setRoute, setSubRoute }) {
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSubRoute(r.sub); } }}
               >
                 <div className="jt-report-live__top">
-                  <span className="jt-report-live__cat">{r.cat}</span>
+                  <span className="jt-report-live__icon">{JT_ABBR[r.sub]}</span>
                   <span className="jt-report-live__badge"><span className="jt-report-live__dot" aria-hidden="true"></span>LIVE</span>
                 </div>
                 <h3>{r.kr}</h3>
                 <p className="jt-report-live__d">{r.d}</p>
+                <div className="jt-report-live__meta">
+                  <span className="jt-report-live__chip">약 {r.minutes}분</span>
+                  <span className="jt-report-live__chip">{r.questions}문항</span>
+                </div>
                 <div className="jt-report-live__foot">
                   <span className="jt-report-live__cta">{r.cta || '계산하기'} <span className="jt-arrow">→</span></span>
                 </div>
