@@ -86,6 +86,14 @@ const YS_QS = [
     opts: [['yes', '네, 최대주주이자 지배주주', '청년율 적용'], ['no', '아니오 (최대주주 아님)', '일반율'], ['unknown', '잘 모르겠어요', '확인 시 청년율 가능']],
   },
   {
+    // 직원 피드백: 법인은 지분율 등 필요내용 추가(상담 참고). 최대주주 판정은 다른 주주 지분과 비교 필요.
+    id: 'ownershipPct', tier: 'detail', section: '법인 지분율', numeric: true, optional: true,
+    q: '대표자의 지분율(출자비율)은 몇 %인가요? (선택)',
+    sub: '청년창업 인정은 대표자가 지배주주이면서 「최대주주(최대출자자)」여야 합니다(시행령 §5①2호). 지분율만으로 최대주주가 확정되진 않지만(다른 주주 지분과 비교 필요), 50%를 넘으면 대개 최대주주입니다. 정확한 판정은 주주명부로 상담에서 확인합니다.',
+    showIf: (a) => a.entityType === '법인',
+    placeholder: '예: 60',
+  },
+  {
     // 직원 피드백 #1·#2: 병역을 1차(quick)로 이동(청년판정에 직접 영향) + 입대일·전역일로 개월 자동계산
     id: 'military', tier: 'quick', section: '병역', custom: 'military', optional: true, optionalP: true,
     q: '병역을 이행하셨나요? (선택)',
@@ -227,6 +235,7 @@ function buildYSDetail(a, calc, industryMatch, region) {
   const L = ['■ 고객 입력 정보'];
   L.push('  · 창업일: ' + (a.foundingDate || '-'));
   L.push('  · 사업형태: ' + (a.entityType || '-'));
+  if (a.entityType === '법인' && Number(a.ownershipPct) > 0) L.push('  · 대표 지분율: ' + a.ownershipPct + '% (최대주주 여부는 주주명부 확인)');
   L.push('  · 대표자 생년월일: ' + (a.birthDate || '-') + ((a.enlistDate && a.dischargeDate) ? ` (병역 ${a.enlistDate}~${a.dischargeDate})` : (a.militaryYears ? ` (병역 ${a.militaryYears}년)` : '')));
   if (industryMatch) L.push('  · 업종: ' + industryMatch.name + ' (KSIC ' + industryMatch.ksic5 + ', ' + (industryMatch.status === 'eligible' ? '감면대상' : industryMatch.status === 'review' ? '확인필요' : '대상아님') + ')');
   if (region) L.push('  · 창업지역: ' + (region.sigungu || '') + ' [' + calc.area + ']');
@@ -427,9 +436,9 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                 </div>
               ) : (
                 <div>
-                  <div style={{ fontSize: 14, opacity: 0.75, marginBottom: 2 }}>요건을 갖춰 창업하면 최대</div>
-                  <div style={{ fontSize: 44, fontWeight: 800, color: meta.color, lineHeight: 1.1 }}>{calc.best_case_rate}%</div>
-                  <div style={{ fontSize: 13.5, opacity: 0.82, marginTop: 4 }}>청년 · 감면대상 업종 · 수도권 밖(또는 인구감소지역)에서 창업 시, 5년간 감면. 아래에서 지역별 감면율을 확인하세요.</div>
+                  <div style={{ display: 'inline-block', padding: '4px 14px', borderRadius: 999, background: meta.color, color: '#fff', fontWeight: 800, fontSize: 13, marginBottom: 8 }}>💡 요건을 갖춰 창업하면 최대</div>
+                  <div style={{ fontSize: 52, fontWeight: 800, color: meta.color, lineHeight: 1.05 }}>{calc.best_case_rate}%</div>
+                  <div style={{ fontSize: 14, opacity: 0.9, marginTop: 6, lineHeight: 1.6 }}><strong>청년 · 감면대상 업종 · 수도권 밖(또는 인구감소지역)에서 창업</strong>하면 5년간 이만큼 감면받습니다. 아래에서 지역별·조건별로 얼마인지 확인하고, 「어떻게 하면 최대로 받는지」 상담으로 설계하세요.</div>
                 </div>
               )
             ) : !isInelig ? (
@@ -439,6 +448,9 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                 <div style={{ fontSize: 13.5, opacity: 0.8, marginTop: 4 }}>
                   {calc.is_youth ? '청년창업중소기업' : (calc.small_scale_applied ? '소규모 창업 특례(§6⑥)' : '일반 창업중소기업')} · {calc.area}
                 </div>
+                {!calc.is_youth && !calc.small_scale_applied && (
+                  <div style={{ fontSize: 12.5, opacity: 0.75, marginTop: 6, lineHeight: 1.5 }}>※ 청년이 아니면 일반율입니다. <strong>연 수입금액 8천만원 이하 소규모</strong>로 창업하면 청년과 같은 높은 율(§6⑥)을 받을 수 있어요 — 정밀 단계에서 매출을 넣어 확인하세요.</div>
+                )}
                 {calc.estimated_annual_reduction != null && (
                   <div style={{ marginTop: 10, fontSize: 15 }}>예상 감면액(연) <strong style={{ color: meta.color }}>{formatWon(calc.estimated_annual_reduction)}</strong>{calc.cap_applied ? ' (5억 한도)' : ''}</div>
                 )}
