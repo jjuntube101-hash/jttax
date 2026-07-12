@@ -19,6 +19,19 @@ if (typeof window !== 'undefined' && !window.jtLookupIndustry) {
   };
 }
 
+/* 지역 조회 경량함수 (window.jtLookupRegion) — 주소 → 지역규제만(공시가 생략, 렉 해결). RegionInfo 직접 반환 */
+if (typeof window !== 'undefined' && !window.jtLookupRegion) {
+  window.jtLookupRegion = async function (address) {
+    const base = window.JT_ENGINE_BASE || 'http://127.0.0.1:8000';
+    const res = await fetch(base + '/v1/lookup/region', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address: address || '' }),
+    });
+    if (!res.ok) throw new Error('region ' + res.status);
+    return res.json();   // RegionInfo (sigungu_code·is_overcrowding·overcrowding_uncertain·is_sudogwon·is_depopulation…)
+  };
+}
+
 const YS_QS = [
   {
     id: 'mode', tier: 'quick', section: '시작하기',
@@ -334,8 +347,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     if (!raddr.trim()) return;
     setRbusy(true); setRinfo(null);
     try {
-      const r = await window.jtLookupPublicPrice(raddr.trim(), '공동주택');
-      const reg = r && r.region;
+      const reg = await window.jtLookupRegion(raddr.trim());   // 지역만 경량 조회(공시가 생략 → 렉 해결)
       if (reg && (reg.sigungu_code || reg.sigungu)) {
         setRegionInfo(reg);
         const parts = [];
