@@ -5,8 +5,8 @@ window.JT_DATA = {
   firm: {
     nameKr: '제이티 세무회계',
     nameEn: 'JT TAX',
-    address: '서울특별시 강남구 강남대로 310, 1312호',
-    addressEn: '310 Gangnam-daero, Gangnam-gu, Seoul',
+    address: '서울특별시 강남구 강남대로78길 22, 5층',
+    addressEn: '22 Gangnam-daero 78-gil, Gangnam-gu, Seoul',
     phone: '02-554-6405',
     email: 'jttax@jttax.co.kr',
     domain: 'jttax.co.kr',
@@ -16,8 +16,8 @@ window.JT_DATA = {
     kakaoChatUrl: 'https://pf.kakao.com/_CcxlJG/chat',
     kakaoFriendUrl: 'https://pf.kakao.com/_CcxlJG/friend',
     kakaoMapUrl: 'https://place.map.kakao.com/1776119720',
-    naverMapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20310',
-    googleMapUrl: 'https://www.google.com/maps/search/?api=1&query=%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20310%201312%ED%98%B8',
+    naverMapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C78%EA%B8%B8%2022',
+    googleMapUrl: 'https://www.google.com/maps/search/?api=1&query=%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C78%EA%B8%B8%2022%205%EC%B8%B5',
     businessNumber: '699-10-01720', // 사업자등록번호
     licenseNumber: '',              // 세무사 등록번호 (추후 기재)
     representative: '이현준',        // 대표자 성명
@@ -51,7 +51,7 @@ window.JT_DATA = {
       about:    { title: '회사소개 — 가르치고, 설계한 사람들', desc: '감이 아닌 근거, 말이 아닌 문서로 일하는 세무사무소.' },
       insights: { title: '인사이트 — 실무 해설',                      desc: '세무조사·상속·증여·법인 실무에서 자주 부딪히는 쟁점을 정리합니다.' },
       report:   { title: 'JT 세금 계산기 — 무료 세액 계산·감면 진단',              desc: '양도·증여·상속·취득·재산세·종부세 + 종합소득세·법인전환·4대보험 실수령·청년창업 감면 진단까지, 검증 엔진으로 5분 계산.' },
-      contact:  { title: '오시는 길 — 강남대로 310',                 desc: '강남역·신논현역 도보 5분. 방문 상담은 사전 예약 부탁드립니다.' },
+      contact:  { title: '오시는 길 — 강남대로78길 22',              desc: '강남역 4번출구 도보 2분. 방문 상담은 사전 예약 부탁드립니다.' },
       booking:  { title: '상담 예약 — 24시간 이내 응답',              desc: '담당 세무사가 영업일 기준 24시간 이내에 직접 연락드립니다.' },
       // 계산기별 메타 (해시 #/report/<sub>) — 딥링크·탭 제목·계산기 단위 GA4 측정
       'report:cgt':           { title: '양도소득세 계산기',         desc: '집·부동산을 팔 때. 1세대1주택 비과세·일시적2주택·입주권·장기보유특별공제·다주택 중과까지 검증 엔진으로 계산.' },
