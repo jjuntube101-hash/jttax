@@ -1,10 +1,9 @@
-# 제이티 세무회계 — 홈페이지 준비 중 (2026-07-17~)
-# 크롤링은 계속 허용한다. 색인 제외는 페이지의 <meta name="robots" content="noindex, follow">가 담당.
-# (Disallow로 막으면 크롤러가 noindex를 읽지 못하고, 재오픈 시 재색인이 느려진다.)
-
 User-agent: *
 Allow: /
+Disallow: /customer_simulation.html
+Disallow: /screenshots/
 
+# 네이버·다음·구글 검색엔진 허용
 User-agent: Yeti
 Allow: /
 
@@ -14,4 +13,4 @@ Allow: /
 User-agent: Googlebot
 Allow: /
 
-# Sitemap: 재오픈 시 복원 (현재 준비 중이라 제거)
+Sitemap: https://www.jttax.co.kr/sitemap.xml
