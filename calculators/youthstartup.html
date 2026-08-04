@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
+  <meta charset="utf-8">
+  <title>청년창업 세액감면 계산기 — 대상·감면율 자동 진단 | 제이티 세무회계</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="청년창업중소기업 세액감면 대상·감면율을 업종코드·주소만으로 무료 자동 진단. 만 34세 이하(병역 시 40세)·정해진 18개 업종·수도권 밖 100%·수도권 75%·과밀 50%. 창업 배제사유까지 판정합니다(조특법 §6).">
+  <meta name="keywords" content="청년창업 세액감면 계산기, 창업중소기업 세액감면, 청년창업 감면율, 창업감면 대상, 창업감면 업종, 조세특례제한법 제6조, 청년창업 세금감면">
+  <link rel="canonical" href="https://www.jttax.co.kr/calculators/youthstartup.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="청년창업 세액감면 계산기 — 대상·감면율 자동 진단">
+  <meta property="og:description" content="업종코드·주소만 넣으면 청년창업중소기업 세액감면 가능여부·감면율·창업 배제까지 자동 판정. 5년간 최대 100% 감면.">
+  <meta property="og:url" content="https://www.jttax.co.kr/calculators/youthstartup.html">
+  <meta property="og:image" content="https://www.jttax.co.kr/project/assets/og-image.png">
+  <meta property="og:locale" content="ko_KR">
+  <link rel="icon" href="/project/assets/logo_symbol.png">
+  <link rel="stylesheet" href="/project/src/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "청년창업 세액감면 진단 계산기",
+    "url": "https://www.jttax.co.kr/calculators/youthstartup.html",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+    "provider": { "@type": "Organization", "name": "제이티 세무회계", "url": "https://www.jttax.co.kr/" },
+    "description": "조세특례제한법 제6조 청년창업중소기업 세액감면 대상·감면율을 업종코드·주소로 자동 판정하는 무료 진단 도구."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "청년창업 세액감면 대상은 누구인가요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "창업 당시 만 15~34세(병역 이행 시 그 기간 최대 6년을 빼고 34세 이하, 사실상 만 40세까지)인 대표자가 2027년 12월 31일 이전에 정해진 업종으로 창업한 중소기업입니다. 법인은 대표자가 지배주주이면서 최대주주·최대출자자여야 합니다." } },
+      { "@type": "Question", "name": "청년창업 세액감면율은 얼마인가요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "2026년 이후 창업한 청년창업중소기업은 수도권 밖 또는 수도권 인구감소지역 100%, 수도권(과밀억제권역 제외) 75%, 수도권과밀억제권역 50%를 5년간 감면받습니다. 청년이 아니면 일반 창업중소기업으로 50·25·0%이며, 연 수입금액 1억 4백만원 이하 소규모는 청년과 같은 율을 받습니다." } },
+      { "@type": "Question", "name": "어떤 업종이 감면 대상인가요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "제조·건설·정보통신·통신판매(온라인쇼핑몰)·음식점·전문과학기술서비스·물류·사회복지 등 조특법 제6조 3항의 18개 업종입니다. 부동산임대업, 전문직(변호사·세무사 등), 유흥주점·노래방·게임장, 카페, 1인미디어·프리랜서 등 인적용역은 제외됩니다." } },
+      { "@type": "Question", "name": "창업으로 인정되지 않는 경우는 무엇인가요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "기존 사업자등록에 업종을 추가하는 경우(세분류가 달라도 제외), 개인사업을 법인으로 전환, 폐업 후 같은 종류 사업 재개, 다른 사람 사업의 승계·자산인수(30% 초과)는 창업으로 보지 않아 감면 대상이 아닙니다(조특법 제6조 10항)." } }
+    ]
+  }
+  </script>
+</head>
+<body style="background:#fff;color:#0B0B0F;">
+  <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
+      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무회계"/> 제이티 세무회계
+    </a>
+    <span style="margin-left:auto;font-size:13px;color:#666;"><a href="/#report" style="color:inherit;">← 세금 계산기</a></span>
+  </header>
+
+  <main style="max-width:760px;margin:0 auto;padding:56px 24px;">
+    <div style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a6224;font-weight:700;">JT 절세 전략 도구 · 무료</div>
+    <h1 style="font-size:32px;line-height:1.25;margin:12px 0 16px;letter-spacing:-0.02em;">청년창업 세액감면 계산기<br><span style="color:#2a6d4f;">5년간 최대 100% 감면, 내가 대상일까?</span></h1>
+    <p style="font-size:18px;color:#5a5a5a;line-height:1.7;margin-bottom:28px;">업종코드나 업종명, 창업 지역 주소만 넣으면 <strong>청년창업중소기업 세액감면</strong>(조세특례제한법 §6) 가능여부·감면율·창업 배제사유까지 자동으로 판정합니다. 아직 창업 전이면 「어떻게 하면 감면받는지」까지 설계해 드립니다.</p>
+
+    <div style="margin:0 0 40px;">
+      <a href="/#/report/youthstartup" class="jt-btn jt-btn--primary" style="font-size:16px;padding:14px 28px;">청년창업 세액감면 진단하기 →</a>
+    </div>
+
+    <section style="border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:24px;background:#FAFAF8;margin-bottom:40px;">
+      <h2 style="font-size:18px;margin:0 0 14px;">한눈에 보는 감면율 (2026년 이후 창업 · 청년)</h2>
+      <ul style="margin:0;padding-left:18px;line-height:1.9;color:#333;">
+        <li>수도권 밖 · 수도권 인구감소지역(가평·연천·강화·옹진) — <strong style="color:#2a6d4f;">100%</strong></li>
+        <li>수도권 (과밀억제권역 제외) — <strong>75%</strong></li>
+        <li>수도권 과밀억제권역(서울 전역 등) — <strong>50%</strong></li>
+      </ul>
+      <p style="font-size:13.5px;color:#666;margin:14px 0 0;">감면 기간 5년. 청년이 아니어도 연 수입 1억 4백만원 이하 소규모는 청년과 같은 율(§6⑥).</p>
+    </section>
+
+    <h2 style="font-size:22px;margin:0 0 20px;">자주 묻는 질문</h2>
+    <div style="display:flex;flex-direction:column;gap:18px;margin-bottom:44px;">
+      <div><h3 style="font-size:16px;margin:0 0 6px;">청년창업 세액감면 대상은 누구인가요?</h3><p style="margin:0;color:#444;line-height:1.7;">창업 당시 만 15~34세(병역 이행 시 최대 40세)인 대표자가 2027년 12월 31일 이전에 정해진 업종으로 창업한 중소기업입니다. 법인은 대표자가 지배주주이면서 최대주주·최대출자자여야 합니다.</p></div>
+      <div><h3 style="font-size:16px;margin:0 0 6px;">감면율은 얼마인가요?</h3><p style="margin:0;color:#444;line-height:1.7;">2026년 이후 창업 청년창업중소기업은 수도권 밖·인구감소지역 100%, 수도권 75%, 과밀억제권역 50%를 5년간 감면받습니다.</p></div>
+      <div><h3 style="font-size:16px;margin:0 0 6px;">어떤 업종이 감면 대상인가요?</h3><p style="margin:0;color:#444;line-height:1.7;">제조·건설·정보통신·통신판매·음식점·전문과학기술·물류·사회복지 등 18개 업종입니다. 부동산임대·전문직·유흥주점·노래방·카페·1인미디어 등 인적용역은 제외됩니다.</p></div>
+      <div><h3 style="font-size:16px;margin:0 0 6px;">창업으로 인정 안 되는 경우는?</h3><p style="margin:0;color:#444;line-height:1.7;">기존 사업자에 업종추가(세분류 달라도 제외), 법인전환, 폐업 후 같은 종류 재개, 사업 승계·자산인수(30% 초과)는 창업이 아닙니다(§6⑩).</p></div>
+    </div>
+
+    <p style="color:#5a5a5a;line-height:1.7;">더 자세한 내용은 <a href="/insights/youth-startup-tax-reduction-2026.html" rel="noopener" style="color:#2a6d4f;font-weight:600;">청년창업 세액감면 2026 총정리</a>에서 확인하세요.</p>
+
+    <div style="margin-top:40px;padding:24px;border:1.5px solid #2a6d4f;border-radius:12px;background:#f0f7f3;">
+      <div style="font-weight:800;font-size:17px;margin-bottom:6px;">지금 바로 진단해 보세요</div>
+      <p style="font-size:14px;color:#444;line-height:1.6;margin-bottom:14px;">업종·주소만 넣으면 감면 가능여부와 감면율을 즉시 확인. 정확한 신청·설계는 세무사가 함께합니다.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="/#/report/youthstartup" class="jt-btn jt-btn--primary">감면 진단하기 →</a>
+        <a href="https://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_youthstartup')">카톡 상담</a>
+      </div>
+    </div>
+  </main>
+
+  <footer style="margin-top:80px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;">
+    제이티 세무회계 · 대표세무사 이현준 · 사업자등록번호 699-10-01720<br>
+    © 2026 JT TAX — www.jttax.co.kr
+  </footer>
+</body>
+</html>

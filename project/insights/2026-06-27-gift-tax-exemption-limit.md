@@ -1,0 +1,115 @@
+---
+title: "증여세 면제한도 2026 — 자녀·배우자 얼마까지 비과세? (금액별 세금 표)"
+date: 2026-06-27
+tag: "INSIGHT · GIFT TAX"
+excerpt: "증여세 면제한도는 10년 기준 배우자 6억, 성인 자녀 5천만 원, 미성년 2천만 원입니다. 부모가 자녀에게 1억·2억·3억을 증여하면 세금이 각각 얼마인지 금액별로 정리하고, 증여세 계산기로 내 경우를 바로 확인하세요."
+slug: gift-tax-exemption-limit
+author: "제이티 세무회계"
+---
+
+## 들어가며
+
+"자녀에게 얼마까지 세금 없이 줄 수 있나요?"는 가장 많이 받는 질문입니다. 답은 '관계'와 '10년'에 달려 있습니다. 증여세는 받는 사람 기준으로 증여자와의 관계별로 일정 금액까지 공제(면제)해 주고, 이 한도는 10년 단위로 다시 채워집니다. 관계별 면제한도와 자주 놓치는 함정, 그리고 금액별 실제 세금을 정리합니다. (아래 금액은 10년 내 다른 증여가 없고 기한 내 신고한 경우를 기준으로 합니다.)
+
+## 누구에게 얼마까지? — 배우자 6억·자녀 5천만 (관계별 면제한도)
+
+증여를 받는 사람과 증여자의 관계에 따라 공제 한도가 다릅니다(상증법 §53). 모두 10년 합산 기준입니다.
+
+- 배우자에게 받을 때: **6억 원**
+- 부모·조부모가 성인 자녀·손주에게: **5천만 원** (받는 사람이 미성년자면 **2천만 원**)
+- 자녀가 부모에게: **5천만 원**
+- 그 밖의 친족(형제자매 등 4촌 이내 혈족·3촌 이내 인척): **1천만 원**
+
+<div class="jt-figure" style="margin:28px 0;text-align:center;">
+<svg viewBox="0 0 640 244" width="100%" style="max-width:560px;height:auto;font-family:inherit;" role="img" aria-label="관계별 증여세 면제한도 (10년 기준)">
+<rect x="40" y="20" width="330" height="40" fill="#1e3a5f"/>
+<rect x="372" y="20" width="228" height="40" fill="#1e3a5f"/>
+<text x="205" y="45" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">관계 (10년 기준)</text>
+<text x="486" y="45" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">면제한도</text>
+<rect x="40" y="62" width="330" height="42" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="56" y="88" text-anchor="start" font-size="13" font-weight="700" fill="#1e3a5f">배우자</text>
+<rect x="372" y="62" width="228" height="42" fill="#e9eff7" stroke="#3b5b80"/>
+<text x="486" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a5f">6억 원</text>
+<rect x="40" y="106" width="330" height="42" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="56" y="132" text-anchor="start" font-size="12" font-weight="700" fill="#1e3a5f">부모·조부모 → 성인 자녀·손주</text>
+<rect x="372" y="106" width="228" height="42" fill="#e9eff7" stroke="#3b5b80"/>
+<text x="486" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a5f">5,000만 원</text>
+<rect x="40" y="150" width="330" height="42" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="56" y="176" text-anchor="start" font-size="13" font-weight="700" fill="#1e3a5f">미성년 자녀</text>
+<rect x="372" y="150" width="228" height="42" fill="#e9eff7" stroke="#3b5b80"/>
+<text x="486" y="176" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a5f">2,000만 원</text>
+<rect x="40" y="194" width="330" height="42" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="56" y="220" text-anchor="start" font-size="13" font-weight="700" fill="#1e3a5f">그 밖의 친족(형제 등)</text>
+<rect x="372" y="194" width="228" height="42" fill="#e9eff7" stroke="#3b5b80"/>
+<text x="486" y="220" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a5f">1,000만 원</text>
+</svg>
+</div>
+
+## 10년마다 다시 채워진다 — 부모는 합쳐 5천만
+
+이 한도는 평생 한 번이 아니라 10년 단위입니다(상증법 §47②·§53). 증여일로부터 과거 10년 안에 같은 사람에게 받은 증여를 합산해 한도를 따지므로, 자녀가 어릴 때부터 10년 간격으로 나눠 증여하면 한도를 여러 번 쓸 수 있습니다. 단, 아버지와 어머니는 '동일인'으로 묶여 합산됩니다 — 아빠 5천만·엄마 5천만을 따로 받는 게 아니라 부모 합쳐 5천만 원입니다. 또 부모를 건너뛰고 조부모가 손주에게 직접 증여하면 증여세에 30%가 더 붙으니(세대생략 할증, 상증법 §57) 주의해야 합니다.
+
+## 결혼·출산하면 1억 원이 더 (2024년부터)
+
+자녀가 혼인하거나 출산하면 직계존속으로부터 추가로 공제받을 수 있습니다(상증법 §53의2, 2023년 말 신설·2024년부터 적용).
+
+- 혼인: 혼인신고일 전후 2년 이내 **1억 원**
+- 출산·입양: 출생·입양일부터 2년 이내 **1억 원**
+
+단 혼인공제와 출산공제를 **합쳐 1억 원이 한도**입니다(둘 다 받아도 최대 1억). 기본 5천만 원과는 별개라, 결혼하는 성인 자녀는 5천만 + 1억 = **최대 1억 5천만 원**까지 세금 없이 받을 수 있습니다.
+
+## 한도 넘으면 세금은? — 1억 485만·2억 1,940만·3억 3,880만
+
+공제 한도를 넘은 금액(과세표준)에는 10~50% 세율이 붙습니다(증여세율은 상증법 §56에 따라 상속세 세율표 §26을 그대로 적용). 부모가 성인 자녀에게 증여할 때 실제 증여세는 다음과 같습니다(10년 내 다른 증여 없음, 기한 내 신고로 3% 신고세액공제 반영).
+
+- 5,000만 원 → **0원** (공제 한도라 비과세)
+- 1억 원 → 약 **485만 원**
+- 2억 원 → 약 **1,940만 원**
+- 3억 원 → 약 **3,880만 원**
+- (혼인한 자녀가 1억 5,000만 원 받으면 → **0원**: 5천만 + 혼인 1억)
+
+<div class="jt-figure" style="margin:28px 0;text-align:center;">
+<svg viewBox="0 0 640 240" width="100%" style="max-width:520px;height:auto;font-family:inherit;" role="img" aria-label="성인 자녀 증여액별 증여세">
+<text x="320" y="18" text-anchor="middle" font-size="11" fill="#475569">부모 → 성인 자녀 · 10년 내 다른 증여 없음 · 기한 내 신고 기준</text>
+<rect x="60" y="30" width="240" height="38" fill="#1e3a5f"/>
+<rect x="302" y="30" width="278" height="38" fill="#1e3a5f"/>
+<text x="180" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">증여액</text>
+<text x="441" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">증여세</text>
+<rect x="60" y="70" width="240" height="38" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="180" y="94" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a5f">5,000만 원</text>
+<rect x="302" y="70" width="278" height="38" fill="#e8f1ea" stroke="#3a6b4f"/>
+<text x="441" y="94" text-anchor="middle" font-size="13" font-weight="700" fill="#2f5e44">0원 (비과세)</text>
+<rect x="60" y="110" width="240" height="38" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="180" y="134" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a5f">1억 원</text>
+<rect x="302" y="110" width="278" height="38" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="441" y="134" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">약 485만 원</text>
+<rect x="60" y="150" width="240" height="38" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="180" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a5f">2억 원</text>
+<rect x="302" y="150" width="278" height="38" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="441" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">약 1,940만 원</text>
+<rect x="60" y="190" width="240" height="38" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="180" y="214" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a5f">3억 원</text>
+<rect x="302" y="190" width="278" height="38" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="441" y="214" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">약 3,880만 원</text>
+</svg>
+</div>
+
+면제한도 이내라도 자금 출처를 남기려면 신고해 두는 것이 안전하고, 한도를 넘으면 3개월 안에 반드시 신고해야 합니다(신고기한: 증여일이 속하는 달 말일부터 3개월, 상증법 §68). 위 금액은 기한 내 신고로 3% 세액공제를 받은 값이며, 기한을 넘기면 이 공제를 못 받고 무신고 가산세(20%)까지 더해집니다.
+
+<div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
+<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
+<div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">증여세 계산기</div>
+<div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">증여액·관계·10년 내 사전증여만 넣으면<br/>공제·세율·신고세액공제까지 반영해 세금을 즉시 계산</div>
+<a href="/#/report/gift" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">내 증여세 5초 만에 계산하기 →</a>
+</div>
+
+## 마치며
+
+증여세 면제한도는 '관계 × 10년'으로 기억하면 됩니다. 미리 10년 간격으로 계획하면 세금을 크게 줄일 수 있고, 혼인·출산 시점을 활용하면 한도가 늘어납니다. 내 증여액이 정확히 얼마의 세금이 되는지는 [증여세 계산기](/#/report/gift)로 바로 확인하고, 분산 증여 설계는 제이티 세무회계과 상담하시길 권합니다.
+
+<div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
+<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
+<div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">증여세 계산기</div>
+<div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">관계별 공제·10년 합산·혼인출산 공제까지<br/>한 번에 반영해 내 증여세를 확인하세요</div>
+<a href="/#/report/gift" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">증여세 계산하러 가기 →</a>
+</div>
