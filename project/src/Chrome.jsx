@@ -98,9 +98,9 @@ function JTNav({ route, setRoute }) {
   const services = (window.JT_DATA && window.JT_DATA.services) || [];
   return (
     <header className={`jt-nav ${scrolled ? 'jt-nav--scrolled' : ''} ${menuOpen ? 'jt-nav--menu-open' : ''}`}>
-      <a className="jt-nav__brand" onClick={() => setRoute('home')} aria-label="제이티 세무회계 홈">
+      <a className="jt-nav__brand" onClick={() => setRoute('home')} aria-label="제이티 세무법인 홈">
         <img src="project/assets/logo_symbol.png" alt="" style={{ height: 26 }} />
-        <span style={{ fontWeight: 700, letterSpacing: '-0.01em', marginLeft: 8 }}>제이티 세무회계</span>
+        <span style={{ fontWeight: 700, letterSpacing: '-0.01em', marginLeft: 8 }}>제이티 세무법인</span>
       </a>
       <nav className="jt-nav__links">
         <a className={route === 'about' ? 'active' : ''} onClick={() => setRoute('about')}>회사소개</a>
@@ -238,11 +238,17 @@ function JTFooter({ setRoute }) {
         <div>
           <div className="jt-footer__brand">
             <img src="project/assets/logo_symbol_white.png" alt="" style={{ height: 36 }} />
-            <div style={{ marginTop: 8, fontWeight: 700 }}>제이티 세무회계 <span style={{ opacity: .6, fontWeight: 400 }}>· JT TAX</span></div>
+            <div style={{ marginTop: 8, fontWeight: 700 }}>제이티 세무법인 <span style={{ opacity: .6, fontWeight: 400 }}>· JT TAX CORP.</span></div>
           </div>
           <div className="jt-footer__addr">
             {D.address}<br />
-            {D.representative && <>대표 {D.representative} · 사업자등록번호 {D.businessNumber}<br /></>}
+            {D.representative && (
+              <>
+                대표 {D.representative}
+                {D.businessNumber && <> · 사업자등록번호 {D.businessNumber}</>}
+                <br />
+              </>
+            )}
             T. <a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'footer')}>{D.phone}</a><br />
             E. <a href={`mailto:${D.email}`} onClick={() => window.jtTrackCta('email', 'footer')}>{D.email}</a>
           </div>
@@ -270,7 +276,7 @@ function JTFooter({ setRoute }) {
         </div>
       </div>
       <div className="jt-footer__bar">
-        <span>© 2026 JT TAX — {D.domain}</span>
+        <span>© 2026 JT TAX CORP. — {D.domain}</span>
         <span>
           <a onClick={() => setRoute('privacy')} style={{cursor: 'pointer'}}>개인정보처리방침</a>
           {' · '}

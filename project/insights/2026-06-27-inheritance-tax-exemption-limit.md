@@ -4,7 +4,7 @@ date: 2026-06-27
 tag: "INSIGHT · INHERITANCE TAX"
 excerpt: "상속세는 배우자가 있으면 약 10억(일괄공제 5억+배우자공제 5억), 없으면 5억까지 0입니다. 10·15·20·30억 상속의 실제 세금을 현행법 기준 표로 정리하고 상속세 계산기로 내 경우를 확인하세요."
 slug: inheritance-tax-exemption-limit
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 ## 들어가며
@@ -103,7 +103,7 @@ author: "제이티 세무회계"
 
 ## 마치며
 
-상속세 면제한도는 '배우자 있으면 약 10억, 없으면 5억'으로 기억하면 됩니다. 그 위로는 재산 규모·배우자 상속분·사전증여에 따라 세금이 크게 갈립니다. 내 상속재산의 세금은 [상속세 계산기](/#/report/inheritance)로 바로 확인하고, 배우자 상속분 설계는 제이티 세무회계과 상담하시길 권합니다.
+상속세 면제한도는 '배우자 있으면 약 10억, 없으면 5억'으로 기억하면 됩니다. 그 위로는 재산 규모·배우자 상속분·사전증여에 따라 세금이 크게 갈립니다. 내 상속재산의 세금은 [상속세 계산기](/#/report/inheritance)로 바로 확인하고, 배우자 상속분 설계는 제이티 세무법인과 상담하시길 권합니다.
 
 <div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
 <div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>

@@ -4,7 +4,7 @@ date: 2026-06-14
 tag: "INSIGHT · LEGACY"
 excerpt: "상속세 신고 기한은 상속개시일이 속한 달 말일부터 6개월. 일괄공제 5억·배우자공제(최소 5억)로 10억까지, 면제한도와 공제 조건을 조문으로 정리했습니다."
 slug: inheritance-tax-basics
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 ## 들어가며

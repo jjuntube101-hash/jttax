@@ -82,17 +82,17 @@ window.JTHero = JTHero;
 // ============ Brand Moment — 로고 + 슬로건 (다크 앵커) ============
 function JTBrandMoment() {
   return (
-    <section className="jt-brandmoment" aria-label="제이티 세무회계">
+    <section className="jt-brandmoment" aria-label="제이티 세무법인">
       <div className="jt-brandmoment__inner">
-        <div className="jt-brandmoment__logowrap reveal" role="img" aria-label="제이티 세무회계 · JT TAX">
+        <div className="jt-brandmoment__logowrap reveal" role="img" aria-label="제이티 세무법인 · JT TAX CORP.">
           <svg className="jt-bm-logosvg" viewBox="132 97 168 114" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
   <g className="jt-bm-g jt-bm-g--symbol">
     <path d="M0 0V-83.221L-17.231-65.99H-42.95V-98.204L9.612-98.174 32.154-75.119 32.213 0Z" transform="matrix(1,0,0,-1,182.414,203.14209)" pathLength="1" />
     <path d="M0 0-48.285-.03-70.827-23.085-70.887-98.204H-38.673V-49.563L-56.021-32.215H0Z" transform="matrix(1,0,0,-1,291.8127,203.14209)" pathLength="1" />
   </g>
 </svg>
-          <div style={{ marginTop: 20, fontWeight: 800, fontSize: 'clamp(26px, 5vw, 42px)', letterSpacing: '-0.02em' }}>제이티 세무회계</div>
-          <div style={{ marginTop: 8, fontFamily: 'ui-monospace, monospace', fontSize: 13, letterSpacing: '.35em', opacity: .65 }}>JT TAX</div>
+          <div style={{ marginTop: 20, fontWeight: 800, fontSize: 'clamp(26px, 5vw, 42px)', letterSpacing: '-0.02em' }}>제이티 세무법인</div>
+          <div style={{ marginTop: 8, fontFamily: 'ui-monospace, monospace', fontSize: 13, letterSpacing: '.35em', opacity: .65 }}>JT TAX CORP.</div>
         </div>
         <h2 className="jt-brandmoment__slogan">
           <span className="reveal" data-delay="1">근거 위에서,</span>{' '}
@@ -117,7 +117,7 @@ function JTReportHome({ setRoute }) {
         <h2 className="jt-platform__title reveal" data-delay="1">
           <span className="jt-platform__line">계산하고 · 상담하고 · 맡기고</span>
           <span className="jt-platform__line jt-platform__line--brand">
-            <img className="jt-platform__logo" src="project/assets/logo_symbol.png" alt="제이티 세무회계" />
+            <img className="jt-platform__logo" src="project/assets/logo_symbol.png" alt="제이티 세무법인" />
             <span>하나로.</span>
           </span>
         </h2>
@@ -433,7 +433,7 @@ function JTQuote() {
         <p className="jt-pullquote__p">상담에서 가장 자주 본 장면은<br />‘미리 물었더라면’으로 시작하는 뒤늦은 문의였습니다.</p>
         <div className="jt-pullquote__by">
           <div className="jt-pullquote__avatar">JT</div>
-          <div><b>이현준 대표세무사</b> · 제이티 세무회계</div>
+          <div><b>이현준 대표세무사</b> · 제이티 세무법인</div>
         </div>
       </div>
     </section>);

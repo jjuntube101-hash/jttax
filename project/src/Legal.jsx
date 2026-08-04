@@ -1,5 +1,5 @@
 /* global React */
-/* JT 세무회계 — 법적 고지 페이지 (Privacy · Terms) */
+/* JT 세무법인 — 법적 고지 페이지 (Privacy · Terms) */
 
 function JTLegal({ kind, setRoute }) {
   const D = window.JT_DATA.firm;

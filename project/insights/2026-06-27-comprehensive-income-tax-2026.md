@@ -4,7 +4,7 @@ date: "2026-06-27"
 tag: "INSIGHT · INCOME TAX"
 excerpt: "프리랜서·자영업·N잡러는 5월에 종합소득세를 직접 신고합니다. 6대 소득 합산·분리과세 기준, 6~45% 세율표, 인적공제, 무신고 20% 가산세까지. 사업소득 3천만원이면 약 324만원, 8천만원이면 약 1,431만원 — 1분 계산기로 확인하세요."
 slug: "comprehensive-income-tax-2026"
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 매년 5월은 종합소득세 신고의 달입니다. 회사에서 연말정산을 해주는 근로소득만 있다면 보통 5월 신고가 따로 필요 없지만, **프리랜서·자영업자·N잡러처럼 스스로 정산해야 하는 소득이 있으면 5월 1일부터 31일까지 직접 신고**해야 합니다(소득세법 §70).
@@ -113,4 +113,4 @@ author: "제이티 세무회계"
 
 종합소득세는 소득 종류·경비·공제에 따라 사람마다 세금이 크게 달라집니다. 특히 여러 소득이 합산되거나 사업소득 경비 처리(장부 vs 추계), 분리과세 유불리가 얽히면 스스로 신고하다 빠뜨려 가산세를 무는 경우가 많습니다.
 
-<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">종합소득세 신고 대행·검토가 필요하신가요? 제이티 세무회계이 누락 없이 도와드리겠습니다.</p><a href="/#/report/income" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">종합소득세 계산기로 시작하기 →</a></div>
+<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">종합소득세 신고 대행·검토가 필요하신가요? 제이티 세무법인이 누락 없이 도와드리겠습니다.</p><a href="/#/report/income" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">종합소득세 계산기로 시작하기 →</a></div>

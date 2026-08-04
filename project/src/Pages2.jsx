@@ -88,7 +88,7 @@ function JTContact({ setRoute }) {
           </div>
           <div className="jt-map__canvas">
             <iframe
-              title="제이티 세무회계 위치 지도"
+              title="제이티 세무법인 위치 지도"
               src={`https://www.google.com/maps?q=${encodeURIComponent(D.address)}&z=17&hl=ko&output=embed`}
               style={{width: '100%', height: '100%', minHeight: 460, border: 0, display: 'block'}}
               loading="lazy"

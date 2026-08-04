@@ -4,7 +4,7 @@ date: 2026-06-25
 tag: "INSIGHT · CORPORATE TAX"
 excerpt: "법인전환 개인사업자 세금 비교, 세율만 보면 함정입니다. 사업 이익 2억 원 기준 종합소득세 6,096만 원 vs 법인 전환 2,069만 원 차이와 전환 시기·손익분기 신호, 법인 전환 시뮬레이터로 두 숫자만 넣어 5초 만에 비교하는 법까지 정리했습니다."
 slug: corporate-conversion
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 ## 들어가며
@@ -75,7 +75,7 @@ author: "제이티 세무회계"
 
 ## 법인 전환 시뮬레이터, 이렇게 쓰세요
 
-머릿속 추측 대신 숫자로 보면 가장 빠릅니다. 제이티 세무회계 홈페이지의 [법인 전환 시뮬레이터](/#/report/corporate)는 단 두 가지 숫자로 개인과 법인의 세부담을 즉시 비교합니다.
+머릿속 추측 대신 숫자로 보면 가장 빠릅니다. 제이티 세무법인 홈페이지의 [법인 전환 시뮬레이터](/#/report/corporate)는 단 두 가지 숫자로 개인과 법인의 세부담을 즉시 비교합니다.
 
 <div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
 <div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
@@ -113,7 +113,7 @@ author: "제이티 세무회계"
 
 ## 마치며
 
-법인 전환은 "세율이 낮으니 무조건 이득"이 아니라, 내 이익 규모·생활비로 빼는 금액·향후 계획을 모두 넣어야 답이 나옵니다. 먼저 [법인 전환 시뮬레이터](/#/report/corporate)로 내 숫자를 비교해 윤곽을 잡고, 'A안과 B안 중 무엇이 맞는지' 헷갈리는 지점은 제이티 세무회계과의 상담으로 매듭짓는 것을 권합니다.
+법인 전환은 "세율이 낮으니 무조건 이득"이 아니라, 내 이익 규모·생활비로 빼는 금액·향후 계획을 모두 넣어야 답이 나옵니다. 먼저 [법인 전환 시뮬레이터](/#/report/corporate)로 내 숫자를 비교해 윤곽을 잡고, 'A안과 B안 중 무엇이 맞는지' 헷갈리는 지점은 제이티 세무법인과의 상담으로 매듭짓는 것을 권합니다.
 
 <div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
 <div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>

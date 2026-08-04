@@ -4,7 +4,7 @@ date: "2026-06-27"
 tag: "INSIGHT · PROPERTY TAX"
 excerpt: "재산세 = 공시가격 × 공정시장가액비율 × 세율. 2026년 1주택 특례비율 43~45%로 공시가격 3억 아파트 약 30만, 5억 약 62만, 6억 약 79만. 7·9월 납부기한과 계산법을 세무사가 정리했습니다."
 slug: "property-tax-2026-calculation"
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 7월이면 어김없이 재산세 고지서가 날아옵니다. 그런데 막상 받아 보면 "이 금액이 어떻게 나온 거지?" 싶습니다. 재산세는 **신고하는 세금이 아니라 지자체가 계산해서 고지하는 세금**이라, 원리를 모르면 그저 내라는 대로 낼 수밖에 없습니다.
@@ -114,6 +114,6 @@ author: "제이티 세무회계"
 
 재산세는 매년 반복되는 보유세입니다. 6월 1일 기준일과 1주택 특례를 이해하면, 집을 사고팔 때나 추가로 보유할 때 한 해 세금을 미리 설계할 수 있습니다. 보유세 전반의 절세 타이밍이 궁금하다면 [6월 1일 보유세 과세기준일 글](/insights/property-holding-tax-june1.html)도 함께 참고하세요.
 
-복잡한 다주택·공동명의·종합부동산세까지 얽힌 경우라면 제이티 세무회계이 보유세 전체를 함께 검토해 드립니다.
+복잡한 다주택·공동명의·종합부동산세까지 얽힌 경우라면 제이티 세무법인이 보유세 전체를 함께 검토해 드립니다.
 
-<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">보유세·양도세 종합 상담이 필요하신가요? 제이티 세무회계이 도와드리겠습니다.</p><a href="/#/report/property" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">재산세 계산기로 시작하기 →</a></div>
+<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">보유세·양도세 종합 상담이 필요하신가요? 제이티 세무법인이 도와드리겠습니다.</p><a href="/#/report/property" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">재산세 계산기로 시작하기 →</a></div>

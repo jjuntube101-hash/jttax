@@ -29,7 +29,7 @@ const esc = (s) => String(s == null ? '' : s)
 function renderCalcPage(c) {
   const url = `${SITE}/calculators/${c.slug}.html`;
   const appUrl = `/#/report/${c.sub}`;
-  const fullTitle = `${c.metaTitle} | 제이티 세무회계`;
+  const fullTitle = `${c.metaTitle} | 제이티 세무법인`;
 
   const faqLd = {
     '@context': 'https://schema.org',
@@ -47,7 +47,7 @@ function renderCalcPage(c) {
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' },
-    provider: { '@type': 'Organization', name: '제이티 세무회계', url: SITE },
+    provider: { '@type': 'Organization', name: '제이티 세무법인', url: SITE },
     description: c.metaDesc,
   };
   const crumbLd = {
@@ -132,7 +132,7 @@ ${GA_HEAD_SNIPPET}
 <body style="background:#fff;">
   <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
     <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
-      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무회계"/> 제이티 세무회계
+      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무법인"/> 제이티 세무법인
     </a>
     <span style="margin-left:auto;font-size:13px;"><a href="/calculators/" style="color:#666;text-decoration:none;">← 모든 계산기</a></span>
   </header>
@@ -232,13 +232,13 @@ function renderIndexPage() {
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>무료 세금 계산기 — 양도·증여·상속·취득·재산세·종부세·종소세 | 제이티 세무회계</title>
+  <title>무료 세금 계산기 — 양도·증여·상속·취득·재산세·종부세·종소세 | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="양도소득세·증여세·상속세·취득세·재산세·종합부동산세·종합소득세·법인전환·4대보험 실수령까지, 검증된 계산 엔진으로 5분 만에 계산하는 무료 세금 계산기 모음.">
   <meta name="keywords" content="세금 계산기, 무료 세금 계산기, 양도소득세 계산기, 증여세 계산기, 상속세 계산기, 취득세 계산기, 재산세 계산기, 종합부동산세 계산기, 종합소득세 계산기, 실수령액 계산기">
   <link rel="canonical" href="${url}">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="무료 세금 계산기 모음 | 제이티 세무회계">
+  <meta property="og:title" content="무료 세금 계산기 모음 | 제이티 세무법인">
   <meta property="og:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 무료 세금 계산기.">
   <meta property="og:url" content="${url}">
   <meta property="og:image" content="${SITE}/project/assets/og-image.png">
@@ -262,7 +262,7 @@ ${GA_HEAD_SNIPPET}
 <body style="background:#fff;">
   <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
     <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
-      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무회계"/> 제이티 세무회계
+      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무법인"/> 제이티 세무법인
     </a>
     <span style="margin-left:auto;font-size:13px;"><a href="/" style="color:#666;text-decoration:none;">홈 →</a></span>
   </header>
@@ -287,11 +287,15 @@ ${cards}
 
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
+  let made = 0, kept = 0;
   for (const c of CALCULATORS) {
+    // custom: true → 손으로 쓴 페이지. 덮어쓰면 연도별 비교표가 날아가므로 건드리지 않는다.
+    if (c.custom) { kept++; continue; }
     await writeFile(join(OUT_DIR, `${c.slug}.html`), renderCalcPage(c));
+    made++;
   }
   await writeFile(join(OUT_DIR, 'index.html'), renderIndexPage());
-  console.log(`✓ 계산기 SEO 페이지 ${CALCULATORS.length}건 + 인덱스 생성 → /calculators/`);
+  console.log(`✓ 계산기 SEO 페이지 ${made}건 생성 + 수기 페이지 ${kept}건 보존 + 인덱스 → /calculators/`);
   const n = await writeSitemap(REPO_ROOT, SITE);
   console.log(`✓ sitemap.xml 갱신 (${n} URL)`);
 }

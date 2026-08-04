@@ -49,7 +49,7 @@ function JTReportDisclaimer({ variant }) {
     <>
       <strong>면책 고지</strong>
       <p>본 리포트는 공개 정보와 이용자가 입력한 사실관계를 바탕으로 제공되는 <strong>간이 참고 자료</strong>이며, 특정 거래·납세자에 대한 <strong>확정적 세무 판단이 아닙니다</strong>. 정식 검토는 반드시 유상 상담을 통해 담당 세무사가 자료 일체를 확인한 후 진행됩니다.</p>
-      <p>본 리포트는 <strong>법적 효력이 없으며</strong>, 제이티 세무회계과 이용자 사이에 <strong>어떠한 위임·자문 관계나 권리·의무도 발생시키지 않습니다</strong>. 본 리포트만을 근거로 한 신고·결정·소송으로 발생한 손실에 대해 당사는 책임을 지지 않습니다.</p>
+      <p>본 리포트는 <strong>법적 효력이 없으며</strong>, 제이티 세무법인과 이용자 사이에 <strong>어떠한 위임·자문 관계나 권리·의무도 발생시키지 않습니다</strong>. 본 리포트만을 근거로 한 신고·결정·소송으로 발생한 손실에 대해 당사는 책임을 지지 않습니다.</p>
       <p>법령·예규·판례는 수시로 변경됩니다. 열람 시점 기준 최신 자료를 담당 세무사가 재확인합니다.</p>
     </>
   );
@@ -139,6 +139,7 @@ const JT_ABBR = {
   cgt: '양도', gift: '증여', inheritance: '상속', acquisition: '취득', property: '재산',
   comprehensive: '종부', income: '종소', vat: '부가', insurance: '급여', corporate: '법인',
   youthstartup: '창업', compare: '비교', burden: '부담', appeal: '경정',
+  'reform-cgt': '개편', 'reform-cre': '개편',
 };
 window.JT_ABBR = JT_ABBR;
 
@@ -176,7 +177,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
       {/* 히어로 */}
       <section className="jt-section jt-report-hero">
         <div className="jt-container">
-          <div className="jt-eyebrow reveal">JT TAX · 세금 계산기</div>
+          <div className="jt-eyebrow reveal">JT TAX CORP. · 세금 계산기</div>
           <h1 className="jt-report-hero__title reveal">
             <span>내</span> <span>세금,</span>
             <br/>
@@ -190,6 +191,30 @@ function JTReportHub({ setRoute, setSubRoute }) {
             <span>● 로그인 불필요</span>
             <span>● 입력값은 계산에만 사용 · 미저장</span>
             <span>● 결과로 바로 상담 연결</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 🔥 핫이슈 — 2026 세제개편안(2026.8.3 발표) 연도별 비교. 히어로 바로 아래 최상단 배치 */}
+      <section className="jt-section jt-report-grid" style={{ background: 'linear-gradient(180deg,#fff4e8 0%,#fffaf4 100%)', borderTop: '3px solid #d0680a' }}>
+        <div className="jt-container">
+          <div className="jt-report-grid__head reveal">
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 14px', borderRadius: 999, background: 'rgba(208,104,10,.12)', border: '1px solid rgba(208,104,10,.45)', color: '#a8500a', fontSize: 12.5, fontWeight: 800, letterSpacing: '.04em', marginBottom: 14 }}>NEW · 2026.8.3 발표</div>
+            <h2>2026 세제개편안, 내 세금은 얼마나 달라지나</h2>
+            <p>양도세 장기보유특별공제가 <strong style={{ color: '#a8500a' }}>「보유」에서 「거주」로</strong>, 종부세는 <strong style={{ color: '#a8500a' }}>「주택 수」에서 「가액과 실거주」로</strong> 바뀝니다. 같은 집도 파는 해에 따라 세금이 달라집니다 — 연도별로 한 번에 비교해 보세요. <span style={{ color: '#8a6224' }}>(국회 통과 전 정부안 기준)</span></p>
+          </div>
+          <div className="jt-report-live-grid">
+            {[
+              { sub: 'reform-cgt', kr: '2026 세제개편안 양도세 계산기', tagline: '2026 · 2027 · 2028 · 2029년 비교', d: '장특공제가 거주 기준으로 바뀌면 내 양도세는 얼마가 될까. 다주택 중과 한시 완화(2027~2028년)와 새로 생기는 공제 한도(20억→10억)까지 반영해 네 개 연도를 한 화면에서 비교합니다.' },
+              { sub: 'reform-cre', kr: '2026 종부세 개편안 계산기', tagline: '거주 14억 vs 비거주 9억', d: '1주택 기본공제가 실거주 여부로 갈립니다. 공정시장가액비율 인상(60→70→80%)과 가액 기준 세율 일원화까지 반영해 2026·2027·2028년 종부세를 비교합니다.' },
+            ].map((x) => (
+              <button key={x.sub} className="jt-report-live-card" onClick={() => setSubRoute(x.sub)} style={{ textAlign: 'left', border: '1px solid rgba(208,104,10,.35)', background: '#fff', borderRadius: 12, padding: '20px 22px', cursor: 'pointer', font: 'inherit' }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: '#a8500a', letterSpacing: '.03em', marginBottom: 7 }}>{x.tagline}</div>
+                <h3 style={{ fontSize: 18.5, margin: '0 0 8px' }}>{x.kr}</h3>
+                <p style={{ fontSize: 13.5, color: '#6b6459', lineHeight: 1.65, margin: '0 0 12px' }}>{x.d}</p>
+                <span style={{ fontSize: 13.5, fontWeight: 700 }}>연도별 비교하기 →</span>
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -347,7 +372,9 @@ function JTReportHub({ setRoute, setSubRoute }) {
 window.JTReportHub = JTReportHub;
 
 // ============ 라우터 (허브 ↔ 각 진단) ============
-const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup'];
+/* ★ 새 계산기를 추가하면 «반드시» 이 배열에도 키를 넣을 것.
+   빠뜨리면 딥링크가 조용히 허브로 리다이렉트되고 에러도 안 난다(260804 실측). */
+const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup', 'reform-cgt', 'reform-cre'];
 const jtNormSub = (s) => (JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : 'hub'); // 모르는 계산기 키 → 허브 (깨진 공유링크 방어)
 
 function JTReportPage({ setRoute }) {
@@ -406,6 +433,8 @@ function JTReportPage({ setRoute }) {
   return (
     <div className="jt-report">
       {subRoute === 'hub' && <JTReportHub setRoute={setRoute} setSubRoute={setSubRoute} />}
+      {subRoute === 'reform-cgt' && <JTReportReformCGT setRoute={setRoute} setSubRoute={setSubRoute} onBack={back} />}
+      {subRoute === 'reform-cre' && <JTReportReformCRE setRoute={setRoute} setSubRoute={setSubRoute} onBack={back} />}
       {subRoute === 'appeal' && <JTReportAppeal setRoute={setRoute} onBack={back} />}
       {subRoute === 'cgt' && <JTReportCGT setRoute={setRoute} onBack={back} />}
       {subRoute === 'income' && <JTReportIncome setRoute={setRoute} onBack={back} />}

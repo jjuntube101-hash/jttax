@@ -101,7 +101,7 @@ async function loadArticles() {
       dateISO: meta.date,
       tag: meta.tag || 'INSIGHT',
       excerpt: meta.excerpt || '',
-      author: meta.author || '제이티 세무회계',
+      author: meta.author || '제이티 세무법인',
       body,
       html: mdToHtml(body),
       filename: f,
@@ -144,7 +144,7 @@ function renderArticlePage(a) {
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>${a.title} | 제이티 세무회계</title>
+  <title>${a.title} | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="${esc(a.excerpt)}">
   <link rel="canonical" href="${shareUrl}">
@@ -166,7 +166,7 @@ ${GA_HEAD_SNIPPET}
     "headline": ${JSON.stringify(a.title)},
     "datePublished": ${JSON.stringify(a.dateISO)},
     "author": { "@type": "Organization", "name": ${JSON.stringify(a.author)} },
-    "publisher": { "@type": "Organization", "name": "제이티 세무회계", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
+    "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
     "description": ${JSON.stringify(a.excerpt)},
     "mainEntityOfPage": ${JSON.stringify(shareUrl)}
   }
@@ -175,7 +175,7 @@ ${GA_HEAD_SNIPPET}
 <body style="background:#fff;color:#0B0B0F;">
   <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
     <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
-      <img src="/project/assets/logo_symbol.png" width="28" alt=""/> 제이티 세무회계
+      <img src="/project/assets/logo_symbol.png" width="28" alt=""/> 제이티 세무법인
     </a>
     <span style="margin-left:auto;font-size:13px;color:#666;">
       <a href="/#insights" style="color:inherit;">← 모든 인사이트</a>

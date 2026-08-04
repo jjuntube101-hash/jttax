@@ -4,7 +4,7 @@ date: "2026-06-27"
 tag: "INSIGHT · PROPERTY TAX"
 excerpt: "2026년 종부세, 1주택 공시가격 12억까지 0원. 15억 97만·20억 288만, 다주택은 9억 공제에 중과까지. 고령·장기보유 세액공제로 최대 80% 감면받는 법을 종부세 계산기로 1분 만에 확인하세요."
 slug: "comprehensive-real-estate-tax-2026"
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 해마다 11~12월이면 "나도 종합부동산세 대상인가?" 걱정하는 분이 많습니다. 결론부터 말하면, **1주택자라면 공시가격 12억원 이하일 때 종부세는 0원**입니다. 종부세는 모든 집주인이 내는 세금이 아니라, 고가 주택과 다주택에 집중되는 '국세 보유세'이기 때문입니다.
@@ -130,4 +130,4 @@ author: "제이티 세무회계"
 
 종합부동산세는 공제·세율·세액공제·명의가 얽혀 같은 집값이라도 사람마다 세금이 크게 달라집니다. 특히 다주택 합산·중과나 공동명의 선택, 세액공제 80% 적용 여부는 세대·보유기간 판정이 핵심이라 계산만으로 끝나지 않습니다.
 
-<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">다주택 합산·공동명의·세액공제 등 절세 설계가 필요하신가요? 제이티 세무회계이 보유세 전체를 함께 검토해 드립니다.</p><a href="/#/report/comprehensive" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">종부세 계산기로 시작하기 →</a></div>
+<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">다주택 합산·공동명의·세액공제 등 절세 설계가 필요하신가요? 제이티 세무법인이 보유세 전체를 함께 검토해 드립니다.</p><a href="/#/report/comprehensive" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">종부세 계산기로 시작하기 →</a></div>

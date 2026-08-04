@@ -4,7 +4,7 @@ date: 2026-06-17
 tag: "INSIGHT · CONSULT"
 excerpt: "가업승계 증여특례와 가업상속공제, 어느 길로? 2026년 기준 최대 600억 공제·세율 10%와 5년 사후관리 요건을 조문 근거로 비교했습니다. 승계 전 두 갈래의 갈림길을 꼭 확인하세요."
 slug: family-business-succession
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 ## 들어가며

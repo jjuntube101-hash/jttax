@@ -4,7 +4,7 @@ date: 2026-06-22
 tag: "INSIGHT · INCOME TAX"
 excerpt: "주택임대소득 세금, 1주택은 비과세·3주택부터 전세 보증금도 과세됩니다. 주택 수·월세·연 2천만원 기준으로 분리과세(14%)와 종합과세 중 무엇이 유리한지 조문으로 정리했습니다."
 slug: housing-rental-income
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 ## 들어가며

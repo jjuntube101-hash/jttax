@@ -4,7 +4,7 @@ date: "2026-06-27"
 tag: "INSIGHT · GIFT & INHERITANCE"
 excerpt: "증여세·상속세 세율은 똑같은 10~50%. 그런데 20억을 물려줄 때 배우자가 있으면 상속세 약 1억 2,742만, 없으면 약 4억 2,486만으로 3배 넘게 갈립니다. '미리 증여=절세'가 오해인 이유와 증여가 유리한 3가지 경우를 계산기로 확인하세요."
 slug: "gift-vs-inheritance-2026"
-author: "제이티 세무회계"
+author: "제이티 세무법인"
 ---
 
 "살아있을 때 미리 증여해두는 게 상속세보다 낫다"는 말, 한 번쯤 들어보셨을 겁니다. 정말 그럴까요? 결론부터 말하면 경우에 따라 다르고, 오히려 상속이 유리할 때가 더 많습니다. 같은 재산이라도 배우자가 살아있는지, 시간이 얼마나 남았는지에 따라 세금이 세 배 넘게 갈립니다.
@@ -89,6 +89,6 @@ author: "제이티 세무회계"
 
 <div style="margin:28px 0;padding:20px 22px;border:1px solid #3b5b80;border-radius:10px;background:#f4f8fc;"><p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#1f2d3d;">같은 재산, 증여와 상속을 직접 비교해 보세요</p><p style="margin:0 0 14px;font-size:13.5px;line-height:1.6;color:#42566e;">내 재산을 지금 증여하면 얼마인지, 그대로 두고 상속하면 얼마인지 — 두 계산기에 각각 넣어 실제 세금을 비교할 수 있습니다.</p><a href="/#/report/gift" style="display:inline-block;margin-right:8px;padding:11px 20px;background:#3b5b80;color:#ffffff;text-decoration:none;border-radius:7px;font-size:14px;font-weight:700;">증여세 계산기 →</a><a href="/#/report/inheritance" style="display:inline-block;padding:11px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:14px;font-weight:700;border:1px solid #3b5b80;">상속세 계산기 →</a></div>
 
-두 방식의 세금은 계산기로 직접 비교할 수 있지만, **어느 쪽을 택할지는 배우자상속공제·자산 상승률·10년 타이밍이 얽혀 사람마다 갈립니다.** 숫자는 나왔는데 판단이 서지 않는다면, 제이티 세무회계이 자산승계 전체 그림을 그려 도와드리겠습니다.
+두 방식의 세금은 계산기로 직접 비교할 수 있지만, **어느 쪽을 택할지는 배우자상속공제·자산 상승률·10년 타이밍이 얽혀 사람마다 갈립니다.** 숫자는 나왔는데 판단이 서지 않는다면, 제이티 세무법인이 자산승계 전체 그림을 그려 도와드리겠습니다.
 
-<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">증여 vs 상속, 우리 집은 어느 쪽이 유리할까요? 제이티 세무회계이 사례에 맞춰 설계해 드립니다.</p><a href="/#booking" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">자산승계 상담 받기 →</a></div>
+<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">증여 vs 상속, 우리 집은 어느 쪽이 유리할까요? 제이티 세무법인이 사례에 맞춰 설계해 드립니다.</p><a href="/#booking" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">자산승계 상담 받기 →</a></div>
