@@ -23,11 +23,22 @@ const RF_EOK = 100000000;              // 1억
 const rfNum = (v) => { const n = Number(String(v == null ? '' : v).replace(/[^0-9.-]/g, '')); return isFinite(n) ? n : 0; };
 const rfWon = (n) => (window.formatWon ? window.formatWon(Math.round(n)) : (Math.round(n).toLocaleString('ko-KR') + '원'));
 /* 억 단위 요약 표기 — 카드에서 큰 숫자를 한눈에 */
-const rfEok = (n) => {
+/* 요약 표기 — «절대 올려서 보이지 않게» 내림(floor)한다.
+   99,995,000원이 「10,000만원」으로 보이면 1억을 넘긴 것처럼 읽힌다 (260805 Codex R11 P2).
+   정확한 금액은 항상 원 단위(rfWon/crWon)로 옆에 병기된다. */
+const jtEokFmt = (n, eok) => {
   const v = Math.round(n);
-  if (Math.abs(v) < RF_EOK) return (Math.round(v / 10000)).toLocaleString('ko-KR') + '만원';
-  return (Math.round(v / RF_EOK * 100) / 100).toLocaleString('ko-KR') + '억원';
+  const a = Math.abs(v), sign = v < 0 ? '-' : '';
+  if (a < 10000) return v.toLocaleString('ko-KR') + '원';
+  if (a < eok) {
+    const man = Math.floor(a / 1000) / 10;                 // 만원, 소수 1자리, 내림
+    const i = Math.floor(man), f = Math.round((man - i) * 10);
+    return sign + i.toLocaleString('ko-KR') + (f ? '.' + f : '') + '만원';
+  }
+  const e = Math.floor(a / eok * 100) / 100;               // 억원, 소수 2자리, 내림
+  return sign + e.toLocaleString('ko-KR') + '억원';
 };
+const rfEok = (n) => jtEokFmt(n, RF_EOK);
 
 /* ══════════════════════════════════════════════════════════════════════════
    SSOT — 개편안 수치 (출처: 「2026년 세제개편안 개조식」 2026.8.3)

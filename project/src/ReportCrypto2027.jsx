@@ -35,12 +35,9 @@ const { useState: useCrState } = React;
 const crNum = (v) => { const n = Number(String(v == null ? '' : v).replace(/[^0-9.-]/g, '')); return isFinite(n) ? n : 0; };
 const crWon = (n) => (window.formatWon ? window.formatWon(Math.round(n)) : (Math.round(n).toLocaleString('ko-KR') + '원'));
 const CR_EOK = 100000000;
-const crEok = (n) => {
-  const v = Math.round(n);
-  if (Math.abs(v) < 10000) return v.toLocaleString('ko-KR') + '원';
-  if (Math.abs(v) < CR_EOK) return Math.round(v / 10000).toLocaleString('ko-KR') + '만원';
-  return (Math.round(v / CR_EOK * 100) / 100).toLocaleString('ko-KR') + '억원';
-};
+/* 요약 표기는 ReportReform2026.jsx 의 jtEokFmt 를 재사용한다(로드 순서상 먼저 올라옴).
+   내림 기준이라 «올려 보이는» 일이 없다 (260805 Codex R11 P2). */
+const crEok = (n) => (typeof jtEokFmt === 'function' ? jtEokFmt(n, CR_EOK) : Math.round(n).toLocaleString('ko-KR') + '원');
 
 /* ══════════ SSOT — 법령 값 (개정 시 여기만 고친다) ══════════ */
 window.JT_CRYPTO_2027 = {
