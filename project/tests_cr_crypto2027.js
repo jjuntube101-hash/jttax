@@ -19,7 +19,7 @@ chk('세율 20% (§64의3②)', C.rate, 0.20);
 chk('공제 250만원 (§64의3②·§84 3호)', C.basicDeduct, 2500000);
 
 console.log('\n════ CASE 1: 의제취득가액 작동 — 1천만에 사서 2026말 4천만, 5천만에 매도 ════');
-const c1 = { heldBefore: 'yes', salePrice: '50000000', acqPrice: '10000000', marketAt2026: '40000000', fee: '250000', otherLoss: '0' };
+const c1 = { heldBefore: 'yes', salePrice: '50000000', acqPrice: '10000000', marketAt2026: '40000000', fee: '250000' };
 const r1 = CR(c1);
 console.log(`  취득가액 적용 ${won(r1.baseCost)} / 소득금액 ${won(r1.income)} / 세액 ${won(r1.total)}`);
 /* 취득가액 = max(1천만, 4천만) = 4천만. 필요경비 4천만+25만 = 40,250,000
@@ -40,14 +40,14 @@ chk('C2 총세액', r2.total, 495000);
 chk('C2 shielded = 0', r2.shielded, 0);
 
 console.log('\n════ CASE 3: 2027년 이후 취득 — 의제취득 미적용 ════');
-const c3 = { heldBefore: 'no', salePrice: '50000000', acqPrice: '10000000', marketAt2026: '40000000', fee: '0', otherLoss: '0' };
+const c3 = { heldBefore: 'no', salePrice: '50000000', acqPrice: '10000000', marketAt2026: '40000000', fee: '0' };
 const r3 = CR(c3);
 /* 취득가액 1천만 → 소득 4천만 → 과표 37,500,000 → 세 7,500,000 + 750,000 = 8,250,000 */
 chk('C3 취득가액 = 실제(1천만) — 2026말 시가 무시', r3.baseCost, 10000000);
 chk('C3 총세액', r3.total, 8250000);
 
 console.log('\n════ CASE 4: 과세최저한 §84 3호 — 연 소득 250만원 «이하» ════');
-const c4 = { heldBefore: 'no', salePrice: '12400000', acqPrice: '10000000', marketAt2026: '0', fee: '0', otherLoss: '0' };
+const c4 = { heldBefore: 'no', salePrice: '12400000', acqPrice: '10000000', marketAt2026: '0', fee: '0' };
 const r4 = CR(c4);   // 소득 2,400,000 ≤ 250만 → 0원
 chk('C4 소득 240만 → 세액 0', r4.total, 0);
 const c4b = { ...c4, salePrice: '12500000' };
@@ -56,18 +56,23 @@ const c4c = { ...c4, salePrice: '12500001' };
 console.log(`  경계 직후: 소득 ${won(CR(c4c).income)} → 과표 ${won(CR(c4c).taxBase)} → 세액 ${won(CR(c4c).total)}`);
 chk('C4c 소득 250만+1원 → 과세 전환', CR(c4c).belowMinimum ? 1 : 0, 0);
 
-console.log('\n════ CASE 5: 같은 해 손실 통산 ════');
-const c5 = { ...c1, otherLoss: '5000000' };
+console.log('\n════ CASE 5: 손실 거래를 «합계에 포함»해 통산 (Codex R2 P1) ════');
+/* 종전엔 otherLoss 를 따로 받아 «이중 차감»했다. 지금은 손실 거래의 매도액·취득가액을
+   합계에 넣으면 자동 상계된다.
+   Codex 재현: 이익 2,000만/취득 1,000만 + 손실 100만/취득 400만
+     → 합계 매도 2,100만 / 취득 1,400만 → 소득 700만
+       과표 700만 − 250만 = 450만 → 소득세 90만 + 지방 9만 = 990,000
+     ※ 종전 구현은 이 입력에서 330,000 원(66만원 과소)이 나왔다. */
+const c5 = { heldBefore: 'no', salePrice: '21000000', acqPrice: '14000000', marketAt2026: '', fee: '0' };
 const r5 = CR(c5);
-/* 소득 9,750,000 − 500만 = 4,750,000 → 과표 2,250,000 → 495,000 */
-chk('C5 손실 통산 후 소득금액', r5.income, 4750000);
-chk('C5 총세액', r5.total, 495000);
+chk('C5 소득금액 = 700만 (이중차감 없음)', r5.income, 7000000);
+chk('C5 총세액 990,000', r5.total, 990000);
 
 console.log('\n════ CASE 6: 손실이 이익보다 큰 경우 → 0원 ════');
-chk('C6 세액 0', CR({ ...c1, otherLoss: '20000000' }).total, 0);
+chk('C6 세액 0', CR({ heldBefore: 'no', salePrice: '5000000', acqPrice: '20000000', marketAt2026: '', fee: '0' }).total, 0);
 
 console.log('\n════ CASE 7: 지방소득세 = 소득세의 10% ════');
-const r7 = CR({ heldBefore: 'no', salePrice: '100000000', acqPrice: '0', marketAt2026: '0', fee: '0', otherLoss: '0' });
+const r7 = CR({ heldBefore: 'no', salePrice: '100000000', acqPrice: '0', marketAt2026: '0', fee: '0' });
 /* 소득 1억 → 과표 97,500,000 → 소득세 19,500,000 · 지방 1,950,000 → 21,450,000 */
 chk('C7 소득세', r7.tax, 19500000);
 chk('C7 지방소득세', r7.local, 1950000);

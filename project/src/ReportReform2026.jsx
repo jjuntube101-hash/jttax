@@ -569,8 +569,17 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
   const [busy, setBusy] = useRfState(false);
   const [info, setInfo] = useRfState(null);
   /* ⚠️ 조회 중 주소를 바꾸면 «먼저 보낸» 응답이 나중에 도착해 새 주소의 값을 덮는다.
-        요청마다 순번을 매기고, 최신 순번의 응답만 반영한다 (260805 Codex P1). */
+        요청마다 순번을 매기고, 최신 순번의 응답만 반영한다 (260805 Codex P1).
+        ⚠️ R2: 순번만으론 부족했다 — 주소를 «고칠 때»도 순번을 올려 진행 중 응답을
+        무효화하고 busy 를 풀어야 새 조회가 막히지 않는다. 그리고 needs_unit 일 때
+        지우는 건 «이 컴포넌트가 자동으로 넣은 값»뿐이다(수동 입력분은 보존). */
   const seq = React.useRef(0);
+  const autoFilled = React.useRef(null);   // 마지막으로 «자동 입력»한 값
+
+  const changeAddr = (v) => {
+    if (busy) { seq.current += 1; setBusy(false); }   // 진행 중 요청 무효화
+    setInfo(null); setAddr(v);
+  };
 
   const run = async () => {
     const a = addr.trim();
@@ -592,7 +601,8 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
         if (r.region && onRegion) onRegion(r.region);
         const n = Number(r.unitCount) || 0;
         const lo = Number(r.priceMin) || 0, hi = Number(r.priceMax) || 0;
-        if (onPrice) onPrice('');                // 앞서 자동입력된 금액을 «지운다» (남으면 남의 집 값)
+        /* 자동으로 넣었던 값만 지운다 — 사용자가 직접 넣은 금액은 건드리지 않는다 */
+        if (onPrice && autoFilled.current != null) { onPrice(''); autoFilled.current = null; }
         setInfo({ ok: false, msg:
           (r.complex ? r.complex + ' — ' : '') + '이 주소에는 ' + (n ? n.toLocaleString('ko-KR') + '세대' : '세대가 여럿') + '가 있어 어느 집인지 특정할 수 없습니다.'
           + (lo && hi ? ' 단지 내 공시가격이 ' + rfEok(lo) + ' ~ ' + rfEok(hi) + '으로 갈리니' : ' 세대마다 공시가격이 달라서')
@@ -602,7 +612,7 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
       const reg = r && r.region;
       if (reg && onRegion) onRegion(reg);
       if (r && r.amount > 0 && onPrice) {
-        onPrice(r.amount);
+        onPrice(r.amount); autoFilled.current = String(r.amount);
         setInfo({ ok: true, msg: (r.year ? r.year + '년 ' : '') + '공시가격 ' + rfWon(r.amount) + '을 넣었어요.'
           + (reg ? ' (' + (reg.is_adjusted_area ? '조정대상지역' : '조정대상지역 아님') + ')' : '')
           + ' ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.' });
@@ -625,7 +635,7 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
       </div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <input
-          type="text" value={addr} onChange={(e) => setAddr(e.target.value)}
+          type="text" value={addr} onChange={(e) => changeAddr(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); run(); } }}
           placeholder="예: 서울 강남구 도곡동 467"
           style={{ flex: '1 1 220px', minWidth: 0, padding: '11px 13px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }}
@@ -679,9 +689,10 @@ function RfQuestion({ q, value, onChange }) {
                「1.5년」이 «15년»이 되어 단기보유가 장기보유로 둔갑했다 (260805 Codex P0). */
             onChange={(e) => {
               const raw = String(e.target.value);
-              onChange(q.id, q.money
-                ? raw.replace(/[^0-9]/g, '')
-                : raw.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'));
+              if (q.money) { onChange(q.id, raw.replace(/[^0-9]/g, '')); return; }
+              /* 기간: 소수점 «하나»만 허용. 종전엔 '1.2.3' 을 '1.23' 으로 조용히
+                 바꿔 다른 값이 됐다 — 형식에 안 맞으면 입력을 «받지 않는다» (260805 R2 P2). */
+              if (raw === '' || /^\d*(?:\.\d*)?$/.test(raw)) onChange(q.id, raw);
             }}
             style={{ width: '100%', padding: '13px 15px', fontSize: 17, border: '1px solid #dcd8d0', borderRadius: 9, fontWeight: 700 }}
           />
@@ -755,7 +766,7 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
 const RF_CGT_QS = [
   { id: 'transferPrice', section: '양도 (파는 금액)', q: '집을 얼마에 파시나요? (원)', money: true, placeholder: '예: 2,000,000,000',
     sub: '실제로 받는 매매대금(양도가액)입니다. 1세대 1주택은 12억원까지 비과세이고, 12억원을 넘는 부분만 세금 계산에 들어갑니다.' },
-  { id: 'acqPrice', section: '취득 (산 금액)', q: '그 집을 얼마에 사셨나요? (원)', money: true, placeholder: '예: 1,000,000,000', allowZero: true,
+  { id: 'acqPrice', section: '취득 (산 금액)', q: '그 집을 얼마에 사셨나요? (원)', money: true, placeholder: '예: 1,000,000,000',
     check: (v, a) => (rfNum(v) > rfNum(a.transferPrice) ? '산 금액이 파는 금액보다 큽니다 — 양도차손이면 낼 세금이 없습니다.' : null),
     sub: '취득 당시 실제 매매대금입니다. 상속·증여로 받았다면 그때 평가된 금액을 넣으세요.' },
   { id: 'expenses', section: '필요경비', q: '취득세·중개수수료·자본적지출은 모두 얼마인가요? (원)', money: true, placeholder: '예: 40,000,000', optional: true,
