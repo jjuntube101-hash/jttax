@@ -158,10 +158,12 @@ const CGT_QS = [
     section: '주택 상황',
     q: '그 집을 «살 때» 조정대상지역이었나요?',
     sub: '1세대 1주택 비과세에서 「거주 2년」을 요구하는지는 **살 때** 조정대상지역이었는지로 정해집니다(시행령 §154①). 파는 시점 기준이 아닙니다. 2017년 8월 3일 이후에 조정대상지역에서 산 집이면 보유 2년만으로는 부족하고 거주도 2년을 채워야 비과세됩니다. 반대로 살 때는 비조정지역이었다가 나중에 조정지역이 된 경우에는 거주요건이 없습니다.',
-    showIf: (a) => (a.assetType === 'house_1' || a.assetType === 'house_2' || a.assetType === 'house_3')
-      && a.adjustedZone === 'yes',
+    /* ⚠️ «현재» 조정지역일 때만 물으면, 살 때는 조정이었다가 지금 해제된 집을 놓친다.
+       그러면 거주요건이 «있는데» 없는 것으로 계산돼 비과세가 잘못 나온다 (260806 Codex R2 P0).
+       현재 지정 여부와 무관하게 주택이면 항상 묻는다. */
+    showIf: (a) => a.assetType === 'house_1' || a.assetType === 'house_2' || a.assetType === 'house_3',
     opts: [
-      ['yes', '네 — 살 때도 조정대상지역이었습니다', '보유 2년 + 거주 2년 모두 필요'],
+      ['yes', '네 — 살 때 조정대상지역이었습니다', '보유 2년 + 거주 2년 모두 필요'],
       ['no', '아니오 / 2017.8.3. 이전에 샀습니다', '보유 2년이면 비과세 (거주요건 없음)'],
       ['unsure', '잘 모르겠습니다', '보수적으로 «거주요건 있음»으로 계산합니다'],
     ],
@@ -468,8 +470,7 @@ function mapAnswersToTransfer(answers) {
     // (현재 조정인데 취득당시 비조정이면 거주요건 과다적용될 수 있으나, 미적용 시 비과세 과대평가보다 안전)
     /* 취득 당시 조정대상지역 — «현재 지역»으로 대신하면 안 된다(시행령 §154①).
        모르겠다(unsure)는 보수적으로 true. 260806 Codex A P0 */
-    regulated_at_acquisition: isHouseType && answers.adjustedZone === 'yes'
-      && answers.acqAdjustedZone !== 'no',
+    regulated_at_acquisition: isHouseType && answers.acqAdjustedZone !== 'no',
     expenses_total: Number(answers.expenses) || 0,
     acquired_from_member: assetType === 'occupancy_succ',  // 승계취득 입주권 → 장특공제 배제(§95②)
   };
@@ -739,7 +740,7 @@ function JTReportCGT({ setRoute, onBack }) {
       let nonTaxableMsg = null;
       let taxable = capGain;
       /* 거주 2년 요건은 «취득 당시» 조정지역일 때만. 취득 당시 비조정이면 면제 (§154①) */
-      const needResidence = answers.adjustedZone === 'yes' && answers.acqAdjustedZone !== 'no';
+      const needResidence = answers.acqAdjustedZone !== 'no';
       const residenceOk = !needResidence || residenceYears >= 2;
       if (is1House && sold <= 1_200_000_000 && years >= 2 && residenceOk && !hasConcurrentRight) {
         nonTaxableMsg = '1세대 1주택 · 양도가 12억 이하 · 2년 이상 보유 요건을 모두 충족하시면 원칙적으로 비과세 대상입니다.';
@@ -1059,7 +1060,7 @@ cautions 3개, saving_ideas 2~3개.`;
         // 기본 계산만 재실행 (runAnalysis 본문의 로직 요약)
         const residenceYears2 = answers.moveInDate ? yearsBetween(answers.moveInDate, answers.transferDate) : 0;
         // 거주 2년 요건은 «취득 당시» 조정지역일 때만 (§154① · 260806 Codex A P0)
-        const residenceOk2 = !(answers.adjustedZone === 'yes' && answers.acqAdjustedZone !== 'no') || residenceYears2 >= 2;
+        const residenceOk2 = answers.acqAdjustedZone === 'no' || residenceYears2 >= 2;
         let taxable2 = capGain2;
         let nonTaxableMsg2 = null;
         if (is1House2 && sold2 <= 1_200_000_000 && years2 >= 2 && residenceOk2 && !hasConcurrentRight2) {

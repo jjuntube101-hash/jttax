@@ -57,7 +57,8 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
               //    읽지, «내 재산·세액 정보가 사무소로 전송된다»고 읽지 않는다 (260806 Codex E P0).
               //    개인정보보호법 §15(수집·이용)·§17(제3자 제공)은 고지와 동의를 전제로 한다.
               //    → 리드 확보라는 목적은 그대로 두되, 무엇이 어디로 가는지 먼저 알리고 고르게 한다.
-              var jtSent = false;
+              var COPIED = '결과 요약이 복사되었으니, 카카오톡 채팅창에 붙여넣기(Ctrl+V) 하시면 더 정확히 상담받으실 수 있습니다.';
+              var notify = function (msg) { setTimeout(function () { try { window.alert(msg); } catch (_e) {} }, 80); };
               try {
                 var w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
                 var maySend = false;
@@ -72,8 +73,10 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
                     );
                   } catch (_e2) { maySend = false; }
                 }
+                /* ★ 전송은 비동기다 — «성공 응답» 전에 보냈다고 말하면 안 된다.
+                   네트워크 차단·4xx/5xx 에도 「전달했습니다」가 뜨면 사용자는 응답을 기다리게 된다
+                   (260806 Codex R2 P1). 응답을 보고 안내문을 결정한다. */
                 if (maySend) {
-                  jtSent = true;
                   fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -88,14 +91,18 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
                       접수시각: new Date().toLocaleString('ko-KR'),
                       비고: '고객이 결과 후 카카오톡 채널로 연결 — 연락처 미수집(카톡으로 응대). 같은 시각 카톡 문의와 대조 바람.',
                     }),
-                  }).catch(function(){});
+                  }).then(function (res) {
+                    notify(res && res.ok
+                      ? '계산 결과를 담당 세무사에게 전달했습니다.\n' + COPIED
+                      : '전달에 실패했습니다 — 카카오톡으로 결과를 직접 보내 주세요.\n' + COPIED);
+                  }).catch(function () {
+                    notify('전달에 실패했습니다 — 카카오톡으로 결과를 직접 보내 주세요.\n' + COPIED);
+                  });
+                } else {
+                  notify(COPIED);          // 동의하지 않았거나 전송 대상이 아님 — 복사·카톡만
                 }
-              } catch (_e) {}
-              // ③ 안내 — «실제로 한 일»만 말한다 (보내지 않았는데 보냈다고 하지 않는다)
-              setTimeout(function(){ try { window.alert(
-                (jtSent ? '계산 결과를 담당 세무사에게 전달했습니다.\n' : '')
-                + '결과 요약이 복사되었으니, 카카오톡 채팅창에 붙여넣기(Ctrl+V) 하시면 더 정확히 상담받으실 수 있습니다.'
-              ); } catch (_e) {} }, 80);
+              } catch (_e) { notify(COPIED); }
+              // ③ 안내는 위 «응답 경로»에서 실제로 한 일에 맞춰 띄운다
             }}>
             카톡으로 결과 전송
           </a>

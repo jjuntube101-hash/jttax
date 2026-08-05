@@ -13,15 +13,15 @@ const { useState: useInsState } = React;
 // 2026년 4대보험 요율 (근로자 부담분) — 보건복지부·국민연금공단 공식 (1차소스 260624)
 const INS_RATES_2026 = {
   pension: 0.0475,            // 국민연금 (9.5%의 1/2)
-  /* ⚠️ 기준소득월액 상·하한은 «매년 7월» 국민연금공단 고시로 바뀐다(적용기간 7.1~다음해 6.30).
-     아래 값의 적용기간은 2025.7.1~2026.6.30 으로 **이미 지났다** — 새 고시값을 확인해
-     pensionMin/Max 와 pensionBoundsUntil 을 함께 갱신해야 한다 (260806 Codex D P1).
-     ★ 지금은 확인된 새 값이 없어 옛 값을 그대로 두되, 아래 pensionBoundsUntil 로
-       «기간이 지났다»는 사실을 화면이 스스로 알리게 한다 — 근거 없는 숫자를 지어내지 않는다.
-     확인처: 국민연금공단 「기준소득월액 상·하한액 조정」 고시. */
-  pensionMin: 400000,        // 기준소득월액 하한 (2025.7~2026.6 고시)
-  pensionMax: 6370000,       // 기준소득월액 상한 (2025.7~2026.6 고시)
-  pensionBoundsUntil: '2026-06-30',   // 이 날짜가 지나면 상·하한 갱신 필요
+  /* ⚠️ 기준소득월액 상·하한은 «매년 7월» 보건복지부 고시로 바뀐다(적용 7.1~다음해 6.30).
+     260806 갱신: 종전 값(40만/637만)은 2026.6.30 로 적용기간이 끝나 있었다.
+     현행 = 2026.7.1~2027.6.30 **하한 41만원 · 상한 659만원**
+     (보건복지부 「국민연금 기준소득월액 하한액과 상한액」 고시 개정 — 웹 확인 260806).
+     ★ 만료일이 지나면 아래 pensionBoundsUntil 로 화면이 스스로 알린다.
+       다음 갱신 때 세 값(min·max·until)을 «함께» 고칠 것. */
+  pensionMin: 410000,        // 기준소득월액 하한 (2026.7~2027.6 고시)
+  pensionMax: 6590000,       // 기준소득월액 상한 (2026.7~2027.6 고시)
+  pensionBoundsUntil: '2027-06-30',   // 이 날짜가 지나면 상·하한 갱신 필요
   health: 0.03595,           // 건강보험 (7.19%의 1/2)
   longTermOfHealth: 0.1314,  // 장기요양 = 건강보험료 × 13.14%
   employment: 0.009,         // 고용보험 (실업급여분)
@@ -264,10 +264,10 @@ function JTReportInsurance({ setRoute, onBack }) {
                 걸린» 경우에만 알린다 — 근거 없는 새 숫자를 지어내지 않고 사실만 고지한다. */}
             {calc.ins.pensionBoundsStale && (
               <p style={{ marginTop: 10, padding: '11px 14px', background: '#fff7ea', borderLeft: '4px solid #d08b00', borderRadius: 8, fontSize: 13.5, lineHeight: 1.65 }}>
-                국민연금 기준소득월액 <strong>상·하한</strong>은 매년 7월 고시로 바뀝니다. 이 계산은
-                <strong> 2026년 6월 30일까지 적용되던 상·하한</strong>(하한 40만원·상한 637만원)으로 했고,
-                입력하신 급여가 그 구간에 걸려 있어 <strong>실제 국민연금액이 다를 수 있습니다</strong>.
-                정확한 금액은 상담으로 확인해 주세요.
+                국민연금 기준소득월액 <strong>상·하한</strong>은 매년 7월 고시로 바뀝니다. 이 계산에 쓴
+                상·하한(하한 {wonExact(INS_RATES_2026.pensionMin)}·상한 {wonExact(INS_RATES_2026.pensionMax)})은
+                <strong>{INS_RATES_2026.pensionBoundsUntil}까지 적용</strong>되던 값이고, 입력하신 급여가 그 구간에
+                걸려 있어 <strong>실제 국민연금액이 다를 수 있습니다</strong>. 정확한 금액은 상담으로 확인해 주세요.
               </p>
             )}
           </section>
