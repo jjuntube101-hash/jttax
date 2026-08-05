@@ -280,7 +280,7 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
   // ===== 문항 화면 =====
   return (
     <div className="jt-container">
-      <JTReportShell
+      <JTReportShell dataFlow="ai"
         title="경정청구 가능성 진단"
         subtitle="이미 낸 세금, 다시 볼 수 있는지 5분 안에 살펴봅니다."
         stepIdx={step}
