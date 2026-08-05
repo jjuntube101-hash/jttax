@@ -564,7 +564,7 @@ function RfCrossLinks({ setSubRoute, exclude }) {
    (ReportProperty.jsx 가 전역에 정의 — index.html 로드 순서상 항상 먼저 올라온다)
    ⚠️ 대단지는 동·호에 따라 공시가격이 크게 다르다 — 결과에 확인 안내를 붙인다.
    ══════════════════════════════════════════════════════════════════════════ */
-function RfAddrLookup({ mode, onPrice, onRegion, isAuto, getGen }) {
+function RfAddrLookup({ mode, onPrice, onRegion, isAuto, getGen, accumulate }) {
   const [addr, setAddr] = useRfState('');
   const [busy, setBusy] = useRfState(false);
   const [info, setInfo] = useRfState(null);
@@ -620,7 +620,8 @@ function RfAddrLookup({ mode, onPrice, onRegion, isAuto, getGen }) {
       if (reg && onRegion) onRegion(reg);
       if (r && r.amount > 0 && onPrice) {
         onPrice(r.amount);
-        setInfo({ ok: true, msg: (r.year ? r.year + '년 ' : '') + '공시가격 ' + rfWon(r.amount) + '을 넣었어요.'
+        setInfo({ ok: true, msg: (r.year ? r.year + '년 ' : '') + '공시가격 ' + rfWon(r.amount)
+          + (accumulate ? '을 합계에 «더했어요». 주택이 여러 채면 다음 주소를 이어서 조회하세요.' : '을 넣었어요.')
           + (reg ? ' (' + (reg.is_adjusted_area ? '조정대상지역' : '조정대상지역 아님') + ')' : '')
           + ' ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.' });
       } else if (reg) {
@@ -671,7 +672,15 @@ function RfQuestion({ q, value, onChange, isAuto, getGen }) {
           mode={q.addr}
           isAuto={isAuto}
           getGen={getGen}
-          onPrice={q.addr === 'price' ? function (amt) { onChange(q.id, amt === '' ? '' : String(amt), { auto: true }); } : null}
+          accumulate={q.addr === 'priceAdd'}
+          /* ⚠️ 종부세 「공시가격 합계」는 주택이 여러 채일 수 있다. 한 주소만 조회해
+             그 값으로 «대체»하면 나머지 주택이 빠져 세액이 과소된다(260805 Codex R5 P1).
+             → priceAdd 는 조회 결과를 기존 값에 «더한다». 주소를 하나씩 이어 조회한다. */
+          onPrice={(q.addr === 'price' || q.addr === 'priceAdd') ? function (amt) {
+            if (amt === '') { onChange(q.id, '', { auto: true }); return; }
+            const next = q.addr === 'priceAdd' ? (rfNum(value) + Number(amt)) : Number(amt);
+            onChange(q.id, String(next), { auto: true });
+          } : null}
           onRegion={q.regionTo ? function (reg) { onChange(q.regionTo, reg.is_adjusted_area ? 'yes' : 'no'); } : null}
         />
       )}
@@ -733,8 +742,13 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
        세대를 캡처했다가 응답 시점에 같을 때만 반영한다. */
   const gens = React.useRef({});
   const onChangeTracked = (id, v, opt) => {
+    /* ⚠️ 자동입력도 세대를 올린다. 종전엔 수동 입력만 올려서, 문항을 벗어났다
+       돌아오며 RfAddrLookup 이 언마운트→재마운트되면 seq 가 초기화돼 «옛 조회»의
+       늦은 응답이 최신으로 판정됐다(다른 주소 값이 덮임 — 260805 Codex R5 P1).
+       세대는 컴포넌트 밖(위저드)에 있으므로 언마운트와 무관하게 이어진다. */
     if (opt && opt.auto) autoIds.current[id] = true;
-    else { delete autoIds.current[id]; gens.current[id] = (gens.current[id] || 0) + 1; }
+    else delete autoIds.current[id];
+    gens.current[id] = (gens.current[id] || 0) + 1;
     onChange(id, v);
   };
   const visible = questions.filter((q) => !q.showIf || q.showIf(answers));
@@ -972,8 +986,8 @@ const RF_CRE_QS = [
     sub: '종합부동산세는 매년 6월 1일 기준으로 세대가 가진 주택의 공시가격을 모두 더해 계산합니다.',
     opts: [['one', '1채 (1세대 1주택)', "공제 확대 — 거주하면 14억원"], ['two', '2채', ''], ['three', '3채 이상', '높은 세율·공정비율 적용']] },
   { id: 'totalValue', section: '공시가격 합계', q: '가진 집들의 공시가격을 모두 더하면 얼마인가요? (원)', money: true, placeholder: '예: 1,800,000,000',
-    addr: 'price',
-    sub: '실거래가가 아니라 정부가 매년 발표하는 «공시가격»입니다. 부동산공시가격알리미(realtyprice.kr)에서 주소로 조회할 수 있습니다.' },
+    addr: 'priceAdd',
+    sub: '실거래가가 아니라 정부가 매년 발표하는 «공시가격»입니다. 여러 채라면 아래 주소 조회를 «한 채씩 이어서» 하시면 합계에 더해집니다. 부동산공시가격알리미(realtyprice.kr)에서 직접 확인할 수도 있습니다.' },
   { id: 'isResident', section: '거주 여부', q: '그 집에 본인(세대)이 실제로 살고 있나요?', showIf: (a) => a.houses === 'one',
     sub: '★ 이번 개편의 핵심입니다. 살고 있으면 공제가 12억 → 14억으로 늘고, 살지 않으면 12억 → 9억으로 줄어듭니다.',
     opts: [['yes', '예 — 거주 중', '공제 14억원'], ['no', '아니오 — 비거주', '공제 9억원 (세금이 크게 늘어남)']] },
