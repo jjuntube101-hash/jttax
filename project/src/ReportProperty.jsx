@@ -235,30 +235,202 @@ async function callPropEngine(body) {
    주택은 공동주택 먼저→없으면 개별주택 폴백. 반환 {amount(총액 원), year, kind} 또는 null.
    (토지는 원/㎡ 단가라 면적 곱셈 필요 → 자동조회 미지원) */
 if (typeof window !== 'undefined' && !window.jtLookupPublicPrice) {
-  window.jtLookupPublicPrice = async function (address, housingKind) {
+  window.jtLookupPublicPrice = async function (address, housingKind, unit) {
     const base = window.JT_ENGINE_BASE || 'http://127.0.0.1:8000';
+    const body = { address, housing_kind: housingKind };
+    // 260720: 세대 특정. PNU는 **필지** 단위라 아파트 단지 전체가 한 PNU다.
+    //   동·호가 없으면 엔진이 금액을 주지 않고 needs_unit_selection으로 되묻는다.
+    //   (종전 엔진은 말없이 단지 최고가 세대를 반환했다 — 트리마제 기준 70억 오차)
+    if (unit && unit.dong) body.dong = String(unit.dong);
+    if (unit && unit.ho) body.ho = String(unit.ho);
     const res = await fetch(base + '/v1/lookup/price', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ address, housing_kind: housingKind }),
+      body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error('lookup ' + res.status);
     return res.json();
   };
-  window.jtLookupHousePrice = async function (address) {
-    // 공시가격(주택)을 공동→개별 순으로 찾되, region(지역규제)은 조회 성공/실패와 무관하게 확보
+
+  /* 주택 공시가격 조회 — 공동주택 먼저, 없으면 개별주택 폴백.
+     반환 status:
+       'ok'          금액 확정. matched(단지·동·호·면적)를 화면에 함께 띄워 "이 집이 맞습니까?"를 물을 것
+       'needs_unit'  이 주소에 세대가 여럿이다. **금액을 쓰지 말고** 동·호를 되물어야 한다
+       'region_only' 공시가격은 못 찾았지만 지역규제 판별은 유효(상가·오피스텔·신축 등)
+       'none'        아무것도 못 찾음
+     ⚠️ 하위호환: 어느 경우에도 `amount` 키를 채운다(확정 아니면 0). 기존 호출부의
+        `r.amount > 0` 검사가 그대로 안전하게 동작하도록. */
+  /* 동·호 표기 정규화 — **엔진의 _keys와 같은 2키 방식**이어야 한다.
+       ① exact  : NFKC·대문자·구분자 제거·꼬리 동/호 제거   '103동'→'103'  'C'→'C'
+       ② digits : 숫자만 + 앞의 0 제거                      '0103'→'103'
+     하나라도 겹치면 같은 세대로 본다.
+     ⚠️ 처음엔 ①만 비교했다가 **엔진이 매칭에 성공한 정상 결과를 프론트가 거부**했다
+        (사용자 '0103' vs 엔진 반환 '103'). 검증이 과하면 기능이 죽는다 — 엔진과 규칙을 맞춘다. */
+  window.jtNormUnit = function (v) {
+    return String(v == null ? '' : v).normalize('NFKC').trim().toUpperCase()
+      .replace(/[\s\-_.·]/g, '').replace(/(동|호)$/, '');
+  };
+  /* 비교용 정규형 — 앞자리 0만 없애고 **나머지는 그대로 둔다.**
+       '0103'→'103'  'B0101'→'B101'  'B101'→'B101'(유지)  'C'→'C'  '１０３'→'103'
+     ⚠️ "숫자만 뽑아 비교"하면 안 된다. 지하 'B101'과 지상 '101'이 둘 다 '101'이 되어
+        **층이 다른 남의 집을 같은 집으로 본다.** 엔진에서 고친 오매칭을 프론트가
+        되살리는 셈이라, 실제로 그 버그를 여기서 한 번 만들었다가 테스트로 잡았다.
+        (DB 실측: 호 'B101' 2,549건 · 지하 'B01' 18,539건) */
+  window.jtUnitKey = function (v) {
+    return window.jtNormUnit(v).replace(/^([^0-9]*)0+(\d)/, '$1$2');
+  };
+  window.jtUnitSame = function (a, b) {
+    const ka = window.jtUnitKey(a), kb = window.jtUnitKey(b);
+    return !!ka && !!kb && ka === kb;
+  };
+
+  window.jtLookupHousePrice = async function (address, unit) {
     let lastRegion = null;
     for (const kind of ['공동주택', '개별주택']) {
       try {
-        const r = await window.jtLookupPublicPrice(address, kind);
+        const r = await window.jtLookupPublicPrice(address, kind, unit);
         if (r && r.region) lastRegion = r.region;
+
+        // ⚠️ 260720 (Codex P1): needs_unit_selection을 **금액보다 먼저** 본다.
+        //    엔진이 두 필드를 함께 돌려주는 순간(스키마 변경·부분 구현 등) 종전 순서로는
+        //    "되물어야 하는데 금액이 확정"되어 최고가 반환 결함이 되살아난다.
+        if (r && r.needs_unit_selection) {
+          // 공동주택으로 확인된 주소다 — 개별주택 폴백을 시도하지 않는다
+          return {
+            status: 'needs_unit', amount: 0, kind, region: r.region || lastRegion,
+            complex: r.matched_complex || '',
+            unitCount: Number(r.unit_count) || 0,
+            priceMin: Number(r.price_min) || 0,
+            priceMax: Number(r.price_max) || 0,
+            candidates: Array.isArray(r.unit_candidates) ? r.unit_candidates : [],
+            note: r.note || '',
+          };
+        }
+
         const v = (r && r.valuations && r.valuations[0]) || null;
         if (r && !r.manual_input_required && v && Number(v.amount) > 0) {
-          return { amount: Number(v.amount), year: v.as_of_year || '', kind, region: r.region || lastRegion };
+          // ⚠️ 260720 (Codex): 서버가 돌려준 동·호가 **내가 요청한 것과 같은지** 확인한다.
+          //    엔진이 유사 매칭하거나 식별값을 비워 보내면 남의 집 금액을 그대로 받는다.
+          //    엔진에도 완전일치 규칙이 있지만, 프론트가 한 번 더 본다 — 여기가 마지막 방어선이다.
+          // ⚠️ 260720 2차: **프론트가 자체 규칙으로 재검증하지 않는다.**
+          //    처음엔 여기서 matched_dong/ho를 직접 대조했는데, 그 규칙이 엔진보다 엄격해
+          //    **정상 매칭을 죽였다.** 실데이터에 괄호표기 호 '(201)' 6,650건·
+          //    앞자리0 '001호' 10,431건이 있어, 사용자가 '201'을 치면 엔진은 맞다고
+          //    확정하는데 프론트가 "표기가 다르다"며 거부하는 상황이 실제로 발생했다.
+          //    → 판정은 엔진이 한다(exact/loose). 프론트는 **사용자에게 알리는 역할**만.
+          //    'loose'면 금액은 채우되 입력값과 찾은 세대를 나란히 보여 확인을 받는다.
+          const quality = r.match_quality || '';
+          if (unit && (unit.dong || unit.ho) && quality === 'loose') {
+            return {
+              status: 'ok', amount: Number(v.amount), year: v.as_of_year || '', kind,
+              region: r.region || lastRegion, loose: true, matchQuality: 'loose',
+              asked: { dong: unit.dong || '', ho: unit.ho || '' },
+              matched: {
+                complex: r.matched_complex || '', dong: r.matched_dong || '',
+                ho: r.matched_ho || '', area: Number(r.matched_area_m2) || 0,
+              },
+            };
+          }
+          return {
+            status: 'ok', amount: Number(v.amount), year: v.as_of_year || '', kind,
+            region: r.region || lastRegion, matchQuality: r.match_quality || '',
+            matched: {
+              complex: r.matched_complex || '', dong: r.matched_dong || '',
+              ho: r.matched_ho || '', area: Number(r.matched_area_m2) || 0,
+            },
+          };
+        }
+
+        // 동·호를 줬는데 그 세대를 못 찾은 경우.
+        // ⚠️ note 문자열 매칭은 취약하다(Codex P1) — 엔진이 문구를 바꾸면 깨진다.
+        //    엔진에 error_code를 넣는 게 정답이나 스키마 변경이라 별건으로 남긴다.
+        //    당장은 **문자열이 안 맞아도 폴백으로 새지 않게** 조건을 넓혀 둔다:
+        //    동·호를 준 조회에서 공동주택이 금액을 못 주면 그 자체로 '세대 못 찾음'이다.
+        if (kind === '공동주택' && unit && (unit.dong || unit.ho)) {
+          return {
+            status: 'unit_not_found', amount: 0, kind, region: r && r.region ? r.region : lastRegion,
+            note: (r && r.note) || '입력하신 동·호를 이 단지에서 찾지 못했습니다. 다시 확인해 주세요.',
+          };
         }
       } catch (e) { /* 다음 종류 시도 */ }
     }
-    // 공시가격을 못 찾아도(상가·오피스텔 등) 지역규제 판별은 유효 → region만이라도 반환
-    return lastRegion ? { amount: 0, region: lastRegion } : null;
+    return lastRegion ? { status: 'region_only', amount: 0, region: lastRegion } : { status: 'none', amount: 0 };
+  };
+
+  /* 조회 결과를 사람이 확인할 수 있게 만드는 문구 — 3개 계산기가 동일하게 쓴다.
+     금액만 보여주면 그게 내 집 값인지 알 수 없다. 반드시 무엇을 맞췄는지 함께 띄운다. */
+  window.jtMatchedLabel = function (m) {
+    if (!m) return '';
+    const parts = [];
+    if (m.complex) parts.push(m.complex);
+    if (m.dong) parts.push(m.dong + '동');
+    if (m.ho) parts.push(m.ho + '호');
+    if (m.area > 0) parts.push(m.area.toFixed(1) + '㎡');
+    return parts.join(' ');
+  };
+}
+
+/* ═══ 동·호 되묻기 (공용) ═══════════════════════════════════════════════
+   이 주소에 세대가 여럿일 때 뜬다. 재산세·취득세·종부세 계산기가 동일하게 쓴다.
+   왜 되묻나: PNU는 **필지** 단위라 아파트 단지 전체가 한 PNU다. 동·호 없이는
+   어느 집인지 특정할 수 없고, 종전 엔진은 그럴 때 말없이 단지 최고가 세대를
+   반환했다(트리마제 기준 5.16억짜리 집에 75.03억 — 70억 오차).
+   금액을 추측해 채우느니 한 번 더 묻는다. */
+if (typeof window !== 'undefined' && !window.JTUnitAsk) {
+  window.JTUnitAsk = function JTUnitAsk({ info, busy, onPick }) {
+    const [d, setD] = React.useState('');
+    const [h, setH] = React.useState('');
+    if (!info) return null;
+    // 앱 전역 formatWon("5억 1,600만원")을 쓴다. 없으면 원 단위로 폴백.
+    // ⚠️ `jtFormatWon`이라는 전역은 존재하지 않는다(실측) — 그걸 기대하면 조용히 폴백만 탄다.
+    const won = (n) => (typeof window.formatWon === 'function'
+      ? window.formatWon(Number(n))
+      : Number(n).toLocaleString('ko-KR') + '원');
+    const submit = () => { if (d.trim() || h.trim()) onPick({ dong: d.trim(), ho: h.trim() }); };
+    const inputStyle = {
+      width: '100%', padding: '10px 12px', fontSize: 15, border: '1px solid rgba(0,0,0,.22)',
+      borderRadius: 6, boxSizing: 'border-box',
+    };
+    return (
+      <div style={{
+        marginTop: 12, padding: '16px 18px', background: '#FFFDF5',
+        border: '1px solid #C9A227', borderRadius: 8,
+      }}>
+        <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 6 }}>
+          어느 집인지 알려주세요
+        </div>
+        <p style={{ margin: '0 0 12px', fontSize: 13.5, color: '#5a5a5a', lineHeight: 1.65 }}>
+          {info.complex ? <strong>{info.complex}</strong> : '이 주소'}에 세대가{' '}
+          <strong>{info.unitCount.toLocaleString('ko-KR')}곳</strong> 있습니다
+          {info.priceMin > 0 && info.priceMax > 0 && (
+            <> — 공시가격이 {won(info.priceMin)}부터 {won(info.priceMax)}까지 다릅니다</>
+          )}.
+          <br />동·호를 넣으시면 <strong>그 집의 공시가격</strong>을 정확히 찾아 드립니다.
+        </p>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 110px', minWidth: 100 }}>
+            <label style={{ fontSize: 12, color: '#777', display: 'block', marginBottom: 4 }}>동</label>
+            <input style={inputStyle} value={d} onChange={e => setD(e.target.value)}
+              placeholder="예: 101 (없으면 비워두세요)" inputMode="text"
+              onKeyDown={e => { if (e.key === 'Enter') submit(); }} />
+          </div>
+          <div style={{ flex: '1 1 110px', minWidth: 100 }}>
+            <label style={{ fontSize: 12, color: '#777', display: 'block', marginBottom: 4 }}>호</label>
+            <input style={inputStyle} value={h} onChange={e => setH(e.target.value)}
+              placeholder="예: 1203" inputMode="text"
+              onKeyDown={e => { if (e.key === 'Enter') submit(); }} />
+          </div>
+        </div>
+        <div style={{ marginTop: 10, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <button className="jt-btn jt-btn--primary" style={{ borderRadius: 0 }}
+            disabled={busy || !(d.trim() || h.trim())} onClick={submit}>
+            {busy ? '찾는 중…' : '이 세대로 조회'}
+          </button>
+          <span style={{ fontSize: 12, color: '#888' }}>
+            '101동'·'0101'처럼 적으셔도 됩니다. 모르시면 공시가격을 직접 입력하셔도 돼요.
+          </span>
+        </div>
+      </div>
+    );
   };
 }
 
@@ -274,6 +446,18 @@ function JTReportProperty({ setRoute, onBack }) {
   const [laddr, setLaddr] = usePropState('');
   const [lbusy, setLbusy] = usePropState(false);
   const [linfo, setLinfo] = usePropState(null); // {ok:bool, msg:string}
+  const [unitAsk, setUnitAsk] = usePropState(null); // 260720: 세대 여럿 → 동·호 되묻기
+  // ⚠️ 260720 (Codex P0): 비동기 경합 방어. 주소 A 조회 뒤 B를 조회하면 A의 늦은 응답이
+  //    B의 화면(되묻기·금액·안내문)을 덮는다. 요청마다 번호를 매기고 **최신 것만** 반영한다.
+  const jtReqSeq = React.useRef(0);
+  // ⚠️ 260720 2차 (Codex P0): seq만으로는 부족하다. 요청 도중 사용자가 **주소를 고치면**
+  //    seq는 그대로라 옛 응답이 새 주소 화면에 그대로 적용된다.
+  //    최신 주소를 ref로 들고, 응답 시점에 조회 당시 주소와 다르면 버린다.
+  const jtAddrRef = React.useRef('');
+  // ⚠️ 260720 3R (Codex P0): 종전엔 useEffect로 ref를 갱신했는데, effect는 **렌더 이후**에
+  //    돌기 때문에 "주소 변경 렌더 ~ effect 실행" 사이에 응답이 도착하면 ref가 아직 옛 주소다.
+  //    → 옛 응답이 반영되거나(위험) 최신 응답이 버려진다. 입력 시점에 **동기로** 갱신한다.
+  const setLaddrSync = (v) => { jtAddrRef.current = v; setLaddr(v); };
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
@@ -295,15 +479,54 @@ function JTReportProperty({ setRoute, onBack }) {
     return !!answers[cur.id];
   };
 
-  const doAddrLookup = async () => {
+  const doAddrLookup = async (unit) => {
     if (!laddr.trim()) return;
+    const addrNow = laddr.trim();
+    // 되묻기 제출인데 그 사이 주소가 바뀌었으면 폐기 — 이전 주소의 동·호가 새 주소로 가면 안 된다
+    if (unit && unitAsk && unitAsk.addr && unitAsk.addr !== addrNow) { setUnitAsk(null); return; }
+    const mySeq = ++jtReqSeq.current;
+    // 두 갈래로 나눈다:
+    //   seqStale : 더 새 요청이 시작됨 → busy 해제 판단용(이걸로 막으면 busy가 영구히 남는다)
+    //   stale    : seq가 낡았거나 **그 사이 주소가 바뀜** → 화면 상태 반영 금지
+    const seqStale = () => jtReqSeq.current !== mySeq;
+    const stale = () => seqStale() || (jtAddrRef.current || '').trim() !== addrNow;
     setLbusy(true); setLinfo(null);
+    if (!unit) setUnitAsk(null);   // 주소를 새로 조회하면 이전 되묻기는 닫는다
     try {
-      const r = await window.jtLookupHousePrice(laddr.trim());
-      if (r && r.amount > 0) {
+      const r = await window.jtLookupHousePrice(addrNow, unit);
+      if (stale()) return;   // 더 새 요청이 진행 중 — 이 응답은 버린다
+      // 260720: 이 주소에 세대가 여럿 — 금액을 채우지 않고 동·호를 되묻는다
+      if (r && r.status === 'needs_unit') {
+        setUnitAsk({ ...r, addr: addrNow });
+        const reg = r.region;
+        if (reg && reg.urban_area_likely === true) setAns('isUrbanArea', 'yes');
+        else if (reg && reg.urban_area_likely === false) setAns('isUrbanArea', 'no');
+        return;
+      }
+      if (r && (r.status === 'unit_not_found' || r.status === 'unit_mismatch')) {
+        setLinfo({ ok: false, msg: r.note || '입력하신 동·호를 찾지 못했어요. 다시 확인해 주세요.' });
+        return;
+      }
+      // ⚠️ 260720 3R (Codex P1): 금액만 보고 반영하지 않는다. 응답 계약을 확인한다 —
+      //    상태가 'ok'이고, 유한한 양수이며, match_quality가 허용값일 때만.
+      //    (업무 규칙 재검증이 아니라 계약 검증이다 — 이건 프론트가 해야 한다)
+      const contractOk = r && r.status === 'ok'
+        && Number.isFinite(Number(r.amount)) && Number(r.amount) > 0
+        && ['', 'exact', 'loose'].indexOf(r.matchQuality === undefined ? '' : r.matchQuality) >= 0;
+      if (contractOk) {
+        setUnitAsk(null);
         setAns('standardValue', String(r.amount));
         const kindLabel = r.kind === '공동주택' ? '아파트·연립·다세대' : '단독·다가구주택';
-        let msg = `${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).`;
+        const ml = window.jtMatchedLabel && window.jtMatchedLabel(r.matched);
+        // ⚠️ 금액만 보여주면 그게 내 집 값인지 알 수 없다. 무엇을 맞췄는지 반드시 함께.
+        // 260720: 엔진이 'loose'(숫자는 같은데 표기가 다름)로 맞춘 경우 그 차이를 드러낸다.
+        //   실데이터에 '(201)'·'001호' 같은 표기가 있어 정상적으로 발생한다. 거부하지 않고 알린다.
+        const looseNote = r.loose
+          ? ` (입력하신 ${[r.asked.dong && r.asked.dong + '동', r.asked.ho && r.asked.ho + '호'].filter(Boolean).join(' ')} → 찾은 세대 ${[r.matched.dong && r.matched.dong + '동', r.matched.ho && r.matched.ho + '호'].filter(Boolean).join(' ')} — 표기가 조금 다릅니다)`
+          : '';
+        let msg = ml
+          ? `${ml} — ${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요.${looseNote} 이 집이 맞는지 확인해 주세요.`
+          : `${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).`;
         // 도시지역 자동선택(근사) — 주소 기준. 재산세 도시지역분(0.14%) 판정용
         const reg = r.region;
         if (reg && reg.urban_area_likely === true) { setAns('isUrbanArea', 'yes'); msg += ` ${reg.sigungu || '해당 지역'}은 도시지역으로 자동판단했어요(다르면 뒤 단계에서 수정).`; }
@@ -320,8 +543,10 @@ function JTReportProperty({ setRoute, onBack }) {
         setLinfo({ ok: false, msg: '이 주소의 공시가격을 찾지 못했어요(상가·오피스텔·신축 등은 미수록일 수 있어요). 공시가격을 직접 입력해 주세요.' });
       }
     } catch (e) {
-      setLinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 잠시 후 다시 시도하거나 직접 입력해 주세요.' });
-    } finally { setLbusy(false); }
+      // ⚠️ 260720 2차 (Codex P0): 여기에 가드가 없으면 **먼저 쏜 요청이 늦게 실패**했을 때
+      //    이미 성공한 최신 화면을 '오류'로 덮어쓴다.
+      if (!stale()) setLinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 잠시 후 다시 시도하거나 직접 입력해 주세요.' });
+    } finally { if (!seqStale()) setLbusy(false); }   // 주소가 바뀌어도 busy는 반드시 해제
   };
 
   const runAnalysis = async () => {
@@ -539,9 +764,11 @@ function JTReportProperty({ setRoute, onBack }) {
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
                   placeholder="예: 서울 종로구 자하문로36길 16-14"
-                  value={laddr} onChange={e => setLaddr(e.target.value)}
+                  value={laddr} onChange={e => setLaddrSync(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter' && !lbusy) doAddrLookup(); }} />
-                <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={lbusy || !laddr.trim()} onClick={doAddrLookup}>
+                {/* ⚠️ onClick={doAddrLookup} 로 두면 React가 **이벤트 객체를 첫 인자**로 넘겨
+                    doAddrLookup(unit)의 unit 자리에 들어간다. 반드시 화살표로 감쌀 것. */}
+                <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={lbusy || !laddr.trim()} onClick={() => doAddrLookup()}>
                   {lbusy ? '조회 중…' : '공시가격 조회'}
                 </button>
               </div>
@@ -550,6 +777,12 @@ function JTReportProperty({ setRoute, onBack }) {
                   background: linfo.ok ? '#eaf5ee' : '#fff7ea', borderLeft: '4px solid ' + (linfo.ok ? '#2a6d4f' : '#d08b00') }}>
                   {linfo.msg}
                 </div>
+              )}
+              {/* JTUnitAsk는 ReportProperty.jsx에 정의된다. 이 파일이 먼저 로드될 수 있고,
+                  정의가 실패하면 window.JTUnitAsk가 undefined라 렌더가 통째로 죽는다 —
+                  되묻기가 필요 없는 평시에도. 존재 확인 후에만 렌더한다. */}
+              {unitAsk && window.JTUnitAsk && (
+                <window.JTUnitAsk info={unitAsk} busy={lbusy} onPick={(u) => doAddrLookup(u)} />
               )}
             </div>
           )}

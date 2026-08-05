@@ -233,6 +233,18 @@ function JTReportComprehensive({ setRoute, onBack }) {
   const [lbusy, setLbusy] = useCompState(false);
   const [linfo, setLinfo] = useCompState(null);
   const [addedCount, setAddedCount] = useCompState(0);
+  const [unitAsk, setUnitAsk] = useCompState(null); // 260720: 세대 여럿 → 동·호 되묻기
+  // ⚠️ 260720 (Codex P0): 비동기 경합 방어. 주소 A 조회 뒤 B를 조회하면 A의 늦은 응답이
+  //    B의 화면(되묻기·금액·안내문)을 덮는다. 요청마다 번호를 매기고 **최신 것만** 반영한다.
+  const jtReqSeq = React.useRef(0);
+  // ⚠️ 260720 2차 (Codex P0): seq만으로는 부족하다. 요청 도중 사용자가 **주소를 고치면**
+  //    seq는 그대로라 옛 응답이 새 주소 화면에 그대로 적용된다.
+  //    최신 주소를 ref로 들고, 응답 시점에 조회 당시 주소와 다르면 버린다.
+  const jtAddrRef = React.useRef('');
+  // ⚠️ 260720 3R (Codex P0): 종전엔 useEffect로 ref를 갱신했는데, effect는 **렌더 이후**에
+  //    돌기 때문에 "주소 변경 렌더 ~ effect 실행" 사이에 응답이 도착하면 ref가 아직 옛 주소다.
+  //    → 옛 응답이 반영되거나(위험) 최신 응답이 버려진다. 입력 시점에 **동기로** 갱신한다.
+  const setLaddrSync = (v) => { jtAddrRef.current = v; setLaddr(v); };
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
@@ -240,27 +252,56 @@ function JTReportComprehensive({ setRoute, onBack }) {
   }, []);
 
   // 종부세는 여러 채 합계 → 주소 1건 조회할 때마다 공시가격을 합계에 '누적' 더함
-  const doAddrLookup = async () => {
+  const doAddrLookup = async (unit) => {
     if (!laddr.trim()) return;
+    const addrNow = laddr.trim();
+    // 되묻기 제출인데 그 사이 주소가 바뀌었으면 폐기 — 이전 주소의 동·호가 새 주소로 가면 안 된다
+    if (unit && unitAsk && unitAsk.addr && unitAsk.addr !== addrNow) { setUnitAsk(null); return; }
+    const mySeq = ++jtReqSeq.current;
+    // 두 갈래로 나눈다:
+    //   seqStale : 더 새 요청이 시작됨 → busy 해제 판단용(이걸로 막으면 busy가 영구히 남는다)
+    //   stale    : seq가 낡았거나 **그 사이 주소가 바뀜** → 화면 상태 반영 금지
+    const seqStale = () => jtReqSeq.current !== mySeq;
+    const stale = () => seqStale() || (jtAddrRef.current || '').trim() !== addrNow;
     setLbusy(true); setLinfo(null);
+    if (!unit) setUnitAsk(null);   // 주소를 새로 조회하면 이전 되묻기는 닫는다
     try {
-      const r = await window.jtLookupHousePrice(laddr.trim());
-      if (r) {
+      const r = await window.jtLookupHousePrice(addrNow, unit);
+      if (stale()) return;   // 더 새 요청이 진행 중 — 이 응답은 버린다
+      // 260720: 이 주소에 세대가 여럿 — 금액을 채우지 않고 동·호를 되묻는다
+      if (r && r.status === 'needs_unit') { setUnitAsk({ ...r, addr: addrNow }); return; }
+      if (r && (r.status === 'unit_not_found' || r.status === 'unit_mismatch')) {
+        setLinfo({ ok: false, msg: r.note || '입력하신 동·호를 찾지 못했어요. 다시 확인해 주세요.' });
+        return;
+      }
+      // ⚠️ 260720: 종전 조건은 `if (r)`였다. 헬퍼가 실패 시에도 객체를 돌려주므로
+      //    **0원을 합계에 더하고 "더했어요"라고 알리는** 상태였다(주택 채수도 1 증가).
+      //    금액이 실제로 있을 때만 누적한다.
+      // ⚠️ 260720 3R (Codex P1): 금액만 보고 반영하지 않는다. 응답 계약을 확인한다 —
+      //    상태가 'ok'이고, 유한한 양수이며, match_quality가 허용값일 때만.
+      //    (업무 규칙 재검증이 아니라 계약 검증이다 — 이건 프론트가 해야 한다)
+      const contractOk = r && r.status === 'ok'
+        && Number.isFinite(Number(r.amount)) && Number(r.amount) > 0
+        && ['', 'exact', 'loose'].indexOf(r.matchQuality === undefined ? '' : r.matchQuality) >= 0;
+      if (contractOk) {
+        setUnitAsk(null);
         const prev = Number(answers.totalValue) || 0;
         const next = prev + r.amount;
         setAns('totalValue', String(next));
         const n = addedCount + 1; setAddedCount(n);
         const kindLabel = r.kind === '공동주택' ? '아파트·연립·다세대' : '단독·다가구주택';
-        setLinfo({ ok: true, msg: `${kindLabel} 공시가격 ${formatWon(r.amount)}을 합계에 더했어요. 현재 합계 ${formatWon(next)} (주택 ${n}채 반영). 여러 채면 다음 주소를 이어서 조회하세요.` });
-        setLaddr('');
+        const ml = window.jtMatchedLabel && window.jtMatchedLabel(r.matched);
+        setLinfo({ ok: true, msg: `${ml || kindLabel} 공시가격 ${formatWon(r.amount)}을 합계에 더했어요. 현재 합계 ${formatWon(next)} (주택 ${n}채 반영). 맞는지 확인하시고, 여러 채면 다음 주소를 이어서 조회하세요.` });
+        setLaddrSync('');
       } else {
         setLinfo({ ok: false, msg: '이 주소의 공시가격을 찾지 못했어요(상가·오피스텔·신축 등). 직접 더해 입력해 주세요.' });
       }
     } catch (e) {
-      setLinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 직접 입력해 주세요.' });
-    } finally { setLbusy(false); }
+      // ⚠️ 260720 2차 (Codex P0): 늦게 실패한 옛 요청이 최신 화면을 덮지 않도록
+      if (!stale()) setLinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 직접 입력해 주세요.' });
+    } finally { if (!seqStale()) setLbusy(false); }   // 주소가 바뀌어도 busy는 반드시 해제
   };
-  const resetAddr = () => { setAns('totalValue', ''); setAddedCount(0); setLinfo(null); setLaddr(''); };
+  const resetAddr = () => { setAns('totalValue', ''); setAddedCount(0); setLinfo(null); setLaddrSync(''); };
 
   const allVisible = COMP_QS.filter(q => !q.showIf || q.showIf(answers));
   const visibleQs = phase === 'quick' ? allVisible.filter(q => q.tier === 'quick') : allVisible.filter(q => q.tier !== 'quick');
@@ -509,9 +550,10 @@ function JTReportComprehensive({ setRoute, onBack }) {
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
                   placeholder="예: 서울 종로구 자하문로36길 16-14"
-                  value={laddr} onChange={e => setLaddr(e.target.value)}
+                  value={laddr} onChange={e => setLaddrSync(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter' && !lbusy) doAddrLookup(); }} />
-                <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={lbusy || !laddr.trim()} onClick={doAddrLookup}>
+                {/* ⚠️ onClick={doAddrLookup} 면 React가 이벤트 객체를 unit 인자로 넘긴다 — 화살표 필수 */}
+                <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={lbusy || !laddr.trim()} onClick={() => doAddrLookup()}>
                   {lbusy ? '조회 중…' : '합계에 추가'}
                 </button>
               </div>
@@ -521,6 +563,12 @@ function JTReportComprehensive({ setRoute, onBack }) {
                   {linfo.msg}
                   {addedCount > 0 && <div style={{ marginTop: 6 }}><button className="jt-btn jt-btn--ghost" style={{ padding: '4px 10px', fontSize: 13 }} onClick={resetAddr}>합계 초기화</button></div>}
                 </div>
+              )}
+              {/* JTUnitAsk는 ReportProperty.jsx에 정의된다. 이 파일이 먼저 로드될 수 있고,
+                  정의가 실패하면 window.JTUnitAsk가 undefined라 렌더가 통째로 죽는다 —
+                  되묻기가 필요 없는 평시에도. 존재 확인 후에만 렌더한다. */}
+              {unitAsk && window.JTUnitAsk && (
+                <window.JTUnitAsk info={unitAsk} busy={lbusy} onPick={(u) => doAddrLookup(u)} />
               )}
             </div>
           )}
