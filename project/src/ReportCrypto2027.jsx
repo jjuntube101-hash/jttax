@@ -351,7 +351,7 @@ function JTReportCrypto({ setRoute, setSubRoute, onBack }) {
 
   if (!result) {
     return (
-      <JTReportShell tag="2027 시행 예정" stepIdx={0} stepTotal={2} onBack={onBack}
+      <JTReportShell dataFlow="local" tag="2027 시행 예정" stepIdx={0} stepTotal={2} onBack={onBack}
         title="코인 세금, 2027년부터 얼마나 낼까요?"
         subtitle="2026년 안에 팔면 0원, 2027년부터는 과세됩니다 — 내 경우 얼마인지 바로 계산합니다.">
         <div className="jt-container">
@@ -379,7 +379,7 @@ function JTReportCrypto({ setRoute, setSubRoute, onBack }) {
 
   const r = result;
   return (
-    <JTReportShell tag="2027 시행 예정" stepIdx={2} stepTotal={2} onBack={onBack}
+    <JTReportShell dataFlow="local" tag="2027 시행 예정" stepIdx={2} stepTotal={2} onBack={onBack}
       title="가상자산 소득세 계산 결과" subtitle="2027년 1월 1일 이후 양도한다고 가정한 세액입니다.">
       <div className="jt-container">
         <CrNotice />

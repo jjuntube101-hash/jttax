@@ -153,7 +153,18 @@ if (typeof window !== 'undefined' && !window.jtValidCalc) {
 }
 
 // ============ 공통 스텝 셸 (진단별 공용) ============
-function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag }) {
+/* 입력값 처리 고지 — 계산기마다 «실제 데이터 흐름»이 다르다 (260806 Codex R6 P2).
+     engine (기본) : 세액 계산 엔진 호출 + 일부 진단은 AI
+     lookup        : 계산은 브라우저 안에서. 주소로 공시가격을 «조회할 때만» 엔진 호출
+     local         : 전부 브라우저 안에서. 밖으로 나가는 것이 없다
+   ⚠️ 하나로 뭉뚱그리면 «하지 않는 전송»을 한다고 말하게 된다 — 반대 방향의 거짓이다. */
+const JT_PRIVACY_NOTE = {
+  engine: <>입력값은 계정에 저장하지 않습니다. 계산을 위해 세액 계산 엔진으로 전송되며, 일부 진단은 AI 응답을 이용합니다. 담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.</>,
+  lookup: <>입력값은 계정에 저장하지 않습니다. 계산은 <strong>브라우저 안에서</strong> 이뤄지고, 주소로 공시가격을 조회할 때만 조회 서버로 주소가 전송됩니다. 담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.</>,
+  local: <>입력값은 계정에 저장하지 않습니다. 계산은 <strong>전부 브라우저 안에서</strong> 이뤄지며 외부로 전송되지 않습니다. 담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.</>,
+};
+
+function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag, dataFlow }) {
   // P2-2: 로딩·결과 화면은 stepIdx=stepTotal을 넘겨 진행률 100% 초과·"Step N+1/N"이 되던 것 클램프(0~100%)
   const _tot = Math.max(1, stepTotal || 0);
   const _stepNo = Math.max(0, Math.min(stepIdx + 1, _tot));
@@ -175,8 +186,7 @@ function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, 
             이용자는 «엔진 전송·AI 이용»을 모른 채 재산 정보를 넣는다 (260806 Codex R5 P1).
             모든 계산기가 이 셸을 쓰므로 여기 한 줄을 두면 전 화면이 덮인다. */}
         <p className="jt-report-shell__privacy" style={{ fontSize: 12.5, opacity: 0.65, lineHeight: 1.6, marginTop: 6 }}>
-          입력값은 계정에 저장하지 않습니다. 계산을 위해 세액 계산 엔진으로 전송되며, 일부 진단은 AI 응답을 이용합니다.
-          담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.
+          {JT_PRIVACY_NOTE[dataFlow] || JT_PRIVACY_NOTE.engine}
         </p>
       </div>
       <div className="jt-report-shell__body">

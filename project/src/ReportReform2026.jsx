@@ -1128,7 +1128,7 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
   const submit = () => { cancelPending(); onSubmit(); };
 
   return (
-    <JTReportShell tag={tag} stepIdx={pos} stepTotal={total} onBack={onBack} title={title} subtitle={subtitle}>
+    <JTReportShell dataFlow="lookup" tag={tag} stepIdx={pos} stepTotal={total} onBack={onBack} title={title} subtitle={subtitle}>
       <div className="jt-container">
         {notice}
         <div className="jt-report-calc"
@@ -1300,7 +1300,7 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
   const best = result.reduce((a, b) => (b.total < a.total ? b : a), result[0]);
   const worst = result.reduce((a, b) => (b.total > a.total ? b : a), result[0]);
   return (
-    <JTReportShell tag="2026 세제개편안" stepIdx={2} stepTotal={2} onBack={onBack}
+    <JTReportShell dataFlow="lookup" tag="2026 세제개편안" stepIdx={2} stepTotal={2} onBack={onBack}
       title="연도별 양도소득세 비교" subtitle="개편안이 그대로 시행된다고 가정했을 때, 파는 시점별 총 세부담입니다.">
       <div className="jt-container">
         <RfNotice />
@@ -1505,7 +1505,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
   const v = rfCreVerdict(result);          // 결론 판정 — 정본은 순수 함수 쪽
   const diff = v.diff;
   return (
-    <JTReportShell tag="2026 세제개편안" stepIdx={2} stepTotal={2} onBack={onBack}
+    <JTReportShell dataFlow="lookup" tag="2026 세제개편안" stepIdx={2} stepTotal={2} onBack={onBack}
       title="연도별 종합부동산세 비교" subtitle="개편안이 그대로 시행된다고 가정했을 때, 해마다 내야 할 종부세입니다.">
       <div className="jt-container">
         <RfNotice />
