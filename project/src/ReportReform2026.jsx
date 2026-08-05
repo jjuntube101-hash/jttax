@@ -620,7 +620,13 @@ function rfSplitUnit(raw) {
   const pick = (re) => {
     const m = addr.match(re);
     if (!m) return '';
-    addr = addr.slice(0, m.index) + m[1] + ' ' + addr.slice(m.index + m[0].length);
+    /* 앞 경계 문자는 되돌려 붙여 주소를 훼손하지 않는다.
+       단 «구분자로 쓰인» 가운뎃점은 공백으로 바꾼다 (Codex R22 P2).
+       그러지 않으려고 마지막 정규화에서 「·」를 싹 지웠더니, 이번엔
+       「서울 A·B아파트」처럼 **주소 본문의 가운뎃점**까지 공백이 됐다.
+       지우는 자리를 여기로 좁혀야 본문이 산다. */
+    const lead = m[1] === '·' ? ' ' : m[1];
+    addr = addr.slice(0, m.index) + lead + ' ' + addr.slice(m.index + m[0].length);
     /* 토큰만 반각·대문자로 눕힌다. 주소 본문은 원문 그대로 남는다. */
     return m[2].normalize('NFKC').toUpperCase();
   };
@@ -642,7 +648,7 @@ function rfSplitUnit(raw) {
     else if (ch === ')' || ch === '）') { depth--; if (depth < 0) { broken = true; break; } }
   }
   if (broken || depth !== 0) addr = addr.replace(/[(（)）]/g, ' ');
-  addr = addr.replace(/[,，·\s]+/g, ' ').replace(/[,，·\s]+$/, '').trim();
+  addr = addr.replace(/[,，\s]+/g, ' ').replace(/[,，\s]+$/, '').trim();
   return { addr, dong, ho };
 }
 
