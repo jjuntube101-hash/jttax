@@ -139,7 +139,7 @@ const JT_ABBR = {
   cgt: '양도', gift: '증여', inheritance: '상속', acquisition: '취득', property: '재산',
   comprehensive: '종부', income: '종소', vat: '부가', insurance: '급여', corporate: '법인',
   youthstartup: '창업', compare: '비교', burden: '부담', appeal: '경정',
-  'reform-cgt': '개편', 'reform-cre': '개편',
+  'reform-cgt': '개편', 'reform-cre': '개편', crypto: '코인',
 };
 window.JT_ABBR = JT_ABBR;
 
@@ -207,6 +207,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
             {[
               { sub: 'reform-cgt', kr: '2026 세제개편안 양도세 계산기', tagline: '2026 · 2027 · 2028 · 2029년 비교', d: '장특공제가 거주 기준으로 바뀌면 내 양도세는 얼마가 될까. 다주택 중과 한시 완화(2027~2028년)와 새로 생기는 공제 한도(20억→10억)까지 반영해 네 개 연도를 한 화면에서 비교합니다.' },
               { sub: 'reform-cre', kr: '2026 종부세 개편안 계산기', tagline: '거주 14억 vs 비거주 9억', d: '1주택 기본공제가 실거주 여부로 갈립니다. 공정시장가액비율 인상(60→70→80%)과 가액 기준 세율 일원화까지 반영해 2026·2027·2028년 종부세를 비교합니다.' },
+              { sub: 'crypto', kr: '가상자산(코인) 세금 계산기', tagline: '2027.1.1 시행 예정 · 22%', d: '코인 세금은 2027년 1월 1일부터입니다. 2026년 말까지 오른 부분은 「의제취득가액」으로 과세 대상에서 빠집니다 — 2026년에 팔 때와 2027년에 팔 때가 얼마나 다른지 계산합니다.' },
             ].map((x) => (
               <button key={x.sub} className="jt-report-live-card" onClick={() => setSubRoute(x.sub)} style={{ textAlign: 'left', border: '1px solid rgba(208,104,10,.35)', background: '#fff', borderRadius: 12, padding: '20px 22px', cursor: 'pointer', font: 'inherit' }}>
                 <div style={{ fontSize: 12, fontWeight: 800, color: '#a8500a', letterSpacing: '.03em', marginBottom: 7 }}>{x.tagline}</div>
@@ -374,7 +375,7 @@ window.JTReportHub = JTReportHub;
 // ============ 라우터 (허브 ↔ 각 진단) ============
 /* ★ 새 계산기를 추가하면 «반드시» 이 배열에도 키를 넣을 것.
    빠뜨리면 딥링크가 조용히 허브로 리다이렉트되고 에러도 안 난다(260804 실측). */
-const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup', 'reform-cgt', 'reform-cre'];
+const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup', 'reform-cgt', 'reform-cre', 'crypto'];
 const jtNormSub = (s) => (JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : 'hub'); // 모르는 계산기 키 → 허브 (깨진 공유링크 방어)
 
 function JTReportPage({ setRoute }) {
@@ -435,6 +436,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'hub' && <JTReportHub setRoute={setRoute} setSubRoute={setSubRoute} />}
       {subRoute === 'reform-cgt' && <JTReportReformCGT setRoute={setRoute} setSubRoute={setSubRoute} onBack={back} />}
       {subRoute === 'reform-cre' && <JTReportReformCRE setRoute={setRoute} setSubRoute={setSubRoute} onBack={back} />}
+      {subRoute === 'crypto' && <JTReportCrypto setRoute={setRoute} setSubRoute={setSubRoute} onBack={back} />}
       {subRoute === 'appeal' && <JTReportAppeal setRoute={setRoute} onBack={back} />}
       {subRoute === 'cgt' && <JTReportCGT setRoute={setRoute} onBack={back} />}
       {subRoute === 'income' && <JTReportIncome setRoute={setRoute} onBack={back} />}
