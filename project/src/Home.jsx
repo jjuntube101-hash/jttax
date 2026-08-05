@@ -364,7 +364,8 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
       {list ?
       <ul className="jt-insights" style={{ borderTop: '1px solid var(--border-1)' }}>
           {all.map((s, i) =>
-        <li key={s.num} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => setRoute('services')}>
+        <li key={s.num} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => setRoute('services')}
+            role="link" tabIndex={0} onKeyDown={window.jtKeyActivate}>
               <span className="jt-insights__num">{s.num}</span>
               <span className="jt-insights__title">{s.kr}</span>
               <span className="jt-insights__tag">{s.en}</span>
@@ -408,7 +409,8 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
           }
             </article>
         )}
-          <article className="jt-service reveal" data-delay="4" onClick={() => setRoute('services')} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gridColumn: mobile ? 'auto' : 'span 2', minHeight: 220 }}>
+          <article className="jt-service reveal" data-delay="4" onClick={() => setRoute('services')}
+          role="link" tabIndex={0} onKeyDown={window.jtKeyActivate} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gridColumn: mobile ? 'auto' : 'span 2', minHeight: 220 }}>
             <header className="jt-service__head">
               <span>{all[4].num} · {all[4].en}</span>
               <span className="jt-arrow">→</span>
