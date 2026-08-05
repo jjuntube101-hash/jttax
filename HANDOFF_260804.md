@@ -146,45 +146,40 @@ node project/insights/build-insights.mjs && node project/calculators/build-calcu
 
 ---
 
-## ⏸ 미완 — 개별주택 2025년 합본 적재 (260805 중단, 이어서 하면 됨)
+## ✅ 완료 — 개별주택 2025+2026 합본 (260805 배포)
 
-**왜 하는가**: 엔진의 개별주택 DB에 **2026년치만** 실려 있어, 2026년 공시 «대상이 아닌»
-필지(멸실·용도변경 등)가 통째로 조회 실패였다. 실측 — 종로 가회동 11-42는
-2026년엔 없고 2025년에 5.24억이 있다. **신규 커버 65,840 필지(+1.7%)**.
+**해결**: 2026년 공시 «대상이 아닌» 필지가 통째로 조회 실패였다. 2025년치를 같은 표에
+얹어 **사각지대 65,840 필지(+1.8%)** 해소. **코드 변경 0** — `query_house` 가
+`year=(SELECT MAX(year) ... WHERE pnu=?)` 로 «집집마다 최신 연도»를 본다.
 
-**왜 도쿄 IP 얘기가 나오나**: vworld 는 해외 IP 차단이라 fly(도쿄)에서 실시간 조회가 막힌다.
-그래서 로컬 SQLite 가 1순위다. ⛔ **fly 에 한국 리전은 없다** — 실측 확인:
-아시아·태평양 = 뭄바이(bom)·싱가포르(sin)·시드니(syd)·도쿄(nrt) 뿐. 리전 이전은 «불가».
+라이브 확인: 가회동 11-42 → **524,000,000·2025**(종전 실패) / 가회동 11-40 → 905,000,000·2026,
+31-1 → 6,046,000,000·2026(회귀 없음) / 아파트 정릉로 305 102동 601호 → 411,000,000 exact.
+합본 7,717,823행 = 3,855,427(2026) + 3,862,396(2025) · integrity ok. **2026 원본 보존**(되돌릴 길).
 
-### 이미 끝난 것
-- `D:/jt-data/공시가격벌크/house_price_2025.sqlite` (386만행, 319MB) — 원본 ZIP `20250810` 로 생성
-- `D:/jt-data/공시가격벌크/house_price.sqlite` (**합본 771만행, 693MB**, integrity ok)
-- **동작 검증 완료(코드 변경 0)**: `query_house` 가 `year=(SELECT MAX(year) ... WHERE pnu=?)`
-  로 «집집마다 최신 연도»를 보므로, 2026 있는 집은 2026 유지 / 없는 집만 2025 로 떨어진다.
-    가회동 11-42 → 2025년 524,000,000  ·  성북 62-18 → 2026년 469,000,000
-- `jt-taxlab/services/tax-engine/fly.toml` 의 `HOUSE_PRICE_DB` 를
-  `/data/house_price.sqlite` 로 **로컬 편집만 해 둠 (배포 안 함)**
+⛔ **fly 에 한국 리전은 없다** — 실측(`flyctl platform regions`): 아시아·태평양 =
+뭄바이·싱가포르·시드니·도쿄. **리전 이전 제안 금지.**
 
-### 남은 것 — 업로드가 두 번 끊겼다
-```
-1회차: 693MB 통짜 → 39MB 에서 중단(느림, 90분 예상)
-2회차: 319MB(2025분만) → "connection lost (72,318,976 bytes written)"
-```
-⚠️ **`flyctl ssh sftp put` 은 대용량에서 끊긴다. exit code 0 이어도 실패한다** —
-반드시 `ls -la /data` 로 **크기를 눈으로 대조**할 것.
-⚠️ Git Bash 에서는 `MSYS_NO_PATHCONV=1` 필수. 안 하면 원격 `/data/...` 가
-`C:/Program Files/Git/data/...` 로 바뀌어 조용히 실패한다(1회차에 실제로 당함).
+### 다시 할 때 쓰는 스크립트 (jt-taxlab/services/tax-engine/scripts/)
+`upload_house_zips_260805.sh` → `build_merge_house_2025.py` (서버 `/data` 에 올려 `python3` 실행)
 
-**권장 경로 — 서버에서 만들기**(업로드 총량 절반, 재개 가능):
-1. `/data/house_price_2025.sqlite` 업로드 (319MB). 끊기면 이어서 재시도 후 크기 대조
-2. 서버에서 병합 — 2026 원본은 남겨 둔다:
-   `cp /data/house_price_2026.sqlite /data/house_price.sqlite`
-   `python3 -c "import sqlite3;c=sqlite3.connect('/data/house_price.sqlite');c.execute(\"ATTACH '/data/house_price_2025.sqlite' AS y\");c.execute('INSERT INTO house_price SELECT * FROM y.house_price');c.commit()"`
-3. `PRAGMA integrity_check` + 행수 7,717,823 확인 → `rm /data/house_price_2025.sqlite`
-4. `flyctl deploy` (fly.toml 변경 반영) → 라이브 재확인
+🔑 **업로드가 세 번 막혔다. 전부 «성공처럼 보이는» 실패였다**
+1. `sftp put` 은 끊겨도 **exit 0** → 파일마다 `stat -c %s` 로 크기 대조가 유일한 진실
+2. flyctl 은 Windows 바이너리 → **로컬** 경로는 `D:/...`, 원격은 `MSYS_NO_PATHCONV=1`
+3. `auto_stop_machines="stop"` → SFTP 트래픽은 «깨어 있는 근거»가 아니다. 6개 올리고
+   머신이 자서 나머지 11개가 전부 「받은 0」. → keepalive(HTTP) + 파일마다 `machine start`
 
-**정리 필요**: 볼륨에 2회차 부분 파일 `/data/house_price_2025.sqlite` (72MB) 가 남아 있다.
-**라이브 엔진은 무손상** — 배포를 안 했으므로 여전히 `house_price_2026.sqlite` 를 본다.
+## 🔴 새로 발견 — 개별주택도 «한 필지에 여러 채»다 (미수정, 별건)
+
+`app/routers/lookup.py:296` 주석이 **「개별주택·토지는 필지당 1건이라 세대 개념이 없다」**
+고 단정하고 `items[0]` 을 「자동 조회 성공」으로 확정한다. **그 전제가 사실이 아니다** —
+2026 DB 실측: 필지 3,746,183개 중 **71,499개(1.9%)에 주택이 2채 이상**,
+그중 **67,788개는 가격이 서로 다르다**(최대 **807배**: 31.7만 ~ 2.56억).
+한 필지에 16채·112채인 곳도 있고 **`dong` 컬럼이 그것을 구분**한다.
+
+아파트에서 고쳤던 「단지 최고가를 말없이 반환」과 **같은 계열의 조용한 오답**이다.
+금액이 그럴듯해 아무도 눈치채지 못한다. 합본은 이 모호성을 **늘리지 않았다**
+(2026 에 있는 PNU 의 반환은 그대로) — 그러나 원래 있던 구멍이다.
+고치려면 아파트처럼 `dong` 으로 되묻는 분기가 필요하다.
 
 ## 🔎 별건 — 건축물대장 래퍼가 «데이터 없음»으로 위장 중 (260805 발견, 미수정)
 
