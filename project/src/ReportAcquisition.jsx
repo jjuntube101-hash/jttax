@@ -618,7 +618,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
           {cur.numeric && (
             <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
               value={answers[cur.id] ? (cur.money ? Number(answers[cur.id]).toLocaleString('ko-KR') : answers[cur.id]) : ''}
-              onChange={(e) => setAns(cur.id, cur.money ? e.target.value.replace(/[^0-9]/g, '') : e.target.value.replace(/[^0-9.]/g, ''))} />
+              onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)} />
           )}
           {cur.numeric && cur.money && Number(answers[cur.id]) > 0 && (
             <div style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: 'var(--accent,#2a6d4f)' }}>= {acqKoreanAmount(answers[cur.id])}</div>

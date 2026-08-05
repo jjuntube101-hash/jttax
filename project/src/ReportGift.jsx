@@ -769,7 +769,7 @@ function JTReportGift({ setRoute, onBack }) {
           {cur.numeric && (
             <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
               value={answers[cur.id] ? Number(answers[cur.id]).toLocaleString('ko-KR') : ''}
-              onChange={(e) => setAns(cur.id, e.target.value.replace(/[^0-9]/g, ''))} />
+              onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)} />
           )}
           {cur.numeric && cur.money && Number(answers[cur.id]) > 0 && (
             <div style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: 'var(--accent,#2a6d4f)' }}>= {koreanAmount(answers[cur.id])}</div>

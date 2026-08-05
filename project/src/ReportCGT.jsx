@@ -1360,10 +1360,7 @@ cautions 3개, saving_ideas 2~3개.`;
               inputMode="numeric"
               placeholder={cur.placeholder}
               value={answers[cur.id] ? Number(answers[cur.id]).toLocaleString('ko-KR') : ''}
-              onChange={(e) => {
-                const digits = e.target.value.replace(/[^0-9]/g, '');
-                setAns(cur.id, digits);
-              }}
+              onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)}
             />
           )}
 

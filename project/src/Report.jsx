@@ -3,6 +3,40 @@
 
 const { useState: useReportState, useEffect: useReportEffect, useMemo: useReportMemo } = React;
 
+/* ══════════════════════════════════════════════════════════════════════════
+   숫자 입력 정규화 — «전 계산기 공용». 이 파일이 Report*.jsx 중 가장 먼저 로드된다.
+
+   ⚠️ 「숫자가 아닌 문자를 전부 지운다」(`replace(/[^0-9]/g,'')`)는 방식은 **자릿수를 바꾼다**:
+        "50,000,000.00" → 소수점만 사라져 5000000000  (100배)
+        "18e8"          → 188                        (자릿수 붕괴)
+        "１２３"(전각)   → ''                         (붙여넣기가 통째로 사라짐)
+        "-100"          → 100                        (부호만 조용히 삭제)
+      엑셀·거래소 명세·부동산 사이트에서 복사해 붙이면 실제로 일어나는 입력들이다.
+      260805 개편안·가상자산 계산기에서 처음 잡았고, 260806 전수 점검 결과 **나머지
+      계산기 7종도 같은 코드**였다 — 그래서 규칙을 여기 한 곳에 두고 전부가 재사용한다.
+
+   반환: 정규화된 문자열 / '' (빈 입력) / **null = 「받지 않는다」**
+         (호출부는 null 이면 값을 갱신하지 않는다 — 자릿수가 바뀐 값을 저장하느니 무시한다)
+   ══════════════════════════════════════════════════════════════════════════ */
+window.jtMoneyDigits = function (raw) {
+  var s = String(raw == null ? '' : raw).normalize('NFKC').replace(/[,\s_₩원]/g, '');
+  if (s === '') return '';
+  if (!/^\d+(?:\.\d*)?$/.test(s)) return null;      // 지수표기·음수·문자 혼입은 거부
+  return s.split('.')[0].replace(/^0+(?=\d)/, '');  // 원 단위이므로 소수부는 절사
+};
+/* 기간·비율·면적처럼 «소수»를 허용하는 칸 — 소수점 하나까지 살린다 */
+window.jtDecimalInput = function (raw) {
+  var s = String(raw == null ? '' : raw).normalize('NFKC').replace(/[,\s_]/g, '');
+  if (s === '') return '';
+  if (!/^\d*(?:\.\d*)?$/.test(s)) return null;
+  return s;
+};
+/* 문항 입력 공용 핸들러 — `money` 여부로 갈라 정규화하고, 거부되면 값을 그대로 둔다 */
+window.jtSetNumericAns = function (setAns, id, raw, isMoney) {
+  var v = isMoney ? window.jtMoneyDigits(raw) : window.jtDecimalInput(raw);
+  if (v !== null) setAns(id, v);
+};
+
 // ============ 진단 메타 ============
 window.JT_REPORTS = [
   {

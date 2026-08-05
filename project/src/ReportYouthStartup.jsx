@@ -738,7 +738,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
             <div>
               <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] ? (cur.money ? Number(answers[cur.id]).toLocaleString('ko-KR') : answers[cur.id]) : ''}
-                onChange={e => setAns(cur.id, cur.money ? e.target.value.replace(/[^0-9]/g, '') : e.target.value.replace(/[^0-9.]/g, ''))} />
+                onChange={e => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)} />
             </div>
           )}
 
