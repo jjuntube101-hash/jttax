@@ -626,6 +626,21 @@ function JTReportGift({ setRoute, onBack }) {
         why: '10년 내 사전증여 — 합산은 하지만 기납부세액공제(§58)가 빠져 세금이 «많게» 나옵니다(실측 485만원 차이).' },
     ]);
     const giftBlocked = giftGaps.length > 0;
+    /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
+       가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
+       AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
+    if (giftBlocked) {
+      return (
+        <div className="jt-container">
+          <JTReportShell title="증여세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            <JTFallbackBlocked gaps={giftGaps} onRetry={runAnalysis} />
+            <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
+              <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
+            </div>
+          </JTReportShell>
+        </div>
+      );
+    }
     return (
       <div className="jt-container">
         <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
@@ -752,6 +767,10 @@ function JTReportGift({ setRoute, onBack }) {
             본 계산은 입력 정보와 현행 세법을 기준으로 한 예상액입니다. 실제 세액은 사실관계·평가액·세법 개정에 따라 달라질 수 있으며, 신고기한은 증여일이 속한 달의 말일부터 3개월입니다(신고세액공제 3%). 정확한 신고는 담당 세무사 확인이 필요합니다.
           </p>
 
+          {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
+              kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
+              Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
+          {!giftBlocked && (
           <JTReportConvert
             setRoute={setRoute}
             reportType={isBurdened ? '부담부증여 통합 계산' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')}
@@ -761,6 +780,7 @@ function JTReportGift({ setRoute, onBack }) {
             kakaoSummary={buildGiftKakao(answers, calc)}
             urgent={false}
           />
+          )}
         </JTReportShell>
       </div>
     );

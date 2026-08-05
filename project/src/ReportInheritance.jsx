@@ -489,6 +489,21 @@ function JTReportInheritance({ setRoute, onBack }) {
         why: '자녀가 7명 이상인데 정확한 인원이 없습니다 — 배우자 법정상속분이 인원수로 갈립니다.' },
     ]);
     const inhBlocked = inhGaps.length > 0;
+    /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
+       가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
+       AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
+    if (inhBlocked) {
+      return (
+        <div className="jt-container">
+          <JTReportShell title="상속세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            <JTFallbackBlocked gaps={inhGaps} onRetry={runAnalysis} />
+            <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
+              <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
+            </div>
+          </JTReportShell>
+        </div>
+      );
+    }
     return (
       <div className="jt-container">
         <JTReportShell title="상속세 계산 결과" subtitle={calc.precise ? '상속세 정밀 계산' : '상속세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
@@ -517,7 +532,7 @@ function JTReportInheritance({ setRoute, onBack }) {
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
                 <strong>총재산·배우자·자녀만으로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
-                채무·장례비 · 금융재산공제 · 동거주택공제 · 10년 내 사전증여(합산) · 배우자 실제 상속분.
+                채무·장례비 · 금융재산공제 · 동거주택공제 · 10년 내 사전증여(합산) · 배우자 실제 상속분 · 비거주자 여부(일괄공제 배제).
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
             </div>
@@ -585,6 +600,10 @@ function JTReportInheritance({ setRoute, onBack }) {
             본 계산은 입력 정보와 현행 세법을 기준으로 한 예상액입니다. 실제 세액은 재산 평가액·상속재산 분할·공제 적용·세법 개정에 따라 달라질 수 있으며, 신고기한은 상속개시일(사망일)이 속한 달의 말일부터 6개월입니다(피상속인 또는 상속인 중 한 분이라도 외국에 주소를 둔 경우 9개월, 신고세액공제 3%). 정확한 신고는 담당 세무사 확인이 필요합니다.
           </p>
 
+          {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
+              kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
+              Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
+          {!inhBlocked && (
           <JTReportConvert
             setRoute={setRoute}
             reportType={calc.precise ? '상속세 정밀 계산' : '상속세 간이 계산'}
@@ -594,6 +613,7 @@ function JTReportInheritance({ setRoute, onBack }) {
             kakaoSummary={buildInhKakao(answers, calc)}
             urgent={false}
           />
+          )}
         </JTReportShell>
       </div>
     );

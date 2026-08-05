@@ -102,6 +102,77 @@ eq('평범한 1주택 → 통과',
    CGT({ assetType: 'house_1', acqAdjustedZone: 'no', acquiredDate: '2015-01-01', moveInDate: '2015-06-01' }).length, 0);
 eq('상가(비주택) → 통과 (단기세율·기본세율은 폴백도 맞다)', CGT({ assetType: 'commercial' }).length, 0);
 
+/* ── «실제 누설» 검사 ────────────────────────────────────────────────
+   종전 검사는 `{!blocked` 같은 정규식만 봐서, 헤드라인만 가리고 계산표·공유버튼이
+   남은 상태를 그대로 통과시켰다(260806 Codex P2 — 실제로 그렇게 샜다).
+
+   구조를 뒤집었으므로 검사도 뒤집는다. 가릴 것을 «세지» 않고,
+   차단 시 반환되는 «그 서브트리 안»에 금액을 만드는 표현이 없는지만 본다.
+   가려야 할 대상이 앞으로 늘어도 이 검사는 그대로 유효하다. */
+console.log('\n════ 누설 검사 — 차단 시 반환되는 화면에 금액이 없는가 ════');
+
+/* if (blockVar) { return ( … ); } 의 실제 본문을 중괄호 균형으로 잘라낸다 */
+function earlyReturnBody(src, blockVar) {
+  const head = `if (${blockVar}) {`;
+  const i = src.indexOf(head);
+  if (i < 0) return null;
+  let d = 1, j = i + head.length;
+  while (j < src.length && d > 0) {
+    const ch = src[j];
+    if (ch === '{') d++; else if (ch === '}') d--;
+    j++;
+  }
+  return src.slice(i, j);
+}
+
+/* 금액을 화면·클립보드·전송·외부 AI 로 내보내는 표현들 */
+const LEAK_TARGETS = [
+  { pat: 'JTReportConvert', what: '공유·카카오 전송' },
+  { pat: 'formatWon', what: '금액 포맷 호출' },
+  { pat: 'totalTax', what: '세액 값 참조' },
+  { pat: 'commentary', what: 'AI 코멘터리' },
+];
+const BLOCKED_FILES = [
+  ['ReportInheritance.jsx', 'inhBlocked'], ['ReportGift.jsx', 'giftBlocked'],
+  ['ReportAcquisition.jsx', 'acqBlocked'], ['ReportProperty.jsx', 'propBlocked'],
+  ['ReportCGT.jsx', 'cgtBlocked'],
+];
+BLOCKED_FILES.forEach(([f, v]) => {
+  const src = fs.readFileSync(SRC(f), 'utf8');
+  const body = earlyReturnBody(src, v);
+  if (body === null) {
+    eq(`${f} 에 if (${v}) 조기 반환이 있다`, false, true);
+    return;
+  }
+  /* 조기 반환이 «결과 JSX 를 만드는 return 보다 앞»에 있어야 실효가 있다.
+     차단 변수를 선언한 «직후»에 오는지로 본다 — 뒤로 밀리면 결과 화면이 먼저 만들어진다. */
+  const declEnd = src.indexOf(`const ${v} = `);
+  const guardAt = src.indexOf(`if (${v}) {`);
+  const mainReturn = src.indexOf('return (', declEnd);
+  eq(`${f} · 조기 반환이 결과 화면 return 보다 앞에 있다`,
+     declEnd >= 0 && guardAt > declEnd && guardAt < mainReturn, true);
+  eq(`${f} · 차단 화면이 JTFallbackBlocked 를 렌더한다`, /<JTFallbackBlocked\b/.test(body), true);
+  const hits = LEAK_TARGETS.filter(({ pat }) => body.includes(pat)).map((t) => t.what);
+  eq(`${f} · 차단 화면에 금액 표현이 없다`, hits.length ? `누설: ${hits.join(' / ')}` : '없음', '없음');
+});
+
+/* precise 이면 gaps 가 «실제로» 비는지 — 정규식이 아니라 실행으로 확인한다.
+   종전 검사는 `calc.precise … ? [] :` 문자열만 봐서, 그 삼항이 딴 데 있어도 통과했다. */
+console.log('\n════ 엔진 성공(precise) 시엔 차단하지 않는다 — 실행으로 확인 ════');
+[['ReportInheritance.jsx', 'inhGaps', { spouseActual: 'zero', isResident: 'no' }, { nonResident: true }],
+ ['ReportGift.jsx', 'giftGaps', { genSkip: 'yes', priorGiftHas: 'yes' }, { nonResident: false }],
+ ['ReportAcquisition.jsx', 'acqGaps', { propertyType: '토지', reduction: 'first' }, { acqArea: 0 }],
+ ['ReportProperty.jsx', 'propGaps', { propertyKind: '건축물' }, {}],
+ ['ReportCGT.jsx', 'cgtGaps', { assetType: 'occupancy_succ' }, {}]].forEach(([f, v, ans, extra]) => {
+  const body = extractGapChecks(f, v);
+  const fn = new Function('answers', 'calc', 'Number', 'window', Object.keys(extra).join(',') || '_unused',
+    'return calc.precise ? [] : window.jtFallbackGaps([' + body + ']);');
+  const blocked = fn(ans, { precise: false }, Number, window, ...Object.values(extra));
+  const precise = fn(ans, { precise: true }, Number, window, ...Object.values(extra));
+  eq(`${f} · 차단 입력 + 엔진 실패 → 막는다`, blocked.length > 0, true);
+  eq(`${f} · 같은 입력이라도 엔진 성공 → 안 막는다`, precise.length, 0);
+});
+
 console.log('\n════ «배선» 확인 — 규칙만 있고 화면이 안 쓰면 소용없다 ════');
 [['ReportInheritance.jsx', 'inhBlocked'], ['ReportGift.jsx', 'giftBlocked'],
  ['ReportAcquisition.jsx', 'acqBlocked'], ['ReportProperty.jsx', 'propBlocked'],

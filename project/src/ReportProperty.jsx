@@ -624,6 +624,21 @@ function JTReportProperty({ setRoute, onBack }) {
         why: '건축물 — 지역자원시설세(소방분)가 간이 계산에 없어 세금이 «적게» 나옵니다.' },
     ]);
     const propBlocked = propGaps.length > 0;
+    /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
+       가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
+       AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
+    if (propBlocked) {
+      return (
+        <div className="jt-container">
+          <JTReportShell title="재산세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            <JTFallbackBlocked gaps={propGaps} onRetry={runAnalysis} />
+            <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
+              <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
+            </div>
+          </JTReportShell>
+        </div>
+      );
+    }
     return (
       <div className="jt-container">
         <JTReportShell title="재산세 계산 결과" subtitle={calc.precise ? '재산세 정밀 계산' : '재산세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
@@ -729,7 +744,10 @@ function JTReportProperty({ setRoute, onBack }) {
             </section>
           )}
 
-          {typeof JTReportConvert === 'function' && (
+          {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
+              kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
+              Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
+          {typeof JTReportConvert === 'function' && !propBlocked && (
             <JTReportConvert
               reportType="재산세"
               reportSummary={`${answers.propertyKind} 공시 ${formatWon(Number(answers.standardValue) || 0)} → 연 ${formatWon(calc.totalTax)}`}

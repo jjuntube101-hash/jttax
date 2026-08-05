@@ -1156,17 +1156,33 @@ cautions 3개, saving_ideas 2~3개.`;
         why: '승계취득 조합원입주권 — 장기보유특별공제 대상이 아닌데 간이 계산이 공제를 적용해 세금이 «적게» 나옵니다.' },
       { when: answers.assetType === 'occupancy_orig',
         why: '원조합원 입주권 — 관리처분인가 «전» 차익에만 장특공제가 붙는데 간이 계산은 전체 차익에 적용해 세금이 «크게 적게» 나옵니다.' },
+      /* 조정지역 조건을 빼는 이유 — 틀리는 «방향»이 지역에 따라 뒤집힐 뿐, 둘 다 틀린다 (260806 Codex P1).
+         · 조정: 중과(+20%p)·장특 배제(§104⑦2호) 미반영 → 세금이 «적게»(실측 5억원대)
+         · 비조정: 일시적 특례(시령 §156의2③·§156의3②) 판정 불가라 무조건 과세 → 비과세여야 할 건이 «많게»
+         «많게»도 사고다. 팔지 말아야 할 이유가 되어 의사결정을 바꾼다. */
       { when: answers.assetType === 'house_1'
-              && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale')
-              && answers.adjustedZone === 'yes',
-        why: '조정대상지역 «1주택 + 입주권·분양권» 보유 — 중과(+20%p)와 장특 배제(§104⑦2호)를 간이 계산이 반영하지 못해 세금이 «크게 적게» 나옵니다(실측 5억원대 차이).' },
-      { when: (answers.assetType === 'house_1' || answers.assetType === 'house_2' || answers.assetType === 'house_3')
-              && answers.acqAdjustedZone === 'unsure',
+              && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale'),
+        why: '«1주택 + 입주권·분양권» 동시 보유 — 비과세 배제(§89②)와 일시적 특례를 간이 계산이 판정하지 못합니다.' },
+      /* 취득 당시 조정지역은 «1세대1주택 비과세의 거주요건»에만 쓰인다(§154①) — 2·3주택엔 영향이 없어
+         차단하면 멀쩡한 이용자를 막는다. 과잉 차단도 결함이다 (Codex P2, 소스 1063·746행에서 확인). */
+      { when: answers.assetType === 'house_1' && answers.acqAdjustedZone === 'unsure',
         why: '살 때 조정대상지역이었는지 «모름» — 1세대1주택 비과세의 거주 2년 요건이 이 사실로 갈립니다.' },
       { when: !!answers.moveInDate && !!answers.acquiredDate && answers.moveInDate < answers.acquiredDate,
         why: '전입일이 취득일보다 앞섭니다 — 거주기간이 실제보다 길게 잡혀 공제가 과다해집니다.' },
     ]);
     const cgtBlocked = cgtGaps.length > 0;
+    /* ★ 차단이면 «결과 화면을 아예 만들지 않는다» — 위 조기 반환과 같은 이유. */
+    if (cgtBlocked) {
+      return (
+        <div className="jt-container jt-report-result">
+          <div className="jt-report-result__head">
+            <button className="jt-report-shell__back" onClick={onBack}>← 세금 계산기</button>
+            <div className="jt-report-result__meta"><span className="jt-tag">정밀 계산 필요</span></div>
+          </div>
+          <JTFallbackBlocked gaps={cgtGaps} onRetry={runAnalysis} />
+        </div>
+      );
+    }
     return (
       <div className="jt-container jt-report-result">
         <div className="jt-report-result__head">
@@ -1255,6 +1271,8 @@ cautions 3개, saving_ideas 2~3개.`;
           </section>
         )}
 
+        {/* 차단 시엔 계산 내역도 감춘다 — 헤드라인만 가리고 표를 남기면 막은 게 아니다 (Codex P0) */}
+        {!cgtBlocked && (
         <section className="jt-report-result__section">
           <h3>계산 내역</h3>
           <table className="jt-report-calc">
@@ -1277,6 +1295,7 @@ cautions 3개, saving_ideas 2~3개.`;
             </tbody>
           </table>
         </section>
+        )}
 
         {calc.precise && calc.steps && calc.steps.length > 0 && (
           <section className="jt-report-result__section">
@@ -1337,15 +1356,20 @@ cautions 3개, saving_ideas 2~3개.`;
         </section>
 
         <JTReportDisclaimer variant="inline" />
-        <JTReportConvert
-          setRoute={setRoute}
-          reportType="양도소득세 간이 계산"
-          reportTag="LEGACY"
-          reportSummary={`총 세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
-          reportDetail={buildReportDetail(answers, calc, commentary)}
-          kakaoSummary={buildKakaoSummary(answers, calc)}
-          urgent={calc.shortTermNote !== null}
+        {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
+            kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
+            Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
+        {!cgtBlocked && (
+        <JTReportConvert
+          setRoute={setRoute}
+          reportType="양도소득세 간이 계산"
+          reportTag="LEGACY"
+          reportSummary={`총 세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
+          reportDetail={buildReportDetail(answers, calc, commentary)}
+          kakaoSummary={buildKakaoSummary(answers, calc)}
+          urgent={calc.shortTermNote !== null}
         />
+        )}
 
         <div className="jt-report-result__foot">
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setStep(0); setAnswers({ transferDate: isoDate(new Date()) }); }}>다시 계산</button>
