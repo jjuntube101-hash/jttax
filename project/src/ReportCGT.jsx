@@ -630,6 +630,14 @@ function JTReportCGT({ setRoute, onBack }) {
       const isHouse = is1House || is2House || is3House;
       const isPresale = assetType === 'presale';
       const isCommercial = assetType === 'commercial';
+      /* ★ 단기보유 세율은 «자산 종류»로 갈린다 (소득세법 §104①2호·3호 — 260806 원문 확인)
+           · 주택·조합원입주권·분양권 : 1년 미만 70% / 1년 이상 2년 미만 60%
+           · 그 밖의 부동산(상가·토지) : 1년 미만 50% / 1년 이상 2년 미만 40%
+         분양권은 위 isPresale 분기가 따로 처리한다(2년 이상도 60% — §104①1호 괄호). */
+      const isDwellingClass = is1House || is2House || is3House
+        || assetType === 'replacement' || assetType === 'occupancy_orig' || assetType === 'occupancy_succ';
+      const shortRate = years < 1 ? (isDwellingClass ? 0.70 : 0.50)
+        : (years < 2 ? (isDwellingClass ? 0.60 : 0.40) : 0);
       const isAdjusted = answers.adjustedZone === 'yes';
       // 비주택은 엔진이 기본세율·표1 장특·단기(50/40)로 계산(비과세 없음). 토지는 사용현황 사실로 비사업용 중과 반영.
       const isLand = isCommercial && answers.nonHouseType === 'land';
@@ -742,26 +750,26 @@ function JTReportCGT({ setRoute, onBack }) {
         const rate = years < 1 ? 0.70 : 0.60;
         baseTax = Math.round(taxBase * rate);
         shortTermNote = `분양권·입주권 양도 · ${(rate * 100).toFixed(0)}% 단일세율이 적용됩니다.`;
-      } else if (years < 1) {
-        // 수정 260628(R2-01·소§104⑦ 후단): 조정 다주택 단기는 단기세액과 중과세액 중 큰 값(max).
-        const shortTax = Math.round(taxBase * 0.70);
+      } else if (shortRate > 0) {
+        /* 단기보유 세율 — 수정 260806(Codex A P0, 소득세법 §104①2호·3호 원문 확인).
+           종전엔 1년 미만에 «모든 자산» 70%를 먹이고, 1~2년은 isHouse 만 60%로 처리해
+           ①상가·토지에 법정 50%/40% 가 아예 안 붙고 ②조합원입주권이 60% 분기에서 빠졌다. */
+        const shortTax = Math.round(taxBase * shortRate);
+        const pct = (shortRate * 100).toFixed(0);
+        const bandLabel = years < 1 ? '1년 미만' : '1~2년';
         if (isHeavyCgt) {
+          // 소§104⑦ 후단: 중과세액과 단기세액 중 «큰 세액»
           const surcharge = is3House ? 0.30 : 0.20;
           baseTax = Math.max(shortTax, calcBaseTax(taxBase) + Math.round(taxBase * surcharge));
-          shortTermNote = `보유 1년 미만 + 조정 다주택 — 단기 70%와 중과(+${(surcharge * 100).toFixed(0)}%p) 중 큰 세액(소§104⑦ 후단·장특 배제, 간이 추정).`;
+          shortTermNote = `보유 ${bandLabel} + 조정 다주택 — 단기 ${pct}%와 중과(+${(surcharge * 100).toFixed(0)}%p) 중 큰 세액(소§104⑦ 후단·장특 배제, 간이 추정).`;
+        } else if (isLand && (answers.landUse === 'non_business' || answers.landUse === 'unsure')) {
+          // 소§104④ 후단: 비사업용 토지가 2년 미만이면 [기본세율+10%p] 와 단기세율 중 «큰 세액»
+          const heavyLand = calcBaseTax(taxBase) + Math.round(taxBase * 0.10);
+          baseTax = Math.max(shortTax, heavyLand);
+          shortTermNote = `비사업용 토지 보유 ${bandLabel} — 단기 ${pct}%와 기본세율+10%p 중 큰 세액(소§104④ 후단, 간이 추정).`;
         } else {
           baseTax = shortTax;
-          shortTermNote = '보유 1년 미만 단기양도 · 70% 중과세율이 적용됩니다.';
-        }
-      } else if (years < 2 && isHouse) {
-        const shortTax = Math.round(taxBase * 0.60);
-        if (isHeavyCgt) {
-          const surcharge = is3House ? 0.30 : 0.20;
-          baseTax = Math.max(shortTax, calcBaseTax(taxBase) + Math.round(taxBase * surcharge));
-          shortTermNote = `주택 1~2년 + 조정 다주택 — 단기 60%와 중과(+${(surcharge * 100).toFixed(0)}%p) 중 큰 세액(소§104⑦ 후단·장특 배제, 간이 추정).`;
-        } else {
-          baseTax = shortTax;
-          shortTermNote = '주택 단기양도(1~2년) · 60% 중과세율이 적용됩니다.';
+          shortTermNote = `${isDwellingClass ? '주택·입주권' : '주택 외 부동산'} 보유 ${bandLabel} 단기양도 · ${pct}% 세율이 적용됩니다(소§104①${years < 1 ? '3' : '2'}호).`;
         }
       } else if (isHeavyCgt) {
         // 다주택자 + 조정대상지역 중과(2026.5.10 복원): 기본세율 + 20%p(2주택)/+30%p(3주택+)·장특 배제

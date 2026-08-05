@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "www.jttax.co.kr — 정적 사이트(React UMD + @babel/standalone 브라우저 트랜스파일). 빌드 툴체인 없음.",
   "scripts": {
-    "test": "node project/tests_jsx_smoke.js && node project/tests_asset_versions.js && node project/tests_money_input.js && node project/tests_rf_addr.js && node project/tests_rf_reform2026.js && node project/tests_cr_crypto2027.js",
+    "test": "node project/tests_jsx_smoke.js && node project/tests_asset_versions.js && node project/tests_money_input.js && node project/tests_cgt_shortterm.js && node project/tests_rf_addr.js && node project/tests_rf_reform2026.js && node project/tests_cr_crypto2027.js",
     "build": "node project/insights/build-insights.mjs && node project/calculators/build-calculators.mjs",
     "gate": "npm run test && npm run build"
   },

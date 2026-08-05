@@ -28,24 +28,24 @@
     "sha256": "f85860b7e60c3edbabdcafa64a70dd22ea98d9be54cf797d2e09dcf4ae4a5c69"
   },
   "project/src/Report.jsx": {
-    "v": "48",
-    "sha256": "ddab4d2d026751a81457921e0e686328ec049a0203954166cafc7ee8476c9f47"
+    "v": "49",
+    "sha256": "29f958322ed2534f9ccd2ca31ded319d31c3d63d500bd1dc1569cbc7acb19a60"
   },
   "project/src/ReportConvert.jsx": {
-    "v": "23",
-    "sha256": "788186d47f336f0f82f5d53e1a5b8bfab4e60f4b4b32d843337098f8ff3021c2"
+    "v": "24",
+    "sha256": "cc3e2572a845563e0129626bdef227637cade768c6545b4f19676dec02e0c8d0"
   },
   "project/src/ReportAppeal.jsx": {
     "v": "22",
     "sha256": "1a20b4f6da25ee1915bb1c8c2a32230253eae71fdfd0a958b749277e7651481d"
   },
   "project/src/ReportCGT.jsx": {
-    "v": "33",
-    "sha256": "43c31b852edfece49fa494711881c468045c4950d420c011aa6320d2fb8afd38"
+    "v": "34",
+    "sha256": "1bfc38da3093a8530fcdadd0aee28ecba19efe537437c6213b5acabb4f9d7063"
   },
   "project/src/ReportReform2026.jsx": {
-    "v": "24",
-    "sha256": "c523082caa931ed971284b74fd196bf452f644a7e938da4a26a6b12f98d7b1ac"
+    "v": "25",
+    "sha256": "7f8723003a975b62fb11cff0fbeb1f8cef0c05bee5bd3ff2ccb02ede5131ec2c"
   },
   "project/src/ReportCrypto2027.jsx": {
     "v": "7",

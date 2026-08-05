@@ -7,6 +7,18 @@ if (_cut < 0) throw new Error('절단 마커를 찾지 못했습니다 — Repor
 src = src.slice(0, _cut);
 src = src.replace(/const \{ useState: useCrState \} = React;/, '');
 global.window = {};
+/* ★ 금액 정규화 «구현은 Report.jsx 한 곳»에 있다. 이 파일이 그것을 쓰므로 하네스도 같이 싣는다.
+   구현을 여기서 흉내 내면(폴백 복사) 두 벌이 되어 반드시 갈라진다 — 260806 실사고. */
+(function loadSharedMoneyHelper() {
+  const rp = require('path').join(__dirname, 'src', 'Report.jsx');
+  const rs = require('fs').readFileSync(rp, 'utf8');
+  const a = rs.indexOf('window.jtMoneyDigits = function');
+  const b = rs.indexOf('window.jtSetNumericAns = function');
+  if (a < 0 || b < 0) throw new Error('Report.jsx 의 공용 금액 헬퍼를 찾지 못했습니다.');
+  const e = rs.indexOf(String.fromCharCode(10) + '};', b);
+  if (e < 0) throw new Error('jtSetNumericAns 끝을 찾지 못했습니다.');
+  eval(rs.slice(a, e + 3));
+})();
 eval(src);
 let CR = window.jtCrCalc; const C = window.JT_CRYPTO_2027;
 /* 구(舊) 평면 입력을 rows 한 줄로 감싸는 헬퍼 — 기존 케이스 재사용용 */

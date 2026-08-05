@@ -51,10 +51,29 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
               window.jtTrackCta('kakao', 'report_banner', { urgent });
               // ① 결과 요약을 클립보드에 복사 (고객이 카톡 채팅창에 붙여넣기)
               try { if (kakaoSummary && navigator.clipboard) navigator.clipboard.writeText(kakaoSummary).catch(function(){}); } catch (_e) {}
-              // ② 담당 세무사에게 고객 입력·결과·분석 자동 전송 (연락처 미수집 — 카톡으로 응대)
+              // ② 담당 세무사에게 전달 — ★ «동의를 받은 뒤에만» 보낸다.
+              //    종전엔 이 버튼을 누르는 것만으로 입력값·세액·분석이 곧바로 외부(Web3Forms)로
+              //    나갔다. 「카톡으로 결과 전송」이라는 라벨을 보고 누른 사람은 «내 카톡이 열린다»고
+              //    읽지, «내 재산·세액 정보가 사무소로 전송된다»고 읽지 않는다 (260806 Codex E P0).
+              //    개인정보보호법 §15(수집·이용)·§17(제3자 제공)은 고지와 동의를 전제로 한다.
+              //    → 리드 확보라는 목적은 그대로 두되, 무엇이 어디로 가는지 먼저 알리고 고르게 한다.
+              var jtSent = false;
               try {
                 var w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
+                var maySend = false;
                 if (w3fKey && w3fKey.indexOf('REPLACE') < 0 && reportDetail) {
+                  try {
+                    maySend = window.confirm(
+                      '상담을 위해 아래 내용을 담당 세무사에게 함께 보낼까요?\n\n' +
+                      '· 보내는 것: 입력하신 값과 계산 결과, 분석 내용\n' +
+                      '· 보내지 않는 것: 이름·연락처 (카카오톡으로 응대합니다)\n' +
+                      '· 전달 경로: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로\n\n' +
+                      '[취소] 를 누르면 아무것도 보내지 않습니다. 결과 요약 복사와 카카오톡 열기만 됩니다.'
+                    );
+                  } catch (_e2) { maySend = false; }
+                }
+                if (maySend) {
+                  jtSent = true;
                   fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -72,8 +91,11 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
                   }).catch(function(){});
                 }
               } catch (_e) {}
-              // ③ 안내 (카톡은 target=_blank로 새 탭에서 열림)
-              setTimeout(function(){ try { window.alert('계산 결과를 담당 세무사에게 전달했습니다.\n결과 요약이 복사되었으니, 카카오톡 채팅창에 붙여넣기(Ctrl+V) 하시면 더 정확히 상담받으실 수 있습니다.'); } catch (_e) {} }, 80);
+              // ③ 안내 — «실제로 한 일»만 말한다 (보내지 않았는데 보냈다고 하지 않는다)
+              setTimeout(function(){ try { window.alert(
+                (jtSent ? '계산 결과를 담당 세무사에게 전달했습니다.\n' : '')
+                + '결과 요약이 복사되었으니, 카카오톡 채팅창에 붙여넣기(Ctrl+V) 하시면 더 정확히 상담받으실 수 있습니다.'
+              ); } catch (_e) {} }, 80);
             }}>
             카톡으로 결과 전송
           </a>
@@ -162,7 +184,12 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
       <label style={{display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 13, color: '#5a5a5a', marginBottom: 16, cursor: 'pointer'}}>
         <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} style={{marginTop: 3}}/>
         <span>
-          상담 목적 개인정보 수집·이용에 동의합니다. (필수) · 수집 항목: 성명·연락처·이메일 / 보유기간: 상담 종료 후 3년 / 동의를 거부할 권리가 있습니다.
+          {/* ⚠️ 동의문은 «실제 전송 항목»과 일치해야 한다. 종전엔 성명·연락처·이메일만 적었는데
+              실제 payload 에는 진단요약·상세입력_및_분석(재산·세액 정보)이 함께 갔다 (260806 Codex E P1). */}
+          상담 목적 개인정보 수집·이용 및 처리위탁에 동의합니다. (필수)
+          · <strong>수집 항목</strong>: 성명·연락처·이메일 <strong>및 계산에 입력하신 값·계산 결과·분석 내용</strong>
+          · <strong>처리위탁</strong>: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로 전달
+          · 보유기간: 상담 종료 후 3년 · 동의를 거부할 권리가 있으며, 거부 시 회신 서비스만 제공되지 않습니다.
         </span>
       </label>
       <div style={{display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap'}}>

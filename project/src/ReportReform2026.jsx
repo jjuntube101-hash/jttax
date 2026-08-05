@@ -36,13 +36,12 @@ const rfWon = (n) => (window.formatWon ? window.formatWon(Math.round(n)) : (Math
    → ①NFKC 로 전각을 눕히고 ②천단위 구분자·통화기호만 걷어낸 뒤
      ③「숫자(.소수)」 꼴일 때만 받는다. 원 단위이므로 소수부는 버린다(원 미만 절사).
    반환: 정규화된 숫자 문자열 / '' (빈 입력) / null = «받지 않는다» (호출부가 오류 표시) */
-const rfMoneyDigits = (raw) => {
-  const s = String(raw == null ? '' : raw).normalize('NFKC').replace(/[,\s_₩원]/g, '');
-  if (s === '') return '';
-  if (!/^\d+(?:\.\d*)?$/.test(s)) return null;
-  return s.split('.')[0].replace(/^0+(?=\d)/, '');
-};
-window.jtMoneyDigits = rfMoneyDigits;
+/* ★ 구현은 Report.jsx 한 곳에만 둔다 (`window.jtMoneyDigits`). 이 파일은 «쓰기만» 한다.
+   ⚠️ 종전엔 여기서 window.jtMoneyDigits 를 «다시 대입»했다. Report.jsx 가 먼저 로드되므로
+      나중에 로드되는 이 파일이 공용 구현을 덮어썼고, Report.jsx 쪽을 개선해도 화면에는
+      옛 규칙이 그대로 돌았다 — 브라우저에서 실측해 확인 (260806 Codex E 예고 → 현실화).
+      구현이 두 벌이면 «반드시» 갈라진다. 그래서 대입을 없애고 참조만 남긴다. */
+const rfMoneyDigits = (raw) => window.jtMoneyDigits(raw);
 /* 억 단위 요약 표기 — 카드에서 큰 숫자를 한눈에 */
 /* 요약 표기 — «절대 올려서 보이지 않게» 내림(floor)한다.
    99,995,000원이 「10,000만원」으로 보이면 1억을 넘긴 것처럼 읽힌다 (260805 Codex R11 P2).

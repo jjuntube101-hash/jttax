@@ -18,17 +18,23 @@ const { useState: useReportState, useEffect: useReportEffect, useMemo: useReport
    반환: 정규화된 문자열 / '' (빈 입력) / **null = 「받지 않는다」**
          (호출부는 null 이면 값을 갱신하지 않는다 — 자릿수가 바뀐 값을 저장하느니 무시한다)
    ══════════════════════════════════════════════════════════════════════════ */
+/* ⚠️ 구분자를 «위치 검증 없이» 지우면 여전히 자릿수가 바뀐다 (260806 Codex E P1):
+     "1,2" → 12 · "1원2" → 12 · "12\n34" → 1234 · "1 2" → 12
+   그래서 ①먼저 «전체 형태»를 확인하고 ②통과한 것만 구분자를 걷어낸다.
+   허용 형태: 구분자 없는 숫자 / 정확한 천단위 표기(1,234,567) / 끝에 「원」·「₩」 한 번.
+   앞뒤 공백은 붙여넣기에서 흔하므로 허용하되, 숫자 «사이»의 공백은 거부한다. */
 window.jtMoneyDigits = function (raw) {
-  var s = String(raw == null ? '' : raw).normalize('NFKC').replace(/[,\s_₩원]/g, '');
+  var s = String(raw == null ? '' : raw).normalize('NFKC').trim();
   if (s === '') return '';
-  if (!/^\d+(?:\.\d*)?$/.test(s)) return null;      // 지수표기·음수·문자 혼입은 거부
-  return s.split('.')[0].replace(/^0+(?=\d)/, '');  // 원 단위이므로 소수부는 절사
+  s = s.replace(/^₩\s*/, '').replace(/\s*원$/, '').trim();       // 통화기호는 «양 끝»에서만
+  if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d*)?$/.test(s)) return null;
+  return s.replace(/,/g, '').split('.')[0].replace(/^0+(?=\d)/, '');  // 원 단위이므로 소수부는 절사
 };
 /* 기간·비율·면적처럼 «소수»를 허용하는 칸 — 소수점 하나까지 살린다 */
 window.jtDecimalInput = function (raw) {
-  var s = String(raw == null ? '' : raw).normalize('NFKC').replace(/[,\s_]/g, '');
+  var s = String(raw == null ? '' : raw).normalize('NFKC').trim();
   if (s === '') return '';
-  if (!/^\d*(?:\.\d*)?$/.test(s)) return null;
+  if (!/^\d*(?:\.\d*)?$/.test(s)) return null;   // 구분자·공백을 «지우지 않고» 거부한다
   return s;
 };
 /* 문항 입력 공용 핸들러 — `money` 여부로 갈라 정규화하고, 거부되면 값을 그대로 둔다 */
