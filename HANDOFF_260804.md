@@ -68,9 +68,10 @@
    | R12 | P1 3 | slug 경로탈출(홈 덮어쓰기)·GA4 이중 발화·키보드 접근 불가 |
    | R13 | P1 2 | 남은 키보드 접근성·개인정보 동의문 법정고지 미달 |
    | R14 | **P0 1** | **내가 R13에서 만든 중복 attribute → 라이브 홈 백지** |
+   | R15 | P1 2 | 재발방지 스모크 자체가 거짓 통과를 낼 수 있었다(수제 파서) |
 
-   **⚠️ 수렴 조건(3라운드 연속 0건)은 채우지 못했다.** R14까지 계속 나왔고
-   오너 지시로 종료했다. 이어서 하려면 R15 부터 같은 방식으로 돌리면 된다.
+   **⚠️ 수렴 조건(3라운드 연속 0건)은 채우지 못했다.** R15까지 계속 나왔고
+   오너 지시로 종료했다. 이어서 하려면 R16 부터 같은 방식으로 돌리면 된다.
 
    **내가 1차 소스로 잡은 것(Codex 도 못 본 것)**: 비과세가 배제되면 장특공제도
    표1(최대 30%)이어야 한다 — §95② 단서상 표2(최대 80%)는 「대통령령으로 정하는
@@ -106,13 +107,18 @@ R13 에서 접근성을 «정규식 일괄 치환»으로 넣다가, 이미 `rol
 ### 배포 전 게이트 4종 (전부 통과 상태)
 
 ```bash
+npm install     # 최초 1회 — @babel/parser (스모크가 이것 없으면 «실패» 처리)
+npm run gate    # 테스트 3종 + 빌드 2종 일괄
+```
+개별 실행:
+```bash
+node project/tests_jsx_smoke.js        # JSX 실제 AST 파싱 · 중복속성 · 키보드 접근
 node project/tests_rf_reform2026.js    # 양도세·종부세 44건
 node project/tests_cr_crypto2027.js    # 가상자산 24건
-node project/tests_jsx_smoke.js        # JSX 중복속성·키보드 접근
 node project/insights/build-insights.mjs && node project/calculators/build-calculators.mjs
 ```
-※ `@babel/standalone` 을 설치하면 스모크가 «실제 파싱»까지 수행한다(현재 미설치라
-  중복 검출만 작동). `npm i -D @babel/standalone` 권장.
+※ 스모크는 **@babel/parser 로 실제 AST 를 만든다.** 손수 만든 태그 파서는
+  문자열 안의 `>` 에 속아 거짓 통과를 내므로 R15 에서 폐기했다.
 
 ### 다음 단계 (계획 Step 3~5)
 5. ~~인사이트 1편~~ ✅ **완료(260805)** — `insights/tax-reform-2026-real-estate.html`. 계산기 2종과 양방향 내부링크. ※ jttax-cta 인사이트 30편은 **noindex 아님**(전부 색인 허용) — 종전 메모의 「29편 noindex」는 jt-calc 저장소 얘기였음.
