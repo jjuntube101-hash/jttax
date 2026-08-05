@@ -21,13 +21,37 @@ const { useState: useRfState } = React;
 
 const RF_EOK = 100000000;              // 1억
 const rfNum = (v) => { const n = Number(String(v == null ? '' : v).replace(/[^0-9.-]/g, '')); return isFinite(n) ? n : 0; };
+/* 금액·기간·나이는 «음수가 될 수 없다». rfNum 은 '-' 를 살려 두므로(1.5년 같은 소수 입력을
+   받으려면 '.' 과 함께 남길 수밖에 없다) 계산 진입부에서 한 번 더 바닥을 친다.
+   UI 는 음수를 막지만 window.jtRfCalcCGT/CRE 는 공개 함수라 밖에서도 불린다 (260805 R26). */
+const rfPos = (v) => Math.max(0, rfNum(v));
 const rfWon = (n) => (window.formatWon ? window.formatWon(Math.round(n)) : (Math.round(n).toLocaleString('ko-KR') + '원'));
+
+/* ⚠️ 금액 입력 정규화 — 「숫자가 아닌 문자를 전부 지운다」는 방식은 **자릿수를 바꾼다**.
+   260805 R28 실측 (세 계산기 전부 같은 결함이었다):
+     "50,000,000.00" → 소수점만 사라져 5000000000  (100배)
+     "18e8"          → 188                        (자릿수 붕괴)
+     "１２３"(전각)   → ''                         (붙여넣기가 통째로 사라짐)
+   엑셀·거래소 명세를 복사해 붙이면 실제로 일어나는 입력들이다.
+   → ①NFKC 로 전각을 눕히고 ②천단위 구분자·통화기호만 걷어낸 뒤
+     ③「숫자(.소수)」 꼴일 때만 받는다. 원 단위이므로 소수부는 버린다(원 미만 절사).
+   반환: 정규화된 숫자 문자열 / '' (빈 입력) / null = «받지 않는다» (호출부가 오류 표시) */
+const rfMoneyDigits = (raw) => {
+  const s = String(raw == null ? '' : raw).normalize('NFKC').replace(/[,\s_₩원]/g, '');
+  if (s === '') return '';
+  if (!/^\d+(?:\.\d*)?$/.test(s)) return null;
+  return s.split('.')[0].replace(/^0+(?=\d)/, '');
+};
+window.jtMoneyDigits = rfMoneyDigits;
 /* 억 단위 요약 표기 — 카드에서 큰 숫자를 한눈에 */
 /* 요약 표기 — «절대 올려서 보이지 않게» 내림(floor)한다.
    99,995,000원이 「10,000만원」으로 보이면 1억을 넘긴 것처럼 읽힌다 (260805 Codex R11 P2).
    정확한 금액은 항상 원 단위(rfWon/crWon)로 옆에 병기된다. */
 const jtEokFmt = (n, eok) => {
-  const v = Math.round(n);
+  /* ⚠️ Math.round 를 먼저 걸면 «내림» 원칙이 깨진다 — 99,999,999.6 이 1억으로 반올림된 뒤
+     억 단위 내림을 통과해 「1억원」으로 보인다. 크기가 커지지 않는 절사(trunc)로 받는다.
+     공제액·과세대상 양도차익처럼 정수가 아닌 값이 그대로 넘어오는 자리가 있다 (260805 R24 P3). */
+  const v = Math.trunc(n);
   const a = Math.abs(v), sign = v < 0 ? '-' : '';
   if (a < 10000) return v.toLocaleString('ko-KR') + '원';
   if (a < eok) {
@@ -44,7 +68,12 @@ const rfEok = (n) => jtEokFmt(n, RF_EOK);
    SSOT — 개편안 수치 (출처: 「2026년 세제개편안 개조식」 2026.8.3)
    ══════════════════════════════════════════════════════════════════════════ */
 window.JT_REFORM_2026 = {
-  source: '재정경제부 「2026년 세제개편안」(2026.8.3 발표) — 개조식 p17~25',
+  /* ★ 260805 원문 전수 대조 완료 — 배포자료 4종(보도자료·개조식·상세본·문답자료) 실물 대조.
+     개조식 p17~22(양도세·종부세 표) · 상세본 p56~72(조문별 신·구 대조) · 문답 p39~40(적용사례).
+     대조로 «찾아낸 것»: 종부세 과세대상 문턱(§7①)이 코드에 통째로 빠져 있었다 → 아래 taxableThreshold.
+     대조로 «확인한 것»: 장특공제 이원화 표·중과 완화율·세액공제율/한도·공정시장가액비율·
+       세율표 7구간(6~12억 1.0→1.3% 포함)·기본공제 2,500만원 시행시기('27 양도분) 전부 일치. */
+  source: '재정경제부 「2026년 세제개편안」(2026.8.3 발표) — 개조식 p17~22 · 상세본 p56~72 · 문답 p39~40',
   notice: '국회 심의·의결 전 «정부안» 입니다. 입법 과정에서 내용이 달라질 수 있습니다.',
 
   /* ── 소득세 기본세율 (소득세법 §55①, 양도소득 §104① 준용) — 현행, 개편 대상 아님 ── */
@@ -122,6 +151,19 @@ window.JT_REFORM_2026 = {
 
   /* ── 종합부동산세 (개조식 p18~19) ───────────────────────────────────── */
   cre: {
+    /* ★ 과세대상 «문턱» (종부세법 §7① 신설 — 상세본 p60 · 문답 p39, '27.1.1. 이후 성립분)
+       기본공제와 «별개»의 단계다. 이 문턱을 넘지 못하면 그 해 종부세 자체가 없다.
+         · 1세대1주택자 : 공시가격 합계 14억원 초과 (거주 여부와 «무관»)
+         · 그 외        : 공시가격 합계  9억원 초과 (현행 유지)
+       ⚠️ 종전엔 이 단계가 아예 없어 «없는 세금»을 만들어 냈다 (260805 원문 대조에서 발견):
+         · 비거주 1주택 13억 → 기본공제 9억만 적용해 168만원. 실제는 14억 이하라 0원
+         · 2주택 합계 8억(비거주) → 공제 4억만 적용해 168만원. 실제는 9억 이하라 0원
+       2026년(현행)은 이 조항이 없지만 기본공제 12억/9억이 같은 일을 하므로 null 로 둔다. */
+    taxableThreshold: {
+      2026: null,
+      2027: { one: 1400000000, multi: 900000000 },
+      2028: { one: 1400000000, multi: 900000000 },
+    },
     /* 기본공제 (개조식 p18)
        1주택: 현행 12억 → 거주용 14억 / 비거주 9억
        그 외: 현행 9억 → 4억 + 5억 × (거주용주택가액 ÷ 주택가액합계액) */
@@ -214,14 +256,14 @@ function rfBracketTax(base, table) {
 
 function rfCalcCGT(input, year) {
   const R = window.JT_REFORM_2026, C = R.cgt;
-  const price = rfNum(input.transferPrice);
-  const acq = rfNum(input.acqPrice);
-  const exp = rfNum(input.expenses);
-  const hold = rfNum(input.holdYears);
-  const res = rfNum(input.resYears);
+  const price = rfPos(input.transferPrice);
+  const acq = rfPos(input.acqPrice);
+  const exp = rfPos(input.expenses);
+  const hold = rfPos(input.holdYears);
+  const res = Math.min(rfPos(input.resYears), rfPos(input.holdYears));  // 거주 ≤ 보유
   const houses = input.houses || 'one';                 // one | two | three
   const adjusted = input.adjusted === 'yes';            // 조정대상지역 소재
-  const age = rfNum(input.age);
+  const age = rfPos(input.age);
   const seniorMove = input.seniorMove === 'yes';        // 비수도권 이주 (고령 특례)
   const isOne = houses === 'one';
   const steps = [];
@@ -349,7 +391,11 @@ function rfCalcCGT(input, year) {
   /* ⚠️ 종전엔 나이·1주택·이주 의사만 봤다. 조특법 신설안은 «5년 이상 거주» +
         «양도일 현재 2년 이상 계속 거주»가 요건이다. 거주 0년인데도 감면이
         붙던 것을 막는다 (260805 Codex P1). */
-  const seniorResOK = res >= C.seniorRelief.minResYears && input.seniorLive2y === 'yes';
+  /* ⚠️ 「이미 이사했다」와 「양도일 현재 2년 이상 계속 거주」는 동시에 참일 수 없다.
+     화면에서도 막지만(문항 showIf + 모순 답 정리), 이 함수는 window 로 공개돼 밖에서도
+     불리므로 여기서도 한 번 더 닫는다 — 낡은 값이 흘러들면 감면이 부당 적용된다 (R29 P1). */
+  const seniorResOK = res >= C.seniorRelief.minResYears && input.seniorLive2y === 'yes'
+    && input.stillLiving !== 'no';
   if (isOne && seniorMove && age >= C.seniorRelief.minAge && sr && !seniorResOK) {
     steps.push({
       k: '고령 1주택자 감면 배제', v: 0,
@@ -365,14 +411,19 @@ function rfCalcCGT(input, year) {
     steps.push({ k: '고령 1주택자 감면', v: -relief, note: reliefNote });
   }
 
-  /* 7. 지방소득세 */
+  /* 7. 지방소득세
+     ⚠️ 단계 표시는 «절사 전» 값을, 카드 총액은 «절사 후» 값을 쓰고 있었다. 화면에 뜬
+        숫자를 더하면 총액과 최대 9원이 어긋난다 — 사용자가 「숫자가 안 맞는다」고 읽는다.
+        절사를 별도 단계로 드러내 두 숫자가 같은 길을 걷게 한다 (260805 R26 P3). */
   tax = Math.round(tax);
+  const taxFinal = Math.floor(tax / 10) * 10;
+  if (taxFinal !== tax) steps.push({ k: '10원 미만 절사', v: taxFinal - tax, note: `양도소득세 ${rfWon(tax)} → ${rfWon(taxFinal)}` });
   const local = Math.floor(Math.round(tax * 0.1) / 10) * 10;
-  const total = Math.floor(tax / 10) * 10 + local;
+  const total = taxFinal + local;
   steps.push({ k: '지방소득세 (10%)', v: local, note: '지방세법 §103의3' });
 
   return {
-    year, total, tax: Math.floor(tax / 10) * 10, local, base, ltdRate, ltdAmount,
+    year, total, tax: taxFinal, local, base, ltdRate, ltdAmount, holdYears: hold, resYears: res, age,
     surcharge: sur, relief, basicDeduct: basic, taxableGain, gain, steps,
     effRate: gain > 0 ? total / gain : 0,
   };
@@ -383,16 +434,40 @@ function rfCalcCGT(input, year) {
    ══════════════════════════════════════════════════════════════════════════ */
 function rfCalcCRE(input, year) {
   const R = window.JT_REFORM_2026, C = R.cre;
-  const totalValue = rfNum(input.totalValue);
+  const totalValue = rfPos(input.totalValue);
   const houses = input.houses || 'one';            // one | two | three
   const isRes = input.isResident !== 'no';         // 본인 거주 여부 (1주택)
-  const resValue = rfNum(input.residentValue);     // 다주택 — 거주용 주택 공시가격
-  const age = rfNum(input.age);
-  const holdY = rfNum(input.holdYears);
-  const resY = rfNum(input.resYears);
+  /* 거주용 가액은 «합계 이하»여야 한다. 밖에서 부르면 음수·초과가 들어와
+     공제 비율이 0 미만/1 초과로 튄다 (260805 R23 P3·R26 P3). */
+  const resValue = Math.min(rfPos(input.residentValue), totalValue);
+  const age = rfPos(input.age);
+  const holdY = rfPos(input.holdYears);
+  const resY = Math.min(rfPos(input.resYears), rfPos(input.holdYears));
   const adjusted = input.adjusted === 'yes';       // 조정대상지역 주택 보유
   const isOne = houses === 'one';
   const steps = [];
+
+  /* 중과 구분(3주택 이상 또는 조정대상지역 보유, 1세대1주택자 제외)은 과세대상 판정보다
+     «먼저» 정해 둔다 — 조기 반환 객체도 정상 경로와 같은 값을 실어야 한다 (260805 R33 P3). */
+  const heavy = !isOne && (houses === 'three' || adjusted);
+
+  /* 0. 과세대상 판정 (종부세법 §7① 신설, '27~) — 기본공제 «이전» 단계다.
+     문턱을 넘지 못하면 납세의무 자체가 성립하지 않으므로 여기서 끝낸다. */
+  const th = C.taxableThreshold[year];
+  const thAmt = th ? (isOne ? th.one : th.multi) : 0;
+  if (th && totalValue <= thAmt) {
+    steps.push({
+      k: '과세대상 아님', v: 0,
+      note: `${isOne ? '1세대 1주택자' : '1세대 1주택자 외'}는 공시가격 합계가 ${rfEok(thAmt)}을 넘어야 종부세가 나옵니다 `
+        + `(합계 ${rfWon(totalValue)}) — 종합부동산세법 §7①`,
+    });
+    return {
+      year, gross: 0, credit: 0, net: 0, rural: 0, total: 0, base: 0,
+      deduct: 0, fairRatio: C.fairRatio[year][heavy ? 'heavy' : 'light'],
+      heavy, steps, notTaxable: true, threshold: thAmt,
+      holdYears: holdY, resYears: resY, age,
+    };
+  }
 
   /* 1. 기본공제 */
   const bdCfg = C.basicDeduct[year];
@@ -412,7 +487,6 @@ function rfCalcCRE(input, year) {
   steps.push({ k: '기본공제', v: -deduct, note: dNote });
 
   /* 2. 과세표준 = (공시합계 − 기본공제) × 공정시장가액비율 */
-  const heavy = !isOne && (houses === 'three' || adjusted);
   const ratio = C.fairRatio[year][heavy ? 'heavy' : 'light'];
   const excess = Math.max(0, totalValue - deduct);
   const base = Math.floor(excess * ratio);
@@ -454,18 +528,67 @@ function rfCalcCRE(input, year) {
   }
 
   const net = Math.round(Math.max(0, gross - credit));
+  /* 단계 표시와 카드 총액이 어긋나지 않도록 절사를 «보이는 단계»로 둔다 (260805 R26 P2) */
+  const netFinal = Math.floor(net / 10) * 10;
+  if (netFinal !== net) steps.push({ k: '10원 미만 절사', v: netFinal - net, note: `종부세액 ${rfWon(net)} → ${rfWon(netFinal)}` });
   /* 5. 농어촌특별세 */
   const rural = Math.floor(Math.round(net * C.ruralSurtaxRate) / 10) * 10;
   steps.push({ k: '농어촌특별세 (20%)', v: rural, note: '농어촌특별세법 §5①' });
 
   return {
-    year, gross, credit, net: Math.floor(net / 10) * 10, rural,
-    total: Math.floor(net / 10) * 10 + rural, base, deduct, fairRatio: ratio, heavy, steps,
+    year, gross, credit, net: netFinal, rural,
+    total: netFinal + rural, base, deduct, fairRatio: ratio, heavy, steps,
+    holdYears: holdY, resYears: resY, age,
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   연도별 비교용 — 「지금 기준」 입력을 «그 해에 팔 때(보유할 때)» 기준으로 옮긴다.
+   ⚠️ 이걸 안 하면 2029년 카드가 오늘과 같은 보유·거주기간으로 계산돼, 「언제 팔면
+      유리한가」를 비교한다면서 정작 «늦게 팔수록 기간이 늘어난다»는 가장 큰 변수를
+      빼놓는다 (260805 R23 P1 — 실측 1,699만원 차이).
+   · 보유기간 — 팔기 전까지 계속 늘어난다 (항상 +1/년)
+   · 거주기간 — «지금도 살고 있을 때만» 늘어난다. 이미 이사 나왔으면 그대로 멈춘다
+   · 나이     — 함께 든다 (고령 감면 65세·종부세 연령공제 60/65/70세 요건이 걸린다)
+   ★ stillLiving 이 'yes' 라도 거주기간이 0이면 늘리지 않는다 — 뒤로 가서 거주를 0으로
+     바꾸면 이 문항은 숨겨지지만 예전 답이 남아, «살지도 않는 집»의 거주기간이 늘어난다.
+   ══════════════════════════════════════════════════════════════════════════ */
+function rfShiftYears(answers, year, baseYear) {
+  const off = Math.max(0, rfPos(year) - rfPos(baseYear));
+  const hold = rfPos(answers.holdYears), res = rfPos(answers.resYears), age = rfPos(answers.age);
+  const living = res > 0 && answers.stillLiving === 'yes';
+  return Object.assign({}, answers, {
+    holdYears: String(hold + off),
+    resYears: String(living ? res + off : res),
+    age: String(age + off),
+  });
+}
+
+/* 종부세 「한 줄 결론」 판정 — 화면이 아니라 «여기»가 정본이다.
+   ⚠️ 회귀 테스트 하네스는 JSX 앞까지만 실행하므로, 판정이 JSX 안에 있으면
+      결론 로직이 다시 `diff === 0`(첫 해·마지막 해만 비교)으로 퇴행해도 테스트가
+      전부 통과한다 — 「게이트를 만든 것」과 「작동하는 것」은 다르다 (260805 R36 P2).
+   첫 해와 마지막 해만 보면 2026·2028 이 같고 2027 만 다른 조합을 「변동 없음」이라
+   단정한다. 실재하는 조합이다(1주택 거주·공시 19.14억·보유 5년: 230만/207만/230만). */
+function rfCreVerdict(rows) {
+  const base = rows[0], last = rows[rows.length - 1];
+  const mid = rows.find((r) => r.year === 2027) || null;
+  return {
+    kind: rows.every((r) => r.total === 0) ? 'none'
+        : rows.every((r) => r.total === base.total) ? 'same'
+        : 'changed',
+    diff: last.total - base.total,
+    base: base.total, last: last.total,
+    mid: mid ? mid.total : null,
+    midDiffers: !!(mid && mid.total !== base.total),
+    anyNotTaxable: rows.some((r) => r.notTaxable),
   };
 }
 
 window.jtRfCalcCGT = rfCalcCGT;
 window.jtRfCalcCRE = rfCalcCRE;
+window.jtRfShiftYears = rfShiftYears;
+window.jtRfCreVerdict = rfCreVerdict;
 
 /* ══════════════════════════════════════════════════════════════════════════
    공용 UI 조각
@@ -512,6 +635,9 @@ function RfYearCards({ rows, baseYear, unitLabel }) {
                 {diff === 0 ? '변동 없음' : `${up ? '▲ +' : '▼ '}${rfEok(Math.abs(diff))}`}
               </div>
             )}
+            {/* 그 해 기준으로 «가정한» 보유·거주기간을 카드에 드러낸다 — 연도별로 값이
+                달라지는데 화면에 안 보이면 사용자가 왜 세금이 달라졌는지 알 수 없다. */}
+            {r.foot && <div style={{ fontSize: 11.5, color: '#a09889', marginTop: 6 }}>{r.foot}</div>}
           </div>
         );
       })}
@@ -879,6 +1005,9 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
 
 /* 질문 렌더 (숫자 / 선택 / 주소조회) */
 function RfQuestion({ q, value, onChange, onChangeRaw, picks, onAdd, onRemove, bumpEpoch, getEpoch }) {
+  /* 형식이 어긋난 입력은 «받지 않는다». 조용히 무시하면 붙여넣기가 통째로 사라진 것처럼
+     보이므로 무엇이 문제인지 그 자리에서 알려 준다 (260805 R28). */
+  const [fmtErr, setFmtErr] = useRfState('');
   return (
     <div className="jt-report-q">
       <div className="jt-report-q__section">{q.section}</div>
@@ -897,7 +1026,9 @@ function RfQuestion({ q, value, onChange, onChangeRaw, picks, onAdd, onRemove, b
       {q.opts ? (
         <div className="jt-report-q__opts" style={{ display: 'grid', gap: 9 }}>
           {q.opts.map(([v, label, hint]) => (
-            <button key={v} onClick={() => onChange(q.id, v)} style={{
+            <button key={v} onClick={() => onChange(q.id, v)}
+              aria-pressed={value === v}
+              style={{
               textAlign: 'left', border: value === v ? '2px solid #2a3038' : '1px solid #dcd8d0',
               background: value === v ? '#f7f5f0' : '#fff', borderRadius: 9, padding: '12px 15px',
               cursor: 'pointer', font: 'inherit',
@@ -911,16 +1042,27 @@ function RfQuestion({ q, value, onChange, onChangeRaw, picks, onAdd, onRemove, b
         <>
           <input
             className="jt-report-q__input" type="text" inputMode="decimal"
-            value={q.money && value ? Number(String(value).replace(/[^0-9]/g, '') || 0).toLocaleString('ko-KR') : (value || '')}
+            aria-label={q.q}
+            value={q.money && value ? (rfMoneyDigits(value) === null ? String(value) : Number(rfMoneyDigits(value) || 0).toLocaleString('ko-KR')) : (value || '')}
             placeholder={q.placeholder || ''}
             onChange={(e) => {
               const raw = String(e.target.value);
-              if (q.money) { onChange(q.id, raw.replace(/[^0-9]/g, '')); return; }
-              /* 기간: 소수점 «하나»만 허용. 형식에 안 맞으면 입력을 받지 않는다 (260805 R2 P2). */
-              if (raw === '' || /^\d*(?:\.\d*)?$/.test(raw)) onChange(q.id, raw);
+              if (q.money) {
+                const d = rfMoneyDigits(raw);
+                if (d === null) { setFmtErr('숫자만 넣어 주세요 (원 단위). 「1e9」·마이너스는 받지 않습니다.'); return; }
+                setFmtErr('');
+                onChange(q.id, d);
+                return;
+              }
+              /* 기간: 소수점 «하나»만 허용. 형식에 안 맞으면 입력을 받지 않는다 (260805 R2 P2).
+                 전각 숫자도 눕혀서 받는다 — 「１２」가 통째로 사라지던 것 (260805 R24 P2). */
+              const s = raw.normalize('NFKC');
+              if (s === '' || /^\d*(?:\.\d*)?$/.test(s)) { setFmtErr(''); onChange(q.id, s); }
+              else setFmtErr('숫자만 넣어 주세요. 반년은 0.5 처럼 소수로 적습니다.');
             }}
             style={{ width: '100%', padding: '13px 15px', fontSize: 17, border: '1px solid #dcd8d0', borderRadius: 9, fontWeight: 700 }}
           />
+          {fmtErr && <div style={{ fontSize: 13, color: '#b3261e', marginTop: 7 }}>{fmtErr}</div>}
           {q.money && rfNum(value) > 0 && (
             <div style={{ fontSize: 13, color: '#7b756b', marginTop: 7 }}>= {rfEok(rfNum(value))}</div>
           )}
@@ -964,6 +1106,10 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
     const v = answers[cur.id];
     if (cur.opts) return v ? null : '하나를 골라 주세요.';
     if (v == null || v === '') return cur.optional ? null : '값을 넣어 주세요.';
+    /* ⚠️ 「.」 하나만 남아도 정규식(^\d*(?:\.\d*)?$)을 통과한다. rfNum('.') 은 0 이고
+          allowZero 문항(거주기간)은 0 을 받으므로, 점 하나가 «거주 0년»으로 확정됐다
+          (260805 R24 P2). 숫자가 한 자도 없으면 값으로 인정하지 않는다. */
+    if (!/\d/.test(String(v))) return '숫자를 넣어 주세요.';
     /* ⚠️ 종전엔 '0' 도 통과해 전 문항을 0으로 넘기면 결과가 «0원»으로 나왔다.
           0 을 허용할 문항만 optional/allowZero 로 표시한다 (260805 Codex P2). */
     if (!cur.optional && !cur.allowZero && rfNum(v) <= 0) return '0보다 큰 값을 넣어 주세요.';
@@ -987,9 +1133,21 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
       <div className="jt-container">
         {notice}
         <div className="jt-report-calc"
-          onKeyDown={(e) => { if (e.key === 'Enter' && !stepErr) { e.preventDefault(); if (last) submit(); else go(1); } }}>
+          /* ⚠️ preventDefault 를 무조건 걸면 «버튼 위에서 누른 Enter»의 기본동작(=클릭)까지
+             막는다. 선택지에 Tab 으로 가 Enter 를 치면 선택은 되지 않은 채 다음 문항으로
+             넘어가, 기본값(1주택·비조정)이 그대로 확정됐다 — 최대 5.6억원 오차 (260805 R25).
+             버튼·링크에서는 위저드가 손대지 않고 그 요소가 자기 일을 하게 둔다. */
+          onKeyDown={(e) => {
+            if (e.key !== 'Enter' || stepErr) return;
+            const t = e.target;
+            if (t && typeof t.closest === 'function' && t.closest('button, a, textarea, select')) return;
+            e.preventDefault();
+            if (last) submit(); else go(1);
+          }}>
           {cur && (
-            <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked} onChangeRaw={onChangeRaw}
+            /* key — 문항이 바뀌면 입력 컴포넌트를 새로 만든다. 안 그러면 앞 문항의
+               형식 오류 문구가 다음 문항에 남는다. */
+            <RfQuestion key={cur.id} q={cur} value={answers[cur.id]} onChange={onChangeTracked} onChangeRaw={onChangeRaw}
               picks={getPicks(cur.id)}
               /* ⚠️ 목록은 «항상 ref 의 현재값»에서 읽는다. 클로저로 캡처하면
                  B 조회 중 A 를 빼도 B 응답이 옛 목록(A 포함)을 되살린다 (260805 Codex R7 P1). */
@@ -1039,27 +1197,52 @@ const RF_CGT_QS = [
     sub: '★ 1세대 1주택 비과세 요건이 갈립니다. 2017년 8월 3일 이후 «취득 당시» 조정대상지역이었다면, 보유 2년만으로는 부족하고 «거주도 2년» 채워야 비과세를 받습니다(소득세법 시행령 §154①). 파는 시점의 지정 여부가 아니라 «살 때» 기준입니다.',
     opts: [['yes', '예 — 살 때 조정대상지역이었다', '보유 2년 + 거주 2년 모두 필요'],
            ['no', '아니오 / 2017.8.3. 이전 취득', '보유 2년이면 비과세']] },
-  { id: 'holdYears', section: '보유기간', q: '몇 년 «보유» 하셨나요? (년)', placeholder: '예: 12',
-    sub: '등기부상 취득일부터 양도일까지의 기간입니다. 개편안은 이 «보유» 기준 공제를 단계적으로 줄입니다.' },
+  { id: 'holdYears', section: '보유기간', q: '«지금까지» 몇 년 보유하셨나요? (년)', placeholder: '예: 12',
+    sub: '등기부상 취득일부터 «오늘»까지의 기간입니다. 뒤에서 2027·2028·2029년에 팔 경우를 비교할 때는 여기에 그만큼을 더해 계산합니다. 2년·3년처럼 세금이 갈리는 경계에 걸쳐 있으면 며칠 차이로 결과가 크게 달라지니 정확한 날짜는 상담으로 확인하세요.' },
   { id: 'resYears', section: '거주기간', q: '그중 실제로 몇 년 «거주» 하셨나요? (년)', placeholder: '예: 10', allowZero: true,
     check: (v, a) => (rfNum(v) > rfNum(a.holdYears) ? '거주기간이 보유기간보다 길 수는 없습니다.' : null),
     sub: '★ 이번 개편의 핵심입니다. 주민등록을 두고 실제 살았던 기간이며, 2029년부터는 «거주한 기간만» 공제받습니다. 보유만 하고 살지 않았다면 0을 넣으세요.' },
+  /* ⚠️ 연도별 비교에서 «거주기간»을 늘려도 되는지는 「지금도 살고 있는가」에 달렸다.
+     이미 이사 나온 사람의 거주기간은 해가 바뀌어도 늘지 않는다 (260805 R23 P1 대응). */
+  { id: 'stillLiving', section: '현재 거주', q: '지금도 그 집에 살고 계신가요?',
+    showIf: (a) => rfNum(a.resYears) > 0,
+    sub: '연도별 비교를 위해 필요합니다. 계속 살고 계시면 늦게 팔수록 거주기간이 늘어 공제가 커지지만, 이미 이사 나오셨다면 거주기간은 지금 값에서 멈춥니다.',
+    opts: [['yes', '예 — 계속 살고 있다', '늦게 팔수록 거주기간이 늘어납니다'], ['no', '아니오 — 이미 이사했다', '거주기간은 더 늘지 않습니다']] },
   { id: 'age', section: '나이', q: '양도자 나이가 몇 세인가요? (세)', placeholder: '예: 67',
     sub: '65세 이상 1주택자가 수도권 집을 팔고 비수도권으로 이주하면 2027~2028년에 한시 감면이 있습니다. 해당 없으면 대충 넣어도 결과에 영향이 없습니다.' },
-  { id: 'seniorLive2y', section: '고령 특례', q: '양도일 현재 그 집에 2년 이상 «계속» 거주 중이신가요?',
-    showIf: (a) => rfNum(a.age) >= 65 && (a.houses || 'one') === 'one' && a.seniorMove === 'yes',
-    sub: '고령 1주택자 감면은 ①보유기간 중 5년 이상 거주 ②양도일 현재 2년 이상 계속 거주 두 가지를 모두 요구합니다. 하나라도 빠지면 감면이 없습니다.',
-    opts: [['yes', '예 — 2년 이상 계속 거주 중', ''], ['no', '아니오', '감면 대상 아님']] },
+  /* ⚠️ 순서 주의 — seniorLive2y 의 showIf 가 seniorMove 를 참조하므로 seniorMove 가 «먼저»
+     와야 한다. 거꾸로 두면 이주 「예」를 고르는 순간 앞자리에 새 문항이 끼어들어,
+     사용자가 이미 답한 이주 문항을 한 번 더 보게 된다 (260805 R23 P3).
+     나이 기준을 63세로 잡은 이유: 2027·2028년 양도 비교에서는 지금보다 1~2세 많아지므로
+     지금 63세면 그때 65세가 되어 감면 대상이다. */
   { id: 'seniorMove', section: '고령 특례', q: '수도권 집을 팔고 비수도권으로 이주하시나요?',
-    showIf: (a) => rfNum(a.age) >= 65 && a.houses === 'one',
+    showIf: (a) => rfNum(a.age) >= 63 && a.houses === 'one',
     sub: '65세 이상 1주택자 한시 특례입니다. 5년 이상 거주했고 양도일 현재 2년 이상 계속 거주 중인 수도권 주택을 팔고 비수도권으로 이주하는 경우입니다. 양도일부터 5년 안에 다시 수도권으로 이주하거나 수도권 주택을 사면 감면세액을 추징당합니다.',
     opts: [['yes', '예 — 비수도권으로 이주', "'27년 50%(5억 한도) · '28년 30%(3억 한도) 감면"], ['no', '아니오', '']] },
+  /* ⚠️ 「이미 이사했다」(stillLiving='no')면 «양도일 현재 2년 이상 계속 거주»는 성립할 수
+     없다. 두 문항을 따로 물으면 서로 모순된 답이 남아 감면이 부당 적용된다 — 실제로
+     내가 stillLiving 문항을 넣으면서 만든 구멍이다 (260805 R29 P1).
+     ①이 문항 자체를 「계속 거주 중」일 때만 띄우고 ②stillLiving 을 'no' 로 바꾸면
+     앞서 답한 seniorLive2y 를 함께 내린다(아래 onChange). 숨기기만 하면 옛 답이 남는다. */
+  { id: 'seniorLive2y', section: '고령 특례', q: '양도일 현재 그 집에 2년 이상 «계속» 거주 중이신가요?',
+    showIf: (a) => rfNum(a.age) >= 63 && (a.houses || 'one') === 'one' && a.seniorMove === 'yes'
+      && a.stillLiving === 'yes',
+    sub: '고령 1주택자 감면은 ①보유기간 중 5년 이상 거주 ②양도일 현재 2년 이상 계속 거주 두 가지를 모두 요구합니다. 하나라도 빠지면 감면이 없습니다.',
+    opts: [['yes', '예 — 2년 이상 계속 거주 중', ''], ['no', '아니오', '감면 대상 아님']] },
 ];
+
 
 function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
   const [answers, setAnswers] = useRfState({ houses: 'one', adjusted: 'no', seniorMove: 'no' });
   const [result, setResult] = useRfState(null);
-  const onChange = (id, v) => setAnswers((p) => ({ ...p, [id]: v }));
+  const onChange = (id, v) => setAnswers((p) => {
+    const n = Object.assign({}, p, { [id]: v });
+    /* 답이 서로 모순되면 «숨기는» 것만으로는 부족하다 — 값이 남아 계산까지 흘러간다.
+       이미 이사했다면 「양도일 현재 2년 이상 계속 거주」는 성립할 수 없으므로 함께 내린다.
+       (거주기간을 0으로 되돌리는 경우도 같다 — 살지 않는 집에 계속거주가 있을 수 없다.) */
+    if ((id === 'stillLiving' && v !== 'yes') || (id === 'resYears' && rfNum(v) <= 0)) n.seniorLive2y = 'no';
+    return n;
+  });
   /* 조회로 넣은 주소 목록 — «결과 화면 밖» 이 컴포넌트가 소유한다.
      위저드 안에 두면 「조건 바꿔서 다시 계산」으로 위저드가 언마운트될 때 목록만
      비고 answers 의 합계는 남아, 이후 조회가 «대체»처럼 동작한다 (260805 Codex R7 P1).
@@ -1091,8 +1274,9 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
   const run = () => {
     const years = [2026, 2027, 2028, 2029];
     const rs = years.map((y) => {
-      const r = rfCalcCGT(answers, y);
+      const r = rfCalcCGT(rfShiftYears(answers, y, 2026), y);
       r.label = y === 2026 ? '2026년 (현행)' : (y === 2029 ? '2029년 이후' : `${y}년`);
+      r.foot = `보유 ${r.holdYears}년 · 거주 ${r.resYears}년`;
       return r;
     });
     setResult(rs);
@@ -1123,7 +1307,12 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
         <RfNotice />
 
         <section className="jt-report-result__section" style={{ marginBottom: 6 }}>
-          <h3 style={{ fontSize: 16, marginBottom: 12 }}>언제 팔면 얼마인가 (양도세 + 지방소득세)</h3>
+          <h3 style={{ fontSize: 16, marginBottom: 4 }}>언제 팔면 얼마인가 (양도세 + 지방소득세)</h3>
+          <p style={{ fontSize: 13, color: '#7b756b', margin: '0 0 12px', lineHeight: 1.65 }}>
+            늦게 팔수록 보유기간이 늘어나므로, 각 연도는 <strong>그 해까지 계속 보유한 것으로 보고</strong> 계산했습니다
+            {answers.stillLiving === 'yes' && rfNum(answers.resYears) > 0 ? ' (계속 거주 중이라 거주기간도 함께 늘렸습니다)' : (rfNum(answers.resYears) > 0 ? ' (이미 이사하셨다고 하셔서 거주기간은 그대로 두었습니다)' : '')}.
+            매도 금액·취득가액은 입력값 그대로이며, 집값 변동은 반영하지 않았습니다.
+          </p>
           <RfYearCards rows={result} baseYear={2026} />
         </section>
 
@@ -1159,6 +1348,8 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
               </thead>
               <tbody>
                 {[
+                  ['보유기간 (그 해 기준)', (r) => r.holdYears + '년'],
+                  ['거주기간 (그 해 기준)', (r) => r.resYears + '년'],
                   ['장기보유특별공제율', (r) => (r.ltdRate * 100).toFixed(0) + '%'],
                   ['장기보유특별공제액', (r) => rfEok(r.ltdAmount)],
                   ['양도소득 기본공제', (r) => rfWon(r.basicDeduct)],
@@ -1217,8 +1408,14 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
    ② 2026 종부세 개편안 계산기
    ══════════════════════════════════════════════════════════════════════════ */
 const RF_CRE_QS = [
+  /* ⚠️ 「1채」 하나로 1세대1주택 공제·세액공제가 통째로 갈리는데, 세대 판정은 사람마다
+     오해가 크다. 특히 «배우자는 주소가 달라도 같은 세대»다(종부세법 시행령 §2의3① —
+     세대원 중 1명만이 1주택을 소유해야 1세대1주택자). 별거 중이라 각자 1채인 부부가
+     「1채」를 고르면 공제 14억·세액공제까지 붙어 세금이 크게 낮게 나온다 (260805 R25 P1).
+     판정 자체를 자동화하지 않고 — 자동화하면 오히려 틀린 확신을 준다 — 문항에서
+     기준을 명시하고, 아래 「반영하지 않은 것」에 공동명의 특례 미반영을 함께 적는다. */
   { id: 'houses', section: '주택 보유 현황', q: '세대가 가진 집은 몇 채인가요?',
-    sub: '종합부동산세는 매년 6월 1일 기준으로 세대가 가진 주택의 공시가격을 모두 더해 계산합니다.',
+    sub: '종합부동산세는 매년 6월 1일 기준으로 «세대»가 가진 주택의 공시가격을 모두 더해 계산합니다. 본인·배우자·같이 사는 가족의 집을 모두 세세요. ★ 배우자는 주소가 달라도(따로 살아도) 같은 세대로 봅니다 — 부부가 각자 1채면 「2채」입니다. 부부 공동명의 1주택은 지분별 과세가 원칙이고 별도 신청을 해야 1주택자 특례를 받으므로, 이 계산기 결과와 다를 수 있습니다.',
     opts: [['one', '1채 (1세대 1주택)', "공제 확대 — 거주하면 14억원"], ['two', '2채', ''], ['three', '3채 이상', '높은 세율·공정비율 적용']] },
   { id: 'totalValue', section: '공시가격 합계', q: '가진 집들의 공시가격을 모두 더하면 얼마인가요? (원)', money: true, placeholder: '예: 1,800,000,000',
     addr: 'priceAdd',
@@ -1241,6 +1438,11 @@ const RF_CRE_QS = [
   { id: 'resYears', section: '거주기간', q: '그중 실제로 몇 년 «거주» 하셨나요? (년)', placeholder: '예: 10', allowZero: true, showIf: (a) => a.houses === 'one',
     check: (v, a) => (rfNum(v) > rfNum(a.holdYears) ? '거주기간이 보유기간보다 길 수는 없습니다.' : null),
     sub: '2028년부터는 «거주기간»만 세액공제 대상입니다. 살지 않았다면 0을 넣으세요.' },
+  /* 종부세는 «해마다» 내는 세금이라 연도별 비교에서 보유·거주·나이가 함께 든다 (R23 P1 대응) */
+  { id: 'stillLiving', section: '현재 거주', q: '지금도 그 집에 살고 계신가요?',
+    showIf: (a) => a.houses === 'one' && rfNum(a.resYears) > 0,
+    sub: '2027·2028년 종부세를 비교하려면 필요합니다. 계속 살고 계시면 해마다 거주기간이 늘어 세액공제가 커집니다.',
+    opts: [['yes', '예 — 계속 살고 있다', '해마다 거주기간이 늘어납니다'], ['no', '아니오 — 이미 이사했다', '거주기간은 더 늘지 않습니다']] },
 ];
 
 function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
@@ -1277,8 +1479,9 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
 
   const run = () => {
     const rs = [2026, 2027, 2028].map((y) => {
-      const r = rfCalcCRE(answers, y);
+      const r = rfCalcCRE(rfShiftYears(answers, y, 2026), y);
       r.label = y === 2026 ? '2026년 (현행)' : (y === 2028 ? '2028년 이후' : '2027년');
+      if (answers.houses === 'one') r.foot = `보유 ${r.holdYears}년 · 거주 ${r.resYears}년 · ${r.age}세`;
       return r;
     });
     setResult(rs);
@@ -1300,8 +1503,8 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
   }
 
   const base = result[0];
-  const last = result[result.length - 1];
-  const diff = last.total - base.total;
+  const v = rfCreVerdict(result);          // 결론 판정 — 정본은 순수 함수 쪽
+  const diff = v.diff;
   return (
     <JTReportShell tag="2026 세제개편안" stepIdx={2} stepTotal={2} onBack={onBack}
       title="연도별 종합부동산세 비교" subtitle="개편안이 그대로 시행된다고 가정했을 때, 해마다 내야 할 종부세입니다.">
@@ -1309,20 +1512,42 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
         <RfNotice />
 
         <section className="jt-report-result__section" style={{ marginBottom: 6 }}>
-          <h3 style={{ fontSize: 16, marginBottom: 12 }}>해마다 얼마인가 (종부세 + 농어촌특별세)</h3>
+          <h3 style={{ fontSize: 16, marginBottom: 4 }}>해마다 얼마인가 (종부세 + 농어촌특별세)</h3>
+          <p style={{ fontSize: 13, color: '#7b756b', margin: '0 0 12px', lineHeight: 1.65 }}>
+            종부세는 해마다 내는 세금이라, 각 연도는 <strong>그 해 6월 1일까지 계속 보유한 것으로 보고</strong> 보유기간·나이를 함께 반영했습니다
+            {answers.houses === 'one' && answers.stillLiving === 'yes' && rfNum(answers.resYears) > 0 ? ' (계속 거주 중이라 거주기간도 늘렸습니다)' : ''}.
+            공시가격은 입력값 그대로이며, 해마다 오르내리는 공시가격 변동은 반영하지 않았습니다.
+          </p>
           <RfYearCards rows={result} baseYear={2026} />
         </section>
 
         <div className="jt-report-result__section" style={{ background: diff > 0 ? '#fdf2f1' : '#f0f7f3', borderLeft: `4px solid ${diff > 0 ? '#b3261e' : '#2a6d4f'}`, padding: '15px 18px', borderRadius: 8, marginBottom: 20 }}>
           <strong style={{ display: 'block', marginBottom: 6 }}>한 줄 결론</strong>
           <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7 }}>
-            {diff === 0
+            {/* 판정은 rfCreVerdict(순수 함수·회귀 테스트 대상)가 한다. 여기서는 문장만 고른다. */}
+            {v.kind === 'none'
+              ? <>입력하신 공시가격 합계 <strong>{rfEok(rfNum(answers.totalValue))}</strong>은 종부세 과세 문턱
+                  ({answers.houses === 'one' ? '1세대 1주택자 14억원' : '1세대 1주택자 외 9억원'})을 넘지 않아,
+                  <strong>개편안이 시행돼도 종부세가 없습니다</strong>. 다만 재산세는 별도로 부과됩니다.</>
+              : v.kind === 'same'
               ? '입력하신 조건에서는 개편안이 시행되어도 종부세가 달라지지 않습니다.'
-              : <>2028년 이후 종부세는 현행 대비 <strong>{diff > 0 ? rfEok(diff) + ' 늘어납니다' : rfEok(-diff) + ' 줄어듭니다'}</strong>
-                  ({rfEok(base.total)} → {rfEok(last.total)}).</>}
-            {answers.houses === 'one' && answers.isResident === 'no' &&
+              : <>
+                  {v.diff === 0
+                    ? <>2028년 이후 종부세는 현행과 같은 <strong>{rfEok(v.base)}</strong>입니다.</>
+                    : <>2028년 이후 종부세는 현행 대비 <strong>{v.diff > 0 ? rfEok(v.diff) + ' 늘어납니다' : rfEok(-v.diff) + ' 줄어듭니다'}</strong>
+                        ({rfEok(v.base)} → {rfEok(v.last)}).</>}
+                  {v.midDiffers &&
+                    <> 중간의 <strong>2027년</strong>은 <strong>{rfEok(v.mid)}</strong>으로,
+                      현행보다 {v.mid > v.base ? rfEok(v.mid - v.base) + ' 많습니다' : rfEok(v.base - v.mid) + ' 적습니다'}.</>}
+                </>}
+            {/* ⚠️ 「공제가 줄어 세금이 늘었다」는 설명은 «실제로 늘었을 때»만 참이다.
+                종전엔 조건이 「1주택·비거주」뿐이라, 세금이 줄어든 경우에도 증가 원인을 붙였다.
+                문턱 미달로 0원이 된 해가 섞이면 특히 앞 문장과 정면으로 모순된다 (260805 R33 P2). */}
+            {v.anyNotTaxable && v.kind !== 'none' &&
+              <> 공시가격 합계가 과세 문턱({answers.houses === 'one' ? '14억원' : '9억원'})을 넘지 않는 해에는 종부세가 아예 없습니다.</>}
+            {v.diff > 0 && answers.houses === 'one' && answers.isResident === 'no' &&
               ' 지금 그 집에 살지 않으시는데, 개편안은 비거주 1주택의 공제를 12억원에서 9억원으로 줄입니다 — 이것이 증가의 가장 큰 원인입니다.'}
-            {answers.houses === 'one' && answers.isResident !== 'no' &&
+            {v.diff < 0 && answers.houses === 'one' && answers.isResident !== 'no' &&
               ' 실제 거주 중이시라 공제가 12억원에서 14억원으로 늘어나는 혜택을 받습니다.'}
           </p>
         </div>
@@ -1338,13 +1563,15 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
                 </tr>
               </thead>
               <tbody>
+                {/* ⚠️ 과세대상 문턱을 넘지 못한 해는 공제·과표를 숫자로 찍으면 「공제가 0이 됐다」로
+                    읽힌다. 실제로는 «그 단계까지 가지도 않은» 것이므로 사유를 그대로 적는다. */}
                 {[
-                  ['기본공제', (r) => rfEok(r.deduct)],
-                  ['공정시장가액비율', (r) => (r.fairRatio * 100).toFixed(0) + '%'],
-                  ['과세표준', (r) => rfEok(r.base)],
-                  ['산출세액', (r) => rfEok(r.gross)],
-                  ['1주택 세액공제', (r) => (r.credit ? '−' + rfEok(r.credit) : '—')],
-                  ['농어촌특별세', (r) => rfEok(r.rural)],
+                  ['기본공제', (r) => (r.notTaxable ? `과세대상 아님 (${rfEok(r.threshold)} 이하)` : rfEok(r.deduct))],
+                  ['공정시장가액비율', (r) => (r.notTaxable ? '—' : (r.fairRatio * 100).toFixed(0) + '%')],
+                  ['과세표준', (r) => (r.notTaxable ? '—' : rfEok(r.base))],
+                  ['산출세액', (r) => (r.notTaxable ? '—' : rfEok(r.gross))],
+                  ['1주택 세액공제', (r) => (r.notTaxable ? '—' : (r.credit ? '−' + rfEok(r.credit) : '—'))],
+                  ['농어촌특별세', (r) => (r.notTaxable ? '—' : rfEok(r.rural))],
                   ['총 세부담', (r) => rfEok(r.total)],
                 ].map(([label, fn], i) => (
                   <tr key={i} style={{ background: i % 2 ? '#fbfaf8' : '#fff' }}>
@@ -1377,7 +1604,8 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
           <strong style={{ display: 'block', marginBottom: 6 }}>이 계산에 반영하지 않은 것</strong>
           <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.7 }}>
             <strong>재산세 중복분 공제</strong>(종부세 과세표준에 이미 부과된 재산세를 빼 주는 제도)와 <strong>세부담 상한</strong>은 직전연도 보유세를 알아야 계산되므로 반영하지 않았습니다 — 실제 고지세액은 여기 금액보다 낮게 나옵니다.
-            부부 공동명의 특례, 합산배제 임대주택·사원용 주택, 지방 저가주택·세컨드홈 특례도 반영하지 않았습니다.
+            <strong>부부 공동명의</strong> 1주택은 이 계산기가 「1세대 1주택자 특례를 신청한 경우」(거주 14억·비거주 9억 공제)로 계산합니다 — 특례를 신청하지 않고 <strong>부부가 각자 납부</strong>하면 지분별로 나눠 거주 시 각 9억원, 비거주 시 각 4억원을 공제하므로 결과가 달라집니다.
+            합산배제 임대주택·사원용 주택, 지방 저가주택·세컨드홈 특례도 반영하지 않았습니다.
             재산세 공제까지 반영한 현행법 기준 금액은 <a href="#/report/comprehensive" style={{ textDecoration: 'underline', fontWeight: 700 }}>종합부동산세 계산기</a>에서 확인하세요.
           </p>
         </section>

@@ -21,8 +21,16 @@ function chk(label, got, want) {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}\n      got=${won(got)}  want=${won(want)}`);
 }
 
+/* ⚠️ 비율은 chk 로 재면 안 된다 — 허용오차가 «1»이라 0.20 자리에 0.9 를 넣어도 통과한다.
+   즉 세율 검사가 사실상 아무것도 잡지 못하고 있었다 (260805 자체 감사). 정확히 비교한다. */
+function eqNum(label, got, want) {
+  const ok = got === want; if (!ok) fails++;
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}\n      got=${got}  want=${want}`);
+}
+
 console.log('════ SSOT 확인 (조문 원문 대조) ════');
-chk('세율 20% (§64의3②)', C.rate, 0.20);
+eqNum('세율 20% (§64의3②)', C.rate, 0.20);
+eqNum('지방소득세율 10% (지방세법)', C.localRateOfTax, 0.10);
 chk('공제 250만원 (§64의3②·§84 3호)', C.basicDeduct, 2500000);
 
 console.log('\n════ CASE 1: 의제취득가액 작동 — 1천만에 사서 2026말 4천만, 5천만에 매도 ════');
@@ -107,6 +115,95 @@ const r9 = CR({ rows: [
    과표 1,750만 → 세 350만 + 지방 35만 = 3,850,000 */
 chk('C9 혼합 보유 총세액', r9.total, 3850000);
 chk('C9 신규 취득분엔 의제취득가액 미적용', r9.lines[1].baseCost, 20000000);
+
+/* ══════════════════════════════════════════════════════════════════════════
+   260805 R23~R28 반영분 회귀
+   ══════════════════════════════════════════════════════════════════════════ */
+function eq(label, got, want) {
+  const ok = String(got) === String(want); if (!ok) fails++;
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}\n      got=${JSON.stringify(got)}  want=${JSON.stringify(want)}`);
+}
+
+console.log('\n════ CASE 10: 금액 입력 정규화 (R27 P2·R28 P1 — 4필드 공통) ════');
+/* 종전 "50,000,000.00" → 5000000000 (100배). 폴백 경로도 같은 규칙이어야 한다 */
+eq('C10 .00 붙여넣기', window.jtCrMoneyDigits('50,000,000.00'), '50000000');
+eq('C10 전각', window.jtCrMoneyDigits('１，０００'), '1000');
+eq('C10 지수표기 거부', window.jtCrMoneyDigits('18e8'), null);
+eq('C10 음수 거부', window.jtCrMoneyDigits('-1'), null);
+
+console.log('\n════ CASE 11: §37⑥ 추계 필요경비 — 시행령 §88⑤ 100분의 50 ════');
+/* 시행령 §88④⑤ 는 «이미 제정»돼 있다(2025.2.28 신설, 2026.7.1 시행). 종전엔 화면이
+   「시행령 미제정」이라 안내하고 계산 경로도 없어, 증빙 없는 이용자는 계산을 못 했다. */
+eqNum('C11 추계율 SSOT = 50% (시행령 §88⑤)', C.estimateRate, 0.50);
+const r11 = CR({ rows: [{ name: 'X', sale: '100000000', acq: '', mkt2026: '', fee: '5000000',
+                          heldBefore: 'no', estimate: 'yes' }] });
+/* 필요경비 = 1억 × 50% = 5,000만 (수수료 500만은 §37⑥ 후단에 따라 «불산입»)
+   소득 5,000만 − 250만 = 과표 4,750만 → 세 950만 + 지방 95만 = 10,450,000 */
+chk('C11 필요경비 = 양도가액 × 50%', r11.expense, 50000000);
+chk('C11 수수료 불산입 (§37⑥ 후단)', r11.lines[0].fee, 0);
+chk('C11 총세액', r11.total, 10450000);
+/* 2026년 말 이전 보유분은 §37⑤ 가 취득가액을 정하므로 추계 대상이 아니다 */
+const r11b = CR({ rows: [{ sale: '100000000', acq: '10000000', mkt2026: '40000000', fee: '0',
+                           heldBefore: 'yes', estimate: 'yes' }] });
+chk('C11b 구보유분엔 추계가 «적용되지 않는다» (의제취득 4천만 유지)', r11b.lines[0].baseCost, 40000000);
+eq('C11b estimateApplies=false', r11b.estimateApplies, false);
+
+console.log('\n════ CASE 12: 2026년 비교는 «구보유분이 있을 때만» 성립 (R25 P2) ════');
+/* 2027년 이후에 산 코인을 2026년에 팔 수는 없다 — 「0원·차익 전액 비과세」를 띄우면
+   있지도 않은 절세 기회를 보여 주는 셈이다 */
+const r12 = CR({ rows: [{ sale: '30000000', acq: '20000000', mkt2026: '', fee: '0', heldBefore: 'no' }] });
+eq('C12 전부 2027년 이후 취득 → 2026년 매도 불가', r12.canSellIn2026, false);
+chk('C12 그 경우 2026년 차익은 0으로 집계', r12.gainIfSoldIn2026, 0);
+const r12b = CR({ rows: [
+  { sale: '50000000', acq: '10000000', mkt2026: '40000000', fee: '0', heldBefore: 'yes' },
+  { sale: '30000000', acq: '20000000', mkt2026: '',         fee: '0', heldBefore: 'no'  },
+] });
+eq('C12b 구보유분이 하나라도 있으면 비교 성립', r12b.canSellIn2026, true);
+chk('C12b 2026년 차익엔 «구보유분만» 들어간다', r12b.gainIfSoldIn2026, 40000000);
+
+console.log('\n════ CASE 13b: 한 종목당 한 줄 강제 (R29 P1) ════');
+/* §37⑥ 는 「같은 종류의 가상자산 «전체»의 총양도가액 × 50%」다. 같은 코인을 두 줄로
+   나누면 추계를 고른 줄에만 걸려 필요경비가 어긋난다 — Codex R29 재현:
+     BTC① 매도 1억 추계 + BTC② 매도 1억 취득 9천만 → 12,650,000원
+     한 줄로 합치면(총양도 2억 × 50% = 1억) 21,450,000원
+   자동으로 합치면 무엇이 합쳐졌는지 사용자가 모르므로 «입력 단계»에서 막는다. */
+const V = window.jtCrValidateRows;
+const hasErr = (re, rows) => re.test(V(rows) || '');
+eq('C13b 같은 코인 두 줄 → 거부', hasErr(/두 줄에 있습니다/, [
+  { name: '비트코인', sale: '100000000', acq: '', heldBefore: 'no', estimate: 'yes' },
+  { name: '비트코인', sale: '100000000', acq: '90000000', heldBefore: 'no' },
+]), true);
+eq('C13b 대소문자·공백만 다른 이름도 같은 종목', hasErr(/두 줄에 있습니다/, [
+  { name: 'BTC', sale: '100000000', acq: '1', heldBefore: 'no' },
+  { name: ' btc ', sale: '100000000', acq: '1', heldBefore: 'no' },
+]), true);
+eq('C13b 2줄 이상인데 이름이 비면 거부', hasErr(/코인 이름을 넣어 주세요/, [
+  { name: '', sale: '100000000', acq: '1', heldBefore: 'no' },
+  { name: '이더리움', sale: '100000000', acq: '1', heldBefore: 'no' },
+]), true);
+eq('C13b 서로 다른 종목이면 통과', V([
+  { name: '비트코인', sale: '100000000', acq: '1', heldBefore: 'no' },
+  { name: '이더리움', sale: '100000000', acq: '1', heldBefore: 'no' },
+]), null);
+eq('C13b 한 줄이면 이름 없어도 통과', V([{ name: '', sale: '100000000', acq: '1', heldBefore: 'no' }]), null);
+eq('C13b 추계 선택 시 취득가액 없어도 통과', V([{ name: '', sale: '100000000', acq: '', heldBefore: 'no', estimate: 'yes' }]), null);
+eq('C13b 추계 아닌데 취득가액 없으면 거부', hasErr(/실제 산 금액/, [{ name: '', sale: '100000000', acq: '', heldBefore: 'no' }]), true);
+/* ★ 공개 함수 우회 — 화면 검증을 건너뛰고 jtCrCalc 을 직접 부르면 중복 종목도 계산됐다 (R30 P2).
+   틀린 세액(12,650,000원)을 내놓느니 «거부»한다. */
+const dupRows = [
+  { name: '비트코인', sale: '100000000', acq: '', heldBefore: 'no', estimate: 'yes' },
+  { name: '비트코인', sale: '100000000', acq: '90000000', heldBefore: 'no' },
+];
+var rDup = CR0({ rows: dupRows });
+eq('C13b jtCrCalc 직접 호출도 중복 종목이면 거부', /두 줄에 있습니다/.test(rDup.error || ''), true);
+chk('C13b 거부 시 세액 0 (틀린 12,650,000 을 내놓지 않는다)', rDup.total, 0);
+eq('C13b 서로 다른 종목이면 정상 계산', CR0({ rows: [
+  { name: '비트코인', sale: '100000000', acq: '50000000', heldBefore: 'no' },
+  { name: '이더리움', sale: '100000000', acq: '50000000', heldBefore: 'no' },
+] }).error || null, null);
+
+console.log('\n════ CASE 13: 공개 함수 방어 — 음수 (R26) ════');
+chk('C13 음수 매도가는 0으로', CR({ rows: [{ sale: '-100000000', acq: '1', heldBefore: 'no' }] }).sale, 0);
 
 console.log(`\n════════════════════\n실패 ${fails}건`);
 process.exit(fails ? 1 : 0);

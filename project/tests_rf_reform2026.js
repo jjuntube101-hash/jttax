@@ -21,6 +21,12 @@ function chk(label, got, want, tol = 1) {
   if (!ok) fails++;
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}\n      got=${won(got)}  want=${won(want)}`);
 }
+/* ⚠️ «비율»을 chk 로 재면 안 된다 — 허용오차가 원 단위 1이라, 공제율 0.10 자리에 0.9 가
+   들어와도 통과한다. 세율·공제율 검사가 사실상 아무것도 잡지 못하고 있었다 (260805 자체 감사). */
+function eqRate(label, got, want) {
+  const ok = Math.abs(got - want) < 1e-9; if (!ok) fails++;
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}\n      got=${got}  want=${want}`);
+}
 
 console.log('════ CASE 1: 1세대1주택 20억 매도 (취득 10억, 경비 0, 보유 12년/거주 12년) ════');
 const c1 = { transferPrice: '2000000000', acqPrice: '1000000000', expenses: '0',
@@ -189,7 +195,7 @@ console.log(`  취득 당시 조정지역 + 거주 0년 → 총부담 ${won(r14.
      987,500,000 × 42% − 누진 35,940,000 = 378,810,000 · 지방 37,881,000
    ※ Codex R1 은 470,728,500 을 제시했으나 장특공제를 0으로 본 값이었다. */
 chk('C14 취득 당시 조정지역 + 거주 0년 → 비과세 배제 + 표1 장특공제', r14.total, 416691000);
-chk('C14 장특공제율 = 표1 보유 5년 10%', r14.ltdRate, 0.10);
+eqRate('C14 장특공제율 = 표1 보유 5년 10%', r14.ltdRate, 0.10);
 chk('C14b 취득 당시 조정지역 + 거주 2년 → 비과세', CGT({ ...a14, acqAdjusted: 'yes', resYears: '2' }, 2026).total, 0);
 
 console.log('\n════ CASE 15: 중과 한시완화는 «보유 2년 이상»만 (Codex R10 P1) ════');
@@ -201,12 +207,148 @@ console.log(`  보유 1.5년 3주택 조정 2027 → 중과 +${(r15.surcharge*10
    기본세율분 1,097,500,000×75% − 65,940,000 = 757,185,000  (45%+30%p)
    단기 60% 분    1,097,500,000×60% = 658,500,000 → 큰 쪽 757,185,000
    지방 75,718,500 → 832,903,500 */
-chk('C15 보유 2년 미만 → 완화 미적용(+30%p)', r15.surcharge, 0.30);
+eqRate('C15 보유 2년 미만 → 완화 미적용(+30%p)', r15.surcharge, 0.30);
 chk('C15 총세액 832,903,500 (완화 적용 시 724,350,000)', r15.total, 832903500);
-chk('C15b 보유 정확히 2년 → 완화 적용(+10%p)', CGT({ ...m15, holdYears: '2' }, 2027).surcharge, 0.10);
-chk('C15c 2026년은 보유 무관 +30%p', CGT(m15, 2026).surcharge, 0.30);
+eqRate('C15b 보유 정확히 2년 → 완화 적용(+10%p)', CGT({ ...m15, holdYears: '2' }, 2027).surcharge, 0.10);
+eqRate('C15c 2026년은 보유 무관 +30%p', CGT(m15, 2026).surcharge, 0.30);
 
-console.log(`
-════════════════════
-실패 ${fails}건`);console.log(`\n════════════════════\n실패 ${fails}건`);
+/* ══════════════════════════════════════════════════════════════════════════
+   260805 R23~R28 반영분 회귀 — 여기부터는 «고친 결함이 되살아나지 않는지» 지킨다
+   ══════════════════════════════════════════════════════════════════════════ */
+const MD = window.jtMoneyDigits, SHIFT = window.jtRfShiftYears;
+function eq(label, got, want) {
+  const ok = String(got) === String(want);
+  if (!ok) fails++;
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}\n      got=${JSON.stringify(got)}  want=${JSON.stringify(want)}`);
+}
+
+console.log('\n════ CASE 16: 금액 입력 정규화 — 자릿수를 바꾸면 안 된다 (R27·R28 P1) ════');
+/* 「숫자 아닌 문자를 전부 지운다」 방식이 만들던 사고: "50,000,000.00" → 5000000000 (100배) */
+eq('C16 소수점 붙여넣기 .00 → 소수부 버림', MD('50,000,000.00'), '50000000');
+eq('C16 소수부가 0이 아니어도 원 단위 절사', MD('1,234,567.89'), '1234567');
+eq('C16 쉼표만', MD('1,800,000,000'), '1800000000');
+eq('C16 「원」·공백·통화기호 제거', MD(' ₩1,234,567원 '), '1234567');
+eq('C16 전각 숫자 — 종전엔 통째로 사라졌다', MD('１２３４５６'), '123456');
+eq('C16 전각 쉼표 포함', MD('１，８００，０００，０００'), '1800000000');
+eq('C16 지수표기는 «받지 않는다» (종전엔 18e8 → 188)', MD('18e8'), null);
+eq('C16 음수는 «받지 않는다» (종전엔 부호만 조용히 삭제)', MD('-100000000'), null);
+eq('C16 문자 섞인 값 거부', MD('1억2천'), null);
+eq('C16 빈 입력', MD(''), '');
+eq('C16 0 은 그대로', MD('0'), '0');
+eq('C16 앞 0 제거', MD('007'), '7');
+
+console.log('\n════ CASE 17: 공개 함수 방어 — 음수·범위초과 입력 (R23 P3·R26 P3) ════');
+/* window.jtRfCalcCGT/CRE 는 UI 밖에서도 불린다. 음수 필요경비가 양도차익을 «키우면» 안 된다 */
+const a17 = { transferPrice: '2000000000', acqPrice: '1000000000', expenses: '-100000000',
+              houses: 'two', adjusted: 'no', holdYears: '3', resYears: '0', age: '50' };
+chk('C17 음수 필요경비는 0으로 — 경비 0과 같은 결과', CGT(a17, 2026).total, CGT({ ...a17, expenses: '0' }, 2026).total);
+chk('C17 거주 > 보유 이면 보유로 깎임', CGT({ ...a17, holdYears: '3', resYears: '99' }, 2026).resYears, 3);
+const c17 = { totalValue: '2500000000', houses: 'two', residentValue: '-1000000000', adjusted: 'no' };
+chk('C17 음수 거주용가액 → 0 (공제 4억)', CRE(c17, 2027).deduct, 400000000);
+chk('C17 거주용가액 > 합계 → 합계로 클램프 (공제 9억)',
+    CRE({ ...c17, residentValue: '9999999999' }, 2027).deduct, 900000000);
+chk('C17 음수 공시가격 → 세액 0', CRE({ ...c17, totalValue: '-1' }, 2026).total, 0);
+
+console.log('\n════ CASE 18: 연도별 비교는 «그 해 기준» 기간으로 계산한다 (R23 P1) ════');
+/* 종전엔 2027~2029 카드가 오늘과 같은 보유·거주기간을 그대로 썼다 */
+const a18 = { transferPrice: '2000000000', acqPrice: '1000000000', expenses: '0', houses: 'one',
+              adjusted: 'no', holdYears: '9', resYears: '9', age: '50', stillLiving: 'yes' };
+eq('C18 2026 = 기준 그대로', SHIFT(a18, 2026, 2026).holdYears, '9');
+eq('C18 2027 보유 +1', SHIFT(a18, 2027, 2026).holdYears, '10');
+eq('C18 2027 거주도 +1 (계속 거주 중)', SHIFT(a18, 2027, 2026).resYears, '10');
+eq('C18 2029 나이도 +3', SHIFT(a18, 2029, 2026).age, '53');
+eq('C18 이사 나갔으면 거주는 그대로', SHIFT({ ...a18, stillLiving: 'no' }, 2029, 2026).resYears, '9');
+eq('C18 보유는 이사와 무관하게 늘어난다', SHIFT({ ...a18, stillLiving: 'no' }, 2029, 2026).holdYears, '12');
+/* ★ 거주 0년인데 stillLiving 답이 남아 있으면 «살지도 않는 집»의 거주가 늘어난다 */
+eq('C18 거주 0년이면 stillLiving=yes 라도 안 늘어난다',
+   SHIFT({ ...a18, resYears: '0', stillLiving: 'yes' }, 2029, 2026).resYears, '0');
+/* 보유 9년·거주 9년 → 2027엔 10년이 되어 장특 상한(각 40%)에 도달한다 */
+chk('C18 2027년 실제 세액 (보유·거주 10년 기준)', CGT(SHIFT(a18, 2027, 2026), 2027).total, 8184000);
+chk('C18 기간을 안 옮기면 세액이 다르다(회귀 감시)', CGT(a18, 2027).total, 25173500);
+
+console.log('\n════ CASE 18b: 「이미 이사」와 「계속 거주 중」은 동시에 참일 수 없다 (R29 P1) ════');
+/* stillLiving 문항을 넣으면서 내가 만든 구멍 — 이사했다고 답해도 seniorLive2y='yes' 가
+   남아 있으면 고령감면이 붙었다. 화면(showIf+모순 정리)과 계산부 양쪽에서 닫는다. */
+const a18b = { transferPrice: '2000000000', acqPrice: '1000000000', expenses: '0', houses: 'one',
+               adjusted: 'no', holdYears: '5', resYears: '5', age: '64',
+               seniorMove: 'yes', seniorLive2y: 'yes' };
+const y27 = SHIFT(a18b, 2027, 2026);                       // 2027년엔 65세가 된다
+chk('C18b 계속 거주 중이면 감면 적용 (65세 도달)', CGT({ ...y27, stillLiving: 'yes' }, 2027).relief > 0 ? 1 : 0, 1);
+chk('C18b 이미 이사했으면 감면 0', CGT({ ...y27, stillLiving: 'no' }, 2027).relief, 0);
+chk('C18b 이사 시 세액이 감면분만큼 크다',
+    CGT({ ...y27, stillLiving: 'no' }, 2027).total > CGT({ ...y27, stillLiving: 'yes' }, 2027).total ? 1 : 0, 1);
+/* stillLiving 을 아예 안 넘기는 기존 호출부는 영향 없어야 한다(하위호환) */
+chk('C18b stillLiving 미지정이면 종전대로 동작', CGT(y27, 2027).relief > 0 ? 1 : 0, 1);
+
+console.log('\n════ CASE 20: 종부세 «과세대상 문턱» — 원문 대조로 찾은 누락 (종부세법 §7① 신설) ════');
+/* 1차 소스: 상세본 p60 「(1세대1주택자) 14억원 초과 / (그 외) 9억원 초과」·문답 p39.
+   기본공제와 «별개» 단계다. 종전엔 이 단계가 없어 «없는 세금»을 만들어 냈다. */
+const t20a = { totalValue: '1300000000', houses: 'one', isResident: 'no', age: '50', holdYears: '3', resYears: '0', adjusted: 'no' };
+chk('C20 비거주 1주택 13억 · 2027 → 0원 (14억 이하라 과세대상 아님)', CRE(t20a, 2027).total, 0);
+eq('C20 notTaxable 플래그', CRE(t20a, 2027).notTaxable, true);
+chk('C20 14억 «정확히» → 0원 (초과여야 과세)', CRE({ ...t20a, totalValue: '1400000000' }, 2027).total, 0);
+chk('C20 14억 초과분은 종전대로 과세', CRE({ ...t20a, totalValue: '1600000000' }, 2027).total, 3396000);
+const t20b = { totalValue: '800000000', houses: 'two', residentValue: '0', adjusted: 'no' };
+chk('C20 2주택 합계 8억 · 2027 → 0원 (9억 이하)', CRE(t20b, 2027).total, 0);
+chk('C20 9억 «정확히» → 0원', CRE({ ...t20b, totalValue: '900000000' }, 2027).total, 0);
+/* 2026(현행)엔 이 조항이 없다 — 기본공제 12억/9억이 같은 일을 하므로 결과는 0원으로 같아야 한다 */
+chk('C20 2026 비거주 1주택 13억 → 기본공제 12억으로 과세(현행)', CRE(t20a, 2026).total > 0 ? 1 : 0, 1);
+eq('C20 2026 엔 문턱 자체가 없다', CRE(t20a, 2026).notTaxable, undefined);
+
+/* 조기 반환 객체도 정상 경로와 «같은» heavy/fairRatio 를 실어야 한다 (R33 P3) */
+const t20c = CRE({ totalValue: '800000000', houses: 'two', residentValue: '0', adjusted: 'no' }, 2028);
+eq('C20 문턱 미달이어도 heavy 판정은 정상 경로와 같다', t20c.heavy, false);
+eq('C20 그에 맞는 공정시장가액비율(2028 light 70%)', t20c.fairRatio, 0.70);
+const t20d = CRE({ totalValue: '800000000', houses: 'three', residentValue: '0', adjusted: 'no' }, 2028);
+eq('C20 3주택이면 heavy=true · 비율 80%', t20d.heavy + '/' + t20d.fairRatio, 'true/0.8');
+
+console.log('\n════ CASE 20b: 결론문은 «세 해 전부»를 봐야 한다 (R34·R35) ════');
+/* 2026 과 2028 이 같고 2027 만 다른 조합이 실재한다 — 종전 결론문은 첫 해와 마지막 해만
+   비교(diff)해 「달라지지 않습니다」로 단정했다.
+   1주택 거주·공시 19.14억·보유 5년·거주 0년: 2027 만 보유공제 1/2(10%)이 걸린다.
+   ⚠️ 내가 처음 「그런 조합 0건」이라 판정했던 것은 «보유 4년 고정» 스캔이라 놓친 것이었다.
+      Codex R35 가 보유 5년 반례를 제시해 정정 — 「0건」은 스캔 범위의 답이지 사실이 아니었다. */
+const t20e = { totalValue: '1914285714', houses: 'one', isResident: 'yes', age: '1', holdYears: '5', resYears: '0', adjusted: 'no' };
+const y20 = [2026, 2027, 2028].map((y) => CRE(SHIFT(t20e, y, 2026), y));
+chk('C20b 2026 총부담', y20[0].total, 2304000);
+chk('C20b 2027 총부담 (보유 6년 → 공제 10%)', y20[1].total, 2073600);
+chk('C20b 2028 총부담 (거주 0년 → 공제 0)', y20[2].total, 2304000);
+eq('C20b 2026 === 2028 (첫·끝만 보면 «변동 없음»으로 보인다)', y20[0].total === y20[2].total, true);
+/* ★ 세액만 고정하면 «결론 로직»이 diff===0 으로 퇴행해도 전부 통과한다 — 고친 그 로직을
+   직접 검사해야 한다 (260805 R36 P2, 「게이트를 만든 것 ≠ 작동하는 것」). */
+const VD = window.jtRfCreVerdict;
+const v20 = VD(y20);
+eq('C20b 결론 판정 = changed (변동 없음이 아니다)', v20.kind, 'changed');
+eq('C20b 2027 이 다르다는 것을 판정이 안다', v20.midDiffers, true);
+chk('C20b diff 는 0 이지만(첫·끝 동일) 그것만으로 판정하지 않는다', v20.diff, 0);
+chk('C20b 2027 금액을 결론이 들고 있다', v20.mid, 2073600);
+/* 판정 함수의 나머지 갈래도 고정 */
+const mk = (arr) => arr.map((t, i) => ({ year: 2026 + i, total: t, notTaxable: t === 0 }));
+eq('C20b 전 연도 0원 → none', VD(mk([0, 0, 0])).kind, 'none');
+eq('C20b 전 연도 동일 → same', VD(mk([100, 100, 100])).kind, 'same');
+eq('C20b 2028만 다름 → changed·mid 동일', VD(mk([100, 100, 200])).kind + '/' + VD(mk([100, 100, 200])).midDiffers, 'changed/false');
+eq('C20b 문턱 미달 섞임 감지', VD(mk([100, 0, 100])).anyNotTaxable, true);
+
+console.log('\n════ CASE 21: 다주택 공제 산식 — 문답자료 p40 적용사례 그대로 ════');
+/* 「2주택자 공시가격 10억원 주택 2채: 1채 거주 → 4억+(5억×10/20)=6.5억 공제 / 비거주 → 4억」 */
+chk('C21 2주택 10억×2 · 1채 거주 → 공제 6.5억',
+    CRE({ totalValue: '2000000000', houses: 'two', residentValue: '1000000000', adjusted: 'no' }, 2027).deduct, 650000000);
+chk('C21 2주택 10억×2 · 비거주 → 공제 4억',
+    CRE({ totalValue: '2000000000', houses: 'two', residentValue: '0', adjusted: 'no' }, 2027).deduct, 400000000);
+/* 「3주택자 공시가격 10억원 주택 3채: 1채 거주 → 4억+(5억×10/30) = 약 5.7억」 */
+chk('C21 3주택 10억×3 · 1채 거주 → 공제 약 5.67억',
+    CRE({ totalValue: '3000000000', houses: 'three', residentValue: '1000000000', adjusted: 'no' }, 2027).deduct,
+    400000000 + 500000000 / 3, 1);
+
+console.log('\n════ CASE 19: 단계 표시 합계 = 카드 총액 (R26 P2·P3) ════');
+/* 절사가 안 보이는 단계였을 때 화면 숫자를 더하면 총액과 최대 9원 어긋났다 */
+const r19 = CRE({ totalValue: '1700000167', houses: 'one', isResident: 'yes', age: '1', holdYears: '1', resYears: '0' }, 2026);
+chk('C19 종부세 본세는 10원 단위', r19.net % 10, 0);
+chk('C19 net + 농특세 = total', r19.net + r19.rural, r19.total);
+const r19b = CGT({ transferPrice: '1000000167', acqPrice: '100000000', expenses: '0', houses: 'two',
+                   adjusted: 'no', holdYears: '3', resYears: '0', age: '50' }, 2026);
+chk('C19 양도세 본세는 10원 단위', r19b.tax % 10, 0);
+chk('C19 tax + 지방세 = total', r19b.tax + r19b.local, r19b.total);
+
+console.log(`\n════════════════════\n실패 ${fails}건`);
 process.exit(fails ? 1 : 0);
