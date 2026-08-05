@@ -95,12 +95,19 @@ const c5c = { ...c5, resYears: '9' };                  // 거주 9년 → 10년 
 chk('C5c 2027 거주 9년 → 상향 배제', CGT(c5c, 2027).basicDeduct, 2500000);
 
 console.log('\n════ CASE 6: 고령 1주택 비수도권 이주 감면 (67세) ════');
-const c6 = { ...c2, age: '67', seniorMove: 'yes' };
+/* ⚠️ 종전 이 케이스는 «거주 0년»(c2)인데도 감면을 정답으로 기대해 결함을 고착시켰다.
+   조특법 신설안 요건: ①보유기간 중 5년 이상 거주 ②양도일 현재 2년 이상 계속 거주
+   → 거주 0년이면 감면이 «없어야» 정상 (260805 Codex P1 반영). */
+const c6no = { ...c2, age: '67', seniorMove: 'yes' };
+const c6 = { ...c1, age: '67', seniorMove: 'yes', seniorLive2y: 'yes' };
+chk('C6 거주 0년 → 감면 0 (5년 거주 요건 미충족)', CGT(c6no, 2027).relief, 0);
+chk('C6 계속거주 2년 «아니오» → 감면 0', CGT({ ...c6, seniorLive2y: 'no' }, 2027).relief, 0);
 [2026, 2027, 2028, 2029].forEach((y) => {
   const r = CGT(c6, y);
   console.log(`  ${y}: 감면 ${won(r.relief)}  총부담 ${won(r.total)}`);
 });
-chk('C6 2027 감면(산출세액 70,310,000 × 50%)', CGT(c6, 2027).relief, 35155000);
+chk('C6 2027 감면(요건 충족 → 산출세액 × 50%)', CGT(c6, 2027).relief,
+    Math.min(CGT({ ...c1, age: '67', seniorMove: 'no' }, 2027).tax * 0.5, 500000000));
 chk('C6 2026 감면 없음', CGT(c6, 2026).relief, 0);
 chk('C6 2029 감면 없음(일몰)', CGT(c6, 2029).relief, 0);
 chk('C6 65세 미만이면 감면 없음', CGT({ ...c6, age: '60' }, 2027).relief, 0);
@@ -158,6 +165,32 @@ chk('C11 2028 세액공제 = 한도 600만', CRE(d4, 2028).credit, 6000000);
 console.log('\n════ CASE 12: 공제 이하 → 0원 ════');
 chk('C12 1주택 공시 10억 2026 총부담', CRE({ ...d1, totalValue: '1000000000' }, 2026).total, 0);
 chk('C12 1주택 거주 공시 13억 2027 총부담(공제 14억)', CRE({ ...d1, totalValue: '1300000000' }, 2027).total, 0);
+
+console.log('\n════ CASE 13: 단기보유 세율 (Codex P0) ════');
+const s13 = { transferPrice: '1200000000', acqPrice: '100000000', expenses: '0',
+              houses: 'one', adjusted: 'no', acqAdjusted: 'no', holdYears: '1.5', resYears: '0', age: '50', seniorMove: 'no' };
+const r13 = CGT(s13, 2026);
+console.log(`  보유 1.5년 → 과표 ${won(r13.base)} / 총부담 ${won(r13.total)}`);
+chk('C13 소수점 보존 — 1.5년이 15년이 되지 않음', r13.base, 1097500000);
+chk('C13 단기보유 60% 적용 (소득세법 §104①3호)', r13.total, 724350000);
+chk('C13b 보유 0.5년 → 70%', CGT({ ...s13, holdYears: '0.5' }, 2026).tax, Math.round(1097500000 * 0.70));
+
+console.log('\n════ CASE 14: 취득 당시 조정대상지역 → 거주 2년 요건 (Codex P1) ════');
+const a14 = { transferPrice: '1200000000', acqPrice: '100000000', expenses: '0',
+              houses: 'one', adjusted: 'no', holdYears: '5', resYears: '0', age: '50', seniorMove: 'no' };
+chk('C14 취득 당시 비조정 + 거주 0년 → 비과세', CGT({ ...a14, acqAdjusted: 'no' }, 2026).total, 0);
+const r14 = CGT({ ...a14, acqAdjusted: 'yes' }, 2026);
+console.log(`  취득 당시 조정지역 + 거주 0년 → 총부담 ${won(r14.total)}`);
+/* 비과세 배제 → 전액 과세. 단 장특공제는 «표1»(소득세법 §95② 본문, 보유만).
+   표2(보유+거주 최대80%)는 §95② 단서상 「대통령령으로 정하는 1세대 1주택」 전용이라
+   비과세가 배제되면 못 쓴다 — 1차 소스 확인(260805).
+     양도차익 11억 × 표1 보유 5년 10% = 110,000,000 공제
+     소득 990,000,000 − 기본공제 250만 = 과표 987,500,000
+     987,500,000 × 42% − 누진 35,940,000 = 378,810,000 · 지방 37,881,000
+   ※ Codex R1 은 470,728,500 을 제시했으나 장특공제를 0으로 본 값이었다. */
+chk('C14 취득 당시 조정지역 + 거주 0년 → 비과세 배제 + 표1 장특공제', r14.total, 416691000);
+chk('C14 장특공제율 = 표1 보유 5년 10%', r14.ltdRate, 0.10);
+chk('C14b 취득 당시 조정지역 + 거주 2년 → 비과세', CGT({ ...a14, acqAdjusted: 'yes', resYears: '2' }, 2026).total, 0);
 
 console.log(`\n════════════════════\n실패 ${fails}건`);
 process.exit(fails ? 1 : 0);

@@ -59,6 +59,14 @@ function mdToHtml(md) {
     const items = block.trim().split('\n').map(l => `  <li>${l.replace(/^- /, '')}</li>`).join('\n');
     return `${pre}<ul>\n${items}\n</ul>\n`;
   });
+  /* ⚠️ 표 치환 «전에» fenced code block 을 빼 둔다.
+     안 그러면 코드블록 안의 표 모양 텍스트까지 <table> 로 바뀐다 (260805 Codex P2).
+     센티널은 사용자 私用영역(U+E000)이라 본문과 충돌하지 않는다. */
+  const _fences = [];
+  html = html.replace(/```[\s\S]*?```/g, (m) => {
+    _fences.push(m);
+    return 'FENCE' + (_fences.length - 1) + '';
+  });
   // ── GFM 표 (260805 추가) ────────────────────────────────────────────────
   // 종전 렌더러엔 표 지원이 없어, 세제개편안처럼 「연도별 비교」가 핵심인 글의
   // 표가 «파이프 문자가 그대로 보이는 문단»으로 깨져 나왔다.
@@ -79,6 +87,7 @@ function mdToHtml(md) {
       return `${pre}<div class="jt-ins-tblwrap">\n  <table class="jt-ins-tbl">\n    <thead><tr>${th}</tr></thead>\n    <tbody>\n      ${tb}\n    </tbody>\n  </table>\n</div>\n`;
     }
   );
+  html = html.replace(/FENCE(\d+)/g, (_, i) => _fences[Number(i)]);
   html = html.split(/\n\n+/).map(p => {
     const t = p.trim();
     if (!t) return '';

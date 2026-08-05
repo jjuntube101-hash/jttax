@@ -53,6 +53,10 @@ window.JT_REFORM_2026 = {
     /* 1세대1주택 고가주택 기준 (소득세법 §89①3호·시행령 §156①) — 현행, 개편 대상 아님 */
     highValueThreshold: 1200000000,
 
+    /* 단기보유 세율 (소득세법 §104①2호·3호) — 개편 대상 아님, 현행.
+       주택·조합원입주권 기준. 둘 이상 해당 시 큰 세액(§104⑤). */
+    shortTermRates: { under1y: 0.70, under2y: 0.60 },
+
     /* 장기보유특별공제 → 「장기거주소득공제」 개편 (개조식 p19)
        one   : 1세대 1주택자   / multi : 다주택자(비조정대상지역)
        ※ 다주택자가 조정대상지역 주택 양도 시에는 현행과 같이 장특공제 배제(거주공제도 배제) */
@@ -96,6 +100,8 @@ window.JT_REFORM_2026 = {
        ※ 양도일부터 5년 내 수도권 이주·수도권 주택 취득 시 감면세액 추징 */
     seniorRelief: {
       minAge: 65,
+      minResYears: 5,      // 보유기간 중 총 5년 이상 거주
+
       2026: null,
       2027: { rate: 0.50, cap: 500000000 },
       2028: { rate: 0.30, cap: 300000000 },
@@ -213,9 +219,23 @@ function rfCalcCGT(input, year) {
   const gain = Math.max(0, price - acq - exp);
   steps.push({ k: '양도차익', v: gain, note: `양도가액 ${rfWon(price)} − 취득가액 ${rfWon(acq)} − 필요경비 ${rfWon(exp)}` });
 
-  /* 2. 1세대1주택 고가주택 — 12억 초과분만 과세 (2년 이상 보유 요건 전제) */
+  /* 2. 1세대1주택 고가주택 — 12억 초과분만 과세
+     ⚠️ 종전엔 «보유 2년»만 봤다. 2017.8.3. 이후 «취득 당시» 조정대상지역이었던 주택은
+        보유 2년 + «거주 2년»을 모두 채워야 비과세다(소득세법 시행령 §154①).
+        이걸 안 보면 거주 0년인 조정지역 취득분이 0원으로 나온다 (260805 Codex P1). */
+  const acqAdjusted = input.acqAdjusted === 'yes';   // 취득 당시 조정대상지역이었나
+  const needResidence = acqAdjusted;                 // 그렇다면 거주 2년까지 필요
+  const exemptOK = isOne && hold >= 2 && (!needResidence || res >= 2);
   let taxableGain = gain, exemptNote = '';
-  if (isOne && hold >= 2) {
+  if (isOne && !exemptOK) {
+    steps.push({
+      k: '1세대1주택 비과세 배제', v: 0,
+      note: hold < 2
+        ? `보유 ${hold}년 — 2년 미만이라 비과세 요건 미충족`
+        : `취득 당시 조정대상지역 주택은 «거주 2년»도 필요합니다 (거주 ${res}년) — 시행령 §154①`,
+    });
+  }
+  if (exemptOK) {
     if (price <= C.highValueThreshold) {
       taxableGain = 0;
       exemptNote = `1세대1주택 비과세 — 양도가액이 ${rfEok(C.highValueThreshold)} 이하`;
@@ -226,8 +246,14 @@ function rfCalcCGT(input, year) {
     steps.push({ k: '과세대상 양도차익', v: taxableGain, note: exemptNote });
   }
 
-  /* 3. 장기보유특별공제(개정 「장기거주소득공제」) */
-  const kind = isOne ? 'one' : 'multi';
+  /* 3. 장기보유특별공제(개정 「장기거주소득공제」)
+     ⚠️ 소득세법 §95② 단서 — 표2(보유+거주, 최대 80%)는 «대통령령으로 정하는
+        1세대 1주택»에만 적용된다. 거주요건 미달 등으로 비과세가 배제되면 1주택이라도
+        표1(보유만, 최대 30%)이다. 종전엔 isOne 만 보고 표2를 적용해 공제를 과다
+        계상했다 (260805, 1차 소스 §95② 확인).
+        ※ 개편안은 「1세대1주택자」와 「다주택자(비조정)」 두 줄만 제시하므로,
+          비과세 배제 1주택은 후자(표1 계열)로 본다 — 정부안 해석. */
+  const kind = exemptOK ? 'one' : 'multi';
   const cfg = C.ltd[year][kind];
   const maxY = C.ltdYears[kind];
   let ltdRate = 0, ltdNote = '';
@@ -274,7 +300,11 @@ function rfCalcCGT(input, year) {
   });
   const base = Math.max(0, Math.floor((incomeAmt - Math.min(basic, incomeAmt)) / 1000) * 1000);
 
-  /* 5. 세율 — 기본세율 + 다주택 조정지역 중과 */
+  /* 5. 세율 — 기본세율 + 다주택 조정지역 중과, 그리고 «단기보유 세율»과 비교과세
+     ⚠️ 종전엔 단기보유 세율이 아예 없어, 보유 1년 미만도 기본세율(6~45%)로 계산했다.
+        1.5년을 넣으면(위 P0-a 수정 전) 15년으로 읽혀 비과세까지 나왔다 (260805 Codex P0).
+     소득세법 §104①2호·3호: 주택·조합원입주권은 1년 미만 70%, 1년 이상 2년 미만 60%.
+     같은 조 ⑤: 둘 이상 해당하면 «큰 세액». 중과와 단기 중 큰 쪽을 취한다. */
   const br = rfProgressiveTax(base, R.incomeBrackets);
   let sur = 0, surNote = '';
   if (!isOne && adjusted) {
@@ -283,16 +313,35 @@ function rfCalcCGT(input, year) {
   }
   /* ★ Math.round 선행 필수 — 0.42+0.15 가 0.5700000000000001 이 되어
      산출세액이 …999.99994 로 떨어지면 뒤의 10원 절사가 10원을 더 깎는다(260804 실측). */
-  let tax = base > 0 ? Math.max(0, Math.round(base * (br.rate + sur) - br.deduct)) : 0;
+  const taxBasic = base > 0 ? Math.max(0, Math.round(base * (br.rate + sur) - br.deduct)) : 0;
+  const shortRate = hold < 1 ? C.shortTermRates.under1y : (hold < 2 ? C.shortTermRates.under2y : 0);
+  const taxShort = shortRate ? Math.round(base * shortRate) : 0;
+  let tax = Math.max(taxBasic, taxShort);
+  const usedShort = taxShort > taxBasic;
   steps.push({
     k: '산출세액', v: tax,
-    note: `과세표준 ${rfWon(base)} × ${((br.rate + sur) * 100).toFixed(0)}% − 누진공제 ${rfWon(br.deduct)}${surNote ? ' · ' + surNote : ''}`,
+    note: usedShort
+      ? `보유 ${hold}년 — 단기보유 세율 ${(shortRate * 100).toFixed(0)}% 적용 (소득세법 §104①, 비교과세 §104⑤). 과세표준 ${rfWon(base)} × ${(shortRate * 100).toFixed(0)}%`
+      : `과세표준 ${rfWon(base)} × ${((br.rate + sur) * 100).toFixed(0)}% − 누진공제 ${rfWon(br.deduct)}${surNote ? ' · ' + surNote : ''}`
+        + (shortRate ? ` (단기보유 ${(shortRate * 100).toFixed(0)}%보다 큼)` : ''),
   });
 
   /* 6. 고령 1주택자 한시 감면 */
   let relief = 0, reliefNote = '';
   const sr = C.seniorRelief[year];
-  if (isOne && seniorMove && age >= C.seniorRelief.minAge && sr) {
+  /* ⚠️ 종전엔 나이·1주택·이주 의사만 봤다. 조특법 신설안은 «5년 이상 거주» +
+        «양도일 현재 2년 이상 계속 거주»가 요건이다. 거주 0년인데도 감면이
+        붙던 것을 막는다 (260805 Codex P1). */
+  const seniorResOK = res >= C.seniorRelief.minResYears && input.seniorLive2y === 'yes';
+  if (isOne && seniorMove && age >= C.seniorRelief.minAge && sr && !seniorResOK) {
+    steps.push({
+      k: '고령 1주택자 감면 배제', v: 0,
+      note: res < C.seniorRelief.minResYears
+        ? `거주 ${res}년 — 5년 이상 거주 요건 미충족`
+        : '양도일 현재 2년 이상 계속 거주 요건 미충족',
+    });
+  }
+  if (isOne && seniorMove && age >= C.seniorRelief.minAge && sr && seniorResOK) {
     relief = Math.min(tax * sr.rate, sr.cap);
     reliefNote = `65세 이상 1주택자 비수도권 이주 — ${(sr.rate * 100).toFixed(0)}% 감면(한도 ${rfEok(sr.cap)})`;
     tax -= relief;
@@ -519,10 +568,14 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
   const [addr, setAddr] = useRfState('');
   const [busy, setBusy] = useRfState(false);
   const [info, setInfo] = useRfState(null);
+  /* ⚠️ 조회 중 주소를 바꾸면 «먼저 보낸» 응답이 나중에 도착해 새 주소의 값을 덮는다.
+        요청마다 순번을 매기고, 최신 순번의 응답만 반영한다 (260805 Codex P1). */
+  const seq = React.useRef(0);
 
   const run = async () => {
     const a = addr.trim();
     if (!a || busy) return;
+    const my = ++seq.current;
     setBusy(true); setInfo(null);
     try {
       if (!window.jtLookupHousePrice) {
@@ -530,6 +583,7 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
         return;
       }
       const r = await window.jtLookupHousePrice(a);
+      if (my !== seq.current) return;          // 더 최신 조회가 있다 — 이 응답은 버린다
       /* 엔진이 세대를 특정하지 못하면 금액을 «쓰지 않는다» — 260720 결함 대응.
          ⚠️ jtLookupHousePrice 는 엔진의 needs_unit_selection 을 status:'needs_unit' 으로
             «바꿔서» 돌려준다. 원본 필드명만 보면 이 분기를 못 타고 「공시가격을 찾지
@@ -538,6 +592,7 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
         if (r.region && onRegion) onRegion(r.region);
         const n = Number(r.unitCount) || 0;
         const lo = Number(r.priceMin) || 0, hi = Number(r.priceMax) || 0;
+        if (onPrice) onPrice('');                // 앞서 자동입력된 금액을 «지운다» (남으면 남의 집 값)
         setInfo({ ok: false, msg:
           (r.complex ? r.complex + ' — ' : '') + '이 주소에는 ' + (n ? n.toLocaleString('ko-KR') + '세대' : '세대가 여럿') + '가 있어 어느 집인지 특정할 수 없습니다.'
           + (lo && hi ? ' 단지 내 공시가격이 ' + rfEok(lo) + ' ~ ' + rfEok(hi) + '으로 갈리니' : ' 세대마다 공시가격이 달라서')
@@ -560,7 +615,7 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
       }
     } catch (e) {
       setInfo({ ok: false, msg: '조회 중 오류가 났어요. 직접 입력해 주세요.' });
-    } finally { setBusy(false); }
+    } finally { if (my === seq.current) setBusy(false); }
   };
 
   return (
@@ -597,7 +652,7 @@ function RfQuestion({ q, value, onChange }) {
       {q.addr && (
         <RfAddrLookup
           mode={q.addr}
-          onPrice={q.addr === 'price' ? function (amt) { onChange(q.id, String(amt)); } : null}
+          onPrice={q.addr === 'price' ? function (amt) { onChange(q.id, amt === '' ? '' : String(amt)); } : null}
           onRegion={q.regionTo ? function (reg) { onChange(q.regionTo, reg.is_adjusted_area ? 'yes' : 'no'); } : null}
         />
       )}
@@ -617,10 +672,17 @@ function RfQuestion({ q, value, onChange }) {
       ) : (
         <>
           <input
-            className="jt-report-q__input" type="text" inputMode="numeric"
+            className="jt-report-q__input" type="text" inputMode="decimal"
             value={q.money && value ? Number(String(value).replace(/[^0-9]/g, '') || 0).toLocaleString('ko-KR') : (value || '')}
             placeholder={q.placeholder || ''}
-            onChange={(e) => onChange(q.id, String(e.target.value).replace(/[^0-9]/g, ''))}
+            /* ⚠️ 금액은 정수만, 기간은 «소수점 허용». 종전엔 [^0-9] 로 전부 지워
+               「1.5년」이 «15년»이 되어 단기보유가 장기보유로 둔갑했다 (260805 Codex P0). */
+            onChange={(e) => {
+              const raw = String(e.target.value);
+              onChange(q.id, q.money
+                ? raw.replace(/[^0-9]/g, '')
+                : raw.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'));
+            }}
             style={{ width: '100%', padding: '13px 15px', fontSize: 17, border: '1px solid #dcd8d0', borderRadius: 9, fontWeight: 700 }}
           />
           {q.money && rfNum(value) > 0 && (
@@ -651,6 +713,9 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
     const v = answers[cur.id];
     if (cur.opts) return v ? null : '하나를 골라 주세요.';
     if (v == null || v === '') return cur.optional ? null : '값을 넣어 주세요.';
+    /* ⚠️ 종전엔 '0' 도 통과해 전 문항을 0으로 넘기면 결과가 «0원»으로 나왔다.
+          0 을 허용할 문항만 optional/allowZero 로 표시한다 (260805 Codex P2). */
+    if (!cur.optional && !cur.allowZero && rfNum(v) <= 0) return '0보다 큰 값을 넣어 주세요.';
     return cur.check ? cur.check(v, answers) : null;
   })();
 
@@ -690,7 +755,7 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
 const RF_CGT_QS = [
   { id: 'transferPrice', section: '양도 (파는 금액)', q: '집을 얼마에 파시나요? (원)', money: true, placeholder: '예: 2,000,000,000',
     sub: '실제로 받는 매매대금(양도가액)입니다. 1세대 1주택은 12억원까지 비과세이고, 12억원을 넘는 부분만 세금 계산에 들어갑니다.' },
-  { id: 'acqPrice', section: '취득 (산 금액)', q: '그 집을 얼마에 사셨나요? (원)', money: true, placeholder: '예: 1,000,000,000',
+  { id: 'acqPrice', section: '취득 (산 금액)', q: '그 집을 얼마에 사셨나요? (원)', money: true, placeholder: '예: 1,000,000,000', allowZero: true,
     check: (v, a) => (rfNum(v) > rfNum(a.transferPrice) ? '산 금액이 파는 금액보다 큽니다 — 양도차손이면 낼 세금이 없습니다.' : null),
     sub: '취득 당시 실제 매매대금입니다. 상속·증여로 받았다면 그때 평가된 금액을 넣으세요.' },
   { id: 'expenses', section: '필요경비', q: '취득세·중개수수료·자본적지출은 모두 얼마인가요? (원)', money: true, placeholder: '예: 40,000,000', optional: true,
@@ -704,13 +769,22 @@ const RF_CGT_QS = [
     addr: 'region', regionTo: 'adjusted',
     sub: '조정대상지역은 정부가 지정하는 과열 지역입니다. 다주택자가 이 지역 집을 팔면 세율이 크게 올라가고(중과) 장기보유특별공제도 못 받습니다. 2026년 8월 현재 서울 전역과 경기 일부가 해당합니다.',
     opts: [['yes', '예 — 조정대상지역', '다주택이면 중과 대상'], ['no', '아니오', '중과 없음']] },
+  { id: 'acqAdjusted', section: '취득 당시 지역', q: '살 때 그 집이 조정대상지역이었나요?',
+    showIf: (a) => (a.houses || 'one') === 'one',
+    sub: '★ 1세대 1주택 비과세 요건이 갈립니다. 2017년 8월 3일 이후 «취득 당시» 조정대상지역이었다면, 보유 2년만으로는 부족하고 «거주도 2년» 채워야 비과세를 받습니다(소득세법 시행령 §154①). 파는 시점의 지정 여부가 아니라 «살 때» 기준입니다.',
+    opts: [['yes', '예 — 살 때 조정대상지역이었다', '보유 2년 + 거주 2년 모두 필요'],
+           ['no', '아니오 / 2017.8.3. 이전 취득', '보유 2년이면 비과세']] },
   { id: 'holdYears', section: '보유기간', q: '몇 년 «보유» 하셨나요? (년)', placeholder: '예: 12',
     sub: '등기부상 취득일부터 양도일까지의 기간입니다. 개편안은 이 «보유» 기준 공제를 단계적으로 줄입니다.' },
-  { id: 'resYears', section: '거주기간', q: '그중 실제로 몇 년 «거주» 하셨나요? (년)', placeholder: '예: 10',
+  { id: 'resYears', section: '거주기간', q: '그중 실제로 몇 년 «거주» 하셨나요? (년)', placeholder: '예: 10', allowZero: true,
     check: (v, a) => (rfNum(v) > rfNum(a.holdYears) ? '거주기간이 보유기간보다 길 수는 없습니다.' : null),
     sub: '★ 이번 개편의 핵심입니다. 주민등록을 두고 실제 살았던 기간이며, 2029년부터는 «거주한 기간만» 공제받습니다. 보유만 하고 살지 않았다면 0을 넣으세요.' },
   { id: 'age', section: '나이', q: '양도자 나이가 몇 세인가요? (세)', placeholder: '예: 67',
     sub: '65세 이상 1주택자가 수도권 집을 팔고 비수도권으로 이주하면 2027~2028년에 한시 감면이 있습니다. 해당 없으면 대충 넣어도 결과에 영향이 없습니다.' },
+  { id: 'seniorLive2y', section: '고령 특례', q: '양도일 현재 그 집에 2년 이상 «계속» 거주 중이신가요?',
+    showIf: (a) => rfNum(a.age) >= 65 && (a.houses || 'one') === 'one' && a.seniorMove === 'yes',
+    sub: '고령 1주택자 감면은 ①보유기간 중 5년 이상 거주 ②양도일 현재 2년 이상 계속 거주 두 가지를 모두 요구합니다. 하나라도 빠지면 감면이 없습니다.',
+    opts: [['yes', '예 — 2년 이상 계속 거주 중', ''], ['no', '아니오', '감면 대상 아님']] },
   { id: 'seniorMove', section: '고령 특례', q: '수도권 집을 팔고 비수도권으로 이주하시나요?',
     showIf: (a) => rfNum(a.age) >= 65 && a.houses === 'one',
     sub: '65세 이상 1주택자 한시 특례입니다. 5년 이상 거주했고 양도일 현재 2년 이상 계속 거주 중인 수도권 주택을 팔고 비수도권으로 이주하는 경우입니다. 양도일부터 5년 안에 다시 수도권으로 이주하거나 수도권 주택을 사면 감면세액을 추징당합니다.',
@@ -866,7 +940,7 @@ const RF_CRE_QS = [
   { id: 'isResident', section: '거주 여부', q: '그 집에 본인(세대)이 실제로 살고 있나요?', showIf: (a) => a.houses === 'one',
     sub: '★ 이번 개편의 핵심입니다. 살고 있으면 공제가 12억 → 14억으로 늘고, 살지 않으면 12억 → 9억으로 줄어듭니다.',
     opts: [['yes', '예 — 거주 중', '공제 14억원'], ['no', '아니오 — 비거주', '공제 9억원 (세금이 크게 늘어남)']] },
-  { id: 'residentValue', section: '거주용 주택 가액', q: '그중 «본인이 사는 집»의 공시가격은 얼마인가요? (원)', money: true, placeholder: '예: 900,000,000',
+  { id: 'residentValue', section: '거주용 주택 가액', q: '그중 «본인이 사는 집»의 공시가격은 얼마인가요? (원)', money: true, placeholder: '예: 900,000,000', allowZero: true,
     addr: 'price',
     check: (v, a) => (rfNum(v) > rfNum(a.totalValue) ? '거주용 주택 가액이 전체 합계보다 클 수는 없습니다.' : null),
     showIf: (a) => a.houses !== 'one',
@@ -878,7 +952,7 @@ const RF_CRE_QS = [
     sub: '1세대 1주택자는 만 60세부터 연령별 세액공제를 받습니다 (60세~ 20%, 65세~ 30%, 70세~ 40%).' },
   { id: 'holdYears', section: '보유기간', q: '몇 년 «보유» 하셨나요? (년)', placeholder: '예: 12', showIf: (a) => a.houses === 'one',
     sub: '현행은 보유기간에 따라 세액공제를 줍니다(5년~ 20%, 10년~ 40%, 15년~ 50%). 개편안은 이를 거주기간 기준으로 바꿉니다.' },
-  { id: 'resYears', section: '거주기간', q: '그중 실제로 몇 년 «거주» 하셨나요? (년)', placeholder: '예: 10', showIf: (a) => a.houses === 'one',
+  { id: 'resYears', section: '거주기간', q: '그중 실제로 몇 년 «거주» 하셨나요? (년)', placeholder: '예: 10', allowZero: true, showIf: (a) => a.houses === 'one',
     check: (v, a) => (rfNum(v) > rfNum(a.holdYears) ? '거주기간이 보유기간보다 길 수는 없습니다.' : null),
     sub: '2028년부터는 «거주기간»만 세액공제 대상입니다. 살지 않았다면 0을 넣으세요.' },
 ];
