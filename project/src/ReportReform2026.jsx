@@ -509,13 +509,90 @@ function RfCrossLinks({ setSubRoute, exclude }) {
   );
 }
 
-/* 질문 렌더 (숫자 / 선택) */
+/* ══════════════════════════════════════════════════════════════════════════
+   주소 자동조회 — 공시가격 / 조정대상지역
+   엔진 헬퍼 window.jtLookupHousePrice(주소) 를 재사용한다.
+   (ReportProperty.jsx 가 전역에 정의 — index.html 로드 순서상 항상 먼저 올라온다)
+   ⚠️ 대단지는 동·호에 따라 공시가격이 크게 다르다 — 결과에 확인 안내를 붙인다.
+   ══════════════════════════════════════════════════════════════════════════ */
+function RfAddrLookup({ mode, onPrice, onRegion }) {
+  const [addr, setAddr] = useRfState('');
+  const [busy, setBusy] = useRfState(false);
+  const [info, setInfo] = useRfState(null);
+
+  const run = async () => {
+    const a = addr.trim();
+    if (!a || busy) return;
+    setBusy(true); setInfo(null);
+    try {
+      if (!window.jtLookupHousePrice) {
+        setInfo({ ok: false, msg: '조회 기능을 불러오지 못했어요. 금액을 직접 넣어 주세요.' });
+        return;
+      }
+      const r = await window.jtLookupHousePrice(a);
+      /* 엔진이 세대를 특정하지 못하면 금액을 «쓰지 않는다» — 260720 결함 대응 */
+      if (r && r.needs_unit_selection) {
+        if (r.region && onRegion) onRegion(r.region);
+        setInfo({ ok: false, msg: '이 주소에는 세대가 여럿입니다. 공시가격은 동·호에 따라 크게 다르니 직접 입력해 주세요.' });
+        return;
+      }
+      const reg = r && r.region;
+      if (reg && onRegion) onRegion(reg);
+      if (r && r.amount > 0 && onPrice) {
+        onPrice(r.amount);
+        setInfo({ ok: true, msg: (r.year ? r.year + '년 ' : '') + '공시가격 ' + rfWon(r.amount) + '을 넣었어요.'
+          + (reg ? ' (' + (reg.is_adjusted_area ? '조정대상지역' : '조정대상지역 아님') + ')' : '')
+          + ' ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.' });
+      } else if (reg) {
+        setInfo({ ok: true, msg: (reg.sigungu || '') + ' ' + (reg.dong || '') + ' — '
+          + (reg.is_adjusted_area ? '조정대상지역입니다' : '조정대상지역이 아닙니다') + '.'
+          + (mode === 'price' ? ' 공시가격은 찾지 못했어요(상가·오피스텔 등). 금액은 직접 넣어 주세요.' : '') });
+      } else {
+        setInfo({ ok: false, msg: '주소를 찾지 못했어요. 도로명 주소로 다시 시도하거나 직접 입력해 주세요.' });
+      }
+    } catch (e) {
+      setInfo({ ok: false, msg: '조회 중 오류가 났어요. 직접 입력해 주세요.' });
+    } finally { setBusy(false); }
+  };
+
+  return (
+    <div style={{ border: '1px solid #dcd8d0', borderRadius: 10, padding: '13px 15px', background: '#fbfaf8', marginBottom: 16 }}>
+      <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>
+        🔎 주소로 자동 조회 <span style={{ fontWeight: 400, opacity: 0.7, fontSize: 12.5 }}>(선택 — 직접 입력해도 됩니다)</span>
+      </div>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <input
+          type="text" value={addr} onChange={(e) => setAddr(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); run(); } }}
+          placeholder="예: 서울 강남구 도곡동 467"
+          style={{ flex: '1 1 220px', minWidth: 0, padding: '11px 13px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }}
+        />
+        <button className="jt-btn jt-btn--primary" disabled={busy || !addr.trim()} onClick={run}
+          style={{ flex: '0 0 auto', padding: '11px 18px', opacity: (busy || !addr.trim()) ? 0.5 : 1 }}>
+          {busy ? '조회 중…' : '조회'}
+        </button>
+      </div>
+      {info && (
+        <div style={{ marginTop: 9, fontSize: 13, lineHeight: 1.65, color: info.ok ? '#1e6b45' : '#8a6224' }}>{info.msg}</div>
+      )}
+    </div>
+  );
+}
+
+/* 질문 렌더 (숫자 / 선택 / 주소조회) */
 function RfQuestion({ q, value, onChange }) {
   return (
     <div className="jt-report-q">
       <div className="jt-report-q__section">{q.section}</div>
       <h2 style={{ fontSize: 20, lineHeight: 1.45, margin: '6px 0 8px' }}>{q.q}</h2>
       {q.sub && <p className="jt-report-q__sub" style={{ fontSize: 13.5, lineHeight: 1.7, color: '#7b756b', marginBottom: 14 }}>{q.sub}</p>}
+      {q.addr && (
+        <RfAddrLookup
+          mode={q.addr}
+          onPrice={q.addr === 'price' ? function (amt) { onChange(q.id, String(amt)); } : null}
+          onRegion={q.regionTo ? function (reg) { onChange(q.regionTo, reg.is_adjusted_area ? 'yes' : 'no'); } : null}
+        />
+      )}
       {q.opts ? (
         <div className="jt-report-q__opts" style={{ display: 'grid', gap: 9 }}>
           {q.opts.map(([v, label, hint]) => (
@@ -547,23 +624,55 @@ function RfQuestion({ q, value, onChange }) {
   );
 }
 
-/* 입력 폼 셸 — 한 화면에 모든 문항 (빠른 결과 도달) */
-function RfForm({ questions, answers, onChange, onSubmit, ctaLabel, invalid }) {
+/* ══════════════════════════════════════════════════════════════════════════
+   입력 위저드 — «한 문항씩» 넘어가는 구조
+   기존 계산기(ReportCGT·ReportProperty 등)와 진행 방식을 통일한다.
+   종전에는 전 문항을 한 화면에 쌓아 보여 줘 길이가 부담스러웠다 (260805 교체).
+   ══════════════════════════════════════════════════════════════════════════ */
+function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, tag, title, subtitle, notice }) {
+  const [idx, setIdx] = useRfState(0);
+  const visible = questions.filter((q) => !q.showIf || q.showIf(answers));
+  const total = Math.max(1, visible.length);
+  const pos = Math.min(idx, total - 1);
+  const cur = visible[pos];
+  const last = pos === total - 1;
+
+  /* 현재 문항만 검증 — 통과해야 다음으로 넘어간다 */
+  const stepErr = (() => {
+    if (!cur) return null;
+    const v = answers[cur.id];
+    if (cur.opts) return v ? null : '하나를 골라 주세요.';
+    if (v == null || v === '') return cur.optional ? null : '값을 넣어 주세요.';
+    return cur.check ? cur.check(v, answers) : null;
+  })();
+
+  const go = (d) => {
+    if (d > 0 && stepErr) return;
+    setIdx(Math.min(Math.max(0, pos + d), total - 1));
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
+  };
+
   return (
-    <div className="jt-report-calc">
-      {questions.filter((q) => !q.showIf || q.showIf(answers)).map((q) => (
-        <div key={q.id} style={{ marginBottom: 26, paddingBottom: 22, borderBottom: '1px solid #efece6' }}>
-          <RfQuestion q={q} value={answers[q.id]} onChange={onChange} />
+    <JTReportShell tag={tag} stepIdx={pos} stepTotal={total} onBack={onBack} title={title} subtitle={subtitle}>
+      <div className="jt-container">
+        {notice}
+        <div className="jt-report-calc"
+          onKeyDown={(e) => { if (e.key === 'Enter' && !stepErr) { e.preventDefault(); if (last) onSubmit(); else go(1); } }}>
+          {cur && <RfQuestion q={cur} value={answers[cur.id]} onChange={onChange} />}
+          {stepErr && <p style={{ color: '#b3261e', fontSize: 13.5, margin: '12px 0 0' }}>{stepErr}</p>}
+          <div className="jt-report-q__nav" style={{ display: 'flex', gap: 10, marginTop: 24, flexWrap: 'wrap' }}>
+            {pos > 0 && (
+              <button className="jt-btn jt-btn--ghost" onClick={() => go(-1)} style={{ flex: '0 0 auto', padding: '14px 20px' }}>← 이전</button>
+            )}
+            <button className="jt-btn jt-btn--primary" onClick={() => (last ? onSubmit() : go(1))} disabled={!!stepErr}
+              style={{ flex: '1 1 200px', padding: '15px 20px', fontSize: 16.5, fontWeight: 800, borderRadius: 10,
+                       opacity: stepErr ? 0.45 : 1, cursor: stepErr ? 'not-allowed' : 'pointer' }}>
+              {last ? ctaLabel : '다음'} <span className="jt-arrow">→</span>
+            </button>
+          </div>
         </div>
-      ))}
-      {invalid && <p style={{ color: '#b3261e', fontSize: 13.5, marginBottom: 12 }}>{invalid}</p>}
-      <button className="jt-btn jt-btn--primary" onClick={onSubmit} disabled={!!invalid} style={{
-        width: '100%', padding: '16px 20px', fontSize: 17, fontWeight: 800, borderRadius: 10,
-        opacity: invalid ? 0.45 : 1, cursor: invalid ? 'not-allowed' : 'pointer',
-      }}>
-        {ctaLabel} <span className="jt-arrow">→</span>
-      </button>
-    </div>
+      </div>
+    </JTReportShell>
   );
 }
 
@@ -574,8 +683,9 @@ const RF_CGT_QS = [
   { id: 'transferPrice', section: '양도 (파는 금액)', q: '집을 얼마에 파시나요? (원)', money: true, placeholder: '예: 2,000,000,000',
     sub: '실제로 받는 매매대금(양도가액)입니다. 1세대 1주택은 12억원까지 비과세이고, 12억원을 넘는 부분만 세금 계산에 들어갑니다.' },
   { id: 'acqPrice', section: '취득 (산 금액)', q: '그 집을 얼마에 사셨나요? (원)', money: true, placeholder: '예: 1,000,000,000',
+    check: (v, a) => (rfNum(v) > rfNum(a.transferPrice) ? '산 금액이 파는 금액보다 큽니다 — 양도차손이면 낼 세금이 없습니다.' : null),
     sub: '취득 당시 실제 매매대금입니다. 상속·증여로 받았다면 그때 평가된 금액을 넣으세요.' },
-  { id: 'expenses', section: '필요경비', q: '취득세·중개수수료·자본적지출은 모두 얼마인가요? (원)', money: true, placeholder: '예: 40,000,000',
+  { id: 'expenses', section: '필요경비', q: '취득세·중개수수료·자본적지출은 모두 얼마인가요? (원)', money: true, placeholder: '예: 40,000,000', optional: true,
     sub: '살 때 낸 취득세와 법무사·중개수수료, 그리고 «집의 가치를 올린» 공사비(새시·확장 등)를 더합니다. 도배·장판 같은 수선비는 들어가지 않습니다. 모르면 비워 두세요(세금이 다소 높게 나옵니다).' },
   { id: 'houses', section: '주택 수', q: '세대 전체가 가진 집은 몇 채인가요?',
     sub: '본인·배우자·같이 사는 가족(1세대)이 가진 집을 모두 셉니다. 분양권·입주권도 주택 수에 들어갑니다.',
@@ -583,11 +693,13 @@ const RF_CGT_QS = [
            ['two', '2채', '조정대상지역이면 중과 대상'],
            ['three', '3채 이상', '조정대상지역이면 중과 폭이 더 큼']] },
   { id: 'adjusted', section: '조정대상지역', q: '파는 집이 조정대상지역에 있나요?',
+    addr: 'region', regionTo: 'adjusted',
     sub: '조정대상지역은 정부가 지정하는 과열 지역입니다. 다주택자가 이 지역 집을 팔면 세율이 크게 올라가고(중과) 장기보유특별공제도 못 받습니다. 2026년 8월 현재 서울 전역과 경기 일부가 해당합니다.',
     opts: [['yes', '예 — 조정대상지역', '다주택이면 중과 대상'], ['no', '아니오', '중과 없음']] },
   { id: 'holdYears', section: '보유기간', q: '몇 년 «보유» 하셨나요? (년)', placeholder: '예: 12',
     sub: '등기부상 취득일부터 양도일까지의 기간입니다. 개편안은 이 «보유» 기준 공제를 단계적으로 줄입니다.' },
   { id: 'resYears', section: '거주기간', q: '그중 실제로 몇 년 «거주» 하셨나요? (년)', placeholder: '예: 10',
+    check: (v, a) => (rfNum(v) > rfNum(a.holdYears) ? '거주기간이 보유기간보다 길 수는 없습니다.' : null),
     sub: '★ 이번 개편의 핵심입니다. 주민등록을 두고 실제 살았던 기간이며, 2029년부터는 «거주한 기간만» 공제받습니다. 보유만 하고 살지 않았다면 0을 넣으세요.' },
   { id: 'age', section: '나이', q: '양도자 나이가 몇 세인가요? (세)', placeholder: '예: 67',
     sub: '65세 이상 1주택자가 수도권 집을 팔고 비수도권으로 이주하면 2027~2028년에 한시 감면이 있습니다. 해당 없으면 대충 넣어도 결과에 영향이 없습니다.' },
@@ -624,15 +736,12 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
 
   if (!result) {
     return (
-      <JTReportShell tag="2026 세제개편안" stepIdx={0} stepTotal={2} onBack={onBack}
+      <RfWizard tag="2026 세제개편안" onBack={onBack}
         title="2026 세제개편안 양도세, 지금 얼마나 달라지나요?"
-        subtitle="파는 해에 따라 세금이 달라집니다 — 2026년(현행)·2027·2028·2029년 이후를 한 번에 비교합니다.">
-        <div className="jt-container">
-          <RfNotice />
-          <RfForm questions={RF_CGT_QS} answers={answers} onChange={onChange} onSubmit={run}
-            ctaLabel="연도별 양도세 비교하기" invalid={invalid} />
-        </div>
-      </JTReportShell>
+        subtitle="파는 해에 따라 세금이 달라집니다 — 2026년(현행)·2027·2028·2029년 이후를 한 번에 비교합니다."
+        notice={<RfNotice />}
+        questions={RF_CGT_QS} answers={answers} onChange={onChange} onSubmit={run}
+        ctaLabel="연도별 양도세 비교하기" />
     );
   }
 
@@ -744,11 +853,14 @@ const RF_CRE_QS = [
     sub: '종합부동산세는 매년 6월 1일 기준으로 세대가 가진 주택의 공시가격을 모두 더해 계산합니다.',
     opts: [['one', '1채 (1세대 1주택)', "공제 확대 — 거주하면 14억원"], ['two', '2채', ''], ['three', '3채 이상', '높은 세율·공정비율 적용']] },
   { id: 'totalValue', section: '공시가격 합계', q: '가진 집들의 공시가격을 모두 더하면 얼마인가요? (원)', money: true, placeholder: '예: 1,800,000,000',
+    addr: 'price',
     sub: '실거래가가 아니라 정부가 매년 발표하는 «공시가격»입니다. 부동산공시가격알리미(realtyprice.kr)에서 주소로 조회할 수 있습니다.' },
   { id: 'isResident', section: '거주 여부', q: '그 집에 본인(세대)이 실제로 살고 있나요?', showIf: (a) => a.houses === 'one',
     sub: '★ 이번 개편의 핵심입니다. 살고 있으면 공제가 12억 → 14억으로 늘고, 살지 않으면 12억 → 9억으로 줄어듭니다.',
     opts: [['yes', '예 — 거주 중', '공제 14억원'], ['no', '아니오 — 비거주', '공제 9억원 (세금이 크게 늘어남)']] },
   { id: 'residentValue', section: '거주용 주택 가액', q: '그중 «본인이 사는 집»의 공시가격은 얼마인가요? (원)', money: true, placeholder: '예: 900,000,000',
+    addr: 'price',
+    check: (v, a) => (rfNum(v) > rfNum(a.totalValue) ? '거주용 주택 가액이 전체 합계보다 클 수는 없습니다.' : null),
     showIf: (a) => a.houses !== 'one',
     sub: '개편안은 다주택자 공제를 「4억원 + 5억원 × (거주용 주택가액 ÷ 전체 합계)」로 바꿉니다. 사는 집의 비중이 클수록 공제가 커집니다. 아무 집에도 살지 않으면 0을 넣으세요.' },
   { id: 'adjusted', section: '조정대상지역', q: '조정대상지역에 있는 집을 가지고 있나요?', showIf: (a) => a.houses !== 'one',
@@ -759,6 +871,7 @@ const RF_CRE_QS = [
   { id: 'holdYears', section: '보유기간', q: '몇 년 «보유» 하셨나요? (년)', placeholder: '예: 12', showIf: (a) => a.houses === 'one',
     sub: '현행은 보유기간에 따라 세액공제를 줍니다(5년~ 20%, 10년~ 40%, 15년~ 50%). 개편안은 이를 거주기간 기준으로 바꿉니다.' },
   { id: 'resYears', section: '거주기간', q: '그중 실제로 몇 년 «거주» 하셨나요? (년)', placeholder: '예: 10', showIf: (a) => a.houses === 'one',
+    check: (v, a) => (rfNum(v) > rfNum(a.holdYears) ? '거주기간이 보유기간보다 길 수는 없습니다.' : null),
     sub: '2028년부터는 «거주기간»만 세액공제 대상입니다. 살지 않았다면 0을 넣으세요.' },
 ];
 
@@ -788,15 +901,12 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
 
   if (!result) {
     return (
-      <JTReportShell tag="2026 세제개편안" stepIdx={0} stepTotal={2} onBack={onBack}
+      <RfWizard tag="2026 세제개편안" onBack={onBack}
         title="2026 종부세 개편안, 우리 집은 얼마나 달라지나요?"
-        subtitle="공시가격만 넣으면 2026년(현행)·2027년·2028년 이후 종합부동산세를 한 번에 비교합니다.">
-        <div className="jt-container">
-          <RfNotice />
-          <RfForm questions={RF_CRE_QS} answers={answers} onChange={onChange} onSubmit={run}
-            ctaLabel="연도별 종부세 비교하기" invalid={invalid} />
-        </div>
-      </JTReportShell>
+        subtitle="주소만 넣으면 공시가격이 자동으로 들어갑니다 — 2026년(현행)·2027년·2028년 이후를 한 번에 비교합니다."
+        notice={<RfNotice />}
+        questions={RF_CRE_QS} answers={answers} onChange={onChange} onSubmit={run}
+        ctaLabel="연도별 종부세 비교하기" />
     );
   }
 

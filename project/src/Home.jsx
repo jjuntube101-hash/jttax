@@ -85,7 +85,13 @@ function JTBrandMoment() {
     <section className="jt-brandmoment" aria-label="제이티 세무법인">
       <div className="jt-brandmoment__inner">
         <div className="jt-brandmoment__logowrap reveal" role="img" aria-label="제이티 세무법인 · JT TAX CORP.">
-          <svg className="jt-bm-logosvg" viewBox="132 97 168 114" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+          {/* ⚠️ viewBox 는 아래 두 path 의 «실제» bbox 여야 한다.
+              종전 "132 97 168 114" 는 y 범위가 실제(203~301)와 어긋나 있었고,
+              CSS 의 overflow:visible 과 겹쳐 로고가 박스 밖으로 흘러넘쳐
+              아래 「제이티 세무법인」·슬로건을 덮었다 (260805 수정).
+              path transform: matrix(1,0,0,-1,dx,203.14209) → y' = 203.14 − y
+              bbox 실측: x 139.46~291.81 / y 203.14~301.35 (여백 5) */}
+          <svg className="jt-bm-logosvg" viewBox="134.5 198.1 162.3 108.2" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
   <g className="jt-bm-g jt-bm-g--symbol">
     <path d="M0 0V-83.221L-17.231-65.99H-42.95V-98.204L9.612-98.174 32.154-75.119 32.213 0Z" transform="matrix(1,0,0,-1,182.414,203.14209)" pathLength="1" />
     <path d="M0 0-48.285-.03-70.827-23.085-70.887-98.204H-38.673V-49.563L-56.021-32.215H0Z" transform="matrix(1,0,0,-1,291.8127,203.14209)" pathLength="1" />
