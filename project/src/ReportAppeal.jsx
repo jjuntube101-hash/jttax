@@ -232,7 +232,7 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
           </div>
         )}
 
-        <JTReportDisclaimer variant="inline" />
+        <JTReportDisclaimer dataFlow="ai" variant="inline" />
         <JTReportConvert
           setRoute={setRoute}
           reportType="경정청구 가능성 진단"

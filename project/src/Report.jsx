@@ -84,17 +84,19 @@ window.JT_REPORTS = [
 ];
 
 // ============ 면책 고지 (강함 버전) ============
-function JTReportDisclaimer({ variant }) {
+/* dataFlow 별 입력값 처리 고지 — 정의는 아래 JT_PRIVACY_NOTE (한 곳에서만 문안을 관리한다).
+   ⚠️ 셸(JTReportShell)만으로는 «결과·로딩 화면»을 덮지 못한다. 그 화면들이 셸을 우회하기
+      때문이다 (260806 Codex R8 P2 — 내가 면책에서 문단을 빼면서 만든 구멍).
+      면책은 결과 화면마다 렌더되므로 여기에도 같은 문안을 둔다. 두 곳에 나와도
+      «같은 출처»라 서로 모순하지 않는다. */
+function JTReportDisclaimer({ variant, dataFlow }) {
   const full = (
     <>
       <strong>면책 고지</strong>
       <p>본 리포트는 공개 정보와 이용자가 입력한 사실관계를 바탕으로 제공되는 <strong>간이 참고 자료</strong>이며, 특정 거래·납세자에 대한 <strong>확정적 세무 판단이 아닙니다</strong>. 정식 검토는 반드시 유상 상담을 통해 담당 세무사가 자료 일체를 확인한 후 진행됩니다.</p>
       <p>본 리포트는 <strong>법적 효력이 없으며</strong>, 제이티 세무법인과 이용자 사이에 <strong>어떠한 위임·자문 관계나 권리·의무도 발생시키지 않습니다</strong>. 본 리포트만을 근거로 한 신고·결정·소송으로 발생한 손실에 대해 당사는 책임을 지지 않습니다.</p>
       <p>법령·예규·판례는 수시로 변경됩니다. 열람 시점 기준 최신 자료를 담당 세무사가 재확인합니다.</p>
-      {/* ⚠️ 입력값 처리 고지는 «계산기마다 다르므로» 여기(공통 면책)에 두지 않는다.
-          여기에 「엔진으로 전송」이라고 박아 두면, 로컬 계산인 가상자산·개편안 화면에서
-          셸의 「전부 브라우저 안에서」 고지와 «한 화면에서» 모순한다 (260806 Codex R7 P2).
-          → 고지는 JTReportShell 의 dataFlow 한 곳에서만 낸다. */}
+      <p><strong>입력값 처리</strong> — {(window.JT_PRIVACY_NOTE || {})[dataFlow] || (window.JT_PRIVACY_NOTE || {}).engine}</p>
     </>
   );
   if (variant === 'inline') {
@@ -156,7 +158,7 @@ if (typeof window !== 'undefined' && !window.jtValidCalc) {
      lookup        : 계산은 브라우저 안에서. 주소로 공시가격을 «조회할 때만» 엔진 호출
      local         : 전부 브라우저 안에서. 밖으로 나가는 것이 없다
    ⚠️ 하나로 뭉뚱그리면 «하지 않는 전송»을 한다고 말하게 된다 — 반대 방향의 거짓이다. */
-const JT_PRIVACY_NOTE = {
+const JT_PRIVACY_NOTE = window.JT_PRIVACY_NOTE = {
   engine: <>입력값은 계정에 저장하지 않습니다. 계산을 위해 세액 계산 엔진으로 전송되며, 일부 진단은 AI 응답을 이용합니다. 담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.</>,
   lookup: <>입력값은 계정에 저장하지 않습니다. 계산은 <strong>브라우저 안에서</strong> 이뤄지고, 주소로 공시가격을 조회할 때만 조회 서버로 주소가 전송됩니다. 담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.</>,
   local: <>입력값은 계정에 저장하지 않습니다. 계산은 <strong>전부 브라우저 안에서</strong> 이뤄지며 외부로 전송되지 않습니다. 담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.</>,

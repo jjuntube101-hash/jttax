@@ -523,7 +523,7 @@ function JTReportCrypto({ setRoute, setSubRoute, onBack }) {
             ))}
           </div>
         </section>
-        <JTReportDisclaimer variant="inline" />
+        <JTReportDisclaimer dataFlow="local" variant="inline" />
       </div>
     </JTReportShell>
   );

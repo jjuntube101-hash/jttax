@@ -1397,7 +1397,7 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
 
         <JTReportCta setRoute={setRoute} />
         <RfCrossLinks setSubRoute={setSubRoute} exclude={[]} />
-        <JTReportDisclaimer variant="inline" />
+        <JTReportDisclaimer dataFlow="lookup" variant="inline" />
       </div>
     </JTReportShell>
   );
@@ -1616,7 +1616,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
 
         <JTReportCta setRoute={setRoute} />
         <RfCrossLinks setSubRoute={setSubRoute} exclude={[]} />
-        <JTReportDisclaimer variant="inline" />
+        <JTReportDisclaimer dataFlow="lookup" variant="inline" />
       </div>
     </JTReportShell>
   );
