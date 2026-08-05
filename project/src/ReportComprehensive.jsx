@@ -414,7 +414,17 @@ function JTReportComprehensive({ setRoute, onBack }) {
           )}
           {!calc.precise && calc.totalTax > 0 && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다 — 누진세율(3주택 이상 중과 포함)은 반영했으나 <strong>재산세 공제·1세대1주택 세액공제는 미반영</strong>이라 실제보다 <strong>높게</strong> 나옵니다(특히 1세대1주택·고령·장기보유는 실제가 훨씬 낮을 수 있어요).
+              {/* ⚠️ 이 문구는 «코드가 실제로 하는 일»과 일치해야 한다. 종전엔 「1세대1주택
+                  세액공제 미반영」이라 적혀 있었지만 260628(COMP-A-02)에 연령·보유 세액공제가
+                  추가된 뒤 문구가 따라가지 않았다 — 반영한 것을 안 했다고 알리고 있었다
+                  (260806 자체 점검). 아래 목록을 고칠 땐 fallbackCompTax() 와 함께 본다. */}
+              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.
+              <br /><strong>반영한 것</strong>: 기본공제(1세대1주택 12억·그 외 9억) · 공정시장가액비율 60% ·
+              누진세율(3주택 이상 중과 포함) · 1세대1주택 연령·보유 세액공제(합계 80% 한도) ·
+              부부 공동명의 지분과세와 1주택 특례 중 유리한 쪽 · 농어촌특별세 20%.
+              <br /><strong>반영하지 않은 것</strong>: <strong>재산세 중복분 공제</strong>(종부세법 §9③) ·
+              <strong>세부담 상한</strong>(§10) · 합산배제 임대주택 · 일시적 2주택·상속주택·지방 저가주택 특례.
+              그래서 실제 고지세액은 여기 금액보다 <strong>낮게</strong> 나옵니다.
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
             </div>
           )}

@@ -4,8 +4,8 @@ R13 반영과 지정 조합을 재검토했습니다. 신규 P0은 0건, 신규 
 
 ## 2. 변경 내역 / 발견 결함
 
-- [P1] · [Home.jsx:142](/D:/jt-data/jttax-cta/project/src/Home.jsx:142) · R13 자동 치환이 기존 버튼 속성과 병합되어 같은 `<a>`에 `role`, `tabIndex`, `onKeyDown`이 각각 두 번 선언됐습니다.  
-  재현 입력값: 초기 홈 진입(`/#/`, 별도 입력 없음). 잘못된 출력: Babel JSX 변환에서 중복 attribute 오류가 나 `JTReportHome`이 정의되지 않고, 기본 홈 화면은 렌더링되지 않습니다.  
+- [P1] · [Home.jsx:142](/D:/jt-data/jttax-cta/project/src/Home.jsx:142) · R13 자동 치환이 기존 버튼 속성과 병합되어 같은 `<a>`에 `role`, `tabIndex`, `onKeyDown`이 각각 두 번 선언됐습니다.
+  재현 입력값: 초기 홈 진입(`/#/`, 별도 입력 없음). 잘못된 출력: Babel JSX 변환에서 중복 attribute 오류가 나 `JTReportHome`이 정의되지 않고, 기본 홈 화면은 렌더링되지 않습니다.
   수정안: 이 CTA는 상태 전환·추적을 수행하는 버튼이므로 `<button type="button">`으로 교체하거나, 앵커를 유지한다면 기존 `role="button"`, `tabIndex`, 인라인 `onKeyDown` 중 하나의 세트만 남기십시오. `role="link"`와 `role="button"`을 함께 두면 안 됩니다.
 
 ## 3. 재발 방지

@@ -4,19 +4,19 @@
 
 ## 2. 발견 결함
 
-- [P1] · [Home.jsx](/D:/jt-data/jttax-cta/project/src/Home.jsx:229), [362](/D:/jt-data/jttax-cta/project/src/Home.jsx:362), [478](/D:/jt-data/jttax-cta/project/src/Home.jsx:478), [526](/D:/jt-data/jttax-cta/project/src/Home.jsx:526) · R12 대상과 같은 href 없는 라우팅 `<a>` 4개가 키보드 접근성 없이 남아 있습니다.  
-  재현: Tab으로 홈을 탐색해 “내 사안 적용 여부 상담하기”, “전체 업무분야”, “전체 보기”, “전체 구성원 보기”에 도달하려 합니다.  
-  잘못된 출력: 포커스되지 않아 Enter/Space 입력으로 각각 `#/booking`, `#/services`, `#/insights`, `#/about` 이동이 불가능합니다. 마우스 클릭만 동작합니다.  
+- [P1] · [Home.jsx](/D:/jt-data/jttax-cta/project/src/Home.jsx:229), [362](/D:/jt-data/jttax-cta/project/src/Home.jsx:362), [478](/D:/jt-data/jttax-cta/project/src/Home.jsx:478), [526](/D:/jt-data/jttax-cta/project/src/Home.jsx:526) · R12 대상과 같은 href 없는 라우팅 `<a>` 4개가 키보드 접근성 없이 남아 있습니다.
+  재현: Tab으로 홈을 탐색해 “내 사안 적용 여부 상담하기”, “전체 업무분야”, “전체 보기”, “전체 구성원 보기”에 도달하려 합니다.
+  잘못된 출력: 포커스되지 않아 Enter/Space 입력으로 각각 `#/booking`, `#/services`, `#/insights`, `#/about` 이동이 불가능합니다. 마우스 클릭만 동작합니다.
   수정안: 각 앵커에 R12와 동일하게 `tabIndex={0}`, `role="link"`, `onKeyDown={jtKeyActivate}`를 추가하거나, 라우팅용 `<button>`으로 교체하십시오.
 
-- [P1] · [Pages2.jsx](/D:/jt-data/jttax-cta/project/src/Pages2.jsx:177), [Pages2.jsx](/D:/jt-data/jttax-cta/project/src/Pages2.jsx:361) · 개인정보 수집 동의문이 실제 Web3Forms 전송 항목과 법정 고지 항목을 충족하지 않습니다.  
-  재현 입력값: `성명=홍길동`, `연락처=010-1234-5678`, `이메일=a@b.com`, `회사=(주)JT`, `문의내용=양도 10억원 상담`. 동의 후 제출합니다.  
-  잘못된 출력: 요청 JSON에는 `회사`, `문의분야`, `선호채널`, `문의내용`까지 전송되지만 동의문은 성명·연락처·이메일만 열거하며, 보유기간과 동의 거부권·거부 시 불이익도 표시하지 않습니다. 동의를 근거로 수집하는 경우 목적·항목·보유기간·거부권 고지가 필요합니다. [개인정보 보호법 제15조 제2항](https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=900079620)  
+- [P1] · [Pages2.jsx](/D:/jt-data/jttax-cta/project/src/Pages2.jsx:177), [Pages2.jsx](/D:/jt-data/jttax-cta/project/src/Pages2.jsx:361) · 개인정보 수집 동의문이 실제 Web3Forms 전송 항목과 법정 고지 항목을 충족하지 않습니다.
+  재현 입력값: `성명=홍길동`, `연락처=010-1234-5678`, `이메일=a@b.com`, `회사=(주)JT`, `문의내용=양도 10억원 상담`. 동의 후 제출합니다.
+  잘못된 출력: 요청 JSON에는 `회사`, `문의분야`, `선호채널`, `문의내용`까지 전송되지만 동의문은 성명·연락처·이메일만 열거하며, 보유기간과 동의 거부권·거부 시 불이익도 표시하지 않습니다. 동의를 근거로 수집하는 경우 목적·항목·보유기간·거부권 고지가 필요합니다. [개인정보 보호법 제15조 제2항](https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=900079620)
   수정안: 체크박스 옆에 목적, 실제 전송 전 항목, `상담 종료 후 3년`, 거부권 및 “거부 시 상담 접수 불가”를 명시하고 개인정보처리방침으로 연결하십시오.
 
-- [P2] · [styles.css](/D:/jt-data/jttax-cta/project/src/styles.css:2801), [redesign.css](/D:/jt-data/jttax-cta/project/src/redesign.css:928) · 인쇄 규칙이 고정 로고 `.jt-logomark-fix`를 숨기지 않습니다.  
-  재현: 데스크톱 폭에서 2쪽 이상인 리포트 결과를 인쇄합니다.  
-  잘못된 출력: 좌하단 고정 로고가 인쇄 페이지 하단에 겹치거나 반복됩니다.  
+- [P2] · [styles.css](/D:/jt-data/jttax-cta/project/src/styles.css:2801), [redesign.css](/D:/jt-data/jttax-cta/project/src/redesign.css:928) · 인쇄 규칙이 고정 로고 `.jt-logomark-fix`를 숨기지 않습니다.
+  재현: 데스크톱 폭에서 2쪽 이상인 리포트 결과를 인쇄합니다.
+  잘못된 출력: 좌하단 고정 로고가 인쇄 페이지 하단에 겹치거나 반복됩니다.
   수정안: `@media print`의 숨김 목록에 `.jt-logomark-fix`를 추가하십시오.
 
 ## 3. 재발 방지
