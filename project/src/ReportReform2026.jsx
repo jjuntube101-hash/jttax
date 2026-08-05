@@ -564,7 +564,7 @@ function RfCrossLinks({ setSubRoute, exclude }) {
    (ReportProperty.jsx 가 전역에 정의 — index.html 로드 순서상 항상 먼저 올라온다)
    ⚠️ 대단지는 동·호에 따라 공시가격이 크게 다르다 — 결과에 확인 안내를 붙인다.
    ══════════════════════════════════════════════════════════════════════════ */
-function RfAddrLookup({ mode, onPrice, onRegion, isAuto }) {
+function RfAddrLookup({ mode, onPrice, onRegion, isAuto, getGen }) {
   const [addr, setAddr] = useRfState('');
   const [busy, setBusy] = useRfState(false);
   const [info, setInfo] = useRfState(null);
@@ -584,6 +584,7 @@ function RfAddrLookup({ mode, onPrice, onRegion, isAuto }) {
     const a = addr.trim();
     if (!a || busy) return;
     const my = ++seq.current;
+    const gen0 = getGen ? getGen() : 0;        // 조회 «시작» 시점의 입력 세대
     setBusy(true); setInfo(null);
     try {
       if (!window.jtLookupHousePrice) {
@@ -592,6 +593,12 @@ function RfAddrLookup({ mode, onPrice, onRegion, isAuto }) {
       }
       const r = await window.jtLookupHousePrice(a);
       if (my !== seq.current) return;          // 더 최신 조회가 있다 — 이 응답은 버린다
+      /* 조회하는 사이에 사용자가 금액을 «직접» 고쳤다 — 자동값으로 덮지 않는다 */
+      const genNow = getGen ? getGen() : 0;
+      if (genNow !== gen0) {
+        setInfo({ ok: false, msg: '직접 입력하신 금액이 있어 조회 결과를 넣지 않았습니다. 자동 조회 값을 쓰시려면 금액을 비우고 다시 조회해 주세요.' });
+        return;
+      }
       /* 엔진이 세대를 특정하지 못하면 금액을 «쓰지 않는다» — 260720 결함 대응.
          ⚠️ jtLookupHousePrice 는 엔진의 needs_unit_selection 을 status:'needs_unit' 으로
             «바꿔서» 돌려준다. 원본 필드명만 보면 이 분기를 못 타고 「공시가격을 찾지
@@ -653,7 +660,7 @@ function RfAddrLookup({ mode, onPrice, onRegion, isAuto }) {
 }
 
 /* 질문 렌더 (숫자 / 선택 / 주소조회) */
-function RfQuestion({ q, value, onChange, isAuto }) {
+function RfQuestion({ q, value, onChange, isAuto, getGen }) {
   return (
     <div className="jt-report-q">
       <div className="jt-report-q__section">{q.section}</div>
@@ -663,6 +670,7 @@ function RfQuestion({ q, value, onChange, isAuto }) {
         <RfAddrLookup
           mode={q.addr}
           isAuto={isAuto}
+          getGen={getGen}
           onPrice={q.addr === 'price' ? function (amt) { onChange(q.id, amt === '' ? '' : String(amt), { auto: true }); } : null}
           onRegion={q.regionTo ? function (reg) { onChange(q.regionTo, reg.is_adjusted_area ? 'yes' : 'no'); } : null}
         />
@@ -718,9 +726,15 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
      지워 버린다 (260805 Codex R3 P2). 자동입력된 문항 id 를 집합으로 들고 다니고,
      사용자가 그 칸을 직접 고치는 순간 해제한다. */
   const autoIds = React.useRef({});
+  /* ⚠️ isAuto(불리언)만으로는 «이미 떠난» 조회의 늦은 응답을 못 막는다.
+     사용자가 조회 중에 금액을 직접 고쳐도 응답이 도착하면 그 값을 덮어썼다
+     (종부세 12,096,000원 과다 — 260805 Codex R4 P1).
+     → 문항마다 «입력 세대»를 두고 «수동 입력»이 있을 때 올린다. 조회는 시작 시점의
+       세대를 캡처했다가 응답 시점에 같을 때만 반영한다. */
+  const gens = React.useRef({});
   const onChangeTracked = (id, v, opt) => {
     if (opt && opt.auto) autoIds.current[id] = true;
-    else delete autoIds.current[id];
+    else { delete autoIds.current[id]; gens.current[id] = (gens.current[id] || 0) + 1; }
     onChange(id, v);
   };
   const visible = questions.filter((q) => !q.showIf || q.showIf(answers));
@@ -753,7 +767,8 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
         {notice}
         <div className="jt-report-calc"
           onKeyDown={(e) => { if (e.key === 'Enter' && !stepErr) { e.preventDefault(); if (last) onSubmit(); else go(1); } }}>
-          {cur && <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked} isAuto={!!autoIds.current[cur.id]} />}
+          {cur && <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked} isAuto={!!autoIds.current[cur.id]}
+            getGen={() => (gens.current[cur.id] || 0)} />}
           {stepErr && <p style={{ color: '#b3261e', fontSize: 13.5, margin: '12px 0 0' }}>{stepErr}</p>}
           <div className="jt-report-q__nav" style={{ display: 'flex', gap: 10, marginTop: 24, flexWrap: 'wrap' }}>
             {pos > 0 && (

@@ -1,8 +1,10 @@
 /* ReportCrypto2027.jsx 의 «순수 계산부»만 잘라내 실제 코드 그대로 실행 검산 */
 const fs = require('fs'), path = require('path');
 let src = fs.readFileSync(path.join(__dirname, 'src', 'ReportCrypto2027.jsx'), 'utf8');
-/* 계산부만 잘라낸다 — UI(코인별 입력 행) 앞까지 */
-src = src.slice(0, src.indexOf('/* ══════════ 코인별 입력 행'));
+/* 계산부만 잘라낸다 — 화면(JSX) 시작 앞까지 */
+const _cut = src.indexOf('/* ══════════ 화면 ══════════ */');
+if (_cut < 0) throw new Error('절단 마커를 찾지 못했습니다 — ReportCrypto2027.jsx 구조가 바뀌었는지 확인하세요.');
+src = src.slice(0, _cut);
 src = src.replace(/const \{ useState: useCrState \} = React;/, '');
 global.window = {};
 eval(src);
