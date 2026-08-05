@@ -1340,6 +1340,9 @@ cautions 3개, saving_ideas 2~3개.`;
         <div className="jt-report-loading__spinner" />
         <h2>세액을 계산하고 있습니다</h2>
         <p>기본세율 · 장기보유특별공제 · 지방소득세를 반영합니다.</p>
+        <p className="jt-report-loading__privacy" style={{ fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 }}>
+          {(window.JT_PRIVACY_NOTE || {})['engine'] || (window.JT_PRIVACY_NOTE || {}).engine}
+        </p>
       </div>
     );
   }

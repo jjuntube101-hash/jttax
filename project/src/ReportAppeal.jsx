@@ -259,6 +259,9 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
             기준으로」라고 하면 검증된 근거가 있는 것처럼 읽힌다 (260806 Codex R4 P1). */}
         <p>입력하신 내용을 바탕으로 경정청구 가능성을 «간이 진단»하고 있습니다.</p>
         <p className="jt-report-loading__hint">약 10~20초 소요됩니다.</p>
+        <p className="jt-report-loading__privacy" style={{ fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 }}>
+          {(window.JT_PRIVACY_NOTE || {})['ai'] || (window.JT_PRIVACY_NOTE || {}).engine}
+        </p>
       </div>
     );
   }
