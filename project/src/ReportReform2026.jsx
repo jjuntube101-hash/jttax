@@ -604,10 +604,15 @@ function RfCrossLinks({ setSubRoute, exclude }) {
       엔진에 **원문과 다른 주소**를 보내게 된다. 정규화는 «뽑아낸 동·호 토큰»에만 건다. */
 const RF_D = '0-9０-９';                       // 숫자 (반각+전각)
 const RF_L = 'A-Za-zＡ-Ｚａ-ｚ';       // 영문 (반각+전각)
+/* ⚠️ 문자 클래스 안에서 하이픈은 «맨 끝»에 둔다. '\\--－' 로 쓰면 U+002D~U+FF0D «범위»가
+   되어 숫자·괄호·쉼표까지 전부 삼킨다 (260805에 실제로 그렇게 만들었다가 테스트가 잡음). */
+const RF_HY = '－\\-';                                 // 하이픈 (전각+반각, R21 P2)
+const RF_SEP = '\\s,，·';                              // 앞 경계로 인정할 구분자
 /* 동·호 토큰: 「101」「101-1」「A101」「B」 — 문자만 있는 동(B동·C동)도 실데이터에 있다 (R18 P2) */
-const RF_UNIT = '((?:[' + RF_L + '][' + RF_D + ']*|[' + RF_D + ']+)(?:-[' + RF_D + ']+)?)';
+const RF_UNIT = '((?:[' + RF_L + '][' + RF_D + ']*|[' + RF_D + ']+)(?:[' + RF_HY + '][' + RF_D + ']+)?)';
+/* 앞 경계에 전각 쉼표「，」·가운뎃점「·」도 넣는다 — 한글 IME 로 치면 흔히 나온다 (R21 P2) */
 const rfUnitRe = (tail) => new RegExp(
-  '(^|[\\s,(（])(?:제\\s*)?' + RF_UNIT + '\\s*' + tail + '(?![가-힣])'
+  '(^|[' + RF_SEP + '(（])(?:제\\s*)?' + RF_UNIT + '\\s*' + tail + '(?![가-힣])'
 );
 
 function rfSplitUnit(raw) {
@@ -626,7 +631,7 @@ function rfSplitUnit(raw) {
      길이가 매번 줄어드니 반복은 반드시 끝난다. 「(길음뉴타운)」처럼 내용이 남은
      괄호는 건드리지 않는다 — 단지명은 주소의 일부다. */
   let prev;
-  do { prev = addr; addr = addr.replace(/[(（][\s,]*[)）]/g, ' '); } while (addr !== prev);
+  do { prev = addr; addr = addr.replace(/[(（][\s,，·]*[)）]/g, ' '); } while (addr !== prev);
   /* 「정릉로 305((101동 601호)」처럼 짝이 안 맞으면 고아 괄호가 남아 엔진에 그대로 간다 (R18 P3).
      짝이 «맞지 않을 때만» 괄호를 전부 턴다 — 균형 잡힌 「(길음뉴타운)」은 그대로 살린다.
      ⚠️ «개수»만 세면 「305) 101동 (」처럼 순서가 뒤집힌 것을 놓친다 (R19 P2).
@@ -637,7 +642,7 @@ function rfSplitUnit(raw) {
     else if (ch === ')' || ch === '）') { depth--; if (depth < 0) { broken = true; break; } }
   }
   if (broken || depth !== 0) addr = addr.replace(/[(（)）]/g, ' ');
-  addr = addr.replace(/[,\s]+/g, ' ').replace(/[,\s]+$/, '').trim();
+  addr = addr.replace(/[,，·\s]+/g, ' ').replace(/[,，·\s]+$/, '').trim();
   return { addr, dong, ho };
 }
 
