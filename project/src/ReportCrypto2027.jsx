@@ -281,7 +281,13 @@ function JTReportCrypto({ setRoute, setSubRoute, onBack }) {
               ? <>그 해 가상자산 소득금액이 <strong>{crEok(r.income)}</strong>으로 과세최저한(연 250만원) 이하라 <strong>세금이 없습니다</strong>(소득세법 §84 3호). 다만 같은 해에 다른 코인을 더 팔아 합산 소득이 250만원을 넘으면 과세됩니다.</>
               : <>2027년 이후 매도 시 <strong>{crWon(r.total)}</strong>을 내게 됩니다 — 소득금액 {crEok(r.income)}에서 250만원을 뺀 {crEok(r.taxBase)}에 20%(지방소득세 포함 22%)를 적용한 금액입니다.</>}
             {r.deemedApplies && <> 2026년 말까지 오른 <strong>{crEok(r.shielded)}</strong>은 의제취득가액 덕분에 <strong>과세 대상에서 빠집니다</strong>(소득세법 §37⑤).</>}
-            {!r.heldBefore && ' 2027년 이후에 사실 예정이라 의제취득가액은 적용되지 않고, 실제 산 가격이 그대로 취득가액이 됩니다.'}
+            {/* ⚠️ 결과 객체엔 heldBefore 가 없다(행 단위로 갈림) — lines 로 판정한다.
+                   종전엔 !r.heldBefore 가 항상 참이라 「2027년 이후 취득」 문구가
+                   의제취득 적용 설명 뒤에 늘 따라붙었다 (260805 Codex R6 P2). */}
+            {r.lines.length > 0 && r.lines.every((l) => !l.held) &&
+              ' 전부 2027년 이후 취득분이라 의제취득가액은 적용되지 않고, 실제 산 가격이 그대로 취득가액이 됩니다.'}
+            {r.lines.some((l) => l.held) && r.lines.some((l) => !l.held) &&
+              ' 2027년 이후 취득한 종목에는 의제취득가액이 적용되지 않아, 그 종목은 실제 산 가격이 취득가액이 됩니다.'}
           </p>
         </div>
 

@@ -560,80 +560,76 @@ function RfCrossLinks({ setSubRoute, exclude }) {
 
 /* ══════════════════════════════════════════════════════════════════════════
    주소 자동조회 — 공시가격 / 조정대상지역
-   엔진 헬퍼 window.jtLookupHousePrice(주소) 를 재사용한다.
-   (ReportProperty.jsx 가 전역에 정의 — index.html 로드 순서상 항상 먼저 올라온다)
-   ⚠️ 대단지는 동·호에 따라 공시가격이 크게 다르다 — 결과에 확인 안내를 붙인다.
+   엔진 헬퍼 window.jtLookupHousePrice(주소) 를 재사용한다(ReportProperty.jsx 정의).
+
+   ★ 설계 (260805 R6 — 「값 하나에 덮어쓰기」 구조를 버림)
+   종전엔 조회 결과를 금액 칸에 바로 «대체» 또는 «누적»했는데, 그 구조에서는
+     · 1주택인데 누적돼 두 배가 되거나(직접 입력 후 조회)
+     · needs_unit 이 오면 앞서 쌓은 합계까지 지워지거나
+     · 잘못 더한 주소 하나만 되돌릴 방법이 없었다.
+   → **조회한 주소를 목록(picks)으로 들고, 합계를 그 목록에서 파생**시킨다.
+      삭제하면 합계가 즉시 줄고, 실패한 주소는 애초에 목록에 안 들어간다.
+      1주택이든 다주택이든 같은 모델로 동작한다(1채면 항목 1개).
+
+   ★ 늦은 응답 차단 — 문항별 «에폭» 하나로 통합
+   조회 시작·수동 입력 때마다 에폭을 올리고, 응답은 시작 시점 에폭과 같을 때만 반영한다.
+   에폭은 위저드(컴포넌트 밖) ref 라 문항 이동으로 언마운트돼도 이어진다.
+     A시작(1) → B시작(2) → A응답(1≠2 폐기) → B응답(2=2 반영)
+     조회시작(1) → 수동입력(2) → 응답(1≠2 폐기)
    ══════════════════════════════════════════════════════════════════════════ */
-function RfAddrLookup({ mode, onPrice, onRegion, isAuto, getGen, accumulate }) {
+function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEpoch }) {
   const [addr, setAddr] = useRfState('');
   const [busy, setBusy] = useRfState(false);
   const [info, setInfo] = useRfState(null);
-  /* ⚠️ 조회 중 주소를 바꾸면 «먼저 보낸» 응답이 나중에 도착해 새 주소의 값을 덮는다.
-        요청마다 순번을 매기고, 최신 순번의 응답만 반영한다 (260805 Codex P1).
-        ⚠️ R2: 순번만으론 부족했다 — 주소를 «고칠 때»도 순번을 올려 진행 중 응답을
-        무효화하고 busy 를 풀어야 새 조회가 막히지 않는다. 그리고 needs_unit 일 때
-        지우는 건 «이 컴포넌트가 자동으로 넣은 값»뿐이다(수동 입력분은 보존). */
-  const seq = React.useRef(0);
-
-  const changeAddr = (v) => {
-    if (busy) { seq.current += 1; setBusy(false); }   // 진행 중 요청 무효화
-    setInfo(null); setAddr(v);
-  };
+  const list = picks || [];
 
   const run = async () => {
     const a = addr.trim();
     if (!a || busy) return;
-    const my = ++seq.current;
-    const gen0 = getGen ? getGen() : 0;        // 조회 «시작» 시점의 입력 세대
+    const ep = bumpEpoch ? bumpEpoch() : 0;      // 조회 «시작» — 앞선 요청은 이 순간 무효
     setBusy(true); setInfo(null);
+    const stale = () => (getEpoch ? getEpoch() !== ep : false);
     try {
       if (!window.jtLookupHousePrice) {
         setInfo({ ok: false, msg: '조회 기능을 불러오지 못했어요. 금액을 직접 넣어 주세요.' });
         return;
       }
       const r = await window.jtLookupHousePrice(a);
-      if (my !== seq.current) return;          // 더 최신 조회가 있다 — 이 응답은 버린다
-      /* 조회하는 사이에 사용자가 금액을 «직접» 고쳤다 — 자동값으로 덮지 않는다 */
-      const genNow = getGen ? getGen() : 0;
-      if (genNow !== gen0) {
-        setInfo({ ok: false, msg: '직접 입력하신 금액이 있어 조회 결과를 넣지 않았습니다. 자동 조회 값을 쓰시려면 금액을 비우고 다시 조회해 주세요.' });
-        return;
-      }
-      /* 엔진이 세대를 특정하지 못하면 금액을 «쓰지 않는다» — 260720 결함 대응.
-         ⚠️ jtLookupHousePrice 는 엔진의 needs_unit_selection 을 status:'needs_unit' 으로
-            «바꿔서» 돌려준다. 원본 필드명만 보면 이 분기를 못 타고 「공시가격을 찾지
-            못했다(상가·오피스텔)」는 엉뚱한 안내가 나간다 — 둘 다 본다 (260805). */
+      if (stale()) return;                       // 더 최신 조회·수동 입력이 있었다
+
+      const reg = r && r.region;
+      if (reg && onRegion) onRegion(reg);
+
+      /* 세대를 특정 못 하면 «목록에 넣지 않는다» — 앞서 쌓은 합계는 그대로 둔다 */
       if (r && (r.status === 'needs_unit' || r.needs_unit_selection)) {
-        if (r.region && onRegion) onRegion(r.region);
         const n = Number(r.unitCount) || 0;
         const lo = Number(r.priceMin) || 0, hi = Number(r.priceMax) || 0;
-        /* 자동으로 넣었던 값만 지운다 — 사용자가 «직접» 넣은 금액은 건드리지 않는다.
-           판정은 위저드가 들고 있는 isAuto(누가 넣었는가)로 한다. */
-        if (onPrice && isAuto) onPrice('');
         setInfo({ ok: false, msg:
           (r.complex ? r.complex + ' — ' : '') + '이 주소에는 ' + (n ? n.toLocaleString('ko-KR') + '세대' : '세대가 여럿') + '가 있어 어느 집인지 특정할 수 없습니다.'
           + (lo && hi ? ' 단지 내 공시가격이 ' + rfEok(lo) + ' ~ ' + rfEok(hi) + '으로 갈리니' : ' 세대마다 공시가격이 달라서')
           + ' 내 세대의 공시가격을 직접 넣어 주세요(부동산공시가격알리미 realtyprice.kr).' });
         return;
       }
-      const reg = r && r.region;
-      if (reg && onRegion) onRegion(reg);
-      if (r && r.amount > 0 && onPrice) {
-        onPrice(r.amount);
-        setInfo({ ok: true, msg: (r.year ? r.year + '년 ' : '') + '공시가격 ' + rfWon(r.amount)
-          + (accumulate ? '을 합계에 «더했어요». 주택이 여러 채면 다음 주소를 이어서 조회하세요.' : '을 넣었어요.')
+
+      if (r && r.amount > 0) {
+        if (onAdd) onAdd({ label: a, amount: Number(r.amount), year: r.year || '' });
+        setAddr('');
+        setInfo({ ok: true, msg: (r.year ? r.year + '년 ' : '') + '공시가격 ' + rfWon(r.amount) + '을 넣었어요.'
           + (reg ? ' (' + (reg.is_adjusted_area ? '조정대상지역' : '조정대상지역 아님') + ')' : '')
+          + (mode === 'priceAdd' ? ' 주택이 여러 채면 다음 주소를 이어서 조회하세요.' : '')
           + ' ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.' });
       } else if (reg) {
         setInfo({ ok: true, msg: (reg.sigungu || '') + ' ' + (reg.dong || '') + ' — '
           + (reg.is_adjusted_area ? '조정대상지역입니다' : '조정대상지역이 아닙니다') + '.'
-          + (mode === 'price' ? ' 공시가격은 찾지 못했어요(상가·오피스텔 등). 금액은 직접 넣어 주세요.' : '') });
+          + (mode !== 'region' ? ' 공시가격은 찾지 못했어요(상가·오피스텔 등). 금액은 직접 넣어 주세요.' : '') });
       } else {
         setInfo({ ok: false, msg: '주소를 찾지 못했어요. 도로명 주소로 다시 시도하거나 직접 입력해 주세요.' });
       }
     } catch (e) {
-      setInfo({ ok: false, msg: '조회 중 오류가 났어요. 직접 입력해 주세요.' });
-    } finally { if (my === seq.current) setBusy(false); }
+      if (!stale()) setInfo({ ok: false, msg: '조회 중 오류가 났어요. 직접 입력해 주세요.' });
+    } finally {
+      if (!stale()) setBusy(false);
+    }
   };
 
   return (
@@ -643,7 +639,8 @@ function RfAddrLookup({ mode, onPrice, onRegion, isAuto, getGen, accumulate }) {
       </div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <input
-          type="text" value={addr} onChange={(e) => changeAddr(e.target.value)}
+          type="text" value={addr}
+          onChange={(e) => { setInfo(null); setAddr(e.target.value); }}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); run(); } }}
           placeholder="예: 서울 강남구 도곡동 467"
           style={{ flex: '1 1 220px', minWidth: 0, padding: '11px 13px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }}
@@ -653,6 +650,26 @@ function RfAddrLookup({ mode, onPrice, onRegion, isAuto, getGen, accumulate }) {
           {busy ? '조회 중…' : '조회'}
         </button>
       </div>
+
+      {/* 조회로 넣은 주소 목록 — 하나씩 되돌릴 수 있다 */}
+      {list.length > 0 && (
+        <div style={{ marginTop: 11, display: 'grid', gap: 6 }}>
+          {list.map((it, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 13, background: '#fff', border: '1px solid #e5e1d9', borderRadius: 7, padding: '8px 11px' }}>
+              <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{it.label}</span>
+              <strong style={{ whiteSpace: 'nowrap' }}>{rfEok(it.amount)}</strong>
+              <button onClick={() => onRemove && onRemove(i)} title="이 주소 빼기"
+                style={{ flex: '0 0 auto', border: '1px solid #dcd8d0', background: '#fff', borderRadius: 6, padding: '4px 9px', cursor: 'pointer', fontSize: 12 }}>빼기</button>
+            </div>
+          ))}
+          {list.length > 1 && (
+            <div style={{ fontSize: 12.5, color: '#7b756b', textAlign: 'right' }}>
+              합계 {rfWon(list.reduce((t, x) => t + x.amount, 0))}
+            </div>
+          )}
+        </div>
+      )}
+
       {info && (
         <div style={{ marginTop: 9, fontSize: 13, lineHeight: 1.65, color: info.ok ? '#1e6b45' : '#8a6224' }}>{info.msg}</div>
       )}
@@ -661,7 +678,7 @@ function RfAddrLookup({ mode, onPrice, onRegion, isAuto, getGen, accumulate }) {
 }
 
 /* 질문 렌더 (숫자 / 선택 / 주소조회) */
-function RfQuestion({ q, value, onChange, isAuto, getGen }) {
+function RfQuestion({ q, value, onChange, picks, onAdd, onRemove, bumpEpoch, getEpoch }) {
   return (
     <div className="jt-report-q">
       <div className="jt-report-q__section">{q.section}</div>
@@ -670,18 +687,11 @@ function RfQuestion({ q, value, onChange, isAuto, getGen }) {
       {q.addr && (
         <RfAddrLookup
           mode={q.addr}
-          isAuto={isAuto}
-          getGen={getGen}
-          accumulate={q.addr === 'priceAdd'}
-          /* ⚠️ 종부세 「공시가격 합계」는 주택이 여러 채일 수 있다. 한 주소만 조회해
-             그 값으로 «대체»하면 나머지 주택이 빠져 세액이 과소된다(260805 Codex R5 P1).
-             → priceAdd 는 조회 결과를 기존 값에 «더한다». 주소를 하나씩 이어 조회한다. */
-          onPrice={(q.addr === 'price' || q.addr === 'priceAdd') ? function (amt) {
-            if (amt === '') { onChange(q.id, '', { auto: true }); return; }
-            const next = q.addr === 'priceAdd' ? (rfNum(value) + Number(amt)) : Number(amt);
-            onChange(q.id, String(next), { auto: true });
-          } : null}
+          picks={picks}
+          onAdd={(q.addr === 'price' || q.addr === 'priceAdd') ? onAdd : null}
+          onRemove={(q.addr === 'price' || q.addr === 'priceAdd') ? onRemove : null}
           onRegion={q.regionTo ? function (reg) { onChange(q.regionTo, reg.is_adjusted_area ? 'yes' : 'no'); } : null}
+          bumpEpoch={bumpEpoch} getEpoch={getEpoch}
         />
       )}
       {q.opts ? (
@@ -703,13 +713,10 @@ function RfQuestion({ q, value, onChange, isAuto, getGen }) {
             className="jt-report-q__input" type="text" inputMode="decimal"
             value={q.money && value ? Number(String(value).replace(/[^0-9]/g, '') || 0).toLocaleString('ko-KR') : (value || '')}
             placeholder={q.placeholder || ''}
-            /* ⚠️ 금액은 정수만, 기간은 «소수점 허용». 종전엔 [^0-9] 로 전부 지워
-               「1.5년」이 «15년»이 되어 단기보유가 장기보유로 둔갑했다 (260805 Codex P0). */
             onChange={(e) => {
               const raw = String(e.target.value);
               if (q.money) { onChange(q.id, raw.replace(/[^0-9]/g, '')); return; }
-              /* 기간: 소수점 «하나»만 허용. 종전엔 '1.2.3' 을 '1.23' 으로 조용히
-                 바꿔 다른 값이 됐다 — 형식에 안 맞으면 입력을 «받지 않는다» (260805 R2 P2). */
+              /* 기간: 소수점 «하나»만 허용. 형식에 안 맞으면 입력을 받지 않는다 (260805 R2 P2). */
               if (raw === '' || /^\d*(?:\.\d*)?$/.test(raw)) onChange(q.id, raw);
             }}
             style={{ width: '100%', padding: '13px 15px', fontSize: 17, border: '1px solid #dcd8d0', borderRadius: 9, fontWeight: 700 }}
@@ -730,27 +737,30 @@ function RfQuestion({ q, value, onChange, isAuto, getGen }) {
    ══════════════════════════════════════════════════════════════════════════ */
 function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, tag, title, subtitle, notice }) {
   const [idx, setIdx] = useRfState(0);
+  /* 조회로 넣은 주소 목록 (문항 id → [{label, amount}]). 합계는 여기서 파생한다.
+     문항 이동으로 RfAddrLookup 이 언마운트돼도 위저드가 들고 있으므로 유지된다. */
+  const [picks, setPicks] = useRfState({});
+  /* 문항별 «에폭» — 조회 시작·수동 입력 때마다 증가. 늦은 응답 차단의 유일한 기준. */
+  const epochs = React.useRef({});
   /* ⚠️ 「자동입력분인가」는 «값»이 아니라 «누가 넣었는가»로 판정해야 한다.
      값으로 기억하면 사용자가 우연히 같은 금액을 직접 넣었을 때도 자동값으로 오인해
      지워 버린다 (260805 Codex R3 P2). 자동입력된 문항 id 를 집합으로 들고 다니고,
      사용자가 그 칸을 직접 고치는 순간 해제한다. */
-  const autoIds = React.useRef({});
-  /* ⚠️ isAuto(불리언)만으로는 «이미 떠난» 조회의 늦은 응답을 못 막는다.
-     사용자가 조회 중에 금액을 직접 고쳐도 응답이 도착하면 그 값을 덮어썼다
-     (종부세 12,096,000원 과다 — 260805 Codex R4 P1).
-     → 문항마다 «입력 세대»를 두고 «수동 입력»이 있을 때 올린다. 조회는 시작 시점의
-       세대를 캡처했다가 응답 시점에 같을 때만 반영한다. */
-  const gens = React.useRef({});
-  const onChangeTracked = (id, v, opt) => {
-    /* ⚠️ 자동입력도 세대를 올린다. 종전엔 수동 입력만 올려서, 문항을 벗어났다
-       돌아오며 RfAddrLookup 이 언마운트→재마운트되면 seq 가 초기화돼 «옛 조회»의
-       늦은 응답이 최신으로 판정됐다(다른 주소 값이 덮임 — 260805 Codex R5 P1).
-       세대는 컴포넌트 밖(위저드)에 있으므로 언마운트와 무관하게 이어진다. */
-    if (opt && opt.auto) autoIds.current[id] = true;
-    else delete autoIds.current[id];
-    gens.current[id] = (gens.current[id] || 0) + 1;
+  const bumpEpoch = (id) => { epochs.current[id] = (epochs.current[id] || 0) + 1; return epochs.current[id]; };
+  const getEpoch = (id) => (epochs.current[id] || 0);
+
+  const setPicksFor = (id, arr) => {
+    setPicks(Object.assign({}, picks, { [id]: arr }));
+    onChange(id, arr.length ? String(arr.reduce((t, x) => t + x.amount, 0)) : '');
+  };
+  const onChangeTracked = (id, v) => {
+    /* 사용자가 직접 고치면 진행 중 조회를 무효화하고, 조회 목록도 버린다
+       (목록에서 파생한 합계와 손으로 넣은 값이 뒤섞이면 되돌릴 수 없다). */
+    bumpEpoch(id);
+    if (picks[id] && picks[id].length) setPicks(Object.assign({}, picks, { [id]: [] }));
     onChange(id, v);
   };
+
   const visible = questions.filter((q) => !q.showIf || q.showIf(answers));
   const total = Math.max(1, visible.length);
   const pos = Math.min(idx, total - 1);
@@ -781,8 +791,13 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
         {notice}
         <div className="jt-report-calc"
           onKeyDown={(e) => { if (e.key === 'Enter' && !stepErr) { e.preventDefault(); if (last) onSubmit(); else go(1); } }}>
-          {cur && <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked} isAuto={!!autoIds.current[cur.id]}
-            getGen={() => (gens.current[cur.id] || 0)} />}
+          {cur && (
+            <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked}
+              picks={picks[cur.id] || []}
+              onAdd={(item) => setPicksFor(cur.id, (picks[cur.id] || []).concat([item]))}
+              onRemove={(i) => setPicksFor(cur.id, (picks[cur.id] || []).filter((_, j) => j !== i))}
+              bumpEpoch={() => bumpEpoch(cur.id)} getEpoch={() => getEpoch(cur.id)} />
+          )}
           {stepErr && <p style={{ color: '#b3261e', fontSize: 13.5, margin: '12px 0 0' }}>{stepErr}</p>}
           <div className="jt-report-q__nav" style={{ display: 'flex', gap: 10, marginTop: 24, flexWrap: 'wrap' }}>
             {pos > 0 && (
