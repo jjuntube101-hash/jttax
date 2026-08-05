@@ -488,7 +488,7 @@ function JTReportInheritance({ setRoute, onBack }) {
 
           {!calc.precise && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 세율표 · 채무·장례비 차감 · 보험금·퇴직금 합산 · 일괄공제 5억 · <strong>법정상속분 기준 배우자상속공제</strong> · 신고세액공제.<br /><strong>반영하지 않은 것</strong>: <strong>금융재산상속공제</strong>(§22) · <strong>동거주택상속공제</strong>(§23의2) · <strong>사전증여 합산과 증여세액공제</strong>(§13·§28) · 배우자가 실제로 상속받지 않는 경우의 조정 · 공제 종합한도(§24). 정밀 계산에서 반영됩니다 —
+              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 세율표 · 채무·장례비 차감 · 보험금·퇴직금 합산 · 일괄공제 5억(<strong>배우자 단독상속</strong>, 즉 자녀가 없으면 일괄공제 대신 기초공제 2억) · <strong>법정상속분 기준 배우자상속공제</strong> · 신고세액공제.<br /><strong>반영하지 않은 것</strong>: <strong>금융재산상속공제</strong>(§22) · <strong>동거주택상속공제</strong>(§23의2) · <strong>사전증여 합산과 증여세액공제</strong>(§13·§28) · 배우자가 실제로 상속받지 않는 경우의 조정 · 공제 종합한도(§24). 정밀 계산에서 반영됩니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
             </div>
           )}

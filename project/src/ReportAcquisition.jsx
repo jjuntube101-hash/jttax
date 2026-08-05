@@ -476,7 +476,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
 
           {!calc.precise && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 취득유형별 세율 · 6~9억 구간 산식 · <strong>다주택 중과</strong>(조정 2주택·비조정 3주택 8.4% / 그 이상 12.4%) · 지방교육세.<br /><strong>반영하지 않은 것</strong>: <strong>생애최초 감면</strong> · <strong>85㎡ 초과 농어촌특별세</strong> · 일시적 2주택 등 중과배제 특례 · 법인 취득 · 농지 특례. 정밀 계산에서 반영됩니다 —
+              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: <strong>일반</strong> 취득유형별 세율 · 6~9억 구간 산식 · <strong>다주택 중과</strong>(조정 2주택·비조정 3주택 8.4% / 그 이상 12.4%) · 지방교육세.<br /><strong>반영하지 않은 것</strong>: <strong>생애최초 감면</strong> · <strong>85㎡ 초과 농어촌특별세</strong> · 일시적 2주택 등 중과배제 특례 · 법인 취득 · 농지 특례 · <strong>무주택 1가구 1주택 상속 0.8% 특례</strong>. 정밀 계산에서 반영됩니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
             </div>
           )}

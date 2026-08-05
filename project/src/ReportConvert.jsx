@@ -92,7 +92,12 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
                       비고: '고객이 결과 후 카카오톡 채널로 연결 — 연락처 미수집(카톡으로 응대). 같은 시각 카톡 문의와 대조 바람.',
                     }),
                   }).then(function (res) {
-                    notify(res && res.ok
+                    /* ⚠️ res.ok 만 보면 «200 + {"success":false}» 를 성공으로 읽는다.
+                       Web3Forms 는 본문의 success 필드로 판정한다 (260806 Codex R5 P1). */
+                    if (!res || !res.ok) throw new Error('http');
+                    return res.json().catch(function () { return {}; });
+                  }).then(function (data) {
+                    notify(data && data.success === true
                       ? '계산 결과를 담당 세무사에게 전달했습니다.\n' + COPIED
                       : '전달에 실패했습니다 — 카카오톡으로 결과를 직접 보내 주세요.\n' + COPIED);
                   }).catch(function () {
@@ -398,7 +403,8 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
       if (w3fKey && !w3fKey.includes('REPLACE')) {
         const res = await fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'}, body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, replyto: email || '', ...payload })});
         const data = await res.json().catch(() => ({}));
-        sent = !!(res.ok && data && data.success !== false);
+        /* ⚠️ 200 + {} 도 성공으로 보면 안 된다 — Web3Forms 는 success 필드로 판정한다 */
+        sent = !!(res.ok && data && data.success === true);
       }
     } catch(_){ sent = false; }
     setSentOk(sent);

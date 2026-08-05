@@ -171,6 +171,13 @@ function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, 
       <div className="jt-report-shell__title">
         <h1>{title}</h1>
         <p>{subtitle}</p>
+        {/* ⚠️ 입력값 처리 고지가 허브에만 있으면, 딥링크(#/report/gift 등)로 바로 들어온
+            이용자는 «엔진 전송·AI 이용»을 모른 채 재산 정보를 넣는다 (260806 Codex R5 P1).
+            모든 계산기가 이 셸을 쓰므로 여기 한 줄을 두면 전 화면이 덮인다. */}
+        <p className="jt-report-shell__privacy" style={{ fontSize: 12.5, opacity: 0.65, lineHeight: 1.6, marginTop: 6 }}>
+          입력값은 계정에 저장하지 않습니다. 계산을 위해 세액 계산 엔진으로 전송되며, 일부 진단은 AI 응답을 이용합니다.
+          담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.
+        </p>
       </div>
       <div className="jt-report-shell__body">
         {children}
