@@ -59,10 +59,30 @@ function mdToHtml(md) {
     const items = block.trim().split('\n').map(l => `  <li>${l.replace(/^- /, '')}</li>`).join('\n');
     return `${pre}<ul>\n${items}\n</ul>\n`;
   });
+  // ── GFM 표 (260805 추가) ────────────────────────────────────────────────
+  // 종전 렌더러엔 표 지원이 없어, 세제개편안처럼 「연도별 비교」가 핵심인 글의
+  // 표가 «파이프 문자가 그대로 보이는 문단»으로 깨져 나왔다.
+  //   | a | b |
+  //   |---|---|
+  //   | 1 | 2 |
+  // 셀 안의 <strong>·<a> 는 위 인라인 치환이 이미 끝난 상태로 들어온다.
+  const splitRow = (line) => line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+  html = html.replace(
+    /(^|\n)(\|.+\|[ \t]*\n\|[ \t:|-]+\|[ \t]*\n(?:\|.+\|[ \t]*\n?)+)/g,
+    (_, pre, block) => {
+      const lines = block.trim().split('\n');
+      const head = splitRow(lines[0]);
+      const rows = lines.slice(2).map(splitRow);
+      const th = head.map(c => `<th>${c}</th>`).join('');
+      const tb = rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('\n      ');
+      // 좁은 화면에서 가로 스크롤 — 표가 본문 폭을 밀어내지 않게(모바일 필수)
+      return `${pre}<div class="jt-ins-tblwrap">\n  <table class="jt-ins-tbl">\n    <thead><tr>${th}</tr></thead>\n    <tbody>\n      ${tb}\n    </tbody>\n  </table>\n</div>\n`;
+    }
+  );
   html = html.split(/\n\n+/).map(p => {
     const t = p.trim();
     if (!t) return '';
-    if (/^<(h[1-6]|ul|ol|blockquote|pre|div)/.test(t)) return t;
+    if (/^<(h[1-6]|ul|ol|blockquote|pre|div|table)/.test(t)) return t;
     return `<p>${t.replace(/\n/g, '<br/>')}</p>`;
   }).join('\n\n');
   return html;
@@ -158,6 +178,16 @@ function renderArticlePage(a) {
   <meta property="article:author" content="${esc(a.author)}">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+  <style>
+    /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
+    .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
+    .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
+    .jt-ins-tbl th,.jt-ins-tbl td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top;line-height:1.6;}
+    .jt-ins-tbl thead th{background:#F5F3EE;border-bottom:2px solid rgba(0,0,0,.14);font-size:13.5px;white-space:nowrap;}
+    .jt-ins-tbl td+td,.jt-ins-tbl th+th{text-align:right;}
+    .jt-ins-tbl tbody tr:nth-child(even){background:#FBFAF8;}
+    @media (max-width:600px){ .jt-ins-tbl{font-size:13.5px;} }
+  </style>
 ${GA_HEAD_SNIPPET}
   <script type="application/ld+json">
   {

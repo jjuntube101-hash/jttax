@@ -16,6 +16,16 @@
   <meta property="article:author" content="제이티 세무법인">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="/project/src/styles.css">
+  <style>
+    /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
+    .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
+    .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
+    .jt-ins-tbl th,.jt-ins-tbl td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top;line-height:1.6;}
+    .jt-ins-tbl thead th{background:#F5F3EE;border-bottom:2px solid rgba(0,0,0,.14);font-size:13.5px;white-space:nowrap;}
+    .jt-ins-tbl td+td,.jt-ins-tbl th+th{text-align:right;}
+    .jt-ins-tbl tbody tr:nth-child(even){background:#FBFAF8;}
+    @media (max-width:600px){ .jt-ins-tbl{font-size:13.5px;} }
+  </style>
   <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
   <script>
