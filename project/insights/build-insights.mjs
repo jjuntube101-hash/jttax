@@ -45,6 +45,16 @@ function parseFrontmatter(src) {
   return { meta, body: m[2] };
 }
 
+/* ⚠️ slug 는 파일 «경로»가 된다. `../index` 같은 값이면 출력 디렉터리를 탈출해
+   루트 index.html(홈 SPA)까지 덮어쓴다 (260805 Codex R12 P1). 문자 집합을 강제한다. */
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+function assertSlug(slug, where) {
+  if (!SLUG_RE.test(String(slug || ''))) {
+    throw new Error(`[${where}] slug 형식 오류: ${JSON.stringify(slug)} — 소문자·숫자·하이픈만 허용합니다(경로 구분자 금지).`);
+  }
+  return slug;
+}
+
 // ────────────── 경량 마크다운 → HTML ──────────────
 function mdToHtml(md) {
   let html = md
@@ -116,7 +126,7 @@ async function loadArticles() {
       skipped.push(f);
       continue;
     }
-    const slug = meta.slug || f.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '');
+    const slug = assertSlug(meta.slug || f.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, ''), f);
     // ② slug 충돌 방지: 같은 slug 두 글은 /insights/<slug>.html 을 서로 덮어써
     //    한 글이 조용히 유실된다. 충돌 시 빌드를 실패시킨다.
     if (seenSlugs.has(slug)) {

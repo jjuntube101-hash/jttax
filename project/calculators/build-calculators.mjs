@@ -285,10 +285,21 @@ ${cards}
 </html>`;
 }
 
+/* ⚠️ slug 는 파일 «경로»가 된다. `../index` 같은 값이면 출력 디렉터리를 탈출해
+   루트 index.html(홈 SPA)까지 덮어쓴다 (260805 Codex R12 P1). 문자 집합을 강제한다. */
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+function assertSlug(slug, where) {
+  if (!SLUG_RE.test(String(slug || ''))) {
+    throw new Error(`[${where}] slug 형식 오류: ${JSON.stringify(slug)} — 소문자·숫자·하이픈만 허용합니다(경로 구분자 금지).`);
+  }
+  return slug;
+}
+
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
   let made = 0, kept = 0;
   for (const c of CALCULATORS) {
+    assertSlug(c.slug, 'calculators.data.mjs');
     // custom: true → 손으로 쓴 페이지. 덮어쓰면 연도별 비교표가 날아가므로 건드리지 않는다.
     if (c.custom) { kept++; continue; }
     await writeFile(join(OUT_DIR, `${c.slug}.html`), renderCalcPage(c));
