@@ -530,10 +530,18 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
         return;
       }
       const r = await window.jtLookupHousePrice(a);
-      /* 엔진이 세대를 특정하지 못하면 금액을 «쓰지 않는다» — 260720 결함 대응 */
-      if (r && r.needs_unit_selection) {
+      /* 엔진이 세대를 특정하지 못하면 금액을 «쓰지 않는다» — 260720 결함 대응.
+         ⚠️ jtLookupHousePrice 는 엔진의 needs_unit_selection 을 status:'needs_unit' 으로
+            «바꿔서» 돌려준다. 원본 필드명만 보면 이 분기를 못 타고 「공시가격을 찾지
+            못했다(상가·오피스텔)」는 엉뚱한 안내가 나간다 — 둘 다 본다 (260805). */
+      if (r && (r.status === 'needs_unit' || r.needs_unit_selection)) {
         if (r.region && onRegion) onRegion(r.region);
-        setInfo({ ok: false, msg: '이 주소에는 세대가 여럿입니다. 공시가격은 동·호에 따라 크게 다르니 직접 입력해 주세요.' });
+        const n = Number(r.unitCount) || 0;
+        const lo = Number(r.priceMin) || 0, hi = Number(r.priceMax) || 0;
+        setInfo({ ok: false, msg:
+          (r.complex ? r.complex + ' — ' : '') + '이 주소에는 ' + (n ? n.toLocaleString('ko-KR') + '세대' : '세대가 여럿') + '가 있어 어느 집인지 특정할 수 없습니다.'
+          + (lo && hi ? ' 단지 내 공시가격이 ' + rfEok(lo) + ' ~ ' + rfEok(hi) + '으로 갈리니' : ' 세대마다 공시가격이 달라서')
+          + ' 내 세대의 공시가격을 직접 넣어 주세요(부동산공시가격알리미 realtyprice.kr).' });
         return;
       }
       const reg = r && r.region;
