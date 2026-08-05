@@ -525,8 +525,8 @@ function JTReportProperty({ setRoute, onBack }) {
           ? ` (입력하신 ${[r.asked.dong && r.asked.dong + '동', r.asked.ho && r.asked.ho + '호'].filter(Boolean).join(' ')} → 찾은 세대 ${[r.matched.dong && r.matched.dong + '동', r.matched.ho && r.matched.ho + '호'].filter(Boolean).join(' ')} — 표기가 조금 다릅니다)`
           : '';
         let msg = ml
-          ? `${ml} — ${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요.${looseNote} 이 집이 맞는지 확인해 주세요.`
-          : `${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).`;
+          ? `${ml} — ${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요.${looseNote} 이 집이 맞는지 확인해 주세요. ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.`
+          : `${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}). ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.`;
         // 도시지역 자동선택(근사) — 주소 기준. 재산세 도시지역분(0.14%) 판정용
         const reg = r.region;
         if (reg && reg.urban_area_likely === true) { setAns('isUrbanArea', 'yes'); msg += ` ${reg.sigungu || '해당 지역'}은 도시지역으로 자동판단했어요(다르면 뒤 단계에서 수정).`; }

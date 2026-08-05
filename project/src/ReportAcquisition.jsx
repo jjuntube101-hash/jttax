@@ -349,8 +349,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
           ? ` (입력 ${[r.asked.dong, r.asked.ho].filter(Boolean).join(' ')} → 찾은 세대 ${[r.matched.dong, r.matched.ho].filter(Boolean).join(' ')} — 표기가 조금 다릅니다)`
           : '';
         setLinfo({ ok: true, msg: (ml
-          ? `${ml} — ${r.year ? r.year + '년 ' : ''}공시가격(시가표준액) ${formatWon(r.amount)}을 자동 입력했어요.${looseNote} 이 집이 맞는지 확인해 주세요.`
-          : `${r.year ? r.year + '년 ' : ''}공시가격(시가표준액) ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).`) + applyRegulated(r.region) });
+          ? `${ml} — ${r.year ? r.year + '년 ' : ''}공시가격(시가표준액) ${formatWon(r.amount)}을 자동 입력했어요.${looseNote} 이 집이 맞는지 확인해 주세요. ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.`
+          : `${r.year ? r.year + '년 ' : ''}공시가격(시가표준액) ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}).`) + ' ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.' + applyRegulated(r.region) });
       } else if (r && r.region) {
         setLinfo({ ok: false, msg: '이 주소의 공시가격은 못 찾았어요(상가·오피스텔·신축 등). 시가표준액은 직접 입력하세요.' + applyRegulated(r.region) });
       } else {

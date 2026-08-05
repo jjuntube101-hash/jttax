@@ -291,7 +291,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
         const n = addedCount + 1; setAddedCount(n);
         const kindLabel = r.kind === '공동주택' ? '아파트·연립·다세대' : '단독·다가구주택';
         const ml = window.jtMatchedLabel && window.jtMatchedLabel(r.matched);
-        setLinfo({ ok: true, msg: `${ml || kindLabel} 공시가격 ${formatWon(r.amount)}을 합계에 더했어요. 현재 합계 ${formatWon(next)} (주택 ${n}채 반영). 맞는지 확인하시고, 여러 채면 다음 주소를 이어서 조회하세요.` });
+        setLinfo({ ok: true, msg: `${ml || kindLabel} 공시가격 ${formatWon(r.amount)}을 합계에 더했어요. 현재 합계 ${formatWon(next)} (주택 ${n}채 반영). 맞는지 확인하시고, 여러 채면 다음 주소를 이어서 조회하세요. ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.` });
         setLaddrSync('');
       } else {
         setLinfo({ ok: false, msg: '이 주소의 공시가격을 찾지 못했어요(상가·오피스텔·신축 등). 직접 더해 입력해 주세요.' });
