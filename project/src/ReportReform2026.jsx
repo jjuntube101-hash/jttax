@@ -577,33 +577,57 @@ function RfCrossLinks({ setSubRoute, exclude }) {
 
 /* ══════════════════════════════════════════════════════════════════════════
    주소 자동조회 — 공시가격 / 조정대상지역
-   엔진 헬퍼 window.jtLookupHousePrice(주소) 를 재사용한다(ReportProperty.jsx 정의).
+   엔진 헬퍼 window.jtLookupHousePrice(주소, unit) 를 재사용한다(ReportProperty.jsx 정의).
 
-   ★ 설계 (260805 R6 — 「값 하나에 덮어쓰기」 구조를 버림)
-   종전엔 조회 결과를 금액 칸에 바로 «대체» 또는 «누적»했는데, 그 구조에서는
-     · 1주택인데 누적돼 두 배가 되거나(직접 입력 후 조회)
-     · needs_unit 이 오면 앞서 쌓은 합계까지 지워지거나
-     · 잘못 더한 주소 하나만 되돌릴 방법이 없었다.
-   → **조회한 주소를 목록(picks)으로 들고, 합계를 그 목록에서 파생**시킨다.
-      삭제하면 합계가 즉시 줄고, 실패한 주소는 애초에 목록에 안 들어간다.
-      1주택이든 다주택이든 같은 모델로 동작한다(1채면 항목 1개).
+   ★ 동·호는 «주소 문자열»이 아니라 «별도 필드»로 넘겨야 한다 (260805 실측)
+   엔진은 address 안의 "102동 601호" 를 파싱하지 않는다. 실증:
+     {address:'정릉로 305, 102동 601호'}        → needs_unit (860세대)
+     {address:'정릉로 305', dong:'102', ho:'601'} → 411,000,000원
+   종전 이 컴포넌트는 주소 한 줄만 넘겨, 사용자가 동·호를 같이 써도 늘 되물었다.
+   → ① 주소에서 동·호를 «자동 추출»해 필드로 분리해 넘긴다
+      ② 그래도 세대가 여럿이면 동·호 입력칸을 띄워 되묻는다(기존 계산기와 같은 방식)
 
-   ★ 늦은 응답 차단 — 문항별 «에폭» 하나로 통합
-   조회 시작·수동 입력 때마다 에폭을 올리고, 응답은 시작 시점 에폭과 같을 때만 반영한다.
-   에폭은 위저드(컴포넌트 밖) ref 라 문항 이동으로 언마운트돼도 이어진다.
-     A시작(1) → B시작(2) → A응답(1≠2 폐기) → B응답(2=2 반영)
-     조회시작(1) → 수동입력(2) → 응답(1≠2 폐기)
+   ★ 목록 모델 (R6~): 조회한 주소를 picks 로 들고 합계를 파생. 「빼기」로 되돌린다.
+   ★ 에폭 (R8~R9): 조회 시작·수동 입력 때 증가. 응답은 시작 시점 에폭과 같을 때만 반영.
    ══════════════════════════════════════════════════════════════════════════ */
+
+/* 주소 문자열에서 동·호를 뽑아낸다.
+   잡는 것:  101동 / 101-1동 / A101동 / 제101동 / 601호 / B102호
+   안 잡는 것(중요):
+     · 「도곡동」·「정릉동」 — 법정동. 숫자가 아예 없다
+     · 「상계1동」·「목1동」 — 행정동. 숫자는 있지만 **앞이 한글**이다
+   그래서 동·호 앞은 «문장 시작·공백·쉼표·괄호»여야 하고, 뒤에 한글이 붙으면 안 된다
+   (「1호선」의 '선'). 잡아낸 앞 글자는 그대로 되돌려 붙여 주소를 훼손하지 않는다. */
+function rfSplitUnit(raw) {
+  let addr = String(raw || '');
+  const pick = (re) => {
+    const m = addr.match(re);
+    if (!m) return '';
+    addr = addr.slice(0, m.index) + m[1] + ' ' + addr.slice(m.index + m[0].length);
+    return m[2];
+  };
+  const dong = pick(/(^|[\s,(])(?:제\s*)?([A-Za-z]?\d+(?:-\d+)?)\s*동(?![가-힣])/);
+  const ho = pick(/(^|[\s,(])(?:제\s*)?([A-Za-z]?\d+(?:-\d+)?)\s*호(?![가-힣])/);
+  addr = addr.replace(/[,\s]+/g, ' ').replace(/[,\s]+$/, '').trim();
+  return { addr, dong, ho };
+}
+
 function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEpoch }) {
   const [addr, setAddr] = useRfState('');
   const [busy, setBusy] = useRfState(false);
   const [info, setInfo] = useRfState(null);
+  /* 세대가 여럿이라 되물어야 할 때만 뜨는 동·호 입력칸 */
+  const [ask, setAsk] = useRfState(null);        // { complex, unitCount, priceMin, priceMax, baseAddr }
+  const [dong, setDong] = useRfState('');
+  const [ho, setHo] = useRfState('');
   const list = picks || [];
 
-  const run = async () => {
-    const a = addr.trim();
-    if (!a || busy) return;
-    const ep = bumpEpoch ? bumpEpoch() : 0;      // 조회 «시작» — 앞선 요청은 이 순간 무효
+  const runWith = async (rawAddr, unit) => {
+    const parsed = rfSplitUnit(rawAddr);
+    const base = parsed.addr || String(rawAddr || '').trim();
+    const u = { dong: (unit && unit.dong) || parsed.dong, ho: (unit && unit.ho) || parsed.ho };
+    if (!base || busy) return;
+    const ep = bumpEpoch ? bumpEpoch() : 0;
     setBusy(true); setInfo(null);
     const stale = () => (getEpoch ? getEpoch() !== ep : false);
     try {
@@ -611,30 +635,35 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
         setInfo({ ok: false, msg: '조회 기능을 불러오지 못했어요. 금액을 직접 넣어 주세요.' });
         return;
       }
-      const r = await window.jtLookupHousePrice(a);
-      if (stale()) return;                       // 더 최신 조회·수동 입력이 있었다
+      const r = await window.jtLookupHousePrice(base, (u.dong || u.ho) ? u : undefined);
+      if (stale()) return;
 
       const reg = r && r.region;
       if (reg && onRegion) onRegion(reg);
 
-      /* 세대를 특정 못 하면 «목록에 넣지 않는다» — 앞서 쌓은 합계는 그대로 둔다 */
-      if (r && (r.status === 'needs_unit' || r.needs_unit_selection)) {
-        const n = Number(r.unitCount) || 0;
-        const lo = Number(r.priceMin) || 0, hi = Number(r.priceMax) || 0;
-        setInfo({ ok: false, msg:
-          (r.complex ? r.complex + ' — ' : '') + '이 주소에는 ' + (n ? n.toLocaleString('ko-KR') + '세대' : '세대가 여럿') + '가 있어 어느 집인지 특정할 수 없습니다.'
-          + (lo && hi ? ' 단지 내 공시가격이 ' + rfEok(lo) + ' ~ ' + rfEok(hi) + '으로 갈리니' : ' 세대마다 공시가격이 달라서')
-          + ' 내 세대의 공시가격을 직접 넣어 주세요(부동산공시가격알리미 realtyprice.kr).' });
+      /* 세대가 여럿이라 금액을 못 정한 경우 — 동·호를 되묻는다.
+         단 «조정대상지역만» 묻는 화면(mode 'region')에서는 금액이 필요 없다.
+         그쪽은 위에서 이미 지역 판정을 넘겼으므로 되묻지 않고 결과만 알린다. */
+      if (r && (r.status === 'needs_unit' || r.needs_unit_selection) && mode !== 'region') {
+        setAsk({
+          complex: r.complex || '', unitCount: Number(r.unitCount) || 0,
+          priceMin: Number(r.priceMin) || 0, priceMax: Number(r.priceMax) || 0, baseAddr: base,
+        });
+        setDong(u.dong || ''); setHo(u.ho || '');
+        setInfo(null);
         return;
       }
 
+      setAsk(null);
       if (r && r.amount > 0) {
-        if (onAdd) onAdd({ label: a, amount: Number(r.amount), year: r.year || '' });
-        setAddr('');
+        /* .trim() 을 템플릿 «전체»에 걸면 앞 공백까지 먹어 「정릉로 305102동」이 된다 (260805) */
+        const unitLabel = ((u.dong ? u.dong + '동 ' : '') + (u.ho ? u.ho + '호' : '')).trim();
+        const label = base + (unitLabel ? ' ' + unitLabel : '');
+        if (onAdd) onAdd({ label, amount: Number(r.amount), year: r.year || '' });
+        setAddr(''); setDong(''); setHo('');
         setInfo({ ok: true, msg: (r.year ? r.year + '년 ' : '') + '공시가격 ' + rfWon(r.amount) + '을 넣었어요.'
           + (reg ? ' (' + (reg.is_adjusted_area ? '조정대상지역' : '조정대상지역 아님') + ')' : '')
-          + (mode === 'priceAdd' ? ' 주택이 여러 채면 다음 주소를 이어서 조회하세요.' : '')
-          + ' ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.' });
+          + (mode === 'priceAdd' ? ' 주택이 여러 채면 다음 주소를 이어서 조회하세요.' : '') });
       } else if (reg) {
         setInfo({ ok: true, msg: (reg.sigungu || '') + ' ' + (reg.dong || '') + ' — '
           + (reg.is_adjusted_area ? '조정대상지역입니다' : '조정대상지역이 아닙니다') + '.'
@@ -649,6 +678,12 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
     }
   };
 
+  const run = () => runWith(addr, null);
+  const retryWithUnit = () => {
+    if (!dong.trim() && !ho.trim()) return;
+    runWith(ask.baseAddr, { dong: dong.trim(), ho: ho.trim() });
+  };
+
   return (
     <div style={{ border: '1px solid #dcd8d0', borderRadius: 10, padding: '13px 15px', background: '#fbfaf8', marginBottom: 16 }}>
       <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>
@@ -657,21 +692,47 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <input
           type="text" value={addr}
-          /* ⚠️ 조회 중 주소를 고치면 그 요청을 «취소»한 것으로 본다.
-             안 그러면 사용자가 주소를 바꿔도 앞선 응답이 목록에 들어간다 (260805 Codex R8 P1). */
           onChange={(e) => {
             if (busy) { if (bumpEpoch) bumpEpoch(); setBusy(false); }
-            setInfo(null); setAddr(e.target.value);
+            setInfo(null); setAsk(null); setAddr(e.target.value);
           }}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); run(); } }}
-          placeholder="예: 서울 강남구 도곡동 467"
-          style={{ flex: '1 1 220px', minWidth: 0, padding: '11px 13px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }}
+          placeholder="예: 정릉로 305, 102동 601호 (동·호까지 쓰면 바로 찾습니다)"
+          style={{ flex: '1 1 240px', minWidth: 0, padding: '11px 13px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }}
         />
         <button className="jt-btn jt-btn--primary" disabled={busy || !addr.trim()} onClick={run}
           style={{ flex: '0 0 auto', padding: '11px 18px', opacity: (busy || !addr.trim()) ? 0.5 : 1 }}>
           {busy ? '조회 중…' : '조회'}
         </button>
       </div>
+
+      {/* 세대가 여럿 — 동·호를 되묻는다 */}
+      {ask && (
+        <div style={{ marginTop: 11, border: '1px solid #e5c98a', background: '#FFF8EC', borderRadius: 9, padding: '12px 14px' }}>
+          <div style={{ fontSize: 13.5, lineHeight: 1.65, color: '#6b5320', marginBottom: 10 }}>
+            {ask.complex ? <strong>{ask.complex}</strong> : null}
+            {ask.complex ? ' — ' : ''}
+            이 주소에 {ask.unitCount ? ask.unitCount.toLocaleString('ko-KR') + '세대' : '여러 세대'}가 있습니다.
+            {ask.priceMin && ask.priceMax ? ` 단지 내 공시가격이 ${rfEok(ask.priceMin)} ~ ${rfEok(ask.priceMax)}으로 갈립니다.` : ''}
+            {' '}<strong>동·호를 넣으면 내 세대 금액을 찾아 드립니다.</strong>
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <input type="text" value={dong} onChange={(e) => setDong(e.target.value)} placeholder="동 (예: 102)"
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); retryWithUnit(); } }}
+              style={{ flex: '1 1 110px', minWidth: 0, padding: '10px 12px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }} />
+            <input type="text" value={ho} onChange={(e) => setHo(e.target.value)} placeholder="호 (예: 601)"
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); retryWithUnit(); } }}
+              style={{ flex: '1 1 110px', minWidth: 0, padding: '10px 12px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }} />
+            <button className="jt-btn jt-btn--primary" disabled={busy || (!dong.trim() && !ho.trim())} onClick={retryWithUnit}
+              style={{ flex: '0 0 auto', padding: '10px 16px', opacity: (busy || (!dong.trim() && !ho.trim())) ? 0.5 : 1 }}>
+              {busy ? '조회 중…' : '이 세대로 조회'}
+            </button>
+          </div>
+          <div style={{ fontSize: 12.5, color: '#8a6224', marginTop: 8 }}>
+            모르시면 부동산공시가격알리미(realtyprice.kr)에서 확인하시거나, 금액을 직접 넣으셔도 됩니다.
+          </div>
+        </div>
+      )}
 
       {/* 조회로 넣은 주소 목록 — 하나씩 되돌릴 수 있다 */}
       {list.length > 0 && (
