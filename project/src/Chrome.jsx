@@ -11,6 +11,8 @@ function jtKeyActivate(e) {
     if (e.currentTarget && e.currentTarget.click) e.currentTarget.click();
   }
 }
+window.jtKeyActivate = jtKeyActivate;
+
 
 
 // 카톡 상담 링크 — 모바일은 1:1 채팅 바로 열기, PC는 채널 홈으로(로그인 에러 화면 회피)

@@ -361,7 +361,7 @@ function JTBooking({ setRoute }) {
             <label style={{display: 'flex', alignItems: 'flex-start', gap: 12, marginTop: 32, maxWidth: 720, cursor: 'pointer'}}>
               <input type="checkbox" checked={form.consent} onChange={set('consent')} style={{marginTop: 3, width: 18, height: 18, accentColor: '#000'}} />
               <span style={{fontSize: 13, color: 'var(--fg-2)', lineHeight: 1.6}}>
-                본인은 상담 목적으로 개인정보(성명·연락처·이메일)의 수집·이용에 동의합니다. 수집된 정보는 상담 응대 목적에 한해 사용되며, 별도 동의 없이 마케팅 용도로 활용되지 않습니다.
+                <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 세무 상담 접수·응대 및 결과 회신<br />· <strong>항목</strong>: 성명, 연락처, 이메일, 회사명, 문의분야, 선호 연락채널, 문의내용<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년(상법 §33 상업장부 보존기간에 준함). 기간 경과 시 지체 없이 파기<br />· <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 위 항목은 상담 접수에 «필수»이므로 거부 시 상담 신청이 접수되지 않습니다.<br />수집된 정보는 상담 응대 목적에 한해 사용되며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.
               </span>
             </label>
 

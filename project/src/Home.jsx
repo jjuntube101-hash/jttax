@@ -139,7 +139,7 @@ function JTReportHome({ setRoute }) {
         </ol>
         <div className="jt-platform__cta reveal" data-delay="4">
           <button className="jt-btn jt-btn--primary" onClick={() => setRoute('report')}>계산기 보러가기 <span className="jt-arrow">→</span></button>
-          <a className="jt-link jt-platform__link" onClick={() => { window.jtTrackCta('booking', 'home_report'); setRoute('booking'); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.jtTrackCta('booking', 'home_report'); setRoute('booking'); } }}>먼저 상담부터 →</a>
+          <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link jt-platform__link" onClick={() => { window.jtTrackCta('booking', 'home_report'); setRoute('booking'); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.jtTrackCta('booking', 'home_report'); setRoute('booking'); } }}>먼저 상담부터 →</a>
         </div>
       </div>
     </section>);
@@ -226,7 +226,7 @@ function JTProof({ setRoute }) {
         ※ 본 내용은 공개된 조세심판원 결정·국세청 발표·국세기본법을 교육 목적으로 요약한 참고자료입니다. 법령 개정·사실관계에 따라 결론이 달라질 수 있으며, 특정 납세자에 대한 자문 의견이 아닙니다.
       </p>
       <div className="reveal" style={{ marginTop: 40, display: 'flex', justifyContent: 'flex-end' }}>
-        <a className="jt-link" onClick={() => { window.jtTrackCta('booking', 'proof'); setRoute('booking'); }}>내 사안 적용 여부 상담하기 →</a>
+        <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link" onClick={() => { window.jtTrackCta('booking', 'proof'); setRoute('booking'); }}>내 사안 적용 여부 상담하기 →</a>
       </div>
     </section>);
 
@@ -359,7 +359,7 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
           <div className="jt-kicker">SERVICES · 업무분야</div>
           <h2 className="jt-h2 jt-display-h2">근거에 기반한<br />다섯 개 전문 영역.</h2>
         </div>
-        <a className="jt-link" onClick={() => setRoute('services')}>전체 업무분야 →</a>
+        <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link" onClick={() => setRoute('services')}>전체 업무분야 →</a>
       </div>
       {list ?
       <ul className="jt-insights" style={{ borderTop: '1px solid var(--border-1)' }}>
@@ -397,7 +397,7 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
               <li key={p.b}><span className="jt-tick">—</span><span><b>{p.b}</b> — <span style={{ color: 'var(--fg-2)' }}>{p.s}</span></span></li>
               )}
                   </ul>
-                  <a
+                  <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate}
               className="jt-link"
               onClick={(e) => {e.stopPropagation();setRoute('services');}}
               style={{ marginTop: 20, display: 'inline-block' }}>
@@ -475,7 +475,7 @@ function JTInsightsPreview({ setRoute, limit }) {
           <div className="jt-kicker">INSIGHTS · 최근 글</div>
           <h2 className="jt-h2 jt-display-h2">실무에 바로 쓰는 해설.</h2>
         </div>
-        <a className="jt-link" onClick={() => setRoute('insights')}>전체 보기 →</a>
+        <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link" onClick={() => setRoute('insights')}>전체 보기 →</a>
       </div>
       <div className="jt-icards">
         {items.map((a, i) => <JTInsightCard key={a.slug || a.title} a={a} i={i} />)}
@@ -523,7 +523,7 @@ function JTTeamPreview({ setRoute }) {
           <div className="jt-kicker">TEAM · 담당 세무사</div>
           <h2 className="jt-h2 jt-display-h2">담당 세무사가<br />각자의 전문 영역을 맡습니다.</h2>
         </div>
-        <a className="jt-link" onClick={() => setRoute('about', 'team')}>전체 구성원 보기 →</a>
+        <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link" onClick={() => setRoute('about', 'team')}>전체 구성원 보기 →</a>
       </div>
       <div className="jt-team-preview">
         {profiles.map((p, i) =>

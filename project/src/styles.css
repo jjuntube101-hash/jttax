@@ -2799,6 +2799,10 @@ button { font-family: inherit; }
 
 /* ---------- 인쇄 ---------- */
 @media print {
+  /* 고정 로고(redesign.css .jt-logomark-fix)는 position:fixed 라 인쇄 시
+     페이지마다 겹쳐 찍힌다 (260805 Codex R13 P2) */
+  .jt-logomark-fix { display: none !important; }
+
   .jt-nav, .jt-footer, .jt-report-cta, .jt-report-result__foot { display: none !important; }
   .jt-report-result { margin: 0; padding: 0; max-width: none; }
   .jt-report-result__grade { background: #fff !important; color: #000 !important; border: 2px solid #000; }
