@@ -91,6 +91,12 @@ function JTReportDisclaimer({ variant }) {
       <p>본 리포트는 공개 정보와 이용자가 입력한 사실관계를 바탕으로 제공되는 <strong>간이 참고 자료</strong>이며, 특정 거래·납세자에 대한 <strong>확정적 세무 판단이 아닙니다</strong>. 정식 검토는 반드시 유상 상담을 통해 담당 세무사가 자료 일체를 확인한 후 진행됩니다.</p>
       <p>본 리포트는 <strong>법적 효력이 없으며</strong>, 제이티 세무법인과 이용자 사이에 <strong>어떠한 위임·자문 관계나 권리·의무도 발생시키지 않습니다</strong>. 본 리포트만을 근거로 한 신고·결정·소송으로 발생한 손실에 대해 당사는 책임을 지지 않습니다.</p>
       <p>법령·예규·판례는 수시로 변경됩니다. 열람 시점 기준 최신 자료를 담당 세무사가 재확인합니다.</p>
+      {/* ⚠️ 「입력값 미저장」만 말하면 «전송»은 없는 것처럼 읽힌다. 실제로는 계산을 위해
+          외부 엔진을 호출하고, 일부 진단은 AI 를 거치며, 이용자가 동의한 경우에만 사무소로
+          전달된다. 하는 일을 그대로 적는다 (260806 Codex R4 P1). */}
+      <p><strong>입력값 처리</strong> — 입력하신 값은 <strong>계정에 저장하지 않습니다</strong>. 다만 계산을 위해
+        세액 계산 엔진(<code>jt-tax-engine</code>)으로 전송되며, 일부 진단(경정청구 가능성 등)은 AI 응답을 이용합니다.
+        담당 세무사에게 전달되는 것은 <strong>이용자가 별도로 동의한 경우</strong>뿐입니다.</p>
     </>
   );
   if (variant === 'inline') {
@@ -229,7 +235,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
           </p>
           <div className="jt-report-hero__meta reveal">
             <span>● 로그인 불필요</span>
-            <span>● 입력값은 계산에만 사용 · 미저장</span>
+            <span>● 입력값을 계정에 저장하지 않습니다</span>
             <span>● 결과로 바로 상담 연결</span>
           </div>
         </div>

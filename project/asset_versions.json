@@ -28,48 +28,48 @@
     "sha256": "f85860b7e60c3edbabdcafa64a70dd22ea98d9be54cf797d2e09dcf4ae4a5c69"
   },
   "project/src/Report.jsx": {
-    "v": "49",
-    "sha256": "29f958322ed2534f9ccd2ca31ded319d31c3d63d500bd1dc1569cbc7acb19a60"
+    "v": "50",
+    "sha256": "35974f584a8f1d0b616f068a065256f7f46b1118de279f128051ec65034160ae"
   },
   "project/src/ReportConvert.jsx": {
-    "v": "25",
-    "sha256": "2b0c46b313a81971a20dc5a3ce38b6132418f533e7079fdbe4ff82218f39bfcf"
+    "v": "26",
+    "sha256": "a4a4fc73506e1268afb41ab7a2139f0a657939f873f622d281d3fc137f04b703"
   },
   "project/src/ReportAppeal.jsx": {
-    "v": "22",
-    "sha256": "1a20b4f6da25ee1915bb1c8c2a32230253eae71fdfd0a958b749277e7651481d"
+    "v": "23",
+    "sha256": "0b2971dacce36977b9e8db1a768bc202ea2b9f11b9c51c3ee3bf342f30005a7a"
   },
   "project/src/ReportCGT.jsx": {
     "v": "36",
     "sha256": "4a3f1aea2dd9abc122e5b31f34c74c02b3e48b07603541aae3f142c9faf63f7f"
   },
   "project/src/ReportReform2026.jsx": {
-    "v": "25",
-    "sha256": "7f8723003a975b62fb11cff0fbeb1f8cef0c05bee5bd3ff2ccb02ede5131ec2c"
+    "v": "26",
+    "sha256": "aad32c8cc2c7c661266179e2002b9e3ae583b9cd44cb0090243074c5b7a95910"
   },
   "project/src/ReportCrypto2027.jsx": {
-    "v": "7",
-    "sha256": "83548876756015ea6e0dca49ae733cfd20dc5d045c67d762784cbde3f7023f08"
+    "v": "8",
+    "sha256": "031ebc5cce00f59daf639103e2872b5050e5d781eb28ab5b06a6dc55faf26e91"
   },
   "project/src/ReportIncome.jsx": {
     "v": "34",
     "sha256": "a1a951b65f1742f0351cb1b072bd7e1625c38478dd3029d91cbb16b607d89b6b"
   },
   "project/src/ReportGift.jsx": {
-    "v": "37",
-    "sha256": "c49b8101b3ff82483dd57d5d94950d1cddff4fa87e273c73fb98685b07f4346d"
+    "v": "38",
+    "sha256": "ebf33e3d5a4e44f66b7a80dcd85fecc7ec0dc3bdbbf9032d01e3e7931eef5c1c"
   },
   "project/src/ReportInheritance.jsx": {
-    "v": "13",
-    "sha256": "9b71081adee0d2a00e98bd507791b25cff655f49250d3c0a6d44a35249121773"
+    "v": "14",
+    "sha256": "58e2648e1149b5f0bcca269aa08231cd5a18ac0f153b1e5d2b376e6944e19ff8"
   },
   "project/src/ReportAcquisition.jsx": {
-    "v": "15",
-    "sha256": "0b9e4a5ab6223566d6aa2a9098a68f7d30f36a11e3cb1f90329fa7f9e2c54a9a"
+    "v": "16",
+    "sha256": "96dd1d31c428005056d217eaf40f4a4292c7392e0bcffbab880810e015c10453"
   },
   "project/src/ReportProperty.jsx": {
-    "v": "15",
-    "sha256": "c5fbee154903c2867b70a612b67031916eee73453ce2ceba2bc03ccd7549d5c6"
+    "v": "16",
+    "sha256": "877e28056fbd7dd5925fe72587cd7621488f41a36a15e95922d51c06a54103aa"
   },
   "project/src/ReportComprehensive.jsx": {
     "v": "12",

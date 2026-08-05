@@ -255,7 +255,9 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
       <div className="jt-container jt-report-loading">
         <div className="jt-report-loading__spinner" />
         <h2>분석 중입니다</h2>
-        <p>법령·예규·판례 기준으로 경정청구 가능성을 정리하고 있습니다.</p>
+        {/* ⚠️ 실제로는 법령 DB 조회나 출처 검증을 하지 않고 AI 응답만 받는다. 「법령·예규·판례
+            기준으로」라고 하면 검증된 근거가 있는 것처럼 읽힌다 (260806 Codex R4 P1). */}
+        <p>입력하신 내용을 바탕으로 경정청구 가능성을 «간이 진단»하고 있습니다.</p>
         <p className="jt-report-loading__hint">약 10~20초 소요됩니다.</p>
       </div>
     );

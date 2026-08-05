@@ -104,7 +104,8 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
               } catch (_e) { notify(COPIED); }
               // ③ 안내는 위 «응답 경로»에서 실제로 한 일에 맞춰 띄운다
             }}>
-            카톡으로 결과 전송
+            {/* 라벨은 실제 동작대로 — 카톡을 열고 결과를 복사한다. 사무소 전달은 «동의»한 경우만 */}
+            카카오톡 열기 · 결과 복사
           </a>
         </div>
       </div>
@@ -330,9 +331,13 @@ function JTConvertTimeSlots({ setRoute, urgent }) {
       padding: '36px 40px',
     }}>
       <div style={{display: 'flex', gap: 16, alignItems: 'baseline', flexWrap: 'wrap', marginBottom: 8}}>
-        <h3 style={{margin: 0}}>{urgent ? '긴급 상담 가능 시간' : '상담 가능 시간'}</h3>
+        {/* ⚠️ 이 시간표는 «하드코딩 배열»이고, 누르면 희망 시간을 세션에 담아 예약 화면으로
+            보낼 뿐 실제 잔여 슬롯을 조회하지 않는다. 종전엔 「실시간 반영」·「당일 예약 가능」
+            이라 적어 확인되지 않은 사실을 단정했다 — 세무사법 §12조의7(거짓·과장 광고)과도
+            부딪힌다 (260806 Codex R4 P1). 실제 하는 일만 말한다. */}
+        <h3 style={{margin: 0}}>{urgent ? '긴급 상담 희망 시간' : '상담 희망 시간'}</h3>
         <span style={{fontSize: 13, color: urgent ? '#d14e3a' : '#5a5a5a'}}>
-          {urgent ? '● 당일 예약 가능' : '● 실시간 반영 · 원하는 시간을 선택해 예약으로 이동'}
+          ● 원하는 시간을 고르면 예약 화면으로 넘어갑니다 · 확정은 예약 후 안내드립니다
         </span>
       </div>
       <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%, 260px),1fr))', gap: 16, marginTop: 20}}>
@@ -369,6 +374,7 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
   const [agree, setAgree] = useCvtState(false);
   const [sending, setSending] = useCvtState(false);
   const [done, setDone] = useCvtState(false);
+  const [sentOk, setSentOk] = useCvtState(false);   // 사무소 전달이 «실제로» 됐는가
 
   const canSend = email.includes('@') && agree && !sending;
 
@@ -385,11 +391,17 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
       진단요약: reportSummary || '',
       접수시각: new Date().toLocaleString('ko-KR'),
     };
+    /* ⚠️ 전송 실패를 삼키고 무조건 「접수됐다」고 말하면 안 된다. 인쇄창은 열렸어도
+       사무소에는 아무것도 안 갔을 수 있다 (260806 Codex R4 P1). 두 결과를 분리해 알린다. */
+    let sent = false;
     try {
       if (w3fKey && !w3fKey.includes('REPLACE')) {
-        await fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'}, body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, replyto: email || '', ...payload })});
+        const res = await fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'}, body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, replyto: email || '', ...payload })});
+        const data = await res.json().catch(() => ({}));
+        sent = !!(res.ok && data && data.success !== false);
       }
-    } catch(_){}
+    } catch(_){ sent = false; }
+    setSentOk(sent);
     setTimeout(() => {
       window.print();
       setDone(true);
@@ -402,10 +414,17 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
       <div style={{fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6}}>PDF SAVE</div>
       <h4 style={{fontSize: 18, marginTop: 8, marginBottom: 6}}>이 리포트를 PDF로 저장</h4>
       <p style={{fontSize: 13, opacity: 0.7, marginTop: 0, marginBottom: 16, lineHeight: 1.6}}>
-        이메일을 남기시면 브랜디드 PDF로 저장 시 자동 인쇄창이 열립니다. 스팸 발송은 없으며, 후속 정보는 30일 내 최대 1회로 제한됩니다.
+        {/* ⚠️ 「30일 내 최대 1회」는 이를 강제하는 코드가 없어 지킬 수 없는 약속이었다.
+            지킬 수 있는 것만 적는다 (260806 Codex R4 P2). */}
+        이메일을 남기시면 인쇄창이 열려 PDF로 저장하실 수 있습니다. 스팸 발송은 하지 않습니다.
       </p>
       {done ? (
-        <p style={{color: '#C7A15B', fontSize: 13, margin: 0}}>● 저장 창이 열렸습니다. 담당 세무사가 같은 사안을 검토해 회신드릴 수 있습니다.</p>
+        /* 인쇄창은 열렸어도 사무소 전달은 실패했을 수 있다 — 두 가지를 나눠 말한다 */
+        <p style={{color: '#C7A15B', fontSize: 13, margin: 0}}>
+          {sentOk
+            ? '● 저장 창이 열렸습니다. 남기신 이메일과 진단요약이 담당 세무사에게 전달되어, 같은 사안을 검토해 회신드릴 수 있습니다.'
+            : '● 저장 창이 열렸습니다. 다만 담당 세무사에게는 전달되지 않았습니다(전송 실패) — 회신이 필요하시면 카카오톡이나 전화로 연락해 주세요.'}
+        </p>
       ) : (
         <>
           <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10}}>
@@ -418,7 +437,9 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
           </div>
           <label style={{display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 12, opacity: 0.7, cursor: 'pointer'}}>
             <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} style={{marginTop: 3}}/>
-            <span>개인정보(이메일) 수집에 동의합니다. 목적: 리포트 발송 · 보유기간: 발송 후 3년</span>
+            {/* 동의문은 «실제 전송 항목»과 일치해야 한다 — 이메일 외에 진단요약도 간다 */}
+            <span>개인정보 수집·이용 및 처리위탁에 동의합니다. 수집 항목: <strong>이메일 · 진단요약</strong> ·
+              처리위탁: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로 전달 · 목적: 상담 회신 · 보유기간: 3년</span>
           </label>
         </>
       )}

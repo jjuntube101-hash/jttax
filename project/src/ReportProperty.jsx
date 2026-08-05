@@ -630,7 +630,7 @@ function JTReportProperty({ setRoute, onBack }) {
 
           {!calc.precise && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>(대략 세율 — 실제보다 다소 높게 나올 수 있어요)으로 보여드립니다. 1세대1주택 특례·세부담 상한 등 정밀 계산은 엔진 계산에서 반영됩니다 —
+              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 주택 공정시장가액비율 · 누진세율 · <strong>1세대1주택 특례세율과 특례 공정비율(43~45%)</strong> · 지방교육세.<br /><strong>반영하지 않은 것</strong>: <strong>세부담 상한</strong>(§122 — 전년도 세액을 넣으셔도 간이에서는 쓰지 않습니다) · 토지 종합·별도합산의 누진 구간 · 감면. 그래서 실제보다 높게 나올 수 있습니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
             </div>
           )}

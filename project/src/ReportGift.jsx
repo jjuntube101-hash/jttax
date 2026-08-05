@@ -636,7 +636,7 @@ function JTReportGift({ setRoute, onBack }) {
 
           {!calc.precise && !calc.engineErr && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다. <strong>세대생략(손주 증여) 할증·10년 내 사전증여 합산</strong>은 간이추정에서 누락돼 실제보다 적게 나올 수 있으니 정밀 계산을 권합니다 —
+              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 세율표 · 관계별 증여재산공제 · 입력하신 <strong>10년 내 사전증여 금액의 합산</strong> · 신고세액공제.<br /><strong>반영하지 않은 것</strong>: <strong>세대생략 할증</strong>(손주 증여) · <strong>혼인·출산 공제</strong> · 사전증여분 <strong>기납부세액공제</strong> · 비거주자 공제 배제. 그래서 실제와 다를 수 있으니 정밀 계산을 권합니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
             </div>
           )}
