@@ -14,6 +14,15 @@ const INH_BRACKETS = [
   [3_000_000_000, 0.40, 160_000_000],
   [Infinity, 0.50, 460_000_000],
 ];
+/* 자녀 수 — 「7명 이상」을 고르면 실제 인원을 쓴다. 「6명 이상」으로 뭉쳐 6을 보내면
+   배우자 법정상속분이 실제보다 커져 세액이 과소 계산된다 (260806 Codex B P1). */
+function inhChildCount(a) {
+  if (!a) return 0;
+  if (a.numChildren === 'many') return Math.max(7, Math.floor(Number(a.numChildrenExact) || 0));
+  return Number(a.numChildren) || 0;
+}
+window.jtInhChildCount = inhChildCount;
+
 function calcInhBaseTax(taxBase) {
   if (taxBase <= 0) return 0;
   for (const [limit, rate, deduct] of INH_BRACKETS) {
@@ -79,8 +88,20 @@ const INHERITANCE_QS = [
       ['3', '3명', ''],
       ['4', '4명', ''],
       ['5', '5명', ''],
-      ['6', '6명 이상', ''],
+      ['6', '6명', ''],
+      ['many', '7명 이상 — 정확한 인원 입력', '법정상속분이 인원수로 갈려 «6명 이상»으로 뭉치면 세액이 틀립니다'],
     ],
+  },
+  /* ⚠️ 종전엔 「6명 이상」을 그대로 6으로 엔진에 보내, 자녀 7명 이상이면 배우자 법정상속분이
+     실제보다 크게 잡혀 세액이 과소 계산됐다 (260806 Codex B P1). 실제 인원을 받는다. */
+  {
+    id: 'numChildrenExact',
+    section: '상속인',
+    q: '자녀가 정확히 몇 명인가요? (명)',
+    sub: '배우자 법정상속분이 자녀 수로 갈리기 때문에 정확한 인원이 필요합니다.',
+    numeric: true,
+    placeholder: '예: 7',
+    showIf: (a) => a.numChildren === 'many',
   },
 
   // ── 더 정확히 (상세) ──
@@ -223,7 +244,7 @@ function mapAnswersToInheritance(a) {
   const body = {
     estate_value: Number(a.estateValue) || 0,
     has_spouse: a.hasSpouse === 'yes',
-    num_children: Number(a.numChildren) || 0,
+    num_children: inhChildCount(a),
   };
   if (Number(a.debts) > 0) body.debts = Number(a.debts);
   if (Number(a.funeralExpenses) > 0) body.funeral_expenses = Number(a.funeralExpenses);
@@ -361,7 +382,7 @@ function JTReportInheritance({ setRoute, onBack }) {
       const estate = Number(answers.estateValue) || 0;
       // 간이 폴백: 일괄공제 5억 + 배우자 최소공제 5억 + 채무·장례 차감
       // 배우자 단독상속(자녀 0)은 일괄공제 배제 → 기초공제 2억만(상증법 §21②) — 과소추정 방지
-      const childCount = Number(answers.numChildren) || 0;
+      const childCount = inhChildCount(answers);
       const lumpSum = (answers.hasSpouse === 'yes' && childCount === 0) ? 200_000_000 : 500_000_000;
       const debts = Number(answers.debts) || 0;
       const funeral = Math.min(Math.max(Number(answers.funeralExpenses) || 0, 5_000_000), 15_000_000);
