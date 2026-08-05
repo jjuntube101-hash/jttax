@@ -143,3 +143,58 @@ node project/insights/build-insights.mjs && node project/calculators/build-calcu
 - `D:\jt-data\jt-calc`(별도 저장소)의 부동산 6종은 **이쪽보다 최신**(공시가 동·호 되묻기 수정 = 70억 오차 결함 대응). 이번엔 이식하지 않음 — www의 6종은 아직 구버전. **별도 라운드 필요.**
 - `calculators/*.html`·`insights/*.html`은 **빌드 산출물**(`project/{calculators,insights}/build-*.mjs`). 직접 고치면 다음 빌드에 날아감 — 데이터 소스를 고칠 것. 단 개편안 2p는 `custom:true`라 보존됨.
 - 개편안은 **정부안**. 국회 통과 시 수치 변동 가능 → `ReportReform2026.jsx`의 `window.JT_REFORM_2026` 블록만 고치면 전 화면 반영됨.
+
+---
+
+## ⏸ 미완 — 개별주택 2025년 합본 적재 (260805 중단, 이어서 하면 됨)
+
+**왜 하는가**: 엔진의 개별주택 DB에 **2026년치만** 실려 있어, 2026년 공시 «대상이 아닌»
+필지(멸실·용도변경 등)가 통째로 조회 실패였다. 실측 — 종로 가회동 11-42는
+2026년엔 없고 2025년에 5.24억이 있다. **신규 커버 65,840 필지(+1.7%)**.
+
+**왜 도쿄 IP 얘기가 나오나**: vworld 는 해외 IP 차단이라 fly(도쿄)에서 실시간 조회가 막힌다.
+그래서 로컬 SQLite 가 1순위다. ⛔ **fly 에 한국 리전은 없다** — 실측 확인:
+아시아·태평양 = 뭄바이(bom)·싱가포르(sin)·시드니(syd)·도쿄(nrt) 뿐. 리전 이전은 «불가».
+
+### 이미 끝난 것
+- `D:/jt-data/공시가격벌크/house_price_2025.sqlite` (386만행, 319MB) — 원본 ZIP `20250810` 로 생성
+- `D:/jt-data/공시가격벌크/house_price.sqlite` (**합본 771만행, 693MB**, integrity ok)
+- **동작 검증 완료(코드 변경 0)**: `query_house` 가 `year=(SELECT MAX(year) ... WHERE pnu=?)`
+  로 «집집마다 최신 연도»를 보므로, 2026 있는 집은 2026 유지 / 없는 집만 2025 로 떨어진다.
+    가회동 11-42 → 2025년 524,000,000  ·  성북 62-18 → 2026년 469,000,000
+- `jt-taxlab/services/tax-engine/fly.toml` 의 `HOUSE_PRICE_DB` 를
+  `/data/house_price.sqlite` 로 **로컬 편집만 해 둠 (배포 안 함)**
+
+### 남은 것 — 업로드가 두 번 끊겼다
+```
+1회차: 693MB 통짜 → 39MB 에서 중단(느림, 90분 예상)
+2회차: 319MB(2025분만) → "connection lost (72,318,976 bytes written)"
+```
+⚠️ **`flyctl ssh sftp put` 은 대용량에서 끊긴다. exit code 0 이어도 실패한다** —
+반드시 `ls -la /data` 로 **크기를 눈으로 대조**할 것.
+⚠️ Git Bash 에서는 `MSYS_NO_PATHCONV=1` 필수. 안 하면 원격 `/data/...` 가
+`C:/Program Files/Git/data/...` 로 바뀌어 조용히 실패한다(1회차에 실제로 당함).
+
+**권장 경로 — 서버에서 만들기**(업로드 총량 절반, 재개 가능):
+1. `/data/house_price_2025.sqlite` 업로드 (319MB). 끊기면 이어서 재시도 후 크기 대조
+2. 서버에서 병합 — 2026 원본은 남겨 둔다:
+   `cp /data/house_price_2026.sqlite /data/house_price.sqlite`
+   `python3 -c "import sqlite3;c=sqlite3.connect('/data/house_price.sqlite');c.execute(\"ATTACH '/data/house_price_2025.sqlite' AS y\");c.execute('INSERT INTO house_price SELECT * FROM y.house_price');c.commit()"`
+3. `PRAGMA integrity_check` + 행수 7,717,823 확인 → `rm /data/house_price_2025.sqlite`
+4. `flyctl deploy` (fly.toml 변경 반영) → 라이브 재확인
+
+**정리 필요**: 볼륨에 2회차 부분 파일 `/data/house_price_2025.sqlite` (72MB) 가 남아 있다.
+**라이브 엔진은 무손상** — 배포를 안 했으므로 여전히 `house_price_2026.sqlite` 를 본다.
+
+## 🔎 별건 — 건축물대장 래퍼가 «데이터 없음»으로 위장 중 (260805 발견, 미수정)
+
+`jt_realestate/building_info.py` 가 **XML 만 파싱**하는데 data.go.kr 이 응답 기본값을
+**JSON 으로 바꿨다.** 파싱 실패가 빈 리스트가 되어 "해당 조건의 건축물대장 정보가 없습니다"
+로 나간다 — 강남파이낸스센터도 «없음»이 떴다. API 는 멀쩡하다(직접 호출 실증):
+```
+GET .../BldRgstHubService/getBrTitleInfo?sigunguCd=11680&bjdongCd=10100&bun=0737&ji=0000
+→ 200, platArea(대지면적) 13,156.7 / totArea(연면적) 212,615.29
+```
+고치면 **토지 자동계산(개별공시지가 × 대지면적)** 이 열린다. data.go.kr 은 IP 차단이
+없어 도쿄에서도 되고, 키(`DATA_GO_KR_KEY`)도 이미 배포돼 있다. 벌크 수집 불필요 —
+주소당 API 1회. 단 **건물 있는 필지만** 되고, 나대지는 토지대장 쪽 별도 API 가 필요하다.
