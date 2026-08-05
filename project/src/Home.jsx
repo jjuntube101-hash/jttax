@@ -139,7 +139,7 @@ function JTReportHome({ setRoute }) {
         </ol>
         <div className="jt-platform__cta reveal" data-delay="4">
           <button className="jt-btn jt-btn--primary" onClick={() => setRoute('report')}>계산기 보러가기 <span className="jt-arrow">→</span></button>
-          <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link jt-platform__link" onClick={() => { window.jtTrackCta('booking', 'home_report'); setRoute('booking'); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.jtTrackCta('booking', 'home_report'); setRoute('booking'); } }}>먼저 상담부터 →</a>
+          <a className="jt-link jt-platform__link" onClick={() => { window.jtTrackCta('booking', 'home_report'); setRoute('booking'); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.jtTrackCta('booking', 'home_report'); setRoute('booking'); } }}>먼저 상담부터 →</a>
         </div>
       </div>
     </section>);
