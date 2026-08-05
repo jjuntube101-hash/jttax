@@ -598,18 +598,41 @@ function RfCrossLinks({ setSubRoute, exclude }) {
      · 「상계1동」·「목1동」 — 행정동. 숫자는 있지만 **앞이 한글**이다
    그래서 동·호 앞은 «문장 시작·공백·쉼표·괄호»여야 하고, 뒤에 한글이 붙으면 안 된다
    (「1호선」의 '선'). 잡아낸 앞 글자는 그대로 되돌려 붙여 주소를 훼손하지 않는다. */
+/* 전각 문자를 «패턴에» 직접 넣는다.
+   ⚠️ 주소 전체에 NFKC 를 걸면 안 된다 (Codex R18 P2). NFKC 는 단위·기호까지 바꿔
+      아파트명 「자이Ⅱ」→「자이II」, 「84㎡」→「84m2」, 「㈜」→「(주)」 가 되어
+      엔진에 **원문과 다른 주소**를 보내게 된다. 정규화는 «뽑아낸 동·호 토큰»에만 건다. */
+const RF_D = '0-9０-９';                       // 숫자 (반각+전각)
+const RF_L = 'A-Za-zＡ-Ｚａ-ｚ';       // 영문 (반각+전각)
+/* 동·호 토큰: 「101」「101-1」「A101」「B」 — 문자만 있는 동(B동·C동)도 실데이터에 있다 (R18 P2) */
+const RF_UNIT = '((?:[' + RF_L + '][' + RF_D + ']*|[' + RF_D + ']+)(?:-[' + RF_D + ']+)?)';
+const rfUnitRe = (tail) => new RegExp(
+  '(^|[\\s,(（])(?:제\\s*)?' + RF_UNIT + '\\s*' + tail + '(?![가-힣])'
+);
+
 function rfSplitUnit(raw) {
   let addr = String(raw || '');
   const pick = (re) => {
     const m = addr.match(re);
     if (!m) return '';
     addr = addr.slice(0, m.index) + m[1] + ' ' + addr.slice(m.index + m[0].length);
-    return m[2];
+    /* 토큰만 반각·대문자로 눕힌다. 주소 본문은 원문 그대로 남는다. */
+    return m[2].normalize('NFKC').toUpperCase();
   };
-  const dong = pick(/(^|[\s,(])(?:제\s*)?([A-Za-z]?\d+(?:-\d+)?)\s*동(?![가-힣])/);
-  const ho = pick(/(^|[\s,(])(?:제\s*)?([A-Za-z]?\d+(?:-\d+)?)\s*호(?![가-힣])/);
-  /* 「정릉로 305(101동 601호)」처럼 괄호 안이 통째로 빠지면 빈 괄호가 남는다 (Codex R16 P3) */
-  addr = addr.replace(/\(\s*\)/g, ' ').replace(/[,\s]+/g, ' ').replace(/[,\s]+$/, '').trim();
+  const dong = pick(rfUnitRe('동'));
+  const ho = pick(rfUnitRe('호'));
+  /* 「정릉로 305(101동 601호)」처럼 괄호 안이 통째로 빠지면 빈 괄호가 남는다 (Codex R16 P3).
+     쉼표만 남는 경우「(101동, 601호)」와 중첩「((101동))」까지 걷어낸다 (R17 P3).
+     길이가 매번 줄어드니 반복은 반드시 끝난다. 「(길음뉴타운)」처럼 내용이 남은
+     괄호는 건드리지 않는다 — 단지명은 주소의 일부다. */
+  let prev;
+  do { prev = addr; addr = addr.replace(/[(（][\s,]*[)）]/g, ' '); } while (addr !== prev);
+  /* 「정릉로 305((101동 601호)」처럼 짝이 안 맞으면 고아 괄호가 남아 엔진에 그대로 간다 (R18 P3).
+     짝이 «맞지 않을 때만» 괄호를 전부 턴다 — 균형 잡힌 「(길음뉴타운)」은 그대로 살린다. */
+  const nOpen = (addr.match(/[(（]/g) || []).length;
+  const nClose = (addr.match(/[)）]/g) || []).length;
+  if (nOpen !== nClose) addr = addr.replace(/[(（)）]/g, ' ');
+  addr = addr.replace(/[,\s]+/g, ' ').replace(/[,\s]+$/, '').trim();
   return { addr, dong, ho };
 }
 
@@ -621,6 +644,9 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
   const [ask, setAsk] = useRfState(null);        // { complex, unitCount, priceMin, priceMax, baseAddr }
   const [dong, setDong] = useRfState('');
   const [ho, setHo] = useRfState('');
+  /* 엔진이 «표기가 다른» 세대를 찾아 준 경우(loose) — 확인 전에는 목록에 넣지 않는다 (Codex R18 P1).
+     예: 102동을 물었는데 103동이 돌아오면, 그대로 넣을 경우 「102동」 라벨로 옆집 금액이 확정된다. */
+  const [pending, setPending] = useRfState(null); // { amount, year, asked, matched, base }
   const list = picks || [];
 
   const runWith = async (rawAddr, unit) => {
@@ -655,8 +681,31 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
         return;
       }
 
+      /* 동·호를 줬는데 그 세대가 단지에 없는 경우 (Codex R17 P2 — 실측 응답 확인).
+         엔진이 「입력하신 동·호를 이 단지에서 찾지 못했습니다(총 860세대)」 처럼
+         구체적으로 알려 주는데, 종전엔 이걸 버리고 "상가·오피스텔 등" 이라는
+         엉뚱한 일반 안내를 띄웠다. 오타를 고칠 수 있게 입력칸도 열어 둔다. */
+      if (r && r.status === 'unit_not_found' && mode !== 'region') {
+        setInfo({ ok: false, msg: r.note || '입력하신 동·호를 이 단지에서 찾지 못했습니다. 다시 확인해 주세요.' });
+        if (!ask) setAsk({ complex: '', unitCount: 0, priceMin: 0, priceMax: 0, baseAddr: base });
+        setDong(u.dong || ''); setHo(u.ho || '');
+        return;
+      }
+
       setAsk(null);
       if (r && r.amount > 0) {
+        /* ★ loose = 엔진이 «표기가 다른» 세대를 찾은 것이다. 확인 없이 넣으면
+           「102동」이라 물었는데 103동 금액이 102동 라벨로 확정된다 (Codex R18 P1).
+           목록에 넣지 않고 보류해, 찾은 세대를 보여 주고 사용자 승인을 받는다. */
+        if (r.loose && onAdd) {
+          setPending({
+            amount: Number(r.amount), year: r.year || '', base,
+            asked: r.asked || { dong: u.dong || '', ho: u.ho || '' },
+            matched: r.matched || {},
+          });
+          setInfo(null);
+          return;
+        }
         /* .trim() 을 템플릿 «전체»에 걸면 앞 공백까지 먹어 「정릉로 305102동」이 된다 (260805) */
         const unitLabel = ((u.dong ? u.dong + '동 ' : '') + (u.ho ? u.ho + '호' : '')).trim();
         const label = base + (unitLabel ? ' ' + unitLabel : '');
@@ -684,6 +733,23 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
     if (!dong.trim() && !ho.trim()) return;
     runWith(ask.baseAddr, { dong: dong.trim(), ho: ho.trim() });
   };
+  /* loose 결과 승인 — 라벨은 «찾은 세대» 기준으로 남긴다. 물어본 값으로 남기면
+     나중에 목록만 봐서는 옆집 금액인지 알 수 없다 (Codex R18 P1). */
+  const acceptPending = () => {
+    const m = pending.matched || {};
+    const unit = ((m.dong ? m.dong + '동 ' : '') + (m.ho ? m.ho + '호' : '')).trim();
+    const label = (m.complex ? m.complex + ' ' : '') + (unit || pending.base);
+    if (onAdd) onAdd({ label, amount: pending.amount, year: pending.year });
+    setPending(null); setAddr(''); setDong(''); setHo('');
+    setInfo({ ok: true, msg: (pending.year ? pending.year + '년 ' : '') + '공시가격 '
+      + rfWon(pending.amount) + '을 넣었어요.'
+      + (mode === 'priceAdd' ? ' 주택이 여러 채면 다음 주소를 이어서 조회하세요.' : '') });
+  };
+  const rejectPending = () => {
+    setPending(null);
+    setInfo({ ok: false, msg: '넣지 않았습니다. 동·호를 다시 확인해 조회하시거나, 금액을 직접 넣어 주세요.' });
+  };
+  const rfUnitText = (o) => ((o && o.dong ? o.dong + '동 ' : '') + (o && o.ho ? o.ho + '호' : '')).trim() || '(동·호 없음)';
 
   return (
     <div style={{ border: '1px solid #dcd8d0', borderRadius: 10, padding: '13px 15px', background: '#fbfaf8', marginBottom: 16 }}>
@@ -695,7 +761,7 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
           type="text" value={addr}
           onChange={(e) => {
             if (busy) { if (bumpEpoch) bumpEpoch(); setBusy(false); }
-            setInfo(null); setAsk(null); setAddr(e.target.value);
+            setInfo(null); setAsk(null); setPending(null); setAddr(e.target.value);
           }}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); run(); } }}
           placeholder="예: 정릉로 305, 102동 601호 (동·호까지 쓰면 바로 찾습니다)"
@@ -706,6 +772,29 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
           {busy ? '조회 중…' : '조회'}
         </button>
       </div>
+
+      {/* 표기가 다른 세대를 찾은 경우 — 넣기 전에 «내 집이 맞는지» 확인받는다 */}
+      {pending && (
+        <div style={{ marginTop: 11, border: '1px solid #e5c98a', background: '#FFF8EC', borderRadius: 9, padding: '12px 14px' }}>
+          <div style={{ fontSize: 13.5, lineHeight: 1.7, color: '#6b5320', marginBottom: 10 }}>
+            ⚠️ 입력하신 <strong>{rfUnitText(pending.asked)}</strong> 와 표기가 조금 다른 세대를 찾았습니다.
+            <div style={{ marginTop: 7, background: '#fff', border: '1px solid #e5e1d9', borderRadius: 7, padding: '9px 11px' }}>
+              찾은 세대 — <strong>{pending.matched.complex || ''} {rfUnitText(pending.matched)}</strong>
+              {pending.matched.area ? ` · 전용 ${pending.matched.area}㎡` : ''}
+              <div style={{ marginTop: 3 }}>공시가격 <strong>{rfWon(pending.amount)}</strong>{pending.year ? ` (${pending.year}년)` : ''}</div>
+            </div>
+            <div style={{ marginTop: 7 }}>이 집이 <strong>내 집이 맞습니까?</strong> 맞을 때만 넣어 드립니다.</div>
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button className="jt-btn jt-btn--primary" onClick={acceptPending}
+              style={{ flex: '0 0 auto', padding: '10px 16px' }}>맞습니다 — 이 금액 넣기</button>
+            <button onClick={rejectPending}
+              style={{ flex: '0 0 auto', padding: '10px 16px', border: '1px solid #dcd8d0', background: '#fff', borderRadius: 8, cursor: 'pointer', font: 'inherit' }}>
+              아닙니다
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 세대가 여럿 — 동·호를 되묻는다 */}
       {ask && (
