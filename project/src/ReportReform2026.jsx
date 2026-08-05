@@ -640,7 +640,12 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <input
           type="text" value={addr}
-          onChange={(e) => { setInfo(null); setAddr(e.target.value); }}
+          /* ⚠️ 조회 중 주소를 고치면 그 요청을 «취소»한 것으로 본다.
+             안 그러면 사용자가 주소를 바꿔도 앞선 응답이 목록에 들어간다 (260805 Codex R8 P1). */
+          onChange={(e) => {
+            if (busy) { if (bumpEpoch) bumpEpoch(); setBusy(false); }
+            setInfo(null); setAddr(e.target.value);
+          }}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); run(); } }}
           placeholder="예: 서울 강남구 도곡동 467"
           style={{ flex: '1 1 220px', minWidth: 0, padding: '11px 13px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }}
@@ -735,17 +740,12 @@ function RfQuestion({ q, value, onChange, onChangeRaw, picks, onAdd, onRemove, b
    기존 계산기(ReportCGT·ReportProperty 등)와 진행 방식을 통일한다.
    종전에는 전 문항을 한 화면에 쌓아 보여 줘 길이가 부담스러웠다 (260805 교체).
    ══════════════════════════════════════════════════════════════════════════ */
-function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, tag, title, subtitle, notice, getPicks, setPicksFor }) {
+function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, tag, title, subtitle, notice, getPicks, setPicksFor, bumpEpoch, getEpoch }) {
   const [idx, setIdx] = useRfState(0);
-  /* 문항별 «에폭» — 조회 시작·수동 입력 때마다 증가. 늦은 응답 차단의 유일한 기준. */
-  const epochs = React.useRef({});
   /* ⚠️ 「자동입력분인가」는 «값»이 아니라 «누가 넣었는가»로 판정해야 한다.
      값으로 기억하면 사용자가 우연히 같은 금액을 직접 넣었을 때도 자동값으로 오인해
      지워 버린다 (260805 Codex R3 P2). 자동입력된 문항 id 를 집합으로 들고 다니고,
      사용자가 그 칸을 직접 고치는 순간 해제한다. */
-  const bumpEpoch = (id) => { epochs.current[id] = (epochs.current[id] || 0) + 1; return epochs.current[id]; };
-  const getEpoch = (id) => (epochs.current[id] || 0);
-
   const onChangeTracked = (id, v) => {
     /* 사용자가 직접 고치면 진행 중 조회를 무효화하고, 조회 목록도 버린다
        (목록에서 파생한 합계와 손으로 넣은 값이 뒤섞이면 되돌릴 수 없다). */
@@ -864,6 +864,12 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
      비고 answers 의 합계는 남아, 이후 조회가 «대체»처럼 동작한다 (260805 Codex R7 P1).
      ref 로 들고 다니는 이유는 조회 콜백이 «항상 현재값»을 봐야 하기 때문(stale closure 방지). */
   const picksRef = React.useRef({});
+  /* 에폭도 «여기» 둔다. 위저드에 두면 결과 화면을 오갈 때 초기화돼, 이전 세션의
+     늦은 응답이 새 세션 값을 덮는다 (260805 Codex R8 P1).
+     목록·에폭을 한 소유자에 묶어 단일 상태원으로 만든다. */
+  const epochsRef = React.useRef({});
+  const bumpEpoch = (id) => { epochsRef.current[id] = (epochsRef.current[id] || 0) + 1; return epochsRef.current[id]; };
+  const getEpoch = (id) => (epochsRef.current[id] || 0);
   const [, rfBump] = useRfState(0);
   const getPicks = (id) => (picksRef.current[id] || []);
   const setPicksFor = (id, arr) => {
@@ -901,6 +907,7 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
         notice={<RfNotice />}
         questions={RF_CGT_QS} answers={answers} onChange={onChange} onSubmit={run}
         getPicks={getPicks} setPicksFor={setPicksFor}
+        bumpEpoch={bumpEpoch} getEpoch={getEpoch}
         ctaLabel="연도별 양도세 비교하기" />
     );
   }
@@ -1044,6 +1051,12 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
      비고 answers 의 합계는 남아, 이후 조회가 «대체»처럼 동작한다 (260805 Codex R7 P1).
      ref 로 들고 다니는 이유는 조회 콜백이 «항상 현재값»을 봐야 하기 때문(stale closure 방지). */
   const picksRef = React.useRef({});
+  /* 에폭도 «여기» 둔다. 위저드에 두면 결과 화면을 오갈 때 초기화돼, 이전 세션의
+     늦은 응답이 새 세션 값을 덮는다 (260805 Codex R8 P1).
+     목록·에폭을 한 소유자에 묶어 단일 상태원으로 만든다. */
+  const epochsRef = React.useRef({});
+  const bumpEpoch = (id) => { epochsRef.current[id] = (epochsRef.current[id] || 0) + 1; return epochsRef.current[id]; };
+  const getEpoch = (id) => (epochsRef.current[id] || 0);
   const [, rfBump] = useRfState(0);
   const getPicks = (id) => (picksRef.current[id] || []);
   const setPicksFor = (id, arr) => {
@@ -1080,6 +1093,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
         notice={<RfNotice />}
         questions={RF_CRE_QS} answers={answers} onChange={onChange} onSubmit={run}
         getPicks={getPicks} setPicksFor={setPicksFor}
+        bumpEpoch={bumpEpoch} getEpoch={getEpoch}
         ctaLabel="연도별 종부세 비교하기" />
     );
   }
