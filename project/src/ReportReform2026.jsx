@@ -628,10 +628,15 @@ function rfSplitUnit(raw) {
   let prev;
   do { prev = addr; addr = addr.replace(/[(（][\s,]*[)）]/g, ' '); } while (addr !== prev);
   /* 「정릉로 305((101동 601호)」처럼 짝이 안 맞으면 고아 괄호가 남아 엔진에 그대로 간다 (R18 P3).
-     짝이 «맞지 않을 때만» 괄호를 전부 턴다 — 균형 잡힌 「(길음뉴타운)」은 그대로 살린다. */
-  const nOpen = (addr.match(/[(（]/g) || []).length;
-  const nClose = (addr.match(/[)）]/g) || []).length;
-  if (nOpen !== nClose) addr = addr.replace(/[(（)）]/g, ' ');
+     짝이 «맞지 않을 때만» 괄호를 전부 턴다 — 균형 잡힌 「(길음뉴타운)」은 그대로 살린다.
+     ⚠️ «개수»만 세면 「305) 101동 (」처럼 순서가 뒤집힌 것을 놓친다 (R19 P2).
+        왼쪽부터 깊이를 세어, 음수로 내려가거나 끝에 0이 아니면 전부 턴다. */
+  let depth = 0, broken = false;
+  for (const ch of addr) {
+    if (ch === '(' || ch === '（') depth++;
+    else if (ch === ')' || ch === '）') { depth--; if (depth < 0) { broken = true; break; } }
+  }
+  if (broken || depth !== 0) addr = addr.replace(/[(（)）]/g, ' ');
   addr = addr.replace(/[,\s]+/g, ' ').replace(/[,\s]+$/, '').trim();
   return { addr, dong, ho };
 }
@@ -654,6 +659,10 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
     const base = parsed.addr || String(rawAddr || '').trim();
     const u = { dong: (unit && unit.dong) || parsed.dong, ho: (unit && unit.ho) || parsed.ho };
     if (!base || busy) return;
+    /* 새 조회를 시작하면 «직전 보류»는 버린다 (Codex R19 P1).
+       안 버리면 확인창을 띄운 채 다시 조회 → 새 결과가 들어간 뒤에도
+       옛 확인창이 남아 승인하면 «두 채»가 되어 합계가 부풀었다. */
+    setPending(null);
     const ep = bumpEpoch ? bumpEpoch() : 0;
     setBusy(true); setInfo(null);
     const stale = () => (getEpoch ? getEpoch() !== ep : false);
@@ -697,6 +706,13 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
         /* ★ loose = 엔진이 «표기가 다른» 세대를 찾은 것이다. 확인 없이 넣으면
            「102동」이라 물었는데 103동 금액이 102동 라벨로 확정된다 (Codex R18 P1).
            목록에 넣지 않고 보류해, 찾은 세대를 보여 주고 사용자 승인을 받는다. */
+        /* 찾은 세대가 «무엇인지» 알 수 없으면 승인을 물을 수 없다 (Codex R19 P2).
+           목록에 「정릉로 305」로만 남으면 나중에 어느 집 금액인지 분간이 안 된다. */
+        if (r.loose && onAdd && !((r.matched || {}).dong || (r.matched || {}).ho)) {
+          setInfo({ ok: false, msg: '비슷한 세대를 찾았지만 어느 동·호인지 확인되지 않아 넣지 않았습니다. '
+            + '동·호를 다시 넣어 조회하시거나, 금액을 직접 넣어 주세요.' });
+          return;
+        }
         if (r.loose && onAdd) {
           setPending({
             amount: Number(r.amount), year: r.year || '', base,
