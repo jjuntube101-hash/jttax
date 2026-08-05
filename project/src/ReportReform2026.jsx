@@ -608,7 +608,8 @@ function rfSplitUnit(raw) {
   };
   const dong = pick(/(^|[\s,(])(?:제\s*)?([A-Za-z]?\d+(?:-\d+)?)\s*동(?![가-힣])/);
   const ho = pick(/(^|[\s,(])(?:제\s*)?([A-Za-z]?\d+(?:-\d+)?)\s*호(?![가-힣])/);
-  addr = addr.replace(/[,\s]+/g, ' ').replace(/[,\s]+$/, '').trim();
+  /* 「정릉로 305(101동 601호)」처럼 괄호 안이 통째로 빠지면 빈 괄호가 남는다 (Codex R16 P3) */
+  addr = addr.replace(/\(\s*\)/g, ' ').replace(/[,\s]+/g, ' ').replace(/[,\s]+$/, '').trim();
   return { addr, dong, ho };
 }
 
