@@ -564,7 +564,7 @@ function RfCrossLinks({ setSubRoute, exclude }) {
    (ReportProperty.jsx 가 전역에 정의 — index.html 로드 순서상 항상 먼저 올라온다)
    ⚠️ 대단지는 동·호에 따라 공시가격이 크게 다르다 — 결과에 확인 안내를 붙인다.
    ══════════════════════════════════════════════════════════════════════════ */
-function RfAddrLookup({ mode, onPrice, onRegion }) {
+function RfAddrLookup({ mode, onPrice, onRegion, isAuto }) {
   const [addr, setAddr] = useRfState('');
   const [busy, setBusy] = useRfState(false);
   const [info, setInfo] = useRfState(null);
@@ -574,7 +574,6 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
         무효화하고 busy 를 풀어야 새 조회가 막히지 않는다. 그리고 needs_unit 일 때
         지우는 건 «이 컴포넌트가 자동으로 넣은 값»뿐이다(수동 입력분은 보존). */
   const seq = React.useRef(0);
-  const autoFilled = React.useRef(null);   // 마지막으로 «자동 입력»한 값
 
   const changeAddr = (v) => {
     if (busy) { seq.current += 1; setBusy(false); }   // 진행 중 요청 무효화
@@ -601,8 +600,9 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
         if (r.region && onRegion) onRegion(r.region);
         const n = Number(r.unitCount) || 0;
         const lo = Number(r.priceMin) || 0, hi = Number(r.priceMax) || 0;
-        /* 자동으로 넣었던 값만 지운다 — 사용자가 직접 넣은 금액은 건드리지 않는다 */
-        if (onPrice && autoFilled.current != null) { onPrice(''); autoFilled.current = null; }
+        /* 자동으로 넣었던 값만 지운다 — 사용자가 «직접» 넣은 금액은 건드리지 않는다.
+           판정은 위저드가 들고 있는 isAuto(누가 넣었는가)로 한다. */
+        if (onPrice && isAuto) onPrice('');
         setInfo({ ok: false, msg:
           (r.complex ? r.complex + ' — ' : '') + '이 주소에는 ' + (n ? n.toLocaleString('ko-KR') + '세대' : '세대가 여럿') + '가 있어 어느 집인지 특정할 수 없습니다.'
           + (lo && hi ? ' 단지 내 공시가격이 ' + rfEok(lo) + ' ~ ' + rfEok(hi) + '으로 갈리니' : ' 세대마다 공시가격이 달라서')
@@ -612,7 +612,7 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
       const reg = r && r.region;
       if (reg && onRegion) onRegion(reg);
       if (r && r.amount > 0 && onPrice) {
-        onPrice(r.amount); autoFilled.current = String(r.amount);
+        onPrice(r.amount);
         setInfo({ ok: true, msg: (r.year ? r.year + '년 ' : '') + '공시가격 ' + rfWon(r.amount) + '을 넣었어요.'
           + (reg ? ' (' + (reg.is_adjusted_area ? '조정대상지역' : '조정대상지역 아님') + ')' : '')
           + ' ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.' });
@@ -653,7 +653,7 @@ function RfAddrLookup({ mode, onPrice, onRegion }) {
 }
 
 /* 질문 렌더 (숫자 / 선택 / 주소조회) */
-function RfQuestion({ q, value, onChange }) {
+function RfQuestion({ q, value, onChange, isAuto }) {
   return (
     <div className="jt-report-q">
       <div className="jt-report-q__section">{q.section}</div>
@@ -662,7 +662,8 @@ function RfQuestion({ q, value, onChange }) {
       {q.addr && (
         <RfAddrLookup
           mode={q.addr}
-          onPrice={q.addr === 'price' ? function (amt) { onChange(q.id, amt === '' ? '' : String(amt)); } : null}
+          isAuto={isAuto}
+          onPrice={q.addr === 'price' ? function (amt) { onChange(q.id, amt === '' ? '' : String(amt), { auto: true }); } : null}
           onRegion={q.regionTo ? function (reg) { onChange(q.regionTo, reg.is_adjusted_area ? 'yes' : 'no'); } : null}
         />
       )}
@@ -712,6 +713,16 @@ function RfQuestion({ q, value, onChange }) {
    ══════════════════════════════════════════════════════════════════════════ */
 function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, tag, title, subtitle, notice }) {
   const [idx, setIdx] = useRfState(0);
+  /* ⚠️ 「자동입력분인가」는 «값»이 아니라 «누가 넣었는가»로 판정해야 한다.
+     값으로 기억하면 사용자가 우연히 같은 금액을 직접 넣었을 때도 자동값으로 오인해
+     지워 버린다 (260805 Codex R3 P2). 자동입력된 문항 id 를 집합으로 들고 다니고,
+     사용자가 그 칸을 직접 고치는 순간 해제한다. */
+  const autoIds = React.useRef({});
+  const onChangeTracked = (id, v, opt) => {
+    if (opt && opt.auto) autoIds.current[id] = true;
+    else delete autoIds.current[id];
+    onChange(id, v);
+  };
   const visible = questions.filter((q) => !q.showIf || q.showIf(answers));
   const total = Math.max(1, visible.length);
   const pos = Math.min(idx, total - 1);
@@ -742,7 +753,7 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
         {notice}
         <div className="jt-report-calc"
           onKeyDown={(e) => { if (e.key === 'Enter' && !stepErr) { e.preventDefault(); if (last) onSubmit(); else go(1); } }}>
-          {cur && <RfQuestion q={cur} value={answers[cur.id]} onChange={onChange} />}
+          {cur && <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked} isAuto={!!autoIds.current[cur.id]} />}
           {stepErr && <p style={{ color: '#b3261e', fontSize: 13.5, margin: '12px 0 0' }}>{stepErr}</p>}
           <div className="jt-report-q__nav" style={{ display: 'flex', gap: 10, marginTop: 24, flexWrap: 'wrap' }}>
             {pos > 0 && (

@@ -215,6 +215,14 @@ function useSeoMeta(route) {
       setMeta('og:description', desc, 'property');
       const hashPath = (window.JTRouter ? window.JTRouter.build(key, sub) : (key === 'home' ? '#/' : '#/' + key));
       setMeta('og:url', `${seo.siteUrl}/${hashPath === '#/' ? '' : hashPath}`, 'property');
+      /* ⚠️ canonical 을 홈에 고정해 두면 모든 해시 화면이 «홈의 중복본»으로 신호된다.
+         해시 화면은 색인 대상이 아니고(색인은 /calculators/*.html 정적 랜딩이 맡는다),
+         그렇다고 홈을 가리키면 오신호다 → 화면별 URL 로 갱신 (260805 Codex R3 P2). */
+      try {
+        let can = document.querySelector('link[rel="canonical"]');
+        if (!can) { can = document.createElement('link'); can.setAttribute('rel', 'canonical'); document.head.appendChild(can); }
+        can.setAttribute('href', `${seo.siteUrl}/${hashPath === '#/' ? '' : hashPath}`);
+      } catch (e) {}
       setMeta('twitter:title', title);
       setMeta('twitter:description', desc);
       // GA4 page_view — 계산기 단위 측정(/report/cgt). path가 바뀔 때만 1회(중복 발화 방지).

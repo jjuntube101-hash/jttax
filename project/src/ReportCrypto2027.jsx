@@ -58,29 +58,41 @@ window.JT_CRYPTO_2027 = {
 };
 
 /* ══════════ 계산 엔진 ══════════ */
+/* ⚠️ 의제취득가액(§37⑤)은 «가상자산별»로 적용한다.
+   종전엔 매도·취득·2026말시가를 «합계 3필드»로 받아 max(합계, 합계)를 한 번만 계산했다.
+   그러면 종목마다 유불리가 반대인 경우 필요경비가 통째로 어긋난다 — 260805 Codex R3 P1:
+     A: 매도 1.5억 / 실제취득 100만 / 2026말 1억   → 의제 1억
+     B: 매도 1.5억 / 실제취득 1억   / 2026말 100만 → 의제 1억(실제취득)
+     자산별 필요경비 2억 · 소득 1억 · 세액 21,450,000
+     합계방식  필요경비 1.01억 · 소득 1.99억 · 세액 43,230,000  (2,178만원 과다)
+   → 종목별 행(rows)으로 받아 «행마다» max(실제취득, 2026말시가)를 적용하고 합산한다.
+      2026년 이전 보유분과 이후 취득분이 섞이는 경우도 행마다 heldBefore 를 둬 표현한다. */
 function crCalc(input) {
   const C = window.JT_CRYPTO_2027;
-  const sale = crNum(input.salePrice);          // 매도(양도) 금액
-  const acq = crNum(input.acqPrice);            // 실제 취득가액
-  const mkt2026 = crNum(input.marketAt2026);    // 2026.12.31 시가
-  const fee = crNum(input.fee);                 // 부대비용(수수료)
-  /* ⚠️ 종전엔 «그 해 전체 합계»를 받으면서 otherLoss 를 또 뺐다 → 손실 이중 차감.
-     (이익 2,000만/취득 1,000만 + 손실 100만/취득 400만 을 안내대로 합쳐 넣으면
-      실제 소득 700만인데 400만으로 계산돼 세액이 66만원 과소 — 260805 Codex R2 P1)
-     → 손실 거래도 매도액·취득가액 «합계»에 포함하는 것으로 일원화하고 별도 항목은 없앤다. */
-  const loss = 0;
-  const heldBefore = input.heldBefore !== 'no'; // 2026년 말 이전부터 보유 중인가
+  const rows = (Array.isArray(input.rows) ? input.rows : []).filter(
+    (r) => r && (crNum(r.sale) > 0 || crNum(r.acq) > 0)
+  );
 
-  /* ① 필요경비 — §37①3호 + §37⑤(의제취득가액) */
-  const deemedApplies = heldBefore && mkt2026 > acq;
-  const baseCost = heldBefore ? Math.max(acq, mkt2026) : acq;
-  const expense = baseCost + fee;
+  let sale = 0, expense = 0, shielded = 0, deemedApplies = false;
+  const lines = rows.map((r, i) => {
+    const s = crNum(r.sale), a = crNum(r.acq), m = crNum(r.mkt2026), f = crNum(r.fee);
+    const held = r.heldBefore !== 'no';                 // 2026년 말 이전부터 보유했나
+    const useDeemed = held && m > a;                    // 의제취득가액이 «유리하게» 작동하나
+    const cost = held ? Math.max(a, m) : a;             // §37⑤ — 큰 금액
+    sale += s; expense += cost + f;
+    if (useDeemed) { shielded += (m - a); deemedApplies = true; }
+    return {
+      idx: i + 1, name: (r.name || '').trim() || `코인 ${i + 1}`,
+      sale: s, acq: a, mkt2026: m, fee: f, held, useDeemed,
+      baseCost: cost, gain: s - cost - f,
+    };
+  });
 
-  /* ② 가상자산소득금액 (연간 통산 — §84 3호가 «해당 과세기간의» 소득금액을 기준으로 함) */
-  const rawIncome = sale - expense;
-  const income = rawIncome - loss;
+  /* ② 가상자산소득금액 — 그 해 전체 합산(§84 3호 «해당 과세기간의»).
+     행별 손실은 합산 과정에서 자연히 상계된다(별도 손실 항목을 두면 이중 차감). */
+  const income = sale - expense;
 
-  /* ③ 과세최저한 §84 3호 — 연간 소득금액 250만원 이하면 과세 안 함 */
+  /* ③ 과세최저한 §84 3호 — 연간 소득금액 250만원 이하면 과세하지 않는다 */
   const belowMinimum = income <= C.basicDeduct;
 
   /* ④ 결정세액 §64의3② — (소득금액 − 250만원) × 20% */
@@ -89,36 +101,18 @@ function crCalc(input) {
   const local = Math.floor(Math.round(tax * C.localRateOfTax) / 10) * 10;
   const total = belowMinimum ? 0 : tax + local;
 
-  /* 의제취득가액 덕분에 «과세되지 않고 넘어가는» 2026년 말까지의 상승분 */
-  const shielded = deemedApplies ? (mkt2026 - acq) : 0;
-
   return {
-    sale, acq, mkt2026, fee, loss, heldBefore, deemedApplies, baseCost, expense,
-    rawIncome, income, belowMinimum, taxBase,
-    tax: belowMinimum ? 0 : tax, local: belowMinimum ? 0 : local, total, shielded,
+    lines, sale, expense, income, belowMinimum, taxBase, shielded, deemedApplies,
+    tax: belowMinimum ? 0 : tax, local: belowMinimum ? 0 : local, total,
     effRate: sale > 0 ? total / sale : 0,
-    gainIfSoldIn2026: sale - acq - fee,     // 2026년에 팔았다면 (전액 비과세)
+    /* 2026년 안에 팔았다면: 과세 규정 자체가 없으므로 0원 (의제취득가액 무관) */
+    gainIfSoldIn2026: lines.reduce((t, l) => t + (l.sale - l.acq - l.fee), 0),
   };
 }
+
 window.jtCrCalc = crCalc;
 
 /* ══════════ 문항 ══════════ */
-const CR_QS = [
-  { id: 'heldBefore', section: '보유 시점', q: '이 코인을 2026년 12월 31일 이전부터 갖고 계신가요?',
-    sub: '★ 이게 세금을 가장 크게 가릅니다. 2027년 시행 전부터 갖고 있던 코인은 「2026년 12월 31일 시가」를 취득가액으로 쳐 주기 때문에(소득세법 §37⑤), 그날까지 오른 부분에는 세금이 붙지 않습니다.',
-    opts: [['yes', '예 — 2026년 말 이전부터 보유', '2026년 말 시가를 취득가액으로 인정(의제취득가액)'],
-           ['no', '아니오 — 2027년 이후에 살 예정', '실제 산 가격이 취득가액']] },
-  { id: 'salePrice', section: '매도 금액', q: '얼마에 파실 예정인가요? (원)', money: true, placeholder: '예: 50,000,000',
-    sub: '1년 동안 판 금액을 «모두» 더해 넣으세요 — 이익 본 거래도, 손해 본 거래도 전부 포함합니다. 가상자산 세금은 건별이 아니라 «그 해 전체»를 합산해 계산하므로(소득세법 §84 3호), 손실은 아래 취득가액과 함께 자동으로 상계됩니다.' },
-  { id: 'acqPrice', section: '실제 취득가액', q: '실제로 얼마에 사셨나요? (원)', money: true, placeholder: '예: 10,000,000',
-    sub: '위에 넣은 «그 해에 판 코인 전부»의 취득가액 합계입니다. 손해 보고 판 코인의 취득가액도 반드시 포함하세요 — 그래야 손실이 이익과 상계됩니다. 여러 번 나눠 샀다면 모두 더합니다. 채굴·에어드랍 등으로 취득가액을 알기 어려운 경우는 별도 규정이 있습니다(아래 안내 참조).' },
-  { id: 'marketAt2026', section: '2026년 말 시가', q: '2026년 12월 31일 기준 시가는 얼마였나요? (원)', money: true, placeholder: '예: 40,000,000',
-    showIf: (a) => a.heldBefore !== 'no',
-    sub: '그날 그 코인의 시세로 환산한 «내 보유분 전체» 금액입니다. 아직 2026년이 끝나지 않았다면 예상 금액을 넣어 보세요. 실제 시가 산정 방법은 시행령에서 정합니다.' },
-  { id: 'fee', section: '거래 수수료', q: '살 때·팔 때 낸 수수료를 모두 더하면 얼마인가요? (원)', money: true, placeholder: '예: 250,000',
-    sub: '거래소 매매수수료·출금수수료 등 취득·양도에 든 부대비용은 필요경비로 빼 줍니다(소득세법 §37①3호). 모르면 비워 두세요(세금이 조금 높게 나옵니다).' },
-];
-
 /* ══════════ 화면 ══════════ */
 function CrNotice() {
   return (
@@ -131,53 +125,97 @@ function CrNotice() {
   );
 }
 
-function CrQuestion({ q, value, onChange }) {
+/* ══════════ 코인별 입력 행 ══════════
+   의제취득가액이 «가상자산별»로 적용되므로(§37⑤) 종목을 한 줄씩 받는다.
+   합계 3필드로는 종목마다 유불리가 반대인 경우를 표현할 수 없다 (260805 Codex R3 P1). */
+const CR_EMPTY_ROW = { name: '', sale: '', acq: '', mkt2026: '', fee: '', heldBefore: 'yes' };
+
+function CrMoney({ value, onChange, placeholder }) {
   return (
-    <div className="jt-report-q">
-      <div className="jt-report-q__section">{q.section}</div>
-      <h2 style={{ fontSize: 20, lineHeight: 1.45, margin: '6px 0 8px' }}>{q.q}</h2>
-      {q.sub && <p className="jt-report-q__sub" style={{ fontSize: 13.5, lineHeight: 1.7, color: '#7b756b', marginBottom: 14 }}>{q.sub}</p>}
-      {q.opts ? (
-        <div className="jt-report-q__opts" style={{ display: 'grid', gap: 9 }}>
-          {q.opts.map(([v, label, hint]) => (
-            <button key={v} onClick={() => onChange(q.id, v)} style={{
-              textAlign: 'left', border: value === v ? '2px solid #2a3038' : '1px solid #dcd8d0',
-              background: value === v ? '#f7f5f0' : '#fff', borderRadius: 9, padding: '12px 15px',
-              cursor: 'pointer', font: 'inherit',
-            }}>
-              <div style={{ fontWeight: 700, fontSize: 15 }}>{label}</div>
-              {hint && <div style={{ fontSize: 12.5, color: '#7b756b', marginTop: 3 }}>{hint}</div>}
-            </button>
-          ))}
+    <input type="text" inputMode="numeric" placeholder={placeholder || ''}
+      value={value ? Number(String(value).replace(/[^0-9]/g, '') || 0).toLocaleString('ko-KR') : ''}
+      onChange={(e) => onChange(String(e.target.value).replace(/[^0-9]/g, ''))}
+      style={{ width: '100%', padding: '10px 12px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8, fontWeight: 700 }} />
+  );
+}
+
+function CrRows({ rows, setRows }) {
+  const upd = (i, k, v) => setRows(rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
+  const add = () => setRows(rows.concat([{ ...CR_EMPTY_ROW }]));
+  const del = (i) => setRows(rows.length > 1 ? rows.filter((_, j) => j !== i) : rows);
+
+  return (
+    <div>
+      {rows.map((r, i) => (
+        <div key={i} style={{ border: '1px solid #dcd8d0', borderRadius: 10, padding: '14px 15px', marginBottom: 12, background: i % 2 ? '#fbfaf8' : '#fff' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 11 }}>
+            <input type="text" value={r.name} onChange={(e) => upd(i, 'name', e.target.value)}
+              placeholder={`코인 ${i + 1} (예: 비트코인)`}
+              style={{ flex: 1, minWidth: 0, padding: '8px 11px', fontSize: 14.5, border: '1px solid #e5e1d9', borderRadius: 7, fontWeight: 700 }} />
+            {rows.length > 1 && (
+              <button onClick={() => del(i)} title="이 줄 삭제"
+                style={{ flex: '0 0 auto', border: '1px solid #dcd8d0', background: '#fff', borderRadius: 7, padding: '8px 11px', cursor: 'pointer', fontSize: 13 }}>삭제</button>
+            )}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
+            <label style={{ fontSize: 12.5, color: '#7b756b' }}>판 금액 (원)
+              <CrMoney value={r.sale} onChange={(v) => upd(i, 'sale', v)} placeholder="예: 50,000,000" /></label>
+            <label style={{ fontSize: 12.5, color: '#7b756b' }}>실제 산 금액 (원)
+              <CrMoney value={r.acq} onChange={(v) => upd(i, 'acq', v)} placeholder="예: 10,000,000" /></label>
+            {r.heldBefore !== 'no' && (
+              <label style={{ fontSize: 12.5, color: '#7b756b' }}>2026.12.31 시가 (원)
+                <CrMoney value={r.mkt2026} onChange={(v) => upd(i, 'mkt2026', v)} placeholder="예: 40,000,000" /></label>
+            )}
+            <label style={{ fontSize: 12.5, color: '#7b756b' }}>수수료 (원, 선택)
+              <CrMoney value={r.fee} onChange={(v) => upd(i, 'fee', v)} placeholder="예: 250,000" /></label>
+          </div>
+
+          <div style={{ display: 'flex', gap: 7, marginTop: 11, flexWrap: 'wrap' }}>
+            {[['yes', '2026년 말 이전부터 보유'], ['no', '2027년 이후 취득']].map(([v, label]) => (
+              <button key={v} onClick={() => upd(i, 'heldBefore', v)} style={{
+                border: r.heldBefore === v ? '2px solid #2a3038' : '1px solid #dcd8d0',
+                background: r.heldBefore === v ? '#f7f5f0' : '#fff',
+                borderRadius: 999, padding: '7px 14px', fontSize: 12.5, cursor: 'pointer', font: 'inherit', fontWeight: 700,
+              }}>{label}</button>
+            ))}
+          </div>
+          {r.heldBefore !== 'no' && crNum(r.mkt2026) > crNum(r.acq) && crNum(r.acq) > 0 && (
+            <div style={{ fontSize: 12.5, color: '#1e6b45', marginTop: 9, lineHeight: 1.6 }}>
+              → 2026년 말까지 오른 {crEok(crNum(r.mkt2026) - crNum(r.acq))}은 과세 대상에서 빠집니다(의제취득가액).
+            </div>
+          )}
         </div>
-      ) : (
-        <>
-          <input className="jt-report-q__input" type="text" inputMode="numeric"
-            value={value ? Number(String(value).replace(/[^0-9]/g, '') || 0).toLocaleString('ko-KR') : (value || '')}
-            placeholder={q.placeholder || ''}
-            onChange={(e) => onChange(q.id, String(e.target.value).replace(/[^0-9]/g, ''))}
-            style={{ width: '100%', padding: '13px 15px', fontSize: 17, border: '1px solid #dcd8d0', borderRadius: 9, fontWeight: 700 }} />
-          {crNum(value) > 0 && <div style={{ fontSize: 13, color: '#7b756b', marginTop: 7 }}>= {crEok(crNum(value))}</div>}
-        </>
-      )}
+      ))}
+      <button onClick={add} style={{
+        width: '100%', border: '1px dashed #b0a89b', background: '#fff', borderRadius: 9,
+        padding: '12px', cursor: 'pointer', font: 'inherit', fontWeight: 700, fontSize: 14.5, color: '#5a5449',
+      }}>+ 코인 추가</button>
     </div>
   );
 }
 
 function JTReportCrypto({ setRoute, setSubRoute, onBack }) {
-  const [answers, setAnswers] = useCrState({ heldBefore: 'yes' });
+  const [rows, setRows] = useCrState([{ ...CR_EMPTY_ROW }]);
   const [result, setResult] = useCrState(null);
-  const onChange = (id, v) => setAnswers((p) => ({ ...p, [id]: v }));
   const C = window.JT_CRYPTO_2027;
 
-  let invalid = null;
-  if (!crNum(answers.salePrice)) invalid = '매도 예정 금액을 넣어 주세요.';
-  else if (answers.acqPrice == null || answers.acqPrice === '') invalid = '실제 취득가액을 넣어 주세요.';
-  else if (answers.heldBefore !== 'no' && (answers.marketAt2026 == null || answers.marketAt2026 === ''))
-    invalid = '2026년 12월 31일 기준 시가를 넣어 주세요. 이 값이 세금을 크게 좌우합니다.';
+  /* 행 단위 검증 — 한 줄이라도 값이 있으면 그 줄은 완전해야 한다 */
+  const invalid = (() => {
+    const filled = rows.filter((r) => crNum(r.sale) > 0 || crNum(r.acq) > 0);
+    if (!filled.length) return '판 금액과 산 금액을 넣어 주세요.';
+    for (let i = 0; i < filled.length; i++) {
+      const r = filled[i], nm = (r.name || '').trim() || `${i + 1}번째 코인`;
+      if (crNum(r.sale) <= 0) return `${nm} — 판 금액을 넣어 주세요.`;
+      if (crNum(r.acq) <= 0) return `${nm} — 실제 산 금액을 넣어 주세요.`;
+      if (r.heldBefore !== 'no' && crNum(r.mkt2026) <= 0)
+        return `${nm} — 2026년 12월 31일 시가를 넣어 주세요. 이 값이 세금을 크게 좌우합니다.`;
+    }
+    return null;
+  })();
 
   const run = () => {
-    setResult(crCalc(answers));
+    setResult(crCalc({ rows }));
     try { window.jtTrackCta && window.jtTrackCta('calc_run', 'crypto_2027'); } catch (e) {}
     setTimeout(() => { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }, 30);
   };
@@ -190,11 +228,14 @@ function JTReportCrypto({ setRoute, setSubRoute, onBack }) {
         <div className="jt-container">
           <CrNotice />
           <div className="jt-report-calc">
-            {CR_QS.filter((q) => !q.showIf || q.showIf(answers)).map((q) => (
-              <div key={q.id} style={{ marginBottom: 26, paddingBottom: 22, borderBottom: '1px solid #efece6' }}>
-                <CrQuestion q={q} value={answers[q.id]} onChange={onChange} />
-              </div>
-            ))}
+            <div className="jt-report-q__section">코인별 매도 내역</div>
+            <h2 style={{ fontSize: 20, lineHeight: 1.45, margin: '6px 0 8px' }}>그 해에 판 코인을 종목별로 넣어 주세요</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.7, color: '#7b756b', marginBottom: 16 }}>
+              ★ 종목마다 «따로» 넣어야 정확합니다. 2026년 말 이전부터 갖고 있던 코인은 그날 시가를 취득가액으로 인정받는데(의제취득가액, 소득세법 §37⑤),
+              이 판정이 <strong>코인 하나하나에 대해</strong> 이뤄지기 때문입니다. 손해 보고 판 코인도 넣으세요 — 그 해 전체를 합산하므로 자동으로 상계됩니다.
+            </p>
+            <CrRows rows={rows} setRows={setRows} />
+            <div style={{ height: 18 }} />
             {invalid && <p style={{ color: '#b3261e', fontSize: 13.5, marginBottom: 12 }}>{invalid}</p>}
             <button className="jt-btn jt-btn--primary" onClick={run} disabled={!!invalid} style={{
               width: '100%', padding: '16px 20px', fontSize: 17, fontWeight: 800, borderRadius: 10,
@@ -250,10 +291,15 @@ function JTReportCrypto({ setRoute, setSubRoute, onBack }) {
           <div style={{ border: '1px solid #e5e1d9', borderRadius: 8, overflow: 'hidden' }}>
             {[
               { k: 'Step 1. 양도가액 (그 해 매도 합계)', v: r.sale, note: window.JT_CRYPTO_2027.articles.income },
-              { k: 'Step 2. 취득가액', v: -r.baseCost, note: r.deemedApplies
-                  ? `2026.12.31 시가 ${crWon(r.mkt2026)} > 실제 취득가액 ${crWon(r.acq)} → 큰 금액 적용 (${C.articles.deemed})`
-                  : (r.heldBefore ? `실제 취득가액이 2026년 말 시가보다 커서 실제 취득가액 적용 (${C.articles.deemed})` : `실제 취득가액 (${C.articles.expense})`) },
-              { k: 'Step 3. 부대비용 (수수료)', v: -r.fee, note: C.articles.expense },
+              ...r.lines.map((l) => ({
+                k: `　└ ${l.name} 필요경비`, v: -(l.baseCost + l.fee),
+                note: (l.useDeemed
+                  ? `2026.12.31 시가 ${crWon(l.mkt2026)} > 실제 취득가액 ${crWon(l.acq)} → 큰 금액 적용 (${C.articles.deemed})`
+                  : (l.held ? `실제 취득가액이 2026년 말 시가보다 커서 실제 취득가액 적용 (${C.articles.deemed})`
+                            : `2027년 이후 취득 — 실제 취득가액 (${C.articles.expense})`))
+                  + (l.fee ? ` + 수수료 ${crWon(l.fee)}` : ''),
+              })),
+              { k: 'Step 2. 필요경비 합계', v: -r.expense, note: '코인별 의제취득가액을 «각각» 적용한 뒤 합산 (§37⑤)' },
               { k: '가상자산소득금액', v: r.income, note: '양도가액 − 필요경비 (그 해 전체 합산 — 손실 거래 포함)' },
               { k: '기본공제', v: -Math.min(C.basicDeduct, Math.max(0, r.income)), note: `연 250만원 (${C.articles.tax})` },
               { k: '과세표준', v: r.taxBase, note: r.belowMinimum ? `250만원 이하 → 과세 제외 (${C.articles.minimum})` : '' },
