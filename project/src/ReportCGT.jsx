@@ -1352,6 +1352,9 @@ cautions 3개, saving_ideas 2~3개.`;
       <div className="jt-container jt-report-loading">
         <h2>일시적인 오류입니다</h2>
         <p>{err}</p>
+        <p className="jt-report-loading__privacy" style={{ fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 }}>
+          {(window.JT_PRIVACY_NOTE || {})['engine'] || (window.JT_PRIVACY_NOTE || {}).engine}
+        </p>
         <div style={{marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center'}}>
           <button className="jt-btn jt-btn--primary" onClick={() => { setErr(null); runAnalysis(); }}>다시 시도</button>
           <button className="jt-btn jt-btn--ghost" onClick={onBack}>허브로 돌아가기</button>

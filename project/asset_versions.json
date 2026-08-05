@@ -36,12 +36,12 @@
     "sha256": "6ce5321f9db1eb75c4f939e36a9c890551380575dbbce6dd131a6c13a1680bf2"
   },
   "project/src/ReportAppeal.jsx": {
-    "v": "26",
-    "sha256": "00e7f6fe3379a4b67e1b97c824e55918b141df5405cad303659503c2d9d1bef7"
+    "v": "27",
+    "sha256": "8773badb434ae44b5e69b035041acb7d4e9606d9349cffa88a3e8005037809c7"
   },
   "project/src/ReportCGT.jsx": {
-    "v": "37",
-    "sha256": "f0d8cbf9992640e22e945e1f9fe740ffc457092e21dda9b81056d6d6754cf5cc"
+    "v": "38",
+    "sha256": "d01837f39bfffa5f366795575aef7a837c3f3723ebb3d6e3124bad3dcbff16fc"
   },
   "project/src/ReportReform2026.jsx": {
     "v": "29",
