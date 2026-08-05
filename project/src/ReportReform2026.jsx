@@ -775,18 +775,24 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
     return cur.check ? cur.check(v, answers) : null;
   })();
 
+  /* ⚠️ 문항을 떠나거나 제출하면 그 문항의 진행 중 조회를 «취소»한다.
+     안 그러면 늦은 응답이 이미 확정된 답을 뒤늦게 바꿔, 화면에 뜬 세액과
+     실제 입력 상태가 갈린다 (260805 Codex R9 P1). */
+  const cancelPending = () => { if (cur && bumpEpoch) bumpEpoch(cur.id); };
   const go = (d) => {
     if (d > 0 && stepErr) return;
+    cancelPending();
     setIdx(Math.min(Math.max(0, pos + d), total - 1));
     try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
   };
+  const submit = () => { cancelPending(); onSubmit(); };
 
   return (
     <JTReportShell tag={tag} stepIdx={pos} stepTotal={total} onBack={onBack} title={title} subtitle={subtitle}>
       <div className="jt-container">
         {notice}
         <div className="jt-report-calc"
-          onKeyDown={(e) => { if (e.key === 'Enter' && !stepErr) { e.preventDefault(); if (last) onSubmit(); else go(1); } }}>
+          onKeyDown={(e) => { if (e.key === 'Enter' && !stepErr) { e.preventDefault(); if (last) submit(); else go(1); } }}>
           {cur && (
             <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked} onChangeRaw={onChangeRaw}
               picks={getPicks(cur.id)}
@@ -801,7 +807,7 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
             {pos > 0 && (
               <button className="jt-btn jt-btn--ghost" onClick={() => go(-1)} style={{ flex: '0 0 auto', padding: '14px 20px' }}>← 이전</button>
             )}
-            <button className="jt-btn jt-btn--primary" onClick={() => (last ? onSubmit() : go(1))} disabled={!!stepErr}
+            <button className="jt-btn jt-btn--primary" onClick={() => (last ? submit() : go(1))} disabled={!!stepErr}
               style={{ flex: '1 1 200px', padding: '15px 20px', fontSize: 16.5, fontWeight: 800, borderRadius: 10,
                        opacity: stepErr ? 0.45 : 1, cursor: stepErr ? 'not-allowed' : 'pointer' }}>
               {last ? ctaLabel : '다음'} <span className="jt-arrow">→</span>
