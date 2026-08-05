@@ -678,7 +678,7 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
 }
 
 /* 질문 렌더 (숫자 / 선택 / 주소조회) */
-function RfQuestion({ q, value, onChange, picks, onAdd, onRemove, bumpEpoch, getEpoch }) {
+function RfQuestion({ q, value, onChange, onChangeRaw, picks, onAdd, onRemove, bumpEpoch, getEpoch }) {
   return (
     <div className="jt-report-q">
       <div className="jt-report-q__section">{q.section}</div>
@@ -690,7 +690,7 @@ function RfQuestion({ q, value, onChange, picks, onAdd, onRemove, bumpEpoch, get
           picks={picks}
           onAdd={(q.addr === 'price' || q.addr === 'priceAdd') ? onAdd : null}
           onRemove={(q.addr === 'price' || q.addr === 'priceAdd') ? onRemove : null}
-          onRegion={q.regionTo ? function (reg) { onChange(q.regionTo, reg.is_adjusted_area ? 'yes' : 'no'); } : null}
+          onRegion={q.regionTo ? function (reg) { (onChangeRaw || onChange)(q.regionTo, reg.is_adjusted_area ? 'yes' : 'no'); } : null}
           bumpEpoch={bumpEpoch} getEpoch={getEpoch}
         />
       )}
@@ -735,11 +735,8 @@ function RfQuestion({ q, value, onChange, picks, onAdd, onRemove, bumpEpoch, get
    기존 계산기(ReportCGT·ReportProperty 등)와 진행 방식을 통일한다.
    종전에는 전 문항을 한 화면에 쌓아 보여 줘 길이가 부담스러웠다 (260805 교체).
    ══════════════════════════════════════════════════════════════════════════ */
-function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, tag, title, subtitle, notice }) {
+function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, tag, title, subtitle, notice, getPicks, setPicksFor }) {
   const [idx, setIdx] = useRfState(0);
-  /* 조회로 넣은 주소 목록 (문항 id → [{label, amount}]). 합계는 여기서 파생한다.
-     문항 이동으로 RfAddrLookup 이 언마운트돼도 위저드가 들고 있으므로 유지된다. */
-  const [picks, setPicks] = useRfState({});
   /* 문항별 «에폭» — 조회 시작·수동 입력 때마다 증가. 늦은 응답 차단의 유일한 기준. */
   const epochs = React.useRef({});
   /* ⚠️ 「자동입력분인가」는 «값»이 아니라 «누가 넣었는가»로 판정해야 한다.
@@ -749,17 +746,16 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
   const bumpEpoch = (id) => { epochs.current[id] = (epochs.current[id] || 0) + 1; return epochs.current[id]; };
   const getEpoch = (id) => (epochs.current[id] || 0);
 
-  const setPicksFor = (id, arr) => {
-    setPicks(Object.assign({}, picks, { [id]: arr }));
-    onChange(id, arr.length ? String(arr.reduce((t, x) => t + x.amount, 0)) : '');
-  };
   const onChangeTracked = (id, v) => {
     /* 사용자가 직접 고치면 진행 중 조회를 무효화하고, 조회 목록도 버린다
        (목록에서 파생한 합계와 손으로 넣은 값이 뒤섞이면 되돌릴 수 없다). */
     bumpEpoch(id);
-    if (picks[id] && picks[id].length) setPicks(Object.assign({}, picks, { [id]: [] }));
+    if (getPicks(id).length) setPicksFor(id, []);
     onChange(id, v);
   };
+  /* 지역 자동판정(조정대상지역)은 «조회 응답»이 넣는 값이라 에폭을 올리면 안 된다.
+     올리면 자기 응답이 stale 로 판정돼 busy 가 안 풀린다 (260805 Codex R7 P2). */
+  const onChangeRaw = (id, v) => onChange(id, v);
 
   const visible = questions.filter((q) => !q.showIf || q.showIf(answers));
   const total = Math.max(1, visible.length);
@@ -792,10 +788,12 @@ function RfWizard({ questions, answers, onChange, onSubmit, ctaLabel, onBack, ta
         <div className="jt-report-calc"
           onKeyDown={(e) => { if (e.key === 'Enter' && !stepErr) { e.preventDefault(); if (last) onSubmit(); else go(1); } }}>
           {cur && (
-            <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked}
-              picks={picks[cur.id] || []}
-              onAdd={(item) => setPicksFor(cur.id, (picks[cur.id] || []).concat([item]))}
-              onRemove={(i) => setPicksFor(cur.id, (picks[cur.id] || []).filter((_, j) => j !== i))}
+            <RfQuestion q={cur} value={answers[cur.id]} onChange={onChangeTracked} onChangeRaw={onChangeRaw}
+              picks={getPicks(cur.id)}
+              /* ⚠️ 목록은 «항상 ref 의 현재값»에서 읽는다. 클로저로 캡처하면
+                 B 조회 중 A 를 빼도 B 응답이 옛 목록(A 포함)을 되살린다 (260805 Codex R7 P1). */
+              onAdd={(item) => setPicksFor(cur.id, getPicks(cur.id).concat([item]))}
+              onRemove={(i) => setPicksFor(cur.id, getPicks(cur.id).filter((_, j) => j !== i))}
               bumpEpoch={() => bumpEpoch(cur.id)} getEpoch={() => getEpoch(cur.id)} />
           )}
           {stepErr && <p style={{ color: '#b3261e', fontSize: 13.5, margin: '12px 0 0' }}>{stepErr}</p>}
@@ -861,6 +859,19 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
   const [answers, setAnswers] = useRfState({ houses: 'one', adjusted: 'no', seniorMove: 'no' });
   const [result, setResult] = useRfState(null);
   const onChange = (id, v) => setAnswers((p) => ({ ...p, [id]: v }));
+  /* 조회로 넣은 주소 목록 — «결과 화면 밖» 이 컴포넌트가 소유한다.
+     위저드 안에 두면 「조건 바꿔서 다시 계산」으로 위저드가 언마운트될 때 목록만
+     비고 answers 의 합계는 남아, 이후 조회가 «대체»처럼 동작한다 (260805 Codex R7 P1).
+     ref 로 들고 다니는 이유는 조회 콜백이 «항상 현재값»을 봐야 하기 때문(stale closure 방지). */
+  const picksRef = React.useRef({});
+  const [, rfBump] = useRfState(0);
+  const getPicks = (id) => (picksRef.current[id] || []);
+  const setPicksFor = (id, arr) => {
+    picksRef.current = Object.assign({}, picksRef.current, { [id]: arr });
+    rfBump((n) => n + 1);
+    onChange(id, arr.length ? String(arr.reduce((t, x) => t + x.amount, 0)) : '');
+  };
+
 
   let invalid = null;
   if (!rfNum(answers.transferPrice)) invalid = '파는 금액(양도가액)을 넣어 주세요.';
@@ -889,6 +900,7 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
         subtitle="파는 해에 따라 세금이 달라집니다 — 2026년(현행)·2027·2028·2029년 이후를 한 번에 비교합니다."
         notice={<RfNotice />}
         questions={RF_CGT_QS} answers={answers} onChange={onChange} onSubmit={run}
+        getPicks={getPicks} setPicksFor={setPicksFor}
         ctaLabel="연도별 양도세 비교하기" />
     );
   }
@@ -1027,6 +1039,19 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
   const [answers, setAnswers] = useRfState({ houses: 'one', isResident: 'yes', adjusted: 'no' });
   const [result, setResult] = useRfState(null);
   const onChange = (id, v) => setAnswers((p) => ({ ...p, [id]: v }));
+  /* 조회로 넣은 주소 목록 — «결과 화면 밖» 이 컴포넌트가 소유한다.
+     위저드 안에 두면 「조건 바꿔서 다시 계산」으로 위저드가 언마운트될 때 목록만
+     비고 answers 의 합계는 남아, 이후 조회가 «대체»처럼 동작한다 (260805 Codex R7 P1).
+     ref 로 들고 다니는 이유는 조회 콜백이 «항상 현재값»을 봐야 하기 때문(stale closure 방지). */
+  const picksRef = React.useRef({});
+  const [, rfBump] = useRfState(0);
+  const getPicks = (id) => (picksRef.current[id] || []);
+  const setPicksFor = (id, arr) => {
+    picksRef.current = Object.assign({}, picksRef.current, { [id]: arr });
+    rfBump((n) => n + 1);
+    onChange(id, arr.length ? String(arr.reduce((t, x) => t + x.amount, 0)) : '');
+  };
+
 
   let invalid = null;
   if (!rfNum(answers.totalValue)) invalid = '공시가격 합계를 넣어 주세요.';
@@ -1054,6 +1079,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
         subtitle="주소만 넣으면 공시가격이 자동으로 들어갑니다 — 2026년(현행)·2027년·2028년 이후를 한 번에 비교합니다."
         notice={<RfNotice />}
         questions={RF_CRE_QS} answers={answers} onChange={onChange} onSubmit={run}
+        getPicks={getPicks} setPicksFor={setPicksFor}
         ctaLabel="연도별 종부세 비교하기" />
     );
   }
