@@ -473,6 +473,22 @@ function JTReportInheritance({ setRoute, onBack }) {
   if (report) {
     const { calc, commentary } = report;
     const nonResident = answers.isResident === 'no';
+    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex — 실측 최대 1.8억 오차).
+       ★ 엔진 정밀계산이 성공했으면(calc.precise) 아무것도 막지 않는다. */
+    const inhGaps = calc.precise ? [] : window.jtFallbackGaps([
+      { when: nonResident, why: '비거주자 상속 — 국내 재산만 과세되고 일괄공제 등이 배제되어 계산 구조가 다릅니다.' },
+      { when: answers.spouseActual === 'zero',
+        why: '배우자가 실제로 상속받지 않는 경우 — 간이 계산은 법정상속분대로 공제해 세금이 «크게 적게» 나옵니다(실측 1억 8,381만원 차이).' },
+      { when: answers.priorGiftHas === 'yes',
+        why: '10년 내 사전증여 — 상속재산 가산(§13)과 증여세액공제(§28)를 간이 계산이 다루지 못합니다(실측 6,741만원 차이).' },
+      { when: (Number(answers.netFinancialAssets) || 0) > 0,
+        why: '순금융재산 — 금융재산상속공제(§22, 최대 2억)가 간이 계산에 없습니다.' },
+      { when: answers.hasCohabitationHouse === 'yes',
+        why: '동거주택 — 동거주택상속공제(§23의2, 최대 6억)가 간이 계산에 없습니다.' },
+      { when: answers.numChildren === 'many' && !(Number(answers.numChildrenExact) > 0),
+        why: '자녀가 7명 이상인데 정확한 인원이 없습니다 — 배우자 법정상속분이 인원수로 갈립니다.' },
+    ]);
+    const inhBlocked = inhGaps.length > 0;
     return (
       <div className="jt-container">
         <JTReportShell title="상속세 계산 결과" subtitle={calc.precise ? '상속세 정밀 계산' : '상속세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
@@ -481,12 +497,16 @@ function JTReportInheritance({ setRoute, onBack }) {
               ⚠️ 비거주자 상속은 국내 재산만 과세되고 일괄공제 등이 배제되어 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
             </div>
           )}
+          {inhBlocked ? (
+            <JTFallbackBlocked gaps={inhGaps} onRetry={runAnalysis} />
+          ) : (
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 상속세' : (calc.precise ? '총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '추정 납부세액 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
+          )}
 
-          {!calc.precise && (
+          {!calc.precise && !inhBlocked && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
               정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 세율표 · 채무·장례비 차감 · 보험금·퇴직금 합산 · 일괄공제 5억(<strong>배우자 단독상속</strong>, 즉 자녀가 없으면 일괄공제 대신 기초공제 2억) · <strong>법정상속분 기준 배우자상속공제</strong> · 신고세액공제.<br /><strong>반영하지 않은 것</strong>: <strong>금융재산상속공제</strong>(§22) · <strong>동거주택상속공제</strong>(§23의2) · <strong>사전증여 합산과 증여세액공제</strong>(§13·§28) · 배우자가 실제로 상속받지 않는 경우의 조정 · 공제 종합한도(§24). 정밀 계산에서 반영됩니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
@@ -503,6 +523,8 @@ function JTReportInheritance({ setRoute, onBack }) {
             </div>
           )}
 
+          {/* 차단 시에는 «계산 내역»도 감춘다 — 헤드라인만 가리고 표에 같은 숫자를 남기면 막은 게 아니다 */}
+          {!inhBlocked && (
           <section className="jt-report-result__section">
             <h3>계산 내역</h3>
             <table className="jt-report-calc">
@@ -514,6 +536,7 @@ function JTReportInheritance({ setRoute, onBack }) {
             </table>
             {calc.nonTaxableMsg && <p style={{ marginTop: 10 }}>{calc.nonTaxableMsg}</p>}
           </section>
+          )}
 
           {calc.precise && calc.steps && calc.steps.length > 0 && (
             <section className="jt-report-result__section">

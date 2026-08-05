@@ -442,13 +442,34 @@ function JTReportAcquisition({ setRoute, onBack }) {
 
   if (report) {
     const { calc, commentary } = report;
+    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반) */
+    const acqArea = Number(answers.exclusiveArea) || 0;
+    const acqGaps = calc.precise ? [] : window.jtFallbackGaps([
+      { when: answers.reduction === 'first',
+        why: '생애최초 주택 구입 감면(최대 200만원) — 간이 계산에 없어 세금이 «많게» 나옵니다(실측 220만원 차이).' },
+      { when: answers.propertyType === '주택' && acqArea > 85,
+        why: '전용면적 85㎡ 초과 — 농어촌특별세가 간이 계산에 빠져 세금이 «적게» 나옵니다(실측 120만원 차이).' },
+      { when: answers.propertyType === '주택' && answers.acquisitionType === '매매' && acqArea === 0,
+        why: '전용면적을 넣지 않으셨습니다 — 85㎡ 초과면 농어촌특별세가 붙는데 판정할 수 없습니다.' },
+      { when: answers.propertyType === '주택' && answers.acquisitionType === '매매'
+              && (Number(answers.housingCount) || 1) >= 2 && answers.isRegulatedArea !== 'yes' && answers.isRegulatedArea !== 'no',
+        why: '다주택인데 조정대상지역 여부가 정해지지 않았습니다 — 중과 여부가 갈립니다.' },
+      { when: answers.propertyType === '토지',
+        why: '토지 취득 — 농지(전·답·과수원)는 세율이 달라 간이 계산이 일반 토지율만 적용합니다.' },
+      { when: answers.acquisitionType === '상속' && answers.propertyType === '주택',
+        why: '주택 상속 — 무주택 1가구 1주택 상속의 0.8% 특례를 간이 계산이 판정하지 못합니다.' },
+    ]);
+    const acqBlocked = acqGaps.length > 0;
     return (
       <div className="jt-container">
         <JTReportShell title="취득세 계산 결과" subtitle={calc.precise ? '취득세 정밀 계산' : '취득세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          {acqBlocked && <JTFallbackBlocked gaps={acqGaps} onRetry={runAnalysis} />}
+          {!acqBlocked && (
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 취득세(총액)' : (calc.precise ? '총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '추정 납부세액 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
+          )}
 
           {report.quick && calc.totalTax > 0 && calc.appliedRate && calc.appliedRate !== '-' && (
             <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: 14, color: 'var(--jt-ink-700,#444)' }}>
@@ -474,7 +495,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
             </div>
           )}
 
-          {!calc.precise && (
+          {!calc.precise && !acqBlocked && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
               정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: <strong>일반</strong> 취득유형별 세율 · 6~9억 구간 산식 · <strong>다주택 중과</strong>(조정 2주택·비조정 3주택 8.4% / 그 이상 12.4%) · 지방교육세.<br /><strong>반영하지 않은 것</strong>: <strong>생애최초 감면</strong> · <strong>85㎡ 초과 농어촌특별세</strong> · 일시적 2주택 등 중과배제 특례 · 법인 취득 · 농지 특례 · <strong>무주택 1가구 1주택 상속 0.8% 특례</strong>. 정밀 계산에서 반영됩니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>

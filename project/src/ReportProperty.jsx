@@ -614,13 +614,26 @@ function JTReportProperty({ setRoute, onBack }) {
 
   if (report) {
     const { calc, commentary } = report;
+    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반) */
+    const propGaps = calc.precise ? [] : window.jtFallbackGaps([
+      { when: answers.propertyKind === '토지' && (answers.landType === '종합합산' || answers.landType === '별도합산'),
+        why: '종합·별도합산 토지 — 간이 계산이 누진 구간을 쓰지 않고 최고세율만 곱해 세금이 «크게 많게» 나옵니다(실측 2배 이상 차이).' },
+      { when: (Number(answers.priorYearTax) || 0) > 0,
+        why: '전년도 재산세를 넣으셨는데 — 세부담 상한(§122)을 간이 계산이 적용하지 못해 세금이 «크게 많게» 나옵니다(실측 10배 이상 차이).' },
+      { when: answers.propertyKind === '건축물',
+        why: '건축물 — 지역자원시설세(소방분)가 간이 계산에 없어 세금이 «적게» 나옵니다.' },
+    ]);
+    const propBlocked = propGaps.length > 0;
     return (
       <div className="jt-container">
         <JTReportShell title="재산세 계산 결과" subtitle={calc.precise ? '재산세 정밀 계산' : '재산세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          {propBlocked && <JTFallbackBlocked gaps={propGaps} onRetry={runAnalysis} />}
+          {!propBlocked && (
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 재산세(연간 총액)' : (calc.precise ? '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '연간 추정 납부세액 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
+          )}
 
           {report.quick && calc.appliedRate && (
             <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: 14, opacity: 0.8 }}>
@@ -628,7 +641,7 @@ function JTReportProperty({ setRoute, onBack }) {
             </p>
           )}
 
-          {!calc.precise && (
+          {!calc.precise && !propBlocked && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
               정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 주택 공정시장가액비율 · 누진세율 · <strong>1세대1주택 특례세율과 특례 공정비율(43~45%)</strong> · 지방교육세.<br /><strong>반영하지 않은 것</strong>: <strong>세부담 상한</strong>(§122 — 전년도 세액을 넣으셔도 간이에서는 쓰지 않습니다) · 토지 종합·별도합산의 누진 구간 · <strong>지역자원시설세(소방분)</strong> · 감면. 그래서 실제 세액과 차이가 날 수 있습니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>

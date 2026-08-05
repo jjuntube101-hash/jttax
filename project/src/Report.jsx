@@ -43,6 +43,53 @@ window.jtSetNumericAns = function (setAns, id, raw, isMoney) {
   if (v !== null) setAns(id, v);
 };
 
+/* ══════════════════════════════════════════════════════════════════════════
+   폴백 «차단» 장치 — 엔진이 죽었을 때 «틀린 숫자»를 내놓느니 안 내놓는다.
+
+   배경(260806 Codex A~E 전수 검토): 각 계산기의 간이 폴백은 엔진보다 훨씬 단순해서
+   특정 사실관계에서 세액이 크게 어긋난다. 실측 예 —
+     · 상속세 배우자가 실제로 상속받지 않는 경우 : 1억 8,381만원 «과소»
+     · 상속세 10년 내 사전증여                   : 6,741만원 «과소»
+     · 증여세 세대생략(손주 증여)                :   582만원 «과소»
+     · 취득세 일시적 2주택                       : 4,670만원 «과대»
+     · 취득세 85㎡ 초과 농특세 누락              :   120만원 «과소»
+     · 양도세 1주택+입주권 동시보유 중과 누락     : 5억 8,000만원대 «과소»
+   이걸 프론트에 다시 구현하는 것은 «엔진을 한 벌 더 만드는 것»이라 새 오류를 낳는다.
+   그래서 «감당 못 하는 입력»이면 숫자를 감추고 재시도·상담으로 보낸다.
+   (부담부증여 경로가 이미 이 방식이었다 — 그 패턴을 전 계산기로 넓힌 것)
+
+   ★ 자유입력(context) 해석으로 판단하지 않는다. 구조화된 문항 답으로만 판정한다.
+   ★ 「과대」도 차단 대상이다 — 세금이 실제보다 크게 나오면 이용자가 «하지 않아도 될
+     포기»를 한다. 방향이 어느 쪽이든 «결정을 바꿀 만큼» 틀리면 숫자를 내지 않는다.
+   ══════════════════════════════════════════════════════════════════════════ */
+window.jtFallbackGaps = function (checks) {
+  return (checks || []).filter(function (c) { return c && c.when; }).map(function (c) { return c.why; });
+};
+
+/* 차단 화면 — 숫자 자리에 «왜 못 내는지»와 다음 행동을 놓는다 */
+function JTFallbackBlocked({ gaps, onRetry }) {
+  return (
+    <div className="jt-report-result__section" style={{
+      background: '#fdf6ec', borderLeft: '4px solid #d08b00', padding: '20px 22px',
+      borderRadius: 8, marginBottom: 20, lineHeight: 1.7,
+    }}>
+      <strong style={{ display: 'block', fontSize: 16, marginBottom: 8 }}>이 조건은 간이 계산으로 금액을 낼 수 없습니다</strong>
+      <p style={{ margin: '0 0 10px', fontSize: 14.5 }}>
+        정밀 계산 엔진 연결이 지연됐는데, <strong>입력하신 조건은 간이 계산이 다루지 못하는 항목</strong>을 포함합니다.
+        틀린 금액을 보여 드리느니 알려 드리는 편이 낫다고 판단해 <strong>금액을 표시하지 않습니다</strong>.
+      </p>
+      <ul style={{ margin: '0 0 12px', paddingLeft: 19, fontSize: 14 }}>
+        {(gaps || []).map(function (g, i) { return <li key={i}>{g}</li>; })}
+      </ul>
+      <p style={{ margin: '0 0 12px', fontSize: 13.5, color: '#5a5449' }}>
+        잠시 후 <strong>정밀 계산 다시 시도</strong>를 눌러 주세요. 계속 안 되면 상담으로 정확히 확인해 드립니다.
+      </p>
+      {onRetry && <button className="jt-btn jt-btn--primary" onClick={onRetry}>정밀 계산 다시 시도 →</button>}
+    </div>
+  );
+}
+window.JTFallbackBlocked = JTFallbackBlocked;
+
 // ============ 진단 메타 ============
 window.JT_REPORTS = [
   {

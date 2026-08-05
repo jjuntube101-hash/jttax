@@ -614,6 +614,18 @@ function JTReportGift({ setRoute, onBack }) {
     const priorDedEstimated = !isBurdened && calc.precise &&
       answers.priorGiftHas === 'yes' && Number(answers.priorGiftValue) > 0 &&
       priorGiftDeductionUsed(answers, Number(answers.priorGiftValue) || 0).estimated;
+    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반).
+       부담부증여는 이미 engineErr 로 같은 처리를 하고 있어 여기서 중복 판정하지 않는다. */
+    const giftGaps = (calc.precise || calc.engineErr) ? [] : window.jtFallbackGaps([
+      { when: nonResident, why: '비거주자 증여 — 증여재산공제가 배제되어 세금이 «크게 많아»집니다(실측 970만원 차이).' },
+      { when: answers.genSkip === 'yes',
+        why: '세대생략 증여(손주에게) — 30%(미성년·20억 초과는 40%) 할증이 간이 계산에 없습니다(실측 582만원 차이).' },
+      { when: answers.marriageDed === 'yes' || answers.childbirthDed === 'yes',
+        why: '혼인·출산 증여공제(최대 1억) — 간이 계산에 없어 세금이 «크게 많게» 나옵니다(실측 1,455만원 차이).' },
+      { when: answers.priorGiftHas === 'yes',
+        why: '10년 내 사전증여 — 합산은 하지만 기납부세액공제(§58)가 빠져 세금이 «많게» 나옵니다(실측 485만원 차이).' },
+    ]);
+    const giftBlocked = giftGaps.length > 0;
     return (
       <div className="jt-container">
         <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
@@ -622,10 +634,13 @@ function JTReportGift({ setRoute, onBack }) {
               ⚠️ 비거주자 증여는 증여재산공제 배제 등 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
             </div>
           )}
+          {giftBlocked && <JTFallbackBlocked gaps={giftGaps} onRetry={runAnalysis} />}
+          {!giftBlocked && (
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : (calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : (calc.engineErr ? '엔진 연결 실패 — 재시도 필요' : '추정 총 세부담 · 간이'))}</div>
             <div className="jt-report-result__grade-val" style={calc.engineErr ? { fontSize: 22 } : undefined}>{calc.engineErr ? '정밀 계산 필요' : formatWon(calc.totalTax)}</div>
           </div>
+          )}
 
           {calc.engineErr && (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
@@ -634,7 +649,7 @@ function JTReportGift({ setRoute, onBack }) {
             </div>
           )}
 
-          {!calc.precise && !calc.engineErr && (
+          {!calc.precise && !calc.engineErr && !giftBlocked && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
               정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 세율표 · 관계별 증여재산공제 · 입력하신 <strong>10년 내 사전증여 금액의 합산</strong> · 신고세액공제.<br /><strong>반영하지 않은 것</strong>: <strong>세대생략 할증</strong>(손주 증여) · <strong>혼인·출산 공제</strong> · 사전증여분 <strong>기납부세액공제</strong> · 비거주자 공제 배제. 그래서 실제와 다를 수 있으니 정밀 계산을 권합니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
@@ -673,7 +688,7 @@ function JTReportGift({ setRoute, onBack }) {
                 </div>
               )}
             </section>
-          ) : (
+          ) : giftBlocked ? null : (
             <section className="jt-report-result__section">
               <h3>계산 내역</h3>
               <table className="jt-report-calc">

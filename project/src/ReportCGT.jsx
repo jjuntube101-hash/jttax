@@ -1149,6 +1149,24 @@ cautions 3개, saving_ideas 2~3개.`;
 
   if (report) {
     const { calc, commentary } = report;
+    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반).
+       기본세율표·단기세율·중과·장특은 폴백도 맞게 계산하므로 «그 밖의» 구조적 결함만 막는다. */
+    const cgtGaps = calc.precise ? [] : window.jtFallbackGaps([
+      { when: answers.assetType === 'occupancy_succ',
+        why: '승계취득 조합원입주권 — 장기보유특별공제 대상이 아닌데 간이 계산이 공제를 적용해 세금이 «적게» 나옵니다.' },
+      { when: answers.assetType === 'occupancy_orig',
+        why: '원조합원 입주권 — 관리처분인가 «전» 차익에만 장특공제가 붙는데 간이 계산은 전체 차익에 적용해 세금이 «크게 적게» 나옵니다.' },
+      { when: answers.assetType === 'house_1'
+              && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale')
+              && answers.adjustedZone === 'yes',
+        why: '조정대상지역 «1주택 + 입주권·분양권» 보유 — 중과(+20%p)와 장특 배제(§104⑦2호)를 간이 계산이 반영하지 못해 세금이 «크게 적게» 나옵니다(실측 5억원대 차이).' },
+      { when: (answers.assetType === 'house_1' || answers.assetType === 'house_2' || answers.assetType === 'house_3')
+              && answers.acqAdjustedZone === 'unsure',
+        why: '살 때 조정대상지역이었는지 «모름» — 1세대1주택 비과세의 거주 2년 요건이 이 사실로 갈립니다.' },
+      { when: !!answers.moveInDate && !!answers.acquiredDate && answers.moveInDate < answers.acquiredDate,
+        why: '전입일이 취득일보다 앞섭니다 — 거주기간이 실제보다 길게 잡혀 공제가 과다해집니다.' },
+    ]);
+    const cgtBlocked = cgtGaps.length > 0;
     return (
       <div className="jt-container jt-report-result">
         <div className="jt-report-result__head">
@@ -1159,6 +1177,8 @@ cautions 3개, saving_ideas 2~3개.`;
           </div>
         </div>
 
+        {cgtBlocked && <JTFallbackBlocked gaps={cgtGaps} onRetry={runAnalysis} />}
+        {!cgtBlocked && (
         <div className="jt-report-result__grade jt-grade-mid">
           <div className="jt-report-result__grade-label">
             {calc.precise ? '총 세액 · 정밀 계산 (JT택스랩 엔진)' : '추정 총 세액 · 간이 추정치'}
@@ -1199,8 +1219,9 @@ cautions 3개, saving_ideas 2~3개.`;
             </p>
           )}
         </div>
+        )}
 
-        {(((calc.scenarios && calc.scenarios.length > 1)) || calc.orderTip) && (
+        {!cgtBlocked && (((calc.scenarios && calc.scenarios.length > 1)) || calc.orderTip) && (
           <section className="jt-report-result__section">
             <h3>이 집, 어떻게 팔면 세금이 줄까요? · 절세 전략</h3>
             {calc.orderTip && (
