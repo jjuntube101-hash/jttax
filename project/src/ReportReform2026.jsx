@@ -308,8 +308,14 @@ function rfCalcCGT(input, year) {
   const br = rfProgressiveTax(base, R.incomeBrackets);
   let sur = 0, surNote = '';
   if (!isOne && adjusted) {
-    sur = C.surcharge[year][houses === 'three' ? 'three' : 'two'];
-    surNote = `${houses === 'three' ? '3주택 이상' : '2주택'} 조정대상지역 중과 +${(sur * 100).toFixed(0)}%p`;
+    /* ⚠️ '27~'28 한시 완화는 «보유기간 2년 이상»인 경우에 한정된다(개조식 p22 각주).
+       2년 미만이면 완화 없이 원래 중과율(+20/+30%p)이다. 종전엔 보유기간을 보지
+       않아 보유 1.5년 3주택이 1억855만원 과소계산됐다 (260805 Codex R10 P1). */
+    const relaxed = hold >= 2;
+    const rateYear = relaxed ? year : 2026;   // 2026·2029 가 원래 중과율
+    sur = C.surcharge[rateYear][houses === 'three' ? 'three' : 'two'];
+    surNote = `${houses === 'three' ? '3주택 이상' : '2주택'} 조정대상지역 중과 +${(sur * 100).toFixed(0)}%p`
+      + (!relaxed && year >= 2027 && year <= 2028 ? ` (보유 ${hold}년 — 2년 미만이라 한시 완화 대상 아님)` : '');
   }
   /* ★ Math.round 선행 필수 — 0.42+0.15 가 0.5700000000000001 이 되어
      산출세액이 …999.99994 로 떨어지면 뒤의 10원 절사가 10원을 더 깎는다(260804 실측). */

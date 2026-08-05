@@ -192,5 +192,21 @@ chk('C14 취득 당시 조정지역 + 거주 0년 → 비과세 배제 + 표1 �
 chk('C14 장특공제율 = 표1 보유 5년 10%', r14.ltdRate, 0.10);
 chk('C14b 취득 당시 조정지역 + 거주 2년 → 비과세', CGT({ ...a14, acqAdjusted: 'yes', resYears: '2' }, 2026).total, 0);
 
-console.log(`\n════════════════════\n실패 ${fails}건`);
+console.log('\n════ CASE 15: 중과 한시완화는 «보유 2년 이상»만 (Codex R10 P1) ════');
+const m15 = { transferPrice: '1200000000', acqPrice: '100000000', expenses: '0',
+              houses: 'three', adjusted: 'yes', holdYears: '1.5', resYears: '0', age: '50', seniorMove: 'no' };
+const r15 = CGT(m15, 2027);
+console.log(`  보유 1.5년 3주택 조정 2027 → 중과 +${(r15.surcharge*100).toFixed(0)}%p / 총 ${won(r15.total)}`);
+/* 보유 2년 미만 → 완화 없음, 원래 +30%p. 과표 1,097,500,000
+   기본세율분 1,097,500,000×75% − 65,940,000 = 757,185,000  (45%+30%p)
+   단기 60% 분    1,097,500,000×60% = 658,500,000 → 큰 쪽 757,185,000
+   지방 75,718,500 → 832,903,500 */
+chk('C15 보유 2년 미만 → 완화 미적용(+30%p)', r15.surcharge, 0.30);
+chk('C15 총세액 832,903,500 (완화 적용 시 724,350,000)', r15.total, 832903500);
+chk('C15b 보유 정확히 2년 → 완화 적용(+10%p)', CGT({ ...m15, holdYears: '2' }, 2027).surcharge, 0.10);
+chk('C15c 2026년은 보유 무관 +30%p', CGT(m15, 2026).surcharge, 0.30);
+
+console.log(`
+════════════════════
+실패 ${fails}건`);console.log(`\n════════════════════\n실패 ${fails}건`);
 process.exit(fails ? 1 : 0);
