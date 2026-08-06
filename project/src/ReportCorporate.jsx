@@ -85,7 +85,7 @@ const CORP_QS = [
 
 /* 불확정·미지원 입력 차단 — 다른 계산기와 같은 규약(시그니처·사용처).
    여기 있는 건 «사용자 입력을 말없이 바꾸지 않기 위한» 것이다. */
-function corpFallbackGaps(answers) {
+function corpFallbackGaps(answers, calc) {   // eslint-disable-line no-unused-vars
   const income = Math.round(Number(answers.businessIncome) || 0);
   const salary = Math.round(Number(answers.ownerSalary) || 0);
   return window.jtFallbackGaps([
@@ -195,7 +195,9 @@ function JTReportCorporate({ setRoute, onBack }) {
       const income = Math.round(Number(answers.businessIncome) || 0);
       /* ★ 급여 > 이익 조합은 아래 게이트가 이미 막는다 — 여기 Math.min 은 방어용이며,
             «조용히 값을 바꾸는» 경로로 다시 쓰이면 안 된다 (260806 Codex P1). */
-      if (corpFallbackGaps(answers).length > 0) {
+      /* calc 은 아래에서 선언된다 — 여기서 참조하면 TDZ 로 죽는다. 판정에 필요한 건
+         「엔진 성공 여부」뿐이고 이 시점엔 아직 안 불렀으니 precise:false 를 넘긴다. */
+      if (corpFallbackGaps(answers, { precise: false }).length > 0) {
         const blockedRep = { calc: { precise: false }, commentary: null, quick: phase === 'quick' };
         setReport(blockedRep);
         if (phase === 'quick') setQuickReport(blockedRep);
@@ -291,8 +293,9 @@ function JTReportCorporate({ setRoute, onBack }) {
 
   if (report) {
     const { calc, commentary } = report;
-    const corpGaps = corpFallbackGaps(answers);
-    if (corpGaps.length > 0) {
+    const corpGaps = corpFallbackGaps(answers, calc);
+    const corpBlocked = corpGaps.length > 0;
+    if (corpBlocked) {
       return (
         <div className="jt-container">
           <JTReportShell title="법인 전환 비교" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">

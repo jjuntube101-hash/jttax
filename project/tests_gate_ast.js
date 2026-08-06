@@ -18,12 +18,17 @@ const fs = require('fs'), path = require('path');
 const parser = require('@babel/parser');
 
 const SRC = (f) => path.join(__dirname, 'src', f);
+/* ⚠️ 새 *FallbackGaps 를 만들면 «반드시» 여기에 등록한다 — 판정 함수 자체 테스트만
+   통과하고 AI·공유 차단 회귀는 안 잡히는 구멍이 생긴다 (260806 Codex R18 P1: 법인전환이
+   이 목록에 없어, 게이트의 return 을 지워도 두 테스트가 전부 통과했다). */
 const TARGETS = [
   ['ReportInheritance.jsx', 'inhFallbackGaps'],
   ['ReportGift.jsx', 'giftFallbackGaps'],
   ['ReportAcquisition.jsx', 'acqFallbackGaps'],
   ['ReportProperty.jsx', 'propFallbackGaps'],
   ['ReportCGT.jsx', 'cgtFallbackGaps'],
+  ['ReportIncome.jsx', 'incFallbackGaps'],
+  ['ReportCorporate.jsx', 'corpFallbackGaps'],
 ];
 
 let fails = 0;
@@ -62,7 +67,9 @@ TARGETS.forEach(([file, fn]) => {
   walk(ast.program, (n) => {
     if (n.type === 'IfStatement') {
       const src = code.slice(n.test.start, n.test.end);
-      if (src.includes(`${fn}(answers, calc)`) && alwaysReturns(n.consequent)) gates.push(n);
+      /* 인자 형태는 파일마다 다르다(법인전환은 calc 가 TDZ 라 리터럴을 넘긴다) —
+         «판정 함수를 부르는가»만 본다. 인자까지 고정하면 정당한 변형에 헛되이 깨진다. */
+      if (src.includes(`${fn}(`) && alwaysReturns(n.consequent)) gates.push(n);
     }
     if (n.type === 'CallExpression') {
       const callee = code.slice(n.callee.start, n.callee.end);
@@ -71,8 +78,14 @@ TARGETS.forEach(([file, fn]) => {
   });
 
   eq(`${file} · 판정 결과로 «return 하는» 게이트가 있다`, gates.length > 0, true);
-  eq(`${file} · window.claude.complete 호출이 있다(계측 대상 존재)`, aiCallStart !== null, true);
-  if (!gates.length || aiCallStart === null) return;
+  if (!gates.length) return;
+  /* AI 호출이 «없는» 계산기(종합소득세)도 있다. 그때는 순서를 볼 대상이 없으므로
+     「지금은 없다」는 사실만 고정한다 — 나중에 누가 AI 호출을 넣으면 이 줄이 FAIL 나서
+     게이트 순서를 같이 챙기게 된다. 조용히 통과시키면 그때 또 샌다. */
+  if (aiCallStart === null) {
+    eq(`${file} · AI 호출이 없다 (생기면 게이트 순서를 함께 배선해야 한다)`, true, true);
+    return;
+  }
 
   /* ② 그 게이트가 AI 호출보다 앞이어야 한다. «막고 나가는» 게이트만 세므로,
         빈 껍데기 if 를 앞에 두는 되돌림으로는 통과할 수 없다. */

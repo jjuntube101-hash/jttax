@@ -59,19 +59,11 @@ const giftFallbackGaps = loadGapFn('ReportGift.jsx', 'giftFallbackGaps');
 const acqFallbackGaps = loadGapFn('ReportAcquisition.jsx', 'acqFallbackGaps');
 const propFallbackGaps = loadGapFn('ReportProperty.jsx', 'propFallbackGaps');
 const cgtFallbackGaps = loadGapFn('ReportCGT.jsx', 'cgtFallbackGaps');
-/* 종소세·법인전환은 «간이 폴백»이 없어 ②층이 필요 없다 — 판정 시그니처만 맞춰 둔다.
-   법인전환은 calc 를 안 쓰므로 (answers) 한 인자다. */
+/* 종소세·법인전환은 «간이 폴백»이 없어 ②층이 필요 없다.
+   시그니처는 (answers, calc) 로 통일했다 — 다르면 테스트 규약에서 빠져 구멍이 된다
+   (260806 Codex R18 P1: 법인전환이 1인자라 두 테스트 목록에서 누락돼 있었다). */
 const incFallbackGaps = loadGapFn('ReportIncome.jsx', 'incFallbackGaps');
-const corpFallbackGaps = (() => {
-  const s = fs.readFileSync(SRC('ReportCorporate.jsx'), 'utf8');
-  const head = 'function corpFallbackGaps(answers) {';
-  const i = s.indexOf(head);
-  if (i < 0) throw new Error('ReportCorporate.jsx 의 corpFallbackGaps 를 찾지 못했습니다.');
-  let d = 1, j = i + head.length;
-  while (j < s.length && d > 0) { const ch = s[j]; if (ch === '{') d++; else if (ch === '}') d--; j++; }
-  // eslint-disable-next-line no-eval
-  return eval(`(${s.slice(i, j)})`);
-})();
+const corpFallbackGaps = loadGapFn('ReportCorporate.jsx', 'corpFallbackGaps');
 
 const DOWN = { precise: false };            // 엔진 장애
 const OK = { precise: true };               // 엔진 정상
@@ -215,33 +207,40 @@ eq('배당 0이면 유형과 무관하게 통과', incFallbackGaps({ dividendInc
 
 console.log('\n════ 법인 전환 — 입력값을 말없이 바꾸지 않는다 ════');
 eq('대표급여 ≤ 사업이익 → 통과',
-   corpFallbackGaps({ businessIncome: '100000000', ownerSalary: '50000000' }).length, 0);
+   corpFallbackGaps({ businessIncome: '100000000', ownerSalary: '50000000' }, OK).length, 0);
 eq('대표급여 > 사업이익 → 차단 (종전엔 Math.min 으로 조용히 깎아 다른 시나리오를 계산했다)',
-   corpFallbackGaps({ businessIncome: '50000000', ownerSalary: '100000000' }).length > 0, true);
-eq('같으면 통과', corpFallbackGaps({ businessIncome: '50000000', ownerSalary: '50000000' }).length, 0);
+   corpFallbackGaps({ businessIncome: '50000000', ownerSalary: '100000000' }, OK).length > 0, true);
+eq('같으면 통과', corpFallbackGaps({ businessIncome: '50000000', ownerSalary: '50000000' }, OK).length, 0);
 
 /* ── ② 게이트 순서: 차단이 «외부 전송»보다 먼저인가 ─────────────────────────
    렌더 단계의 조기 반환만 검사하면 이 누설을 못 잡는다. 실제로 260806 에
    window.claude.complete 프롬프트가 폴백 총세액을 담아 조기 반환보다 «먼저»
    외부로 나가고 있었고, 종전 검사는 그걸 전부 통과시켰다(Codex P0). */
 console.log('\n════ 차단 게이트가 외부 전송보다 «먼저» 오는가 ════');
+/* ⚠️ 새 판정 함수를 만들면 여기와 tests_gate_ast.js 의 TARGETS 에 «둘 다» 등록한다.
+   빠뜨리면 판정 규칙 테스트만 통과하고 누설 회귀는 안 잡힌다 (260806 Codex R18 P1). */
 const FILES = [
   ['ReportInheritance.jsx', 'inhFallbackGaps', 'inhBlocked'],
   ['ReportGift.jsx', 'giftFallbackGaps', 'giftBlocked'],
   ['ReportAcquisition.jsx', 'acqFallbackGaps', 'acqBlocked'],
   ['ReportProperty.jsx', 'propFallbackGaps', 'propBlocked'],
   ['ReportCGT.jsx', 'cgtFallbackGaps', 'cgtBlocked'],
+  ['ReportIncome.jsx', 'incFallbackGaps', 'incBlocked'],
+  ['ReportCorporate.jsx', 'corpFallbackGaps', 'corpBlocked'],
 ];
 FILES.forEach(([f, fn]) => {
   const src = fs.readFileSync(SRC(f), 'utf8');
-  const gate = src.indexOf(`if (${fn}(answers, calc).length > 0)`);
+  /* 인자 형태는 파일마다 다르다 — «부르는가»만 본다(구문 검증은 tests_gate_ast.js 담당) */
+  const gate = src.indexOf(`if (${fn}(`);
   const ai = src.indexOf('window.claude.complete(');
   eq(`${f} · runAnalysis 안에 차단 게이트가 있다`, gate >= 0, true);
-  eq(`${f} · 차단 게이트가 window.claude.complete 보다 앞이다`, gate >= 0 && ai >= 0 && gate < ai, true);
+  /* 종합소득세처럼 AI 호출이 없는 계산기도 있다 — 없으면 순서를 볼 대상이 없다 */
+  eq(`${f} · 차단 게이트가 window.claude.complete 보다 앞이다`,
+     ai < 0 ? 'AI 호출 없음' : (gate >= 0 && gate < ai), ai < 0 ? 'AI 호출 없음' : true);
   /* 판정 규칙이 «한 벌»인지 — 렌더도 같은 함수를 불러야 한다. 두 벌이면 반드시 어긋난다.
      정의 1 + 분석 1 + 렌더 1 = 3 이 정상이다. */
   eq(`${f} · 판정 함수를 정의 1 + 분석 1 + 렌더 1 회 쓴다`,
-     (src.match(new RegExp(fn + '\\(answers, calc\\)', 'g')) || []).length, 3);
+     (src.match(new RegExp(fn + '\\(', 'g')) || []).length, 3);
   /* 판정 배열이 «판정 함수 밖»에 있으면 그건 두 번째 규칙이다 — 반드시 어긋난다.
      함수 안에 여러 개인 것은 정상이다(불확정 입력 층 + 폴백 한계 층). */
   const fnStart = src.indexOf(`function ${fn}(answers, calc) {`);

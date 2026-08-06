@@ -1,6 +1,6 @@
 ## 1. 작업 요약
 
-`739ab31..34308b5`를 정적 검토했습니다. 결론은 **P0 2건, P1 3건, P2 2건**입니다.  
+`739ab31..34308b5`를 정적 검토했습니다. 결론은 **P0 2건, P1 3건, P2 2건**입니다.
 가장 중요한 문제는 상속·증여의 비거주자 차단이 “비거주자라고 상세 단계에서 답한 경우”에만 작동하고, 실제 빠른 계산 경로에서는 해당 질문 자체가 생략되어 거주자 기준 금액이 그대로 노출된다는 점입니다.
 
 ### [P0] `project/src/ReportInheritance.jsx:113, 283, 395-397, 459` · 빠른 계산의 비거주자 상속인이 거주자 금액을 받는다
@@ -68,7 +68,7 @@ const txt = await window.claude.complete(prompt); // 여전히 실행됨
 - 해당 `IfStatement`가 `runAnalysis` 본문 블록의 직접 statement이고, consequent가 그 함수 자체를 종료하는 `ReturnStatement`를 갖는지 확인하십시오.
 - 가장 신뢰도 높은 보강은 주석에도 적힌 브라우저 회귀 테스트입니다. `window.claude.complete`와 공유 전송 함수를 mock한 뒤, 차단 입력에서 호출 횟수가 각각 0회인지를 자동 검증해야 합니다.
 
-### [P1] `project/src/ReportIncome.jsx:61-67, 227-238` · 모든 배당을 국내법인 배당으로 단정하여 Gross-up을 요청한다  
+### [P1] `project/src/ReportIncome.jsx:61-67, 227-238` · 모든 배당을 국내법인 배당으로 단정하여 Gross-up을 요청한다
 *이번 diff 이전부터 존재한 문제이나, 요청하신 다른 계산기 payload 감사 결과입니다.*
 
 재현:
@@ -84,7 +84,7 @@ const txt = await window.claude.complete(prompt); // 여전히 실행됨
 - 국내법인 배당일 때만 `is_dividend_grossup: true`를 전송하십시오.
 - 외국·혼합·모름은 금액 차단 또는 Gross-up 미적용의 별도 계산임을 명확히 표시하고 공유·AI 수치 전송을 막으십시오.
 
-### [P1] `project/src/ReportCorporate.jsx:180-191` · 입력한 대표 급여를 사전 고지 없이 사업이익 이하로 바꿔 다른 시나리오를 계산한다  
+### [P1] `project/src/ReportCorporate.jsx:180-191` · 입력한 대표 급여를 사전 고지 없이 사업이익 이하로 바꿔 다른 시나리오를 계산한다
 *이번 diff 이전부터 존재한 문제이나, 요청하신 다른 계산기 payload 감사 결과입니다.*
 
 재현:
