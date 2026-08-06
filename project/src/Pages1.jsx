@@ -52,7 +52,7 @@ function JTAbout({ setRoute, initialTab }) {
             aria-selected={tab === 'company'}
             className={`jt-about-tabs__btn ${tab === 'company' ? 'is-active' : ''}`}
             onClick={() => onTab('company')}>
-            
+
             <span className="jt-about-tabs__num">01</span>
             <span className="jt-about-tabs__label">회사소개</span>
           </button>
@@ -61,7 +61,7 @@ function JTAbout({ setRoute, initialTab }) {
             aria-selected={tab === 'team'}
             className={`jt-about-tabs__btn ${tab === 'team' ? 'is-active' : ''}`}
             onClick={() => onTab('team')}>
-            
+
             <span className="jt-about-tabs__num">02</span>
             <span className="jt-about-tabs__label">전문가</span>
           </button>

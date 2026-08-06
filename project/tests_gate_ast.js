@@ -272,11 +272,31 @@ TWO_LAYER.forEach(([file, fn]) => {
     });
     return best;
   })();
+  /* 엔진 호출을 셀 때 «중첩 함수 안»은 보지 않는다 —
+     `const runEngine = async () => callTransferEngine(answers)` 처럼 게이트 «앞»에 정의만
+     해 두고 게이트 «뒤»에서 실행하는 정상 구조를, 정의부 위치 때문에 잘못 FAIL 냈다
+     (260806 Codex R22 P2). 실행되지 않는 중첩 함수를 엔진 호출로 세던 문제도 같이 사라진다.
+
+     ⚠️ 이 검사는 «직접 호출»만 본다. `const runEngine = callTransferEngine;` 처럼 별칭을
+     만들어 부르면 엔진 호출을 못 찾아 FAIL 난다 — 데이터플로 추적까지는 하지 않기로 했다.
+     그러니 이 파일들에서는 엔진 함수를 별칭으로 감싸지 말 것. 규칙을 코드로 못 박는 대신
+     여기 적어 둔다. */
+  const walkSkippingNestedFns = (node, visit, isRoot) => {
+    if (!node || typeof node !== 'object') return;
+    if (Array.isArray(node)) { node.forEach((n) => walkSkippingNestedFns(n, visit, false)); return; }
+    const isFn = node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression' || node.type === 'ArrowFunctionExpression';
+    if (isFn && !isRoot) return;                     // 중첩 함수는 통째로 건너뛴다
+    if (typeof node.type === 'string') visit(node);
+    for (const k of Object.keys(node)) {
+      if (k === 'loc' || k === 'leadingComments' || k === 'trailingComments') continue;
+      walkSkippingNestedFns(node[k], visit, false);
+    }
+  };
   if (enclosing) {
-    walk(enclosing, (n) => {
+    walkSkippingNestedFns(enclosing, (n) => {
       if (n.type === 'CallExpression' && n.callee && n.callee.type === 'Identifier'
           && /^call.*Eng/.test(n.callee.name) && (firstEngine === null || n.start < firstEngine)) firstEngine = n.start;
-    });
+    }, true);
   }
   eq(`${file} · precise:true 로 «막고 나가는» 엔진 전 게이트가 있다`, preGate !== null, true);
   eq(`${file} · 그 게이트가 첫 엔진 호출보다 앞이다`,

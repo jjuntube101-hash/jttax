@@ -66,9 +66,9 @@ if (!gaps.length) {
 
 ## 4. 검증 결과
 
-- `git diff --check c31442b..HEAD`  
+- `git diff --check c31442b..HEAD`
   결과: 종료 코드 0, 공백 오류 없음.
-- `Get-FileHash -Algorithm SHA256 project/src/ReportComprehensive.jsx`와 `project/asset_versions.json` 대조  
+- `Get-FileHash -Algorithm SHA256 project/src/ReportComprehensive.jsx`와 `project/asset_versions.json` 대조
   결과: `2e4c4a110357fd3de923286699cce333135209a933ae1e1f02a2629a5b1c1418`로 일치.
 - `git diff`, `rg`, PowerShell 정적 라인 추적으로 변경 범위·호출 순서·렌더 조건을 확인했습니다.
 - Node 실행은 사용자 지시대로 시도하지 않았습니다.

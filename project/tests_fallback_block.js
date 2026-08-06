@@ -206,6 +206,28 @@ eq('배당 유형 «미입력» → 차단 (문항이 빠져도 새지 않게)',
    incFallbackGaps({ dividendIncome: '50000000' }, OK).length > 0, true);
 eq('배당 0이면 유형과 무관하게 통과', incFallbackGaps({ dividendIncome: '0' }, OK).length, 0);
 
+/* ── 과잉 차단 방지: «평범한 이용자»는 8개 어디서도 막히지 않는다 ────────────
+   차단을 넓힐 때마다 이 목록을 돌린다. 정상 이용자를 쫓아내는 건 틀린 숫자를 보여 주는
+   것과 다른 종류의, 그러나 똑같이 실재하는 사고다. 「막았다」에 취해 여기를 안 보면
+   계산기가 아무에게도 답을 안 주는 물건이 된다. */
+console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 어디서도 안 막힌다 ════');
+[['상속 · 거주자·배우자·자녀2', inhFallbackGaps, { isResident: 'yes', hasSpouse: 'yes', numChildren: '2' }],
+ ['증여 · 거주자·직계존속', giftFallbackGaps, { isResident: 'yes', relationship: '직계존속' }],
+ ['취득 · 1주택 매매 84㎡', acqFallbackGaps, { propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', housingCount: '1', reduction: 'none' }],
+ ['취득 · 2주택 비조정·일시적 아님', acqFallbackGaps, { propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', housingCount: '2', isRegulatedArea: 'no', temporaryTwoHouse: 'no', reduction: 'none' }],
+ ['재산 · 일반 주택', propFallbackGaps, { propertyKind: '주택', isOneHouse: 'yes' }],
+ ['양도 · 1주택 비조정', cgtFallbackGaps, { assetType: 'house_1', acqAdjustedZone: 'no', acquiredDate: '2015-01-01', moveInDate: '2015-06-01' }],
+ ['양도 · 상가', cgtFallbackGaps, { assetType: 'commercial' }],
+ ['소득 · 배당 없음', incFallbackGaps, { dividendIncome: '0' }],
+ ['소득 · 국내 배당', incFallbackGaps, { dividendIncome: '50000000', dividendType: 'domestic' }],
+ ['법인 · 급여 ≤ 이익', corpFallbackGaps, { businessIncome: '100000000', ownerSalary: '50000000' }],
+ ['종부 · 단독명의', compFallbackGaps, { housingCount: 'one', ownership: 'single' }],
+ ['종부 · 공동명의 지분 50%', compFallbackGaps, { housingCount: 'one', ownership: 'joint', ownShare: '50' }],
+].forEach(([name, fn, ans]) => {
+  const gaps = fn(ans, OK);
+  eq(`${name} · 엔진 정상이면 통과`, gaps.length ? gaps[0].slice(0, 40) : 0, 0);
+});
+
 /* ── 엔진 전 게이트가 «①불확정 층만» 거르는가 ────────────────────────────────
    runAnalysis 맨 앞에서 `fn(answers, { precise: true })` 로 부른다. precise 를 참으로
    주면 ②폴백 한계는 빠지고 ①층만 남는다 — 그래서 엔진을 부르기 전에 쓸 수 있다.

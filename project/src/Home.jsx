@@ -355,7 +355,7 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
           role="link"
           tabIndex={0}
           onKeyDown={(e) => {if (e.key === 'Enter' || e.key === ' ') {e.preventDefault();setRoute('services');}}}>
-          
+
           <div className="jt-kicker">SERVICES · 업무분야</div>
           <h2 className="jt-h2 jt-display-h2">근거에 기반한<br />다섯 개 전문 영역.</h2>
         </div>
@@ -384,7 +384,7 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
           role="link" tabIndex={0}
           onClick={() => setRoute('services')}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRoute('services'); } }}>
-          
+
               <header className="jt-service__head">
                 <span>{s.num} · {s.en}</span>
                 <span className="jt-arrow">{detailOpen === i ? '×' : '→'}</span>
@@ -402,7 +402,7 @@ function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
               className="jt-link"
               onClick={(e) => {e.stopPropagation();setRoute('services');}}
               style={{ marginTop: 20, display: 'inline-block' }}>
-              
+
                     자세히 보기 →
                   </a>
                 </>
