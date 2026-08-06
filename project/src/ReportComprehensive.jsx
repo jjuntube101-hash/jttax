@@ -395,6 +395,14 @@ function JTReportComprehensive({ setRoute, onBack }) {
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
 
+          {/* ★ «조용한 가정»을 결과에도 알린다 — 문항 sub 에만 적어 두면, 건너뛴 사람은
+              무엇을 가정한 값인지 모른 채 숫자만 본다. 실측: 지분 50% 65.5만 ↔ 30% 159.3만 */}
+          {answers.ownership === 'joint' && !(Number(answers.ownShare) > 0) && (
+            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
+              본인 지분율을 넣지 않으셔서 <strong>50%</strong>로 보고 계산했습니다. 실제 지분이 다르면 세액이 달라집니다(등기부에서 확인하실 수 있어요).
+            </div>
+          )}
+
           {report.quick && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
