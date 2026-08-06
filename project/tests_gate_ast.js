@@ -226,9 +226,61 @@ TARGETS.forEach(([file, fn]) => {
     if (!gapVars.has(n.id.name) || !n.init) return;
     usedRanges.push([n.init.start, n.init.end]);
   });
-  const orphan = callsInRa.filter((pos) => !usedRanges.some(([a, b]) => pos >= a && pos <= b));
-  eq(`${file} · 판정 호출이 전부 게이트에 쓰인다 (판정만 하고 안 쓰는 호출 = 무력화 흔적)`,
+  /* «무력화»는 if 조건식 안에서 일어난다 — 조건식에 판정 호출이 있는데 게이트로 인정되지
+     않는 경우다. 조건식 «밖»의 호출(로그·계측)은 게이트를 무너뜨리지 않으므로 봐준다
+     (260806 Codex R21 P2: 종전엔 console.debug 호출까지 오탐했다). */
+  const ifTestRanges = [];
+  walk(raFn, (n) => { if (n.type === 'IfStatement' && n.test) ifTestRanges.push([n.test.start, n.test.end]); });
+  const inIfTest = (pos) => ifTestRanges.some(([a, b]) => pos >= a && pos <= b);
+  const orphan = callsInRa.filter((pos) => inIfTest(pos) && !usedRanges.some(([a, b]) => pos >= a && pos <= b));
+  eq(`${file} · if 조건식의 판정 호출이 전부 «막고 나가는» 게이트다 (아니면 무력화 흔적)`,
      orphan.length, 0);
+});
+
+/* ── 불확정 입력이 엔진에 «닿기 전»에 막히는가 ────────────────────────────────
+   260806 Codex R21 P2: 엔진 전 게이트를 통째로 지워도 위 검사들이 전부 통과했다.
+   후단 게이트가 남아 있으면 「게이트가 있다」·「AI 보다 앞이다」가 여전히 참이기 때문이다.
+   그래서 «엔진 호출보다 앞에, precise:true 로 부르는 반환 게이트가 있는가»를 따로 본다.
+   2층 구조가 아닌 계산기(종소세·법인전환)는 게이트가 애초에 맨 앞이라 대상이 아니다. */
+console.log('\n════ 불확정 입력이 엔진 POST 보다 «먼저» 막히는가 ════');
+const TWO_LAYER = [
+  ['ReportInheritance.jsx', 'inhFallbackGaps'], ['ReportGift.jsx', 'giftFallbackGaps'],
+  ['ReportAcquisition.jsx', 'acqFallbackGaps'], ['ReportProperty.jsx', 'propFallbackGaps'],
+  ['ReportCGT.jsx', 'cgtFallbackGaps'], ['ReportComprehensive.jsx', 'compFallbackGaps'],
+];
+TWO_LAYER.forEach(([file, fn]) => {
+  const code = fs.readFileSync(SRC(file), 'utf8');
+  const ast = parser.parse(code, { sourceType: 'script', plugins: ['jsx'] });
+  /* `fn(answers, { precise: true })` 를 조건으로 쓰고 확정 반환하는 if */
+  let preGate = null;
+  let firstEngine = null;
+  walk(ast.program, (n) => {
+    if (n.type === 'IfStatement' && n.test) {
+      const t = code.slice(n.test.start, n.test.end);
+      if (t.includes(`${fn}(answers, { precise: true })`) && t.includes('.length')
+          && alwaysReturns(n.consequent) && (preGate === null || n.start < preGate)) preGate = n.start;
+    }
+  });
+  /* 엔진 호출은 «게이트와 같은 함수 안»의 것만 센다 — 엔진 래퍼 함수가 서로를 부르는
+     정의부(예: callTransferEngine → callEngineBody)를 세면 항상 게이트보다 앞이라 오탐한다. */
+  const enclosing = (() => {
+    let best = null;
+    walk(ast.program, (n) => {
+      const isFn = n.type === 'FunctionExpression' || n.type === 'ArrowFunctionExpression' || n.type === 'FunctionDeclaration';
+      if (!isFn || preGate === null || n.start > preGate || n.end < preGate) return;
+      if (!best || (n.end - n.start) < (best.end - best.start)) best = n;
+    });
+    return best;
+  })();
+  if (enclosing) {
+    walk(enclosing, (n) => {
+      if (n.type === 'CallExpression' && n.callee && n.callee.type === 'Identifier'
+          && /^call.*Eng/.test(n.callee.name) && (firstEngine === null || n.start < firstEngine)) firstEngine = n.start;
+    });
+  }
+  eq(`${file} · precise:true 로 «막고 나가는» 엔진 전 게이트가 있다`, preGate !== null, true);
+  eq(`${file} · 그 게이트가 첫 엔진 호출보다 앞이다`,
+     preGate !== null && firstEngine !== null && preGate < firstEngine, true);
 });
 
 /* ── 판정 함수를 «분석»과 «렌더»가 둘 다 쓰는가 — 실제 호출 노드로 센다 ──────────

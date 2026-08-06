@@ -429,7 +429,11 @@ function JTReportInheritance({ setRoute, onBack }) {
          「모르겠다」고 답한 사실이 기본값으로 둔갑해 엔진까지 가지도 않는다.
          엔진 응답 직후의 기존 게이트는 그대로 ②폴백 한계를 잡는다. */
       if (inhFallbackGaps(answers, { precise: true }).length > 0) {
-        const unknownRep = { calc: { precise: false }, commentary: null, quick: phase === 'quick' };
+        /* precise:true 로 저장하는 이유 — 렌더가 같은 판정 함수를 다시 부르는데,
+           precise:false 로 두면 ②폴백 한계 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
+           다른 항목이 화면에 뜬다 (260806 Codex R21 P2). preEngineBlock 은 그 상태를
+           «정밀 계산 성공»과 구분하기 위한 표식이다. */
+        const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === 'quick' };
         setReport(unknownRep);
         if (phase === 'quick') setQuickReport(unknownRep);
         return;
