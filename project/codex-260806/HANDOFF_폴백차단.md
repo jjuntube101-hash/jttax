@@ -111,9 +111,32 @@ eb33a3d 폴백 차단을 «조기 반환»으로 전환
 | `P-earlyreturn.md` | 조기 반환 후 | P0 1 (AI 프롬프트 누설) | ✅ |
 | `Q-gate.md` | AI 전 게이트 후 | P0 1 (부담부 engineErr 우회) | ✅ |
 | `R-unknown.md` | 불확정 층 후 | **P0 2** (빠른 계산의 거주자 누락) · P1 3 · P2 2 | ✅ |
-| `S-round18.md` | 거주자 quick 승격 후 | **⏳ 실행 중** | — |
+| `S-round18.md` | 거주자 quick 승격 후 | P1 2 · P2 1 (신규 P0 **0**) | ✅ |
 
-**아직 수렴하지 않았다.** R18 결과를 보고 이어가야 한다.
+**아직 수렴 판정 전이다.** 규약은 「P2 이하만 남거나 3라운드 연속 신규 P0/P1 0건」인데,
+R18 에서 P1 이 2건 나왔고 그걸 방금 고쳤다. **R19 를 돌려 0건인지 확인해야 한다.**
+
+### R19 실행 방법
+```
+cd D:/jt-data/jttax-cta
+# S-round18.prompt.txt 를 참고해 새 프롬프트를 쓰고(HEAD·직전 처리 내역 갱신),
+C:/jt-data/tools/codex/codex.cmd exec --sandbox read-only -m gpt-5.6-terra \
+  -c model_reasoning_effort=high -c model_verbosity=high \
+  -o "D:/jt-data/jttax-cta/project/codex-260806/T-round19.md" \
+  < project/codex-260806/T-round19.prompt.txt
+```
+
+### R18이 잡은 것
+- **법인전환이 두 테스트 목록에 없었다** — 게이트의 `return` 을 지워도 전부 통과했다.
+  판정 함수 «자체» 테스트만 있고 누설·순서 검사에는 등록이 안 돼 있었기 때문.
+  → 시그니처 `(answers, calc)` 표준화 + `TARGETS`·`FILES` 등록 + 「빠뜨리면 구멍」 주석
+- `R-unknown.md` 줄끝 공백 3줄 (진짜 공백 — CGT 건과 달랐다)
+
+### R18이 확인해 준 것 (반박 없음)
+- CGT trailing whitespace **기각 타당** — 원시 바이트로 실제 공백 0줄, CRLF 1,529/bareLF 0
+- `isResident` 하드닝으로 정상 이용자가 갇히는 경로 없음
+- 종소세 차단이 `!precise` 엔진 오류 화면보다 먼저 실행됨
+- 외국 배당 P1 은 R18 이 본 커밋 이후 이미 반영돼 있었음
 
 ### R17이 잡은 것 (내가 놓쳤던 것)
 - 비거주자 차단을 **상세 단계만** 덮었다 — 빠른 계산에선 `isResident` 문항이 없어
