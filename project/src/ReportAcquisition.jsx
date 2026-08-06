@@ -95,7 +95,8 @@ const ACQ_QS = [
     tier: 'quick',
     section: '면적',
     q: '전용면적은 몇 ㎡인가요? (농어촌특별세 판정용)',
-    sub: '전용면적 85㎡(약 25.7평) 초과 주택에는 농어촌특별세(취득세 표준세율분의 10%)가 추가됩니다. 85㎡ 이하면 농특세가 없습니다. 모르면 비워두세요(84로 가정).',
+    /* 「84로 가정」은 실제 동작과 어긋난다 — 공란이면 가정하지 않고 폴백을 차단한다 (Codex P2) */
+    sub: '전용면적 85㎡(약 25.7평) 초과 주택에는 농어촌특별세(취득세 표준세율분의 10%)가 추가됩니다. 85㎡ 이하면 농특세가 없습니다. 등기부·분양계약서에 적힌 숫자예요. 비워두시면 엔진이 연결됐을 때만 계산되고, 연결이 안 되면 금액 대신 안내를 보여 드립니다.',
     showIf: (a) => a.propertyType === '주택',
     numeric: true, optional: true,
     placeholder: '예: 84.96',
@@ -113,11 +114,20 @@ const ACQ_QS = [
   },
   {
     id: 'temporaryTwoHouse',
+    /* 다주택 매매에서 «8% 중과냐 1~3% 냐»는 취득세 최대 갈림이다 — 상세로 미루면
+       빠른 계산이 통째로 틀리거나(중과 과대) 차단된다. quick 에서 묻는다. */
+    tier: 'quick',
     section: '일시적 2주택',
-    q: '종전 주택을 새 집 산 뒤 3년 안에 팔 계획인가요? (일시적 2주택)',
-    sub: '이사·직장 이동 등으로 잠깐 두 채가 되는 경우입니다. 신규 주택 취득일부터 3년(종전·신규가 모두 조정대상지역이면 역시 3년) 안에 종전 주택을 처분하면 중과 없이 1~3% 일반 세율로 계산합니다(지방세법 §13의2① 단서, 시행령 §28의5). 기한을 넘기면 중과분이 «추징»되니, 계획이 확실할 때만 「네」를 고르세요.',
-    showIf: (a) => a.propertyType === '주택' && a.acquisitionType === '매매' && (Number(a.housingCount) || 1) >= 2,
-    opts: [['yes', '네, 3년 내 처분 예정', '중과 제외 (1~3%)'], ['no', '아니오 / 계속 보유', '중과 적용 (8~12%)']],
+    q: '이사·학업·취업·직장 이전 등으로 종전 주택 1채를 3년 안에 팔 계획인가요? (일시적 2주택)',
+    /* 260806 law-verifier 원문 확인: 시행령 §28의5는 «지역 불문 3년» — 조문에 「조정대상지역」
+       문구 자체가 없다. 과거의 조정지역 간 단축 규정은 현행 조문에 없다.
+       근거 조문도 §13의2① «단서»가 아니라 1항 2호 괄호(「일시적 2주택은 제외한다」)다. */
+    sub: '이사·직장 이동 등으로 잠깐 두 채가 되는 경우입니다. 신규 주택 취득일부터 3년(조정대상지역인지와 무관하게 3년) 안에 종전 주택을 처분하면 중과 없이 1~3% 일반 세율로 계산합니다(지방세법 §13의2①2호 괄호 — 일시적 2주택은 중과 대상 주택 수에서 제외, 시행령 §28의5). 기한을 넘기면 중과분이 «추징»되니, 계획이 확실할 때만 「네」를 고르세요.',
+    /* 특례 대상은 «종전 주택등을 1개 보유한 1세대»뿐이다(시행령 §28의5①) — 취득 후 3채 이상이면
+       애초에 일시적 2주택이 아니다. >= 2 로 두면 3주택자에게도 물어보고, 「예」를 고르면
+       주택 수가 1로 줄어 엔진이 중과를 빼 버린다 (260806 Codex P1). */
+    showIf: (a) => a.propertyType === '주택' && a.acquisitionType === '매매' && (Number(a.housingCount) || 1) === 2,
+    opts: [['yes', '네, 종전 1채를 3년 내 처분 예정', '중과 제외 (1~3%)'], ['no', '아니오 / 계속 보유', '중과 적용 (8~12%)']],
   },
   {
     id: 'reduction',
@@ -176,9 +186,13 @@ function mapAnswersToAcquisition(a) {
     // 생애최초 감면(§36의3): reduction_type을 보내야 적용. 신혼부부 첫 집도 §36의3 흡수(§36의2는 2020 일몰).
     //   300만(1호)은 '아파트 제외'+가액요건이라 면적만으론 자동판정 불가 → 보수적 200만(2호) 기본, 300만은 상담.
     if (a.reduction === 'first') { body.reduction_type = '생애최초'; body.is_first_home_buyer = true; }
-    // 일시적 2주택(§13의2① 단서·령 §28의5): 주택 수에서 종전 주택을 빼 중과를 배제한다.
+    // 일시적 2주택(§13의2①2호 괄호·령 §28의5): 중과 대상 주택 수에서 종전 주택을 제외한다.
     //   ⚠ 3년 내 미처분 시 추징 대상이므로 화면 문구에서 기한을 반드시 알린다.
-    if (a.temporaryTwoHouse === 'yes') { body.is_temporary_two_house = true; body.housing_count = 1; }
+    // «2주택일 때만» 적용한다. 3주택 이상에서 주택 수를 1로 덮어쓰면 엔진이 중과를 빼고
+    //   그 값이 «정밀 계산»으로 표시된다 — 폴백보다 위험하다.
+    if (a.temporaryTwoHouse === 'yes' && (Number(a.housingCount) || 1) === 2) {
+      body.is_temporary_two_house = true; body.housing_count = 1;
+    }
   }
   // 증여 취득세: 시가표준액 + 조정 12% 중과(지§13의2②). 단 1세대1주택자→배우자·직계존비속 증여는 12% 제외(② 단서).
   if (a.acquisitionType === '증여') {
@@ -208,8 +222,9 @@ function fallbackAcqTax(a) {
   else if (a.acquisitionType === '신축') rate = 0.0296; // 원시취득 2.8%+교육세 0.16%=2.96%
   else if (!isHousing) rate = 0.046;                    // 비주택 4%+교육세
   else { // 주택 매매(기본). 수정 260628(ACQ-A-01): 다주택 중과(§13의2) 반영 — 종전 미반영으로 8%중과 케이스 -69% 과소.
-    // 일시적 2주택이면 종전 주택을 제외해 «1주택»으로 본다 (지§13의2① 단서)
-    const hc = a.temporaryTwoHouse === 'yes' ? 1 : (Number(a.housingCount) || 1);
+    // 일시적 2주택이면 중과 대상 주택 수에서 종전 주택을 제외한다 (지§13의2①2호 괄호)
+    const rawHc = Number(a.housingCount) || 1;
+    const hc = (a.temporaryTwoHouse === 'yes' && rawHc === 2) ? 1 : rawHc;
     const reg = a.isRegulatedArea === 'yes';
     if ((reg && hc >= 3) || (!reg && hc >= 4)) rate = 0.124;        // 12% 중과 + 교육세 0.4% (조정3주택+/비조정4주택+)
     else if ((reg && hc === 2) || (!reg && hc === 3)) rate = 0.084; // 8% 중과 + 교육세 0.4% (조정2주택/비조정3주택) — 엔진 800M=67,200,000 일치
@@ -222,6 +237,44 @@ function fallbackAcqTax(a) {
     else rate = 0.033;
   }
   return Math.round(v * rate);
+}
+
+/* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+   (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+function acqFallbackGaps(answers, calc) {
+  if (calc.precise) return [];
+  const acqArea = Number(answers.exclusiveArea) || 0;
+  return window.jtFallbackGaps([
+    { when: answers.reduction === 'first',
+      why: '생애최초 주택 구입 감면(최대 200만원) — 간이 계산에 없어 세금이 «많게» 나옵니다(실측 220만원 차이).' },
+    { when: answers.propertyType === '주택' && acqArea > 85,
+      why: '전용면적 85㎡ 초과 — 농어촌특별세가 간이 계산에 빠져 세금이 «적게» 나옵니다(실측 120만원 차이).' },
+    /* 농특세는 «취득 원인»을 가리지 않고 85㎡ 초과에 붙는다 — 매매만 보면 증여·신축이 샌다 (Codex P1) */
+    { when: answers.propertyType === '주택' && acqArea === 0,
+      why: '전용면적을 넣지 않으셨습니다 — 85㎡ 초과면 농어촌특별세가 붙는데 판정할 수 없습니다.' },
+    { when: answers.propertyType === '주택' && answers.acquisitionType === '매매'
+            && (Number(answers.housingCount) || 1) >= 2 && answers.isRegulatedArea !== 'yes' && answers.isRegulatedArea !== 'no',
+      why: '다주택인데 조정대상지역 여부가 정해지지 않았습니다 — 중과 여부가 갈립니다.' },
+    { when: answers.propertyType === '주택' && answers.acquisitionType === '증여' && answers.isRegulatedArea !== 'yes' && answers.isRegulatedArea !== 'no',
+      why: '증여인데 조정대상지역 여부가 정해지지 않았습니다 — 시가표준 3억 이상이면 12% 중과라 세금이 3배 넘게 갈립니다.' },
+    /* 일시적 2주택은 «자유 서술»에만 있어 계산에 반영되지 않는다 — 중과가 통째로 빠진다 (Codex P1) */
+    /* 「예」·「아니오」 둘 다 폴백이 정확히 계산한다 — 막을 것은 «답이 없는 경우»뿐이다.
+       답까지 막으면 과잉 차단이라 배선해 둔 계산 경로가 죽는다. */
+    { when: answers.propertyType === '주택' && answers.acquisitionType === '매매'
+            && (Number(answers.housingCount) || 1) === 2 && !answers.temporaryTwoHouse,
+      why: '2주택인데 «일시적 2주택»(3년 내 종전 주택 처분) 여부가 확인되지 않았습니다 — 해당하면 중과 없이 1~3%, 아니면 8%입니다.' },
+    /* 주택 수를 3채로 바꾸면 이 문항은 숨지만 답은 state 에 남는다 — 남은 「예」를 그대로 두면
+       특례 대상이 아닌데 중과가 빠진다. 그런 조합이 오면 계산하지 말고 막는다 (Codex P1). */
+    { when: answers.propertyType === '주택' && answers.acquisitionType === '매매'
+            && (Number(answers.housingCount) || 1) >= 3 && answers.temporaryTwoHouse === 'yes',
+      why: '3주택 이상은 «일시적 2주택» 특례 대상이 아닙니다(시행령 §28의5① — 종전 주택 1채를 보유한 세대만). 주택 수를 다시 확인해 주세요.' },
+    { when: answers.propertyType === '토지',
+      why: '토지 취득 — 농지(전·답·과수원)는 세율이 달라 간이 계산이 일반 토지율만 적용합니다.' },
+    { when: answers.acquisitionType === '상속' && answers.propertyType === '주택',
+      why: '주택 상속 — 무주택 1가구 1주택 상속의 0.8% 특례를 간이 계산이 판정하지 못합니다.' },
+  ]);
 }
 
 function buildAcqDetail(answers, calc, commentary) {
@@ -411,6 +464,16 @@ function JTReportAcquisition({ setRoute, onBack }) {
         }
       } catch (e) { console.warn('취득세 엔진 연결 실패 — 간이 추정 유지', e); }
 
+      /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
+         폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
+         렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
+      if (acqFallbackGaps(answers, calc).length > 0) {
+        const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
+        setReport(blockedRep);
+        if (phase === 'quick') setQuickReport(blockedRep);
+        return;
+      }
+
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
@@ -462,28 +525,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
     const { calc, commentary } = report;
     /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반) */
     const acqArea = Number(answers.exclusiveArea) || 0;
-    const acqGaps = calc.precise ? [] : window.jtFallbackGaps([
-      { when: answers.reduction === 'first',
-        why: '생애최초 주택 구입 감면(최대 200만원) — 간이 계산에 없어 세금이 «많게» 나옵니다(실측 220만원 차이).' },
-      { when: answers.propertyType === '주택' && acqArea > 85,
-        why: '전용면적 85㎡ 초과 — 농어촌특별세가 간이 계산에 빠져 세금이 «적게» 나옵니다(실측 120만원 차이).' },
-      /* 농특세는 «취득 원인»을 가리지 않고 85㎡ 초과에 붙는다 — 매매만 보면 증여·신축이 샌다 (Codex P1) */
-      { when: answers.propertyType === '주택' && acqArea === 0,
-        why: '전용면적을 넣지 않으셨습니다 — 85㎡ 초과면 농어촌특별세가 붙는데 판정할 수 없습니다.' },
-      { when: answers.propertyType === '주택' && answers.acquisitionType === '매매'
-              && (Number(answers.housingCount) || 1) >= 2 && answers.isRegulatedArea !== 'yes' && answers.isRegulatedArea !== 'no',
-        why: '다주택인데 조정대상지역 여부가 정해지지 않았습니다 — 중과 여부가 갈립니다.' },
-      { when: answers.propertyType === '주택' && answers.acquisitionType === '증여' && answers.isRegulatedArea !== 'yes' && answers.isRegulatedArea !== 'no',
-        why: '증여인데 조정대상지역 여부가 정해지지 않았습니다 — 시가표준 3억 이상이면 12% 중과라 세금이 3배 넘게 갈립니다.' },
-      /* 일시적 2주택은 «자유 서술»에만 있어 계산에 반영되지 않는다 — 중과가 통째로 빠진다 (Codex P1) */
-      { when: answers.propertyType === '주택' && answers.acquisitionType === '매매'
-              && (Number(answers.housingCount) || 1) >= 2 && answers.temporaryTwoHouse !== 'no',
-        why: '다주택인데 «일시적 2주택»(3년 내 종전 주택 처분) 여부가 확인되지 않았습니다 — 해당하면 중과 없이 1~3%, 아니면 8%입니다.' },
-      { when: answers.propertyType === '토지',
-        why: '토지 취득 — 농지(전·답·과수원)는 세율이 달라 간이 계산이 일반 토지율만 적용합니다.' },
-      { when: answers.acquisitionType === '상속' && answers.propertyType === '주택',
-        why: '주택 상속 — 무주택 1가구 1주택 상속의 0.8% 특례를 간이 계산이 판정하지 못합니다.' },
-    ]);
+    const acqGaps = acqFallbackGaps(answers, calc);
     const acqBlocked = acqGaps.length > 0;
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·

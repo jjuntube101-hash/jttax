@@ -159,6 +159,22 @@ function fallbackPropTax(a) {
   return Math.round(main + edu + urban);
 }
 
+/* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+   (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+function propFallbackGaps(answers, calc) {
+  if (calc.precise) return [];
+  return window.jtFallbackGaps([
+    { when: answers.propertyKind === '토지' && (answers.landType === '종합합산' || answers.landType === '별도합산'),
+      why: '종합·별도합산 토지 — 간이 계산이 누진 구간을 쓰지 않고 최고세율만 곱해 세금이 «크게 많게» 나옵니다(실측 2배 이상 차이).' },
+    { when: (Number(answers.priorYearTax) || 0) > 0,
+      why: '전년도 재산세를 넣으셨는데 — 세부담 상한(§122)을 간이 계산이 적용하지 못해 세금이 «크게 많게» 나옵니다(실측 10배 이상 차이).' },
+    { when: answers.propertyKind === '건축물',
+      why: '건축물 — 지역자원시설세(소방분)가 간이 계산에 없어 세금이 «적게» 나옵니다.' },
+  ]);
+}
+
 function buildPropDetail(answers, calc, commentary) {
   const L = ['■ 고객 입력 정보'];
   PROP_QS.forEach(q => {
@@ -566,6 +582,16 @@ function JTReportProperty({ setRoute, onBack }) {
         }
       } catch (e) { console.warn('재산세 엔진 연결 실패 — 간이 추정 유지', e); }
 
+      /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
+         폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
+         렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
+      if (propFallbackGaps(answers, calc).length > 0) {
+        const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
+        setReport(blockedRep);
+        if (phase === 'quick') setQuickReport(blockedRep);
+        return;
+      }
+
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
@@ -615,14 +641,7 @@ function JTReportProperty({ setRoute, onBack }) {
   if (report) {
     const { calc, commentary } = report;
     /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반) */
-    const propGaps = calc.precise ? [] : window.jtFallbackGaps([
-      { when: answers.propertyKind === '토지' && (answers.landType === '종합합산' || answers.landType === '별도합산'),
-        why: '종합·별도합산 토지 — 간이 계산이 누진 구간을 쓰지 않고 최고세율만 곱해 세금이 «크게 많게» 나옵니다(실측 2배 이상 차이).' },
-      { when: (Number(answers.priorYearTax) || 0) > 0,
-        why: '전년도 재산세를 넣으셨는데 — 세부담 상한(§122)을 간이 계산이 적용하지 못해 세금이 «크게 많게» 나옵니다(실측 10배 이상 차이).' },
-      { when: answers.propertyKind === '건축물',
-        why: '건축물 — 지역자원시설세(소방분)가 간이 계산에 없어 세금이 «적게» 나옵니다.' },
-    ]);
+    const propGaps = propFallbackGaps(answers, calc);
     const propBlocked = propGaps.length > 0;
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·

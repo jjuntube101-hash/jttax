@@ -5,7 +5,12 @@
    구현하면 «엔진을 한 벌 더 만드는 것»이라 새 오류를 낳으므로, 감당 못 하는 입력이면
    숫자를 내지 않는다.
 
-   ⚠️ 이 파일은 «판정 규칙»과 «배선»을 함께 지킨다 — 규칙만 맞고 화면이 안 쓰면 소용없다. */
+   ⚠️ 이 파일이 지키는 것은 세 층이다 — 셋 중 하나만 빠져도 «막은 척»이 된다.
+     ① 판정 규칙   : 어떤 입력을 막는가 (그리고 «막지 않는가» — 과잉 차단도 결함이다)
+     ② 게이트 순서 : 차단이 외부 전송(AI 프롬프트)보다 «먼저» 오는가
+     ③ 화면 내용   : 차단 시 반환되는 서브트리에 금액을 만드는 표현이 없는가
+
+   ①만 검사하던 시절에 계산표가 샜고, ①+③만 검사하던 시절에 AI 프롬프트가 샜다. */
 const fs = require('fs'), path = require('path');
 const SRC = (f) => path.join(__dirname, 'src', f);
 
@@ -30,29 +35,40 @@ eq('조건이 참인 것만 모은다', GAPS([{ when: true, why: 'A' }, { when: 
 eq('전부 거짓이면 빈 배열 → 차단 안 함', GAPS([{ when: false, why: 'A' }]).length, 0);
 eq('빈 입력 방어', GAPS().length + GAPS([]).length + GAPS([null]).length, 0);
 
-/* ── 각 계산기의 «차단 조건»을 소스에서 추출해 그대로 실행한다 ──────────────
-   문자열 비교가 아니라 «실제 조건식»을 돌려야 규칙이 바뀌면 테스트가 따라온다. */
-function extractGapChecks(file, varName) {
+/* ── ① 판정 규칙: 각 계산기의 «실제 판정 함수»를 소스에서 통째로 꺼내 실행한다 ─────
+   조각(배열 리터럴)만 뽑아 재조립하던 종전 방식은, 함수 안의 전제(비거주자·면적 환산)를
+   테스트가 흉내 내야 해서 «테스트가 본 규칙»과 «앱이 쓰는 규칙»이 갈라질 수 있었다.
+   이제 함수 전체를 eval 해서 앱과 완전히 같은 것을 돌린다. */
+function loadGapFn(file, fnName) {
   const s = fs.readFileSync(SRC(file), 'utf8');
-  const i = s.indexOf(`const ${varName} = `);
-  if (i < 0) throw new Error(`${file} 에서 ${varName} 을 찾지 못했습니다 — 차단 배선이 사라졌는지 확인하세요.`);
-  const open = s.indexOf('window.jtFallbackGaps([', i);
-  if (open < 0) throw new Error(`${file} 의 ${varName} 이 jtFallbackGaps 를 쓰지 않습니다.`);
-  const close = s.indexOf('\n    ]);', open);
-  if (close < 0) throw new Error(`${file} 의 ${varName} 끝을 찾지 못했습니다.`);
-  return s.slice(open + 'window.jtFallbackGaps(['.length, close);
+  const head = `function ${fnName}(answers, calc) {`;
+  const i = s.indexOf(head);
+  if (i < 0) throw new Error(`${file} 에서 ${fnName} 을 찾지 못했습니다 — 차단 배선이 사라졌는지 확인하세요.`);
+  let d = 1, j = i + head.length;
+  while (j < s.length && d > 0) {
+    const ch = s[j];
+    if (ch === '{') d++; else if (ch === '}') d--;
+    j++;
+  }
+  // eslint-disable-next-line no-eval
+  return eval(`(${s.slice(i, j)})`);
 }
 
-function runChecks(file, varName, answers, extra) {
-  const body = extractGapChecks(file, varName);
-  const calc = { precise: false };
-  const fn = new Function('answers', 'calc', 'Number', 'window', Object.keys(extra || {}).join(',') || '_unused',
-    'return window.jtFallbackGaps([' + body + ']);');
-  return fn(answers, calc, Number, window, ...Object.values(extra || {}));
-}
+const inhFallbackGaps = loadGapFn('ReportInheritance.jsx', 'inhFallbackGaps');
+const giftFallbackGaps = loadGapFn('ReportGift.jsx', 'giftFallbackGaps');
+const acqFallbackGaps = loadGapFn('ReportAcquisition.jsx', 'acqFallbackGaps');
+const propFallbackGaps = loadGapFn('ReportProperty.jsx', 'propFallbackGaps');
+const cgtFallbackGaps = loadGapFn('ReportCGT.jsx', 'cgtFallbackGaps');
+
+const DOWN = { precise: false };            // 엔진 장애
+const OK = { precise: true };               // 엔진 정상
+const INH = (x) => inhFallbackGaps(x, DOWN);
+const GIFT = (x) => giftFallbackGaps(x, DOWN);
+const ACQ = (x) => acqFallbackGaps(x, DOWN);
+const PROP = (x) => propFallbackGaps(x, DOWN);
+const CGT = (x) => cgtFallbackGaps(x, DOWN);
 
 console.log('\n════ 상속세 — 실측 최대 1.8억 오차 조건 ════');
-const INH = (a) => runChecks('ReportInheritance.jsx', 'inhGaps', a, { nonResident: a.isResident === 'no' });
 eq('배우자 실제 상속 0 → 차단', INH({ spouseActual: 'zero' }).length > 0, true);
 eq('사전증여 있음 → 차단', INH({ priorGiftHas: 'yes' }).length > 0, true);
 eq('순금융재산 입력 → 차단', INH({ netFinancialAssets: '500000000' }).length > 0, true);
@@ -63,7 +79,6 @@ eq('자녀 7명↑ + 정확인원 입력 → 통과', INH({ numChildren: 'many',
 eq('평범한 입력 → 통과(숫자 표시)', INH({ hasSpouse: 'yes', numChildren: '2' }).length, 0);
 
 console.log('\n════ 증여세 ════');
-const GIFT = (a) => runChecks('ReportGift.jsx', 'giftGaps', a, { nonResident: a.isResident === 'no' });
 eq('세대생략 → 차단', GIFT({ genSkip: 'yes' }).length > 0, true);
 eq('혼인공제 → 차단', GIFT({ marriageDed: 'yes' }).length > 0, true);
 eq('출산공제 → 차단', GIFT({ childbirthDed: 'yes' }).length > 0, true);
@@ -72,17 +87,29 @@ eq('비거주자 → 차단', GIFT({ isResident: 'no' }).length > 0, true);
 eq('평범한 입력 → 통과', GIFT({ relationship: '직계존속' }).length, 0);
 
 console.log('\n════ 취득세 ════');
-const ACQ = (a) => runChecks('ReportAcquisition.jsx', 'acqGaps', a, { acqArea: Number(a.exclusiveArea) || 0 });
-eq('생애최초 감면 → 차단', ACQ({ reduction: 'first' }).length > 0, true);
-eq('85㎡ 초과 → 차단', ACQ({ propertyType: '주택', exclusiveArea: '86' }).length > 0, true);
-eq('면적 미입력(주택 매매) → 차단', ACQ({ propertyType: '주택', acquisitionType: '매매' }).length > 0, true);
+const ACQ_BASE = { propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', reduction: 'none', housingCount: '1' };
+eq('생애최초 감면 → 차단', ACQ({ ...ACQ_BASE, reduction: 'first' }).length > 0, true);
+eq('85㎡ 초과 → 차단', ACQ({ ...ACQ_BASE, exclusiveArea: '86' }).length > 0, true);
+eq('면적 미입력(주택 매매) → 차단', ACQ({ ...ACQ_BASE, exclusiveArea: '' }).length > 0, true);
 eq('토지 → 차단', ACQ({ propertyType: '토지' }).length > 0, true);
-eq('주택 상속 → 차단', ACQ({ acquisitionType: '상속', propertyType: '주택' }).length > 0, true);
-eq('85㎡ 이하·면적 입력·감면없음 → 통과',
-   ACQ({ propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', reduction: 'none', housingCount: '1' }).length, 0);
+eq('주택 상속 → 차단', ACQ({ acquisitionType: '상속', propertyType: '주택', exclusiveArea: '84' }).length > 0, true);
+eq('85㎡ 이하·면적 입력·감면없음 → 통과', ACQ(ACQ_BASE).length, 0);
+/* 260806 Codex 지적으로 넓힌 조건들 — 다시 좁아지면 여기서 잡힌다 */
+eq('증여 주택 + 면적 미입력 → 차단 (종전엔 매매만 봐서 샜다)',
+   ACQ({ propertyType: '주택', acquisitionType: '증여', isRegulatedArea: 'no' }).length > 0, true);
+eq('조정지역 «모르겠어요» + 다주택 → 차단 (종전엔 no 와 한 칸이라 그냥 통과했다)',
+   ACQ({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'unsure', temporaryTwoHouse: 'no' }).length > 0, true);
+eq('증여 주택 + 조정 «모름» → 차단 (시가표준 3억↑면 12% 중과라 3배 갈린다)',
+   ACQ({ propertyType: '주택', acquisitionType: '증여', exclusiveArea: '84', isRegulatedArea: 'unsure' }).length > 0, true);
+eq('다주택인데 일시적2주택 미응답 → 차단',
+   ACQ({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'yes' }).length > 0, true);
+eq('일시적2주택 «예» + 2주택 → 통과 (폴백이 1주택으로 정확히 계산한다)',
+   ACQ({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' }).length, 0);
+/* 시행령 §28의5① 은 «종전 주택등 1개 보유» 세대만 — 3주택 이상엔 특례가 없다 (Codex P1) */
+eq('3주택인데 일시적2주택 «예» → 차단 (특례 대상이 아닌데 주택수를 1로 줄이면 안 된다)',
+   ACQ({ ...ACQ_BASE, housingCount: '3', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' }).length > 0, true);
 
 console.log('\n════ 재산세 ════');
-const PROP = (a) => runChecks('ReportProperty.jsx', 'propGaps', a);
 eq('종합합산 토지 → 차단', PROP({ propertyKind: '토지', landType: '종합합산' }).length > 0, true);
 eq('별도합산 토지 → 차단', PROP({ propertyKind: '토지', landType: '별도합산' }).length > 0, true);
 eq('전년도 세액 입력 → 차단', PROP({ propertyKind: '주택', priorYearTax: '100000' }).length > 0, true);
@@ -90,28 +117,64 @@ eq('건축물 → 차단', PROP({ propertyKind: '건축물' }).length > 0, true)
 eq('일반 주택 → 통과', PROP({ propertyKind: '주택', isOneHouse: 'yes' }).length, 0);
 
 console.log('\n════ 양도세 ════');
-const CGT = (a) => runChecks('ReportCGT.jsx', 'cgtGaps', a);
 eq('승계취득 입주권 → 차단', CGT({ assetType: 'occupancy_succ' }).length > 0, true);
 eq('원조합원 입주권 → 차단', CGT({ assetType: 'occupancy_orig' }).length > 0, true);
 eq('조정 1주택+입주권 동시보유 → 차단',
    CGT({ assetType: 'house_1', houseConcurrentRight: 'occupancy', adjustedZone: 'yes' }).length > 0, true);
+/* 비조정도 막아야 한다 — 일시적 특례를 판정 못 해 «과대» 방향으로 틀린다.
+   조정 조건이 다시 붙으면 이 케이스에서 잡힌다 (Codex P2) */
+eq('«비»조정 1주택+입주권 동시보유도 차단',
+   CGT({ assetType: 'house_1', houseConcurrentRight: 'occupancy', adjustedZone: 'no', acqAdjustedZone: 'no' }).length > 0, true);
 eq('취득당시 조정지역 «모름» → 차단', CGT({ assetType: 'house_1', acqAdjustedZone: 'unsure' }).length > 0, true);
+/* 취득 당시 조정지역은 1주택 거주요건에만 쓰인다 — 2·3주택까지 막으면 과잉 차단 (Codex P2) */
+eq('2주택 + 취득당시 «모름» → 통과 (세액에 영향이 없다)',
+   CGT({ assetType: 'house_2', acqAdjustedZone: 'unsure' }).length, 0);
 eq('전입일이 취득일보다 앞섬 → 차단',
    CGT({ assetType: 'house_1', acquiredDate: '2020-01-01', moveInDate: '2010-01-01' }).length > 0, true);
 eq('평범한 1주택 → 통과',
    CGT({ assetType: 'house_1', acqAdjustedZone: 'no', acquiredDate: '2015-01-01', moveInDate: '2015-06-01' }).length, 0);
 eq('상가(비주택) → 통과 (단기세율·기본세율은 폴백도 맞다)', CGT({ assetType: 'commercial' }).length, 0);
 
-/* ── «실제 누설» 검사 ────────────────────────────────────────────────
-   종전 검사는 `{!blocked` 같은 정규식만 봐서, 헤드라인만 가리고 계산표·공유버튼이
-   남은 상태를 그대로 통과시켰다(260806 Codex P2 — 실제로 그렇게 샜다).
+console.log('\n════ 엔진 성공(precise)이면 절대 막지 않는다 — 정상 이용자를 막는 게 더 큰 사고다 ════');
+[['상속세', inhFallbackGaps, { spouseActual: 'zero', isResident: 'no' }],
+ ['증여세', giftFallbackGaps, { genSkip: 'yes', priorGiftHas: 'yes' }],
+ ['취득세', acqFallbackGaps, { propertyType: '토지', reduction: 'first' }],
+ ['재산세', propFallbackGaps, { propertyKind: '건축물' }],
+ ['양도세', cgtFallbackGaps, { assetType: 'occupancy_succ' }]].forEach(([name, fn, ans]) => {
+  eq(`${name} · 차단 입력 + 엔진 실패 → 막는다`, fn(ans, DOWN).length > 0, true);
+  eq(`${name} · 같은 입력이라도 엔진 성공 → 안 막는다`, fn(ans, OK).length, 0);
+});
 
-   구조를 뒤집었으므로 검사도 뒤집는다. 가릴 것을 «세지» 않고,
-   차단 시 반환되는 «그 서브트리 안»에 금액을 만드는 표현이 없는지만 본다.
-   가려야 할 대상이 앞으로 늘어도 이 검사는 그대로 유효하다. */
-console.log('\n════ 누설 검사 — 차단 시 반환되는 화면에 금액이 없는가 ════');
+/* ── ② 게이트 순서: 차단이 «외부 전송»보다 먼저인가 ─────────────────────────
+   렌더 단계의 조기 반환만 검사하면 이 누설을 못 잡는다. 실제로 260806 에
+   window.claude.complete 프롬프트가 폴백 총세액을 담아 조기 반환보다 «먼저»
+   외부로 나가고 있었고, 종전 검사는 그걸 전부 통과시켰다(Codex P0). */
+console.log('\n════ 차단 게이트가 외부 전송보다 «먼저» 오는가 ════');
+const FILES = [
+  ['ReportInheritance.jsx', 'inhFallbackGaps', 'inhBlocked'],
+  ['ReportGift.jsx', 'giftFallbackGaps', 'giftBlocked'],
+  ['ReportAcquisition.jsx', 'acqFallbackGaps', 'acqBlocked'],
+  ['ReportProperty.jsx', 'propFallbackGaps', 'propBlocked'],
+  ['ReportCGT.jsx', 'cgtFallbackGaps', 'cgtBlocked'],
+];
+FILES.forEach(([f, fn]) => {
+  const src = fs.readFileSync(SRC(f), 'utf8');
+  const gate = src.indexOf(`if (${fn}(answers, calc).length > 0)`);
+  const ai = src.indexOf('window.claude.complete(');
+  eq(`${f} · runAnalysis 안에 차단 게이트가 있다`, gate >= 0, true);
+  eq(`${f} · 차단 게이트가 window.claude.complete 보다 앞이다`, gate >= 0 && ai >= 0 && gate < ai, true);
+  /* 판정 규칙이 «한 벌»인지 — 렌더도 같은 함수를 불러야 한다. 두 벌이면 반드시 어긋난다.
+     정의 1 + 분석 1 + 렌더 1 = 3 이 정상이다. */
+  eq(`${f} · 판정 함수를 정의 1 + 분석 1 + 렌더 1 회 쓴다`,
+     (src.match(new RegExp(fn + '\\(answers, calc\\)', 'g')) || []).length, 3);
+  eq(`${f} · jtFallbackGaps 배열이 한 곳에만 있다`,
+     (src.match(/window\.jtFallbackGaps\(\[/g) || []).length, 1);
+});
 
-/* if (blockVar) { return ( … ); } 의 실제 본문을 중괄호 균형으로 잘라낸다 */
+/* ── ③ 화면 내용: 차단 시 반환되는 서브트리에 금액이 없는가 ────────────────
+   가릴 것을 «세는» 방식은 표현이 늘 때마다 샌다. 반대로 «차단 화면에 무엇이 들었나»만
+   보면, 가려야 할 대상이 앞으로 늘어도 이 검사는 그대로 유효하다. */
+console.log('\n════ 차단 시 반환되는 화면에 금액이 없는가 ════');
 function earlyReturnBody(src, blockVar) {
   const head = `if (${blockVar}) {`;
   const i = src.indexOf(head);
@@ -124,7 +187,6 @@ function earlyReturnBody(src, blockVar) {
   }
   return src.slice(i, j);
 }
-
 /* 금액을 화면·클립보드·전송·외부 AI 로 내보내는 표현들 */
 const LEAK_TARGETS = [
   { pat: 'JTReportConvert', what: '공유·카카오 전송' },
@@ -132,20 +194,10 @@ const LEAK_TARGETS = [
   { pat: 'totalTax', what: '세액 값 참조' },
   { pat: 'commentary', what: 'AI 코멘터리' },
 ];
-const BLOCKED_FILES = [
-  ['ReportInheritance.jsx', 'inhBlocked'], ['ReportGift.jsx', 'giftBlocked'],
-  ['ReportAcquisition.jsx', 'acqBlocked'], ['ReportProperty.jsx', 'propBlocked'],
-  ['ReportCGT.jsx', 'cgtBlocked'],
-];
-BLOCKED_FILES.forEach(([f, v]) => {
+FILES.forEach(([f, , v]) => {
   const src = fs.readFileSync(SRC(f), 'utf8');
   const body = earlyReturnBody(src, v);
-  if (body === null) {
-    eq(`${f} 에 if (${v}) 조기 반환이 있다`, false, true);
-    return;
-  }
-  /* 조기 반환이 «결과 JSX 를 만드는 return 보다 앞»에 있어야 실효가 있다.
-     차단 변수를 선언한 «직후»에 오는지로 본다 — 뒤로 밀리면 결과 화면이 먼저 만들어진다. */
+  if (body === null) { eq(`${f} 에 if (${v}) 조기 반환이 있다`, false, true); return; }
   const declEnd = src.indexOf(`const ${v} = `);
   const guardAt = src.indexOf(`if (${v}) {`);
   const mainReturn = src.indexOf('return (', declEnd);
@@ -154,36 +206,6 @@ BLOCKED_FILES.forEach(([f, v]) => {
   eq(`${f} · 차단 화면이 JTFallbackBlocked 를 렌더한다`, /<JTFallbackBlocked\b/.test(body), true);
   const hits = LEAK_TARGETS.filter(({ pat }) => body.includes(pat)).map((t) => t.what);
   eq(`${f} · 차단 화면에 금액 표현이 없다`, hits.length ? `누설: ${hits.join(' / ')}` : '없음', '없음');
-});
-
-/* precise 이면 gaps 가 «실제로» 비는지 — 정규식이 아니라 실행으로 확인한다.
-   종전 검사는 `calc.precise … ? [] :` 문자열만 봐서, 그 삼항이 딴 데 있어도 통과했다. */
-console.log('\n════ 엔진 성공(precise) 시엔 차단하지 않는다 — 실행으로 확인 ════');
-[['ReportInheritance.jsx', 'inhGaps', { spouseActual: 'zero', isResident: 'no' }, { nonResident: true }],
- ['ReportGift.jsx', 'giftGaps', { genSkip: 'yes', priorGiftHas: 'yes' }, { nonResident: false }],
- ['ReportAcquisition.jsx', 'acqGaps', { propertyType: '토지', reduction: 'first' }, { acqArea: 0 }],
- ['ReportProperty.jsx', 'propGaps', { propertyKind: '건축물' }, {}],
- ['ReportCGT.jsx', 'cgtGaps', { assetType: 'occupancy_succ' }, {}]].forEach(([f, v, ans, extra]) => {
-  const body = extractGapChecks(f, v);
-  const fn = new Function('answers', 'calc', 'Number', 'window', Object.keys(extra).join(',') || '_unused',
-    'return calc.precise ? [] : window.jtFallbackGaps([' + body + ']);');
-  const blocked = fn(ans, { precise: false }, Number, window, ...Object.values(extra));
-  const precise = fn(ans, { precise: true }, Number, window, ...Object.values(extra));
-  eq(`${f} · 차단 입력 + 엔진 실패 → 막는다`, blocked.length > 0, true);
-  eq(`${f} · 같은 입력이라도 엔진 성공 → 안 막는다`, precise.length, 0);
-});
-
-console.log('\n════ «배선» 확인 — 규칙만 있고 화면이 안 쓰면 소용없다 ════');
-[['ReportInheritance.jsx', 'inhBlocked'], ['ReportGift.jsx', 'giftBlocked'],
- ['ReportAcquisition.jsx', 'acqBlocked'], ['ReportProperty.jsx', 'propBlocked'],
- ['ReportCGT.jsx', 'cgtBlocked']].forEach(([f, v]) => {
-  const s = fs.readFileSync(SRC(f), 'utf8');
-  eq(`${f} 가 JTFallbackBlocked 를 렌더한다`, /<JTFallbackBlocked\b/.test(s), true);
-  eq(`${f} 가 ${v} 로 숫자 표시를 가른다`, new RegExp('\\{!?' + v + '\\b').test(s), true);
-  /* 엔진 성공(precise)이면 절대 막지 않는다 — 정상 이용자를 막으면 그게 더 큰 사고다.
-     증여세는 `(calc.precise || calc.engineErr) ? [] :` 형태다(부담부 경로가 이미 따로 막는다).
-     그래서 «정확한 문자열»이 아니라 «precise 가 조건에 들어 있는가»로 본다. */
-  eq(`${f} 는 precise 이면 차단하지 않는다`, /calc\.precise[^?\n]*\?\s*\[\]\s*:/.test(s), true);
 });
 
 console.log(`\n════════════════════\n실패 ${fails}건`);

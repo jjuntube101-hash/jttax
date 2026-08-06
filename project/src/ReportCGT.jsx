@@ -319,6 +319,33 @@ function formatWon(n) {
 }
 
 /* 상담 요청 시 담당 세무사에게 전달할 상세 — 고객 입력 전체 + 계산 결과 + 자동 분석 */
+/* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+   (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+function cgtFallbackGaps(answers, calc) {
+  if (calc.precise) return [];
+  return window.jtFallbackGaps([
+    { when: answers.assetType === 'occupancy_succ',
+      why: '승계취득 조합원입주권 — 장기보유특별공제 대상이 아닌데 간이 계산이 공제를 적용해 세금이 «적게» 나옵니다.' },
+    { when: answers.assetType === 'occupancy_orig',
+      why: '원조합원 입주권 — 관리처분인가 «전» 차익에만 장특공제가 붙는데 간이 계산은 전체 차익에 적용해 세금이 «크게 적게» 나옵니다.' },
+    /* 조정지역 조건을 빼는 이유 — 틀리는 «방향»이 지역에 따라 뒤집힐 뿐, 둘 다 틀린다 (260806 Codex P1).
+       · 조정: 중과(+20%p)·장특 배제(§104⑦2호) 미반영 → 세금이 «적게»(실측 5억원대)
+       · 비조정: 일시적 특례(시령 §156의2③·§156의3②) 판정 불가라 무조건 과세 → 비과세여야 할 건이 «많게»
+       «많게»도 사고다. 팔지 말아야 할 이유가 되어 의사결정을 바꾼다. */
+    { when: answers.assetType === 'house_1'
+            && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale'),
+      why: '«1주택 + 입주권·분양권» 동시 보유 — 비과세 배제(§89②)와 일시적 특례를 간이 계산이 판정하지 못합니다.' },
+    /* 취득 당시 조정지역은 «1세대1주택 비과세의 거주요건»에만 쓰인다(§154①) — 2·3주택엔 영향이 없어
+       차단하면 멀쩡한 이용자를 막는다. 과잉 차단도 결함이다 (Codex P2, 소스 1063·746행에서 확인). */
+    { when: answers.assetType === 'house_1' && answers.acqAdjustedZone === 'unsure',
+      why: '살 때 조정대상지역이었는지 «모름» — 1세대1주택 비과세의 거주 2년 요건이 이 사실로 갈립니다.' },
+    { when: !!answers.moveInDate && !!answers.acquiredDate && answers.moveInDate < answers.acquiredDate,
+      why: '전입일이 취득일보다 앞섭니다 — 거주기간이 실제보다 길게 잡혀 공제가 과다해집니다.' },
+  ]);
+}
+
 function buildReportDetail(answers, calc, commentary) {
   const L = [];
   L.push('■ 고객 입력 정보');
@@ -1004,6 +1031,16 @@ ${context}
 cautions 3개, saving_ideas 2~3개.`;
 
       // 코멘터리는 실패해도 calc(정밀 엔진 결과)를 유지하도록 별도 try/catch
+      /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
+         폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
+         렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
+      if (cgtFallbackGaps(answers, calc).length > 0) {
+        const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
+        setReport(blockedRep);
+        if (phase === 'quick') setQuickReport(blockedRep);
+        return;
+      }
+
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
@@ -1151,25 +1188,7 @@ cautions 3개, saving_ideas 2~3개.`;
     const { calc, commentary } = report;
     /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반).
        기본세율표·단기세율·중과·장특은 폴백도 맞게 계산하므로 «그 밖의» 구조적 결함만 막는다. */
-    const cgtGaps = calc.precise ? [] : window.jtFallbackGaps([
-      { when: answers.assetType === 'occupancy_succ',
-        why: '승계취득 조합원입주권 — 장기보유특별공제 대상이 아닌데 간이 계산이 공제를 적용해 세금이 «적게» 나옵니다.' },
-      { when: answers.assetType === 'occupancy_orig',
-        why: '원조합원 입주권 — 관리처분인가 «전» 차익에만 장특공제가 붙는데 간이 계산은 전체 차익에 적용해 세금이 «크게 적게» 나옵니다.' },
-      /* 조정지역 조건을 빼는 이유 — 틀리는 «방향»이 지역에 따라 뒤집힐 뿐, 둘 다 틀린다 (260806 Codex P1).
-         · 조정: 중과(+20%p)·장특 배제(§104⑦2호) 미반영 → 세금이 «적게»(실측 5억원대)
-         · 비조정: 일시적 특례(시령 §156의2③·§156의3②) 판정 불가라 무조건 과세 → 비과세여야 할 건이 «많게»
-         «많게»도 사고다. 팔지 말아야 할 이유가 되어 의사결정을 바꾼다. */
-      { when: answers.assetType === 'house_1'
-              && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale'),
-        why: '«1주택 + 입주권·분양권» 동시 보유 — 비과세 배제(§89②)와 일시적 특례를 간이 계산이 판정하지 못합니다.' },
-      /* 취득 당시 조정지역은 «1세대1주택 비과세의 거주요건»에만 쓰인다(§154①) — 2·3주택엔 영향이 없어
-         차단하면 멀쩡한 이용자를 막는다. 과잉 차단도 결함이다 (Codex P2, 소스 1063·746행에서 확인). */
-      { when: answers.assetType === 'house_1' && answers.acqAdjustedZone === 'unsure',
-        why: '살 때 조정대상지역이었는지 «모름» — 1세대1주택 비과세의 거주 2년 요건이 이 사실로 갈립니다.' },
-      { when: !!answers.moveInDate && !!answers.acquiredDate && answers.moveInDate < answers.acquiredDate,
-        why: '전입일이 취득일보다 앞섭니다 — 거주기간이 실제보다 길게 잡혀 공제가 과다해집니다.' },
-    ]);
+    const cgtGaps = cgtFallbackGaps(answers, calc);
     const cgtBlocked = cgtGaps.length > 0;
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다» — 위 조기 반환과 같은 이유. */
     if (cgtBlocked) {

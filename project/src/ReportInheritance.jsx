@@ -275,6 +275,28 @@ function mapAnswersToInheritance(a) {
 }
 
 /* 상담 전송용 상세 (이메일) */
+/* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+   (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+function inhFallbackGaps(answers, calc) {
+  if (calc.precise) return [];
+  const nonResident = answers.isResident === 'no';
+  return window.jtFallbackGaps([
+    { when: nonResident, why: '비거주자 상속 — 국내 재산만 과세되고 일괄공제 등이 배제되어 계산 구조가 다릅니다.' },
+    { when: answers.spouseActual === 'zero',
+      why: '배우자가 실제로 상속받지 않는 경우 — 간이 계산은 법정상속분대로 공제해 세금이 «크게 적게» 나옵니다(실측 1억 8,381만원 차이).' },
+    { when: answers.priorGiftHas === 'yes',
+      why: '10년 내 사전증여 — 상속재산 가산(§13)과 증여세액공제(§28)를 간이 계산이 다루지 못합니다(실측 6,741만원 차이).' },
+    { when: (Number(answers.netFinancialAssets) || 0) > 0,
+      why: '순금융재산 — 금융재산상속공제(§22, 최대 2억)가 간이 계산에 없습니다.' },
+    { when: answers.hasCohabitationHouse === 'yes',
+      why: '동거주택 — 동거주택상속공제(§23의2, 최대 6억)가 간이 계산에 없습니다.' },
+    { when: answers.numChildren === 'many' && !(Number(answers.numChildrenExact) > 0),
+      why: '자녀가 7명 이상인데 정확한 인원이 없습니다 — 배우자 법정상속분이 인원수로 갈립니다.' },
+  ]);
+}
+
 function buildInhDetail(answers, calc, commentary) {
   const L = ['■ 고객 입력 정보'];
   INHERITANCE_QS.forEach(q => {
@@ -421,6 +443,16 @@ function JTReportInheritance({ setRoute, onBack }) {
         }
       } catch (e) { console.warn('상속 엔진 연결 실패 — 간이 추정 유지', e); }
 
+      /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
+         폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
+         렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
+      if (inhFallbackGaps(answers, calc).length > 0) {
+        const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
+        setReport(blockedRep);
+        if (phase === 'quick') setQuickReport(blockedRep);
+        return;
+      }
+
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
@@ -475,19 +507,7 @@ function JTReportInheritance({ setRoute, onBack }) {
     const nonResident = answers.isResident === 'no';
     /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex — 실측 최대 1.8억 오차).
        ★ 엔진 정밀계산이 성공했으면(calc.precise) 아무것도 막지 않는다. */
-    const inhGaps = calc.precise ? [] : window.jtFallbackGaps([
-      { when: nonResident, why: '비거주자 상속 — 국내 재산만 과세되고 일괄공제 등이 배제되어 계산 구조가 다릅니다.' },
-      { when: answers.spouseActual === 'zero',
-        why: '배우자가 실제로 상속받지 않는 경우 — 간이 계산은 법정상속분대로 공제해 세금이 «크게 적게» 나옵니다(실측 1억 8,381만원 차이).' },
-      { when: answers.priorGiftHas === 'yes',
-        why: '10년 내 사전증여 — 상속재산 가산(§13)과 증여세액공제(§28)를 간이 계산이 다루지 못합니다(실측 6,741만원 차이).' },
-      { when: (Number(answers.netFinancialAssets) || 0) > 0,
-        why: '순금융재산 — 금융재산상속공제(§22, 최대 2억)가 간이 계산에 없습니다.' },
-      { when: answers.hasCohabitationHouse === 'yes',
-        why: '동거주택 — 동거주택상속공제(§23의2, 최대 6억)가 간이 계산에 없습니다.' },
-      { when: answers.numChildren === 'many' && !(Number(answers.numChildrenExact) > 0),
-        why: '자녀가 7명 이상인데 정확한 인원이 없습니다 — 배우자 법정상속분이 인원수로 갈립니다.' },
-    ]);
+    const inhGaps = inhFallbackGaps(answers, calc);
     const inhBlocked = inhGaps.length > 0;
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·

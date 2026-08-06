@@ -298,6 +298,24 @@ function priorGiftDeductionUsed(a, priorValue) {
   return { used: Math.min(giftDeduction(rel, isMinor), priorValue), estimated: true };
 }
 
+/* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+   (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+function giftFallbackGaps(answers, calc) {
+  if (calc.precise) return [];
+  const nonResident = answers.isResident === 'no';
+  return window.jtFallbackGaps([
+    { when: nonResident, why: '비거주자 증여 — 증여재산공제가 배제되어 세금이 «크게 많아»집니다(실측 970만원 차이).' },
+    { when: answers.genSkip === 'yes',
+      why: '세대생략 증여(손주에게) — 30%(미성년·20억 초과는 40%) 할증이 간이 계산에 없습니다(실측 582만원 차이).' },
+    { when: answers.marriageDed === 'yes' || answers.childbirthDed === 'yes',
+      why: '혼인·출산 증여공제(최대 1억) — 간이 계산에 없어 세금이 «크게 많게» 나옵니다(실측 1,455만원 차이).' },
+    { when: answers.priorGiftHas === 'yes',
+      why: '10년 내 사전증여 — 합산은 하지만 기납부세액공제(§58)가 빠져 세금이 «많게» 나옵니다(실측 485만원 차이).' },
+  ]);
+}
+
 function mapAnswersToGift(a) {
   const body = {
     value: giftAmount(a),
@@ -559,6 +577,16 @@ function JTReportGift({ setRoute, onBack }) {
       }
 
       // Claude 코멘터리 (실패해도 폴백)
+      /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
+         폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
+         렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
+      if (giftFallbackGaps(answers, calc).length > 0) {
+        const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
+        setReport(blockedRep);
+        if (phase === 'quick') setQuickReport(blockedRep);
+        return;
+      }
+
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
@@ -616,15 +644,7 @@ function JTReportGift({ setRoute, onBack }) {
       priorGiftDeductionUsed(answers, Number(answers.priorGiftValue) || 0).estimated;
     /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반).
        부담부증여는 이미 engineErr 로 같은 처리를 하고 있어 여기서 중복 판정하지 않는다. */
-    const giftGaps = (calc.precise || calc.engineErr) ? [] : window.jtFallbackGaps([
-      { when: nonResident, why: '비거주자 증여 — 증여재산공제가 배제되어 세금이 «크게 많아»집니다(실측 970만원 차이).' },
-      { when: answers.genSkip === 'yes',
-        why: '세대생략 증여(손주에게) — 30%(미성년·20억 초과는 40%) 할증이 간이 계산에 없습니다(실측 582만원 차이).' },
-      { when: answers.marriageDed === 'yes' || answers.childbirthDed === 'yes',
-        why: '혼인·출산 증여공제(최대 1억) — 간이 계산에 없어 세금이 «크게 많게» 나옵니다(실측 1,455만원 차이).' },
-      { when: answers.priorGiftHas === 'yes',
-        why: '10년 내 사전증여 — 합산은 하지만 기납부세액공제(§58)가 빠져 세금이 «많게» 나옵니다(실측 485만원 차이).' },
-    ]);
+    const giftGaps = giftFallbackGaps(answers, calc);
     const giftBlocked = giftGaps.length > 0;
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
