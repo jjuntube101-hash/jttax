@@ -72,7 +72,8 @@ const COMP_QS = [
     id: 'ownShare',
     section: '본인 지분율',
     q: '부부 공동명의 중 본인 지분율은 몇 %인가요?',
-    sub: '본인이 가진 지분 비율입니다. 보통 50%이며, 나머지는 배우자 지분으로 계산합니다. 비워두면 50%로 봅니다.',
+    /* 종전 「비워두면 50%로 봅니다」는 이제 거짓이다 — 비우면 계산하지 않는다 */
+    sub: '본인이 가진 지분 비율입니다. 보통 50%이며, 나머지는 배우자 지분으로 계산합니다. 등기부등본의 「지분」란에 적혀 있어요. 비워 두시면 세액이 크게 갈려(50%면 65만원, 30%면 159만원) 금액 대신 안내를 드립니다.',
     showIf: (a) => a.housingCount === 'one' && a.ownership === 'joint',
     numeric: true, optional: true,
     placeholder: '예: 50',
@@ -86,6 +87,23 @@ const COMP_QS = [
     placeholder: '예: 임대사업자 등록 주택 / 상속주택 보유',
   },
 ];
+
+/* 불확정 입력 차단 — 다른 계산기와 같은 규약 `(answers, calc)`.
+   ★ 「고지만 하고 계산은 한다」로 갔다가 되돌렸다 (260806 Codex R19 P1).
+   부부 공동명의 지분은 «압도적 다수가 50%»라 고지로 충분하다고 봤는데, 화면은 그 숫자에
+   「정밀 계산 (JT택스랩 엔진)」 딱지를 붙인다. 노란 경고 한 줄로 상쇄되지 않는다.
+   실측(POST /v1/calc/comprehensive, 공시 20억·1주택): 지분 50% 655,200 / 30% 1,593,000 (2.4배).
+   다른 계산기에 「모르면 막는다」를 적용해 놓고 여기만 예외를 두면 그건 규칙이 아니라 변덕이다. */
+function compFallbackGaps(answers, calc) {   // eslint-disable-line no-unused-vars
+  const share = Number(answers.ownShare);
+  return window.jtFallbackGaps([
+    /* 조건을 «계산이 지분을 실제로 쓰는 경우»와 일치시킨다 — 1주택일 때만 쓴다.
+       2주택으로 바꿔도 state 에 joint 가 남아 엉뚱한 안내가 뜨던 것도 함께 막는다 (R19 P2). */
+    { when: answers.housingCount === 'one' && answers.ownership === 'joint'
+            && !(share > 0 && share < 100),
+      why: '부부 공동명의인데 본인 지분율이 없습니다 — 지분에 따라 세액이 크게 갈립니다(실측: 50%면 65만원, 30%면 159만원). 등기부등본의 「지분」란에서 확인해 입력해 주세요.' },
+  ]);
+}
 
 function mapAnswersToComprehensive(a) {
   const countMap = { one: 1, two: 2, three: 3 };
@@ -337,6 +355,14 @@ function JTReportComprehensive({ setRoute, onBack }) {
         }
       } catch (e) { console.warn('종부세 엔진 연결 실패 — 간이 추정 유지', e); }
 
+      /* ★ AI 프롬프트를 만들기 «전»에 막는다 (다른 계산기와 같은 규약) */
+      if (compFallbackGaps(answers, calc).length > 0) {
+        const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
+        setReport(blockedRep);
+        if (phase === 'quick') setQuickReport(blockedRep);
+        return;
+      }
+
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
@@ -387,6 +413,21 @@ function JTReportComprehensive({ setRoute, onBack }) {
 
   if (report) {
     const { calc, commentary } = report;
+    const compGaps = compFallbackGaps(answers, calc);
+    const compBlocked = compGaps.length > 0;
+    /* 차단이면 결과 화면을 아예 만들지 않는다 — 다른 계산기와 같은 규약 */
+    if (compBlocked) {
+      return (
+        <div className="jt-container">
+          <JTReportShell title="종합부동산세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            <JTFallbackBlocked gaps={compGaps} onRetry={runAnalysis} />
+            <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
+              <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
+            </div>
+          </JTReportShell>
+        </div>
+      );
+    }
     return (
       <div className="jt-container">
         <JTReportShell title="종합부동산세 계산 결과" subtitle={calc.precise ? '종부세 정밀 계산' : '종부세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
@@ -394,14 +435,6 @@ function JTReportComprehensive({ setRoute, onBack }) {
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 종부세(연간, 농특세 포함)' : (calc.precise ? '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '연간 추정 납부세액 · 간이')}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
-
-          {/* ★ «조용한 가정»을 결과에도 알린다 — 문항 sub 에만 적어 두면, 건너뛴 사람은
-              무엇을 가정한 값인지 모른 채 숫자만 본다. 실측: 지분 50% 65.5만 ↔ 30% 159.3만 */}
-          {answers.ownership === 'joint' && !(Number(answers.ownShare) > 0) && (
-            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
-              본인 지분율을 넣지 않으셔서 <strong>50%</strong>로 보고 계산했습니다. 실제 지분이 다르면 세액이 달라집니다(등기부에서 확인하실 수 있어요).
-            </div>
-          )}
 
           {report.quick && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>

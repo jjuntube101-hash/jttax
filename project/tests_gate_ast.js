@@ -21,6 +21,13 @@ const SRC = (f) => path.join(__dirname, 'src', f);
 /* ⚠️ 새 *FallbackGaps 를 만들면 «반드시» 여기에 등록한다 — 판정 함수 자체 테스트만
    통과하고 AI·공유 차단 회귀는 안 잡히는 구멍이 생긴다 (260806 Codex R18 P1: 법인전환이
    이 목록에 없어, 게이트의 return 을 지워도 두 테스트가 전부 통과했다). */
+/* 「외부 AI 를 쓰지 않는다」가 정책인 파일 — 이 목록에 있으면 AI 호출 수 0 을 «기대값»으로
+   검사한다. 순서 검사만으로는 부족하다: 게이트 «뒤»에 AI 를 추가하면 순서상 통과라
+   정책 위반이 조용히 들어온다 (260806 Codex R19 P2).
+   AI 를 의도적으로 도입할 땐 이 목록에서 빼고, 그 커밋에서 프롬프트 범위·차단 입력
+   전송 금지·게이트 순서를 함께 검토한다. */
+const NO_AI_FILES = new Set(['ReportIncome.jsx']);
+
 const TARGETS = [
   ['ReportInheritance.jsx', 'inhFallbackGaps'],
   ['ReportGift.jsx', 'giftFallbackGaps'],
@@ -29,6 +36,7 @@ const TARGETS = [
   ['ReportCGT.jsx', 'cgtFallbackGaps'],
   ['ReportIncome.jsx', 'incFallbackGaps'],
   ['ReportCorporate.jsx', 'corpFallbackGaps'],
+  ['ReportComprehensive.jsx', 'compFallbackGaps'],
 ];
 
 let fails = 0;
@@ -61,15 +69,33 @@ TARGETS.forEach(([file, fn]) => {
   const code = fs.readFileSync(SRC(file), 'utf8');
   const ast = parser.parse(code, { sourceType: 'script', plugins: ['jsx'] });
 
-  /* ① 판정 함수를 부르는 if 문 중, «막고 return 하는» 것이 있는가 */
+  /* ① 판정 함수의 «결과를 실제로 조건으로 쓰는» if 문 중, 막고 return 하는 것이 있는가.
+        ⚠️ 문자열로 `fn(` 이 있는지만 보면 이런 가짜 게이트가 통과한다 (260806 Codex R19 P1) —
+
+          if (corpFallbackGaps(answers, calc), false) { return; }   ← 쉼표 연산자로 결과를 버림
+
+        호출도 하고, if 도 있고, return 도 있고, AI 호출보다 앞이고, 같은 함수 안이다.
+        그런데 «막지 않는다». 그래서 조건식의 «구조»를 본다:
+          fn(...).length  를  0  과 비교하는 이항식이어야 한다. */
+  const isGateTest = (t) => {
+    if (!t || t.type !== 'BinaryExpression') return false;
+    if (!['>', '!==', '!=', '>='].includes(t.operator)) return false;
+    /* 왼쪽이 fn(...).length 인가 */
+    const L = t.left;
+    if (!L || L.type !== 'MemberExpression' || !L.property || L.property.name !== 'length') return false;
+    const call = L.object;
+    if (!call || call.type !== 'CallExpression') return false;
+    if (!call.callee || call.callee.type !== 'Identifier' || call.callee.name !== fn) return false;
+    /* 오른쪽이 0 인가 (>= 는 1 도 허용) */
+    const R = t.right;
+    if (!R || R.type !== 'NumericLiteral') return false;
+    return t.operator === '>=' ? R.value >= 1 : R.value === 0;
+  };
   const gates = [];
   let aiCallStart = null;
   walk(ast.program, (n) => {
     if (n.type === 'IfStatement') {
-      const src = code.slice(n.test.start, n.test.end);
-      /* 인자 형태는 파일마다 다르다(법인전환은 calc 가 TDZ 라 리터럴을 넘긴다) —
-         «판정 함수를 부르는가»만 본다. 인자까지 고정하면 정당한 변형에 헛되이 깨진다. */
-      if (src.includes(`${fn}(`) && alwaysReturns(n.consequent)) gates.push(n);
+      if (isGateTest(n.test) && alwaysReturns(n.consequent)) gates.push(n);
     }
     if (n.type === 'CallExpression') {
       const callee = code.slice(n.callee.start, n.callee.end);
@@ -79,16 +105,14 @@ TARGETS.forEach(([file, fn]) => {
 
   eq(`${file} · 판정 결과로 «return 하는» 게이트가 있다`, gates.length > 0, true);
   if (!gates.length) return;
-  /* AI 호출이 «없는» 계산기(종합소득세)도 있다. 그때는 순서를 볼 대상이 없다.
-     나중에 누가 AI 호출을 «추가»해도 이 파일은 그것만으로 FAIL 내지 않는다 —
-     게이트보다 «앞»에 놓았을 때만 아래 ② 가 잡는다. 260806 주입 실험으로 확인:
-       게이트 뒤에 추가 → 4항목 전부 PASS (안전한 배치라 맞다)
-       게이트 앞에 추가 → 「게이트가 AI 호출보다 앞이다」 FAIL
-     즉 «추가 자체»가 아니라 «위험한 배치»를 잡는다. 그게 맞는 설계다. */
-  if (aiCallStart === null) {
-    eq(`${file} · 지금은 AI 호출이 없다 (추가하려면 반드시 게이트 «뒤»에)`, true, true);
-    return;
+  /* AI 비사용 «정책» 파일은 호출 수 0 을 직접 고정한다. 그냥 통과시키면
+     게이트 뒤에 AI 를 넣는 방식으로 정책이 조용히 무너진다 (R19 P2). */
+  if (NO_AI_FILES.has(file)) {
+    eq(`${file} · AI 비사용 정책 — window.claude.complete 호출 0회`
+       + ' (도입하려면 NO_AI_FILES 에서 빼고 게이트 순서를 함께 검토)', aiCallStart === null, true);
+    if (aiCallStart === null) return;
   }
+  if (aiCallStart === null) return;   // 정책 파일이 아닌데 AI 가 없으면 볼 순서가 없다
 
   /* ② 그 게이트가 AI 호출보다 앞이어야 한다. «막고 나가는» 게이트만 세므로,
         빈 껍데기 if 를 앞에 두는 되돌림으로는 통과할 수 없다. */
@@ -130,6 +154,25 @@ TARGETS.forEach(([file, fn]) => {
     if (n.finalizer.start <= aiCallStart && n.finalizer.end >= aiCallStart) aiInFinally = true;
   });
   eq(`${file} · AI 호출이 finally 안에 있지 않다 (return 을 통과해도 실행되는 자리)`, aiInFinally, false);
+});
+
+/* ── 판정 함수를 «분석»과 «렌더»가 둘 다 쓰는가 — 실제 호출 노드로 센다 ──────────
+   종전엔 소스에서 `fn(` 문자열을 셌다. 그건 `fn (a, b)` 처럼 공백만 넣어도 못 세고,
+   반대로 주석·문자열 안의 `fn(` 은 세어 버린다 (260806 Codex R19 P2).
+   규칙이 «한 벌»인지는 실제 CallExpression 으로 확인해야 한다. */
+console.log('\n════ 판정 규칙이 한 벌인가 — 실제 호출 노드로 확인 ════');
+TARGETS.forEach(([file, fn]) => {
+  const code = fs.readFileSync(SRC(file), 'utf8');
+  const ast = parser.parse(code, { sourceType: 'script', plugins: ['jsx'] });
+  let defs = 0;
+  const calls = [];
+  walk(ast.program, (n) => {
+    if (n.type === 'FunctionDeclaration' && n.id && n.id.name === fn) defs++;
+    if (n.type === 'CallExpression' && n.callee && n.callee.type === 'Identifier' && n.callee.name === fn) calls.push(n.start);
+  });
+  eq(`${file} · ${fn} 정의가 정확히 1개다`, defs, 1);
+  eq(`${file} · 분석·렌더 최소 2곳에서 호출한다 (규칙이 두 벌이면 반드시 어긋난다)`,
+     calls.length >= 2, true);
 });
 
 console.log(`\n════════════════════\n실패 ${fails}건`);

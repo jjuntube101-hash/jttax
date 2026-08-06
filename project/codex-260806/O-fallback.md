@@ -4,40 +4,40 @@
 
 ## 2. 발견 사항
 
-- [P0] `project/src/ReportCGT.jsx:1258-1279` · 차단 후에도 계산표 전체가 렌더됩니다.  
-  재현: 엔진 실패 + `assetType=occupancy_succ` → `cgtBlocked=true`인데도 양도차익·장특공제·과세표준·산출세액·총세액이 표시됩니다.  
+- [P0] `project/src/ReportCGT.jsx:1258-1279` · 차단 후에도 계산표 전체가 렌더됩니다.
+  재현: 엔진 실패 + `assetType=occupancy_succ` → `cgtBlocked=true`인데도 양도차익·장특공제·과세표준·산출세액·총세액이 표시됩니다.
   수정안: 계산 내역, 실효세율, 주의/절세 전략 중 `calc` 금액을 쓰는 전 구간을 `!cgtBlocked`로 감싸십시오.
 
-- [P0] `ReportInheritance.jsx:588-596`, `ReportGift.jsx:755-763`, `ReportAcquisition.jsx:585-593`, `ReportProperty.jsx:732-740`, `ReportCGT.jsx:1340-1348` · 차단 중에도 `JTReportConvert`가 렌더됩니다.  
-  `reportSummary`, `reportDetail`, `kakaoSummary`가 모두 폴백 세액을 생성합니다. [ReportConvert.jsx:53, 80-93, 138-147]은 이를 클립보드와 Web3Forms payload에 사용합니다.  
-  재현: 상속 `spouseActual=zero`, 엔진 실패 → 패널은 “금액을 표시하지 않습니다”라고 하지만 카카오 버튼은 `총 납부세액 …원`을 복사하고, 동의 후 payload에도 전송합니다.  
+- [P0] `ReportInheritance.jsx:588-596`, `ReportGift.jsx:755-763`, `ReportAcquisition.jsx:585-593`, `ReportProperty.jsx:732-740`, `ReportCGT.jsx:1340-1348` · 차단 중에도 `JTReportConvert`가 렌더됩니다.
+  `reportSummary`, `reportDetail`, `kakaoSummary`가 모두 폴백 세액을 생성합니다. [ReportConvert.jsx:53, 80-93, 138-147]은 이를 클립보드와 Web3Forms payload에 사용합니다.
+  재현: 상속 `spouseActual=zero`, 엔진 실패 → 패널은 “금액을 표시하지 않습니다”라고 하지만 카카오 버튼은 `총 납부세액 …원`을 복사하고, 동의 후 payload에도 전송합니다.
   수정안: 차단 시 `JTReportConvert`를 렌더하지 말고, 별도의 “정밀 계산 필요” 상담 CTA에는 세액 없는 입력 요약만 전달하십시오.
 
-- [P1] `project/src/ReportAcquisition.jsx:102-107, 454-456` · 조정대상지역의 “아니오 / 모름”이 모두 `no`로 저장되어 차단 조건을 우회합니다.  
-  재현: 주택 매매, 취득 후 2주택, 전용 84㎡, 실제 조정대상지역이나 사용자가 “아니오 / 모름” 선택, 엔진 실패 → `acqBlocked=false`, 비조정지역 세율로 금액 표시. 조정 2주택 중과와 큰 차이가 납니다.  
+- [P1] `project/src/ReportAcquisition.jsx:102-107, 454-456` · 조정대상지역의 “아니오 / 모름”이 모두 `no`로 저장되어 차단 조건을 우회합니다.
+  재현: 주택 매매, 취득 후 2주택, 전용 84㎡, 실제 조정대상지역이나 사용자가 “아니오 / 모름” 선택, 엔진 실패 → `acqBlocked=false`, 비조정지역 세율로 금액 표시. 조정 2주택 중과와 큰 차이가 납니다.
   수정안: `no`와 `unknown`을 별도 값으로 두고, 다주택 + `unknown`은 차단하십시오.
 
-- [P1] `project/src/ReportAcquisition.jsx:91-100, 452-453` · 85㎡ 미입력 차단이 매매에만 적용됩니다.  
-  재현: 증여 또는 신축 주택, 전용면적 미입력, 엔진 실패 → 농어촌특별세 여부를 모른 채 금액을 표시합니다. 상속 주택은 별도 전면 차단되지만 증여·신축은 아닙니다.  
+- [P1] `project/src/ReportAcquisition.jsx:91-100, 452-453` · 85㎡ 미입력 차단이 매매에만 적용됩니다.
+  재현: 증여 또는 신축 주택, 전용면적 미입력, 엔진 실패 → 농어촌특별세 여부를 모른 채 금액을 표시합니다. 상속 주택은 별도 전면 차단되지만 증여·신축은 아닙니다.
   수정안: 농어촌특별세가 문제인 주택 취득유형 전체에 대해 “면적 미입력”을 차단하거나, 세목별 적용대상만 명시적으로 제외하십시오.
 
-- [P1] `project/src/ReportAcquisition.jsx:138-143, 498-500` · 실측 근거로 든 일시적 2주택 중과배제는 자유입력에만 존재하여 차단할 방법이 없습니다.  
-  재현: 조정지역 2주택 매매, 84㎡, `context='일시적 2주택'`, 엔진 실패 → 폴백은 중과액을 표시하며 `acqGaps`는 비어 있습니다.  
+- [P1] `project/src/ReportAcquisition.jsx:138-143, 498-500` · 실측 근거로 든 일시적 2주택 중과배제는 자유입력에만 존재하여 차단할 방법이 없습니다.
+  재현: 조정지역 2주택 매매, 84㎡, `context='일시적 2주택'`, 엔진 실패 → 폴백은 중과액을 표시하며 `acqGaps`는 비어 있습니다.
   수정안: 자유입력 파싱을 하지 말고, “일시적 2주택 중과배제 가능성” 구조화 문항을 추가해 `yes/unknown`을 차단하십시오.
 
-- [P1] `project/src/ReportCGT.jsx:677-685, 743-765, 1158-1162` · 1주택과 입주권/분양권 동시보유는 조정지역일 때만 차단됩니다.  
-  재현: `house_1`, 동시 입주권, 비조정지역, 권리 취득일 미입력, 엔진 실패 → `cgtBlocked=false`. 그런데 폴백은 비과세를 배제하면서도 `is1House` 기준 장기보유특별공제율을 계속 사용합니다. 권리의 일시적 특례와 과세 장특 판정을 확정할 수 없는 입력입니다.  
+- [P1] `project/src/ReportCGT.jsx:677-685, 743-765, 1158-1162` · 1주택과 입주권/분양권 동시보유는 조정지역일 때만 차단됩니다.
+  재현: `house_1`, 동시 입주권, 비조정지역, 권리 취득일 미입력, 엔진 실패 → `cgtBlocked=false`. 그런데 폴백은 비과세를 배제하면서도 `is1House` 기준 장기보유특별공제율을 계속 사용합니다. 권리의 일시적 특례와 과세 장특 판정을 확정할 수 없는 입력입니다.
   수정안: 동시보유 + 특례 판정 불충분을 지역과 무관하게 차단하거나, 폴백이 해당 장특 구조를 완전히 계산할 수 있음을 검증해야 합니다.
 
-- [P2] `project/src/ReportCGT.jsx:1163-1165` · `acqAdjustedZone='unsure'` 차단은 2·3주택까지 포함해 과차단입니다.  
-  재현: `assetType=house_2`, 취득 당시 조정지역 “모름”, 현재 비조정지역, 엔진 실패 → 차단. 그러나 폴백에서 취득 당시 조정지역은 1주택 거주요건 판정에만 쓰입니다([ReportCGT.jsx:743-755]). 2·3주택 세액에는 영향을 주지 않습니다.  
+- [P2] `project/src/ReportCGT.jsx:1163-1165` · `acqAdjustedZone='unsure'` 차단은 2·3주택까지 포함해 과차단입니다.
+  재현: `assetType=house_2`, 취득 당시 조정지역 “모름”, 현재 비조정지역, 엔진 실패 → 차단. 그러나 폴백에서 취득 당시 조정지역은 1주택 거주요건 판정에만 쓰입니다([ReportCGT.jsx:743-755]). 2·3주택 세액에는 영향을 주지 않습니다.
   수정안: 해당 차단 조건을 `assetType === 'house_1'`로 한정하십시오.
 
-- [P2] `project/src/ReportComprehensive.jsx:401-404` · 종부세 미차단 판단은 수용 가능합니다. 재산세 공제와 세부담 상한을 누락한 상향 추정이라는 구조는 코드와 고지에 일치합니다. 다만 다주택 빠른 결과의 “실제 종부세에 가까운 값”은 [404행]의 누락 항목과 모순됩니다.  
+- [P2] `project/src/ReportComprehensive.jsx:401-404` · 종부세 미차단 판단은 수용 가능합니다. 재산세 공제와 세부담 상한을 누락한 상향 추정이라는 구조는 코드와 고지에 일치합니다. 다만 다주택 빠른 결과의 “실제 종부세에 가까운 값”은 [404행]의 누락 항목과 모순됩니다.
   수정안: “상한 추정이며 실제 고지세액은 낮아질 수 있음”으로 통일하십시오. 이 사유만으로 모든 양(+) 세액을 차단할 근거는 확인되지 않았습니다.
 
-- [P2] `project/tests_fallback_block.js:106-115` · 회귀 테스트는 실제 누설을 잡지 못합니다.  
-  현재 배선 검사는 `JTFallbackBlocked` 문자열 존재와 `{!cgtBlocked` 같은 정규식만 확인합니다. 그래서 현재의 CGT 계산표 누설과 다섯 계산기의 `JTReportConvert` 누설이 모두 통과합니다. `precise` 검사도 실제 `gaps` 결과를 `calc.precise=true`로 실행하지 않고 정규식만 봅니다.  
+- [P2] `project/tests_fallback_block.js:106-115` · 회귀 테스트는 실제 누설을 잡지 못합니다.
+  현재 배선 검사는 `JTFallbackBlocked` 문자열 존재와 `{!cgtBlocked` 같은 정규식만 확인합니다. 그래서 현재의 CGT 계산표 누설과 다섯 계산기의 `JTReportConvert` 누설이 모두 통과합니다. `precise` 검사도 실제 `gaps` 결과를 `calc.precise=true`로 실행하지 않고 정규식만 봅니다.
   수정안: 각 차단 입력을 대상으로 렌더 산출물에 `formatWon(calc.totalTax)`, `kakaoSummary`, `reportSummary`, `reportDetail`, `JTReportConvert`가 없는지 검증하고, `calc.precise=true`일 때 `gaps=[]`를 실제 실행으로 검증하십시오.
 
 빠른 계산 경로 평가는 다음과 같습니다.

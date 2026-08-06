@@ -1,6 +1,6 @@
 ## 1. 작업 요약
 
-`34308b5..afb88c6`을 HEAD 기준으로 정적 검토했습니다. 요청하신 상속·증여 거주자 하드닝의 상태 복원 경로와 종소세 렌더 분기는 정상으로 확인됐고, 종소세 외국배당 처리 1건, 법인전환 전송 게이트의 테스트 공백 1건, 실제 줄끝 공백 1건을 지적합니다.  
+`34308b5..afb88c6`을 HEAD 기준으로 정적 검토했습니다. 요청하신 상속·증여 거주자 하드닝의 상태 복원 경로와 종소세 렌더 분기는 정상으로 확인됐고, 종소세 외국배당 처리 1건, 법인전환 전송 게이트의 테스트 공백 1건, 실제 줄끝 공백 1건을 지적합니다.
 특히 외국배당은 Gross-up만 끈다고 정확해지지 않습니다. 거주자의 국외원천소득에 외국소득세가 있는 경우 소득세법 제57조의 공제 대상이 될 수 있는데, HEAD 클라이언트는 그 금액을 받거나 전송하지 않습니다. [국가법령정보센터 소득세법 제57조](https://law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1030575745)
 
 ## 2. 변경 내역 및 지적
@@ -51,15 +51,15 @@ project/codex-260806/R-unknown.md:87: trailing whitespace.
 
 ## 4. 검증 결과
 
-- `git rev-parse HEAD`  
+- `git rev-parse HEAD`
   결과: `afb88c6136e38ac2779c01f170091fb0db8dca04` — 요청하신 HEAD와 일치.
-- `git diff --check 34308b5..HEAD`  
+- `git diff --check 34308b5..HEAD`
   결과: `R-unknown.md`의 3개 실제 trailing-whitespace 오류를 확인.
-- `git show HEAD:project/src/ReportIncome.jsx`, `git show HEAD:project/src/ReportCorporate.jsx`, `rg` 정적 추적  
+- `git show HEAD:project/src/ReportIncome.jsx`, `git show HEAD:project/src/ReportCorporate.jsx`, `rg` 정적 추적
   결과: 종소세는 AI 호출이 없고 차단 렌더가 `!calc.precise` 분기보다 앞섬; 법인전환은 현재 게이트가 AI 호출보다 앞이나 두 테스트의 대상 목록에는 없음.
-- CGT 원시 바이트 검사  
+- CGT 원시 바이트 검사
   결과: 실제 줄끝 SP/TAB `0`, CRLF `1,529`.
-- Node 실행 검증  
+- Node 실행 검증
   **미실행** — 사용자 지시대로 이 환경에 Node가 없으므로 실행을 시도하지 않았습니다.
 
 ## 5. 미확인 사항

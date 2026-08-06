@@ -64,6 +64,7 @@ const cgtFallbackGaps = loadGapFn('ReportCGT.jsx', 'cgtFallbackGaps');
    (260806 Codex R18 P1: 법인전환이 1인자라 두 테스트 목록에서 누락돼 있었다). */
 const incFallbackGaps = loadGapFn('ReportIncome.jsx', 'incFallbackGaps');
 const corpFallbackGaps = loadGapFn('ReportCorporate.jsx', 'corpFallbackGaps');
+const compFallbackGaps = loadGapFn('ReportComprehensive.jsx', 'compFallbackGaps');
 
 const DOWN = { precise: false };            // 엔진 장애
 const OK = { precise: true };               // 엔진 정상
@@ -205,6 +206,24 @@ eq('배당 유형 «미입력» → 차단 (문항이 빠져도 새지 않게)',
    incFallbackGaps({ dividendIncome: '50000000' }, OK).length > 0, true);
 eq('배당 0이면 유형과 무관하게 통과', incFallbackGaps({ dividendIncome: '0' }, OK).length, 0);
 
+console.log('\n════ 종부세 — 공동명의 지분 (엔진 실측 2.4배 차이) ════');
+/* 260806 실측(POST /v1/calc/comprehensive, 공시 20억·1주택): 50% 655,200 / 30% 1,593,000.
+   한때 «고지만 하고 계산은 한다»로 갔다가 되돌렸다 — 「정밀 계산」 딱지가 붙은 숫자는
+   노란 경고 한 줄로 상쇄되지 않는다 (Codex R19 P1). */
+eq('공동명의 + 지분 미입력 → precise 여도 차단',
+   compFallbackGaps({ housingCount: 'one', ownership: 'joint' }, OK).length > 0, true);
+eq('공동명의 + 지분 50 → 통과',
+   compFallbackGaps({ housingCount: 'one', ownership: 'joint', ownShare: '50' }, OK).length, 0);
+eq('공동명의 + 지분 0 → 차단 (0<지분<100 이어야 한다)',
+   compFallbackGaps({ housingCount: 'one', ownership: 'joint', ownShare: '0' }, OK).length > 0, true);
+eq('공동명의 + 지분 100 → 차단',
+   compFallbackGaps({ housingCount: 'one', ownership: 'joint', ownShare: '100' }, OK).length > 0, true);
+eq('단독명의 → 지분과 무관하게 통과',
+   compFallbackGaps({ housingCount: 'one', ownership: 'single' }, OK).length, 0);
+/* 2주택으로 바꾸면 계산이 지분을 안 쓴다 — state 에 joint 가 남아도 막으면 안 된다 (R19 P2) */
+eq('2주택인데 joint 잔존 → 통과 (계산이 지분을 쓰지 않는다)',
+   compFallbackGaps({ housingCount: 'two', ownership: 'joint' }, OK).length, 0);
+
 console.log('\n════ 법인 전환 — 입력값을 말없이 바꾸지 않는다 ════');
 eq('대표급여 ≤ 사업이익 → 통과',
    corpFallbackGaps({ businessIncome: '100000000', ownerSalary: '50000000' }, OK).length, 0);
@@ -227,6 +246,7 @@ const FILES = [
   ['ReportCGT.jsx', 'cgtFallbackGaps', 'cgtBlocked'],
   ['ReportIncome.jsx', 'incFallbackGaps', 'incBlocked'],
   ['ReportCorporate.jsx', 'corpFallbackGaps', 'corpBlocked'],
+  ['ReportComprehensive.jsx', 'compFallbackGaps', 'compBlocked'],
 ];
 FILES.forEach(([f, fn]) => {
   const src = fs.readFileSync(SRC(f), 'utf8');
@@ -237,13 +257,9 @@ FILES.forEach(([f, fn]) => {
   /* 종합소득세처럼 AI 호출이 없는 계산기도 있다 — 없으면 순서를 볼 대상이 없다 */
   eq(`${f} · 차단 게이트가 window.claude.complete 보다 앞이다`,
      ai < 0 ? 'AI 호출 없음' : (gate >= 0 && gate < ai), ai < 0 ? 'AI 호출 없음' : true);
-  /* 판정 규칙이 «한 벌»인지 — 렌더도 같은 함수를 불러야 한다. 두 벌이면 반드시 어긋난다.
-     «정확히 3회»로 못박으면 정당한 네 번째 호출(예: 캐비엇에 사유 개수 표시)에도
-     헛되이 깨진다 — 헛경보는 게이트를 죽인다. 지켜야 할 불변식은 «정의 말고도
-     최소 두 곳(분석·렌더)이 같은 함수를 쓴다»이므로 하한만 본다.
-     「어느 쪽이 쓰는가」의 구조 검증은 tests_gate_ast.js 담당. */
-  eq(`${f} · 판정 함수를 정의 외에 최소 2곳(분석·렌더)에서 쓴다`,
-     (src.match(new RegExp(fn + '\\(', 'g')) || []).length >= 3, true);
+  /* 「규칙이 한 벌인가」는 tests_gate_ast.js 가 실제 CallExpression 으로 센다.
+     여기서 문자열로 또 세면 `fn (a)` 처럼 공백만 넣어도 깨지고, 주석 속 `fn(` 은
+     잘못 센다 (260806 Codex R19 P2). 같은 것을 두 곳에서 다르게 세지 않는다. */
   /* 판정 배열이 «판정 함수 밖»에 있으면 그건 두 번째 규칙이다 — 반드시 어긋난다.
      함수 안에 여러 개인 것은 정상이다(불확정 입력 층 + 폴백 한계 층). */
   const fnStart = src.indexOf(`function ${fn}(answers, calc) {`);
