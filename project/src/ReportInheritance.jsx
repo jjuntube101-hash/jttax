@@ -423,6 +423,17 @@ function JTReportInheritance({ setRoute, onBack }) {
   const runAnalysis = async () => {
     setLoading(true); setErr(null);
     try {
+      /* ★ «불확정 입력»은 엔진을 부르기 «전»에 막는다 (260806 Codex R20 P1).
+         판정 함수는 2층인데 ①불확정 층은 calc.precise 와 무관하다 — 그래서 여기서
+         precise:true 로 불러 ①층만 본다. 못 낼 값이면 요청 자체가 낭비이고,
+         「모르겠다」고 답한 사실이 기본값으로 둔갑해 엔진까지 가지도 않는다.
+         엔진 응답 직후의 기존 게이트는 그대로 ②폴백 한계를 잡는다. */
+      if (inhFallbackGaps(answers, { precise: true }).length > 0) {
+        const unknownRep = { calc: { precise: false }, commentary: null, quick: phase === 'quick' };
+        setReport(unknownRep);
+        if (phase === 'quick') setQuickReport(unknownRep);
+        return;
+      }
       const estate = Number(answers.estateValue) || 0;
       // 간이 폴백: 일괄공제 5억 + 배우자 최소공제 5억 + 채무·장례 차감
       // 배우자 단독상속(자녀 0)은 일괄공제 배제 → 기초공제 2억만(상증법 §21②) — 과소추정 방지

@@ -543,6 +543,17 @@ function JTReportGift({ setRoute, onBack }) {
   const runAnalysis = async () => {
     setLoading(true); setErr(null);
     try {
+      /* ★ «불확정 입력»은 엔진을 부르기 «전»에 막는다 (260806 Codex R20 P1).
+         판정 함수는 2층인데 ①불확정 층은 calc.precise 와 무관하다 — 그래서 여기서
+         precise:true 로 불러 ①층만 본다. 못 낼 값이면 요청 자체가 낭비이고,
+         「모르겠다」고 답한 사실이 기본값으로 둔갑해 엔진까지 가지도 않는다.
+         엔진 응답 직후의 기존 게이트는 그대로 ②폴백 한계를 잡는다. */
+      if (giftFallbackGaps(answers, { precise: true }).length > 0) {
+        const unknownRep = { calc: { precise: false }, commentary: null, quick: phase === 'quick' };
+        setReport(unknownRep);
+        if (phase === 'quick') setQuickReport(unknownRep);
+        return;
+      }
       const isBurdened = answers.isBurdened === 'yes' && answers.assetType === 'realestate';
       const value = giftAmount(answers);
       let calc;

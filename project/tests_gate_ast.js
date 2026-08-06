@@ -77,16 +77,34 @@ TARGETS.forEach(([file, fn]) => {
         호출도 하고, if 도 있고, return 도 있고, AI 호출보다 앞이고, 같은 함수 안이다.
         그런데 «막지 않는다». 그래서 조건식의 «구조»를 본다:
           fn(...).length  를  0  과 비교하는 이항식이어야 한다. */
-  /* `const gaps = fn(...)` 로 담아 둔 변수 이름들 — 변수를 거쳐 쓰는 건 «정당한» 형태다.
+  /* `const gaps = fn(...)` 로 담아 둔 변수 — 변수를 거쳐 쓰는 건 «정당한» 형태다.
      실제로 렌더 쪽은 전부 그렇게 쓴다. 직접 호출만 인정하면 동작이 같은 리팩터링에
-     헛경보가 난다(260806 주입 실험으로 확인). 헛경보는 게이트를 죽인다. */
-  const gapVars = new Set();
+     헛경보가 난다(260806 주입 실험으로 확인). 헛경보는 게이트를 죽인다.
+
+     ⚠️ 단, «이름»만 기억하면 shadowing 으로 뚫린다 (260806 Codex R20 P1) —
+
+       { const gaps = compFallbackGaps(answers, calc); }   ← 이름만 등록됨
+       const gaps = [];                                    ← 다른 선언
+       if (gaps.length) { return; }                        ← 빈 배열이라 안 막힘
+
+     @babel/traverse 가 없어 스코프 해석은 못 하지만, «같은 이름이 두 번 이상 선언되면
+     어느 것을 가리키는지 알 수 없다»는 사실은 안다. 그럴 땐 그 이름을 인정하지 않는다 —
+     모르면 통과시키지 않는 쪽이 맞다. 정당한 코드에서 같은 이름을 두 번 선언할 이유도 없다. */
+  const gapDecls = new Map();   // 이름 → 판정함수로 초기화된 선언 수
+  const allDecls = new Map();   // 이름 → 전체 선언 수
   walk(ast.program, (n) => {
     if (n.type !== 'VariableDeclarator' || !n.id || n.id.type !== 'Identifier') return;
+    const name = n.id.name;
+    allDecls.set(name, (allDecls.get(name) || 0) + 1);
     const init = n.init;
     if (init && init.type === 'CallExpression' && init.callee
-        && init.callee.type === 'Identifier' && init.callee.name === fn) gapVars.add(n.id.name);
+        && init.callee.type === 'Identifier' && init.callee.name === fn) {
+      gapDecls.set(name, (gapDecls.get(name) || 0) + 1);
+    }
   });
+  const gapVars = new Set(
+    [...gapDecls.keys()].filter((name) => allDecls.get(name) === gapDecls.get(name)),
+  );
   /* 판정 결과를 «실제로 조건으로 쓰는가» — 값을 버리는 가짜 게이트를 걸러 내는 핵심 */
   const isGapsLength = (L) => {
     if (!L || L.type !== 'MemberExpression' || !L.property || L.property.name !== 'length') return false;
@@ -171,6 +189,37 @@ TARGETS.forEach(([file, fn]) => {
     if (n.finalizer.start <= aiCallStart && n.finalizer.end >= aiCallStart) aiInFinally = true;
   });
   eq(`${file} · AI 호출이 finally 안에 있지 않다 (return 을 통과해도 실행되는 자리)`, aiInFinally, false);
+
+  /* ⑤ runAnalysis 안의 «모든» 판정 호출이 실제 게이트에 쓰이는가.
+        게이트가 둘(엔진 전 ①층 + 엔진 후 ②층)인 파일에서, 하나만 무력화하면
+        「게이트가 있다」는 여전히 참이라 위 검사들이 통과한다. 그래서 개수가 아니라
+        «남는 호출이 있는가»를 본다 — 판정해 놓고 안 쓰는 호출이 곧 무력화의 흔적이다. */
+  const raFn = (() => {
+    let best = null;
+    walk(ast.program, (n) => {
+      const isFn = n.type === 'FunctionExpression' || n.type === 'ArrowFunctionExpression' || n.type === 'FunctionDeclaration';
+      if (!isFn) return;
+      const body = code.slice(n.start, n.end);
+      if (!body.includes(`${fn}(`) || !body.includes('setLoading(true)')) return;
+      if (!best || (n.end - n.start) < (best.end - best.start)) best = n;
+    });
+    return best;
+  })();
+  if (!raFn) { eq(`${file} · runAnalysis 를 찾았다`, false, true); return; }
+  const callsInRa = [];
+  walk(raFn, (n) => {
+    if (n.type === 'CallExpression' && n.callee && n.callee.type === 'Identifier' && n.callee.name === fn) callsInRa.push(n.start);
+  });
+  /* 게이트 조건식 안에 들어 있거나, 게이트가 쓰는 변수의 초기화인 호출이면 «쓰인 것» */
+  const usedRanges = gates.map((g) => [g.test.start, g.test.end]);
+  walk(raFn, (n) => {
+    if (n.type !== 'VariableDeclarator' || !n.id || n.id.type !== 'Identifier') return;
+    if (!gapVars.has(n.id.name) || !n.init) return;
+    usedRanges.push([n.init.start, n.init.end]);
+  });
+  const orphan = callsInRa.filter((pos) => !usedRanges.some(([a, b]) => pos >= a && pos <= b));
+  eq(`${file} · 판정 호출이 전부 게이트에 쓰인다 (판정만 하고 안 쓰는 호출 = 무력화 흔적)`,
+     orphan.length, 0);
 });
 
 /* ── 판정 함수를 «분석»과 «렌더»가 둘 다 쓰는가 — 실제 호출 노드로 센다 ──────────
