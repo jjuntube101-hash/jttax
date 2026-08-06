@@ -77,16 +77,33 @@ TARGETS.forEach(([file, fn]) => {
         호출도 하고, if 도 있고, return 도 있고, AI 호출보다 앞이고, 같은 함수 안이다.
         그런데 «막지 않는다». 그래서 조건식의 «구조»를 본다:
           fn(...).length  를  0  과 비교하는 이항식이어야 한다. */
-  const isGateTest = (t) => {
-    if (!t || t.type !== 'BinaryExpression') return false;
-    if (!['>', '!==', '!=', '>='].includes(t.operator)) return false;
-    /* 왼쪽이 fn(...).length 인가 */
-    const L = t.left;
+  /* `const gaps = fn(...)` 로 담아 둔 변수 이름들 — 변수를 거쳐 쓰는 건 «정당한» 형태다.
+     실제로 렌더 쪽은 전부 그렇게 쓴다. 직접 호출만 인정하면 동작이 같은 리팩터링에
+     헛경보가 난다(260806 주입 실험으로 확인). 헛경보는 게이트를 죽인다. */
+  const gapVars = new Set();
+  walk(ast.program, (n) => {
+    if (n.type !== 'VariableDeclarator' || !n.id || n.id.type !== 'Identifier') return;
+    const init = n.init;
+    if (init && init.type === 'CallExpression' && init.callee
+        && init.callee.type === 'Identifier' && init.callee.name === fn) gapVars.add(n.id.name);
+  });
+  /* 판정 결과를 «실제로 조건으로 쓰는가» — 값을 버리는 가짜 게이트를 걸러 내는 핵심 */
+  const isGapsLength = (L) => {
     if (!L || L.type !== 'MemberExpression' || !L.property || L.property.name !== 'length') return false;
-    const call = L.object;
-    if (!call || call.type !== 'CallExpression') return false;
-    if (!call.callee || call.callee.type !== 'Identifier' || call.callee.name !== fn) return false;
-    /* 오른쪽이 0 인가 (>= 는 1 도 허용) */
+    const o = L.object;
+    if (!o) return false;
+    if (o.type === 'CallExpression') {
+      return !!o.callee && o.callee.type === 'Identifier' && o.callee.name === fn;
+    }
+    return o.type === 'Identifier' && gapVars.has(o.name);
+  };
+  const isGateTest = (t) => {
+    if (!t) return false;
+    /* `if (gaps.length)` truthy 형도 정당하다 */
+    if (isGapsLength(t)) return true;
+    if (t.type !== 'BinaryExpression') return false;
+    if (!['>', '!==', '!=', '>='].includes(t.operator)) return false;
+    if (!isGapsLength(t.left)) return false;
     const R = t.right;
     if (!R || R.type !== 'NumericLiteral') return false;
     return t.operator === '>=' ? R.value >= 1 : R.value === 0;
