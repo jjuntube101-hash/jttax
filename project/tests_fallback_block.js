@@ -224,8 +224,12 @@ console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 �
  ['종부 · 단독명의', compFallbackGaps, { housingCount: 'one', ownership: 'single' }],
  ['종부 · 공동명의 지분 50%', compFallbackGaps, { housingCount: 'one', ownership: 'joint', ownShare: '50' }],
 ].forEach(([name, fn, ans]) => {
-  const gaps = fn(ans, OK);
-  eq(`${name} · 엔진 정상이면 통과`, gaps.length ? gaps[0].slice(0, 40) : 0, 0);
+  eq(`${name} · 엔진 정상이면 통과`, fn(ans, OK).length ? fn(ans, OK)[0].slice(0, 40) : 0, 0);
+  /* ⚠️ 「통과」로 못 박는 것이 «차단을 약화»시키지 않는지 같이 본다 —
+     엔진이 죽어도 폴백이 감당하는 조합이어야 안심하고 통과시킬 수 있다.
+     ②층에 걸리는 입력을 여기 넣으면 그건 「엔진 없으면 막아야 할 것」을 통과 목록에
+     올린 셈이라, 나중에 조건이 흔들릴 때 이 줄이 먼저 울린다. */
+  eq(`${name} · 엔진이 죽어도 폴백이 감당한다`, fn(ans, DOWN).length, 0);
 });
 
 /* ── 엔진 전 게이트가 «①불확정 층만» 거르는가 ────────────────────────────────
