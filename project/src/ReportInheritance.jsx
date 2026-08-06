@@ -280,10 +280,20 @@ function mapAnswersToInheritance(a) {
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
    렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
 function inhFallbackGaps(answers, calc) {
-  if (calc.precise) return [];
   const nonResident = answers.isResident === 'no';
-  return window.jtFallbackGaps([
-    { when: nonResident, why: '비거주자 상속 — 국내 재산만 과세되고 일괄공제 등이 배제되어 계산 구조가 다릅니다.' },
+  /* ── ① 엔진도 «못 푸는» 입력 — precise 여도 막는다 ───────────────────────
+     260806 실측(POST /v1/calc/inheritance, 20억·배우자·자녀2):
+       필드 없음 / is_resident:false / resident:false → 셋 다 127,416,380 으로 «동일».
+     즉 엔진은 거주자 여부를 받지 않는다. 비거주자는 일괄공제·배우자공제가 배제돼
+     계산 구조 자체가 다른데, 그대로 두면 거주자 기준 금액에 「정밀 계산」 딱지가 붙는다.
+     경고 배너만으로는 부족하다 — 사람은 숫자를 먼저 본다. */
+  const unknown = window.jtFallbackGaps([
+    { when: nonResident,
+      why: '비거주자 상속 — 국내 재산만 과세되고 일괄공제·배우자상속공제가 배제됩니다. 계산 엔진이 아직 거주자 기준만 지원해 금액을 표시하지 않습니다(상담에서 정확히 안내해 드립니다).' },
+  ]);
+  /* ── ② 여기부터는 «간이 폴백만»의 한계 ── */
+  if (calc.precise) return unknown;
+  return unknown.concat(window.jtFallbackGaps([
     { when: answers.spouseActual === 'zero',
       why: '배우자가 실제로 상속받지 않는 경우 — 간이 계산은 법정상속분대로 공제해 세금이 «크게 적게» 나옵니다(실측 1억 8,381만원 차이).' },
     { when: answers.priorGiftHas === 'yes',
@@ -294,7 +304,7 @@ function inhFallbackGaps(answers, calc) {
       why: '동거주택 — 동거주택상속공제(§23의2, 최대 6억)가 간이 계산에 없습니다.' },
     { when: answers.numChildren === 'many' && !(Number(answers.numChildrenExact) > 0),
       why: '자녀가 7명 이상인데 정확한 인원이 없습니다 — 배우자 법정상속분이 인원수로 갈립니다.' },
-  ]);
+  ]));
 }
 
 function buildInhDetail(answers, calc, commentary) {

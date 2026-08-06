@@ -150,6 +150,17 @@ eq('취득세 · 3주택 + 일시적2주택 「예」 잔존 → precise 여도 
    acqFallbackGaps({ ...ACQ_BASE, housingCount: '3', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' }, OK).length > 0, true);
 eq('양도세 · 취득당시 조정 «모름» → precise 여도 차단 (실측 2,484만 ↔ 2억 997만 = 8.45배)',
    cgtFallbackGaps({ assetType: 'house_1', acqAdjustedZone: 'unsure' }, OK).length > 0, true);
+/* 엔진이 «받지도 않는» 사실 — 보내 봐야 무시된다. 260806 실측: /v1/calc/inheritance 에
+   is_resident:false / resident:false / 필드없음 셋 다 127,416,380 으로 동일했다.
+   증여세 payload(mapAnswersToGift)에는 거주자 필드 자체가 없다. */
+eq('상속세 · 비거주자 → precise 여도 차단 (엔진이 is_resident 를 무시한다)',
+   inhFallbackGaps({ isResident: 'no', hasSpouse: 'yes', numChildren: '2' }, OK).length > 0, true);
+eq('증여세 · 비거주자 → precise 여도 차단 (payload 에 거주자 필드가 없다)',
+   giftFallbackGaps({ isResident: 'no', relationship: '직계존속' }, OK).length > 0, true);
+eq('상속세 · 거주자면 precise 에서 통과',
+   inhFallbackGaps({ isResident: 'yes', hasSpouse: 'yes', numChildren: '2' }, OK).length, 0);
+eq('증여세 · 거주자면 precise 에서 통과',
+   giftFallbackGaps({ isResident: 'yes', relationship: '직계존속' }, OK).length, 0);
 /* 반대 방향도 고정한다 — «답한» 입력까지 막으면 정상 이용자를 쫓아낸다 */
 eq('취득세 · 조정을 «아니오»로 답하면 precise 에서 통과',
    acqFallbackGaps({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'no', temporaryTwoHouse: 'no' }, OK).length, 0);
@@ -157,7 +168,9 @@ eq('양도세 · 취득당시 조정을 «아니오»로 답하면 precise 에�
    cgtFallbackGaps({ assetType: 'house_1', acqAdjustedZone: 'no' }, OK).length, 0);
 
 console.log('\n════ 엔진 성공(precise)이면 «폴백 한계»로는 막지 않는다 — 정상 이용자를 막는 게 더 큰 사고다 ════');
-[['상속세', inhFallbackGaps, { spouseActual: 'zero', isResident: 'no' }],
+/* ⚠️ 여기 입력에 «비거주자»를 넣으면 안 된다 — 그건 폴백 한계가 아니라 엔진 미지원이라
+   precise 에서도 막는 게 «의도»다. 위 «모른다» 블록에서 따로 고정한다. */
+[['상속세', inhFallbackGaps, { spouseActual: 'zero', priorGiftHas: 'yes' }],
  ['증여세', giftFallbackGaps, { genSkip: 'yes', priorGiftHas: 'yes' }],
  ['취득세', acqFallbackGaps, { propertyType: '토지', reduction: 'first' }],
  ['재산세', propFallbackGaps, { propertyKind: '건축물' }],

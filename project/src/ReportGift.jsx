@@ -310,17 +310,24 @@ function giftFallbackGaps(answers, calc) {
   if (calc.engineErr) {
     return ['부담부증여는 «증여세 + 양도세 + 취득세»가 함께 발생해 간이 계산으로는 추정할 수 없습니다(0원이 아닙니다). 정밀 엔진 연결이 지연됐으니 잠시 후 다시 시도하거나 상담으로 확인해 주세요.'];
   }
-  if (calc.precise) return [];
   const nonResident = answers.isResident === 'no';
-  return window.jtFallbackGaps([
-    { when: nonResident, why: '비거주자 증여 — 증여재산공제가 배제되어 세금이 «크게 많아»집니다(실측 970만원 차이).' },
+  /* ── ① 엔진도 «못 푸는» 입력 — precise 여도 막는다 ───────────────────────
+     mapAnswersToGift 는 거주자 여부를 아예 보내지 않는다(260806 확인). 비거주자는
+     증여재산공제가 통째로 배제되는데, 그대로 두면 «공제받은» 금액이 정밀 계산으로 나온다. */
+  const unknown = window.jtFallbackGaps([
+    { when: nonResident,
+      why: '비거주자 증여 — 증여재산공제(배우자 6억·직계 5천만 등)가 배제됩니다. 계산 엔진이 아직 거주자 기준만 지원해 금액을 표시하지 않습니다(상담에서 정확히 안내해 드립니다).' },
+  ]);
+  /* ── ② 여기부터는 «간이 폴백만»의 한계 ── */
+  if (calc.precise) return unknown;
+  return unknown.concat(window.jtFallbackGaps([
     { when: answers.genSkip === 'yes',
       why: '세대생략 증여(손주에게) — 30%(미성년·20억 초과는 40%) 할증이 간이 계산에 없습니다(실측 582만원 차이).' },
     { when: answers.marriageDed === 'yes' || answers.childbirthDed === 'yes',
       why: '혼인·출산 증여공제(최대 1억) — 간이 계산에 없어 세금이 «크게 많게» 나옵니다(실측 1,455만원 차이).' },
     { when: answers.priorGiftHas === 'yes',
       why: '10년 내 사전증여 — 합산은 하지만 기납부세액공제(§58)가 빠져 세금이 «많게» 나옵니다(실측 485만원 차이).' },
-  ]);
+  ]));
 }
 
 function mapAnswersToGift(a) {

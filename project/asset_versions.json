@@ -56,12 +56,12 @@
     "sha256": "a1a951b65f1742f0351cb1b072bd7e1625c38478dd3029d91cbb16b607d89b6b"
   },
   "project/src/ReportGift.jsx": {
-    "v": "43",
-    "sha256": "414c6066dc779e857a23da66e2a2f149d26a2aca0b57fc770ec95aa5fab90f79"
+    "v": "44",
+    "sha256": "59dd8405f8cb03be6886211b5b3fd76d1861751988f067e0f8c4496b433abf78"
   },
   "project/src/ReportInheritance.jsx": {
-    "v": "18",
-    "sha256": "287e6c0bd47d85ffbc01f578abf5af7e7ae8a95cbb546bf9b27ba37487d7214b"
+    "v": "19",
+    "sha256": "ff1843c63365b7e75b922d4ae74dbb50ab49eeada01e87ebbc359940ff0021e8"
   },
   "project/src/ReportAcquisition.jsx": {
     "v": "22",
