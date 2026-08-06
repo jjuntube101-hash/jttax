@@ -281,22 +281,35 @@ TWO_LAYER.forEach(([file, fn]) => {
      만들어 부르면 엔진 호출을 못 찾아 FAIL 난다 — 데이터플로 추적까지는 하지 않기로 했다.
      그러니 이 파일들에서는 엔진 함수를 별칭으로 감싸지 말 것. 규칙을 코드로 못 박는 대신
      여기 적어 둔다. */
-  const walkSkippingNestedFns = (node, visit, isRoot) => {
+  /* ⚠️ 「중첩 함수는 무조건 건너뛴다」로 했더니 진짜 우회를 놓쳤다 (260806 주입 실험) —
+
+       await (async () => { await callPropEng(body); })();   ← 게이트 «앞»에서 즉시 실행
+       if (…게이트…) return;
+
+     정의만 한 함수와 «그 자리에서 실행되는» 함수는 다르다. 그래서 부모를 보고 가른다:
+       · 호출식의 callee 다        → IIFE. 실행된다 → 순회
+       · 호출식의 인자다           → 콜백(.then 등). 실행될 수 있다 → 순회
+       · 그 밖(변수 초기화·할당)   → 정의만. 게이트 뒤에 불릴 수 있다 → 건너뛴다 */
+  const isImmediatelyRun = (fnNode, parent, key) => {
+    if (!parent || parent.type !== 'CallExpression') return false;
+    return key === 'callee' || key === 'arguments';
+  };
+  const walkRunPath = (node, visit, parent, key) => {
     if (!node || typeof node !== 'object') return;
-    if (Array.isArray(node)) { node.forEach((n) => walkSkippingNestedFns(n, visit, false)); return; }
+    if (Array.isArray(node)) { node.forEach((n) => walkRunPath(n, visit, parent, key)); return; }
     const isFn = node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression' || node.type === 'ArrowFunctionExpression';
-    if (isFn && !isRoot) return;                     // 중첩 함수는 통째로 건너뛴다
+    if (isFn && parent && !isImmediatelyRun(node, parent, key)) return;
     if (typeof node.type === 'string') visit(node);
     for (const k of Object.keys(node)) {
       if (k === 'loc' || k === 'leadingComments' || k === 'trailingComments') continue;
-      walkSkippingNestedFns(node[k], visit, false);
+      walkRunPath(node[k], visit, node, k);
     }
   };
   if (enclosing) {
-    walkSkippingNestedFns(enclosing, (n) => {
+    walkRunPath(enclosing, (n) => {
       if (n.type === 'CallExpression' && n.callee && n.callee.type === 'Identifier'
           && /^call.*Eng/.test(n.callee.name) && (firstEngine === null || n.start < firstEngine)) firstEngine = n.start;
-    }, true);
+    }, null, null);
   }
   eq(`${file} · precise:true 로 «막고 나가는» 엔진 전 게이트가 있다`, preGate !== null, true);
   eq(`${file} · 그 게이트가 첫 엔진 호출보다 앞이다`,
