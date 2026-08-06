@@ -298,6 +298,12 @@ const LEAK_TARGETS = [
   { pat: 'formatWon', what: '금액 포맷 호출' },
   { pat: 'totalTax', what: '세액 값 참조' },
   { pat: 'commentary', what: 'AI 코멘터리' },
+  /* 아래 4종은 260806 전수 스캔 때 «지금은 없다»를 확인하고 회귀로 못 박은 것들이다.
+     화면에 금액이 없어도 이 경로 중 하나가 열리면 밖으로 나간다 (Codex R20 질문 5). */
+  { pat: 'claude.complete', what: '외부 AI 호출' },
+  { pat: 'navigator.clipboard', what: '클립보드 복사' },
+  { pat: 'web3forms', what: 'Web3Forms 전송' },
+  { pat: 'gtag(', what: '분석 이벤트' },
 ];
 FILES.forEach(([f, , v]) => {
   const src = fs.readFileSync(SRC(f), 'utf8');
