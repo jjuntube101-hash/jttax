@@ -126,11 +126,20 @@ TARGETS.forEach(([file, fn]) => {
     if (!R || R.type !== 'NumericLiteral') return false;
     return t.operator === '>=' ? R.value >= 1 : R.value === 0;
   };
+  /* 부정형도 정당하다 — gap 이 «없을» 때만 진행하고, 있으면 else 로 빠져나가는 형태:
+       const gaps = fn(...);
+       if (!gaps.length) { …정상 분석… } else { setReport(rep); return; }
+     이때 확정 반환을 봐야 할 곳은 consequent 가 아니라 alternate 다 (260806 Codex R20 P2).
+     반대로 `if (!gaps.length) { return; }` 는 «gap 이 없을 때» 나가는 것이라 게이트가 아니다 —
+     alternate 가 없으면 인정하지 않는다. */
+  const isNegatedGateTest = (t) =>
+    !!t && t.type === 'UnaryExpression' && t.operator === '!' && isGapsLength(t.argument);
   const gates = [];
   let aiCallStart = null;
   walk(ast.program, (n) => {
     if (n.type === 'IfStatement') {
       if (isGateTest(n.test) && alwaysReturns(n.consequent)) gates.push(n);
+      else if (isNegatedGateTest(n.test) && n.alternate && alwaysReturns(n.alternate)) gates.push(n);
     }
     if (n.type === 'CallExpression') {
       const callee = code.slice(n.callee.start, n.callee.end);
