@@ -67,24 +67,41 @@ window.jtFallbackGaps = function (checks) {
 };
 
 /* 차단 화면 — 숫자 자리에 «왜 못 내는지»와 다음 행동을 놓는다 */
-function JTFallbackBlocked({ gaps, onRetry }) {
+/* 차단 패널.
+   ★ `reason` 으로 두 가지를 «구분»한다 — 종전엔 무조건 「엔진 연결이 지연됐는데」라고 했다.
+   그런데 불확정 입력(지분 미입력·「모르겠어요」)은 엔진과 아무 상관이 없다. 엔진은 멀쩡한데
+   입력이 안 정해진 것이다. 그렇게 말하면 사용자는 「다시 시도」만 반복하고(260806 실측:
+   3번 눌러도 아무 일도 안 일어났다) 정작 무엇을 입력해야 하는지 모른다.
+     reason='input'  — 입력을 채우면 풀린다. 재시도 버튼을 보여 주지 않는다
+     reason='engine' — 엔진 장애. 재시도가 의미 있다 (기본값) */
+function JTFallbackBlocked({ gaps, onRetry, reason }) {
+  var byInput = reason === 'input';
   return (
     <div className="jt-report-result__section" style={{
       background: '#fdf6ec', borderLeft: '4px solid #d08b00', padding: '20px 22px',
       borderRadius: 8, marginBottom: 20, lineHeight: 1.7,
     }}>
-      <strong style={{ display: 'block', fontSize: 16, marginBottom: 8 }}>이 조건은 간이 계산으로 금액을 낼 수 없습니다</strong>
+      <strong style={{ display: 'block', fontSize: 16, marginBottom: 8 }}>
+        {byInput ? '아래를 확인해 주시면 금액을 계산해 드릴게요' : '이 조건은 간이 계산으로 금액을 낼 수 없습니다'}
+      </strong>
       <p style={{ margin: '0 0 10px', fontSize: 14.5 }}>
-        정밀 계산 엔진 연결이 지연됐는데, <strong>입력하신 조건은 간이 계산이 다루지 못하는 항목</strong>을 포함합니다.
-        틀린 금액을 보여 드리느니 알려 드리는 편이 낫다고 판단해 <strong>금액을 표시하지 않습니다</strong>.
+        {byInput ? (
+          <React.Fragment><strong>세액이 크게 갈리는 항목이 아직 정해지지 않았습니다.</strong>{' '}
+          짐작으로 채워 계산하면 틀린 금액을 「정밀 계산」처럼 보여 드리게 되어, <strong>금액을 표시하지 않습니다</strong>.</React.Fragment>
+        ) : (
+          <React.Fragment>정밀 계산 엔진 연결이 지연됐는데, <strong>입력하신 조건은 간이 계산이 다루지 못하는 항목</strong>을 포함합니다.
+          틀린 금액을 보여 드리느니 알려 드리는 편이 낫다고 판단해 <strong>금액을 표시하지 않습니다</strong>.</React.Fragment>
+        )}
       </p>
       <ul style={{ margin: '0 0 12px', paddingLeft: 19, fontSize: 14 }}>
         {(gaps || []).map(function (g, i) { return <li key={i}>{g}</li>; })}
       </ul>
       <p style={{ margin: '0 0 12px', fontSize: 13.5, color: '#5a5449' }}>
-        잠시 후 <strong>정밀 계산 다시 시도</strong>를 눌러 주세요. 계속 안 되면 상담으로 정확히 확인해 드립니다.
+        {byInput
+          ? <React.Fragment><strong>← 이전</strong>으로 돌아가 위 항목을 채워 주세요. 확인이 어려우면 상담으로 정확히 안내해 드립니다.</React.Fragment>
+          : <React.Fragment>잠시 후 <strong>정밀 계산 다시 시도</strong>를 눌러 주세요. 계속 안 되면 상담으로 정확히 확인해 드립니다.</React.Fragment>}
       </p>
-      {onRetry && <button className="jt-btn jt-btn--primary" onClick={onRetry}>정밀 계산 다시 시도 →</button>}
+      {!byInput && onRetry && <button className="jt-btn jt-btn--primary" onClick={onRetry}>정밀 계산 다시 시도 →</button>}
     </div>
   );
 }

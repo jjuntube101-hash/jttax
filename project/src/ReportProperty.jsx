@@ -661,7 +661,7 @@ function JTReportProperty({ setRoute, onBack }) {
       return (
         <div className="jt-container">
           <JTReportShell title="재산세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
-            <JTFallbackBlocked gaps={propGaps} onRetry={runAnalysis} />
+            <JTFallbackBlocked gaps={propGaps} onRetry={runAnalysis} reason={propFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
             </div>

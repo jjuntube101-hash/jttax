@@ -557,7 +557,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       return (
         <div className="jt-container">
           <JTReportShell title="취득세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
-            <JTFallbackBlocked gaps={acqGaps} onRetry={runAnalysis} />
+            <JTFallbackBlocked gaps={acqGaps} onRetry={runAnalysis} reason={acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
             </div>

@@ -206,6 +206,33 @@ eq('배당 유형 «미입력» → 차단 (문항이 빠져도 새지 않게)',
    incFallbackGaps({ dividendIncome: '50000000' }, OK).length > 0, true);
 eq('배당 0이면 유형과 무관하게 통과', incFallbackGaps({ dividendIncome: '0' }, OK).length, 0);
 
+/* ── 엔진 전 게이트가 «①불확정 층만» 거르는가 ────────────────────────────────
+   runAnalysis 맨 앞에서 `fn(answers, { precise: true })` 로 부른다. precise 를 참으로
+   주면 ②폴백 한계는 빠지고 ①층만 남는다 — 그래서 엔진을 부르기 전에 쓸 수 있다.
+   이 성질이 깨지면(②층이 precise 를 안 보게 되면) 엔진이 멀쩡한데도 막아 버린다.
+   반대로 ①층이 precise 를 보게 되면 불확정 값이 엔진으로 다시 새어 나간다. */
+console.log('\n════ 엔진 전 게이트: precise=true 면 ①불확정 층만 남는가 ════');
+[['상속 · 비거주자', inhFallbackGaps, { isResident: 'no' }, 1],
+ ['상속 · 사전증여(폴백 한계)', inhFallbackGaps, { isResident: 'yes', priorGiftHas: 'yes' }, 0],
+ ['증여 · 비거주자', giftFallbackGaps, { isResident: 'no' }, 1],
+ ['증여 · 세대생략(폴백 한계)', giftFallbackGaps, { isResident: 'yes', genSkip: 'yes' }, 0],
+ ['취득 · 조정 모름', acqFallbackGaps, { propertyType: '주택', acquisitionType: '증여', exclusiveArea: '84', isRegulatedArea: 'unsure' }, 1],
+ ['취득 · 토지(폴백 한계)', acqFallbackGaps, { propertyType: '토지', exclusiveArea: '84' }, 0],
+ ['양도 · 취득당시 모름', cgtFallbackGaps, { assetType: 'house_1', acqAdjustedZone: 'unsure' }, 1],
+ ['양도 · 입주권(폴백 한계)', cgtFallbackGaps, { assetType: 'occupancy_succ' }, 0],
+ ['재산 · 건축물(폴백 한계)', propFallbackGaps, { propertyKind: '건축물' }, 0],
+ ['종부 · 지분 미입력', compFallbackGaps, { housingCount: 'one', ownership: 'joint' }, 1],
+].forEach(([name, fn, ans, want]) => {
+  eq(`${name} · precise=true 판정`, fn(ans, OK).length > 0 ? 1 : 0, want);
+});
+/* 증여세 engineErr 는 precise 와 «무관»하게 잡혀야 한다 — 부담부 엔진 실패는
+   precise 여부가 아니라 응답 무결성 실패라서 그렇다. 엔진 전 게이트에서는
+   engineErr 가 아직 undefined 라 통과하고, 엔진 후 게이트가 잡는다. */
+eq('증여 · engineErr 는 precise=true 여도 잡는다',
+   giftFallbackGaps({ isResident: 'yes' }, { precise: true, engineErr: true }).length > 0, true);
+eq('증여 · 엔진 전(engineErr 미정)에는 통과',
+   giftFallbackGaps({ isResident: 'yes' }, OK).length, 0);
+
 console.log('\n════ 종부세 — 공동명의 지분 (엔진 실측 2.4배 차이) ════');
 /* 260806 실측(POST /v1/calc/comprehensive, 공시 20억·1주택): 50% 655,200 / 30% 1,593,000.
    한때 «고지만 하고 계산은 한다»로 갔다가 되돌렸다 — 「정밀 계산」 딱지가 붙은 숫자는

@@ -1217,7 +1217,7 @@ cautions 3개, saving_ideas 2~3개.`;
             <button className="jt-report-shell__back" onClick={onBack}>← 세금 계산기</button>
             <div className="jt-report-result__meta"><span className="jt-tag">정밀 계산 필요</span></div>
           </div>
-          <JTFallbackBlocked gaps={cgtGaps} onRetry={runAnalysis} />
+          <JTFallbackBlocked gaps={cgtGaps} onRetry={runAnalysis} reason={cgtFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
         </div>
       );
     }
