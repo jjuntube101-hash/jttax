@@ -201,8 +201,11 @@ console.log('\n════ 종합소득세 — 배당 Gross-up (엔진 실측 �
      grossup 240,160,000 / 미적용 251,760,000. 배당 단독이면 차이 0(공제가 전액 상쇄)이지만
      다른 소득이 있으면 갈린다. 종전엔 문항 없이 «무조건 국내 배당»으로 보냈다. */
 eq('국내 배당 → 통과', incFallbackGaps({ dividendIncome: '50000000', dividendType: 'domestic' }, OK).length, 0);
-eq('외국 배당 → 통과 (엔진이 Gross-up 미적용으로 정확히 계산한다)',
-   incFallbackGaps({ dividendIncome: '50000000', dividendType: 'foreign' }, OK).length, 0);
+/* 처음엔 «외국은 grossup 만 빼면 정확하다»고 통과시켰다. 확인해 보니 반쪽이었다 —
+   엔진이 외국납부세액공제(§57)를 받지 않아(실측: foreign_tax_paid/credit 어느 이름으로도
+   결과 128,190,000 불변) 현지 원천세만큼 «많게» 나온다. */
+eq('외국 배당 → 차단 (엔진이 외국납부세액공제 §57 을 지원하지 않는다)',
+   incFallbackGaps({ dividendIncome: '50000000', dividendType: 'foreign' }, OK).length > 0, true);
 eq('국내·외국 «혼합» → 차단 (금액을 못 나눈다)',
    incFallbackGaps({ dividendIncome: '50000000', dividendType: 'mixed' }, OK).length > 0, true);
 eq('배당 유형 «모름» → 차단', incFallbackGaps({ dividendIncome: '50000000', dividendType: 'unsure' }, OK).length > 0, true);

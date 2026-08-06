@@ -75,11 +75,11 @@ const INC_QS = [
          사업 5억 + 배당 2억 → grossup 240,160,000 / 미적용 251,760,000 (1,160만원)
          사업 3억 + 배당 1억 → 122,190,000 / 128,190,000 (600만원)
        종전엔 이 문항 없이 «무조건 국내 배당»으로 보내 외국 배당이 «적게» 나왔다. */
-    sub: '국내 법인에서 받은 배당만 Gross-up 가산·배당세액공제(§17③·§56) 대상입니다. 외국 법인 배당(해외주식·해외 ETF 등)은 대상이 아니어서 세금이 달라집니다. 국내·외국이 섞여 있으면 금액을 나눠야 정확해 상담으로 안내해 드립니다.',
+    sub: '국내 법인에서 받은 배당만 Gross-up 가산·배당세액공제(§17③·§56) 대상입니다. 외국 법인 배당(해외주식·해외 ETF 등)은 대상이 아닐 뿐 아니라, 현지에서 이미 떼인 세금을 빼 주는 외국납부세액공제(§57)까지 따져야 해서 상담으로 안내해 드립니다.',
     showIf: (a) => (Number(a.dividendIncome) || 0) > 0,
     opts: [
       ['domestic', '국내 법인 배당만 (국내 주식·펀드)', 'Gross-up 적용'],
-      ['foreign', '외국 법인 배당만 (해외주식·해외 ETF)', 'Gross-up 미적용'],
+      ['foreign', '외국 법인 배당만 (해외주식·해외 ETF)', '외국납부세액공제 — 상담'],
       ['mixed', '국내·외국이 섞여 있음', '금액 분리 필요 — 상담'],
       ['unsure', '모르겠어요', '상담 안내'],
     ],
@@ -124,6 +124,12 @@ const INC_QS = [
 function incFallbackGaps(answers, calc) {
   const dividend = Number(answers.dividendIncome) || 0;
   return window.jtFallbackGaps([
+    /* ★ foreign 도 막는다 — 260806 엔진 실측: foreign_tax_paid·foreign_tax_credit 어느 이름으로
+       보내도 결과가 128,190,000 으로 «동일»했다. 즉 엔진이 외국납부세액공제(§57)를 받지 않는다.
+       외국 배당은 현지 원천세가 이미 떼여 있는데 그게 공제되지 않아 세금이 «많게» 나온다.
+       처음엔 「외국은 grossup 만 빼면 정확하다」고 봤는데, 확인해 보니 반쪽이었다. */
+    { when: dividend > 0 && answers.dividendType === 'foreign',
+      why: '외국 법인 배당입니다 — Gross-up 대상이 아닌 것까지는 반영되지만, 현지에서 이미 떼인 세금을 빼 주는 외국납부세액공제(소득세법 §57)를 계산 엔진이 아직 지원하지 않아 세금이 «많게» 나옵니다. 상담에서 정확히 반영해 드립니다.' },
     { when: dividend > 0 && answers.dividendType === 'mixed',
       why: '국내·외국 배당이 섞여 있습니다 — 국내분만 Gross-up(§17③) 대상이라 금액을 나눠야 계산됩니다. 섞인 채로는 세금이 «적게» 나옵니다(실측: 사업 5억+배당 2억이면 1,160만원 차이).' },
     { when: dividend > 0 && (answers.dividendType === 'unsure' || !answers.dividendType),
