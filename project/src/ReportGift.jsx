@@ -303,6 +303,13 @@ function priorGiftDeductionUsed(a, priorValue) {
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
    렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
 function giftFallbackGaps(answers, calc) {
+  /* ★ engineErr(부담부증여 엔진 실패)를 «예외»로 빼 두면 안 된다 — 화면은 금액을 숨기지만
+     그 앞의 AI 프롬프트에 「총세부담: 0원」이 나가고, JTReportConvert 도 그대로 렌더돼
+     클립보드·Web3Forms 로 0원이 흘러간다 (260806 Codex P0 재현). 금액을 숨기는 상태는
+     전송도 함께 막아야 한다. 화면 문구는 아래 why 가 그대로 이어받는다. */
+  if (calc.engineErr) {
+    return ['부담부증여는 «증여세 + 양도세 + 취득세»가 함께 발생해 간이 계산으로는 추정할 수 없습니다(0원이 아닙니다). 정밀 엔진 연결이 지연됐으니 잠시 후 다시 시도하거나 상담으로 확인해 주세요.'];
+  }
   if (calc.precise) return [];
   const nonResident = answers.isResident === 'no';
   return window.jtFallbackGaps([
@@ -643,7 +650,8 @@ function JTReportGift({ setRoute, onBack }) {
       answers.priorGiftHas === 'yes' && Number(answers.priorGiftValue) > 0 &&
       priorGiftDeductionUsed(answers, Number(answers.priorGiftValue) || 0).estimated;
     /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반).
-       부담부증여는 이미 engineErr 로 같은 처리를 하고 있어 여기서 중복 판정하지 않는다. */
+       부담부증여 엔진 실패(engineErr)도 여기서 함께 잡는다 — 종전엔 예외로 빼 두어
+       화면만 가리고 AI·공유로는 0원이 나갔다. */
     const giftGaps = giftFallbackGaps(answers, calc);
     const giftBlocked = giftGaps.length > 0;
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
@@ -672,19 +680,13 @@ function JTReportGift({ setRoute, onBack }) {
           {giftBlocked && <JTFallbackBlocked gaps={giftGaps} onRetry={runAnalysis} />}
           {!giftBlocked && (
           <div className="jt-report-result__grade jt-grade-mid">
-            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : (calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : (calc.engineErr ? '엔진 연결 실패 — 재시도 필요' : '추정 총 세부담 · 간이'))}</div>
-            <div className="jt-report-result__grade-val" style={calc.engineErr ? { fontSize: 22 } : undefined}>{calc.engineErr ? '정밀 계산 필요' : formatWon(calc.totalTax)}</div>
+            {/* engineErr 는 이제 giftBlocked 로 조기 반환된다 — 여기까지 오지 않는다 */}
+            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : (calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : '추정 총 세부담 · 간이')}</div>
+            <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
           )}
 
-          {calc.engineErr && (
-            <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
-              부담부증여는 <strong>증여세 + 양도세 + 취득세</strong>가 함께 발생해 간이 계산으로는 정확히 추정할 수 없습니다(<strong>0원이 아닙니다</strong>). 정밀 엔진 연결이 지연됐으니 잠시 후 다시 시도하거나 상담을 권합니다.
-              <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
-            </div>
-          )}
-
-          {!calc.precise && !calc.engineErr && !giftBlocked && (
+          {!calc.precise && !giftBlocked && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
               정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 세율표 · 관계별 증여재산공제 · 입력하신 <strong>10년 내 사전증여 금액의 합산</strong> · 신고세액공제.<br /><strong>반영하지 않은 것</strong>: <strong>세대생략 할증</strong>(손주 증여) · <strong>혼인·출산 공제</strong> · 사전증여분 <strong>기납부세액공제</strong> · 비거주자 공제 배제. 그래서 실제와 다를 수 있으니 정밀 계산을 권합니다 —
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
@@ -704,9 +706,8 @@ function JTReportGift({ setRoute, onBack }) {
           {isBurdened ? (
             <section className="jt-report-result__section">
               <h3>세금 구성 (부담부증여)</h3>
-              {calc.engineErr ? (
-                <p>정밀 계산에 연결하지 못했습니다. 부담부증여는 정확한 계산이 중요하니 상담을 권합니다.</p>
-              ) : (
+              {/* engineErr 는 giftBlocked 로 조기 반환되므로 여기까지 오지 않는다 */}
+              {(
                 <table className="jt-report-calc">
                   <tbody>
                     <tr><th>증여세 (받는 분 · §47)</th><td>{formatWon(calc.giftTax)}</td></tr>

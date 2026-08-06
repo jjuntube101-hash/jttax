@@ -135,7 +135,28 @@ eq('평범한 1주택 → 통과',
    CGT({ assetType: 'house_1', acqAdjustedZone: 'no', acquiredDate: '2015-01-01', moveInDate: '2015-06-01' }).length, 0);
 eq('상가(비주택) → 통과 (단기세율·기본세율은 폴백도 맞다)', CGT({ assetType: 'commercial' }).length, 0);
 
-console.log('\n════ 엔진 성공(precise)이면 절대 막지 않는다 — 정상 이용자를 막는 게 더 큰 사고다 ════');
+/* ── «불확정 입력»은 엔진이 살아 있어도 막는다 ──────────────────────────────
+   사용자가 「모른다」고 한 사실을 그대로 보내면 엔진은 필드가 없다는 이유로 조용히
+   한쪽을 가정하고, 그 값에 「정밀 계산」 딱지가 붙는다 — 폴백보다 더 믿기 때문에 더 위험하다.
+   아래 배수는 260806 에 실제 엔진을 호출해 얻은 값이다(추정 아님). */
+console.log('\n════ «모른다»고 답한 입력은 엔진이 살아 있어도 막는다 ════');
+eq('취득세 · 증여 + 조정 «모름» → precise 여도 차단 (실측 3,040만 ↔ 9,920만 = 3.26배)',
+   acqFallbackGaps({ propertyType: '주택', acquisitionType: '증여', exclusiveArea: '84', isRegulatedArea: 'unsure' }, OK).length > 0, true);
+eq('취득세 · 다주택 매매 + 조정 «모름» → precise 여도 차단',
+   acqFallbackGaps({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'unsure', temporaryTwoHouse: 'no' }, OK).length > 0, true);
+eq('취득세 · 면적 미입력 → precise 여도 차단 (엔진은 농특세를 0 으로 둔다 — 실측 100㎡면 160만원)',
+   acqFallbackGaps({ ...ACQ_BASE, exclusiveArea: '' }, OK).length > 0, true);
+eq('취득세 · 3주택 + 일시적2주택 「예」 잔존 → precise 여도 차단 (실측 2,050만 ↔ 6,720만 = 3.3배)',
+   acqFallbackGaps({ ...ACQ_BASE, housingCount: '3', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' }, OK).length > 0, true);
+eq('양도세 · 취득당시 조정 «모름» → precise 여도 차단 (실측 2,484만 ↔ 2억 997만 = 8.45배)',
+   cgtFallbackGaps({ assetType: 'house_1', acqAdjustedZone: 'unsure' }, OK).length > 0, true);
+/* 반대 방향도 고정한다 — «답한» 입력까지 막으면 정상 이용자를 쫓아낸다 */
+eq('취득세 · 조정을 «아니오»로 답하면 precise 에서 통과',
+   acqFallbackGaps({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'no', temporaryTwoHouse: 'no' }, OK).length, 0);
+eq('양도세 · 취득당시 조정을 «아니오»로 답하면 precise 에서 통과',
+   cgtFallbackGaps({ assetType: 'house_1', acqAdjustedZone: 'no' }, OK).length, 0);
+
+console.log('\n════ 엔진 성공(precise)이면 «폴백 한계»로는 막지 않는다 — 정상 이용자를 막는 게 더 큰 사고다 ════');
 [['상속세', inhFallbackGaps, { spouseActual: 'zero', isResident: 'no' }],
  ['증여세', giftFallbackGaps, { genSkip: 'yes', priorGiftHas: 'yes' }],
  ['취득세', acqFallbackGaps, { propertyType: '토지', reduction: 'first' }],
@@ -167,8 +188,20 @@ FILES.forEach(([f, fn]) => {
      정의 1 + 분석 1 + 렌더 1 = 3 이 정상이다. */
   eq(`${f} · 판정 함수를 정의 1 + 분석 1 + 렌더 1 회 쓴다`,
      (src.match(new RegExp(fn + '\\(answers, calc\\)', 'g')) || []).length, 3);
-  eq(`${f} · jtFallbackGaps 배열이 한 곳에만 있다`,
-     (src.match(/window\.jtFallbackGaps\(\[/g) || []).length, 1);
+  /* 판정 배열이 «판정 함수 밖»에 있으면 그건 두 번째 규칙이다 — 반드시 어긋난다.
+     함수 안에 여러 개인 것은 정상이다(불확정 입력 층 + 폴백 한계 층). */
+  const fnStart = src.indexOf(`function ${fn}(answers, calc) {`);
+  let depth = 1, fnEnd = fnStart + `function ${fn}(answers, calc) {`.length;
+  while (fnEnd < src.length && depth > 0) {
+    const ch = src[fnEnd];
+    if (ch === '{') depth++; else if (ch === '}') depth--;
+    fnEnd++;
+  }
+  const outside = [];
+  const rx = /window\.jtFallbackGaps\(\[/g;
+  let m;
+  while ((m = rx.exec(src))) if (m.index < fnStart || m.index > fnEnd) outside.push(m.index);
+  eq(`${f} · 판정 배열이 ${fn} 밖에 없다`, outside.length, 0);
 });
 
 /* ── ③ 화면 내용: 차단 시 반환되는 서브트리에 금액이 없는가 ────────────────

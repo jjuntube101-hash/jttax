@@ -324,8 +324,20 @@ function formatWon(n) {
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
    렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
 function cgtFallbackGaps(answers, calc) {
-  if (calc.precise) return [];
-  return window.jtFallbackGaps([
+  /* ── ① 엔진이 있어도 «못 메우는» 입력 — precise 여도 막는다 ──────────────
+     260806 엔진 실측(POST /v1/calc/transfer, 15억 양도·8억 취득·2018 취득·1주택·거주 0년):
+       regulated_at_acquisition=false → 24,845,000 (비과세)
+       regulated_at_acquisition=true  → 209,970,000 (과세)   = 8.45배
+     지금 「모름」은 true 로 보내진다(보수적). 방향이 «과대»라 안전해 보이지만,
+     실제 비조정이었다면 비과세인 사람에게 2억을 «정밀 계산»으로 보여 주는 셈이다.
+     팔지 말라는 이유가 되어 의사결정을 바꾼다 — 과소 못지않은 사고다. */
+  const unknown = window.jtFallbackGaps([
+    { when: answers.assetType === 'house_1' && answers.acqAdjustedZone === 'unsure',
+      why: '살 때 조정대상지역이었는지 «모름» — 1세대1주택 비과세의 거주 2년 요건이 이 사실로 갈립니다(실측 2,484만원 ↔ 2억 997만원). 등기부·매매계약서의 취득일과 당시 고시를 확인해 주세요.' },
+  ]);
+  /* ── ② 여기부터는 «간이 폴백만»의 한계 — 엔진이 살아 있으면 엔진이 제대로 푼다 ── */
+  if (calc.precise) return unknown;
+  return unknown.concat(window.jtFallbackGaps([
     { when: answers.assetType === 'occupancy_succ',
       why: '승계취득 조합원입주권 — 장기보유특별공제 대상이 아닌데 간이 계산이 공제를 적용해 세금이 «적게» 나옵니다.' },
     { when: answers.assetType === 'occupancy_orig',
@@ -337,13 +349,9 @@ function cgtFallbackGaps(answers, calc) {
     { when: answers.assetType === 'house_1'
             && (answers.houseConcurrentRight === 'occupancy' || answers.houseConcurrentRight === 'presale'),
       why: '«1주택 + 입주권·분양권» 동시 보유 — 비과세 배제(§89②)와 일시적 특례를 간이 계산이 판정하지 못합니다.' },
-    /* 취득 당시 조정지역은 «1세대1주택 비과세의 거주요건»에만 쓰인다(§154①) — 2·3주택엔 영향이 없어
-       차단하면 멀쩡한 이용자를 막는다. 과잉 차단도 결함이다 (Codex P2, 소스 1063·746행에서 확인). */
-    { when: answers.assetType === 'house_1' && answers.acqAdjustedZone === 'unsure',
-      why: '살 때 조정대상지역이었는지 «모름» — 1세대1주택 비과세의 거주 2년 요건이 이 사실로 갈립니다.' },
     { when: !!answers.moveInDate && !!answers.acquiredDate && answers.moveInDate < answers.acquiredDate,
       why: '전입일이 취득일보다 앞섭니다 — 거주기간이 실제보다 길게 잡혀 공제가 과다해집니다.' },
-  ]);
+  ]));
 }
 
 function buildReportDetail(answers, calc, commentary) {
