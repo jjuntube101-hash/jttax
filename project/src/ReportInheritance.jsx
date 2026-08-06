@@ -111,6 +111,10 @@ const INHERITANCE_QS = [
   // ── 더 정확히 (상세) ──
   {
     id: 'isResident',
+    /* ★ quick 으로 올린 이유: 상세에만 두면 빠른 계산에서 이 값이 undefined 가 되고,
+       차단 조건(=== 'no')이 안 걸려 «거주자 기준 금액»이 정밀 계산으로 나갔다
+       (260806 Codex P0). 엔진이 거주자 여부를 아예 받지 않으므로 나중에 물어봐선 늦다. */
+    tier: 'quick',
     section: '당사자',
     q: '고인이 한국에 사시던 분(거주자)인가요?',
     /* 종전 문구는 「이 답은 계산에 반영되지 않으며」였다 — 이제는 «금액 자체를 내지 않는다».
@@ -282,7 +286,9 @@ function mapAnswersToInheritance(a) {
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
    렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
 function inhFallbackGaps(answers, calc) {
-  const nonResident = answers.isResident === 'no';
+  /* «아니오»만 보면 미입력이 새어 나간다 — 거주자라고 «확인된» 경우만 계산한다.
+     state 조작·문항 구성 변경으로 값이 빠져도 거주자 가정 수치가 안 나오게 하는 방어다. */
+  const nonResident = answers.isResident !== 'yes';
   /* ── ① 엔진도 «못 푸는» 입력 — precise 여도 막는다 ───────────────────────
      260806 실측(POST /v1/calc/inheritance, 20억·배우자·자녀2):
        필드 없음 / is_resident:false / resident:false → 셋 다 127,416,380 으로 «동일».
@@ -291,7 +297,7 @@ function inhFallbackGaps(answers, calc) {
      경고 배너만으로는 부족하다 — 사람은 숫자를 먼저 본다. */
   const unknown = window.jtFallbackGaps([
     { when: nonResident,
-      why: '비거주자 상속 — 국내 재산만 과세되고 일괄공제·배우자상속공제가 배제됩니다. 계산 엔진이 아직 거주자 기준만 지원해 금액을 표시하지 않습니다(상담에서 정확히 안내해 드립니다).' },
+      why: '고인의 거주자 여부가 «거주자»로 확인되지 않았습니다 — 비거주자는 국내 재산만 과세되고 일괄공제·배우자상속공제가 배제됩니다. 계산 엔진이 아직 거주자 기준만 지원해 금액을 표시하지 않습니다(상담에서 정확히 안내해 드립니다).' },
   ]);
   /* ── ② 여기부터는 «간이 폴백만»의 한계 ── */
   if (calc.precise) return unknown;

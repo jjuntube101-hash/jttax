@@ -83,6 +83,21 @@ const CORP_QS = [
   },
 ];
 
+/* 불확정·미지원 입력 차단 — 다른 계산기와 같은 규약(시그니처·사용처).
+   여기 있는 건 «사용자 입력을 말없이 바꾸지 않기 위한» 것이다. */
+function corpFallbackGaps(answers) {
+  const income = Math.round(Number(answers.businessIncome) || 0);
+  const salary = Math.round(Number(answers.ownerSalary) || 0);
+  return window.jtFallbackGaps([
+    /* 종전엔 salary = Math.min(salary, income) 으로 «조용히» 깎아, 사용자가 넣은 1억이
+       5천만으로 바뀐 시나리오를 계산해 놓고 그 사실을 알리지 않았다 (260806 Codex P1).
+       법인 과세표준(이익 − 급여)이 음수가 되는 구간은 결손금 이월이 얽혀 이 단순 비교로
+       답할 수 없다 — 값을 바꾸는 대신 그렇게 말한다. */
+    { when: income > 0 && salary > income,
+      why: '대표 급여가 사업이익보다 큽니다 — 이 경우 법인에 결손이 생겨 이월결손금·유보금까지 따져야 하므로, 이 간단 비교로는 답을 낼 수 없습니다. 급여를 이익 이하로 낮춰 보시거나 상담으로 확인해 주세요.' },
+  ]);
+}
+
 async function callCorpEng(endpoint, body) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
   const delays = [1000, 2000, 4000, 8000];
@@ -178,7 +193,15 @@ function JTReportCorporate({ setRoute, onBack }) {
     try {
       // 엔진은 정수 필드 → 소수·지수 입력은 422 유발. 매핑 직전 정수 반올림(견고성).
       const income = Math.round(Number(answers.businessIncome) || 0);
-      const salary = Math.min(Math.round(Number(answers.ownerSalary) || 0), income);   // 급여는 이익 초과 불가
+      /* ★ 급여 > 이익 조합은 아래 게이트가 이미 막는다 — 여기 Math.min 은 방어용이며,
+            «조용히 값을 바꾸는» 경로로 다시 쓰이면 안 된다 (260806 Codex P1). */
+      if (corpFallbackGaps(answers).length > 0) {
+        const blockedRep = { calc: { precise: false }, commentary: null, quick: phase === 'quick' };
+        setReport(blockedRep);
+        if (phase === 'quick') setQuickReport(blockedRep);
+        return;
+      }
+      const salary = Math.min(Math.round(Number(answers.ownerSalary) || 0), income);
       const spouse = answers.spouse === 'yes';
       const deps = Number(answers.dependents) || 0;
       const kids = Number(answers.children) || 0;   // 수정 260628(CORPORATE-R2-01): 13세 이상 자녀세액공제(§59의2) 개인·법인대표 대칭 반영
@@ -268,6 +291,19 @@ function JTReportCorporate({ setRoute, onBack }) {
 
   if (report) {
     const { calc, commentary } = report;
+    const corpGaps = corpFallbackGaps(answers);
+    if (corpGaps.length > 0) {
+      return (
+        <div className="jt-container">
+          <JTReportShell title="법인 전환 비교" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            <JTFallbackBlocked gaps={corpGaps} onRetry={() => runAnalysis()} />
+            <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
+              <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
+            </div>
+          </JTReportShell>
+        </div>
+      );
+    }
     const favorable = calc.precise && calc.corpTotal < calc.indivTotal;
     return (
       <div className="jt-container">

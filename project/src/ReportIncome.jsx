@@ -62,9 +62,27 @@ const INC_QS = [
     tier: 'quick',
     section: '금융소득',
     q: '배당소득이 있나요? 연 합계 금액 (원)',
-    sub: '주식·펀드 배당 등 1년 합계. 국내 법인 배당은 Gross-up 가산 후 배당세액공제로 상쇄됩니다(§17③·§56). 이자+배당이 2,000만원을 넘으면 종합과세. 외국 배당 등 특수한 경우는 상담에서 확인하세요. 없으면 0.',
+    sub: '주식·펀드 배당 등 1년 합계. 국내 법인 배당은 Gross-up 가산 후 배당세액공제로 상쇄됩니다(§17③·§56). 이자+배당이 2,000만원을 넘으면 종합과세. 없으면 0.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 0 (없으면 0)',
+  },
+  {
+    id: 'dividendType',
+    tier: 'quick',
+    section: '금융소득',
+    q: '그 배당은 어디에서 받은 것인가요?',
+    /* 260806 엔진 실측(POST /v1/calc/income): 다른 소득이 있으면 Gross-up 여부로 세액이 갈린다.
+         사업 5억 + 배당 2억 → grossup 240,160,000 / 미적용 251,760,000 (1,160만원)
+         사업 3억 + 배당 1억 → 122,190,000 / 128,190,000 (600만원)
+       종전엔 이 문항 없이 «무조건 국내 배당»으로 보내 외국 배당이 «적게» 나왔다. */
+    sub: '국내 법인에서 받은 배당만 Gross-up 가산·배당세액공제(§17③·§56) 대상입니다. 외국 법인 배당(해외주식·해외 ETF 등)은 대상이 아니어서 세금이 달라집니다. 국내·외국이 섞여 있으면 금액을 나눠야 정확해 상담으로 안내해 드립니다.',
+    showIf: (a) => (Number(a.dividendIncome) || 0) > 0,
+    opts: [
+      ['domestic', '국내 법인 배당만 (국내 주식·펀드)', 'Gross-up 적용'],
+      ['foreign', '외국 법인 배당만 (해외주식·해외 ETF)', 'Gross-up 미적용'],
+      ['mixed', '국내·외국이 섞여 있음', '금액 분리 필요 — 상담'],
+      ['unsure', '모르겠어요', '상담 안내'],
+    ],
   },
   {
     id: 'nationalPension',
@@ -99,6 +117,19 @@ const INC_QS = [
     placeholder: '예: 음식점업 / 노란우산 연 300만 납입 / 의료비 500만',
   },
 ];
+
+/* 불확정 입력 차단 — 종소세는 «간이 폴백»이 없어 ②층(폴백 한계)이 필요 없다.
+   여기 있는 건 «엔진이 있어도 못 메우는» 것뿐이다. 다른 계산기와 시그니처를 맞춰
+   같은 규약(runAnalysis 게이트 + 렌더 조기 반환)으로 쓴다. */
+function incFallbackGaps(answers, calc) {
+  const dividend = Number(answers.dividendIncome) || 0;
+  return window.jtFallbackGaps([
+    { when: dividend > 0 && answers.dividendType === 'mixed',
+      why: '국내·외국 배당이 섞여 있습니다 — 국내분만 Gross-up(§17③) 대상이라 금액을 나눠야 계산됩니다. 섞인 채로는 세금이 «적게» 나옵니다(실측: 사업 5억+배당 2억이면 1,160만원 차이).' },
+    { when: dividend > 0 && (answers.dividendType === 'unsure' || !answers.dividendType),
+      why: '배당을 어디에서 받았는지 확인되지 않았습니다 — 국내 법인 배당인지에 따라 Gross-up·배당세액공제가 갈립니다(실측 최대 1,160만원 차이).' },
+  ]);
+}
 
 async function callIncomeEng(body) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
@@ -223,6 +254,13 @@ function JTReportIncome({ setRoute, onBack }) {
       }
 
       let calc = { precise: false };
+      /* ★ 엔진을 부르기 전에 막는다 — 못 낼 값이면 요청 자체가 낭비다 */
+      if (incFallbackGaps(answers, calc).length > 0) {
+        const blockedRep = { calc, quick: phase === 'quick' };
+        setReport(blockedRep);
+        if (phase === 'quick') setQuickReport(blockedRep);
+        return;
+      }
       try {
         const body = {
           business_revenue: biz, business_expenses: 0,
@@ -230,7 +268,9 @@ function JTReportIncome({ setRoute, onBack }) {
           is_salary_earner: salary > 0,    // 근로소득 있으면 근로자(표준공제 13만·§59), 없으면 사업자(7만)
           interest_income: interest,       // 이자소득(분리)
           dividend_income: dividend,       // 배당소득(분리) — §17③ Gross-up·§56 배당세액공제 (수정 260629 INCOME-R2-03)
-          is_dividend_grossup: dividend > 0,   // 국내법인 배당 가정(대부분 Gross-up 대상). 외국배당 등은 상담
+          // «국내 법인 배당일 때만» Gross-up. 종전엔 배당이 있으면 무조건 true 라
+          //   외국 배당이 국내 배당으로 계산돼 세금이 적게 나왔다 (260806 Codex P1).
+          is_dividend_grossup: dividend > 0 && answers.dividendType === 'domestic',
           spouse, dependents: deps, children_count: kids,
           national_pension: np,
           pension_savings: ps,
@@ -281,6 +321,21 @@ function JTReportIncome({ setRoute, onBack }) {
 
   if (report) {
     const { calc } = report;
+    const incGaps = incFallbackGaps(answers, calc);
+    const incBlocked = incGaps.length > 0;
+    /* 차단이면 결과 화면을 아예 만들지 않는다 — 다른 계산기와 같은 규약 */
+    if (incBlocked) {
+      return (
+        <div className="jt-container">
+          <JTReportShell title="종합소득세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
+            <JTFallbackBlocked gaps={incGaps} onRetry={() => runAnalysis()} />
+            <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
+              <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
+            </div>
+          </JTReportShell>
+        </div>
+      );
+    }
     return (
       <div className="jt-container">
         <JTReportShell title="종합소득세 계산 결과" subtitle="사업·근로·금융 소득 합산 종합소득세" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">

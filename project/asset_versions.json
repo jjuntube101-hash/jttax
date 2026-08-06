@@ -52,16 +52,16 @@
     "sha256": "119cd95c8d107677dbc8a361e86894145dd7c2e4cb3974222303e82a9007fbad"
   },
   "project/src/ReportIncome.jsx": {
-    "v": "34",
-    "sha256": "a1a951b65f1742f0351cb1b072bd7e1625c38478dd3029d91cbb16b607d89b6b"
+    "v": "35",
+    "sha256": "088b1ec489f03c89d34bb5a9ba21f601a5c5d9d9b8c68788e3f6c7af11c9ceba"
   },
   "project/src/ReportGift.jsx": {
-    "v": "45",
-    "sha256": "d5a99ce817eb70ac6158e49a1559770f18d8969e8c607d05719a4da873775ecf"
+    "v": "46",
+    "sha256": "8031d89efe4e28ea825ff50f60a97ab80c69b8144f8466ad0cd90d543e19cf54"
   },
   "project/src/ReportInheritance.jsx": {
-    "v": "20",
-    "sha256": "a2f34405ce6666b61bc2a28d6f5f26bf577353571de0e80d10f3fde703143e43"
+    "v": "21",
+    "sha256": "ff4e262478f2497587c9f38831cd5933c70d6a8105bbb4f86a38d54388098625"
   },
   "project/src/ReportAcquisition.jsx": {
     "v": "23",
@@ -76,8 +76,8 @@
     "sha256": "b82a8978854b8157661d4ee0397950be05ae08841b60e2678af5460f9c68bf22"
   },
   "project/src/ReportCorporate.jsx": {
-    "v": "8",
-    "sha256": "7c2c905ba2e7c015187019b8ef7c20ba6edee37e68408cbf0459a1ac18ad7631"
+    "v": "9",
+    "sha256": "090b9509fe59ec72ab2e8d2841000174bcc1ec9cf1bdf54443bd893e9c86d3c0"
   },
   "project/src/ReportInsurance.jsx": {
     "v": "12",

@@ -59,6 +59,19 @@ const giftFallbackGaps = loadGapFn('ReportGift.jsx', 'giftFallbackGaps');
 const acqFallbackGaps = loadGapFn('ReportAcquisition.jsx', 'acqFallbackGaps');
 const propFallbackGaps = loadGapFn('ReportProperty.jsx', 'propFallbackGaps');
 const cgtFallbackGaps = loadGapFn('ReportCGT.jsx', 'cgtFallbackGaps');
+/* 종소세·법인전환은 «간이 폴백»이 없어 ②층이 필요 없다 — 판정 시그니처만 맞춰 둔다.
+   법인전환은 calc 를 안 쓰므로 (answers) 한 인자다. */
+const incFallbackGaps = loadGapFn('ReportIncome.jsx', 'incFallbackGaps');
+const corpFallbackGaps = (() => {
+  const s = fs.readFileSync(SRC('ReportCorporate.jsx'), 'utf8');
+  const head = 'function corpFallbackGaps(answers) {';
+  const i = s.indexOf(head);
+  if (i < 0) throw new Error('ReportCorporate.jsx 의 corpFallbackGaps 를 찾지 못했습니다.');
+  let d = 1, j = i + head.length;
+  while (j < s.length && d > 0) { const ch = s[j]; if (ch === '{') d++; else if (ch === '}') d--; j++; }
+  // eslint-disable-next-line no-eval
+  return eval(`(${s.slice(i, j)})`);
+})();
 
 const DOWN = { precise: false };            // 엔진 장애
 const OK = { precise: true };               // 엔진 정상
@@ -67,6 +80,10 @@ const GIFT = (x) => giftFallbackGaps(x, DOWN);
 const ACQ = (x) => acqFallbackGaps(x, DOWN);
 const PROP = (x) => propFallbackGaps(x, DOWN);
 const CGT = (x) => cgtFallbackGaps(x, DOWN);
+/* ⚠️ 거주자 여부는 «yes 로 확인된» 경우만 통과한다(260806 하드닝) — 미입력도 막는다.
+   빠른 계산에서 이 문항이 안 나와 undefined 로 새던 P0 를 닫은 결과다.
+   그래서 상속·증여의 «통과» 케이스에는 isResident:'yes' 를 반드시 넣는다. */
+const RES = { isResident: 'yes' };
 
 console.log('\n════ 상속세 — 실측 최대 1.8억 오차 조건 ════');
 eq('배우자 실제 상속 0 → 차단', INH({ spouseActual: 'zero' }).length > 0, true);
@@ -75,8 +92,8 @@ eq('순금융재산 입력 → 차단', INH({ netFinancialAssets: '500000000' })
 eq('동거주택 → 차단', INH({ hasCohabitationHouse: 'yes' }).length > 0, true);
 eq('비거주자 → 차단', INH({ isResident: 'no' }).length > 0, true);
 eq('자녀 7명↑인데 정확인원 없음 → 차단', INH({ numChildren: 'many' }).length > 0, true);
-eq('자녀 7명↑ + 정확인원 입력 → 통과', INH({ numChildren: 'many', numChildrenExact: '9' }).length, 0);
-eq('평범한 입력 → 통과(숫자 표시)', INH({ hasSpouse: 'yes', numChildren: '2' }).length, 0);
+eq('자녀 7명↑ + 정확인원 입력 → 통과', INH({ ...RES, numChildren: 'many', numChildrenExact: '9' }).length, 0);
+eq('평범한 입력 → 통과(숫자 표시)', INH({ ...RES, hasSpouse: 'yes', numChildren: '2' }).length, 0);
 
 console.log('\n════ 증여세 ════');
 eq('세대생략 → 차단', GIFT({ genSkip: 'yes' }).length > 0, true);
@@ -84,7 +101,7 @@ eq('혼인공제 → 차단', GIFT({ marriageDed: 'yes' }).length > 0, true);
 eq('출산공제 → 차단', GIFT({ childbirthDed: 'yes' }).length > 0, true);
 eq('사전증여 → 차단', GIFT({ priorGiftHas: 'yes' }).length > 0, true);
 eq('비거주자 → 차단', GIFT({ isResident: 'no' }).length > 0, true);
-eq('평범한 입력 → 통과', GIFT({ relationship: '직계존속' }).length, 0);
+eq('평범한 입력 → 통과', GIFT({ ...RES, relationship: '직계존속' }).length, 0);
 
 console.log('\n════ 취득세 ════');
 const ACQ_BASE = { propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', reduction: 'none', housingCount: '1' };
@@ -170,14 +187,35 @@ eq('양도세 · 취득당시 조정을 «아니오»로 답하면 precise 에�
 console.log('\n════ 엔진 성공(precise)이면 «폴백 한계»로는 막지 않는다 — 정상 이용자를 막는 게 더 큰 사고다 ════');
 /* ⚠️ 여기 입력에 «비거주자»를 넣으면 안 된다 — 그건 폴백 한계가 아니라 엔진 미지원이라
    precise 에서도 막는 게 «의도»다. 위 «모른다» 블록에서 따로 고정한다. */
-[['상속세', inhFallbackGaps, { spouseActual: 'zero', priorGiftHas: 'yes' }],
- ['증여세', giftFallbackGaps, { genSkip: 'yes', priorGiftHas: 'yes' }],
+[['상속세', inhFallbackGaps, { ...RES, spouseActual: 'zero', priorGiftHas: 'yes' }],
+ ['증여세', giftFallbackGaps, { ...RES, genSkip: 'yes', priorGiftHas: 'yes' }],
  ['취득세', acqFallbackGaps, { propertyType: '토지', reduction: 'first' }],
  ['재산세', propFallbackGaps, { propertyKind: '건축물' }],
  ['양도세', cgtFallbackGaps, { assetType: 'occupancy_succ' }]].forEach(([name, fn, ans]) => {
   eq(`${name} · 차단 입력 + 엔진 실패 → 막는다`, fn(ans, DOWN).length > 0, true);
   eq(`${name} · 같은 입력이라도 엔진 성공 → 안 막는다`, fn(ans, OK).length, 0);
 });
+
+console.log('\n════ 종합소득세 — 배당 Gross-up (엔진 실측 최대 1,160만원 차이) ════');
+/* 260806 실측(POST /v1/calc/income): 사업 5억 + 배당 2억 →
+     grossup 240,160,000 / 미적용 251,760,000. 배당 단독이면 차이 0(공제가 전액 상쇄)이지만
+     다른 소득이 있으면 갈린다. 종전엔 문항 없이 «무조건 국내 배당»으로 보냈다. */
+eq('국내 배당 → 통과', incFallbackGaps({ dividendIncome: '50000000', dividendType: 'domestic' }, OK).length, 0);
+eq('외국 배당 → 통과 (엔진이 Gross-up 미적용으로 정확히 계산한다)',
+   incFallbackGaps({ dividendIncome: '50000000', dividendType: 'foreign' }, OK).length, 0);
+eq('국내·외국 «혼합» → 차단 (금액을 못 나눈다)',
+   incFallbackGaps({ dividendIncome: '50000000', dividendType: 'mixed' }, OK).length > 0, true);
+eq('배당 유형 «모름» → 차단', incFallbackGaps({ dividendIncome: '50000000', dividendType: 'unsure' }, OK).length > 0, true);
+eq('배당 유형 «미입력» → 차단 (문항이 빠져도 새지 않게)',
+   incFallbackGaps({ dividendIncome: '50000000' }, OK).length > 0, true);
+eq('배당 0이면 유형과 무관하게 통과', incFallbackGaps({ dividendIncome: '0' }, OK).length, 0);
+
+console.log('\n════ 법인 전환 — 입력값을 말없이 바꾸지 않는다 ════');
+eq('대표급여 ≤ 사업이익 → 통과',
+   corpFallbackGaps({ businessIncome: '100000000', ownerSalary: '50000000' }).length, 0);
+eq('대표급여 > 사업이익 → 차단 (종전엔 Math.min 으로 조용히 깎아 다른 시나리오를 계산했다)',
+   corpFallbackGaps({ businessIncome: '50000000', ownerSalary: '100000000' }).length > 0, true);
+eq('같으면 통과', corpFallbackGaps({ businessIncome: '50000000', ownerSalary: '50000000' }).length, 0);
 
 /* ── ② 게이트 순서: 차단이 «외부 전송»보다 먼저인가 ─────────────────────────
    렌더 단계의 조기 반환만 검사하면 이 누설을 못 잡는다. 실제로 260806 에

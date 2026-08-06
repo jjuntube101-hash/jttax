@@ -79,19 +79,41 @@ TARGETS.forEach(([file, fn]) => {
   const earliestGate = Math.min(...gates.map((g) => g.start));
   eq(`${file} · «막고 나가는» 게이트가 AI 호출보다 앞이다`, earliestGate < aiCallStart, true);
 
-  /* ③ 게이트와 AI 호출이 같은 함수(runAnalysis) 안이어야 의미가 있다 —
-        딴 함수에 있는 게이트는 이 경로를 막지 못한다. */
-  let sameFn = false;
+  /* ③ 게이트와 AI 호출을 «직접» 감싸는 함수가 같아야 한다.
+        종전엔 «둘 다 포함하는 함수가 하나라도 있으면» 통과였는데, 그러면 이런 되돌림이 샌다
+        (260806 Codex P1) —
+
+          const stopIfBlocked = () => {
+            if (giftFallbackGaps(answers, calc).length > 0) { setReport(rep); return; }  ← helper 만 종료
+          };
+          stopIfBlocked();
+          const txt = await window.claude.complete(prompt);                              ← 그대로 실행
+
+        helper 안의 return 은 helper 만 끝내고 runAnalysis 는 계속 간다. 감싸는 함수가
+        둘 다 포함하니 종전 검사는 통과했다. 그래서 «가장 안쪽» 함수를 비교한다. */
+  const innermostFnAt = (pos) => {
+    let best = null;
+    walk(ast.program, (n) => {
+      const isFn = n.type === 'FunctionDeclaration' || n.type === 'FunctionExpression' || n.type === 'ArrowFunctionExpression';
+      if (!isFn || n.start > pos || n.end < pos) return;
+      if (!best || (n.end - n.start) < (best.end - best.start)) best = n;
+    });
+    return best;
+  };
+  const gateFn = innermostFnAt(earliestGate);
+  const aiFn = innermostFnAt(aiCallStart);
+  eq(`${file} · 게이트와 AI 호출을 «직접» 감싸는 함수가 같다`,
+     !!gateFn && !!aiFn && gateFn.start === aiFn.start, true);
+
+  /* ④ AI 호출이 `finally` 안에 있으면 안 된다 — finally 는 return 을 «통과»해도 실행되므로
+        게이트가 아무리 앞에 있어도 소용없다. 게이트가 try 안에 있는 것 자체는 정상이다
+        (try 안의 return 도 함수를 종료한다). 막아야 할 건 «return 해도 실행되는 자리»뿐이다. */
+  let aiInFinally = false;
   walk(ast.program, (n) => {
-    const isFn = n.type === 'FunctionDeclaration' || n.type === 'FunctionExpression' || n.type === 'ArrowFunctionExpression';
-    if (!isFn) return;
-    if (n.start < earliestGate && n.end > aiCallStart) {
-      const body = code.slice(n.start, n.end);
-      /* 가장 안쪽 함수만 보고 싶지만, 감싸는 함수도 참이라 «둘 다 포함»이면 충분하다 */
-      if (body.includes(`${fn}(answers, calc)`) && body.includes('window.claude.complete')) sameFn = true;
-    }
+    if (n.type !== 'TryStatement' || !n.finalizer) return;
+    if (n.finalizer.start <= aiCallStart && n.finalizer.end >= aiCallStart) aiInFinally = true;
   });
-  eq(`${file} · 게이트와 AI 호출이 같은 함수 안에 있다`, sameFn, true);
+  eq(`${file} · AI 호출이 finally 안에 있지 않다 (return 을 통과해도 실행되는 자리)`, aiInFinally, false);
 });
 
 console.log(`\n════════════════════\n실패 ${fails}건`);
