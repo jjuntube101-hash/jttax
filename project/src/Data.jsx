@@ -42,7 +42,9 @@ window.JT_DATA = {
     titleDefault: '제이티 세무법인 — JT TAX CORP.',
     titleTemplate: '%s | 제이티 세무법인',
     description: '부동산 세금 계산기와 세무사 상담. 양도·증여·상속·취득·보유세를 주소 입력만으로 계산하고, 복잡한 사안은 세무사가 직접 확인합니다. 강남 소재, 초기 응답 24시간 기준.',
-    ogImage: 'https://www.jttax.co.kr/project/assets/og-image.png',
+    /* index.html 의 og:image 와 «같은 버전»을 유지할 것 — 어긋나면 이 값을 쓰는 순간
+       옛 공유 이미지가 다시 노출된다 (260808 og-image 를 CI 모노크롬으로 재생성) */
+    ogImage: 'https://www.jttax.co.kr/project/assets/og-image.png?v=2',
     keywords: '강남 세무사, 양도소득세 계산기, 상속세 계산기, 증여세 계산기, 취득세 계산기, 부동산 세금, 경정청구, 세무 상담, 제이티 세무법인',
     pageMeta: {
       home:     { title: '제이티 세무법인 — 근거 위에서, 끝까지', desc: '부동산 세금 계산기와 세무사 상담. 양도·증여·상속·취득·보유세, 세무조사 대응, 경정청구.' },

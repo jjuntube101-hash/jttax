@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { CALCULATORS } from './calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
+import { footerHtml, stylesHref, ogImageHref } from '../_shared/site-meta.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));   // project/calculators
 const REPO_ROOT = join(__dirname, '..', '..');               // 사이트 루트
@@ -49,6 +50,7 @@ function renderCalcPage(c) {
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' },
     provider: { '@type': 'Organization', name: '제이티 세무법인', url: SITE },
     description: c.metaDesc,
+    image: ogImageHref(),
   };
   const crumbLd = {
     '@context': 'https://schema.org',
@@ -91,13 +93,14 @@ ${c.related.map(r => `        <li><a href="/insights/${r.slug}.html">${esc(r.tit
   <meta property="og:title" content="${esc(fullTitle)}">
   <meta property="og:description" content="${esc(c.metaDesc)}">
   <meta property="og:url" content="${url}">
-  <meta property="og:image" content="${SITE}/project/assets/og-image.png">
+  <meta property="og:image" content="${ogImageHref()}">
   <meta property="og:locale" content="ko_KR">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(fullTitle)}">
   <meta name="twitter:description" content="${esc(c.metaDesc)}">
+  <meta name="twitter:image" content="${ogImageHref()}">
   <link rel="icon" href="/project/assets/logo_symbol.png">
-  <link rel="stylesheet" href="/project/src/styles.css">
+  <link rel="stylesheet" href="${stylesHref()}">
 ${GA_HEAD_SNIPPET}
   <script type="application/ld+json">${JSON.stringify(appLd)}</script>
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
@@ -205,9 +208,7 @@ ${otherCalcs}
     </div>
   </main>
 
-  <footer style="margin-top:40px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;">
-    © 2026 JT TAX CORP. — www.jttax.co.kr
-  </footer>
+${footerHtml()}
 </body>
 </html>`;
 }
@@ -217,6 +218,7 @@ function renderIndexPage() {
   const itemsLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
+    image: ogImageHref(),
     itemListElement: CALCULATORS.map((c, i) => ({
       '@type': 'ListItem', position: i + 1, name: c.h1, url: `${SITE}/calculators/${c.slug}.html`,
     })),
@@ -241,10 +243,14 @@ function renderIndexPage() {
   <meta property="og:title" content="무료 세금 계산기 모음 | 제이티 세무법인">
   <meta property="og:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 무료 세금 계산기.">
   <meta property="og:url" content="${url}">
-  <meta property="og:image" content="${SITE}/project/assets/og-image.png">
+  <meta property="og:image" content="${ogImageHref()}">
   <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="무료 세금 계산기 모음 | 제이티 세무법인">
+  <meta name="twitter:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 무료 세금 계산기.">
+  <meta name="twitter:image" content="${ogImageHref()}">
   <link rel="icon" href="/project/assets/logo_symbol.png">
-  <link rel="stylesheet" href="/project/src/styles.css">
+  <link rel="stylesheet" href="${stylesHref()}">
 ${GA_HEAD_SNIPPET}
   <script type="application/ld+json">${JSON.stringify(itemsLd)}</script>
   <style>
@@ -278,9 +284,7 @@ ${cards}
       <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_index')">세무사 상담</a>
     </div>
   </main>
-  <footer style="margin-top:40px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;">
-    © 2026 JT TAX CORP. — www.jttax.co.kr
-  </footer>
+${footerHtml()}
 </body>
 </html>`;
 }

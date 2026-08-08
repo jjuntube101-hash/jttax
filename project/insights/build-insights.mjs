@@ -17,6 +17,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
+import { footerHtml, stylesHref, ogImageHref } from '../_shared/site-meta.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url)); // project/insights
 const PROJECT = join(__dirname, '..');                     // project
@@ -193,12 +194,16 @@ function renderArticlePage(a) {
   <meta property="og:title" content="${esc(a.title)}">
   <meta property="og:description" content="${esc(a.excerpt)}">
   <meta property="og:url" content="${shareUrl}">
-  <meta property="og:image" content="${SITE}/project/assets/og-image.png">
+  <meta property="og:image" content="${ogImageHref()}">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="${a.dateISO}">
   <meta property="article:author" content="${esc(a.author)}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${esc(a.title)}">
+  <meta name="twitter:description" content="${esc(a.excerpt)}">
+  <meta name="twitter:image" content="${ogImageHref()}">
   <link rel="icon" href="/project/assets/logo_symbol.png">
-  <link rel="stylesheet" href="/project/src/styles.css">
+  <link rel="stylesheet" href="${stylesHref()}">
   <style>
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
     .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
@@ -215,6 +220,7 @@ ${GA_HEAD_SNIPPET}
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": ${JSON.stringify(a.title)},
+    "image": ${JSON.stringify(ogImageHref())},
     "datePublished": ${JSON.stringify(a.dateISO)},
     "author": { "@type": "Organization", "name": ${JSON.stringify(a.author)} },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
@@ -250,9 +256,7 @@ ${GA_HEAD_SNIPPET}
     </div>
   </article>
 
-  <footer style="margin-top:80px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;">
-    © 2026 JT TAX CORP. — www.jttax.co.kr
-  </footer>
+${footerHtml()}
 </body>
 </html>`;
 }
