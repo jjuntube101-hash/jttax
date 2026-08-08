@@ -1,16 +1,47 @@
+# ⚠️ robots.txt 는 «그룹별»로 읽힌다 — 자기 User-agent 그룹의 규칙만 적용되고
+#    `User-agent: *` 그룹은 무시된다. 그래서 아래 Disallow 를 모든 그룹에 반복한다.
+#    (* 그룹에만 적으면 정작 막아야 할 구글·네이버·다음이 그대로 크롤링한다)
+#
+# /project/ 하위를 막는 이유 (260808): GitHub Pages 는 저장소의 «모든» 파일을 URL 로
+# 서빙한다. 인사이트 원고 .md 가 게시된 HTML 과 중복 콘텐츠로 잡히고, 빌드용 데이터까지
+# 검색에 노출된다. 단 /project/src/ 와 /project/assets/ 는 CSS·JSX·이미지라 막지 않는다
+# — 크롤러가 못 읽으면 페이지 렌더링 평가에서 손해다.
+
 User-agent: *
 Allow: /
 Disallow: /customer_simulation.html
 Disallow: /screenshots/
+Disallow: /project/insights/
+Disallow: /project/calculators/
+Disallow: /project/scripts/
+Disallow: /project/_shared/
 
 # 네이버·다음·구글 검색엔진 허용
 User-agent: Yeti
 Allow: /
+Disallow: /customer_simulation.html
+Disallow: /screenshots/
+Disallow: /project/insights/
+Disallow: /project/calculators/
+Disallow: /project/scripts/
+Disallow: /project/_shared/
 
 User-agent: Daumoa
 Allow: /
+Disallow: /customer_simulation.html
+Disallow: /screenshots/
+Disallow: /project/insights/
+Disallow: /project/calculators/
+Disallow: /project/scripts/
+Disallow: /project/_shared/
 
 User-agent: Googlebot
 Allow: /
+Disallow: /customer_simulation.html
+Disallow: /screenshots/
+Disallow: /project/insights/
+Disallow: /project/calculators/
+Disallow: /project/scripts/
+Disallow: /project/_shared/
 
 Sitemap: https://www.jttax.co.kr/sitemap.xml
