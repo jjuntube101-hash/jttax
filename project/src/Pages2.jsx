@@ -297,21 +297,25 @@ function JTBooking({ setRoute }) {
             <div className="jt-kicker">STEP 2 · 어디로 연락드릴까요?</div>
             <h2 className="jt-h2" style={{marginBottom: 40}}>연락처를 남겨주세요.</h2>
             <form className="jt-form" onSubmit={(e) => { e.preventDefault(); if (canNext2) setStep(3); }}>
+              {/* 260808: type·inputMode·autoComplete 추가.
+                  연락처가 type="text" 라 휴대폰에서 «문자 키보드»가 떠서 번호를 치려면
+                  키보드를 한 번 더 전환해야 했다. 상담 예약은 전환의 마지막 관문이라
+                  입력 마찰을 그대로 두면 이탈로 이어진다. */}
               <div className="jt-field">
                 <label>성명 <em>REQUIRED</em></label>
-                <input value={form.name} onChange={set('name')} required />
+                <input value={form.name} onChange={set('name')} required autoComplete="name" />
               </div>
               <div className="jt-field">
                 <label>회사 / 법인명 <em>OPTIONAL</em></label>
-                <input value={form.company} onChange={set('company')} placeholder="법인 건은 법인명을 기재해 주세요" />
+                <input value={form.company} onChange={set('company')} placeholder="법인 건은 법인명을 기재해 주세요" autoComplete="organization" />
               </div>
               <div className="jt-field">
                 <label>연락처 <em>REQUIRED</em></label>
-                <input value={form.phone} onChange={set('phone')} required placeholder="010-0000-0000" />
+                <input type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} required placeholder="010-0000-0000" />
               </div>
               <div className="jt-field">
                 <label>이메일 <em>선택</em></label>
-                <input type="email" value={form.email} onChange={set('email')} placeholder="(선택) name@company.com" />
+                <input type="email" inputMode="email" autoComplete="email" value={form.email} onChange={set('email')} placeholder="(선택) name@company.com" />
               </div>
               <div className="jt-field jt-field--full">
                 <label>선호 연락 방법</label>

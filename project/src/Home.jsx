@@ -41,7 +41,11 @@ const JT_SITUATIONS = [
 
 // ============ Hero — 상황별 진입 ============
 function JTHero({ setRoute }) {
-  const w = typeof window !== 'undefined' ? window.innerWidth : 1200;
+  /* 260808: 컬럼 수를 window.innerWidth 로 읽어 «인라인 style» 로 박고 있었다.
+     리사이즈 리스너가 없어 값이 갱신되지 않는데, 인라인은 CSS 미디어쿼리를 이기므로
+     기기를 회전하거나 창을 줄이면 옛 컬럼 수가 그대로 남았다(가로→세로에서 3열 잘림).
+     redesign.css 가 이미 같은 분기(3열 / ≤960 2열 / ≤640 1열)를 갖고 있어
+     인라인을 지우기만 하면 된다. */
   const pick = (s) => {
     if (s.topic) {try {sessionStorage.setItem('jt_preferred_topic', s.topic);} catch (e) {}}
     window.jtTrackCta('booking', 'hero');
@@ -51,10 +55,10 @@ function JTHero({ setRoute }) {
     <section className="jt-sithero">
       <div className="jt-sithero__inner">
         <div className="jt-kicker">WHERE TO START · 상황별 안내</div>
-        <h1 className="jt-sithero__title">지금, 어떤 상황이신가요?</h1>
+        <h2 className="jt-sithero__title">지금, 어떤 상황이신가요?</h2>
         <p className="jt-sithero__sub">세금은 상황마다 답이 다릅니다.</p>
       </div>
-      <div className="jt-sits" style={{ gridTemplateColumns: w <= 640 ? '1fr' : (w <= 960 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)') }}>
+      <div className="jt-sits">
         {JT_SITUATIONS.map((s, i) => <div
             key={s.num}
             data-delay={Math.min(i, 5)}
@@ -100,10 +104,13 @@ function JTBrandMoment() {
           <div style={{ marginTop: 20, fontWeight: 800, fontSize: 'clamp(26px, 5vw, 42px)', letterSpacing: '-0.02em' }}>제이티 세무법인</div>
           <div style={{ marginTop: 8, fontFamily: 'ui-monospace, monospace', fontSize: 13, letterSpacing: '.35em', opacity: .65 }}>JT TAX CORP.</div>
         </div>
-        <h2 className="jt-brandmoment__slogan">
+        {/* 260808: 페이지의 h1 은 여기다. 종전엔 이 슬로건이 h2 이고 아래 상황
+            섹션 제목이 h1 이라 문서 개요가 뒤집혀 있었다(검색엔진이 페이지 주제를
+            「지금, 어떤 상황이신가요?」로 읽는다). CSS 는 전부 클래스 셀렉터라 영향 없음. */}
+        <h1 className="jt-brandmoment__slogan">
           <span className="reveal" data-delay="1">근거 위에서,</span>{' '}
           <span className="reveal" data-delay="2">끝까지.</span>
-        </h2>
+        </h1>
         <p className="jt-brandmoment__sub reveal" data-delay="3">
           세금은 감이 아니라 근거로 다툽니다. 신고 한 건부터 불복 한 건까지 — 기록과 법령 위에서 끝까지 함께합니다.
         </p>

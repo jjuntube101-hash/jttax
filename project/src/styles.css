@@ -986,7 +986,9 @@ button { font-family: inherit; }
 .jt-field label em { font-style: normal; color: var(--jt-ink-500); font-family: var(--font-sans-en); font-size: 11px; letter-spacing: var(--tr-widest); text-transform: uppercase; }
 .jt-field input, .jt-field textarea, .jt-field select {
   font-family: var(--font-sans-kr);
-  font-size: 15px;
+  /* 16px 미만이면 iOS Safari 가 입력 포커스 시 페이지를 «자동 확대»한다.
+     상담 예약 폼에서 이름 칸을 누르는 순간 화면이 튀던 원인 (260808). */
+  font-size: 16px;
   padding: 14px 16px;
   border: 1px solid var(--border-2);
   border-radius: 2px;
@@ -2866,8 +2868,13 @@ button { font-family: inherit; }
 
 @media (max-width: 720px) {
   .jt-mcta { display: flex; }
-  .jt-main { padding-bottom: 76px; }
-  .jt-footer { padding-bottom: 76px; }
+  /* 고정 CTA 바가 페이지 최하단(개인정보처리방침·이용약관 링크)을 덮지 않도록
+     아래를 비워 둔다. 76px 고정값은 바 실높이(버튼 48 + 패딩 20 = 68 이상)와
+     아슬아슬했고 노치 기기의 홈 인디케이터 영역을 계산에 넣지 않았다 →
+     실측 기반 변수 + safe-area 를 더한다 (260808). */
+  :root { --jt-mcta-h: 86px; }
+  .jt-main { padding-bottom: calc(var(--jt-mcta-h) + env(safe-area-inset-bottom, 0px) + 8px); }
+  .jt-footer { padding-bottom: calc(var(--jt-mcta-h) + env(safe-area-inset-bottom, 0px) + 8px); }
 }
 
 /* ============ Legal page (개인정보처리방침·이용약관) ============ */

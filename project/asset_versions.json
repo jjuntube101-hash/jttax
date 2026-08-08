@@ -1,7 +1,7 @@
 {
   "project/src/Data.jsx": {
-    "v": "28",
-    "sha256": "f81f6a4a596b18b0228737c6a443ab13761fcbd115c06607734c01d6ca1c8d59"
+    "v": "29",
+    "sha256": "9f8b2f9c4c0d0abff746b674f734594b34f43a65920174a8a10046e21b349b08"
   },
   "project/src/lawValues.jsx": {
     "v": "2",
@@ -12,16 +12,16 @@
     "sha256": "707da760f576c29afceace0fb741e293149ba6170ef4ec230dd7fd353877dfad"
   },
   "project/src/Home.jsx": {
-    "v": "35",
-    "sha256": "7bd706b99c8eccec4cc58de205773262aaae1867e80366d41ad0b098ed131a37"
+    "v": "36",
+    "sha256": "8a3a262b7a2359eddafdbda309ffc993f02314013e3e851c109401cf3048c845"
   },
   "project/src/Pages1.jsx": {
     "v": "23",
     "sha256": "c028432136160b52331e0c21c62b4519602068e82fce78ca62b7a219f9ef7d81"
   },
   "project/src/Pages2.jsx": {
-    "v": "23",
-    "sha256": "9d10cf49a68fb08d9052f2e4ba6eabe228fe8171da0f6313bd34c51e7ca729e4"
+    "v": "24",
+    "sha256": "164e681a1da27327256e7c539187301d8c20cece8d04cff35022c58409dbd3bc"
   },
   "project/src/Legal.jsx": {
     "v": "20",
@@ -98,5 +98,21 @@
   "project/src/ReportYouthStartup.jsx": {
     "v": "15",
     "sha256": "1b53c9c4d4e3f85a07a341a647ed885c12f969d861afb64e6836aa32bd78366b"
+  },
+  "project/src/styles.css": {
+    "v": "23",
+    "sha256": "2fa22d8e6ed0037389b9a6fd6ae5d7a877b117b4cab4272e4661f79ca92b1521"
+  },
+  "project/src/redesign.css": {
+    "v": "37",
+    "sha256": "c9c5a4773059228c3430e8433e9fbbd60d4758b9e0224bd5bb7ba4cb9fb7c4fa"
+  },
+  "project/src/colors_and_type.css": {
+    "v": "2",
+    "sha256": "6d2beeff5a1c402d2a3081b37c6be3d84cb151b2db84dc4bf182926e1530d122"
+  },
+  "project/assets/og-image.png": {
+    "v": "2",
+    "sha256": "b55fa0cf570fa664449b7346e0285c61c5413fe863bb857c866d82c2ab02f959"
   }
 }
