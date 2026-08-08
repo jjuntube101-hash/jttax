@@ -11,7 +11,20 @@ const ROOT = path.join(HERE, '..', '..');
 const OUT = path.join(HERE, '..', 'asset_versions.json');
 
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const sha = (rel) => crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, rel))).digest('hex');
+
+/* 해시 전에 줄끝을 정규화한다.
+   git 의 core.autocrlf=true 환경에서 체크아웃하면 텍스트 파일이 CRLF 로 변환되어,
+   내용이 한 글자도 안 바뀌었는데 해시가 달라진다. 그대로 두면 clone 한 사람이나
+   CI 에서 이 게이트가 «전 파일 FAIL» 로 거짓 경보를 낸다(260808 실측 11건).
+   바이너리(og-image.png 등)는 손대지 않는다 — 정규화하면 파일이 깨진다.
+   ⚠️ 버전 관리 대상에 «새 바이너리 형식»을 넣을 때는 이 목록과 tests_asset_versions.js
+      의 같은 목록을 함께 고칠 것. 빠뜨리면 그 파일은 텍스트로 취급돼 조용히 손상된다. */
+const BINARY = /\.(png|jpe?g|gif|ico|webp|woff2?|ttf|otf|pdf|zip)$/i;
+const sha = (rel) => {
+  const buf = fs.readFileSync(path.join(ROOT, rel));
+  const data = BINARY.test(rel) ? buf : Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
+  return crypto.createHash('sha256').update(data).digest('hex');
+};
 
 const rec = {};
 

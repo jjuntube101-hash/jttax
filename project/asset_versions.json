@@ -5,7 +5,7 @@
   },
   "project/src/lawValues.jsx": {
     "v": "2",
-    "sha256": "ca6d577c331fbfa0582861dc7d0b2fe1597f7da08e952d7aa89e53c079713044"
+    "sha256": "21d4308478d337d68f464e21aaa9dbbd9fff9ac109721fdcc69f0f57d0f01bee"
   },
   "project/src/Chrome.jsx": {
     "v": "27",
@@ -17,7 +17,7 @@
   },
   "project/src/Pages1.jsx": {
     "v": "23",
-    "sha256": "c028432136160b52331e0c21c62b4519602068e82fce78ca62b7a219f9ef7d81"
+    "sha256": "c89b5fc6e3cb53db6dc4627cf45d36649482203945f770efeecdf89b3febc1ac"
   },
   "project/src/Pages2.jsx": {
     "v": "24",
@@ -25,23 +25,23 @@
   },
   "project/src/Legal.jsx": {
     "v": "20",
-    "sha256": "f85860b7e60c3edbabdcafa64a70dd22ea98d9be54cf797d2e09dcf4ae4a5c69"
+    "sha256": "43e1bd29a0328b3b1bb670a9410a6df700ea6bab1bbc9792e2fadacb5b2e2cff"
   },
   "project/src/Report.jsx": {
     "v": "56",
-    "sha256": "c27a5b02d9068cb5cd28bb9589abb0939ae5d2063d905b578f3ccd94378eda19"
+    "sha256": "0c3b38c036b3e57ff0732a1a24ffe7699adcf75eda937ef497bff458164260f2"
   },
   "project/src/ReportConvert.jsx": {
     "v": "27",
-    "sha256": "6ce5321f9db1eb75c4f939e36a9c890551380575dbbce6dd131a6c13a1680bf2"
+    "sha256": "7797c592afa6da2774f6223b61ff1cfd5197c3ba27d88ba83d7da83d256f46c5"
   },
   "project/src/ReportAppeal.jsx": {
     "v": "27",
-    "sha256": "8773badb434ae44b5e69b035041acb7d4e9606d9349cffa88a3e8005037809c7"
+    "sha256": "69b9beeccc43a8b8ba03d386094520506fcce10d3c81429b5efa5015dca4b24d"
   },
   "project/src/ReportCGT.jsx": {
     "v": "45",
-    "sha256": "02a49c5ea6ec3b2a8e23133354fb543b34ce9a0c3d27e819abbb0daa7cd3afe2"
+    "sha256": "ecfa19a0c454d51825b3386c2b5213037653779510f20fab4a125a729b56de5a"
   },
   "project/src/ReportReform2026.jsx": {
     "v": "29",
@@ -53,15 +53,15 @@
   },
   "project/src/ReportIncome.jsx": {
     "v": "37",
-    "sha256": "729f0e876ce7e904bd6d1cef716966ad81bd7df3fa8ed9616be0977fc25eda74"
+    "sha256": "ccef9fa579c49c531648133e2064d3d61cc9b70594002e087e9282487c42ae9e"
   },
   "project/src/ReportGift.jsx": {
     "v": "49",
-    "sha256": "34f6a4a59ac920cb74244329aa1626f0fbcee67d3cf796fe2980bae6a2fbbfe4"
+    "sha256": "6a48e3cd7b5841ef067f8617aced3eddcce888b9f219c8b17da38565ad0c18e7"
   },
   "project/src/ReportInheritance.jsx": {
     "v": "24",
-    "sha256": "d506980cb1027ba98d037e718c72614ae1a3ecb30c09dd8aced88c220cce7894"
+    "sha256": "44b8246ca2f9149c6b3a7f2c12652cedda11076d5d4c595358b0214e730aae38"
   },
   "project/src/ReportAcquisition.jsx": {
     "v": "26",
@@ -77,23 +77,23 @@
   },
   "project/src/ReportCorporate.jsx": {
     "v": "11",
-    "sha256": "6ac97e9655ae9160a8b03822354fded8a98f01e42d46afc834891a2f145d95d6"
+    "sha256": "5a785f3803a884d2763eeb64b405ac214b5892d37a2de4d18190f7613add9801"
   },
   "project/src/ReportInsurance.jsx": {
     "v": "12",
-    "sha256": "03c1368bf6853444892cbbf98e2b7eb9f649dda60b148976c6f3f5c2a3b6d464"
+    "sha256": "5a81e37cb451ad25ad2611cf6c71b92e75aaa338c365d7ccb377747ab424f980"
   },
   "project/src/ReportVat.jsx": {
     "v": "12",
-    "sha256": "8d7466f999111d269903f451672d7c26dbed9fd0a10bcf2a336444487b447873"
+    "sha256": "7e4e830bc314c5b95c1f1c5818ef2587adcf68468c55bb4e1a1c8ca988d9156d"
   },
   "project/src/ReportCompare.jsx": {
     "v": "12",
-    "sha256": "eab052be01cf429905447a9559bdeee206a15693f7d29bfbd5f2923f1be540b7"
+    "sha256": "88a5c270fecbe112bbe54a9a6f2b56f8e05de72ac02bd19c1b4d54e9a9140c97"
   },
   "project/src/ReportBurdenedOptimize.jsx": {
     "v": "6",
-    "sha256": "1baf0105c197b15ab8d87af33bfd8989911f9ef42eafd3aa5683f369f03688fc"
+    "sha256": "957f493006ff17da66f556084e61239cb101f310528e5367689d185cb3338ed9"
   },
   "project/src/ReportYouthStartup.jsx": {
     "v": "15",
@@ -105,11 +105,11 @@
   },
   "project/src/redesign.css": {
     "v": "37",
-    "sha256": "c9c5a4773059228c3430e8433e9fbbd60d4758b9e0224bd5bb7ba4cb9fb7c4fa"
+    "sha256": "4b63ea0db842bd2521aaf2050b2deb6cbf923aa3265b808360a4ee4e577c05cc"
   },
   "project/src/colors_and_type.css": {
     "v": "2",
-    "sha256": "6d2beeff5a1c402d2a3081b37c6be3d84cb151b2db84dc4bf182926e1530d122"
+    "sha256": "ba4ab89ead5c38173aa8ba89e27ed1615150ed82bc257ad7d7d4e747dc801d58"
   },
   "project/assets/og-image.png": {
     "v": "2",
