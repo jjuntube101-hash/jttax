@@ -628,11 +628,11 @@
      960px 로 첫 화면 «밖»이었다. 시안이 걱정한 바로 그 지점이다.
      → 로고를 더 줄이고 입력을 2열로 접어 버튼을 화면 안으로 끌어올린다.
      ⛔ 슬로건·부제는 건드리지 않는다(브랜드 문장 유지가 안 2 를 고른 이유). */
-  .jt-brandmoment{ padding: 34px 16px 40px !important; }
-  .jt-bm-logosvg{ height: 96px !important; }
-  .jt-brandmoment__logowrap{ margin-bottom: 12px; }
-  .jt-brandmoment__logowrap > div:first-of-type{ font-size: 24px !important; margin-top: 12px !important; }
-  .jt-brandmoment__slogan{ font-size: clamp(32px,9vw,44px); }
+  /* ⚠️ .jt-brandmoment 의 padding 은 여기서 정하지 않는다 — 아래 689행의 무조건
+     규칙이 «뒤»에 있어 !important 끼리 붙으면 그쪽이 이긴다(미디어쿼리는 우선순위를
+     올려 주지 않는다). 모바일 여백은 파일 «맨 끝» 블록에서 덮는다. 260809 실사고.
+     같은 이유로 logowrap 의 margin-bottom(907행에 덮임)과 슬로건 font-size(730행에
+     덮임)도 여기서 빼고 끝 블록으로 옮겼다 — 여기 두면 «쓴 값이 안 먹는다». */
   .jt-brandmoment__sub{ margin-top: 12px; font-size: 14px; }
   .jt-herocalc{ margin-top: 18px; padding: 14px; }
   /* 2열 유지 — 한 칸씩 쌓으면 높이가 두 배가 되어 버튼이 접힌다 */
@@ -1019,16 +1019,18 @@
    줄이는 것은 «여백과 로고»뿐이다. */
 @media (max-height: 900px) and (min-width: 641px){
   .jt-brandmoment{ padding-top: clamp(40px,5vh,64px) !important; padding-bottom: clamp(40px,5vh,64px) !important; }
-  .jt-bm-logosvg{ height: clamp(110px,16vh,168px) !important; }
+  /* 로고 높이는 아래 «공식 Primary 로고» 절의 .jt-bm-primary 가 정본이다 */
   .jt-brandmoment__logowrap{ margin-bottom: clamp(14px,2vh,24px); }
   .jt-brandmoment__sub{ margin-top: clamp(14px,2vh,22px); }
   .jt-herocalc{ margin-top: clamp(18px,2.4vh,28px); }
 }
-/* 아주 낮은 화면(가로 모드 노트북 등)은 한 단계 더 */
+/* 아주 낮은 화면(가로 모드 노트북 등)은 한 단계 더.
+   ⚠️ 260809 재측정: 1280×720 에서 「세액 계산」 버튼이 729px 로 «9px» 넘쳐 있었다.
+      종전엔 계산기 상단만 보고 「첫 화면 안」이라 판정했는데, 정작 눌러야 하는 것은
+      버튼이다. 판정 기준을 카드 상단이 아니라 «버튼 하단»으로 바꿨다. */
 @media (max-height: 720px) and (min-width: 641px){
-  .jt-brandmoment{ padding-top: 28px !important; padding-bottom: 32px !important; }
-  .jt-bm-logosvg{ height: 92px !important; }
-  .jt-brandmoment__logowrap > div:first-of-type{ font-size: 26px !important; margin-top: 12px !important; }
+  .jt-brandmoment{ padding-top: 20px !important; padding-bottom: 32px !important; }
+  .jt-herocalc__head{ margin-bottom: 12px; }
 }
 
 
@@ -1046,7 +1048,7 @@
   .jt-bm-primary{ height: clamp(104px, 15vh, 160px) !important; }
 }
 @media (max-height: 720px) and (min-width: 641px){
-  .jt-bm-primary{ height: 88px !important; }
+  .jt-bm-primary{ height: 78px !important; }   /* 88 → 78: 버튼을 첫 화면에 넣기 위해 */
 }
 @media (max-width: 640px){
   .jt-bm-primary{ height: 92px !important; }
@@ -1111,4 +1113,58 @@
 .jt-herocalc__inline{
   padding: 0; border: 0; background: none; cursor: pointer;
   color: #fff; font: inherit; text-decoration: underline; text-underline-offset: 2px;
+}
+
+/* ── 모바일 히어로 압축 (260809 라이브 실측 후 수정) ─────────────────────────
+   ⚠️ 실측 사고: 배포 후 375×812 에서 「세액 계산」 버튼이 bottom 812px —
+      화면 경계에 «정확히» 걸려 사실상 안 보였다. 원인이 두 겹이었다.
+      ① 626행 @media(max-width:640px) 안의 padding 지정이 689행의 «무조건»
+         규칙에 덮였다. 미디어쿼리는 우선순위를 올리지 않는다 — 같은 선택자·같은
+         !important 면 «뒤에 쓴 것»이 이긴다. 그래서 모바일 여백이 34px 이 아니라
+         96px 로 먹고 있었다.
+      ② 세로 압축 규칙(1020·1028행)에 min-width:641px 이 붙어 모바일이 아예 제외돼
+         있었다. 데스크톱 접힘만 보고 만들어서 생긴 구멍이다.
+   ⛔ 이 블록은 «파일 끝»에 있어야 한다. 위로 옮기면 689행에 다시 덮인다.
+   ⛔ 슬로건·부제는 줄이지 않는다 — 브랜드 문장을 지키는 것이 안 2 를 고른 이유.
+      줄이는 것은 여백·로고·카드 내부 간격뿐이다. */
+@media (max-width: 640px){
+  .jt-brandmoment{ padding-top: 28px !important; padding-bottom: 40px !important; }
+  .jt-bm-primary{ height: 78px !important; }
+  /* 슬로건은 «키우는» 쪽이다. 730행의 무조건 규칙 clamp(24px,3.6vw,52px)!important 가
+     모바일에서 3.6vw=13.5px → 하한 24px 로 떨어져, 첫 화면 브랜드 문장이 본문보다
+     겨우 큰 크기로 나오고 있었다(실측 24px). 브랜드 문장을 지키려고 안 2 를 고른
+     것이므로 여기서 되살린다 — 위 634행의 clamp(32px,9vw,44px) 는 730행에 덮여
+     한 번도 적용된 적이 없다. */
+  .jt-brandmoment__slogan{ font-size: clamp(28px, 8vw, 40px) !important; }
+  .jt-brandmoment__logowrap{ margin-bottom: 10px; }
+  .jt-brandmoment__sub{ margin-top: 8px; }
+  .jt-herocalc{ margin-top: 12px; padding: 12px; }
+  .jt-herocalc__head{ margin-bottom: 8px; }
+  .jt-herocalc__grid{ gap: 8px; }
+  .jt-herocalc__scope{ margin: -4px 0 10px; }
+  .jt-herocalc__go{ margin-top: 12px; }
+}
+/* 태블릿 세로(768×1024). 여기가 «어느 압축 규칙에도 안 걸리는» 구멍이었다 —
+   max-width:640 도 아니고 max-height:900 도 아니라 기본값(여백 107px·로고 169px)이
+   그대로 먹어 버튼이 1117px, 화면 밖 93px 였다. 실측으로 확인.
+   ⛔ max-height:1100 을 단 이유: iPad Pro 세로(1024×1366)처럼 «정말 긴» 화면까지
+      줄이면 로고가 공연히 작아진다. 거기는 기본값으로도 버튼이 들어온다. */
+@media (min-width: 641px) and (max-width: 1024px) and (max-height: 1100px){
+  .jt-brandmoment{ padding-top: 32px !important; padding-bottom: 48px !important; }
+  .jt-bm-primary{ height: 110px !important; }
+}
+
+/* 브라우저 주소창·하단바까지 감안한 «진짜» 짧은 화면(375×640 = iPhone SE 실효).
+   실측으로 여기서도 버튼까지 넣었다 — 656px 로 16px 모자랐던 것을 여백에서만 뽑았다.
+   ⛔ 로고를 더 줄이지 않는다(58px 이 각인의 하한). 슬로건·부제도 그대로. */
+@media (max-width: 640px) and (max-height: 700px){
+  .jt-brandmoment{ padding-top: 12px !important; padding-bottom: 28px !important; }
+  .jt-bm-primary{ height: 58px !important; }
+  .jt-brandmoment__slogan{ font-size: 26px !important; }
+  .jt-brandmoment__sub{ margin-top: 4px; font-size: 13px; }
+  .jt-herocalc{ padding: 10px; }
+  .jt-herocalc__head{ margin-bottom: 6px; }
+  .jt-herocalc__scope{ margin: -4px 0 6px; }
+  .jt-herocalc__grid select, .jt-herocalc__grid input{ padding: 8px 10px; }
+  .jt-herocalc__go{ margin-top: 8px; padding: 11px 16px; }
 }

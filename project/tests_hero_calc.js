@@ -284,9 +284,21 @@ console.log('\n════ ⑥ 히어로 배치 — 첫 화면에서 보여야 
   const css = fs.readFileSync(SRC('redesign.css'), 'utf8');
   eq('세로 여유 없는 화면 압축 규칙 존재', /@media \(max-height: 900px\)/.test(css), true);
   eq('아주 낮은 화면 추가 압축', /@media \(max-height: 720px\)/.test(css), true);
-  /* ⛔ 슬로건·부제는 줄이지 않는다 — 브랜드 문장을 지키는 것이 안 2 를 고른 이유다 */
-  const hSeg = css.slice(css.indexOf('@media (max-height: 900px)'));
-  eq('세로 압축이 슬로건 크기를 건드리지 않음', /max-height[\s\S]{0,400}__slogan\s*\{[^}]*font-size/.test(hSeg), false);
+  /* ⛔ 슬로건은 줄이지 않는다 — 브랜드 문장을 지키는 것이 안 2 를 고른 이유다.
+     ⚠️ 260809 정정: 초판은 「압축 블록이 슬로건 font-size 를 «건드리면» FAIL」이었다.
+        규칙의 뜻은 «작게 만들지 마라»인데 로직이 «만지지 마라»여서, 정작 필요한
+        수정(모바일에서 24px 로 떨어진 것을 30px 로 되살리기)까지 막았다.
+        게이트가 규칙 의도보다 넓으면 사람이 게이트를 끈다 — 방향으로 판정한다.
+        「몇 px 로 그려지는가」는 tests_css_cascade.js ④ 가 뷰포트별 계산값으로 본다. */
+  const 슬로건선언 = [...css.matchAll(/__slogan\s*\{[^}]*font-size:\s*([^;}]+)/g)].map((m) => m[1]);
+  eq('슬로건 크기 선언이 존재', 슬로건선언.length > 0, true);
+  /* ⛔ 여기서 px 를 세지 않는다 — 선언 문자열만 보면 clamp(24px,3.6vw,52px) 의
+     하한 24 를 그대로 위반으로 읽어 위양성이 난다(초판이 실제로 그랬다).
+     승자 규칙을 고르고 clamp/vw 를 계산하는 판정은 캐스케이드 게이트 하나뿐이다 —
+     같은 개념을 두 곳에서 다르게 세면 반드시 어긋난다. */
+  const cascadePath = path.join(__dirname, 'tests_css_cascade.js');
+  eq('슬로건 크기 판정을 캐스케이드 게이트가 맡고 있음',
+    fs.existsSync(cascadePath) && /CSS-SLOGAN-SMALL/.test(fs.readFileSync(cascadePath, 'utf8')), true);
   eq('모바일에서 입력 16px (iOS 자동확대 방지)', /font-size:\s*16px\s*!important/.test(css), true);
   const home = fs.readFileSync(SRC('Home.jsx'), 'utf8');
   eq('히어로에 계산기가 붙어 있음', /window\.JTHeroCalc/.test(home), true);
