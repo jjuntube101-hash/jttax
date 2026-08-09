@@ -265,8 +265,11 @@ function JTCreds() {
                 수험생에게는 들어가는 문이 된다. 두 결론을 한 블록에 섞지 않는다.
                 ⚠ 260809: 처음엔 JTAuthority 카드에 넣었는데 그 컴포넌트는 홈에서
                   **렌더되지 않는 죽은 코드**였다(라이브 DOM 에 .jt-authority 0개).
-                  「파일에 있다」와 「화면에 있다」는 다른 일이다. */}
-            <p className="jt-ident__body">공무원학원 <b>세법 강사</b>, 대학 <b>겸임교수</b>, 세법 기본서·구조노트·가상자산 가이드의 <b>저자</b>입니다. 수강생용 학습앱 <a href="https://class.jttax.co.kr" target="_blank" rel="noopener" onClick={() => { if (window.jtTrackCta) window.jtTrackCta('class_app', 'ident'); }} style={{ color: 'inherit', textDecoration: 'underline', textUnderlineOffset: 3 }}>class.jttax.co.kr</a> 을 직접 운영합니다.</p>
+                  「파일에 있다」와 「화면에 있다」는 다른 일이다.
+                  링크에 인라인 style 을 두지 않는다 — 전역 `a` 규칙이 이미
+                  --fg-link(모노크롬 잉크)+밑줄을 준다. 종전의 color:inherit 은
+                  반전 카드용 잔재였고 사이트 링크 규약을 덮고 있었다 (Codex P2). */}
+            <p className="jt-ident__body">공무원학원 <b>세법 강사</b>, 대학 <b>겸임교수</b>, 세법 기본서·구조노트·가상자산 가이드의 <b>저자</b>입니다. 수강생용 학습앱 <a href="https://class.jttax.co.kr" target="_blank" rel="noopener" onClick={() => { if (window.jtTrackCta) window.jtTrackCta('class_app', 'ident'); }}>class.jttax.co.kr</a> 을 직접 운영합니다.</p>
             <div className="jt-ident__foot">법을 가르치는 사람이 당신의 신고를 직접 봅니다.</div>
           </div>
           <div className="jt-ident__col reveal" data-delay="2">
