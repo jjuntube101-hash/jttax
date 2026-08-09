@@ -66,17 +66,36 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
                 var maySend = false;
                 if (w3fKey && w3fKey.indexOf('REPLACE') < 0 && reportDetail) {
                   try {
-                    maySend = window.confirm(
+                    /* ⚠️ 동의는 «두 개»다 — 창도 두 개여야 한다 (260809 Codex R3 P0).
+                       §28의8①1호가 요구하는 것은 국외 이전에 관한 «별도의» 동의이고,
+                       §22①도 동의사항을 «구분»해 각각 알리고 받도록 한다. 창이 하나면
+                       [확인] 한 번이 의사표시 하나라, 문구로 「둘 다 동의하는 것입니다」라고
+                       적어도 별도 동의가 되지 않는다. 무엇보다 «수집·이용에는 동의하되
+                       국외 이전만 거부»할 길이 없어진다 — 그 선택지를 실제로 만든다. */
+                    var okCollect = window.confirm(
+                      '[1/2] 개인정보 수집·이용 동의 (개인정보 보호법 §15①1호)\n\n' +
                       '상담을 위해 아래 내용을 담당 세무사에게 함께 보낼까요?\n\n' +
                       '· 보내는 것: 입력하신 값과 계산 결과, 분석 내용\n' +
                       '· 함께 가는 것: 접수번호(임의 생성)·유입 매체·유입 사이트 주소(도메인까지)·첫 방문 경로·제출 위치·접수 시각\n' +
                       '  — 카톡 문의와 대조하기 위한 것입니다\n' +
                       '· 보내지 않는 것: 이름·연락처 (카카오톡으로 응대합니다)\n' +
-                      '· 전달 경로: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로\n' +
-                      '· 보유기간: 상담 종료 후 3년\n\n' +
+                      '· 목적: 상담 응대 · 보유기간: 상담 종료 후 3년\n\n' +
                       '동의를 거부하실 수 있습니다 — [취소] 를 누르면 아무것도 보내지 않고, ' +
                       '결과 요약 복사와 카카오톡 열기만 됩니다(불이익 없음).'
                     );
+                    /* 1단계를 거부하셨으면 2단계를 묻지 않는다 — 보낼 것이 없으므로 물을 이유도 없다 */
+                    var okIntl = okCollect && window.confirm(
+                      '[2/2] 개인정보 국외 이전 동의 (개인정보 보호법 §28의8①1호)\n\n' +
+                      '위 내용은 외부 폼 서비스를 거쳐 사무소 메일로 전달되는데, 그 서버가 국외에 있습니다.\n\n' +
+                      '· 이전 항목: 위 1/2 에서 안내드린 항목 전부\n' +
+                      '· 이전 국가·시기·방법: 미국(US-East) · 제출 즉시 · 암호화 전송(HTTPS)\n' +
+                      '· 이전받는 자: Web3Forms (Web3Creative, 인도) · support@web3forms.com\n' +
+                      '· 목적·보유기간: 전달 용도에 한함. 제출 내용은 저장하지 않으며 서버 접속 기록은 2개월 후 삭제\n\n' +
+                      '거부하실 수 있습니다 — [취소] 를 누르면 아무것도 보내지 않고, ' +
+                      '결과 요약 복사와 카카오톡 열기만 됩니다(불이익 없음). ' +
+                      '전화·카카오톡으로는 그대로 상담하실 수 있습니다.'
+                    );
+                    maySend = !!(okCollect && okIntl);
                   } catch (_e2) { maySend = false; }
                 }
                 /* ★ 전송은 비동기다 — «성공 응답» 전에 보냈다고 말하면 안 된다.
@@ -133,11 +152,13 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
   const [name, setName] = useCvtState('');
   const [phone, setPhone] = useCvtState('');
   const [agree, setAgree] = useCvtState(false);
+  /* §28의8①1호 — 국외 이전은 «별도의» 동의라 agree 와 합치면 안 된다 (260809 결재 안 A) */
+  const [agreeIntl, setAgreeIntl] = useCvtState(false);
   const [sending, setSending] = useCvtState(false);
   const [done, setDone] = useCvtState(false);
   const [err, setErr] = useCvtState('');
 
-  const canSend = email.includes('@') && name.trim() && phone.trim() && agree && !sending;
+  const canSend = email.includes('@') && name.trim() && phone.trim() && agree && agreeIntl && !sending;
 
   const send = async () => {
     if (!canSend) return;
@@ -230,6 +251,15 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
           · <strong>함께 전송</strong>: 접수번호(임의 생성)·유입 매체·유입 사이트 주소(도메인까지)·첫 방문 경로·제출 위치·접수 시각
           · <strong>처리위탁</strong>: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로 전달
           · 보유기간: 상담 종료 후 3년 · 동의를 거부할 권리가 있으며, 거부 시 회신 서비스만 제공되지 않습니다.
+        </span>
+      </label>
+      {/* Web3Forms 서버가 미국이라 이 전송은 «국외 이전»이다 — §28의8①1호는 별도 동의를 요구하고
+          ②는 항목·국가/시기/방법·받는 자의 명칭과 연락처·이용목적/보유기간·거부 방법과 효과를 요구한다. */}
+      <label style={{display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 13, color: '#5a5a5a', marginBottom: 16, cursor: 'pointer'}}>
+        <input type="checkbox" checked={agreeIntl} onChange={e => setAgreeIntl(e.target.checked)} style={{marginTop: 3}}/>
+        <span>
+          <strong>개인정보 국외 이전에 동의합니다. (필수)</strong>
+          · <strong>국외 이전</strong>(§28의8①1호 별도 동의): 위 항목이 <strong>미국</strong>(US-East) 서버로 제출 즉시 암호화 전송(HTTPS)됩니다 · 이전받는 자 Web3Forms (Web3Creative, 인도) · support@web3forms.com · 전달 용도에 한하며 제출 내용은 저장하지 않고 서버 접속 기록은 <strong>2개월</strong> 후 삭제 · 거부하실 수 있고 거부 시 전화·카카오톡으로 접수하실 수 있습니다
         </span>
       </label>
       <div style={{display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap'}}>
@@ -404,14 +434,22 @@ window.JTConvertTimeSlots = JTConvertTimeSlots;
 function JTConvertPdfGate({ reportType, reportSummary }) {
   const [email, setEmail] = useCvtState('');
   const [agree, setAgree] = useCvtState(false);
+  /* §28의8①1호 — 국외 이전은 «별도의» 동의라 agree 와 합치면 안 된다 (260809 결재 안 A) */
+  const [agreeIntl, setAgreeIntl] = useCvtState(false);
   const [sending, setSending] = useCvtState(false);
   const [done, setDone] = useCvtState(false);
   const [sentOk, setSentOk] = useCvtState(false);   // 사무소 전달이 «실제로» 됐는가
+  const [askedToSend, setAskedToSend] = useCvtState(false); // 전달을 «요청»하긴 했는가 (미요청 ≠ 실패)
 
-  const canSend = email.includes('@') && agree && !sending;
+  /* ⚠️ PDF 저장은 «동의와 무관한» 서비스다 (260809). 이메일·동의는 「사무소 전달」에만 필요한데
+     저장까지 동의에 묶여 있었다 — 그러면 ①아래 고지문의 「거부 시 PDF 저장은 그대로 가능」이
+     «거짓»이 되고 ②개인정보 보호법 §16③(최소한의 정보 «외»의 수집에 동의하지 않는다는 이유로
+     재화·서비스 제공을 거부할 수 없다)에 걸린다. 인쇄와 전송을 분리한다. */
+  const canPrint = !sending;                                        // 저장은 언제나 가능
+  const willSend = email.includes('@') && agree && agreeIntl;       // 전달은 «두 동의» 모두 있을 때만
 
   const send = async () => {
-    if (!canSend) return;
+    if (!canPrint) return;
     setSending(true);
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     const payload = {
@@ -427,7 +465,8 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
        사무소에는 아무것도 안 갔을 수 있다 (260806 Codex R4 P1). 두 결과를 분리해 알린다. */
     let sent = false;
     try {
-      if (w3fKey && !w3fKey.includes('REPLACE')) {
+      /* 동의하지 않으셨으면 «아무것도 보내지 않는다» — 인쇄창만 연다 */
+      if (willSend && w3fKey && !w3fKey.includes('REPLACE')) {
         const res = await fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'}, body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, replyto: email || '', ...payload })});
         const data = await res.json().catch(() => ({}));
         /* ⚠️ 200 + {} 도 성공으로 보면 안 된다 — Web3Forms 는 success 필드로 판정한다 */
@@ -437,8 +476,9 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
     /* 이 이벤트는 «인쇄창을 여는 행위»를 세는 것이라 실패해도 발화한다(인쇄창은 열린다).
        다만 종전엔 fetch 이전에 발화해 «사무소 도달 여부»를 전혀 알 수 없었다 —
        판정이 끝난 뒤로 옮기고 sent 를 파라미터로 붙여 두 지표를 분리한다 (260808). */
-    window.jtEvent('report_pdf_request', { reportType, sent: sent });
+    window.jtEvent('report_pdf_request', { reportType, sent: sent, requested: willSend });
     setSentOk(sent);
+    setAskedToSend(willSend);
     setTimeout(() => {
       window.print();
       setDone(true);
@@ -453,22 +493,24 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
       <p style={{fontSize: 13, opacity: 0.7, marginTop: 0, marginBottom: 16, lineHeight: 1.6}}>
         {/* ⚠️ 「30일 내 최대 1회」는 이를 강제하는 코드가 없어 지킬 수 없는 약속이었다.
             지킬 수 있는 것만 적는다 (260806 Codex R4 P2). */}
-        이메일을 남기시면 인쇄창이 열려 PDF로 저장하실 수 있습니다. 스팸 발송은 하지 않습니다.
+        <b>PDF 저장은 이메일·동의 없이도 하실 수 있습니다.</b> 이메일을 남기고 아래에 동의하시면, 담당 세무사에게도 함께 전달되어 회신을 받으실 수 있습니다. 스팸 발송은 하지 않습니다.
       </p>
       {done ? (
         /* 인쇄창은 열렸어도 사무소 전달은 실패했을 수 있다 — 두 가지를 나눠 말한다 */
         <p style={{color: '#C7A15B', fontSize: 13, margin: 0}}>
           {sentOk
             ? '● 저장 창이 열렸습니다. 남기신 이메일과 진단요약이 담당 세무사에게 전달되어, 같은 사안을 검토해 회신드릴 수 있습니다.'
-            : '● 저장 창이 열렸습니다. 다만 담당 세무사에게는 전달되지 않았습니다(전송 실패) — 회신이 필요하시면 카카오톡이나 전화로 연락해 주세요.'}
+            : (askedToSend
+              ? '● 저장 창이 열렸습니다. 다만 담당 세무사에게는 전달되지 않았습니다(전송 실패) — 회신이 필요하시면 카카오톡이나 전화로 연락해 주세요.'
+              : '● 저장 창이 열렸습니다. 사무소 전달은 요청하지 않으셨습니다 — 회신을 원하시면 전화(02-554-6405)나 카카오톡으로 연락해 주세요.')}
         </p>
       ) : (
         <>
           <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10}}>
             <input type="email" placeholder="이메일 주소" value={email} onChange={e => setEmail(e.target.value)}
               style={{flex: 1, minWidth: 240, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: 14}}/>
-            <button className="jt-btn jt-btn--onDark" disabled={!canSend} onClick={send}
-              style={{opacity: canSend ? 1 : 0.4, cursor: canSend ? 'pointer' : 'not-allowed'}}>
+            <button className="jt-btn jt-btn--onDark" disabled={!canPrint} onClick={send}
+              style={{opacity: canPrint ? 1 : 0.4, cursor: canPrint ? 'pointer' : 'not-allowed'}}>
               {sending ? '준비 중…' : 'PDF 저장 →'}
             </button>
           </div>
@@ -477,8 +519,13 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
             {/* 동의문은 «실제 전송 항목»과 일치해야 한다 — 이메일 외에 진단요약도 간다 */}
             <span>개인정보 수집·이용 및 처리위탁에 동의합니다. 수집 항목: <strong>이메일 · 진단요약</strong> ·
               함께 전송: 접수번호(임의 생성)·유입 매체·유입 사이트 주소(도메인까지)·첫 방문 경로·제출 위치·접수 시각 ·
-              처리위탁: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로 전달 · 목적: 상담 회신 · 보유기간: 3년 ·
+              처리위탁: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로 전달 · 목적: 상담 회신 · 보유기간: 상담 응대 종료 시점으로부터 3년 ·
               동의를 거부하실 수 있으며, 거부 시 PDF 저장은 그대로 가능하고 사무소 전달만 이루어지지 않습니다</span>
+          </label>
+          {/* §28의8①1호 별도 동의 — 위 체크박스와 합치면 「별도」가 아니다 */}
+          <label style={{display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 12, opacity: 0.7, cursor: 'pointer', marginTop: 8}}>
+            <input type="checkbox" checked={agreeIntl} onChange={e => setAgreeIntl(e.target.checked)} style={{marginTop: 3}}/>
+            <span><strong>개인정보 국외 이전에 동의합니다.</strong> · <strong>국외 이전</strong>(§28의8①1호 별도 동의): 위 항목이 <strong>미국</strong>(US-East) 서버로 제출 즉시 암호화 전송(HTTPS)됩니다 · 이전받는 자 Web3Forms (Web3Creative, 인도) · support@web3forms.com · 전달 용도에 한하며 제출 내용은 저장하지 않고 서버 접속 기록은 <strong>2개월</strong> 후 삭제 · 거부하실 수 있고 거부 시 전화·카카오톡으로 접수하실 수 있습니다</span>
           </label>
         </>
       )}

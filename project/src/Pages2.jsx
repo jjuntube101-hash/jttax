@@ -119,6 +119,8 @@ function JTBooking({ setRoute }) {
     topic: preferredTopic,
     name: '', company: '', email: '', phone: '',
     channel: '전화', msg: preferredSlot ? `희망 상담 시간: ${preferredSlot}\n\n` : '', consent: false,
+    /* §28의8①1호는 국외 이전에 «별도의» 동의를 요구한다 — 위 consent 와 합치면 안 된다 */
+    consentIntl: false,
   });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target && e.target.type === 'checkbox' ? e.target.checked : e.target.value });
   const [done, setDone] = useStatePg2(false);
@@ -153,7 +155,7 @@ function JTBooking({ setRoute }) {
               세무조사 긴급 건은 업무시간 내 즉시 대응됩니다.
             </p>
             <div style={{display: 'flex', gap: 12, flexWrap: 'wrap'}}>
-              <button className="jt-btn jt-btn--primary" onClick={() => { setDone(false); setStep(1); setForm({ topic: '', name: '', company: '', email: '', phone: '', channel: '전화', msg: '', consent: false }); }}>
+              <button className="jt-btn jt-btn--primary" onClick={() => { setDone(false); setStep(1); setForm({ topic: '', name: '', company: '', email: '', phone: '', channel: '전화', msg: '', consent: false, consentIntl: false }); }}>
                 새 문의 작성
               </button>
               <button className="jt-btn jt-btn--outline" onClick={() => setRoute('home')}>
@@ -168,7 +170,7 @@ function JTBooking({ setRoute }) {
 
   const canNext1 = form.topic;
   const canNext2 = form.name && form.phone;
-  const canSubmit = form.consent;
+  const canSubmit = form.consent && form.consentIntl;   // §28의8 별도 동의 — 둘 다 있어야 전송
 
   const submitBooking = async () => {
     if (!canSubmit || submitting) return;
@@ -389,7 +391,21 @@ function JTBooking({ setRoute }) {
                 {/* ⚠️ 수집 항목은 «실제로 보내는 것»과 반드시 일치해야 한다 (개인정보 보호법 §15①).
                     260808 에 유입 출처(접수ID·유입경로·랜딩페이지)를 payload 에 추가하면서
                     이 문구에 반영하지 않아 고지와 실제가 어긋나 있었다 (Codex R1 P1). */}
-                <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 세무 상담 접수·응대 및 결과 회신<br />· <strong>항목</strong>: 성명, 연락처, 이메일, 회사명, 문의분야, 선호 연락채널, 문의내용<br />· <strong>함께 전송되는 접속 정보</strong>: 접수번호(임의 생성), 유입 매체(예: 검색·광고), 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각. 문의가 어느 경로로 들어왔는지 확인하고 중복 접수를 가려내기 위한 것입니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년(상법 §33 상업장부 보존기간에 준함). 기간 경과 시 지체 없이 파기<br />· <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 위 항목은 상담 접수에 «필수»이므로 거부 시 상담 신청이 접수되지 않습니다.<br />수집된 정보는 상담 응대 목적에 한해 사용되며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.
+                <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 세무 상담 접수·응대 및 결과 회신<br />· <strong>항목</strong>: (필수) 성명, 연락처, 문의분야 / (선택) 이메일, 회사명, 선호 연락채널, 문의내용 — 선택 항목은 적지 않으셔도 접수됩니다<br />· <strong>함께 전송되는 접속 정보</strong>: 접수번호(임의 생성), 유입 매체(예: 검색·광고), 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각. 문의가 어느 경로로 들어왔는지 확인하고 중복 접수를 가려내기 위한 것입니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년(상법 §33 상업장부 보존기간에 준함). 기간 경과 시 지체 없이 파기<br />· <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 필수 항목 없이는 접수가 불가하므로, 거부하실 경우 전화·카카오톡·이메일로 상담을 신청해 주십시오.<br />수집된 정보는 상담 응대 목적에 한해 사용되며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.
+              </span>
+            </label>
+
+            {/* 개인정보 보호법 §28의8①1호 «별도» 동의 (260809 결재 「안 A」).
+                이 폼은 Web3Forms 를 거쳐 사무소 메일로 전달되는데 그 서버가 «미국»이라 국외 이전에
+                해당한다. §28의8① 은 국외 제공·처리위탁·보관을 원칙 «금지»하고 5개 예외만 두며,
+                1호를 쓰려면 ②의 5가지(항목 / 국가·시기·방법 / 받는 자의 명칭·연락처 /
+                이용목적·보유기간 / 거부 방법·효과)를 «미리» 알려야 한다.
+                ⛔ 「별도의 동의」라서 위 §15 체크박스와 합치면 안 된다.
+                수령자 정보는 docs.web3forms.com 공식 문서 실측 (260809). */}
+            <label style={{display: 'flex', alignItems: 'flex-start', gap: 12, marginTop: 16, maxWidth: 720, cursor: 'pointer'}}>
+              <input type="checkbox" checked={form.consentIntl} onChange={set('consentIntl')} style={{marginTop: 3, width: 18, height: 18, accentColor: '#000'}} />
+              <span style={{fontSize: 13, color: 'var(--fg-2)', lineHeight: 1.6}}>
+                <strong>개인정보 국외 이전 동의</strong>(개인정보 보호법 §28의8①1호)<br />· <strong>이전 항목</strong>: 위 수집 항목 전부<br />· <strong>이전 국가·시기·방법</strong>: <b>미국</b>(US-East) · 제출 즉시 · 암호화 전송(HTTPS)<br />· <strong>이전받는 자</strong>: Web3Forms (Web3Creative, 인도) · support@web3forms.com<br />· <strong>이용목적·보유기간</strong>: 상담 내용을 사무소 메일로 전달하는 용도에 한함. 제출 내용은 저장하지 않으며 서버 접속 기록은 <b>2개월</b> 후 삭제<br />· <strong>거부할 권리</strong>: 거부하실 수 있습니다. 거부하시면 이 폼으로는 접수되지 않으나, 전화·카카오톡·이메일로 동일하게 상담을 접수하실 수 있습니다.
               </span>
             </label>
 

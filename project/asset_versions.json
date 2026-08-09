@@ -20,20 +20,20 @@
     "sha256": "c89b5fc6e3cb53db6dc4627cf45d36649482203945f770efeecdf89b3febc1ac"
   },
   "project/src/Pages2.jsx": {
-    "v": "25",
-    "sha256": "8ca3db4c9d0af6718732ba3623770902e34e987d6b19056205d06483f765297b"
+    "v": "27",
+    "sha256": "9261f654de24b0f625e74879c70043b9677c5a9a925485d9815c3e9b73ed62ba"
   },
   "project/src/Legal.jsx": {
-    "v": "20",
-    "sha256": "43e1bd29a0328b3b1bb670a9410a6df700ea6bab1bbc9792e2fadacb5b2e2cff"
+    "v": "25",
+    "sha256": "b3565d9fec560d913f62c636eeb804f3e70690dd28af5650131f23d02927bdaf"
   },
   "project/src/Report.jsx": {
     "v": "56",
     "sha256": "0c3b38c036b3e57ff0732a1a24ffe7699adcf75eda937ef497bff458164260f2"
   },
   "project/src/ReportConvert.jsx": {
-    "v": "28",
-    "sha256": "4a9cf5d26ef8d39c60f8581af274170aeeb4932a2e1e8162d260729e37fd49f9"
+    "v": "32",
+    "sha256": "c1dee8a7a44976b7b491c88c9274fc1ccf2b249dbe43f7045356fd1dddbd3ce5"
   },
   "project/src/ReportAppeal.jsx": {
     "v": "27",

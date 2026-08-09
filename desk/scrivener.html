@@ -131,13 +131,28 @@
           <input type="checkbox" name="개인정보동의" value="동의함" required style="margin-top:4px;flex:none;">
           <span><strong>개인정보 수집·이용 동의</strong>(필수)
             · <strong>목적</strong>: 파일럿 신청 접수 및 안내 연락
-            · <strong>항목</strong>: 사무소명, 성함, 연락처, 문의 내용
-            · <strong>보유·이용기간</strong>: 파일럿 종료 후 1년. 기간 경과 시 지체 없이 파기
-            · <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 위 항목은 신청 접수에 필수이므로 거부 시 신청이 접수되지 않습니다.
+            · <strong>항목</strong>: (필수) 사무소명, 성함, 연락처 / (선택) 문의 내용 — 선택 항목은 적지 않으셔도 신청됩니다
+            · <strong>보유·이용기간</strong>: 접수일로부터 1년. 기간 경과 시 지체 없이 파기
+            · <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 필수 항목 없이는 접수가 불가하므로, 거부하실 경우 전화(02-554-6405)나 카카오톡으로 신청해 주십시오.
+          </span>
+        </label>
+        <!-- 개인정보 보호법 §28의8①1호 «별도» 동의. 이 폼은 Web3Forms 를 거쳐 사무소 메일로
+             전달되는데 그 서버가 미국이라 «국외 이전»에 해당한다. ②가 요구하는 5가지(항목 /
+             국가·시기·방법 / 받는 자의 명칭·연락처 / 이용목적·보유기간 / 거부 방법·효과)를
+             모두 적는다. ⛔ 「별도」라서 위 §15 동의와 체크박스를 합치면 안 된다.
+             수령자 정보는 docs.web3forms.com 공식 문서 실측 (260809). -->
+        <label class="jt-consent" style="display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:13px;line-height:1.6;cursor:pointer;">
+          <input type="checkbox" name="국외이전동의" value="동의함" required style="margin-top:4px;flex:none;">
+          <span><strong>개인정보 국외 이전 동의</strong>(필수)
+            · <strong>이전 항목</strong>: 위 수집 항목 전부
+            · <strong>이전 국가·시기·방법</strong>: <strong>미국</strong>(US-East) · 제출 즉시 · 암호화 전송(HTTPS)
+            · <strong>이전받는 자</strong>: Web3Forms (Web3Creative, 인도) · support@web3forms.com
+            · <strong>이용목적·보유기간</strong>: 신청 내용을 사무소 메일로 전달하는 용도에 한함. 제출 내용은 저장하지 않으며 서버 접속 기록은 <strong>2개월</strong> 후 삭제
+            · <strong>거부할 권리</strong>: 거부하실 수 있습니다. 거부하시면 이 폼으로는 접수되지 않으나 전화(02-554-6405)·카카오톡으로 동일하게 신청하실 수 있습니다.
           </span>
         </label>
         <button type="submit" class="jt-btn jt-btn--primary" onclick="jtTrackCta('form_submit','desk_scrivener')">신청하기 →</button>
-        <p class="jt-quiet" style="margin-top:10px;">입력하신 정보는 파일럿 안내 연락에만 사용하며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.</p>
+        <p class="jt-quiet" style="margin-top:10px;">입력하신 정보는 파일럿 안내 연락에만 사용하며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다. 자세한 내용은 <a href="/#/privacy" target="_blank" rel="noopener">개인정보 처리방침 <span>(새 창)</span></a>을 확인해 주십시오.</p>
       </form>
     </section>
 

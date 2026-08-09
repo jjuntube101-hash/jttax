@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "www.jttax.co.kr — 정적 사이트(React UMD + @babel/standalone 브라우저 트랜스파일). 빌드 툴체인 없음.",
   "scripts": {
-    "test": "node project/tests_jsx_smoke.js && node project/tests_asset_versions.js && node project/tests_static_shell.js && node project/tests_money_input.js && node project/tests_cgt_shortterm.js && node project/tests_fallback_block.js && node project/tests_gate_ast.js && node project/tests_form_submit.js && node project/tests_rf_addr.js && node project/tests_rf_reform2026.js && node project/tests_cr_crypto2027.js",
+    "test": "node project/tests_html_scan.js && node project/tests_jsx_smoke.js && node project/tests_asset_versions.js && node project/tests_static_shell.js && node project/tests_money_input.js && node project/tests_cgt_shortterm.js && node project/tests_fallback_block.js && node project/tests_gate_ast.js && node project/tests_form_submit.js && node project/tests_rf_addr.js && node project/tests_rf_reform2026.js && node project/tests_cr_crypto2027.js",
     "build": "node project/insights/build-insights.mjs && node project/calculators/build-calculators.mjs",
     "_gate_note": "build → test 순서다(260808 역전). 정적 45장을 검사하는 tests_static_shell 은 «빌드된 산출물»을 보므로 빌드가 먼저여야 한다. ⛔ sync 는 여기 넣지 말 것 — sync 는 현재 해시를 기준선으로 «기록»하는 도구라, 테스트 앞에서 자동 실행하면 「고쳤는데 ?v= 안 올림」을 영영 못 잡는다. 자산을 고쳤으면 ?v= 를 올린 «뒤» 손으로 sync 한다.",
     "gate": "npm run build && npm run test && node project/tests_build_fresh.js",
