@@ -260,7 +260,13 @@ function JTCreds() {
           <div className="jt-ident__col reveal" data-delay="1">
             <div className="jt-ident__en">Taught · 강의</div>
             <div className="jt-ident__verb">가르칩니다</div>
-            <p className="jt-ident__body">공무원학원 <b>세법 강사</b>, 대학 <b>겸임교수</b>, 세법 기본서·구조노트·가상자산 가이드의 <b>저자</b>입니다.</p>
+            {/* 수강생 학습앱 — 배너·CTA 를 따로 만들지 않고 «이력 문장»에 넣는다.
+                일반 방문자에게는 「지금도 실제로 가르치고 있다」는 증거로 읽히고,
+                수험생에게는 들어가는 문이 된다. 두 결론을 한 블록에 섞지 않는다.
+                ⚠ 260809: 처음엔 JTAuthority 카드에 넣었는데 그 컴포넌트는 홈에서
+                  **렌더되지 않는 죽은 코드**였다(라이브 DOM 에 .jt-authority 0개).
+                  「파일에 있다」와 「화면에 있다」는 다른 일이다. */}
+            <p className="jt-ident__body">공무원학원 <b>세법 강사</b>, 대학 <b>겸임교수</b>, 세법 기본서·구조노트·가상자산 가이드의 <b>저자</b>입니다. 수강생용 학습앱 <a href="https://class.jttax.co.kr" target="_blank" rel="noopener" onClick={() => { if (window.jtTrackCta) window.jtTrackCta('class_app', 'ident'); }} style={{ color: 'inherit', textDecoration: 'underline', textUnderlineOffset: 3 }}>class.jttax.co.kr</a> 을 직접 운영합니다.</p>
             <div className="jt-ident__foot">법을 가르치는 사람이 당신의 신고를 직접 봅니다.</div>
           </div>
           <div className="jt-ident__col reveal" data-delay="2">
@@ -300,22 +306,6 @@ function JTAuthority() {
           <ul className="jt-authority__list">
             <li><span className="jt-tick">—</span><span>해커스공무원 세법 강사</span></li>
             <li><span className="jt-tick">—</span><span>동남보건대 세무회계학과 겸임교수</span></li>
-            {/* 수강생 학습앱 — 광고 블록을 따로 만들지 않고 «이력»으로 둔다.
-                일반 방문자에게는 「실제로 공무원을 가르치고 있다」는 증거로 읽히고,
-                수험생에게는 들어가는 문이 된다. 두 결론을 한 블록에 섞지 않는다. */}
-            <li>
-              <span className="jt-tick">—</span>
-              <span>
-                수강생 학습앱 직접 운영 ·{" "}
-                <a
-                  href="https://class.jttax.co.kr"
-                  target="_blank"
-                  rel="noopener"
-                  onClick={() => { if (window.jtTrackCta) window.jtTrackCta('class_app', 'authority'); }}
-                  style={{ color: 'inherit', textDecoration: 'underline', textUnderlineOffset: 3 }}
-                >class.jttax.co.kr</a>
-              </span>
-            </li>
           </ul>
           <div className="jt-authority__books">
             <div className="jt-authority__book">세법 기본서</div>
