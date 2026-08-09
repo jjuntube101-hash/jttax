@@ -39,7 +39,9 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
         </div>
         <div style={{display: 'flex', gap: 10, flexWrap: 'wrap'}}>
           <button className="jt-btn jt-btn--onDark" onClick={() => {
-            if (window.gtag) window.gtag('event', 'report_cta_banner_booking', { urgent });
+            /* ⚠️ raw gtag 는 광고차단기 환경에서 throw 해 아래 setRoute 까지 막는다 —
+               「예약 버튼을 눌러도 아무 일도 안 나는」 상태 (260808 Codex R2 P2). */
+            window.jtEvent('report_cta_banner_booking', { urgent });
             window.jtTrackCta('booking', 'report_banner', { urgent });
             setRoute && setRoute('booking');
           }}>
@@ -47,7 +49,7 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
           </button>
           <a className="jt-btn jt-btn--ghostOnDark" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
             onClick={() => {
-              if (window.gtag) window.gtag('event', 'report_cta_banner_kakao', { urgent });
+              window.jtEvent('report_cta_banner_kakao', { urgent });
               window.jtTrackCta('kakao', 'report_banner', { urgent });
               // ① 결과 요약을 클립보드에 복사 (고객이 카톡 채팅창에 붙여넣기)
               try { if (kakaoSummary && navigator.clipboard) navigator.clipboard.writeText(kakaoSummary).catch(function(){}); } catch (_e) {}
@@ -67,9 +69,13 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
                     maySend = window.confirm(
                       '상담을 위해 아래 내용을 담당 세무사에게 함께 보낼까요?\n\n' +
                       '· 보내는 것: 입력하신 값과 계산 결과, 분석 내용\n' +
+                      '· 함께 가는 것: 접수번호(임의 생성)·유입 매체·유입 사이트 주소(도메인까지)·첫 방문 경로·제출 위치·접수 시각\n' +
+                      '  — 카톡 문의와 대조하기 위한 것입니다\n' +
                       '· 보내지 않는 것: 이름·연락처 (카카오톡으로 응대합니다)\n' +
-                      '· 전달 경로: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로\n\n' +
-                      '[취소] 를 누르면 아무것도 보내지 않습니다. 결과 요약 복사와 카카오톡 열기만 됩니다.'
+                      '· 전달 경로: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로\n' +
+                      '· 보유기간: 상담 종료 후 3년\n\n' +
+                      '동의를 거부하실 수 있습니다 — [취소] 를 누르면 아무것도 보내지 않고, ' +
+                      '결과 요약 복사와 카카오톡 열기만 됩니다(불이익 없음).'
                     );
                   } catch (_e2) { maySend = false; }
                 }
@@ -90,6 +96,8 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
                       상세입력_및_분석: reportDetail || '',
                       접수시각: new Date().toLocaleString('ko-KR'),
                       비고: '고객이 결과 후 카카오톡 채널로 연결 — 연락처 미수집(카톡으로 응대). 같은 시각 카톡 문의와 대조 바람.',
+                      // 연락처가 없는 경로라 «접수ID»가 특히 중요하다 — 카톡 문의와 대조할 유일한 키
+                      ...window.jtAttributionFields('report_kakao'),
                     }),
                   }).then(function (res) {
                     /* ⚠️ res.ok 만 보면 «200 + {"success":false}» 를 성공으로 읽는다.
@@ -145,8 +153,12 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
       진단요약: reportSummary || '(요약 없음)',
       상세입력_및_분석: reportDetail || '(상세 없음)',
       접수시각: new Date().toLocaleString('ko-KR'),
+      ...window.jtAttributionFields('report_lead'),
     };
-    if (window.gtag) window.gtag('event', 'report_lead_submit', { reportType });
+    /* 전환 이벤트·완료 화면을 «전송 성공 이후»로 옮겼다 (260808) — 상담 예약 폼과 같은
+       이유다. 실패한 접수를 전환으로 세면 수치가 부풀고, mailto 는 열렸는지조차 알 수
+       없는데 「접수 완료」를 띄우면 사무소엔 아무것도 안 온 채 방문자만 기다린다. */
+    let sent = false;
     try {
       if (w3fKey && !w3fKey.includes('REPLACE')) {
         const res = await fetch('https://api.web3forms.com/submit', {
@@ -155,15 +167,25 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
           body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, from_name: name || '홈페이지 리포트 접수', replyto: email || '', ...payload }),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.success) throw new Error('fail');
+        // 200 + {} 를 성공으로 보면 안 된다 — Web3Forms 는 success 필드로 판정한다
+        sent = !!(res.ok && data && data.success === true);
+        if (!sent) throw new Error('fail');
       } else {
-        // Fallback: mailto
+        // Fallback: mailto — 열기만 하고, 접수 성공으로 승격하지 않는다
         const body = Object.entries(payload).map(([k,v]) => `${k}: ${v}`).join('\n');
         window.location.href = `mailto:${window.JT_DATA.firm.email}?subject=${encodeURIComponent(payload._subject)}&body=${encodeURIComponent(body)}`;
+        throw new Error('mailto_fallback');
       }
+      // gtag throw 가 접수 성공을 실패 화면으로 바꾸지 않게 한다 (Chrome.jsx jtEvent)
+      window.jtEvent('report_lead_submit', { reportType });
       setDone(true);
     } catch (e) {
-      setErr('전송에 실패했습니다. 카카오톡 또는 전화로 연락해주세요.');
+      const P = window.JT_DATA.firm.phone;
+      setErr(
+        e && e.message === 'mailto_fallback'
+          ? `메일 앱으로 열었습니다. 전송이 되지 않았다면 전화(${P}) 또는 카카오톡으로 연락해 주세요.`
+          : `전송에 실패했습니다. 전화(${P}) 또는 카카오톡으로 연락해주세요.`
+      );
     } finally {
       setSending(false);
     }
@@ -201,6 +223,11 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
               실제 payload 에는 진단요약·상세입력_및_분석(재산·세액 정보)이 함께 갔다 (260806 Codex E P1). */}
           상담 목적 개인정보 수집·이용 및 처리위탁에 동의합니다. (필수)
           · <strong>수집 항목</strong>: 성명·연락처·이메일 <strong>및 계산에 입력하신 값·계산 결과·분석 내용</strong>
+          {/* 260808: 유입 출처를 payload 에 추가하며 고지도 함께 갱신 (Codex R1→R4).
+              ⚠️ R4 에서 «이 폼만» 옛 문구로 남아 있던 것이 적발됐다 — 예약폼·PDF·카톡 셋만
+              고치고 여기를 빠뜨렸다. 게이트가 동의문을 검사하지 않아 조용히 통과했다.
+              「개인 식별 정보는 포함하지 않습니다」라는 단정은 보장할 수 없으므로 삭제한다. */}
+          · <strong>함께 전송</strong>: 접수번호(임의 생성)·유입 매체·유입 사이트 주소(도메인까지)·첫 방문 경로·제출 위치·접수 시각
           · <strong>처리위탁</strong>: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로 전달
           · 보유기간: 상담 종료 후 3년 · 동의를 거부할 권리가 있으며, 거부 시 회신 서비스만 제공되지 않습니다.
         </span>
@@ -353,7 +380,7 @@ function JTConvertTimeSlots({ setRoute, urgent }) {
               {d.times.map((t, ti) => (
                 <button key={ti} className="jt-btn jt-btn--outline" style={{padding: '8px 14px', fontSize: 13, borderRadius: 0}}
                   onClick={() => {
-                    if (window.gtag) window.gtag('event', 'report_cta_slot_click', { slot: `${d.day} ${t}` });
+                    window.jtEvent('report_cta_slot_click', { slot: `${d.day} ${t}` });
                     window.jtTrackCta('booking', 'report_slots');
                     try { sessionStorage.setItem('jt_preferred_slot', `${d.day} ${t}`); } catch(_){}
                     setRoute && setRoute('booking');
@@ -386,7 +413,6 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
   const send = async () => {
     if (!canSend) return;
     setSending(true);
-    if (window.gtag) window.gtag('event', 'report_pdf_request', { reportType });
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     const payload = {
       _subject: `[JT 리포트 PDF 요청] ${reportType}`,
@@ -395,6 +421,7 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
       이메일: email,
       진단요약: reportSummary || '',
       접수시각: new Date().toLocaleString('ko-KR'),
+      ...window.jtAttributionFields('report_pdf'),
     };
     /* ⚠️ 전송 실패를 삼키고 무조건 「접수됐다」고 말하면 안 된다. 인쇄창은 열렸어도
        사무소에는 아무것도 안 갔을 수 있다 (260806 Codex R4 P1). 두 결과를 분리해 알린다. */
@@ -407,6 +434,10 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
         sent = !!(res.ok && data && data.success === true);
       }
     } catch(_){ sent = false; }
+    /* 이 이벤트는 «인쇄창을 여는 행위»를 세는 것이라 실패해도 발화한다(인쇄창은 열린다).
+       다만 종전엔 fetch 이전에 발화해 «사무소 도달 여부»를 전혀 알 수 없었다 —
+       판정이 끝난 뒤로 옮기고 sent 를 파라미터로 붙여 두 지표를 분리한다 (260808). */
+    window.jtEvent('report_pdf_request', { reportType, sent: sent });
     setSentOk(sent);
     setTimeout(() => {
       window.print();
@@ -445,7 +476,9 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
             <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} style={{marginTop: 3}}/>
             {/* 동의문은 «실제 전송 항목»과 일치해야 한다 — 이메일 외에 진단요약도 간다 */}
             <span>개인정보 수집·이용 및 처리위탁에 동의합니다. 수집 항목: <strong>이메일 · 진단요약</strong> ·
-              처리위탁: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로 전달 · 목적: 상담 회신 · 보유기간: 3년</span>
+              함께 전송: 접수번호(임의 생성)·유입 매체·유입 사이트 주소(도메인까지)·첫 방문 경로·제출 위치·접수 시각 ·
+              처리위탁: 외부 폼 서비스(Web3Forms)를 거쳐 사무소 메일로 전달 · 목적: 상담 회신 · 보유기간: 3년 ·
+              동의를 거부하실 수 있으며, 거부 시 PDF 저장은 그대로 가능하고 사무소 전달만 이루어지지 않습니다</span>
           </label>
         </>
       )}

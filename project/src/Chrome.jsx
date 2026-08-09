@@ -38,6 +38,138 @@ window.jtTrackCta = function (channel, location, extra) {
   } catch (_e) {}
 };
 
+/* ============ 안전한 GA4 이벤트 발화 ============
+   ⚠️ 왜 래퍼가 필요한가 (260808 Codex R1 P1):
+     리드 폼에서 전환 이벤트를 «전송 성공 뒤»로 옮기면서 try 블록 «안»에 들어갔다.
+     그런데 gtag 는 광고차단기·확장프로그램·CSP 환경에서 throw 할 수 있다. 그러면 —
+       fetch 성공 → gtag throw → catch → 「전송에 실패했습니다」
+     즉 «사무소에는 접수됐는데 방문자에게는 실패로 보이는» 최악의 조합이 된다.
+     계측이 본업(리드 접수)을 망치면 안 된다 — 삼키고 조용히 지나간다. */
+window.jtEvent = function (name, params) {
+  try {
+    if (typeof window.gtag === 'function') window.gtag('event', name, params || {});
+  } catch (_e) {}
+};
+
+// ============ 유입 출처 보존 (attribution) ============
+/* 왜 필요한가 (260808):
+     리드 payload 에 주제·연락처·문의내용만 담겨 있어, «어느 채널이 실제로 상담을
+     만들었는지»를 사후에 알 수 없었다. CTA 클릭 이벤트에는 location 이 있지만
+     제출 payload 와 연결되지 않아 둘을 이어붙일 키가 없다.
+
+   설계 원칙 3가지 —
+     ① «최초 진입 1회»만 고정한다. 사이트 안에서 라우트를 옮겨 다니면 referrer 가
+        자기 도메인으로 덮이고 utm 도 사라진다. 그러면 광고로 들어온 사람이
+        「직접 유입」으로 기록된다. sessionStorage 에 처음 값을 박아 두고 이후엔 읽기만.
+     ② 세션 ID 를 함께 남긴다. 전송 실패 후 재시도하면 같은 사람이 2건으로 세어져
+        전환이 부풀려진다. 접수 메일에 같은 ID 가 보이면 중복임을 사무소가 안다.
+     ③ ⛔ 금액·계산값은 절대 넣지 않는다. 이 함수가 담는 것은 «어디서 왔는가»뿐이다.
+        (계산 입력값은 동의를 받은 경로로만 전송한다 — ReportConvert 의 confirm 참조)
+
+   sessionStorage 를 쓰는 이유: 탭을 닫으면 사라진다 = 다음 방문은 새 유입으로 잡힌다.
+   localStorage 로 하면 몇 달 전 광고가 오늘 상담의 공로를 계속 가져간다. */
+window.jtAttribution = (function () {
+  var KEY = 'jt_attribution';
+  var SCHEMA_V = 2;   // 1: pathname+search·referrer 경로 포함 / 2: pathname 만·referrer origin 만
+  var cached = null;
+
+  function capture() {
+    var params = {};
+    try {
+      var sp = new URLSearchParams(window.location.search || '');
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid', 'fbclid'].forEach(function (k) {
+        var v = sp.get(k);
+        if (v) params[k] = String(v).slice(0, 120);
+      });
+    } catch (_e) {}
+
+    var ref = '';
+    try {
+      ref = document.referrer || '';
+      /* 자기 도메인에서 넘어온 것은 «유입»이 아니라 내부 이동이다.
+         ⚠️ 문자열 prefix 비교로는 `https://jttax.co.kr.evil.com` 도 내부로 오분류된다
+         (260808 Codex R2 P2). origin 을 파싱해 «정확히 같을 때»만 내부로 본다. */
+      if (ref) {
+        try { if (new URL(ref).origin === window.location.origin) ref = ''; }
+        catch (_e0) { ref = ''; }   // 파싱 불가한 referrer 는 신뢰하지 않는다
+      }
+      /* ⚠️ referrer 는 «도메인만» 남긴다 — 경로도 query 도 버린다 (260808 Codex R2→R3).
+         처음엔 query 만 버렸는데(R2), 경로 자체에 개인정보가 실릴 수 있다는 지적을 받았다:
+           https://cafe.naver.com/xxx/member/홍길동  ← 제3자 계정명이 경로에 들어간다
+         그 상태로 동의문에 「개인 식별 정보는 포함하지 않습니다」라고 쓰면 거짓이 된다.
+         유입 분석에 필요한 것은 «어느 사이트에서 왔는가»이지 «그 사이트의 어느 페이지»가
+         아니다. 필요 이상을 받아 두면 그 순간부터 우리가 그 정보의 보관 책임을 진다. */
+      if (ref) {
+        try { ref = new URL(ref).origin; } catch (_e2) { ref = ''; }
+      }
+    } catch (_e) {}
+
+    /* 세션 ID — 암호학적 용도가 아니라 «같은 접수인지» 구분용이다.
+       crypto.randomUUID 가 없는 구형 브라우저를 위해 폴백을 둔다. */
+    var sid = '';
+    try {
+      sid = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID().slice(0, 8)
+        : Math.random().toString(36).slice(2, 10);
+    } catch (_e) { sid = Math.random().toString(36).slice(2, 10); }
+
+    return {
+      /* 스키마 버전 — 형식이 바뀌면 올린다 (260808 Codex R3 P1).
+         sessionStorage 에 남아 있던 «옛 형식» 값을 그대로 재사용하면, 코드를 고쳐도
+         이미 열려 있는 탭은 옛 규칙대로 계속 전송한다. 버전이 다르면 버리고 다시 잡는다. */
+      v: SCHEMA_V,
+      sid: sid,
+      utm: params,
+      referrer: ref.slice(0, 200),
+      /* ⚠️ 랜딩은 «경로만» 남긴다 — query string 은 통째로 버린다 (260808 Codex R2 P1).
+         종전엔 `pathname + search` 를 그대로 실었는데, URL 파라미터에 무엇이 붙어 들어올지
+         우리가 정할 수 없다(외부 링크·광고·공유 도구가 임의 키를 붙인다). 그 상태로
+         「개인 식별 정보는 포함하지 않습니다」라고 고지하면 지킬 수 없는 약속이 된다.
+         우리가 실제로 필요한 유입 정보는 위 utm 화이트리스트로 이미 받고 있다. */
+      landing: (function () {
+        try { return String(window.location.pathname || '/').slice(0, 200); } catch (_e) { return ''; }
+      })(),
+      firstSeen: new Date().toISOString(),
+    };
+  }
+
+  return function () {
+    if (cached) return cached;
+    try {
+      var raw = sessionStorage.getItem(KEY);
+      if (raw) {
+        var prev = JSON.parse(raw);
+        /* ⚠️ «옛 형식은 신뢰하지 않는다» (260808 Codex R3 P1).
+           v 가 없거나 다르면 그 값은 지금 규칙보다 넓은 정보를 담고 있을 수 있다
+           (예: v1 의 landing 에는 query 가, referrer 에는 경로가 들어 있다).
+           고친 규칙이 «이미 열려 있는 탭»에도 적용되도록 버리고 다시 잡는다. */
+        if (prev && prev.v === SCHEMA_V) { cached = prev; return cached; }
+      }
+    } catch (_e) {}
+    cached = capture();
+    try { sessionStorage.setItem(KEY, JSON.stringify(cached)); } catch (_e) {}
+    return cached;
+  };
+})();
+
+/* 리드 payload 에 붙일 «사람이 읽는» 한 줄로 정리한다.
+   사무소 담당자가 접수 메일에서 바로 알아볼 수 있어야 하므로 한글 키를 쓴다. */
+window.jtAttributionFields = function (ctaLocation) {
+  try {
+    var a = window.jtAttribution();
+    var u = a.utm || {};
+    var src = u.utm_source
+      ? (u.utm_source + (u.utm_medium ? ' / ' + u.utm_medium : '') + (u.utm_campaign ? ' / ' + u.utm_campaign : ''))
+      : (a.referrer ? a.referrer : '직접 유입');
+    return {
+      접수ID: a.sid,
+      유입경로: src,
+      유입상세: a.referrer || '—',
+      랜딩페이지: a.landing || '/',
+      제출위치: ctaLocation || '—',
+    };
+  } catch (_e) { return {}; }
+};
+
 // ============ Scroll reveal hook ============
 function useReveal() {
   useEffect(() => {
@@ -181,15 +313,18 @@ function JTMobileCta({ setRoute, route }) {
   if (route === 'booking') return null;
   return (
     <div className="jt-mcta" role="navigation" aria-label="빠른 상담">
-      <a className="jt-mcta__btn" href={`tel:${D.phone}`} onClick={() => { window.gtag && window.gtag('event', 'mcta_call'); window.jtTrackCta('call', 'sticky'); }}>
+      {/* ⚠️ raw gtag 를 직접 부르면 광고차단기 환경에서 throw 해 «그 다음 줄»이 실행되지 않는다.
+          특히 예약 버튼은 setRoute('booking') 까지 막혀 «눌러도 아무 일도 안 나는» 상태가 된다
+          (260808 Codex R2 P2). 계측은 jtEvent 로 감싸 삼킨다. */}
+      <a className="jt-mcta__btn" href={`tel:${D.phone}`} onClick={() => { window.jtEvent('mcta_call'); window.jtTrackCta('call', 'sticky'); }}>
         <span className="jt-mcta__ico" aria-hidden="true">{Icon ? <Icon name="phone" /> : '☏'}</span>
         <span>전화</span>
       </a>
-      <a className="jt-mcta__btn" href={D.kakaoChatUrl} target="_blank" rel="noopener" onClick={() => { window.gtag && window.gtag('event', 'mcta_kakao'); window.jtTrackCta('kakao', 'sticky'); }}>
+      <a className="jt-mcta__btn" href={D.kakaoChatUrl} target="_blank" rel="noopener" onClick={() => { window.jtEvent('mcta_kakao'); window.jtTrackCta('kakao', 'sticky'); }}>
         <span className="jt-mcta__ico" aria-hidden="true">{Icon ? <Icon name="chat" /> : '💬'}</span>
         <span>카톡</span>
       </a>
-      <button className="jt-mcta__btn jt-mcta__btn--primary" onClick={() => { if (window.gtag) window.gtag('event', 'mcta_booking'); window.jtTrackCta('booking', 'sticky'); setRoute('booking'); }}>
+      <button className="jt-mcta__btn jt-mcta__btn--primary" onClick={() => { window.jtEvent('mcta_booking'); window.jtTrackCta('booking', 'sticky'); setRoute('booking'); }}>
         <span>상담 예약 →</span>
       </button>
     </div>
@@ -241,11 +376,12 @@ function useSeoMeta(route) {
       setMeta('twitter:description', desc);
       // GA4 page_view — 계산기 단위 측정(/report/cgt). path가 바뀔 때만 1회(중복 발화 방지).
       const gaPath = '/' + metaKey.replace(':', '/');
-      if (window.gtag && gaPath !== __jtLastGaPath) {
+      if (gaPath !== __jtLastGaPath) {
         __jtLastGaPath = gaPath;
         /* GA4 표준 필드는 page_location(전체 URL)·page_title 이다.
-           page_path 는 UA 시절 필드라 GA4 에선 경로 분류가 안 잡힌다 (260805 Codex R12 P1). */
-        window.gtag('event', 'page_view', {
+           page_path 는 UA 시절 필드라 GA4 에선 경로 분류가 안 잡힌다 (260805 Codex R12 P1).
+           jtEvent 로 감싸 계측 예외가 이 effect 의 나머지(메타·canonical 갱신)를 막지 않게 한다. */
+        window.jtEvent('page_view', {
           page_location: (function () { try { return location.origin + '/' + gaPath.replace(/^\//, ''); } catch (e) { return gaPath; } })(),
           page_title: title,
         });

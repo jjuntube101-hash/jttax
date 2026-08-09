@@ -16,6 +16,7 @@ import { readFile, writeFile, readdir, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
+import { insightSlug } from '../_shared/insight-slug.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 import { footerHtml, stylesHref, ogImageHref } from '../_shared/site-meta.mjs';
 
@@ -127,7 +128,8 @@ async function loadArticles() {
       skipped.push(f);
       continue;
     }
-    const slug = assertSlug(meta.slug || f.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, ''), f);
+    // slug 계산은 _shared/insight-slug.mjs 하나로 — sitemap 생성기도 같은 함수를 쓴다
+    const slug = assertSlug(insightSlug(f, meta.slug), f);
     // ② slug 충돌 방지: 같은 slug 두 글은 /insights/<slug>.html 을 서로 덮어써
     //    한 글이 조용히 유실된다. 충돌 시 빌드를 실패시킨다.
     if (seenSlugs.has(slug)) {

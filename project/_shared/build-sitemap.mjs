@@ -6,12 +6,50 @@
 //
 // 어느 빌드 스크립트가 실행되든 동일한 '완전한' sitemap을 만들어 상호 클로버를 방지한다.
 
-import { readdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { insightSlug } from './insight-slug.mjs';
+
+/* ⚠️ lastmod 를 «빌드한 날»로 쓰면 안 된다 (260808 Codex sol 지적).
+     ① 내용이 안 바뀌어도 매 빌드마다 sitemap.xml 이 달라져 **빌드가 재현 불가능**해진다.
+        「빌드 산출물이 커밋과 일치하는가」를 검사하는 신선도 게이트를 넣으면 매일 거짓 실패한다.
+     ② 전 URL 이 매일 「오늘 수정됨」이라고 말하면 크롤러에게 거짓 신호를 준다.
+        구글은 신뢰할 수 없는 lastmod 를 그냥 무시한다.
+
+   그래서 «실제로 아는 날짜»만 쓴다 —
+     · 인사이트: 원고(.md) frontmatter 의 date  ← 진짜 발행일
+     · 계산기  : 날짜 소스가 없다 → **lastmod 를 아예 출력하지 않는다**(선택 필드다).
+                 모르는 날짜를 지어내느니 비워 두는 편이 정직하고, 재현도 된다.
+     · 홈      : 인사이트 중 가장 최근 날짜 = 사이트가 마지막으로 갱신된 시점 */
+async function readInsightDates(repoRoot) {
+  const map = new Map();           // slug → 'YYYY-MM-DD'
+  let files = [];
+  try {
+    files = (await readdir(join(repoRoot, 'project', 'insights'))).filter(f => f.endsWith('.md'));
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
+    return map;
+  }
+  for (const f of files) {
+    if (f.toUpperCase() === 'README.MD') continue;
+    const raw = await readFile(join(repoRoot, 'project', 'insights', f), 'utf8');
+    const fm = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (!fm) continue;
+    const date = (fm[1].match(/^\s*date:\s*['"]?(\d{4}-\d{2}-\d{2})/m) || [])[1];
+    if (!date) continue;
+    // slug 계산은 빌더와 «같은 함수»로 한다 — 규칙이 갈라지면 lastmod 가 조용히 빠진다
+    const fmSlug = (fm[1].match(/^\s*slug:\s*['"]?([\w-]+)/m) || [])[1];
+    map.set(insightSlug(f, fmSlug), date);
+  }
+  return map;
+}
 
 export async function writeSitemap(repoRoot, site) {
-  const today = new Date().toISOString().slice(0, 10);
-  const urls = [{ loc: `${site}/`, lastmod: today, freq: 'weekly', priority: '1.0' }];
+  const insightDates = await readInsightDates(repoRoot);
+  // 홈의 lastmod = 가장 최근 인사이트 발행일(없으면 생략)
+  const latest = [...insightDates.values()].sort().pop() || null;
+
+  const urls = [{ loc: `${site}/`, lastmod: latest, freq: 'weekly', priority: '1.0' }];
 
   const dirs = [
     { dir: 'calculators', freq: 'monthly', priority: '0.9' }, // 계산기 랜딩(고가치)
@@ -31,13 +69,17 @@ export async function writeSitemap(repoRoot, site) {
       // index.html은 canonical(디렉토리 URL)과 일치시킴
       const loc = f === 'index.html' ? `${site}/${d.dir}/` : `${site}/${d.dir}/${f}`;
       const priority = f === 'index.html' ? '0.95' : d.priority;
-      urls.push({ loc, lastmod: today, freq: d.freq, priority });
+      const slug = f.replace(/\.html$/, '');
+      const lastmod = d.dir === 'insights' ? (insightDates.get(slug) || null) : null;
+      urls.push({ loc, lastmod, freq: d.freq, priority });
     }
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls.map(u =>
-      `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${u.lastmod}</lastmod>\n    <changefreq>${u.freq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
+      `  <url>\n    <loc>${u.loc}</loc>\n` +
+      (u.lastmod ? `    <lastmod>${u.lastmod}</lastmod>\n` : '') +
+      `    <changefreq>${u.freq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
     ).join('\n') +
     `\n</urlset>\n`;
 

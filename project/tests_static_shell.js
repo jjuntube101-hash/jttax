@@ -22,6 +22,7 @@
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+const parser = require('@babel/parser');
 
 const ROOT = path.join(__dirname, '..');
 
@@ -31,11 +32,149 @@ const ROOT = path.join(__dirname, '..');
   /* ── 정본 값 읽기 ──────────────────────────────────────────────── */
   const meta = await import(url.pathToFileURL(path.join(__dirname, '_shared', 'site-meta.mjs')).href);
 
-  /* SPA 정본 Data.jsx 에서 법인명·대표자를 «추출»해 대조한다 (사본 드리프트 차단) */
+  /* SPA 정본 Data.jsx 에서 법인 정보를 읽어 사본(부팅 폴백·에러 경계·site-meta)과 대조한다.
+     사본끼리 맞춰 봐야 둘 다 틀리면 못 잡으므로 «정본 한 곳»을 기준으로 삼는다. */
   const dataJsx = fs.readFileSync(path.join(ROOT, 'project', 'src', 'Data.jsx'), 'utf8');
+
+  /** Data.jsx 가 «순수 데이터 계약»을 지키는지 검사하고, 지킬 때만 firm 값을 돌려준다.
+
+      🔑 여기까지 오는 데 일곱 라운드가 걸렸다 (260808 Codex P2a R3~R9). 기록해 둔다 —
+        ① 파일 전체 문자열 검색      → firm «밖»의 동명 키에 걸림
+        ② 첫 `firm: {` 중괄호 균형   → 주석·문자열 안의 `firm: {` 에 걸림
+        ③ AST 첫 매치               → 중첩 scope·재대입·중복 firm
+        ④ 최상위 단일 대입 강제      → spread·중복 키가 «뒤에서 덮음»
+        ⑤ spread·중복키 차단        → computed·globalThis·별칭 경유가 남음
+        ⑥ **vm 으로 실제 실행**      → 값은 정확해졌지만 두 가지가 새로 생겼다:
+             · `node:vm` 은 격리 경계가 아니다(Node 공식 경고). 부작용 코드가 그대로 돈다
+             · 지연 콜백(`Promise.then`)은 실행 시점엔 반영 전이라 여전히 옛 값을 읽는다
+        ⑦ **계약으로 전환** ← 지금. 값을 «추론»하지도 «실행»하지도 않는다.
+
+      계약: Data.jsx 는 순수 데이터여야 한다.
+        ① 최상위 문장은 `window.JT_DATA = { … }` **하나뿐**
+        ② 그 값은 객체·배열·문자열·숫자·불린·null **리터럴만**
+           (함수 호출·spread·계산식·템플릿·식별자 참조·computed 키 전부 금지)
+
+      계약이 서면 지연 콜백도 별칭 재대입도 «존재할 수 없고», 실행하지 않으니 vm 위험도
+      없다. 계약이 깨지면 값을 읽지 않고 실패시킨다 — 애매하면 통과가 아니라 실패다.
+      (현 Data.jsx 실측: 최상위 문장 1개·비리터럴 0건) */
+  function readFirmContract(src) {
+    let ast;
+    try { ast = parser.parse(src, { sourceType: 'script', plugins: ['jsx'], errorRecovery: true }); }
+    catch (e) { return { firm: null, error: '파싱 예외' }; }
+    if (ast.errors && ast.errors.length) return { firm: null, error: `문법 오류 ${ast.errors.length}건` };
+
+    const body = ast.program.body || [];
+    if (body.length !== 1) {
+      return { firm: null, error: `최상위 문장이 ${body.length}개 — 순수 데이터 파일이어야 합니다(계약 위반)` };
+    }
+    const st = body[0];
+    if (st.type !== 'ExpressionStatement' || !st.expression
+      || st.expression.type !== 'AssignmentExpression' || st.expression.operator !== '=') {
+      return { firm: null, error: '최상위 문장이 window.JT_DATA 대입이 아님' };
+    }
+    const L = st.expression.left, R = st.expression.right;
+    if (!(L.type === 'MemberExpression' && !L.computed
+      && L.object && L.object.type === 'Identifier' && L.object.name === 'window'
+      && L.property && L.property.name === 'JT_DATA')) {
+      return { firm: null, error: '좌변이 window.JT_DATA 가 아님' };
+    }
+    if (!R || R.type !== 'ObjectExpression') return { firm: null, error: 'JT_DATA 가 객체 리터럴이 아님' };
+
+    /** 리터럴만 허용하며 실제 값으로 환원한다. 하나라도 어긋나면 throw. */
+    const LIT = (n) => {
+      if (!n) throw new Error('빈 노드');
+      switch (n.type) {
+        case 'StringLiteral': case 'NumericLiteral': case 'BooleanLiteral': return n.value;
+        case 'NullLiteral': return null;
+        case 'ArrayExpression':
+          // 배열 hole(`[1, , 2]`)은 elements 에 null 이 들어와 값이 모호해진다
+          return n.elements.map((el) => { if (!el) throw new Error('배열 hole'); return LIT(el); });
+        case 'ObjectExpression': {
+          /* ⚠️ 일반 `{}` 를 쓰면 `__proto__` 키가 «프로토타입을 갈아끼워» 값이 상속으로
+             읽힌다 — `{firm:{__proto__:{phone:'C'}}}` 는 순수 리터럴이라 통과하면서
+             firm.phone 이 'C' 로 읽힌다 (260808 Codex P2a R10 P1).
+             ① 키 자체를 거부하고 ② 상속이 아예 없는 null-prototype 객체에 담는다. */
+          const o = Object.create(null);
+          for (const p of n.properties) {
+            if (p.type !== 'ObjectProperty' || p.computed) throw new Error(`${p.type}${p.computed ? '(computed)' : ''}`);
+            const k = p.key.name || p.key.value;
+            if (k === '__proto__') throw new Error('__proto__ 키(프로토타입 오염)');
+            if (Object.prototype.hasOwnProperty.call(o, k)) throw new Error(`중복 키 ${k}`);
+            o[k] = LIT(p.value);
+          }
+          return o;
+        }
+        default: throw new Error(n.type);
+      }
+    };
+    let data;
+    try { data = LIT(R); }
+    catch (e) { return { firm: null, error: `순수 리터럴이 아닌 값(${e.message})이 있어 정본을 확정할 수 없음` }; }
+    // own-property 로만 확인한다 — 상속으로 생긴 값을 정본으로 읽지 않기 위해
+    if (!Object.prototype.hasOwnProperty.call(data, 'firm')) return { firm: null, error: 'JT_DATA.firm 이 없음' };
+    if (!data.firm || typeof data.firm !== 'object') return { firm: null, error: 'JT_DATA.firm 이 객체가 아님' };
+    return { firm: data.firm, error: null };
+  }
+
+
+  /* ── 정본 = 계약을 지킨 Data.jsx 에서 읽은 리터럴 값 ──────────── */
+  const _run = readFirmContract(dataJsx);
+  if (!_run.firm) bad.push(`Data.jsx — 정본(window.JT_DATA.firm)을 읽지 못했습니다: ${_run.error}`);
+  {
+    /* 계약 검사 자체검증 — 「순수 데이터가 아닌 것」은 전부 거부돼야 한다.
+       ⚠️ 값을 읽는 게 아니라 «읽기를 거부하는지»가 핵심이다. 계약이 성립하는 파일에서만
+          값을 읽으므로, 거부만 확실하면 값의 정확성은 리터럴 환원으로 보장된다. */
+    const OKSRC = "window.JT_DATA={firm:{phone:'B'}};";
+    const contractCases = [
+      ['순수 리터럴', OKSRC, 'B'],
+      ['중첩 객체·배열', "window.JT_DATA={firm:{phone:'B',tags:['a','b'],n:1,t:true,z:null}};", 'B'],
+      // ↓ 전부 «거부»돼야 한다 (null 기대)
+      ['spread', "window.JT_DATA={firm:{phone:'A'},...{firm:{phone:'B'}}};", null],
+      ['중복 키', "window.JT_DATA={firm:{phone:'A',phone:'B'}};", null],
+      ['computed 후속 변경', OKSRC + "window['JT_DATA'].firm.phone='C';", null],
+      ['globalThis 경유', OKSRC + "globalThis.JT_DATA.firm.phone='C';", null],
+      ['별칭 변수 경유', OKSRC + "const f=window.JT_DATA.firm;f.phone='C';", null],
+      ['Object.assign', OKSRC + "Object.assign(window.JT_DATA.firm,{phone:'C'});", null],
+      ['통째 재대입', OKSRC + "window.JT_DATA={firm:{phone:'C'}};", null],
+      // ↓ R9 가 제시한 지연 콜백 — 실행 기반이었다면 옛 값을 읽고 통과했을 것
+      ['Promise 지연 + 별칭', OKSRC + "Promise.resolve().then(()=>{const f=window.JT_DATA.firm;f.phone='C';});", null],
+      ['queueMicrotask 지연', OKSRC + "queueMicrotask(()=>{window.JT_DATA.firm.phone='C';});", null],
+      ['setTimeout 조건부', OKSRC + "if(location.search)setTimeout(()=>{window.JT_DATA.firm.phone='C';},0);", null],
+      ['함수 호출로 값 생성', "window.JT_DATA={firm:{phone:makePhone()}};", null],
+      ['템플릿 리터럴', "window.JT_DATA={firm:{phone:`02-${x}`}};", null],
+      ['식별자 참조', "window.JT_DATA={firm:{phone:PHONE}};", null],
+      ['계산식', "window.JT_DATA={firm:{phone:'02-'+'554'}};", null],
+      ['computed 키', "window.JT_DATA={firm:{['pho'+'ne']:'B'}};", null],
+      ['JT_DATA 없음', "const x = 1;", null],
+      // ↓ R10 지적 — 프로토타입 오염·비리터럴 값 유형
+      ['__proto__ 오염', "window.JT_DATA={firm:{__proto__:{phone:'C'}}};", null],
+      ['getter(accessor)', "window.JT_DATA={firm:{get phone(){return 'C';}}};", null],
+      ['메서드 축약', "window.JT_DATA={firm:{phone(){return 'C';}}};", null],
+      ['배열 hole', "window.JT_DATA={firm:{phone:'B',a:[1,,2]}};", null],
+      ['배열 안 spread', "window.JT_DATA={firm:{phone:'B',a:[...[1]]}};", null],
+      ['unary 음수', "window.JT_DATA={firm:{phone:'B',n:-1}};", null],
+      ['정규식 리터럴', "window.JT_DATA={firm:{phone:'B',r:/x/}};", null],
+      ['bigint', "window.JT_DATA={firm:{phone:'B',n:1n}};", null],
+      ['undefined 식별자', "window.JT_DATA={firm:{phone:'B',u:undefined}};", null],
+    ];
+    for (const [label, src, want] of contractCases) {
+      const r = readFirmContract(src);
+      const got = r.firm ? r.firm.phone : null;
+      if (got !== want) {
+        bad.push(`정본 계약 자체검증 실패 — 「${label}」은 ${want === null ? '거부돼야' : `'${want}' 여야`} 하는데 '${got}'${r.error ? ` (${r.error})` : ''}`);
+      }
+    }
+  }
+
+  /* ⚠️ 종전엔 여기서 «구조 위생»(extractFirmProps)과 «후속 변경 탐지»(findLateMutations)를
+     따로 돌렸다. 계약 검사가 그 둘을 전부 포괄한다 —
+       · spread·중복 키 → 리터럴 환원에서 거부
+       · 후속 부분 수정·재대입·지연 콜백 → 「최상위 문장 1개」에서 거부
+     같은 개념을 두 곳에서 판정하면 규칙이 갈라지므로 계약 하나로 남긴다 (260808 R9). */
+  // 정본 값은 «실행 결과»에서 읽는다 — 어떤 문법으로 쓰였든 이게 런타임 값이다
   const pickData = (key) => {
-    const m = new RegExp(`${key}:\\s*'([^']+)'`).exec(dataJsx);
-    return m ? m[1] : null;
+    const v = _run.firm && _run.firm[key];
+    return (typeof v === 'string' && v) ? v : null;
   };
   const firmKr = pickData('nameKr');
   const rep = pickData('representative');
@@ -127,6 +266,131 @@ const ROOT = path.join(__dirname, '..');
   listHtml('calculators').map((f) => path.basename(f, '.html'))
     .filter((s) => s !== 'index' && !calcSlugs.includes(s))
     .forEach((s) => bad.push(`calculators/${s}.html — calculators.data.mjs 에 없는 고아 페이지입니다(허브에서 못 찾는데 색인은 됩니다). 등재하거나 삭제하세요`));
+
+  /* ⚠️ 이 아래 방어선 검사들의 «남은 한계» (260808 Codex P2a R4 P1):
+     문자열·구조만 본다. 「렌더 오류가 났을 때 실제로 그 화면이 뜨는가」는 브라우저가
+     있어야 확인된다. 260808 에 수동 실증은 마쳤다 — Data.jsx 404 → 경계 화면,
+     인라인 JSX 문법 오류 → 부팅 폴백(둘 다 전화·카톡·성명 표시 확인).
+     그러나 **자동 회귀는 아니다.** Playwright 도입은 Phase 2b 진입 조건으로 남은 P1 이다.
+     즉 이 게이트가 못 보는 구멍은 「구조는 통과했는데 실제로는 안 뜬다」이다.
+
+     ── SPA 최후 방어선: 에러 경계 ────────────────────────────────────
+     렌더 예외 하나가 나면 React 는 트리 전체를 언마운트한다 = 백지.
+     260805 에 실제로 홈이 20분간 백지였고, 그때 사이트에 전화번호조차 남지 않았다.
+     계산기가 안 되는 것과 «회사에 연락할 방법이 사라지는 것»은 손해의 크기가 다르다.
+     → 경계가 지워지면 조용히 그 상태로 되돌아가므로 게이트로 붙잡는다 (260808). */
+  {
+    const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+    if (!/class JTErrorBoundary/.test(idx)) {
+      bad.push('index.html — JTErrorBoundary 가 없습니다. 렌더 예외 하나로 전 화면이 백지가 됩니다');
+    }
+    if (!/<JTErrorBoundary>[\s\S]{0,80}<App \/>/.test(idx)) {
+      bad.push('index.html — <App /> 이 JTErrorBoundary 로 감싸여 있지 않습니다(정의만 있고 적용 안 됨)');
+    }
+    // 경계 화면에 «연락 수단»이 실제로 남는지 — 경계만 있고 빈 화면이면 의미가 없다
+    const eb = (idx.match(/class JTErrorBoundary[\s\S]*?\n    \}/) || [''])[0];
+    if (!/tel:/.test(eb)) bad.push('index.html — 에러 경계 화면에 전화 링크가 없습니다');
+    if (!/kakao/i.test(eb)) bad.push('index.html — 에러 경계 화면에 카카오톡 링크가 없습니다');
+    /* 새 창으로 열리는 링크는 그 사실을 알려야 한다(접근성). 부팅 폴백엔 있는데 경계엔
+       없어 두 화면이 어긋나 있었다 — 한쪽만 고치는 일이 반복되므로 게이트로 묶는다.
+       ⚠️ 「블록 안에 (새 창) 이 하나라도 있으면 통과」로 두면, 표기 없는 _blank 링크를
+       하나 더 추가해도 그냥 넘어간다 (260808 Codex P2a R4 P2). 앵커 «하나하나» 본다. */
+    const checkBlankLinks = (block, label) => {
+      const anchors = block.match(/<a\b[\s\S]*?<\/a>/g) || [];
+      anchors.forEach((a, i) => {
+        /* ⚠️ `target="_blank"` 한 표기만 보면 변형에 뚫린다 (260808 Codex P2a R5·R6 P1):
+             target = "_blank"  ·  target={'_blank'}  ·  target={`_blank`}  ·  target="_BLANK"
+             target={'_' + 'blank'}   ← 값이 «리터럴이 아닌» 경우는 정적으로 알 수 없다
+           리터럴은 대소문자 무시로 잡고, 비리터럴 target 은 «판정 불가»이므로 fail-closed. */
+        /* ⚠️ JSX 는 속성을 spread 로도 넣는다 — `<a {...{target:'_blank'}} href="…">` 는
+           실제로 새 창인데 `target=` 문자열이 없어 검사를 통째로 건너뛴다
+           (260808 Codex P2a R7 P1). 확신할 수 없으므로 거부한다. */
+        if (/\{\s*\.\.\./.test(a)) {
+          bad.push(`index.html — ${label}에 속성 spread(\`{...}\`)를 쓴 링크가 있어 새 창 여부를 판정할 수 없습니다`);
+          return;
+        }
+        const tgt = a.match(/target\s*=\s*(\{[^}]*\}|"[^"]*"|'[^']*')/);
+        if (!tgt) return;                       // target 자체가 없으면 새 창 아님
+        const raw = tgt[1];
+        const lit = raw.match(/^\{?\s*["'`]([^"'`]*)["'`]\s*\}?$/);
+        if (!lit) {
+          // 예: target={cond ? '_blank' : '_self'} — 값을 확정할 수 없으니 통과시키지 않는다
+          bad.push(`index.html — ${label}에 target 값이 표현식인 링크가 있어 새 창 여부를 판정할 수 없습니다 (${raw.slice(0, 40)})`);
+          return;
+        }
+        if (lit[1].toLowerCase() !== '_blank') return;
+        if (!/\(새 창\)/.test(a)) {
+          const href = (a.match(/href\s*=\s*["{]?\s*["'`]?([^"'`\s}]+)/) || [])[1] || `#${i + 1}`;
+          bad.push(`index.html — ${label}의 새 창 링크에 「(새 창)」 표기가 없습니다 (${href.slice(0, 40)})`);
+        }
+      });
+    };
+    checkBlankLinks(eb, '에러 경계');
+    if (!/representative/.test(eb) || !/nameKr/.test(eb)) {
+      bad.push('index.html — 에러 경계 화면에 사무소명·세무사 성명 표기가 없습니다(§33① 표시의무)');
+    }
+    /* 경계 화면이 JT_DATA 에 «조건부»로 매달리면, 그 파일이 못 읽힌 것이 실패 원인일 때
+       연락처가 통째로 사라진다 — 상수 폴백이 있어야 한다 (260808 Codex P2a P1). */
+    if (!/F\.phone \|\| '/.test(eb)) {
+      bad.push('index.html — 에러 경계의 연락처가 JT_DATA 에만 의존합니다(상수 폴백 없음)');
+    }
+
+    /* ── 부팅 폴백: React 가 «실행조차 못 한» 경우의 최후 방어 ──────────
+       에러 경계는 React 가 도는 뒤의 예외만 잡는다. 260805 실사고는 그 이전이었다 —
+       JSX 문법 오류로 Babel 이 스크립트를 통째로 거부해 경계 코드도 죽었고, 홈이
+       20분간 완전한 백지였다(전화번호조차 없었다). CDN 장애·번들 404 도 같은 결과다.
+       → #root 안에 «자바스크립트 없이도 남는» HTML 을 둔다. React 마운트 시 교체된다. */
+    /* ⚠️ 닫는 태그 짝(`</div></div>`)으로 잘라내면 폴백의 «태그를 바꾸는 순간» 게이트가
+       거짓 실패한다(실제로 <div>→<main> 시맨틱 개선에서 4건 오탐). 검사 의도는
+       «#root 안에 내용이 있는가»이므로, 여는 태그부터 다음 <script> 앞까지로 잡는다. */
+    const rootStart = idx.indexOf('<div id="root">');
+    const rootEnd = idx.indexOf('<script', rootStart);
+    const rootBlock = (rootStart >= 0 && rootEnd > rootStart)
+      ? idx.slice(rootStart + '<div id="root">'.length, rootEnd) : '';
+    if (rootBlock.trim().length < 100) {
+      bad.push('index.html — #root 가 비어 있습니다. 스크립트가 실행되지 않으면 백지가 됩니다(부팅 폴백 필요)');
+    } else {
+      if (!/tel:02-554-6405/.test(rootBlock)) bad.push('index.html — 부팅 폴백에 전화 링크가 없습니다');
+      if (!/pf\.kakao\.com/.test(rootBlock)) bad.push('index.html — 부팅 폴백에 카카오톡 링크가 없습니다');
+      if (!/제이티 세무법인/.test(rootBlock) || !/이현준/.test(rootBlock)) {
+        bad.push('index.html — 부팅 폴백에 사무소명·세무사 성명이 없습니다(§33① 표시의무)');
+      }
+      // JT_DATA 를 참조하면 «그 파일을 못 읽은 상황»에서 무용지물이다
+      if (/JT_DATA/.test(rootBlock)) {
+        bad.push('index.html — 부팅 폴백이 JT_DATA 를 참조합니다. 스크립트 없이 렌더돼야 합니다');
+      }
+      checkBlankLinks(rootBlock, '부팅 폴백');
+    }
+
+    /* ── 연락처가 세 곳에 있다: Data.jsx(정본) · 부팅 폴백 · 에러 경계 폴백 ──
+       폴백들은 «JT_DATA 를 못 읽은 상황»이 존재 이유라 상수일 수밖에 없다. 그래서
+       중복 자체는 없앨 수 없고, 대신 «어긋나면 알아채게» 만든다 (260808 Codex P2a R2 P1).
+       전화번호가 바뀌었는데 한 곳만 고치면, 사고가 난 순간 방문자가 «없는 번호»로 전화한다. */
+    // 정본은 위에서 잘라 둔 firmBlock 하나만 쓴다 (pickData 와 같은 범위)
+    const truth = {
+      전화: pickData('phone') || '',
+      카톡: pickData('kakaoChannelUrl') || '',
+      사무소명: pickData('nameKr') || '',
+      대표: pickData('representative') || '',
+      주소: pickData('address') || '',
+    };
+    /* 클래스 «전체»를 잡아야 한다 — 상수 폴백은 render() 안에 있어서, 첫 메서드까지만
+       끊으면 값을 못 찾고 게이트가 거짓 실패를 낸다(실측 4건). 마운트 호출 직전까지 본다. */
+    const ebStart = idx.indexOf('class JTErrorBoundary');
+    const ebEnd = idx.indexOf('ReactDOM.createRoot', ebStart);
+    const ebBlock = (ebStart >= 0 && ebEnd > ebStart) ? idx.slice(ebStart, ebEnd) : '';
+    if (!ebBlock) bad.push('index.html — 에러 경계 블록을 찾지 못했습니다(게이트가 검사할 대상이 없습니다)');
+    for (const [label, val] of Object.entries(truth)) {
+      if (!val) { bad.push(`Data.jsx — firm.${label} 값을 읽지 못했습니다(게이트가 대조할 정본이 없습니다)`); continue; }
+      if (rootBlock.indexOf(val) < 0) {
+        bad.push(`index.html 부팅 폴백 — ${label} 이 Data.jsx 와 다릅니다(정본 「${val}」). 연락처를 바꿀 땐 세 곳을 함께 고치세요`);
+      }
+      // 에러 경계는 주소·영업시간을 싣지 않으므로 연락 3종만 본다
+      if (['전화', '카톡', '사무소명', '대표'].includes(label) && ebBlock.indexOf(val) < 0) {
+        bad.push(`index.html 에러 경계 — ${label} 이 Data.jsx 와 다릅니다(정본 「${val}」)`);
+      }
+    }
+  }
 
   /* ── 페이지별 검사 ─────────────────────────────────────────────── */
   const checkPage = (rel, { requireShellMarker }) => {

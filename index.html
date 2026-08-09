@@ -120,7 +120,35 @@
   <link rel="stylesheet" href="project/src/redesign.css?v=37">
 </head>
 <body>
-  <div id="root"></div>
+  <!-- ⚠️ #root 안의 이 블록은 «부팅 폴백»이다 — 지우지 말 것 (260808 Codex P2a P0).
+       React 가 마운트되면 통째로 교체되므로 정상 방문자는 이 화면을 결코 보지 않는다.
+
+       왜 필요한가:
+         JTErrorBoundary 는 «React 가 실행된 뒤»의 렌더 예외만 잡는다. 그런데 260805 의
+         실제 사고는 그 이전이었다 — JSX 문법 오류로 Babel 이 파일을 거부해 **스크립트가
+         아예 실행되지 않았고**, 경계 코드도 같이 죽어 홈이 20분간 완전한 백지였다.
+         CDN(React·Babel) 장애, 네트워크 차단, 번들 404 도 같은 결과를 낸다.
+         그 순간 사이트에는 전화번호조차 남지 않는다.
+
+       그래서 «자바스크립트가 한 줄도 돌지 않아도» 남는 HTML 로 최소 연락 수단을 박아 둔다.
+       스타일도 인라인이다 — styles.css 로드가 실패한 상황까지 가정한다.
+       JT_DATA 를 참조하지 않는 것도 의도적이다(그 파일이 못 읽힌 상황이 이 화면의 전제).
+       ⛔ 값을 바꿀 땐 project/src/Data.jsx 의 firm 과 반드시 함께 고칠 것. -->
+  <div id="root"><main style="max-width:640px;margin:0 auto;padding:76px 24px;font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;color:#0B0B0F;line-height:1.7">
+    <div style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.16em;color:#888">제이티 세무법인 · JT TAX CORP.</div>
+    <h1 style="font-size:25px;letter-spacing:-.02em;margin:12px 0 12px;font-weight:700">잠시 후 다시 시도해 주세요.</h1>
+    <p style="font-size:15px;color:#5a5a5a;margin:0 0 26px">
+      화면을 준비하는 중 문제가 생겼습니다. 새로고침해도 같으면 아래로 바로 연락 주세요 — 상담은 정상적으로 진행됩니다.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="tel:02-554-6405" style="padding:13px 22px;background:#0B0B0F;color:#fff;text-decoration:none;font-size:14px">전화 02-554-6405</a>
+      <a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" style="padding:13px 22px;border:1px solid rgba(0,0,0,.2);color:#0B0B0F;text-decoration:none;font-size:14px">카카오톡 상담 <span style="font-size:11px;color:#888">(새 창)</span></a>
+      <a href="/calculators/" style="padding:13px 22px;border:1px solid rgba(0,0,0,.2);color:#0B0B0F;text-decoration:none;font-size:14px">세금 계산기</a>
+    </div>
+    <address style="font-style:normal;font-size:12px;color:#888;margin-top:34px">
+      제이티 세무법인 · 대표 세무사 이현준<br>서울특별시 강남구 강남대로78길 22, 5층 · 평일 09:00–18:00
+    </address>
+  </main></div>
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
@@ -128,15 +156,15 @@
 
   <script type="text/babel" src="project/src/Data.jsx?v=29"></script>
   <script type="text/babel" src="project/src/lawValues.jsx?v=2"></script>
-  <script type="text/babel" src="project/src/Chrome.jsx?v=27"></script>
+  <script type="text/babel" src="project/src/Chrome.jsx?v=28"></script>
   <script type="text/babel" src="project/src/Home.jsx?v=36"></script>
   <script type="text/babel" src="project/src/Pages1.jsx?v=23"></script>
-  <script type="text/babel" src="project/src/Pages2.jsx?v=24"></script>
+  <script type="text/babel" src="project/src/Pages2.jsx?v=25"></script>
   <script type="text/babel" src="project/src/Legal.jsx?v=20"></script>
   <script type="text/babel" src="project/src/Report.jsx?v=56"></script>
-  <script type="text/babel" src="project/src/ReportConvert.jsx?v=27"></script>
+  <script type="text/babel" src="project/src/ReportConvert.jsx?v=28"></script>
   <script type="text/babel" src="project/src/ReportAppeal.jsx?v=27"></script>
-  <script type="text/babel" src="project/src/ReportCGT.jsx?v=45"></script>
+  <script type="text/babel" src="project/src/ReportCGT.jsx?v=46"></script>
   <script type="text/babel" src="project/src/ReportReform2026.jsx?v=29"></script>
   <script type="text/babel" src="project/src/ReportCrypto2027.jsx?v=11"></script>
   <script type="text/babel" src="project/src/ReportIncome.jsx?v=37"></script>
@@ -367,7 +395,65 @@
       );
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    /* ⚠️ 렌더 중 예외 하나가 «전 화면을 백지»로 만든다 — React 는 에러 경계가 없으면
+       트리 전체를 언마운트한다. 260805 에 실제로 홈이 20분간 백지였다(JSX 문법 오류).
+       그때는 사이트에 전화번호조차 남지 않아, 방문자에게 «회사가 사라진 것»처럼 보였다.
+
+       그래서 최후 방어선을 둔다 — 무엇이 깨지든 **연락 수단만은 화면에 남긴다**.
+       계산기가 안 되는 것과 회사에 연락할 방법이 없는 것은 손해의 크기가 다르다.
+       (Phase 2 번들 도입을 앞두고 미리 깔아 둔다 — 번들은 파일 하나의 오류가
+        전체로 번지는 구조라 위험이 더 커진다.) */
+    class JTErrorBoundary extends React.Component {
+      constructor(p) { super(p); this.state = { failed: false }; }
+      static getDerivedStateFromError() { return { failed: true }; }
+      componentDidCatch(err) {
+        try {
+          // 무슨 화면에서 깨졌는지 알아야 고칠 수 있다 — 계측은 실패해도 무시
+          window.jtEvent && window.jtEvent('app_crash', {
+            route: (window.location.hash || '#/').slice(0, 40),
+            message: String((err && err.message) || err).slice(0, 120),
+          });
+        } catch (_e) {}
+        try { console.error('[JT] 렌더 실패:', err); } catch (_e) {}
+      }
+      render() {
+        if (!this.state.failed) return this.props.children;
+        /* ⚠️ JT_DATA 가 «못 읽힌 것»이 실패 원인일 수 있다 — 그러면 연락처가 통째로
+           사라진다 (260808 Codex P2a P1). 상수를 폴백으로 둔다.
+           ⛔ 값을 바꿀 땐 project/src/Data.jsx 의 firm·상단 부팅 폴백과 함께 고칠 것. */
+        const F = (window.JT_DATA && window.JT_DATA.firm) || {};
+        const D = {
+          phone: F.phone || '02-554-6405',
+          kakaoChannelUrl: F.kakaoChannelUrl || F.kakaoChatUrl || 'https://pf.kakao.com/_CcxlJG',
+          nameKr: F.nameKr || '제이티 세무법인',
+          representative: F.representative || '이현준',
+        };
+        return (
+          <div style={{ maxWidth: 640, margin: '0 auto', padding: '80px 24px', fontFamily: 'Pretendard, system-ui, sans-serif', color: '#0B0B0F' }}>
+            <div style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11, letterSpacing: '0.16em', color: '#888' }}>제이티 세무법인</div>
+            <h1 style={{ fontSize: 26, letterSpacing: '-0.02em', margin: '12px 0 14px' }}>화면을 불러오지 못했습니다.</h1>
+            <p style={{ fontSize: 15, lineHeight: 1.75, color: '#5a5a5a', margin: '0 0 28px' }}>
+              일시적인 오류입니다. 새로고침해도 같으면 아래로 바로 연락 주세요 — 상담은 정상적으로 진행됩니다.
+            </p>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {/* 조건부(&&)를 쓰지 않는다 — 값이 비면 링크가 통째로 사라지는데,
+                  이 화면은 «연락 수단만은 남긴다»가 존재 이유다. 위 D 가 상수로 보장한다 */}
+              <a href={`tel:${D.phone}`} style={{ padding: '13px 22px', background: '#0B0B0F', color: '#fff', textDecoration: 'none', fontSize: 14 }}>전화 {D.phone}</a>
+              <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" style={{ padding: '13px 22px', border: '1px solid rgba(0,0,0,.2)', color: '#0B0B0F', textDecoration: 'none', fontSize: 14 }}>카카오톡 상담 <span style={{ fontSize: 11, color: '#888' }}>(새 창)</span></a>
+              <a href="/calculators/" style={{ padding: '13px 22px', border: '1px solid rgba(0,0,0,.2)', color: '#0B0B0F', textDecoration: 'none', fontSize: 14 }}>세금 계산기</a>
+            </div>
+            {/* 세무사법 시행령 §33① 표시의무 — 화면이 깨져도 사무소명·세무사 성명은 남긴다 */}
+            <p style={{ fontSize: 12, color: '#888', marginTop: 32 }}>
+              {D.nameKr || '제이티 세무법인'}{D.representative ? ` · 대표 세무사 ${D.representative}` : ''}
+            </p>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      <JTErrorBoundary><App /></JTErrorBoundary>
+    );
   </script>
 </body>
 </html>

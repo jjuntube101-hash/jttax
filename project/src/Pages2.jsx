@@ -186,9 +186,18 @@ function JTBooking({ setRoute }) {
       선호채널: form.channel,
       문의내용: form.msg || '—',
       접수시각: new Date().toLocaleString('ko-KR'),
+      // 어느 채널이 이 상담을 만들었는지 — 최초 진입 시점의 값이 보존된다 (Chrome.jsx)
+      ...window.jtAttributionFields('booking_form'),
     };
-    // GA4 이벤트 발송
-    if (window.gtag) window.gtag('event', 'booking_submit', { topic: form.topic, channel: form.channel });
+    /* ⚠️ 두 가지를 «전송 성공 이후»로 옮겼다 (260808).
+         ① GA4 booking_submit — 종전엔 fetch 이전에 발화해 실패·이탈 건까지 전환으로
+            세었다. 전환 수치가 부풀려지면 그 수치로 내리는 모든 판단이 틀어진다.
+         ② 완료 화면(setDone) — mailto 폴백은 메일 앱이 없는 기기에서 아무 일도
+            일어나지 않는데 화면에는 「접수되었습니다」가 떴다. 사무소에는 아무것도
+            오지 않은 채 방문자만 기다리게 된다.
+       그래서 «실제로 사무소에 도달했는가»를 sent 로 따로 판정한다 — 리포트 PDF 게이트가
+       260806 에 먼저 쓴 방식과 같다(ReportConvert.jsx). */
+    let sent = false;
     try {
       if (w3fKey && !w3fKey.includes('REPLACE')) {
         const res = await fetch('https://api.web3forms.com/submit', {
@@ -197,15 +206,27 @@ function JTBooking({ setRoute }) {
           body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, from_name: form.name || '홈페이지 상담 접수', replyto: form.email || '', ...payload }),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.success) throw new Error('submit_failed');
+        // 200 + {} 를 성공으로 보면 안 된다 — Web3Forms 는 success 필드로 판정한다
+        sent = !!(res.ok && data && data.success === true);
+        if (!sent) throw new Error('submit_failed');
       } else {
-        // Fallback: 키 미설정 시 mailto로 열기
-        const body = Object.entries(payload).map(([k,v]) => `${k}: ${v}`).join('\n');
+        /* 키 미설정 폴백 — 메일 앱을 열어 보되, «열렸다»를 «접수됐다»로 승격하지 않는다.
+           mailto 는 성공 여부를 알려주지 않으므로 sent 는 false 로 둔다. */
+        const body = Object.entries(payload).map(([k, v]) => `${k}: ${v}`).join('\n');
         window.location.href = `mailto:${window.JT_DATA.firm.email}?subject=${encodeURIComponent(payload._subject)}&body=${encodeURIComponent(body)}`;
+        throw new Error('mailto_fallback');
       }
+      /* jtEvent 로 감싸는 이유 — gtag 가 throw 하면(광고차단기 등) 이 자리가 catch 로
+         빠져 «접수는 됐는데 실패 화면»이 뜬다. 계측이 접수를 망치지 않게 한다. */
+      window.jtEvent('booking_submit', { topic: form.topic, channel: form.channel });
       setDone(true);
     } catch (e) {
-      setSubmitError('전송에 실패했습니다. 카카오톡 또는 전화로 다시 시도해 주세요.');
+      const D = window.JT_DATA.firm;
+      setSubmitError(
+        e && e.message === 'mailto_fallback'
+          ? `메일 앱으로 열었습니다. 전송이 되지 않았다면 전화(${D.phone}) 또는 카카오톡으로 연락해 주세요.`
+          : `전송에 실패했습니다. 전화(${D.phone}) 또는 카카오톡으로 다시 시도해 주세요.`
+      );
     } finally {
       setSubmitting(false);
     }
@@ -226,7 +247,7 @@ function JTBooking({ setRoute }) {
 
       <section className="jt-section">
         <a className="jt-kakao-cta" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
-          onClick={() => { if (window.gtag) window.gtag('event', 'booking_kakao_top'); window.jtTrackCta('kakao', 'booking_top'); }}>
+          onClick={() => { window.jtEvent('booking_kakao_top'); window.jtTrackCta('kakao', 'booking_top'); }}>
           <span className="jt-kakao-cta__msg">
             <span aria-hidden="true" style={{flexShrink: 0, display: 'inline-flex'}}>{React.createElement(window.JTIcon, { name: 'chat' })}</span>
             <span>폼 작성이 번거로우세요? <b>카카오톡으로 1:1 바로 상담</b>하세요.</span>
@@ -365,7 +386,10 @@ function JTBooking({ setRoute }) {
             <label style={{display: 'flex', alignItems: 'flex-start', gap: 12, marginTop: 32, maxWidth: 720, cursor: 'pointer'}}>
               <input type="checkbox" checked={form.consent} onChange={set('consent')} style={{marginTop: 3, width: 18, height: 18, accentColor: '#000'}} />
               <span style={{fontSize: 13, color: 'var(--fg-2)', lineHeight: 1.6}}>
-                <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 세무 상담 접수·응대 및 결과 회신<br />· <strong>항목</strong>: 성명, 연락처, 이메일, 회사명, 문의분야, 선호 연락채널, 문의내용<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년(상법 §33 상업장부 보존기간에 준함). 기간 경과 시 지체 없이 파기<br />· <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 위 항목은 상담 접수에 «필수»이므로 거부 시 상담 신청이 접수되지 않습니다.<br />수집된 정보는 상담 응대 목적에 한해 사용되며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.
+                {/* ⚠️ 수집 항목은 «실제로 보내는 것»과 반드시 일치해야 한다 (개인정보 보호법 §15①).
+                    260808 에 유입 출처(접수ID·유입경로·랜딩페이지)를 payload 에 추가하면서
+                    이 문구에 반영하지 않아 고지와 실제가 어긋나 있었다 (Codex R1 P1). */}
+                <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 세무 상담 접수·응대 및 결과 회신<br />· <strong>항목</strong>: 성명, 연락처, 이메일, 회사명, 문의분야, 선호 연락채널, 문의내용<br />· <strong>함께 전송되는 접속 정보</strong>: 접수번호(임의 생성), 유입 매체(예: 검색·광고), 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각. 문의가 어느 경로로 들어왔는지 확인하고 중복 접수를 가려내기 위한 것입니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년(상법 §33 상업장부 보존기간에 준함). 기간 경과 시 지체 없이 파기<br />· <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 위 항목은 상담 접수에 «필수»이므로 거부 시 상담 신청이 접수되지 않습니다.<br />수집된 정보는 상담 응대 목적에 한해 사용되며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.
               </span>
             </label>
 

@@ -8,8 +8,8 @@
     "sha256": "21d4308478d337d68f464e21aaa9dbbd9fff9ac109721fdcc69f0f57d0f01bee"
   },
   "project/src/Chrome.jsx": {
-    "v": "27",
-    "sha256": "707da760f576c29afceace0fb741e293149ba6170ef4ec230dd7fd353877dfad"
+    "v": "28",
+    "sha256": "c6f29e148cdca430f1c5fcf36afeb1bea65f2e4b6d77ffc27edd0f6c1d9f67f9"
   },
   "project/src/Home.jsx": {
     "v": "36",
@@ -20,8 +20,8 @@
     "sha256": "c89b5fc6e3cb53db6dc4627cf45d36649482203945f770efeecdf89b3febc1ac"
   },
   "project/src/Pages2.jsx": {
-    "v": "24",
-    "sha256": "164e681a1da27327256e7c539187301d8c20cece8d04cff35022c58409dbd3bc"
+    "v": "25",
+    "sha256": "8ca3db4c9d0af6718732ba3623770902e34e987d6b19056205d06483f765297b"
   },
   "project/src/Legal.jsx": {
     "v": "20",
@@ -32,16 +32,16 @@
     "sha256": "0c3b38c036b3e57ff0732a1a24ffe7699adcf75eda937ef497bff458164260f2"
   },
   "project/src/ReportConvert.jsx": {
-    "v": "27",
-    "sha256": "7797c592afa6da2774f6223b61ff1cfd5197c3ba27d88ba83d7da83d256f46c5"
+    "v": "28",
+    "sha256": "4a9cf5d26ef8d39c60f8581af274170aeeb4932a2e1e8162d260729e37fd49f9"
   },
   "project/src/ReportAppeal.jsx": {
     "v": "27",
     "sha256": "69b9beeccc43a8b8ba03d386094520506fcce10d3c81429b5efa5015dca4b24d"
   },
   "project/src/ReportCGT.jsx": {
-    "v": "45",
-    "sha256": "ecfa19a0c454d51825b3386c2b5213037653779510f20fab4a125a729b56de5a"
+    "v": "46",
+    "sha256": "a685859b63f8c4a1037f778390b91707977e1b324cfa0ee1cc93cc210570256e"
   },
   "project/src/ReportReform2026.jsx": {
     "v": "29",

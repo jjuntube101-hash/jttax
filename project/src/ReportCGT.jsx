@@ -676,9 +676,16 @@ function JTReportCGT({ setRoute, onBack }) {
            precise:false 로 두면 ②폴백 한계 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
            다른 항목이 화면에 뜬다 (260806 Codex R21 P2). preEngineBlock 은 그 상태를
            «정밀 계산 성공»과 구분하기 위한 표식이다. */
-        const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === 'quick' };
+        /* ⚠️ 종전에 여기 `quick: phase === 'quick'` 와 `setQuickReport(...)` 가 있었다.
+           둘 다 이 파일에 «선언이 없는» 식별자다 — 취득세처럼 2단계(빠른→정밀) 위저드를
+           쓰는 계산기에서 복사돼 온 잔재다. 양도세는 11단계 단일 위저드라 phase 자체가
+           없다. 라이브에서 실제로 `ReferenceError: phase is not defined` 가 났고, 그
+           바람에 아래 `return` 이 실행되지 못한 채 catch 로 빠지고 있었다.
+           차단 화면이 그래도 떴던 건 «렌더가 같은 판정 함수를 다시 부르는» 2차 방어
+           덕분이지 이 코드가 한 일이 아니다 — 우연에 기대지 않도록 잔재를 걷어낸다.
+           (260808 재현·실증. quick 모드를 양도세에 새로 넣는 것은 별개 작업이다.) */
+        const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: false };
         setReport(unknownRep);
-        if (phase === 'quick') setQuickReport(unknownRep);
         return;
       }
       // P1-1(코덱스): 취득일이 양도일보다 뒤일 수 없음(동일일 허용) — 엔진 422 전에 안내
@@ -1058,9 +1065,9 @@ cautions 3개, saving_ideas 2~3개.`;
          폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
          렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
       if (cgtFallbackGaps(answers, calc).length > 0) {
-        const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
+        // phase·setQuickReport 잔재 제거 — 사유는 위 preEngineBlock 블록 주석 참조 (260808)
+        const blockedRep = { calc, commentary: null, quick: false };
         setReport(blockedRep);
-        if (phase === 'quick') setQuickReport(blockedRep);
         return;
       }
 
@@ -1402,14 +1409,14 @@ cautions 3개, saving_ideas 2~3개.`;
             kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
             Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
         {!cgtBlocked && (
-        <JTReportConvert
-          setRoute={setRoute}
-          reportType="양도소득세 간이 계산"
-          reportTag="LEGACY"
-          reportSummary={`총 세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
-          reportDetail={buildReportDetail(answers, calc, commentary)}
-          kakaoSummary={buildKakaoSummary(answers, calc)}
-          urgent={calc.shortTermNote !== null}
+        <JTReportConvert
+          setRoute={setRoute}
+          reportType="양도소득세 간이 계산"
+          reportTag="LEGACY"
+          reportSummary={`총 세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
+          reportDetail={buildReportDetail(answers, calc, commentary)}
+          kakaoSummary={buildKakaoSummary(answers, calc)}
+          urgent={calc.shortTermNote !== null}
         />
         )}
 
