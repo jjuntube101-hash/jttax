@@ -76,7 +76,7 @@ console.log('\n════ 이벤트 핸들러 ════\n');
 console.log('\n════ R6 회귀 — 브라우저와 어긋나던 것들 ════\n');
 {
   /* 아래 기대값은 전부 브라우저 DOMParser 로 «직접 확인»한 것이다 (260809). */
-  const { isExecutableScriptType, domTouches, externalScriptSrcs } = require('./_shared/html-scan.js');
+  const { isExecutableScriptType, domTouches, externalScriptSrcs, freeIdentifiers } = require('./_shared/html-scan.js');
   // ① 따옴표 «안»의 > 는 태그 끝이 아니다
   eq('따옴표 안 > 가 속성을 자르지 않음',
     eventHandlers(tokenize(`<button onclick="jtTrackCta('a','b')>alert(1)">x</button>`))[0].value,
@@ -113,6 +113,10 @@ console.log('\n════ R6 회귀 — 브라우저와 어긋나던 것들 �
   eq('GA 부트스트랩은 깨끗',
     domTouches('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}'), []);
   eq('추적 호출은 깨끗', domTouches("jtTrackCta('kakao','desk_broker_top')"), []);
+  /* ClassExpression 내부 이름 — 선언으로도 참조로도 세지 않는다 (R12 P2 ↔ R13 P2 양쪽) */
+  eq('정상 class expression 은 낯선 이름이 아님', freeIdentifiers('const C = class Safe {};'), []);
+  eq('class 이름으로 전역을 숨길 수 없음', freeIdentifiers('const m = class fetch {}; fetch(1)'), ['fetch']);
+  eq('클래스 필드·메서드 키는 참조 아님', freeIdentifiers('class C { field = 1; method() {} }'), []);
   /* ⑤ 중첩 label — 코덱스 R6 는 「브라우저가 앞 label 을 닫는다」고 했으나 실측은 반대였다.
      DOMParser 확인: `<label>A<label>B</label>C</label>` → 바깥 label 의 textContent 는 'ABC'.
      (암묵 종료가 일어나는 것은 <p>·<li> 같은 요소이고 label 은 아니다) 기대값을 유지한다. */

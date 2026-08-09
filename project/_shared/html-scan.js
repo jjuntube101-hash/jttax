@@ -337,9 +337,13 @@ function freeIdentifiers(code) {
       const isObjKey = parent && ['ObjectProperty', 'ObjectMethod', 'ClassProperty', 'ClassMethod',
         'ClassPrivateProperty', 'ClassPrivateMethod', 'PropertyDefinition', 'MethodDefinition']
         .includes(parent.type) && key === 'key' && !parent.computed;
+      /* ⚠️ ClassExpression 의 내부 이름은 «선언도 참조도 아니다» — 클래스 안에서만 보이므로
+         전역 declared 에 넣으면 바깥 동명 전역을 숨기고(R12 P2), 참조로 세면 정상 코드를
+         낯선 이름으로 오인한다(R13 P2). 양쪽 다에서 뺀다. */
+      const isClassExprName = parent && parent.type === 'ClassExpression' && key === 'id';
       const isLabel = parent && (parent.type === 'LabeledStatement' || parent.type === 'BreakStatement'
         || parent.type === 'ContinueStatement') && key === 'label';
-      if (!isMemberProp && !isObjKey && !isLabel) referenced.add(n.name);
+      if (!isMemberProp && !isObjKey && !isLabel && !isClassExprName) referenced.add(n.name);
     }
     for (const k of Object.keys(n)) {
       if (k === 'loc' || k === 'leadingComments' || k === 'trailingComments') continue;

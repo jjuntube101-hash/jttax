@@ -799,7 +799,9 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
     for (let k = fi + 1; k < fend; k++) {
       const t = toks[k];
       if (t.type !== 'open') continue;
-      if (['input', 'textarea', 'select'].includes(t.name)) {
+      /* ⚠️ `<button name=… value=…>` 은 클릭한 제출 버튼의 값이 «함께» 전송된다 —
+         기존 입력과 같은 이름을 쓰면 값이 둘이 된다 (260809 Codex R13 P2). */
+      if (['input', 'textarea', 'select'].includes(t.name) || (t.name === 'button' && A(t, 'name'))) {
         inForm.push({ ...t, idx: k, ctl: (A(t, 'type') || (t.name === 'input' ? 'text' : t.name)).toLowerCase(), nm: A(t, 'name') });
       }
       /* ⚠️ `<input type="image">` 도 브라우저에서는 «제출 버튼»이다 (260809 Codex R7 P0).
@@ -836,9 +838,17 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
     /* ⚠️ `disabled` 는 «조상»에서도 내려온다 — `<fieldset disabled>` 로 감싸면 안의 입력이
        전부 disabled 가 되어 required 검증·전송에서 빠진다 (260809 Codex R11 P0).
        체크박스 자신만 보면 못 잡는다. 폼 안에 disabled fieldset 자체를 금지한다. */
-    const disabledFs = toks.filter((t, k) => t.type === 'open' && t.name === 'fieldset'
-      && HAS(t, 'disabled') && k > fi && k < fend);
-    eq(`desk/${f}: 폼 안에 disabled fieldset 없음 (안의 입력이 통째로 빠진다)`, disabledFs.length, 0);
+    /* ⚠️ 위험한 fieldset 은 «폼 안»만이 아니다 — 폼을 «감싸는» fieldset 도 안의 컨트롤을
+       전부 disabled 로 만든다 (260809 Codex R13). 종전 조건 `k > fi` 가 그걸 놓쳤다.
+       폼 안에 있거나, 폼을 감싸고 있으면(열림 < fi && 닫힘 > fend) FAIL. */
+    const disabledFs = toks.filter((t, k) => {
+      if (t.type !== 'open' || t.name !== 'fieldset' || !HAS(t, 'disabled')) return false;
+      const end = elementEnd(toks, k);
+      const inside = k > fi && k < fend;
+      const wraps = k < fi && end > fend;
+      return inside || wraps;
+    });
+    eq(`desk/${f}: 폼을 무력화하는 disabled fieldset 없음 (안·감싸기 모두)`, disabledFs.length, 0);
     /* ⚠️ 네이티브 폼은 마크업에 `checked` 를 박으면 «사용자 조작 없이» required 가 충족되고
        동의 값이 그대로 POST 된다 (260809 Codex R12 P2). React 쪽 초기값과 같은 문제다. */
     const preChecked = [...consentBoxes, ...intlBoxes].filter(b => HAS(b, 'checked'));
@@ -1063,6 +1073,19 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
         eq('처리방침 §1: 「함께 전송」을 모든 경로 공통이라 하지 않음', /공통으로 함께 전송/.test(sec1), false);
         eq('처리방침 §1: 파트너 파일럿 제외를 명시', /파트너 파일럿 신청에는 해당하지 않습니다/.test(attrLine), true);
       }
+      /* ⚠️ 동의 «값» 자체도 전송된다 — desk 폼은 `개인정보동의=동의함`·`국외이전동의=동의함`
+         두 키를 POST 에 싣는다. 방침이 그걸 안 적으면 실제보다 «적게» 고지한 것이 된다
+         (260809 Codex R13 P1).
+         ⚠️ 그리고 나는 이 문구를 «고쳐 놓고 게이트를 또 안 만들었다» — 음성 대조군 ㌚ 가
+            통과해 버려서 알았다. 고지를 고치면 그걸 지키는 검사도 «같이» 만든다. */
+      {
+        const cline = (sec1.split('\n').find(x => x.includes('동의 기록')) || '');
+        eq('처리방침 §1 에 「동의 기록」 줄 존재', !!cline, true);
+        eq('처리방침 §1 동의 기록: 「동의 여부」 명시', /동의 여부/.test(cline), true);
+        const deskRaw = fs.readFileSync(path.join(__dirname, '..', 'desk', 'broker.html'), 'utf8');
+        const consentKeys = [...new Set([...deskRaw.matchAll(/name=\"([^\"]*동의)\"/g)].map(m => m[1]))];
+        eq(`desk 가 전송하는 동의 키가 2개 (${consentKeys.join('·') || '없음'})`, consentKeys.length, 2);
+      }
       /* desk 는 마크업의 required 가 정본이다 */
       const dline = (sec1.split('\n').find(x => x.includes('파트너 파일럿')) || '');
       eq('처리방침 §1 에 「파트너 파일럿」 줄 존재', !!dline, true);
@@ -1112,6 +1135,31 @@ console.log('\n════ 카카오 연결 POST (동의 기반 전송) ══�
   eq('카톡: 수집·이용 동의 창', /okCollect\s*=\s*window\.confirm/.test(seg), true);
   eq('카톡: 국외이전 동의 창 (1단계 거부 시 묻지 않음)', /okIntl\s*=\s*okCollect\s*&&\s*window\.confirm/.test(seg), true);
   eq('카톡: 두 동의를 «모두» 받아야 전송', /maySend\s*=\s*!!\(okCollect\s*&&\s*okIntl\)/.test(seg), true);
+
+  /* ⚠️ 내가 「방침을 실제 payload 키와 대조한다」고 적었는데 «사실이 아니었다» — 방침 줄의
+     낱말만 봤을 뿐이다 (260809 Codex R13 P2). 그 상태로는 payload 에 성명·연락처를 몰래
+     넣어도 방침의 「보내지 않는 것: 성명·연락처」가 그대로 통과한다. 키를 «직접 읽어» 본다. */
+  {
+    const bodyAt = seg.indexOf('JSON.stringify({');
+    eq('카톡: payload 블록을 찾음', bodyAt >= 0, true);
+    if (bodyAt >= 0) {
+      const body = seg.slice(bodyAt, seg.indexOf('})', bodyAt));
+      const keys = [...body.matchAll(/^\s*([가-힣_]+)\s*:/gm)].map(m => m[1]);
+      /* 확인창이 「보내지 않는다」고 약속한 것이 payload 에 «있으면» 거짓 고지다 */
+      const promisedAbsent = ['성명', '이름', '연락처', '전화', '이메일'];
+      const broken = promisedAbsent.filter(k => keys.some(x => x.includes(k)));
+      eq(`카톡: 「보내지 않는다」고 한 항목이 payload 에 없음 (${broken.join('·') || '없음'})`, broken.length, 0);
+      /* payload 에 있는 개인정보성 키는 방침 §1 카카오 줄에 «전부» 적혀 있어야 한다 */
+      const legalKakao = (stripComments(fs.readFileSync(SRC('Legal.jsx'), 'utf8'))
+        .split('\n').find(x => x.includes('카카오톡 상담 연결')) || '');
+      const MAP = { 리포트유형: '리포트 유형', 진단요약: '진단요약', 상세입력_및_분석: '분석 내용' };
+      const notNoticed = keys.filter(k => k in MAP).filter(k => legalKakao.indexOf(MAP[k]) < 0);
+      eq(`카톡: payload 키가 방침 §1 에 모두 고지됨 (빠진 것: ${notNoticed.map(k => MAP[k]).join('·') || '없음'})`,
+        notNoticed.length, 0);
+      eq('카톡: payload 에 모르는 개인정보성 키 없음',
+        keys.filter(k => !(k in MAP) && !['구분', '접수시각', '비고'].includes(k)).join('·'), '');
+    }
+  }
   eq('카톡: maySend 가 false 면 전송 안 함', /if \(maySend\)\s*\{[\s\S]{0,80}fetch\(/.test(seg), true);
   eq('카톡: success 필드로 성공 판정', /data\.success === true/.test(seg), true);
   eq('카톡: 유입 출처 동봉', /jtAttributionFields\('report_kakao'\)/.test(seg), true);
