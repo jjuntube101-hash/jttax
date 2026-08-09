@@ -84,25 +84,19 @@ function JTHero({ setRoute }) {
 window.JTHero = JTHero;
 
 // ============ Brand Moment — 로고 + 슬로건 (다크 앵커) ============
-function JTBrandMoment() {
+function JTBrandMoment({ setRoute }) {
   return (
     <section className="jt-brandmoment" aria-label="제이티 세무법인">
       <div className="jt-brandmoment__inner">
-        <div className="jt-brandmoment__logowrap reveal" role="img" aria-label="제이티 세무법인 · JT TAX CORP.">
-          {/* ⚠️ viewBox 는 아래 두 path 의 «실제» bbox 여야 한다.
-              종전 "132 97 168 114" 는 y 범위가 실제(203~301)와 어긋나 있었고,
-              CSS 의 overflow:visible 과 겹쳐 로고가 박스 밖으로 흘러넘쳐
-              아래 「제이티 세무법인」·슬로건을 덮었다 (260805 수정).
-              path transform: matrix(1,0,0,-1,dx,203.14209) → y' = 203.14 − y
-              bbox 실측: x 139.46~291.81 / y 203.14~301.35 (여백 5) */}
-          <svg className="jt-bm-logosvg" viewBox="134.5 198.1 162.3 108.2" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-  <g className="jt-bm-g jt-bm-g--symbol">
-    <path d="M0 0V-83.221L-17.231-65.99H-42.95V-98.204L9.612-98.174 32.154-75.119 32.213 0Z" transform="matrix(1,0,0,-1,182.414,203.14209)" pathLength="1" />
-    <path d="M0 0-48.285-.03-70.827-23.085-70.887-98.204H-38.673V-49.563L-56.021-32.215H0Z" transform="matrix(1,0,0,-1,291.8127,203.14209)" pathLength="1" />
-  </g>
-</svg>
-          <div style={{ marginTop: 20, fontWeight: 800, fontSize: 'clamp(26px, 5vw, 42px)', letterSpacing: '-0.02em' }}>제이티 세무법인</div>
-          <div style={{ marginTop: 8, fontFamily: 'ui-monospace, monospace', fontSize: 13, letterSpacing: '.35em', opacity: .65 }}>JT TAX CORP.</div>
+        <div className="jt-brandmoment__logowrap reveal">
+          {/* ⛔ CI 가이드(HEAZ, 2026) — Primary Logo 는 «심볼 + 제이티 세무법인 + JT TAX CORP.»
+              가 하나로 잠긴 덩어리이고, 금지사항에 «배치 변경·비율 변경»이 명시돼 있다.
+              종전엔 심볼만 SVG 로 그리고 회사명을 Pretendard 800, 영문을 모노스페이스로
+              «다시 조판»했다 — 서체도 자간도 공식 락업과 달랐다(가이드 위반).
+              → 공식 자산(logo_primary_white_transparent.png)을 그대로 쓴다.
+              비율은 width:auto 로 보존하고, 배경은 단색 검정(정숙 영역)이다. */}
+          <img className="jt-bm-primary" src="project/assets/logo_primary_white.png"
+            alt="제이티 세무법인 JT TAX CORP." width="900" height="667" />
         </div>
         {/* 260808: 페이지의 h1 은 여기다. 종전엔 이 슬로건이 h2 이고 아래 상황
             섹션 제목이 h1 이라 문서 개요가 뒤집혀 있었다(검색엔진이 페이지 주제를
@@ -112,8 +106,11 @@ function JTBrandMoment() {
           <span className="reveal" data-delay="2">끝까지.</span>
         </h1>
         <p className="jt-brandmoment__sub reveal" data-delay="3">
-          세금은 감이 아니라 근거로 다툽니다. 신고 한 건부터 불복 한 건까지 — 기록과 법령 위에서 끝까지 함께합니다.
+          세금은 감이 아니라 근거로 다툽니다. 먼저 숫자부터 확인해 보세요.
         </p>
+        {/* 260809 결재 「안 2」 — 브랜드 문장을 지키면서 도구를 첫 화면에 둔다.
+            세액 계산은 검증된 jt-tax-engine 이 하고 이 컴포넌트는 «묻고 보여주기»만 한다. */}
+        {window.JTHeroCalc ? <window.JTHeroCalc /> : null}
       </div>
     </section>);
 

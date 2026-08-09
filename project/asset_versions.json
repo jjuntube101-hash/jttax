@@ -11,9 +11,13 @@
     "v": "28",
     "sha256": "c6f29e148cdca430f1c5fcf36afeb1bea65f2e4b6d77ffc27edd0f6c1d9f67f9"
   },
+  "project/src/HeroCalc.jsx": {
+    "v": "18",
+    "sha256": "86356808f0aa3b7e6950096b91ebbae6a24f241371e9da5d4c8b464adae02642"
+  },
   "project/src/Home.jsx": {
-    "v": "38",
-    "sha256": "979e0770dfe868b4dd48f6da1ab2f477069b54444731fcf6d670a5ca7edb8225"
+    "v": "41",
+    "sha256": "5580371549f59393c27b7fd4fea7a935babed9fb009062c109c936068051469d"
   },
   "project/src/Pages1.jsx": {
     "v": "23",
@@ -104,8 +108,8 @@
     "sha256": "2fa22d8e6ed0037389b9a6fd6ae5d7a877b117b4cab4272e4661f79ca92b1521"
   },
   "project/src/redesign.css": {
-    "v": "37",
-    "sha256": "4b63ea0db842bd2521aaf2050b2deb6cbf923aa3265b808360a4ee4e577c05cc"
+    "v": "46",
+    "sha256": "cf1e3178dac8b2bf9a0aae296dce997f77c0a8345cf54154ca9d8fa95e633ec1"
   },
   "project/src/colors_and_type.css": {
     "v": "2",

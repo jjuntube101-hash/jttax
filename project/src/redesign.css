@@ -570,6 +570,79 @@
   color: rgba(255,255,255,.62); font-size: clamp(15px, 1.7vw, 19px); line-height: 1.75;
 }
 
+/* ── 히어로 간이 계산기 (260809 결재 「안 2」) ────────────────────────────
+   다크 히어로 «안»에 얹히는 카드. 브랜드 문장을 지키면서 도구를 첫 화면에 둔다.
+   ⚠️ 시안의 걱정거리가 「작은 화면에서 스크롤해야 보인다」였다 —
+      모바일에서는 로고·슬로건 여백을 줄여 계산기가 첫 화면에 들어오게 한다. */
+.jt-herocalc{
+  max-width: 560px; margin: clamp(30px,4vw,44px) auto 0; text-align: left;
+  background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px; padding: clamp(18px,2.6vw,26px);
+  backdrop-filter: blur(2px);
+}
+.jt-herocalc__head{
+  font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .18em;
+  text-transform: uppercase; color: rgba(255,255,255,.55); margin-bottom: 16px;
+}
+.jt-herocalc__grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.jt-herocalc__grid select, .jt-herocalc__grid input{ color: #fff; }
+.jt-herocalc__grid select option{ color: #111; }
+.jt-herocalc__grid input::placeholder{ color: rgba(255,255,255,.38); }
+.jt-herocalc__grid select:focus-visible, .jt-herocalc__grid input:focus-visible{
+  outline: 2px solid rgba(255,255,255,.75); outline-offset: 1px;
+}
+.jt-herocalc__hint{ font-size: 12px; color: #ffcf9b; margin-top: 5px; }
+.jt-herocalc__go{
+  width: 100%; margin-top: 16px; padding: 13px 16px; border: 0; border-radius: 10px;
+  background: #fff; color: #0B0B0F; font: 700 15px/1 inherit; cursor: pointer;
+  transition: opacity .15s;
+}
+.jt-herocalc__go:disabled{ opacity: .38; cursor: not-allowed; }
+.jt-herocalc__out{
+  margin-top: 16px; padding: 16px 18px; border-radius: 12px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16);
+}
+.jt-herocalc__outlabel{ font-size: 12.5px; color: rgba(255,255,255,.62); }
+.jt-herocalc__amount{
+  font-size: clamp(28px,5vw,40px); font-weight: 800; letter-spacing: -.02em;
+  line-height: 1.15; margin-top: 4px;
+}
+.jt-herocalc__why{ font-size: 13.5px; color: #9fe0bd; margin-top: 6px; line-height: 1.6; }
+.jt-herocalc__why strong{ color: #fff; font-weight: 700; }
+/* 범위 표시 — 두 금액이 한 줄에 들어가야 하므로 조금 작게, 물결은 흐리게 */
+.jt-herocalc__amount{ word-break: keep-all; }
+.jt-herocalc__tilde{ opacity: .45; margin: 0 2px; font-weight: 400; }
+@media (max-width: 640px){ .jt-herocalc__amount{ font-size: clamp(22px,6.4vw,30px); } }
+.jt-herocalc__assume{ font-size: 12.5px; color: rgba(255,255,255,.55); line-height: 1.6; margin-top: 10px; }
+.jt-herocalc__more{
+  margin-top: 12px; padding: 0; border: 0; background: none; cursor: pointer;
+  color: #fff; font: 600 14px/1.4 inherit; text-decoration: underline; text-underline-offset: 3px;
+}
+.jt-herocalc__note{
+  margin: 14px 0 0; font-size: 12.5px; line-height: 1.65; color: rgba(255,255,255,.5);
+}
+.jt-herocalc__note strong{ color: rgba(255,255,255,.78); font-weight: 600; }
+
+@media (max-width: 640px){
+  /* ⚠️ 실측(375×812): 로고 168 + 여백 때문에 계산기 상단이 587px, 「세액 계산」 버튼이
+     960px 로 첫 화면 «밖»이었다. 시안이 걱정한 바로 그 지점이다.
+     → 로고를 더 줄이고 입력을 2열로 접어 버튼을 화면 안으로 끌어올린다.
+     ⛔ 슬로건·부제는 건드리지 않는다(브랜드 문장 유지가 안 2 를 고른 이유). */
+  .jt-brandmoment{ padding: 34px 16px 40px !important; }
+  .jt-bm-logosvg{ height: 96px !important; }
+  .jt-brandmoment__logowrap{ margin-bottom: 12px; }
+  .jt-brandmoment__logowrap > div:first-of-type{ font-size: 24px !important; margin-top: 12px !important; }
+  .jt-brandmoment__slogan{ font-size: clamp(32px,9vw,44px); }
+  .jt-brandmoment__sub{ margin-top: 12px; font-size: 14px; }
+  .jt-herocalc{ margin-top: 18px; padding: 14px; }
+  /* 2열 유지 — 한 칸씩 쌓으면 높이가 두 배가 되어 버튼이 접힌다 */
+  .jt-herocalc__grid{ grid-template-columns: 1fr 1fr; gap: 10px; }
+  .jt-herocalc__head{ margin-bottom: 12px; }
+  .jt-herocalc__go{ margin-top: 13px; }
+  /* iOS 는 16px 미만 입력에 자동 확대를 건다 — 확대되면 레이아웃이 튄다 */
+  .jt-herocalc__grid select, .jt-herocalc__grid input{ font-size: 16px !important; padding: 10px 10px; }
+}
+
 /* reveal 안전망(중요): 모션 비선호/JS 미동작 시에도 콘텐츠 보이게 */
 @media (prefers-reduced-motion: reduce){
   .reveal{ opacity: 1 !important; transform: none !important; }
@@ -887,28 +960,6 @@
 .jt-brandmoment__slogan .reveal[data-delay="1"].is-visible{ animation-delay: 1.7s; }
 .jt-brandmoment__slogan .reveal[data-delay="2"].is-visible{ animation-delay: 2.0s; }
 
-/* 스포트라이트 플레어 — 로고 그려지는 동안 빛이 차오르고, 정지 시 호흡 (빛만, 패턴 아님) */
-.jt-brandmoment::before{
-  content: '' !important;
-  background: radial-gradient(closest-side, rgba(255,255,255,.12), rgba(255,255,255,.04) 46%, transparent 72%) !important;
-  position: absolute; left: 50%; top: 40%;
-  width: min(1200px, 130vw); height: min(1000px, 130vh);
-  transform: translate(-50%, -50%) scale(.6);
-  z-index: 0; pointer-events: none; opacity: 0;
-}
-.jt-brandmoment__inner{ position: relative; z-index: 1; }     /* 콘텐츠를 스포트라이트 위로 */
-@keyframes jt-bm-flare{
-  0%   { opacity: 0;  transform: translate(-50%,-50%) scale(.5); }
-  60%  { opacity: 1;  transform: translate(-50%,-50%) scale(1.12); }
-  100% { opacity: .5; transform: translate(-50%,-50%) scale(1); }
-}
-@keyframes jt-bm-flare-breathe{
-  0%,100% { opacity: .4; transform: translate(-50%,-50%) scale(1); }
-  50%     { opacity: .8; transform: translate(-50%,-50%) scale(1.08); }
-}
-.jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before{
-  animation: jt-bm-flare 1.7s ease-out both, jt-bm-flare-breathe 7s ease-in-out 1.7s infinite;
-}
 
 @media (prefers-reduced-motion: reduce){
   .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--symbol path,
@@ -956,3 +1007,108 @@
 .jt-teaser__more{ font-size: 15px; font-weight: 700; }
 .jt-teaser__inner:hover .jt-teaser__more,
 .jt-teaser__inner:focus-visible .jt-teaser__more{ text-decoration: underline; }
+
+
+/* ⚠️ 이 블록은 파일 «끝»에 있어야 한다 — 앞쪽(693행 근처)에 로고·패딩을 !important 로
+   키우는 규칙이 있어서, 위에 두면 그쪽이 이긴다. 순서와 강도를 둘 다 맞춰야 적용된다.
+   (처음엔 위에 뒀다가 실측에서 로고가 그대로 346px 이라 발견) */
+/* ⚠️ 안 2 의 목적은 «먼저 숫자부터»인데, 로고 372px + 패딩 179px×2 때문에 계산기가
+   1280×720(노트북 표준)에서 첫 화면 «밖»(top 955px)으로 밀려나 있었다. 실측으로 확인.
+   시안이 걱정한 바로 그 문제라 세로 여유가 없는 화면에서는 히어로를 압축한다.
+   ⛔ 슬로건·부제는 줄이지 않는다 — 브랜드 문장을 지키는 것이 안 2 를 고른 이유다.
+   줄이는 것은 «여백과 로고»뿐이다. */
+@media (max-height: 900px) and (min-width: 641px){
+  .jt-brandmoment{ padding-top: clamp(40px,5vh,64px) !important; padding-bottom: clamp(40px,5vh,64px) !important; }
+  .jt-bm-logosvg{ height: clamp(110px,16vh,168px) !important; }
+  .jt-brandmoment__logowrap{ margin-bottom: clamp(14px,2vh,24px); }
+  .jt-brandmoment__sub{ margin-top: clamp(14px,2vh,22px); }
+  .jt-herocalc{ margin-top: clamp(18px,2.4vh,28px); }
+}
+/* 아주 낮은 화면(가로 모드 노트북 등)은 한 단계 더 */
+@media (max-height: 720px) and (min-width: 641px){
+  .jt-brandmoment{ padding-top: 28px !important; padding-bottom: 32px !important; }
+  .jt-bm-logosvg{ height: 92px !important; }
+  .jt-brandmoment__logowrap > div:first-of-type{ font-size: 26px !important; margin-top: 12px !important; }
+}
+
+
+/* ── 공식 Primary 로고 (CI 가이드 준수, 260809) ──────────────────────────
+   ⛔ 금지사항: 배치 변경·기울기·비율 변경 / 지정색 외 사용 / 복잡한 배경 위 사용.
+      → 이미지 하나를 그대로 쓰고, width:auto 로 «비율을 브라우저가 보존»하게 한다.
+      높이만 화면 크기에 따라 조절한다. 색은 흰색 자산 + 검정 배경(지정색). */
+.jt-bm-primary{
+  display: block; margin: 0 auto; width: auto;
+  height: clamp(150px, 22vw, 300px);
+  /* 정숙 영역 — 로고 주위에 다른 요소가 붙지 않게 */
+  padding: 0;
+}
+@media (max-height: 900px) and (min-width: 641px){
+  .jt-bm-primary{ height: clamp(104px, 15vh, 160px) !important; }
+}
+@media (max-height: 720px) and (min-width: 641px){
+  .jt-bm-primary{ height: 88px !important; }
+}
+@media (max-width: 640px){
+  .jt-bm-primary{ height: 92px !important; }
+}
+
+/* 입력 밑 «원 단위 읽기» 보조 — 0 을 세지 않게 (260809 사용자 지시) */
+.jt-herocalc__read{ font-size: 12px; color: rgba(255,255,255,.62); margin-top: 5px; letter-spacing: .01em; }
+/* 조정대상지역은 한 줄 전체를 쓴다 — 문장이 길고, 이 하나가 세액을 8배까지 바꾼다 */
+.jt-herocalc__wide{ grid-column: 1 / -1; }
+
+/* ── 로고 뒤 빛 — «은은하게, 천천히» (260809 사용자 결정) ──────────────────
+   한 번 껐다가 되살린다. 대표님 판단: 빛은 두되 더 약하고 느리게.
+   CI 금지사항은 «복잡한 패턴/이미지 위 사용 금지»다 — 단색 위의 «부드러운 광량 변화»는
+   패턴이 아니라고 보고 유지하되, 로고 판독을 방해하지 않도록 아래를 지킨다:
+     · 최대 불투명도 .12 → .06 (절반). 흰 로고와의 대비를 깎지 않는 수준
+     · 등장 1.7s → 4.5s, 호흡 7s → 16s. «움직임»이 아니라 «머무름»으로 느껴지게
+     · 로고 «뒤»에만 (z-index 0, 콘텐츠는 1). 크기도 로고보다 넓게 퍼뜨려 경계가 안 보이게
+     · 동작 최소화 설정이면 애니메이션 없이 «고정된 은은함»만
+   ⚠️ 되돌리려면 이 블록의 opacity 를 0 으로 두거나 content:none 으로 바꾸면 된다. */
+.jt-brandmoment::after{ content: none !important; }
+.jt-brandmoment::before{
+  content: '' !important;
+  background: radial-gradient(closest-side,
+    rgba(255,255,255,.06), rgba(255,255,255,.02) 48%, transparent 74%) !important;
+  position: absolute; left: 50%; top: 42%;
+  width: min(1400px, 150vw); height: min(1100px, 140vh);
+  transform: translate(-50%, -50%) scale(.85);
+  z-index: 0; pointer-events: none;
+  /* ⚠️ 여기를 opacity:0 으로 두면 «:has() 를 모르는 브라우저»에서 빛이 영영 안 뜬다
+     (아래 애니메이션이 :has() 로만 걸리기 때문). 기본을 «보이는 값»으로 두고,
+     :has() 가 되는 브라우저에서는 애니메이션이 0 에서 시작해 서서히 차오른다.
+     즉 지원 여부와 무관하게 «항상 은은한 빛»이 있고, 되는 곳에서만 등장 연출이 붙는다. */
+  opacity: .45;
+  animation: none;
+}
+/* ⚠️ 이 한 줄이 «콘텐츠를 빛 위로» 올린다 — 옛 플레어 블록을 22줄 통째로 지울 때
+   함께 날아갔다(260809 Codex P2 가 지적, git 이력으로 확인).
+   없으면 positioned ::before 가 일반 흐름 콘텐츠 «위»에 합성될 수 있다. */
+.jt-brandmoment__inner{ position: relative; z-index: 1; }
+@keyframes jt-bm-glow-in{
+  from { opacity: 0;   transform: translate(-50%,-50%) scale(.85); }
+  to   { opacity: .55; transform: translate(-50%,-50%) scale(1); }
+}
+@keyframes jt-bm-glow-breathe{
+  0%,100% { opacity: .45; transform: translate(-50%,-50%) scale(1); }
+  50%     { opacity: .7;  transform: translate(-50%,-50%) scale(1.04); }
+}
+.jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before{
+  animation: jt-bm-glow-in 4.5s ease-out both, jt-bm-glow-breathe 16s ease-in-out 4.5s infinite !important;
+}
+/* 동작 최소화를 원하는 분께는 «움직이지 않는» 은은함만 */
+@media (prefers-reduced-motion: reduce){
+  .jt-brandmoment::before{ opacity: .45 !important; animation: none !important;
+    transform: translate(-50%,-50%) scale(1) !important; }
+  .jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before{ animation: none !important; }
+}
+
+/* 간이 계산기의 «범위» 고지 — 주택만 계산한다는 사실을 숫자 앞에 밝힌다 (260809) */
+.jt-herocalc__scope{
+  margin: -6px 0 14px; font-size: 12.5px; line-height: 1.6; color: rgba(255,255,255,.58);
+}
+.jt-herocalc__inline{
+  padding: 0; border: 0; background: none; cursor: pointer;
+  color: #fff; font: inherit; text-decoration: underline; text-underline-offset: 2px;
+}
