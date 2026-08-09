@@ -300,6 +300,22 @@ function JTAuthority() {
           <ul className="jt-authority__list">
             <li><span className="jt-tick">—</span><span>해커스공무원 세법 강사</span></li>
             <li><span className="jt-tick">—</span><span>동남보건대 세무회계학과 겸임교수</span></li>
+            {/* 수강생 학습앱 — 광고 블록을 따로 만들지 않고 «이력»으로 둔다.
+                일반 방문자에게는 「실제로 공무원을 가르치고 있다」는 증거로 읽히고,
+                수험생에게는 들어가는 문이 된다. 두 결론을 한 블록에 섞지 않는다. */}
+            <li>
+              <span className="jt-tick">—</span>
+              <span>
+                수강생 학습앱 직접 운영 ·{" "}
+                <a
+                  href="https://class.jttax.co.kr"
+                  target="_blank"
+                  rel="noopener"
+                  onClick={() => { if (window.jtTrackCta) window.jtTrackCta('class_app', 'authority'); }}
+                  style={{ color: 'inherit', textDecoration: 'underline', textUnderlineOffset: 3 }}
+                >class.jttax.co.kr</a>
+              </span>
+            </li>
           </ul>
           <div className="jt-authority__books">
             <div className="jt-authority__book">세법 기본서</div>

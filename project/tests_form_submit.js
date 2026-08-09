@@ -484,6 +484,49 @@ console.log('\n════ 동의문 ↔ 실제 전송 항목 일치 ═══�
   }
 }
 
+console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ════\n');
+{
+  /* desk/*.html 은 React 가 아니라 «네이티브 form POST» 다 — 제출하면 페이지가 떠나므로
+     「성공 후 발화」·「거짓 완료 화면」이 구조적으로 성립하지 않는다(그래서 Phase 1 범위
+     밖이었다). 다만 개인정보는 똑같이 받는다 — 상담 폼 3곳과 같은 수준으로 고지한다.
+     (260809 결재 B-2 「법령 확인 후 반영」. 개인정보 보호법 §15① 1호 동의 근거,
+      ②가 요구하는 목적·항목·보유기간·거부권을 모두 적었다. law.go.kr API 직접 확인) */
+  const REQ = ['목적', '항목', '보유', '거부'];
+  for (const f of ['broker.html', 'scrivener.html']) {
+    const p = path.join(__dirname, '..', 'desk', f);
+    if (!fs.existsSync(p)) { eq(`desk/${f} 존재`, false, true); continue; }
+    const html = fs.readFileSync(p, 'utf8');
+    // 폼 안에 동의 체크박스가 «필수»로 있는가
+    eq(`desk/${f}: 개인정보 동의 체크박스(required)`,
+      /<input[^>]*type="checkbox"[^>]*name="개인정보동의"[^>]*required/.test(html), true);
+    const seg = html.slice(Math.max(0, html.indexOf('개인정보 수집·이용 동의')), html.indexOf('</form>'));
+    const miss = REQ.filter(k => seg.indexOf(k) < 0);
+    eq(`desk/${f}: §15② 고지 4요건 (누락: ${miss.join('·') || '없음'})`, miss.length, 0);
+    /* 실제 수집 항목이 고지에 다 들어 있는가 — 항목을 늘리고 문구를 안 고치는 일을 막는다.
+       ⚠️ 처음엔 «아는 이름 4개»만 훑었더니, 새 필드(`name="memo2"`)를 추가해도 목록에
+          없어서 조용히 지나갔다(음성 대조군 ㉔). 「고지 없이 항목을 늘리는 것」이 바로
+          이 검사가 막아야 할 일인데 정작 그걸 놓친 것이다.
+       → 폼 안의 «모든» 입력을 뽑고, 이름을 모르면 그것 자체를 FAIL 로 만든다.
+          hidden(access_key 등)·checkbox(동의 자신)·submit 은 수집 항목이 아니라 제외. */
+    const formSeg = html.slice(html.indexOf('<form'), html.indexOf('</form>'));
+    const inputs = [...formSeg.matchAll(/<(input|textarea)\b([^>]*)>/g)].map(m => ({ tag: m[1], attrs: m[2] }));
+    const collected = inputs
+      .filter(i => {
+        const t = (i.attrs.match(/type="([^"]+)"/) || [])[1] || (i.tag === 'textarea' ? 'textarea' : 'text');
+        return !['hidden', 'checkbox', 'submit', 'button'].includes(t);
+      })
+      .map(i => (i.attrs.match(/name="([^"]+)"/) || [])[1])
+      .filter(Boolean);
+    const LABEL = { office: '사무소명', name: '성함', contact: '연락처', memo: '문의 내용' };
+    const unknown = [...new Set(collected)].filter(k => !(k in LABEL));
+    eq(`desk/${f}: 모르는 수집 항목 없음 (${unknown.join('·') || '없음'}) — 새 필드를 넣었으면 고지와 이 표를 함께 고칠 것`,
+      unknown.length, 0);
+    const notNoticed = [...new Set(collected)].filter(k => (k in LABEL) && seg.indexOf(LABEL[k]) < 0);
+    eq(`desk/${f}: 수집 항목이 모두 고지됨 (빠진 것: ${notNoticed.map(k => LABEL[k]).join('·') || '없음'})`,
+      notNoticed.length, 0);
+  }
+}
+
 console.log('\n════ 카카오 연결 POST (동의 기반 전송) ════\n');
 {
   /* 코덱스 R2 P1: 이 경로도 실제 Web3Forms POST 인데 게이트 대상이 아니었다.

@@ -124,8 +124,21 @@
         <label>성함</label><input type="text" name="name" required placeholder="홍길동">
         <label>연락처 (전화 또는 카톡)</label><input type="text" name="contact" required placeholder="010-0000-0000">
         <label>요즘 자주 멈추는 세금 질문이 있다면 (선택)</label><textarea name="memo" rows="3" placeholder="예: 다주택 매도인이 중과 때문에 결정을 못 함"></textarea>
+        <!-- 개인정보 보호법 §15①1호 동의. ②가 요구하는 4가지(목적·항목·보유기간·거부권과
+             불이익)를 모두 적는다. ①4호「계약 체결 과정의 요청에 따른 조치」로 동의 없이
+             처리할 여지도 있으나, 상담 예약 폼 3곳이 이미 동의 방식이라 통일한다 (260809).
+             ⛔ 수집 항목을 늘리면 아래 문구도 함께 고칠 것 — 어긋나면 고지 위반이다. -->
+        <label class="jt-consent" style="display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:13px;line-height:1.6;cursor:pointer;">
+          <input type="checkbox" name="개인정보동의" value="동의함" required style="margin-top:4px;flex:none;">
+          <span><strong>개인정보 수집·이용 동의</strong>(필수)
+            · <strong>목적</strong>: 파일럿 신청 접수 및 안내 연락
+            · <strong>항목</strong>: 사무소명, 성함, 연락처, 문의 내용
+            · <strong>보유·이용기간</strong>: 파일럿 종료 후 1년. 기간 경과 시 지체 없이 파기
+            · <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 위 항목은 신청 접수에 필수이므로 거부 시 신청이 접수되지 않습니다.
+          </span>
+        </label>
         <button type="submit" class="jt-btn jt-btn--primary" onclick="jtTrackCta('form_submit','desk_broker')">신청하기 →</button>
-        <p class="jt-quiet" style="margin-top:10px;">입력하신 정보는 파일럿 안내 연락에만 사용합니다.</p>
+        <p class="jt-quiet" style="margin-top:10px;">입력하신 정보는 파일럿 안내 연락에만 사용하며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.</p>
       </form>
     </section>
 
