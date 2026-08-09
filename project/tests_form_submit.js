@@ -836,8 +836,13 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
     /* ⚠️ `disabled` 는 «조상»에서도 내려온다 — `<fieldset disabled>` 로 감싸면 안의 입력이
        전부 disabled 가 되어 required 검증·전송에서 빠진다 (260809 Codex R11 P0).
        체크박스 자신만 보면 못 잡는다. 폼 안에 disabled fieldset 자체를 금지한다. */
-    const disabledFs = toks.filter(t => t.type === 'open' && t.name === 'fieldset' && HAS(t, 'disabled'));
-    eq(`desk/${f}: disabled fieldset 없음 (안의 입력이 통째로 빠진다)`, disabledFs.length, 0);
+    const disabledFs = toks.filter((t, k) => t.type === 'open' && t.name === 'fieldset'
+      && HAS(t, 'disabled') && k > fi && k < fend);
+    eq(`desk/${f}: 폼 안에 disabled fieldset 없음 (안의 입력이 통째로 빠진다)`, disabledFs.length, 0);
+    /* ⚠️ 네이티브 폼은 마크업에 `checked` 를 박으면 «사용자 조작 없이» required 가 충족되고
+       동의 값이 그대로 POST 된다 (260809 Codex R12 P2). React 쪽 초기값과 같은 문제다. */
+    const preChecked = [...consentBoxes, ...intlBoxes].filter(b => HAS(b, 'checked'));
+    eq(`desk/${f}: 동의 체크박스에 checked 사전설정 없음`, preChecked.length, 0);
     for (const [lbl, arr] of [['수집·이용', consentBoxes], ['국외이전', intlBoxes]]) {
       eq(`desk/${f}: ${lbl} 동의가 required`, arr.length === 1 && HAS(arr[0], 'required'), true);
       eq(`desk/${f}: ${lbl} 동의에 disabled 없음 (있으면 검증·전송에서 빠진다)`,
@@ -879,8 +884,14 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
       const el = inForm.find(i => i.nm === nm && i.ctl === 'hidden');
       const expect = typeof want === 'string' ? want : want[f];
       /* 같은 이름을 두 번 두면 «어느 값이 채택되는지»가 우리 손을 떠난다 (R11 P2) */
-      eq(`desk/${f}: hidden ${nm} 이 하나뿐`, inForm.filter(i => i.nm === nm).length, 1);
       eq(`desk/${f}: hidden ${nm} 값이 고정값과 일치`, el ? A(el, 'value') : null, expect);
+    }
+    /* ⚠️ 이름 중복은 access_key 뿐 아니라 «모든» 입력에서 문제다 — 수신 서비스가 어느 값을
+       쓰는지 우리가 정하지 못한다 (260809 Codex R12 P2). 폼 안 전체를 본다. */
+    {
+      const names = inForm.map(i => i.nm).filter(Boolean);
+      const dup = [...new Set(names.filter((n, k) => names.indexOf(n) !== k))];
+      eq(`desk/${f}: 이름이 중복된 입력 없음 (${dup.join('·') || '없음'})`, dup.length, 0);
     }
     const unknown = [...new Set(collected)].filter(k => !(k in LABEL));
     eq(`desk/${f}: 모르는 수집 항목 없음 (${unknown.join('·') || '없음'}) — 새 필드를 넣었으면 고지와 이 표를 함께 고칠 것`,
@@ -1014,6 +1025,10 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
              `reportSummary || ''` 라 빈 값도 간다. 방침이 그걸 「필수」라 부르면 사실과 다르다
              (260809 Codex R11 P1). 그래서 아래 기대 목록에서 진단요약을 «입력 필수»에서 뺐다. */
           ['이메일'], []],
+        /* 카카오 연결 — 실제 payload 키를 그대로 대조한다 (260809 Codex R12 P1).
+           확인창에만 적고 처리방침 §1 에는 빠뜨렸던 항목이다. */
+        ['카카오톡 상담 연결', /maySend\s*=\s*!!\(okCollect\s*&&\s*okIntl\)/.test(rc2),
+          ['리포트 유형', '진단요약', '분석 내용'], []],
       ];
       for (const [label, guardOk, must, opt] of ROWS) {
         eq(`${label}: 코드의 필수 가드가 방침이 전제한 그대로`, guardOk, true);

