@@ -374,27 +374,85 @@ const ROOT = path.join(__dirname, '..');
                구현이 있고, 동작 최소화 설정에서 애니메이션이 꺼질 수 있다.
             ② 연락처가 지연 블록 «안»에 들어간다 — 6초 동안 전화번호가 안 보인다.
                이 화면의 존재 이유가 바로 그 연락처다. */
-      /* ⚠️ 미디어쿼리 «밖»의 규칙을 봐야 한다. 그냥 첫 매치를 잡으면, 무조건 규칙을
-         지웠을 때 @media(prefers-reduced-motion) 안의 동명 규칙이 대신 잡혀
-         「forwards 없음」이라는 «엉뚱한 이유»로 통과·차단된다(자기시험 NC-1 이 적발). */
+      /* ⚠️ 260810 Codex R1 P1: 초판은 «첫» 선언만 봤다. 그러면 뒤에 animation:none 을
+         하나 더 얹기만 해도 앞의 정상 shorthand 에서 forwards·.4s 를 찾아 통과하는데
+         실제 계산값은 «애니메이션 없음»이다 — 오류 안내가 영영 안 나오는 회귀가
+         조용히 지나간다. 그래서 «중괄호 균형»으로 at-rule 을 걷어내고, 무조건부에
+         남은 .jt-boot__late 선언을 «전부» 모아 마지막에 이기는 값으로 판정한다. */
       const styleBlocks = (idx.match(/<style>[\s\S]*?<\/style>/g) || []).join('\n');
-      const 무조건부 = styleBlocks.replace(/@media[^{]*\{[\s\S]*?\}\s*\}/g, '');
-      const lateDecl = (무조건부.match(/\.jt-boot__late\s*\{([^}]*)\}/) || [])[1] || '';
-      if (!lateDecl) {
+      /* @media / @supports 를 중괄호 짝을 세어 제거 — 정규식 [\s\S]*?\}\s*\} 는
+         중첩 at-rule 에서 안쪽만 지우고 바깥을 남긴다(Codex R1 P2). */
+      const stripAtRules = (css) => {
+        let out = '', i = 0;
+        while (i < css.length) {
+          const at = css.indexOf('@', i);
+          if (at < 0) { out += css.slice(i); break; }
+          const name = (css.slice(at).match(/^@([a-z-]+)/i) || [])[1] || '';
+          if (name !== 'media' && name !== 'supports') { out += css.slice(i, at + 1); i = at + 1; continue; }
+          const open = css.indexOf('{', at);
+          if (open < 0) { out += css.slice(i); break; }
+          let depth = 1, k = open + 1;
+          while (k < css.length && depth > 0) {
+            if (css[k] === '{') depth++;
+            else if (css[k] === '}') depth--;
+            k++;
+          }
+          out += css.slice(i, at);
+          i = k;
+        }
+        return out;
+      };
+      /* @supports 안의 규칙은 «그 기능을 쓸 수 있는 브라우저»에서 실제로 적용된다.
+         지연 노출의 본체가 거기 있으므로, 판정은 「무조건부 + @supports(animation) 안」을
+         합친 것으로 한다. @media 는 조건부라 제외하고 별도 검사한다. */
+      const supportsBlock = (styleBlocks.match(/@supports[^{]*animation[^{]*\{([\s\S]*?)\n\s*\}/) || [])[1] || '';
+      const 판정대상 = stripAtRules(styleBlocks) + '\n' + supportsBlock;
+      const lateDecls = [...판정대상.matchAll(/\.jt-boot__late\s*\{([^}]*)\}/g)].map((m) => m[1]);
+      if (!lateDecls.length) {
         bad.push('index.html — 부팅 폴백에 지연 노출 규칙(.jt-boot__late)이 없습니다. 정상 대기 중에도 오류 문구가 보입니다');
       } else {
-        if (!/animation\s*:/.test(lateDecl)) {
+        /* 「마지막에 이기는 값」 — 같은 속성이 여러 번 나오면 뒤가 이긴다 */
+        const 이긴값 = (prop) => {
+          let v = null;
+          for (const d of lateDecls) {
+            for (const m of d.matchAll(new RegExp(prop + '\\s*:\\s*([^;]+)', 'gi'))) v = m[1].trim();
+          }
+          return v;
+        };
+        const anim = 이긴값('animation');
+        if (!anim) {
           bad.push('index.html — .jt-boot__late 에 animation 이 없습니다. JS 가 죽은 상황에서 오류 안내가 영영 안 나옵니다');
+        } else if (/^\s*none\b/i.test(anim)) {
+          bad.push('index.html — .jt-boot__late 의 최종 animation 이 none 입니다(뒤 선언이 앞을 덮었습니다). 오류 안내가 영영 안 나옵니다');
+        } else {
+          if (!/forwards/.test(anim)) {
+            bad.push('index.html — .jt-boot__late 의 최종 animation 에 fill-mode:forwards 가 없습니다. 애니메이션이 끝나면 다시 사라집니다');
+          }
+          const dur = (anim.match(/(\d*\.?\d+)m?s/) || [])[1];
+          if (dur !== undefined && parseFloat(dur) === 0) {
+            bad.push('index.html — .jt-boot__late 의 animation-duration 이 0 입니다. 0초 애니메이션을 실행하지 않는 구현에서 오류 안내가 안 나옵니다');
+          }
         }
-        if (!/forwards/.test(lateDecl)) {
-          bad.push('index.html — .jt-boot__late 에 fill-mode:forwards 가 없습니다. 애니메이션이 끝나면 다시 사라집니다');
+        /* 숨기는 수단이 opacity 뿐이면 스크린리더가 6초 전에 오류 안내를 낭독한다 —
+           눈으로 보는 사람과 다른 정보를 받는다 (260810 Codex R1). */
+        if (!lateDecls.some((d) => /visibility\s*:\s*hidden/.test(d))) {
+          bad.push('index.html — .jt-boot__late 를 opacity 로만 숨깁니다. opacity:0 은 접근성 트리에서 제거되지 않아 스크린리더가 6초 전에 오류 안내를 읽습니다(visibility:hidden 필요)');
         }
-        const dur = (lateDecl.match(/animation\s*:[^;]*?(\d*\.?\d+)m?s/) || [])[1];
-        if (dur !== undefined && parseFloat(dur) === 0) {
-          bad.push('index.html — .jt-boot__late 의 animation-duration 이 0 입니다. 0초 애니메이션을 실행하지 않는 구현에서 오류 안내가 안 나옵니다');
+        /* 애니메이션을 못 쓰는 환경에서 «안 보이는 쪽»으로 실패하면 방문자가 무한정 기다린다.
+           @supports 밖(무조건부)의 기본값이 보이는 값이어야 한다. */
+        const 무조건decls = [...stripAtRules(styleBlocks).matchAll(/\.jt-boot__late\s*\{([^}]*)\}/g)].map((m) => m[1]);
+        const 기본노출 = 무조건decls.some((d) => /opacity\s*:\s*1/.test(d) && !/visibility\s*:\s*hidden/.test(d));
+        if (!기본노출) {
+          bad.push('index.html — 애니메이션 미지원 환경의 기본값이 «보임»이 아닙니다. 그런 브라우저에서 오류 안내가 영영 안 나옵니다(@supports 밖에 opacity:1 필요)');
         }
-        if (!/prefers-reduced-motion[\s\S]{0,240}\.jt-boot__late\s*\{[^}]*opacity\s*:\s*1/.test(idx)) {
-          bad.push('index.html — 동작 최소화(prefers-reduced-motion)에서 .jt-boot__late 를 즉시 보이게 하는 규칙이 없습니다. 그 설정 사용자는 오류 안내를 못 봅니다');
+        /* 동작 최소화 설정 — 보이게 하는 것만으로 부족하다. animation 도 꺼야 값이 안정된다. */
+        const rm = (styleBlocks.match(/@media\s*\(prefers-reduced-motion[^{]*\{([\s\S]*?)\n\s*\}/) || [])[1] || '';
+        const rmLate = (rm.match(/\.jt-boot__late\s*\{([^}]*)\}/) || [])[1] || '';
+        if (!rmLate || !/opacity\s*:\s*1/.test(rmLate) || !/visibility\s*:\s*visible/.test(rmLate)) {
+          bad.push('index.html — 동작 최소화(prefers-reduced-motion)에서 .jt-boot__late 를 보이게 하는 규칙이 없습니다(visibility:visible + opacity:1). 그 설정 사용자는 오류 안내를 못 봅니다');
+        }
+        if (rmLate && !/animation\s*:\s*none/.test(rmLate)) {
+          bad.push('index.html — 동작 최소화 규칙에 animation:none 이 없습니다. 애니메이션이 계속 돌아 값이 되돌아갈 수 있습니다');
         }
       }
       const lateBlocks = rootBlock.match(/<[^>]*class="jt-boot__late"[^>]*>[\s\S]*?<\/[a-z]+>/gi) || [];

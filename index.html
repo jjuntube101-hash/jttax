@@ -118,6 +118,28 @@
 
   <link rel="stylesheet" href="project/src/styles.css?v=23">
   <link rel="stylesheet" href="project/src/redesign.css?v=47">
+
+  <!-- 부팅 폴백의 «지연 노출» 규칙 (아래 #root 주석 참조).
+       ⛔ head 에 둔다 — style 은 metadata content 라 body 안은 표준 위치가 아니고,
+          외부 CSS 가 실패한 상황까지 가정하는 규칙이라 인라인이어야 한다. -->
+  <style>
+    /* 기본은 «보임». 애니메이션을 못 쓰는 환경에서는 이 값이 그대로 남아 오류 안내가
+       처음부터 보인다 — 안 보이는 쪽으로 실패하면 방문자가 무한정 기다리게 된다. */
+    .jt-boot__late{ opacity:1; }
+    @supports (animation-name: jt-boot-late){
+      /* ⛔ visibility 로 숨긴다. opacity:0 만으로는 «접근성 트리에서 제거되지 않아»
+         스크린리더가 6초 전에 오류 안내를 낭독한다 — 눈으로 보는 사람과 다른 정보를
+         받는다(260810 Codex R1 지적). visibility 는 keyframe 에서 전환 가능하다.
+         ⛔ duration 을 0s 로 두지 않는다 — 0초 애니메이션을 «실행하지 않은 것»으로
+         처리하는 구현이 있어, 그러면 오류 안내가 영영 안 나온다. */
+      .jt-boot__late{ visibility:hidden; opacity:0; animation: jt-boot-late .4s ease-out 6s forwards; }
+    }
+    @keyframes jt-boot-late{ from{ visibility:visible; opacity:0; } to{ visibility:visible; opacity:1; } }
+    /* 동작 최소화 설정에서 애니메이션이 무시되면 오류 안내를 «영영» 못 본다 → 처음부터 보인다 */
+    @media (prefers-reduced-motion: reduce){
+      .jt-boot__late{ visibility:visible; opacity:1; animation:none; }
+    }
+  </style>
 </head>
 <body>
   <!-- ⚠️ #root 안의 이 블록은 «부팅 폴백»이다 — 지우지 말 것 (260808 Codex P2a P0).
@@ -145,20 +167,12 @@
        ⛔ 전환은 반드시 CSS 로 한다. 자바스크립트가 한 줄도 안 도는 상황이 바로 이 화면의
           전제이기 때문이다 — JS 로 전환하면 정작 필요할 때 안 바뀐다.
        ⛔ 연락처는 «처음부터» 보인다. 6초를 기다려야 전화번호가 나오면 안 된다. -->
-  <style>
-    /* ⛔ duration 을 0s 로 두지 않는다 — 0초 애니메이션을 «실행하지 않은 것»으로 처리하는
-       구현이 있어, 그러면 오류 안내가 영영 안 나온다. 짧은 페이드(.4s)로 확실히 실행시킨다. */
-    .jt-boot__late{ opacity:0; animation: jt-boot-late .4s ease-out 6s forwards; }
-    @keyframes jt-boot-late{ from{ opacity:0; } to{ opacity:1; } }
-    /* 동작 최소화 설정에서 애니메이션이 무시되면 오류 안내를 «영영» 못 본다 → 처음부터 보인다 */
-    @media (prefers-reduced-motion: reduce){ .jt-boot__late{ opacity:1; animation:none; } }
-  </style>
   <div id="root"><main style="max-width:640px;margin:0 auto;padding:76px 24px;font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;color:#0B0B0F;line-height:1.7">
     <div style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.16em;color:#888">제이티 세무법인 · JT TAX CORP.</div>
     <h1 style="font-size:25px;letter-spacing:-.02em;margin:12px 0 12px;font-weight:700">화면을 불러오고 있습니다.</h1>
     <p style="font-size:15px;color:#5a5a5a;margin:0 0 6px">잠시만 기다려 주세요.</p>
     <p class="jt-boot__late" style="font-size:14px;color:#8a6320;margin:0 0 26px">
-      오래 걸린다면 새로고침해 주세요. 그래도 같으면 아래로 바로 연락 주세요 — 상담은 정상적으로 진행됩니다.
+      생각보다 오래 걸리고 있습니다. 급하시면 아래로 바로 연락 주세요 — 상담은 정상적으로 진행됩니다.
     </p>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <a href="tel:02-554-6405" style="padding:13px 22px;background:#0B0B0F;color:#fff;text-decoration:none;font-size:14px">전화 02-554-6405</a>
