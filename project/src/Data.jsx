@@ -21,7 +21,7 @@ window.JT_DATA = {
     businessNumber: '', // 사업자등록번호 — 종전 개인 사업자번호 사용 중단(260804 법인 설립). 법인 번호 미발급, 발급 후 기재
     licenseNumber: '',              // 세무사 등록번호 (추후 기재)
     representative: '이현준',        // 대표자 성명
-    businessHours: '평일 09:00–18:00',
+    businessHours: '평일 09:30–17:30',
     responseSla: '초기 응답 24h 이내',
   },
 

@@ -576,7 +576,7 @@ function JTChannels({ setRoute }) {
           <a className="jt-channels__card" href={`tel:${window.JT_DATA.firm.phone}`} onClick={() => window.jtTrackCta('call', 'channels')}>
             <div className="jt-channels__label">전화 상담</div>
             <div className="jt-channels__big">{window.JT_DATA.firm.phone}</div>
-            <div className="jt-channels__sub">평일 09:00–18:00 · 초기 응답 24h 이내</div>
+            <div className="jt-channels__sub">평일 09:30–17:30 · 초기 응답 24h 이내</div>
           </a>
           <a className="jt-channels__card" href={`mailto:${window.JT_DATA.firm.email}`} onClick={() => window.jtTrackCta('email', 'channels')}>
             <div className="jt-channels__label">이메일</div>

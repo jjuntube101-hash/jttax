@@ -60,7 +60,7 @@
       "addressRegion": "서울특별시",
       "addressCountry": "KR"
     },
-    "openingHours": "Mo-Fr 09:00-18:00",
+    "openingHours": "Mo-Fr 09:30-17:30",
     "priceRange": "$$",
     "areaServed": "KR",
     "sameAs": ["https://pf.kakao.com/_CcxlJG"]
@@ -134,11 +134,31 @@
        스타일도 인라인이다 — styles.css 로드가 실패한 상황까지 가정한다.
        JT_DATA 를 참조하지 않는 것도 의도적이다(그 파일이 못 읽힌 상황이 이 화면의 전제).
        ⛔ 값을 바꿀 땐 project/src/Data.jsx 의 firm 과 반드시 함께 고칠 것. -->
+  <!-- ⚠️ 260810: 이 화면의 문구를 «오류»에서 «불러오는 중»으로 바꿨다.
+       이건 오류 화면이 아니라 «React 마운트 전까지 보이는 초기 HTML»이다. 그런데 첫 문장이
+       「문제가 생겼습니다 / 잠시 후 다시 시도해 주세요」라, 정상적으로 기다리는 방문자에게
+       «고장 난 사이트»로 읽혔다(대표 직접 지적 + 화면 캡처). 첫인상을 깎은 건 로딩 시간보다
+       이 문구였다.
+
+       그렇다고 오류 안내를 없앨 수는 없다 — JS 가 정말 죽으면 이 화면이 최후 수단이다.
+       그래서 «시간»으로 가른다: 처음엔 불러오는 중, 6초가 지나도 그대로면 그때 오류 안내.
+       ⛔ 전환은 반드시 CSS 로 한다. 자바스크립트가 한 줄도 안 도는 상황이 바로 이 화면의
+          전제이기 때문이다 — JS 로 전환하면 정작 필요할 때 안 바뀐다.
+       ⛔ 연락처는 «처음부터» 보인다. 6초를 기다려야 전화번호가 나오면 안 된다. -->
+  <style>
+    /* ⛔ duration 을 0s 로 두지 않는다 — 0초 애니메이션을 «실행하지 않은 것»으로 처리하는
+       구현이 있어, 그러면 오류 안내가 영영 안 나온다. 짧은 페이드(.4s)로 확실히 실행시킨다. */
+    .jt-boot__late{ opacity:0; animation: jt-boot-late .4s ease-out 6s forwards; }
+    @keyframes jt-boot-late{ from{ opacity:0; } to{ opacity:1; } }
+    /* 동작 최소화 설정에서 애니메이션이 무시되면 오류 안내를 «영영» 못 본다 → 처음부터 보인다 */
+    @media (prefers-reduced-motion: reduce){ .jt-boot__late{ opacity:1; animation:none; } }
+  </style>
   <div id="root"><main style="max-width:640px;margin:0 auto;padding:76px 24px;font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;color:#0B0B0F;line-height:1.7">
     <div style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.16em;color:#888">제이티 세무법인 · JT TAX CORP.</div>
-    <h1 style="font-size:25px;letter-spacing:-.02em;margin:12px 0 12px;font-weight:700">잠시 후 다시 시도해 주세요.</h1>
-    <p style="font-size:15px;color:#5a5a5a;margin:0 0 26px">
-      화면을 준비하는 중 문제가 생겼습니다. 새로고침해도 같으면 아래로 바로 연락 주세요 — 상담은 정상적으로 진행됩니다.
+    <h1 style="font-size:25px;letter-spacing:-.02em;margin:12px 0 12px;font-weight:700">화면을 불러오고 있습니다.</h1>
+    <p style="font-size:15px;color:#5a5a5a;margin:0 0 6px">잠시만 기다려 주세요.</p>
+    <p class="jt-boot__late" style="font-size:14px;color:#8a6320;margin:0 0 26px">
+      오래 걸린다면 새로고침해 주세요. 그래도 같으면 아래로 바로 연락 주세요 — 상담은 정상적으로 진행됩니다.
     </p>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <a href="tel:02-554-6405" style="padding:13px 22px;background:#0B0B0F;color:#fff;text-decoration:none;font-size:14px">전화 02-554-6405</a>
@@ -146,7 +166,7 @@
       <a href="/calculators/" style="padding:13px 22px;border:1px solid rgba(0,0,0,.2);color:#0B0B0F;text-decoration:none;font-size:14px">세금 계산기</a>
     </div>
     <address style="font-style:normal;font-size:12px;color:#888;margin-top:34px">
-      제이티 세무법인 · 대표 세무사 이현준<br>서울특별시 강남구 강남대로78길 22, 5층 · 평일 09:00–18:00
+      제이티 세무법인 · 대표 세무사 이현준<br>서울특별시 강남구 강남대로78길 22, 5층 · 평일 09:30–17:30
     </address>
   </main></div>
 
@@ -154,13 +174,13 @@
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-  <script type="text/babel" src="project/src/Data.jsx?v=29"></script>
+  <script type="text/babel" src="project/src/Data.jsx?v=30"></script>
   <script type="text/babel" src="project/src/lawValues.jsx?v=2"></script>
   <script type="text/babel" src="project/src/Chrome.jsx?v=28"></script>
   <script type="text/babel" src="project/src/HeroCalc.jsx?v=18"></script>
-  <script type="text/babel" src="project/src/Home.jsx?v=41"></script>
+  <script type="text/babel" src="project/src/Home.jsx?v=42"></script>
   <script type="text/babel" src="project/src/Pages1.jsx?v=23"></script>
-  <script type="text/babel" src="project/src/Pages2.jsx?v=27"></script>
+  <script type="text/babel" src="project/src/Pages2.jsx?v=28"></script>
   <script type="text/babel" src="project/src/Legal.jsx?v=27"></script>
   <script type="text/babel" src="project/src/Report.jsx?v=56"></script>
   <script type="text/babel" src="project/src/ReportConvert.jsx?v=32"></script>

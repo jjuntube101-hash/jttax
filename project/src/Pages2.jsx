@@ -46,7 +46,7 @@ function JTContact({ setRoute }) {
               </li>
               <li>
                 <span className="jt-map__key">Hours</span>
-                <span className="jt-map__val">평일 09:00 — 18:00 (주말·공휴일 휴무)<br/><small style={{color: 'var(--fg-3)'}}>세무조사 긴급 건은 예외 대응</small></span>
+                <span className="jt-map__val">평일 09:30 — 17:30 (주말·공휴일 휴무)<br/><small style={{color: 'var(--fg-3)'}}>세무조사 긴급 건은 예외 대응</small></span>
               </li>
               <li>
                 <span className="jt-map__key">Parking</span>

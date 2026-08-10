@@ -1,7 +1,7 @@
 {
   "project/src/Data.jsx": {
-    "v": "29",
-    "sha256": "9f8b2f9c4c0d0abff746b674f734594b34f43a65920174a8a10046e21b349b08"
+    "v": "30",
+    "sha256": "032177bb677c0d86d662e2c07be3706f91022e544f5bd2d231c3e336fd32571f"
   },
   "project/src/lawValues.jsx": {
     "v": "2",
@@ -16,16 +16,16 @@
     "sha256": "86356808f0aa3b7e6950096b91ebbae6a24f241371e9da5d4c8b464adae02642"
   },
   "project/src/Home.jsx": {
-    "v": "41",
-    "sha256": "5580371549f59393c27b7fd4fea7a935babed9fb009062c109c936068051469d"
+    "v": "42",
+    "sha256": "9365a0562fcefbb1df28e3c675f9ed503b07bb7e16d888327f8540a90b6fa31b"
   },
   "project/src/Pages1.jsx": {
     "v": "23",
     "sha256": "c89b5fc6e3cb53db6dc4627cf45d36649482203945f770efeecdf89b3febc1ac"
   },
   "project/src/Pages2.jsx": {
-    "v": "27",
-    "sha256": "9261f654de24b0f625e74879c70043b9677c5a9a925485d9815c3e9b73ed62ba"
+    "v": "28",
+    "sha256": "a177b69fa195e4c85b839bd2b714a9ef3d5d845077cdbd22a264f5c6f188aff0"
   },
   "project/src/Legal.jsx": {
     "v": "27",

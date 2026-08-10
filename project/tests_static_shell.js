@@ -360,6 +360,56 @@ const ROOT = path.join(__dirname, '..');
         bad.push('index.html — 부팅 폴백이 JT_DATA 를 참조합니다. 스크립트 없이 렌더돼야 합니다');
       }
       checkBlankLinks(rootBlock, '부팅 폴백');
+
+      /* ── 오류 안내는 «지연» 노출, 연락처는 «즉시» (260810) ──────────────
+         이 화면은 오류 화면이 아니라 React 마운트 전까지 보이는 초기 HTML 이다.
+         종전엔 첫 문장이 「문제가 생겼습니다 / 잠시 후 다시 시도해 주세요」라,
+         정상적으로 기다리는 방문자에게 «고장 난 사이트»로 읽혔다(대표 지적).
+         → 처음엔 「불러오는 중」, 6초가 지나도 그대로면 그때 오류 안내.
+
+         ⛔ 이 구조에는 «조용히 망가지는» 실패가 둘 있고 둘 다 여기서 막는다.
+            ① 오류 안내가 영영 안 나온다 — JS 가 죽은 진짜 상황에서 방문자가
+               무한정 기다리게 된다. 전환은 CSS 여야 하고(JS 는 이미 죽었다),
+               fill-mode:forwards 여야 하며, duration 0s 면 실행조차 안 하는
+               구현이 있고, 동작 최소화 설정에서 애니메이션이 꺼질 수 있다.
+            ② 연락처가 지연 블록 «안»에 들어간다 — 6초 동안 전화번호가 안 보인다.
+               이 화면의 존재 이유가 바로 그 연락처다. */
+      /* ⚠️ 미디어쿼리 «밖»의 규칙을 봐야 한다. 그냥 첫 매치를 잡으면, 무조건 규칙을
+         지웠을 때 @media(prefers-reduced-motion) 안의 동명 규칙이 대신 잡혀
+         「forwards 없음」이라는 «엉뚱한 이유»로 통과·차단된다(자기시험 NC-1 이 적발). */
+      const styleBlocks = (idx.match(/<style>[\s\S]*?<\/style>/g) || []).join('\n');
+      const 무조건부 = styleBlocks.replace(/@media[^{]*\{[\s\S]*?\}\s*\}/g, '');
+      const lateDecl = (무조건부.match(/\.jt-boot__late\s*\{([^}]*)\}/) || [])[1] || '';
+      if (!lateDecl) {
+        bad.push('index.html — 부팅 폴백에 지연 노출 규칙(.jt-boot__late)이 없습니다. 정상 대기 중에도 오류 문구가 보입니다');
+      } else {
+        if (!/animation\s*:/.test(lateDecl)) {
+          bad.push('index.html — .jt-boot__late 에 animation 이 없습니다. JS 가 죽은 상황에서 오류 안내가 영영 안 나옵니다');
+        }
+        if (!/forwards/.test(lateDecl)) {
+          bad.push('index.html — .jt-boot__late 에 fill-mode:forwards 가 없습니다. 애니메이션이 끝나면 다시 사라집니다');
+        }
+        const dur = (lateDecl.match(/animation\s*:[^;]*?(\d*\.?\d+)m?s/) || [])[1];
+        if (dur !== undefined && parseFloat(dur) === 0) {
+          bad.push('index.html — .jt-boot__late 의 animation-duration 이 0 입니다. 0초 애니메이션을 실행하지 않는 구현에서 오류 안내가 안 나옵니다');
+        }
+        if (!/prefers-reduced-motion[\s\S]{0,240}\.jt-boot__late\s*\{[^}]*opacity\s*:\s*1/.test(idx)) {
+          bad.push('index.html — 동작 최소화(prefers-reduced-motion)에서 .jt-boot__late 를 즉시 보이게 하는 규칙이 없습니다. 그 설정 사용자는 오류 안내를 못 봅니다');
+        }
+      }
+      const lateBlocks = rootBlock.match(/<[^>]*class="jt-boot__late"[^>]*>[\s\S]*?<\/[a-z]+>/gi) || [];
+      for (const b of lateBlocks) {
+        if (/tel:|pf\.kakao\.com/.test(b)) {
+          bad.push('index.html — 연락처가 지연 노출 블록 안에 있습니다. 6초 동안 전화번호가 안 보입니다');
+        }
+      }
+      /* 즉시 보이는 부분에 오류 표현이 있으면 정상 대기가 고장으로 읽힌다 */
+      const 즉시 = lateBlocks.reduce((s, b) => s.replace(b, ''), rootBlock);
+      for (const w of ['문제가 생겼', '오류', '실패', '다시 시도해']) {
+        if (즉시.indexOf(w) >= 0) {
+          bad.push('index.html — 부팅 폴백에서 «즉시» 보이는 부분에 「' + w + '」가 있습니다. 정상 대기 중인 방문자에게 고장으로 읽힙니다');
+        }
+      }
     }
 
     /* ── 연락처가 세 곳에 있다: Data.jsx(정본) · 부팅 폴백 · 에러 경계 폴백 ──
