@@ -91,9 +91,12 @@ console.log('[번들 게이트 자기시험] 결함 주입 → 잡히는지 확�
                    'const { useEffect, useState } = React;\nconst useHC = 1;'),
   '중복 최상위 선언');
 
+/* ⚠️ 개조 패턴에 «줄바꿈 문자»를 그대로 쓰지 않는다. 이 저장소는 core.autocrlf 라
+   로컬은 LF, clone 은 CRLF 가 되어 `\n` 리터럴 패턴이 조용히 안 맞는다 —
+   로컬에서 통과하던 시험이 CI 에서 「준비 실패」로 드러났다(260810). \r?\n 로 쓴다. */
 시험('NC-2 ORDER 에서 소스 하나 누락 (그 컴포넌트가 통째로 사라진다)',
   'builder',
-  (s) => s.replace("  'ReportCGT.jsx',\n", ''),
+  (s) => s.replace(/[ \t]*'ReportCGT\.jsx',\r?\n/, ''),
   'ORDER 에 빠진 소스 없음');
 
 시험('NC-3 ORDER 에 없는 파일을 넣음 (빌드가 깨진다)',
@@ -108,7 +111,7 @@ console.log('[번들 게이트 자기시험] 결함 주입 → 잡히는지 확�
 
 시험('NC-5 HeroCalc 을 Home 뒤로 (Home 이 참조하는데 아직 없다)',
   'builder',
-  (s) => s.replace("  'HeroCalc.jsx',\n  'Home.jsx',", "  'Home.jsx',\n  'HeroCalc.jsx',"),
+  (s) => s.replace(/([ \t]*)'HeroCalc\.jsx',(\r?\n)([ \t]*)'Home\.jsx',/, "$1'Home.jsx',$2$3'HeroCalc.jsx',"),
   'HeroCalc 이 Home 보다 먼저');
 
 시험('NC-6 @babel/standalone 을 되살림 (3.0MB 를 다시 받는다)',
