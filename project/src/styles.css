@@ -2905,3 +2905,19 @@ button { font-family: inherit; }
 .jt-legal ul li { margin-bottom: 6px; }
 .jt-legal strong { color: var(--fg-1); font-weight: 600; }
 
+
+/* ── 태블릿 구간 상단 메뉴 압축 (260810 결재 N-1 ①) ─────────────────────────
+   ⚠️ 실측(768×1024): 상단 메뉴에 필요한 너비가 855px 인데 화면은 753px 이라
+      102px 이 모자라 «가로 스크롤»이 생겼다. 첫 화면이 옆으로 밀려 보인다.
+   햄버거(≡) 전환은 760px 이하에서만 일어나므로, 761~1024px 구간은 데스크톱 메뉴를
+   그대로 쓰다가 넘친다. 결재에서 「간격을 좁혀 한 줄 유지」(①)를 택했다.
+   ⛔ 줄이는 것은 «여백»뿐이다 — 글자 크기는 건드리지 않는다(읽기 어려워진다).
+   ⛔ 이 블록은 파일 «끝»에 둔다. 위로 옮기면 455행 .jt-nav 기본값에 덮인다. */
+@media (min-width: 761px) and (max-width: 1024px) {
+  /* 실측으로 정한 값이다 — 761px(이 구간의 «가장 좁은 쪽»)에서 여유가 남아야 한다.
+     16px/20px 로는 여유가 -1px 이라 글꼴이 조금만 달라져도 다시 넘친다. */
+  .jt-nav { padding-left: 12px; padding-right: 12px; }
+  .jt-nav__links { gap: 14px; }
+  .jt-nav__cta { gap: 8px; }
+  .jt-nav__phone { display: none; }   /* 전화번호는 히어로·푸터·상담 버튼에 이미 있다 */
+}
