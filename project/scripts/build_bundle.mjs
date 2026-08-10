@@ -69,11 +69,15 @@ export const ORDER = [
    그건 사실이 아니었다. 실측:
      · 종전 @babel/standalone 은 target 지정이 없으면 ES5 까지 낮춘다 → const→var, async→generator
      · esbuild target:'es2017' 은 const 1,526건·async 48건을 «그대로 남긴다»
-   즉 지원 범위는 «좁아졌다». 그런데도 es2017 을 택한 근거는 따로 있다 —
-   이 사이트가 쓰는 React 18 UMD 자체가 Chrome 60+/Firefox 60+/Safari 12+/Edge 79+ 만
-   지원하고, 그 브라우저들은 전부 ES2017(async/await)을 이해한다. ES5 까지 낮춰도
-   React 가 안 도는 브라우저를 살릴 수는 없으므로 실질 손실이 없다.
-   ⛔ React 를 더 낮은 버전으로 내리거나 UMD 를 걷어내면 이 근거가 사라진다 — 그때 다시 정한다.
+   즉 지원 범위는 «좁아졌다». 그런데도 es2017 을 택한 것은 «제품 정책»이다 —
+   이 사이트는 최신 상용 브라우저(대략 Chrome/Edge/Firefox 최근 버전, Safari 12+)만
+   지원 대상으로 삼는다. React 18 이 IE 지원을 끊고 현대 브라우저 기능을 요구하는 것도
+   같은 방향이다.
+   ⛔ 260810 Codex R2 P2 정정: 초판 주석은 「React 18 UMD 가 Chrome60+/Safari12+ 를
+      «강제»한다」고 썼는데, React 공식 문서는 그런 하한을 명시하지 않는다. 근거를
+      React 에 떠넘기지 않고 우리 정책으로 적는다.
+   ⛔ 더 낮은 브라우저를 지원해야 하면 TARGET 을 내려라(es2015 면 async 까지 변환된다).
+      번들이 커지는 대신 범위가 넓어진다.
 
    ▣ 이 차이가 낳은 실제 사고: 종전엔 Babel 이 const 를 var 로 낮춰 «중복 선언이 허용»됐다.
      esbuild 는 const 를 남기므로 같은 이름을 두 파일이 최상위에 선언하면 SyntaxError 로

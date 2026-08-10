@@ -35,7 +35,11 @@ let dirty = [];
 try {
   /* ⚠️ core.autocrlf=true 환경에서는 줄끝만 다른 것도 diff 로 잡힌다 —
      내용은 같은데 실패하면 게이트 신뢰가 깨진다 (260808 실사고). CR 무시로 비교한다. */
-  const out = sh(`git diff --name-only --ignore-cr-at-eol -- ${TARGETS.join(' ')}`);
+  /* ⚠️ HEAD 와 비교한다. 그냥 `git diff` 는 «워킹트리 ↔ index» 라서, 산출물을 다시 만들고
+     git add 만 해 둔 상태(= 아직 커밋 안 함)를 「일치」로 본다. 이 게이트가 지키려는 것은
+     «커밋된 것이 소스와 같은가»이므로 index 가 아니라 HEAD 가 기준이다
+     (260810 Codex R2 P2). */
+  const out = sh(`git diff HEAD --name-only --ignore-cr-at-eol -- ${TARGETS.join(' ')}`);
   dirty = out.split('\n').map(s => s.trim()).filter(Boolean);
   /* ⚠️ git diff 는 «추적되지 않는» 파일을 못 본다 — 산출물이 처음 생긴 경우
      (예: dist/app.js 를 만들었는데 git add 를 안 함) 이 검사가 조용히 통과한다.

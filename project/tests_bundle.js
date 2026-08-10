@@ -9,7 +9,9 @@
    ▣ 이 구조가 «조용히» 깨지는 지점 — 전부 실제로 겪었거나 겪을 뻔한 것들
      ① 중복 최상위 선언 → 이어붙이는 순간 SyntaxError 로 «앱 전체»가 죽는다.
         첫 빌드가 실제로 이걸로 터졌다(App.jsx 와 Chrome.jsx 가 useState/useEffect 중복).
-        별도 <script> 였을 땐 서로 격리돼 안 터졌으므로, 번들에서 «처음» 생기는 위험이다.
+        종전엔 안 터졌는데, 그 이유는 «격리»가 아니다 — classic script 들은 전역 환경을
+        공유한다. 진짜 이유는 @babel/standalone 이 const 를 var 로 낮춰(ES5) 중복을
+        허용했던 것이다. esbuild(es2017)는 const 를 남기므로 이제 터진다.
      ② ORDER 누락·잉여 → 컴포넌트가 통째로 사라지거나 빌드가 깨진다.
      ③ 순서 계약 파괴 → Data 가 늦게 오면 나머지가 window.JT_DATA 를 못 읽고,
         App 이 먼저 오면 아직 정의되지 않은 컴포넌트를 render 한다.
@@ -61,8 +63,9 @@ eq('App.jsx 가 «맨 마지막» (모든 컴포넌트 정의 뒤에 render)', a
 
 console.log('\n════ ③ 중복 최상위 선언 — 이어붙이면 SyntaxError ════\n');
 {
-  /* 별도 <script> 였을 땐 서로 격리돼 안 터졌다. 번들에서 «처음» 생기는 위험이라
-     사람이 알아채기 어렵다 — 첫 빌드가 실제로 이걸로 터졌다. */
+  /* 종전 Babel(ES5)은 const 를 var 로 낮춰 중복을 허용했다. esbuild 는 const 를 남기므로
+     이제 SyntaxError 가 된다 — 번들에서 «처음» 생기는 위험이라 사람이 알아채기 어렵다.
+     첫 빌드가 실제로 이걸로 터졌다. */
   const declared = new Map();
   for (const f of ORDER) {
     const code = fs.readFileSync(path.join(SRC, f), 'utf8');
