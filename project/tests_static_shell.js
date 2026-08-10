@@ -374,85 +374,125 @@ const ROOT = path.join(__dirname, '..');
                구현이 있고, 동작 최소화 설정에서 애니메이션이 꺼질 수 있다.
             ② 연락처가 지연 블록 «안»에 들어간다 — 6초 동안 전화번호가 안 보인다.
                이 화면의 존재 이유가 바로 그 연락처다. */
-      /* ⚠️ 260810 Codex R1 P1: 초판은 «첫» 선언만 봤다. 그러면 뒤에 animation:none 을
-         하나 더 얹기만 해도 앞의 정상 shorthand 에서 forwards·.4s 를 찾아 통과하는데
-         실제 계산값은 «애니메이션 없음»이다 — 오류 안내가 영영 안 나오는 회귀가
-         조용히 지나간다. 그래서 «중괄호 균형»으로 at-rule 을 걷어내고, 무조건부에
-         남은 .jt-boot__late 선언을 «전부» 모아 마지막에 이기는 값으로 판정한다. */
+      /* ⚠️ 260810 Codex R2 P1 로 «판정 기준 자체»가 바뀌었다.
+         초판 설계는 「숨김이 기본값, 애니메이션으로 보이게」였다. 그러면 애니메이션이
+         한 번이라도 안 도는 환경에서 오류 안내가 «영영» 안 나온다 — JS 가 죽은 진짜
+         상황에서 방문자가 무한정 「불러오는 중」만 본다. 게다가 게이트가 cascade 순서를
+         재현하지 못해(@supports 뒤의 무조건부 선언이 실제로는 이긴다) 그 회귀를
+         조용히 통과시킬 수 있었다.
+         → 설계를 뒤집었다: «보임»이 기본이고 애니메이션이 처음 6초를 가린다.
+           애니메이션이 못 돌면 처음부터 보인다. 그래서 판정도 단순해진다 —
+           «무조건부 기본값이 보임인가»가 첫 번째이고, 이것만 지켜지면 뒤에 무엇이
+           덮이든 «안 보이는 쪽»으로는 실패하지 않는다. */
       const styleBlocks = (idx.match(/<style>[\s\S]*?<\/style>/g) || []).join('\n');
-      /* @media / @supports 를 중괄호 짝을 세어 제거 — 정규식 [\s\S]*?\}\s*\} 는
-         중첩 at-rule 에서 안쪽만 지우고 바깥을 남긴다(Codex R1 P2). */
-      const stripAtRules = (css) => {
-        let out = '', i = 0;
+
+      /* at-rule 을 중괄호 짝을 세어 다룬다 — 정규식 [\s\S]*?\}\s*\} 는 중첩에서
+         안쪽만 지우고 바깥을 남긴다(Codex R1·R2 P1). 제거·추출 둘 다 이걸로 한다. */
+      const atRules = (css) => {
+        const out = [];
+        let i = 0;
         while (i < css.length) {
           const at = css.indexOf('@', i);
-          if (at < 0) { out += css.slice(i); break; }
-          const name = (css.slice(at).match(/^@([a-z-]+)/i) || [])[1] || '';
-          if (name !== 'media' && name !== 'supports') { out += css.slice(i, at + 1); i = at + 1; continue; }
-          const open = css.indexOf('{', at);
-          if (open < 0) { out += css.slice(i); break; }
+          if (at < 0) break;
+          const m = css.slice(at).match(/^@([a-z-]+)([^{]*)\{/i);
+          if (!m) { i = at + 1; continue; }
+          const open = at + m[0].length - 1;
           let depth = 1, k = open + 1;
           while (k < css.length && depth > 0) {
             if (css[k] === '{') depth++;
             else if (css[k] === '}') depth--;
             k++;
           }
-          out += css.slice(i, at);
+          out.push({ name: m[1].toLowerCase(), cond: m[2].trim(), body: css.slice(open + 1, k - 1), from: at, to: k });
           i = k;
         }
         return out;
       };
-      /* @supports 안의 규칙은 «그 기능을 쓸 수 있는 브라우저»에서 실제로 적용된다.
-         지연 노출의 본체가 거기 있으므로, 판정은 「무조건부 + @supports(animation) 안」을
-         합친 것으로 한다. @media 는 조건부라 제외하고 별도 검사한다. */
-      const supportsBlock = (styleBlocks.match(/@supports[^{]*animation[^{]*\{([\s\S]*?)\n\s*\}/) || [])[1] || '';
-      const 판정대상 = stripAtRules(styleBlocks) + '\n' + supportsBlock;
-      const lateDecls = [...판정대상.matchAll(/\.jt-boot__late\s*\{([^}]*)\}/g)].map((m) => m[1]);
-      if (!lateDecls.length) {
+      const 무조건부 = (() => {
+        let out = '', i = 0;
+        for (const r of atRules(styleBlocks)) { out += styleBlocks.slice(i, r.from); i = r.to; }
+        return out + styleBlocks.slice(i);
+      })();
+
+      const decls = (css) => [...css.matchAll(/\.jt-boot__late\s*\{([^}]*)\}/g)].map((m) => m[1]);
+      const 무조건decls = decls(무조건부);
+
+      if (!decls(styleBlocks).length) {
         bad.push('index.html — 부팅 폴백에 지연 노출 규칙(.jt-boot__late)이 없습니다. 정상 대기 중에도 오류 문구가 보입니다');
       } else {
-        /* 「마지막에 이기는 값」 — 같은 속성이 여러 번 나오면 뒤가 이긴다 */
-        const 이긴값 = (prop) => {
+        /* ① 가장 중요 — 애니메이션이 안 도는 환경의 «기본값»이 보임이어야 한다.
+           무조건부 선언 중 마지막에 이기는 visibility·opacity 로 판정한다. */
+        const 이긴값 = (list, prop) => {
           let v = null;
-          for (const d of lateDecls) {
+          for (const d of list) {
             for (const m of d.matchAll(new RegExp(prop + '\\s*:\\s*([^;]+)', 'gi'))) v = m[1].trim();
           }
           return v;
         };
-        const anim = 이긴값('animation');
-        if (!anim) {
-          bad.push('index.html — .jt-boot__late 에 animation 이 없습니다. JS 가 죽은 상황에서 오류 안내가 영영 안 나옵니다');
-        } else if (/^\s*none\b/i.test(anim)) {
-          bad.push('index.html — .jt-boot__late 의 최종 animation 이 none 입니다(뒤 선언이 앞을 덮었습니다). 오류 안내가 영영 안 나옵니다');
+        const baseVis = 이긴값(무조건decls, 'visibility');
+        const baseOpa = 이긴값(무조건decls, 'opacity');
+        if (!무조건decls.length || /hidden/i.test(baseVis || '') || (baseOpa !== null && parseFloat(baseOpa) === 0)) {
+          bad.push('index.html — 애니메이션이 못 도는 환경의 기본값이 «보임»이 아닙니다(visibility:' +
+            (baseVis || '없음') + ' / opacity:' + (baseOpa || '없음') + '). 그런 브라우저·설정에서 오류 안내가 영영 안 나옵니다');
+        }
+
+        /* ② 가리는 일은 @keyframes 가 한다 — 초기 구간이 hidden, 끝이 visible 이어야 한다.
+           opacity 로만 가리면 접근성 트리에 남아 스크린리더가 6초 전에 낭독한다(Codex R1). */
+        const kf = (styleBlocks.match(/@keyframes\s+jt-boot-late\s*\{([\s\S]*?)\n\s*\}/) || [])[1] || '';
+        if (!kf) {
+          bad.push('index.html — @keyframes jt-boot-late 가 없습니다. 오류 안내가 처음부터 보입니다');
+        } else {
+          if (!/0%[^{]*\{[^}]*visibility\s*:\s*hidden/.test(kf)) {
+            bad.push('index.html — @keyframes 의 시작 구간이 visibility:hidden 이 아닙니다. opacity 로만 가리면 스크린리더가 6초 전에 오류 안내를 읽습니다');
+          }
+          if (!/100%[^{]*\{[^}]*visibility\s*:\s*visible/.test(kf)) {
+            bad.push('index.html — @keyframes 의 끝 구간이 visibility:visible 이 아닙니다. 6초 뒤에도 오류 안내가 안 보입니다');
+          }
+        }
+
+        /* ③ 애니메이션 선언 — @supports 안이 정상이다. duration·fill-mode 를 본다. */
+        const supports = atRules(styleBlocks).filter((r) => r.name === 'supports');
+        const supDecls = supports.flatMap((r) => decls(r.body));
+        const anim = 이긴값(무조건decls.concat(supDecls), 'animation');
+        if (!anim || /^\s*none\b/i.test(anim)) {
+          bad.push('index.html — .jt-boot__late 에 유효한 animation 이 없습니다(값: ' + (anim || '없음') +
+            '). 오류 안내가 «처음부터» 보여 정상 대기가 고장으로 읽힙니다');
         } else {
           if (!/forwards/.test(anim)) {
-            bad.push('index.html — .jt-boot__late 의 최종 animation 에 fill-mode:forwards 가 없습니다. 애니메이션이 끝나면 다시 사라집니다');
+            bad.push('index.html — animation 에 fill-mode:forwards 가 없습니다. 6초 뒤 나타난 안내가 다시 사라집니다');
           }
           const dur = (anim.match(/(\d*\.?\d+)m?s/) || [])[1];
           if (dur !== undefined && parseFloat(dur) === 0) {
-            bad.push('index.html — .jt-boot__late 의 animation-duration 이 0 입니다. 0초 애니메이션을 실행하지 않는 구현에서 오류 안내가 안 나옵니다');
+            bad.push('index.html — animation-duration 이 0 입니다. 0초 애니메이션을 실행하지 않는 구현에서 안내가 처음부터 보입니다');
           }
         }
-        /* 숨기는 수단이 opacity 뿐이면 스크린리더가 6초 전에 오류 안내를 낭독한다 —
-           눈으로 보는 사람과 다른 정보를 받는다 (260810 Codex R1). */
-        if (!lateDecls.some((d) => /visibility\s*:\s*hidden/.test(d))) {
-          bad.push('index.html — .jt-boot__late 를 opacity 로만 숨깁니다. opacity:0 은 접근성 트리에서 제거되지 않아 스크린리더가 6초 전에 오류 안내를 읽습니다(visibility:hidden 필요)');
+
+        /* ④ !important 로 숨김을 고정하면 keyframe 이 못 이긴다 —
+           애니메이션이 돌아도 영영 안 보인다(Codex R2 P1). */
+        for (const d of 무조건decls.concat(supDecls)) {
+          if (/(visibility\s*:\s*hidden|opacity\s*:\s*0)\s*!\s*important/i.test(d)) {
+            bad.push('index.html — .jt-boot__late 를 !important 로 숨기고 있습니다. keyframe 이 이길 수 없어 오류 안내가 영영 안 나옵니다');
+          }
         }
-        /* 애니메이션을 못 쓰는 환경에서 «안 보이는 쪽»으로 실패하면 방문자가 무한정 기다린다.
-           @supports 밖(무조건부)의 기본값이 보이는 값이어야 한다. */
-        const 무조건decls = [...stripAtRules(styleBlocks).matchAll(/\.jt-boot__late\s*\{([^}]*)\}/g)].map((m) => m[1]);
-        const 기본노출 = 무조건decls.some((d) => /opacity\s*:\s*1/.test(d) && !/visibility\s*:\s*hidden/.test(d));
-        if (!기본노출) {
-          bad.push('index.html — 애니메이션 미지원 환경의 기본값이 «보임»이 아닙니다. 그런 브라우저에서 오류 안내가 영영 안 나옵니다(@supports 밖에 opacity:1 필요)');
+
+        /* ⑤ 동작 최소화 — 애니메이션만 끄면 기본값(보임)으로 남는다 */
+        const rm = atRules(styleBlocks).filter((r) => r.name === 'media' && /prefers-reduced-motion/.test(r.cond));
+        const rmDecls = rm.flatMap((r) => decls(r.body));
+        if (!rmDecls.length || !rmDecls.some((d) => /animation\s*:\s*none/.test(d))) {
+          bad.push('index.html — 동작 최소화(prefers-reduced-motion)에서 animation:none 규칙이 없습니다. 그 설정에서 애니메이션이 무시되면 값이 어긋납니다');
         }
-        /* 동작 최소화 설정 — 보이게 하는 것만으로 부족하다. animation 도 꺼야 값이 안정된다. */
-        const rm = (styleBlocks.match(/@media\s*\(prefers-reduced-motion[^{]*\{([\s\S]*?)\n\s*\}/) || [])[1] || '';
-        const rmLate = (rm.match(/\.jt-boot__late\s*\{([^}]*)\}/) || [])[1] || '';
-        if (!rmLate || !/opacity\s*:\s*1/.test(rmLate) || !/visibility\s*:\s*visible/.test(rmLate)) {
-          bad.push('index.html — 동작 최소화(prefers-reduced-motion)에서 .jt-boot__late 를 보이게 하는 규칙이 없습니다(visibility:visible + opacity:1). 그 설정 사용자는 오류 안내를 못 봅니다');
+        for (const d of rmDecls) {
+          if (/visibility\s*:\s*hidden|opacity\s*:\s*0/.test(d)) {
+            bad.push('index.html — 동작 최소화 규칙이 .jt-boot__late 를 숨깁니다. 그 설정 사용자는 오류 안내를 못 봅니다');
+          }
         }
-        if (rmLate && !/animation\s*:\s*none/.test(rmLate)) {
-          bad.push('index.html — 동작 최소화 규칙에 animation:none 이 없습니다. 애니메이션이 계속 돌아 값이 되돌아갈 수 있습니다');
+
+        /* ⑥ style 은 head 에 — body 안은 HTML 표준 위치가 아니다(Codex R1 P2·R2 P2) */
+        const headEnd = idx.indexOf('</head>');
+        for (const m of idx.matchAll(/<style>/g)) {
+          if (headEnd >= 0 && m.index > headEnd) {
+            bad.push('index.html — <style> 이 body 안에 있습니다. style 은 metadata content 라 head 에 두어야 합니다');
+          }
         }
       }
       const lateBlocks = rootBlock.match(/<[^>]*class="jt-boot__late"[^>]*>[\s\S]*?<\/[a-z]+>/gi) || [];

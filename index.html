@@ -123,21 +123,28 @@
        ⛔ head 에 둔다 — style 은 metadata content 라 body 안은 표준 위치가 아니고,
           외부 CSS 가 실패한 상황까지 가정하는 규칙이라 인라인이어야 한다. -->
   <style>
-    /* 기본은 «보임». 애니메이션을 못 쓰는 환경에서는 이 값이 그대로 남아 오류 안내가
-       처음부터 보인다 — 안 보이는 쪽으로 실패하면 방문자가 무한정 기다리게 된다. */
-    .jt-boot__late{ opacity:1; }
+    /* ⛔ 설계의 핵심 — «숨기는 쪽»을 애니메이션이 맡는다. 반대가 아니다.
+       초판은 「숨김이 기본값, 애니메이션으로 보이게」였는데, 그러면 애니메이션이
+       한 번이라도 안 도는 환경에서 오류 안내가 «영영» 안 나온다 — JS 가 죽은 진짜
+       상황에서 방문자가 무한정 「불러오는 중」만 보게 된다(260810 Codex R2 P1).
+       그래서 뒤집었다: 기본값이 «보임»이고, 애니메이션이 처음 6초를 가린다.
+       애니메이션이 못 돌면 → 처음부터 보인다. 실패가 «안전한 쪽»으로 떨어진다.
+       실측(브라우저): 애니메이션 취소 시 visible/opacity 1 로 남는 것을 확인했다.
+
+       ⛔ visibility 로 가린다. opacity:0 만으로는 접근성 트리에서 제거되지 않아
+       스크린리더가 6초 전에 오류 안내를 낭독한다 — 눈으로 보는 사람과 다른 정보를
+       받는다(Codex R1). visibility 는 keyframe 에서 전환된다. */
+    .jt-boot__late{ visibility:visible; opacity:1; }
     @supports (animation-name: jt-boot-late){
-      /* ⛔ visibility 로 숨긴다. opacity:0 만으로는 «접근성 트리에서 제거되지 않아»
-         스크린리더가 6초 전에 오류 안내를 낭독한다 — 눈으로 보는 사람과 다른 정보를
-         받는다(260810 Codex R1 지적). visibility 는 keyframe 에서 전환 가능하다.
-         ⛔ duration 을 0s 로 두지 않는다 — 0초 애니메이션을 «실행하지 않은 것»으로
-         처리하는 구현이 있어, 그러면 오류 안내가 영영 안 나온다. */
-      .jt-boot__late{ visibility:hidden; opacity:0; animation: jt-boot-late .4s ease-out 6s forwards; }
+      .jt-boot__late{ animation: jt-boot-late 6s linear forwards; }
     }
-    @keyframes jt-boot-late{ from{ visibility:visible; opacity:0; } to{ visibility:visible; opacity:1; } }
-    /* 동작 최소화 설정에서 애니메이션이 무시되면 오류 안내를 «영영» 못 본다 → 처음부터 보인다 */
+    @keyframes jt-boot-late{
+      0%, 96% { visibility:hidden; opacity:0; }   /* 0 ~ 5.76s 가림 */
+      100%    { visibility:visible; opacity:1; }  /* 6s 에 나타남 (forwards 로 유지) */
+    }
+    /* 동작 최소화 설정 — 애니메이션만 끄면 기본값(보임)으로 남는다 */
     @media (prefers-reduced-motion: reduce){
-      .jt-boot__late{ visibility:visible; opacity:1; animation:none; }
+      .jt-boot__late{ animation:none; }
     }
   </style>
 </head>

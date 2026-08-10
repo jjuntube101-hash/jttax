@@ -60,62 +60,74 @@ console.log('[부팅 폴백 게이트 자기시험] 결함 주입 → 잡히는�
   if (code !== 0) console.log(out.split('\n').filter((l) => l.indexOf('✗') >= 0).slice(0, 4).map((l) => '        ' + l).join('\n'));
 }
 
-/* ⚠️ .jt-boot__late 규칙은 «세 곳»에 있다 — 무조건부(기본 보임) / @supports(숨김+애니메이션)
+/* ⚠️ .jt-boot__late 규칙은 «세 곳»에 있다 — 무조건부(기본 보임) / @supports(애니메이션)
    / @media(동작 최소화). 하나만 지우면 다른 검사가 «다른 이유로» 잡아 시험이 의도를
    잃는다. 그래서 전부 지운다(260810 자기시험 초판이 실제로 이걸 놓쳤다). */
 시험('NC-1 .jt-boot__late 규칙을 전부 제거',
   (s) => s.replace(/\.jt-boot__late\s*\{[^}]*\}/g, '/* removed */'),
   '지연 노출 규칙');
 
-시험('NC-2 animation 제거 (오류 안내가 영영 안 나옴)',
-  (s) => s.replace(/animation: jt-boot-late [^;]*;/, ''),
-  'animation 이 없습니다');
+/* ★ NC-2 가 이 설계의 «핵심» 시험이다.
+   초판 설계는 「숨김이 기본값, 애니메이션으로 보이게」였고, 그러면 애니메이션이
+   한 번이라도 안 도는 환경에서 오류 안내가 «영영» 안 나온다(Codex R2 P1).
+   설계를 뒤집어 기본값을 «보임»으로 뒀다 — 이 시험이 그 되돌림을 막는다. */
+시험('NC-2 ★ 기본값을 «숨김»으로 되돌림 (애니 미실행 환경에서 영영 안 보임)',
+  (s) => s.replace('.jt-boot__late{ visibility:visible; opacity:1; }',
+                   '.jt-boot__late{ visibility:hidden; opacity:0; }'),
+  '기본값이 «보임»이 아닙니다');
 
-시험('NC-3 fill-mode:forwards 제거 (떴다가 다시 사라짐)',
-  (s) => s.replace('.4s ease-out 6s forwards', '.4s ease-out 6s'),
+시험('NC-3 animation 제거 (오류 안내가 처음부터 보임)',
+  (s) => s.replace(/animation: jt-boot-late [^;]*;/, ''),
+  '유효한 animation 이 없습니다');
+
+시험('NC-4 fill-mode:forwards 제거 (6초 뒤 떴다가 다시 사라짐)',
+  (s) => s.replace('jt-boot-late 6s linear forwards', 'jt-boot-late 6s linear'),
   'forwards');
 
-시험('NC-4 duration 0s (0초 애니메이션을 실행 안 하는 구현이 있다)',
-  (s) => s.replace('jt-boot-late .4s ease-out 6s forwards', 'jt-boot-late 0s linear 6s forwards'),
+시험('NC-5 duration 0s (0초 애니메이션을 실행 안 하는 구현이 있다)',
+  (s) => s.replace('jt-boot-late 6s linear forwards', 'jt-boot-late 0s linear forwards'),
   'animation-duration 이 0');
 
-시험('NC-5 동작 최소화(prefers-reduced-motion) 폴백 제거',
+/* opacity 로만 가리면 접근성 트리에 남아 스크린리더가 6초 전에 낭독한다(Codex R1) */
+시험('NC-6 keyframes 시작을 opacity 로만 가림 (스크린리더가 미리 읽음)',
+  (s) => s.replace('0%, 96% { visibility:hidden; opacity:0; }', '0%, 96% { opacity:0; }'),
+  '시작 구간이 visibility:hidden');
+
+시험('NC-7 keyframes 끝이 visible 이 아님 (6초 뒤에도 안 보임)',
+  (s) => s.replace('100%    { visibility:visible; opacity:1; }', '100%    { opacity:1; }'),
+  '끝 구간이 visibility:visible');
+
+/* !important 로 숨김을 고정하면 keyframe 이 못 이긴다 — 애니메이션이 돌아도 영영 안 보인다 */
+시험('NC-8 !important 로 숨김 고정 (keyframe 이 못 이김)',
+  (s) => s.replace('.jt-boot__late{ visibility:visible; opacity:1; }',
+                   '.jt-boot__late{ visibility:hidden !important; opacity:1; }'),
+  '!important 로 숨기고');
+
+시험('NC-9 동작 최소화(prefers-reduced-motion) 규칙 제거',
   (s) => s.replace(/@media \(prefers-reduced-motion: reduce\)\{[\s\S]*?\n\s*\}/, ''),
   '동작 최소화');
 
-시험('NC-6 전화 링크를 지연 블록 «안»으로 (6초간 전화번호가 안 보임)',
+시험('NC-10 동작 최소화 규칙이 오히려 숨김',
+  (s) => s.replace('.jt-boot__late{ animation:none; }',
+                   '.jt-boot__late{ animation:none; visibility:hidden; }'),
+  '동작 최소화 규칙이');
+
+시험('NC-11 <style> 을 body 로 되돌림 (HTML 표준 위치 아님)',
+  (s) => {
+    const m = s.match(/ {2}<style>[\s\S]*?<\/style>\r?\n/);
+    if (!m) return s;
+    return s.replace(m[0], '').replace('  <div id="root">', m[0] + '  <div id="root">');
+  },
+  'body 안에 있습니다');
+
+시험('NC-12 전화 링크를 지연 블록 «안»으로 (6초간 전화번호가 안 보임)',
   (s) => s.replace(/(<p class="jt-boot__late"[^>]*>)([\s\S]*?)(<\/p>)/,
     '$1$2 <a href="tel:02-554-6405">전화</a>$3'),
   '지연 노출 블록 안에');
 
-시험('NC-7 즉시 표시부에 「문제가 생겼」 복귀 (대표가 지적한 원래 상태)',
+시험('NC-13 즉시 표시부에 「문제가 생겼」 복귀 (대표가 지적한 원래 상태)',
   (s) => s.replace('화면을 불러오고 있습니다.', '화면을 준비하는 중 문제가 생겼습니다.'),
   '고장으로 읽힙니다');
-
-/* ── 260810 Codex R1 이 든 실패 모드 ────────────────────────────────────── */
-
-/* 첫 선언만 보는 게이트는 앞의 정상 shorthand 에서 forwards·.4s 를 찾아 통과하는데
-   실제 계산값은 «애니메이션 없음»이다 — 오류 안내가 영영 안 나오는 회귀가 조용히 지나간다. */
-시험('NC-8 뒤에 animation:none 을 덧붙여 앞 선언을 덮음',
-  (s) => s.replace('animation: jt-boot-late .4s ease-out 6s forwards; }',
-                   'animation: jt-boot-late .4s ease-out 6s forwards; }\n      .jt-boot__late{ animation:none; }'),
-  '최종 animation 이 none');
-
-/* opacity:0 은 «접근성 트리에서 제거되지 않는다» — 스크린리더는 6초 전에 오류 안내를
-   낭독한다. 눈으로 보는 사람과 다른 정보를 받는 것이다. */
-시험('NC-9 opacity 로만 숨김 (스크린리더가 6초 전에 읽음)',
-  (s) => s.replace('visibility:hidden; opacity:0; animation:', 'opacity:0; animation:'),
-  'opacity 로만 숨깁니다');
-
-/* 애니메이션을 못 쓰는 환경에서 «안 보이는 쪽»으로 실패하면 방문자가 무한정 기다린다.
-   @supports 밖 기본값은 반드시 «보임»이어야 한다. */
-시험('NC-10 애니메이션 미지원 환경의 기본값을 «안 보임»으로',
-  (s) => s.replace('.jt-boot__late{ opacity:1; }', '.jt-boot__late{ opacity:0; }'),
-  '기본값이 «보임»이 아닙니다');
-
-시험('NC-11 동작 최소화 규칙에서 animation:none 제거',
-  (s) => s.replace('visibility:visible; opacity:1; animation:none;', 'visibility:visible; opacity:1;'),
-  'animation:none 이 없습니다');
 
 /* ── 결과 ───────────────────────────────────────────────────────────────── */
 const 실패 = results.filter((r) => !r).length;
