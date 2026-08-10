@@ -384,7 +384,11 @@ const ROOT = path.join(__dirname, '..');
            애니메이션이 못 돌면 처음부터 보인다. 그래서 판정도 단순해진다 —
            «무조건부 기본값이 보임인가»가 첫 번째이고, 이것만 지켜지면 뒤에 무엇이
            덮이든 «안 보이는 쪽»으로는 실패하지 않는다. */
-      const styleBlocks = (idx.match(/<style>[\s\S]*?<\/style>/g) || []).join('\n');
+      /* ⚠️ 주석을 «같은 길이의 공백»으로 지운 뒤 본다 — 주석 안에 @supports 나 중괄호가
+         있으면 at-rule 로 오인해 규칙 추출이 통째로 어긋난다(260810 Codex R3 P2).
+         길이를 보존하므로 오프셋·줄 구조는 그대로다. */
+      const styleBlocks = (idx.match(/<style>[\s\S]*?<\/style>/g) || []).join('\n')
+        .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n\r]/g, ' '));
 
       /* at-rule 을 중괄호 짝을 세어 다룬다 — 정규식 [\s\S]*?\}\s*\} 는 중첩에서
          안쪽만 지우고 바깥을 남긴다(Codex R1·R2 P1). 제거·추출 둘 다 이걸로 한다. */
@@ -453,15 +457,24 @@ const ROOT = path.join(__dirname, '..');
         /* ③ 애니메이션 선언 — @supports 안이 정상이다. duration·fill-mode 를 본다. */
         const supports = atRules(styleBlocks).filter((r) => r.name === 'supports');
         const supDecls = supports.flatMap((r) => decls(r.body));
-        const anim = 이긴값(무조건decls.concat(supDecls), 'animation');
-        if (!anim || /^\s*none\b/i.test(anim)) {
-          bad.push('index.html — .jt-boot__late 에 유효한 animation 이 없습니다(값: ' + (anim || '없음') +
-            '). 오류 안내가 «처음부터» 보여 정상 대기가 고장으로 읽힙니다');
+        /* shorthand 만 보면 longhand 로 쓴 «정상» CSS 를 거짓 실패시킨다(Codex R3 P2).
+           animation / animation-name·duration·fill-mode 둘 다 인정한다. */
+        const 전체decls = 무조건decls.concat(supDecls);
+        const anim = 이긴값(전체decls, 'animation');
+        const lhName = 이긴값(전체decls, 'animation-name');
+        const lhDur = 이긴값(전체decls, 'animation-duration');
+        const lhFill = 이긴값(전체decls, 'animation-fill-mode');
+        const 유효 = (anim && !/^\s*none\b/i.test(anim)) || (lhName && !/^\s*none\b/i.test(lhName));
+        if (!유효) {
+          bad.push('index.html — .jt-boot__late 에 유효한 animation 이 없습니다(shorthand: ' + (anim || '없음') +
+            ' / name: ' + (lhName || '없음') + '). 오류 안내가 «처음부터» 보여 정상 대기가 고장으로 읽힙니다');
         } else {
-          if (!/forwards/.test(anim)) {
+          const fill = lhFill || anim || '';
+          if (!/forwards|both/.test(fill)) {
             bad.push('index.html — animation 에 fill-mode:forwards 가 없습니다. 6초 뒤 나타난 안내가 다시 사라집니다');
           }
-          const dur = (anim.match(/(\d*\.?\d+)m?s/) || [])[1];
+          const durSrc = lhDur || anim || '';
+          const dur = (durSrc.match(/(\d*\.?\d+)m?s/) || [])[1];
           if (dur !== undefined && parseFloat(dur) === 0) {
             bad.push('index.html — animation-duration 이 0 입니다. 0초 애니메이션을 실행하지 않는 구현에서 안내가 처음부터 보입니다');
           }
