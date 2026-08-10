@@ -2,8 +2,16 @@
 #
 # ⚠️ 배포는 건드리지 않는다. GitHub Pages 의 기존 배포 방식(main 브랜치 서빙)은 그대로다.
 #    이 워크플로는 «검사만» 한다 — 실패해도 배포가 막히지는 않으므로, 빨간불이 뜨면
-#    사람이 보고 되돌린다. (배포 차단까지 하려면 Pages 를 Actions 배포로 바꿔야 하는데,
-#    그건 배포 경로 자체를 바꾸는 일이라 별도 결정 사항이다.)
+#    사람이 보고 되돌린다.
+#
+# ⛔ 260810 정정 (Codex R2·R3): 종전 주석은 「배포 차단까지 하려면 Pages 를 Actions 배포로
+#    바꿔야 한다」고 했는데 그건 틀렸다. Pages 를 main 브랜치 서빙으로 «둔 채»
+#    저장소 설정만으로 사전 차단할 수 있다:
+#      ① Settings → Branches → main 에 보호 규칙 추가
+#      ② "Require a pull request before merging" 켜기 (= main 직접 push 금지)
+#      ③ "Require status checks to pass" 에 이 워크플로(gate) 지정
+#    지금은 main 직접 push 가 되므로, 산출물을 빠뜨린 커밋이 들어가면 Pages 가 «먼저»
+#    그 커밋을 서빙하고 게이트는 뒤늦게 빨간불이 된다. 설정은 저장소 소유자만 바꿀 수 있다.
 #
 # 왜 지금 만드나 (260808 Codex P2a R3 P1):
 #   project/tests_build_fresh.js 는 «커밋된 산출물이 소스로 재생성한 것과 같은가»를
