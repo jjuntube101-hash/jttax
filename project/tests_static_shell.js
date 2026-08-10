@@ -280,17 +280,38 @@ const ROOT = path.join(__dirname, '..');
      계산기가 안 되는 것과 «회사에 연락할 방법이 사라지는 것»은 손해의 크기가 다르다.
      → 경계가 지워지면 조용히 그 상태로 되돌아가므로 게이트로 붙잡는다 (260808). */
   {
+    /* ⚠️ 260810 번들 전환: 에러 경계는 index.html 인라인에서 project/src/App.jsx 로 옮겼다.
+       (인라인이 남아 있으면 @babel/standalone 3.0MB 를 못 지운다)
+       검사 «대상»만 바뀌고 검사 «내용»은 그대로다 — 경계가 지워지면 백지가 되는 건 같다. */
     const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-    if (!/class JTErrorBoundary/.test(idx)) {
-      bad.push('index.html — JTErrorBoundary 가 없습니다. 렌더 예외 하나로 전 화면이 백지가 됩니다');
+    /* 에러 경계는 App.jsx 에 있고 부팅 폴백은 index.html 에 있다 — 대상을 «따로» 읽는다.
+       한 변수로 뭉뚱그렸다가 부팅 폴백 검사가 App.jsx 를 뒤져 「#root 가 비었다」는
+       거짓 실패를 냈다(260810 자기수정). */
+    const app = fs.readFileSync(path.join(ROOT, 'project', 'src', 'App.jsx'), 'utf8');
+    if (!/class JTErrorBoundary/.test(app)) {
+      bad.push('App.jsx — JTErrorBoundary 가 없습니다. 렌더 예외 하나로 전 화면이 백지가 됩니다');
     }
-    if (!/<JTErrorBoundary>[\s\S]{0,80}<App \/>/.test(idx)) {
-      bad.push('index.html — <App /> 이 JTErrorBoundary 로 감싸여 있지 않습니다(정의만 있고 적용 안 됨)');
+    if (!/<JTErrorBoundary>[\s\S]{0,80}<App \/>/.test(app)) {
+      bad.push('App.jsx — <App /> 이 JTErrorBoundary 로 감싸여 있지 않습니다(정의만 있고 적용 안 됨)');
     }
-    // 경계 화면에 «연락 수단»이 실제로 남는지 — 경계만 있고 빈 화면이면 의미가 없다
-    const eb = (idx.match(/class JTErrorBoundary[\s\S]*?\n    \}/) || [''])[0];
-    if (!/tel:/.test(eb)) bad.push('index.html — 에러 경계 화면에 전화 링크가 없습니다');
-    if (!/kakao/i.test(eb)) bad.push('index.html — 에러 경계 화면에 카카오톡 링크가 없습니다');
+    /* 경계 화면에 «연락 수단»이 실제로 남는지 — 경계만 있고 빈 화면이면 의미가 없다.
+       ⚠️ 클래스 끝을 «들여쓰기 깊이»로 찾으면 파일로 옮길 때마다 깨진다(인라인 4칸 → 파일 0칸).
+       중괄호 짝을 세어 클래스 본문을 정확히 잘라낸다. */
+    const eb = (() => {
+      const at = app.indexOf('class JTErrorBoundary');
+      if (at < 0) return '';
+      const open = app.indexOf('{', at);
+      if (open < 0) return '';
+      let depth = 1, k = open + 1;
+      while (k < app.length && depth > 0) {
+        if (app[k] === '{') depth++;
+        else if (app[k] === '}') depth--;
+        k++;
+      }
+      return app.slice(at, k);
+    })();
+    if (!/tel:/.test(eb)) bad.push('App.jsx — 에러 경계 화면에 전화 링크가 없습니다');
+    if (!/kakao/i.test(eb)) bad.push('App.jsx — 에러 경계 화면에 카카오톡 링크가 없습니다');
     /* 새 창으로 열리는 링크는 그 사실을 알려야 한다(접근성). 부팅 폴백엔 있는데 경계엔
        없어 두 화면이 어긋나 있었다 — 한쪽만 고치는 일이 반복되므로 게이트로 묶는다.
        ⚠️ 「블록 안에 (새 창) 이 하나라도 있으면 통과」로 두면, 표기 없는 _blank 링크를
@@ -327,12 +348,12 @@ const ROOT = path.join(__dirname, '..');
     };
     checkBlankLinks(eb, '에러 경계');
     if (!/representative/.test(eb) || !/nameKr/.test(eb)) {
-      bad.push('index.html — 에러 경계 화면에 사무소명·세무사 성명 표기가 없습니다(§33① 표시의무)');
+      bad.push('App.jsx — 에러 경계 화면에 사무소명·세무사 성명 표기가 없습니다(§33① 표시의무)');
     }
     /* 경계 화면이 JT_DATA 에 «조건부»로 매달리면, 그 파일이 못 읽힌 것이 실패 원인일 때
        연락처가 통째로 사라진다 — 상수 폴백이 있어야 한다 (260808 Codex P2a P1). */
     if (!/F\.phone \|\| '/.test(eb)) {
-      bad.push('index.html — 에러 경계의 연락처가 JT_DATA 에만 의존합니다(상수 폴백 없음)');
+      bad.push('App.jsx — 에러 경계의 연락처가 JT_DATA 에만 의존합니다(상수 폴백 없음)');
     }
 
     /* ── 부팅 폴백: React 가 «실행조차 못 한» 경우의 최후 방어 ──────────
@@ -537,10 +558,13 @@ const ROOT = path.join(__dirname, '..');
     };
     /* 클래스 «전체»를 잡아야 한다 — 상수 폴백은 render() 안에 있어서, 첫 메서드까지만
        끊으면 값을 못 찾고 게이트가 거짓 실패를 낸다(실측 4건). 마운트 호출 직전까지 본다. */
-    const ebStart = idx.indexOf('class JTErrorBoundary');
-    const ebEnd = idx.indexOf('ReactDOM.createRoot', ebStart);
-    const ebBlock = (ebStart >= 0 && ebEnd > ebStart) ? idx.slice(ebStart, ebEnd) : '';
-    if (!ebBlock) bad.push('index.html — 에러 경계 블록을 찾지 못했습니다(게이트가 검사할 대상이 없습니다)');
+    /* ⚠️ 260810 번들 전환: 에러 경계는 index.html 인라인 → project/src/App.jsx 로 옮겼다.
+       여기서 idx(index.html)를 계속 읽으면 «블록을 못 찾았다»는 거짓 실패가 난다. */
+    const appSrc = fs.readFileSync(path.join(ROOT, 'project', 'src', 'App.jsx'), 'utf8');
+    const ebStart = appSrc.indexOf('class JTErrorBoundary');
+    const ebEnd = appSrc.indexOf('ReactDOM.createRoot', ebStart);
+    const ebBlock = (ebStart >= 0 && ebEnd > ebStart) ? appSrc.slice(ebStart, ebEnd) : '';
+    if (!ebBlock) bad.push('App.jsx — 에러 경계 블록을 찾지 못했습니다(게이트가 검사할 대상이 없습니다)');
     for (const [label, val] of Object.entries(truth)) {
       if (!val) { bad.push(`Data.jsx — firm.${label} 값을 읽지 못했습니다(게이트가 대조할 정본이 없습니다)`); continue; }
       if (rootBlock.indexOf(val) < 0) {
@@ -548,7 +572,7 @@ const ROOT = path.join(__dirname, '..');
       }
       // 에러 경계는 주소·영업시간을 싣지 않으므로 연락 3종만 본다
       if (['전화', '카톡', '사무소명', '대표'].includes(label) && ebBlock.indexOf(val) < 0) {
-        bad.push(`index.html 에러 경계 — ${label} 이 Data.jsx 와 다릅니다(정본 「${val}」)`);
+        bad.push(`App.jsx 에러 경계 — ${label} 이 Data.jsx 와 다릅니다(정본 「${val}」)`);
       }
     }
   }

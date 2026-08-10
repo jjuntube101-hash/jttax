@@ -303,11 +303,15 @@ console.log('\n════ ⑥ 히어로 배치 — 첫 화면에서 보여야 
   const home = fs.readFileSync(SRC('Home.jsx'), 'utf8');
   eq('히어로에 계산기가 붙어 있음', /window\.JTHeroCalc/.test(home), true);
   eq('히어로가 setRoute 를 받음', /function JTBrandMoment\(\{ setRoute \}\)/.test(home), true);
-  const idx = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
-  const iHero = idx.indexOf('HeroCalc.jsx');
-  const iHome = idx.indexOf('src/Home.jsx');
-  eq('HeroCalc 가 Home 보다 «먼저» 로드 (window.JTHeroCalc 선행)', iHero >= 0 && iHero < iHome, true);
-  eq('JTBrandMoment 호출부가 setRoute 를 넘김', /<JTBrandMoment setRoute=\{setRoute\} \/>/.test(idx), true);
+  /* ⚠️ 260810 번들 전환: index.html 은 더 이상 JSX 를 하나씩 로드하지 않는다.
+     실행 «순서»는 이제 build_bundle.mjs 의 ORDER 가 정한다 — 거기서 확인한다.
+     App(라우터·호출부)도 index.html 인라인에서 project/src/App.jsx 로 옮겼다. */
+  const order = fs.readFileSync(path.join(__dirname, 'scripts', 'build_bundle.mjs'), 'utf8');
+  const iHero = order.indexOf("'HeroCalc.jsx'");
+  const iHome = order.indexOf("'Home.jsx'");
+  eq('HeroCalc 가 Home 보다 «먼저» (번들 ORDER — window.JTHeroCalc 선행)', iHero >= 0 && iHero < iHome, true);
+  const app = fs.readFileSync(SRC('App.jsx'), 'utf8');
+  eq('JTBrandMoment 호출부가 setRoute 를 넘김', /<JTBrandMoment setRoute=\{setRoute\} \/>/.test(app), true);
 }
 
 console.log('\n════════════════════');

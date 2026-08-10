@@ -28,12 +28,14 @@ const sha = (rel) => {
 
 const rec = {};
 
-/* .jsx — <script type="text/babel" src="..."> */
-const reJsx = /src="(project\/src\/([A-Za-z0-9_.-]+\.jsx))\?v=(\d+)"/g;
+/* 번들 — <script src="project/dist/app.js?v=N">
+   260810 번들 전환 전에는 JSX 27개를 각각 추적했다. 이제 방문자가 받는 코드는
+   미리 변환한 번들 하나뿐이라 그것만 추적한다(소스↔번들 일치는 tests_build_fresh 소관). */
+const reBundle = /src="(project\/dist\/app\.js)\?v=(\d+)"/g;
 let m;
-while ((m = reJsx.exec(html)) !== null) rec[m[1]] = { v: m[3], sha256: sha(m[1]) };
+while ((m = reBundle.exec(html)) !== null) rec[m[1]] = { v: m[2], sha256: sha(m[1]) };
 const nJsx = Object.keys(rec).length;
-if (nJsx < 10) throw new Error(`index.html 에서 jsx 를 ${nJsx}개만 찾았습니다 — 구조를 확인하세요.`);
+if (nJsx !== 1) throw new Error(`index.html 에서 번들을 ${nJsx}개 찾았습니다(1개여야 정상) — 구조를 확인하세요.`);
 
 /* .css — <link rel="stylesheet" href="..."> (260808 추가)
    CSS 를 고쳐도 `?v=` 를 안 올리면 재방문자에겐 옛 스타일이 간다. jsx 만 보던

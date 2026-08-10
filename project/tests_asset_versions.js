@@ -16,10 +16,14 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const live = {};
 let m;
 
-const reJsx = /src="(project\/src\/([A-Za-z0-9_.-]+\.jsx))\?v=(\d+)"/g;
-while ((m = reJsx.exec(html)) !== null) live[m[1]] = { v: m[3] };
+/* ⚠️ 260810 번들 전환: index.html 은 이제 JSX 27개가 아니라 «번들 하나»를 로드한다
+   (@babel/standalone 3.0MB 를 방문자에게서 걷어내려고). 추적 대상도 그 하나다.
+   「소스를 고쳤는데 번들을 안 만들었다」는 tests_build_fresh.js 가,
+   「번들이 바뀌었는데 ?v= 를 안 올렸다」는 여기가 막는다 — 둘이 한 쌍이다. */
+const reBundle = /src="(project\/dist\/app\.js)\?v=(\d+)"/g;
+while ((m = reBundle.exec(html)) !== null) live[m[1]] = { v: m[2] };
 const jsxCount = Object.keys(live).length;
-if (jsxCount < 10) throw new Error(`index.html 에서 버전 붙은 jsx 를 ${jsxCount}개만 찾았습니다 — 구조가 바뀌었는지 확인하세요.`);
+if (jsxCount !== 1) throw new Error(`index.html 에서 버전 붙은 번들을 ${jsxCount}개 찾았습니다(1개여야 정상) — 구조가 바뀌었는지 확인하세요.`);
 
 /* CSS 도 같은 사고를 낸다 (260808 추가) — index.html 이 로드하는 전수 +
    styles.css 가 @import 로 끌어오는 것까지. 엔트리만 보면 colors_and_type.css 를

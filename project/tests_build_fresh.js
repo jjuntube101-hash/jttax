@@ -19,8 +19,11 @@
 const { execSync } = require('child_process');
 
 const isCI = !!(process.env.CI && process.env.CI !== 'false');
-// 빌드가 만들어 내는 산출물만 본다 — 소스(.jsx/.md) 수정은 여기 관심사가 아니다
-const TARGETS = ['insights', 'calculators', 'sitemap.xml', 'project/src/Data.jsx'];
+/* 빌드가 만들어 내는 산출물만 본다 — 소스(.jsx/.md) 수정은 여기 관심사가 아니다.
+   ⚠️ 260810 번들 도입: project/dist/app.js 가 «방문자가 실제로 받는 코드»다.
+      이걸 빠뜨리면 소스를 고치고 번들을 안 만들거나 커밋에서 누락해도 게이트가 녹색이고,
+      라이브는 옛 코드로 돈다(Codex R1 P0). */
+const TARGETS = ['insights', 'calculators', 'sitemap.xml', 'project/src/Data.jsx', 'project/dist'];
 
 function sh(cmd) {
   return execSync(cmd, { cwd: require('path').join(__dirname, '..'), encoding: 'utf8' });
@@ -34,6 +37,12 @@ try {
      내용은 같은데 실패하면 게이트 신뢰가 깨진다 (260808 실사고). CR 무시로 비교한다. */
   const out = sh(`git diff --name-only --ignore-cr-at-eol -- ${TARGETS.join(' ')}`);
   dirty = out.split('\n').map(s => s.trim()).filter(Boolean);
+  /* ⚠️ git diff 는 «추적되지 않는» 파일을 못 본다 — 산출물이 처음 생긴 경우
+     (예: dist/app.js 를 만들었는데 git add 를 안 함) 이 검사가 조용히 통과한다.
+     그러면 Pages 는 그 파일이 «없는» 상태를 서빙한다 (260810 Codex R1 P0). */
+  const untracked = sh(`git ls-files --others --exclude-standard -- ${TARGETS.join(' ')}`)
+    .split('\n').map((s) => s.trim()).filter(Boolean);
+  for (const f of untracked) if (!dirty.includes(f)) dirty.push(f + ' (추적되지 않음 — git add 필요)');
 } catch (e) {
   /* ⚠️ CI 에서는 «검사하지 못함»을 통과로 만들면 안 된다 (260808 Codex P2a P1).
      git 이 없거나 실패하는 CI 는 그 자체가 설정 오류이고, 그 상태로 녹색이 나오면

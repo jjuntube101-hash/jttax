@@ -10,3 +10,4 @@ project/codex-*
 # 인사이트 파이프라인 내부 안내서 — 「Claude Code 로 초안 생성」 절차가 담겨 있어
 # 세무법인 공식 도메인에서 열리면 곤란하다(라이브 200 실측). 빌드에는 불필요.
 project/insights/README.md
+.selftest-backup/

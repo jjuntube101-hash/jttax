@@ -168,7 +168,12 @@ for (const f of files) {
       if (!n || typeof n !== 'object') return;
       if (Array.isArray(n)) return n.forEach((x) => walk(x, parent, key));
       if (n.type === 'VariableDeclarator') declarePattern(n.id);
-      if (/^(FunctionDeclaration|FunctionExpression|ArrowFunctionExpression)$/.test(n.type)) {
+      /* ⚠️ ObjectMethod·ClassMethod 를 빠뜨리면 «메서드 축약형»의 파라미터가 스코프에
+         안 들어가 정상 코드를 「선언 없이 참조」로 오판한다 — 260810 실측:
+         build(route, sub) · constructor(p) · componentDidCatch(err) 3건이 걸렸다.
+         index.html 인라인에 있던 코드를 App.jsx 로 옮기자 «처음» 드러났다 —
+         인라인은 이 게이트의 사각지대였다는 뜻이기도 하다. */
+      if (/^(FunctionDeclaration|FunctionExpression|ArrowFunctionExpression|ObjectMethod|ClassMethod|ClassPrivateMethod)$/.test(n.type)) {
         if (n.id) declared.add(n.id.name);
         (n.params || []).forEach(declarePattern);
       }
