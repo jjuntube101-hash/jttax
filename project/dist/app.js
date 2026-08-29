@@ -52,7 +52,10 @@ window.JT_DATA = {
     ogImage: "https://www.jttax.co.kr/project/assets/og-image.png?v=2",
     keywords: "\uAC15\uB0A8 \uC138\uBB34\uC0AC, \uC591\uB3C4\uC18C\uB4DD\uC138 \uACC4\uC0B0\uAE30, \uC0C1\uC18D\uC138 \uACC4\uC0B0\uAE30, \uC99D\uC5EC\uC138 \uACC4\uC0B0\uAE30, \uCDE8\uB4DD\uC138 \uACC4\uC0B0\uAE30, \uBD80\uB3D9\uC0B0 \uC138\uAE08, \uACBD\uC815\uCCAD\uAD6C, \uC138\uBB34 \uC0C1\uB2F4, \uC81C\uC774\uD2F0 \uC138\uBB34\uBC95\uC778",
     pageMeta: {
-      home: { title: "\uC81C\uC774\uD2F0 \uC138\uBB34\uBC95\uC778 \u2014 \uADFC\uAC70 \uC704\uC5D0\uC11C, \uB05D\uAE4C\uC9C0", desc: "\uBD80\uB3D9\uC0B0 \uC138\uAE08 \uACC4\uC0B0\uAE30\uC640 \uC138\uBB34\uC0AC \uC0C1\uB2F4. \uC591\uB3C4\xB7\uC99D\uC5EC\xB7\uC0C1\uC18D\xB7\uCDE8\uB4DD\xB7\uBCF4\uC720\uC138, \uC138\uBB34\uC870\uC0AC \uB300\uC751, \uACBD\uC815\uCCAD\uAD6C." },
+      /* home.desc 는 index.html 의 원시 meta description 과 «동일 문자열» 유지 (260830 SEO 파일럿 확정 #2) */
+      /* home.title 에 회사명을 넣지 않는다 — titleTemplate 이 « | 제이티 세무법인»을 붙여
+         회사명이 두 번 찍히던 문제 (260830 Codex R1-F3) */
+      home: { title: "\uADFC\uAC70 \uC704\uC5D0\uC11C, \uB05D\uAE4C\uC9C0", desc: "\uBD80\uB3D9\uC0B0 \uC138\uAE08 \uACC4\uC0B0\uAE30\uC640 \uC138\uBB34\uC0AC \uC0C1\uB2F4. \uC591\uB3C4\xB7\uC99D\uC5EC\xB7\uC0C1\uC18D\xB7\uCDE8\uB4DD\xB7\uBCF4\uC720\uC138\uB97C \uC8FC\uC18C \uC785\uB825\uB9CC\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0, \uBCF5\uC7A1\uD55C \uC0AC\uC548\uC740 \uC138\uBB34\uC0AC\uAC00 \uC9C1\uC811 \uD655\uC778\uD569\uB2C8\uB2E4." },
       services: { title: "\uC5C5\uBB34\uBD84\uC57C \u2014 5\uAC1C \uC804\uBB38 \uC601\uC5ED", desc: "\uC591\uB3C4\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC, \uC138\uBB34\uC870\uC0AC \uB300\uC751, \uAE30\uC7A5\xB7\uC2E0\uACE0, \uC885\uD569 \uCEE8\uC124\uD305, \uACBD\uC815\uCCAD\uAD6C \u2014 \uD55C \uD300\uC774 \uC77C\uAD00\uB41C \uAE30\uC900\uC73C\uB85C." },
       team: { title: "\uC804\uBB38\uAC00 \u2014 \uB2F4\uB2F9 \uC138\uBB34\uC0AC", desc: "\uC138\uBC95 \uAC15\uC0AC \uCD9C\uC2E0 \uB300\uD45C\uC138\uBB34\uC0AC\uC640 \uACB0\uC0B0\xB7\uAE30\uC7A5 \uC804\uBB38 \uC138\uBB34\uC0AC\uAC00 \uD568\uAED8\uD569\uB2C8\uB2E4." },
       about: { title: "\uD68C\uC0AC\uC18C\uAC1C \u2014 \uAC00\uB974\uCE58\uACE0, \uC124\uACC4\uD55C \uC0AC\uB78C\uB4E4", desc: "\uAC10\uC774 \uC544\uB2CC \uADFC\uAC70, \uB9D0\uC774 \uC544\uB2CC \uBB38\uC11C\uB85C \uC77C\uD558\uB294 \uC138\uBB34\uC0AC\uBB34\uC18C." },
@@ -1094,7 +1097,27 @@ function JTBrandMoment({ setRoute }) {
 }
 window.JTBrandMoment = JTBrandMoment;
 function JTReportHome({ setRoute }) {
-  return /* @__PURE__ */ React.createElement("section", { className: "jt-platform", "aria-label": "JT \uB9AC\uD3EC\uD2B8 \u2014 \uC138\uAE08 \uACC4\uC0B0 \uC5D4\uC9C4" }, /* @__PURE__ */ React.createElement("div", { className: "jt-platform__inner" }, /* @__PURE__ */ React.createElement("div", { className: "jt-kicker reveal" }, "JT REPORT \xB7 \uAC80\uC99D \uACC4\uC0B0 \uC5D4\uC9C4"), /* @__PURE__ */ React.createElement("h2", { className: "jt-platform__title reveal", "data-delay": "1" }, /* @__PURE__ */ React.createElement("span", { className: "jt-platform__line" }, "\uACC4\uC0B0\uD558\uACE0 \xB7 \uC0C1\uB2F4\uD558\uACE0 \xB7 \uB9E1\uAE30\uACE0"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__line jt-platform__line--brand" }, /* @__PURE__ */ React.createElement("img", { className: "jt-platform__logo", src: "project/assets/logo_symbol.png", alt: "\uC81C\uC774\uD2F0 \uC138\uBB34\uBC95\uC778" }), /* @__PURE__ */ React.createElement("span", null, "\uD558\uB098\uB85C."))), /* @__PURE__ */ React.createElement("p", { className: "jt-platform__sub reveal", "data-delay": "2" }, "\uC138\uBC95\uC744 \uAC00\uB974\uCE58\uB294 \uC138\uBB34\uC0AC\uAC00 ", /* @__PURE__ */ React.createElement("strong", null, "\uC9C1\uC811 \uC124\uACC4\uD55C \uAC80\uC99D \uACC4\uC0B0 \uC5D4\uC9C4"), ". \uC591\uB3C4\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC\uBD80\uD130 \uC885\uD569\uC18C\uB4DD\uC138\xB7\uBC95\uC778 \uC804\uD658\uAE4C\uC9C0 \uC9C1\uC811 \uACC4\uC0B0\uD574 \uBCF4\uACE0 \u2014 \uD310\uB2E8\uACFC \uAD00\uB9AC\uB294 \uC804\uBB38\uAC00\uC640 \uB05D\uAE4C\uC9C0 \uD568\uAED8\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("ol", { className: "jt-platform__steps reveal", "data-delay": "3" }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-n" }, "01"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-t" }, "\uC9C1\uC811 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-d" }, "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uBB34\uB8CC\xB75\uBD84")), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-n" }, "02"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-t" }, "\uC804\uBB38\uAC00 \uC0C1\uB2F4"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-d" }, "\uACB0\uACFC\uB97C \uB4E4\uACE0 \uBC14\uB85C \uC5F0\uACB0")), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-n" }, "03"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-t" }, "\uC885\uD569 \uAD00\uB9AC"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-d" }, "\uC2E0\uACE0\xB7\uC808\uC138\uB97C \uB05D\uAE4C\uC9C0"))), /* @__PURE__ */ React.createElement("div", { className: "jt-platform__cta reveal", "data-delay": "4" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => setRoute("report") }, "\uACC4\uC0B0\uAE30 \uBCF4\uB7EC\uAC00\uAE30 ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192")), /* @__PURE__ */ React.createElement("a", { className: "jt-link jt-platform__link", onClick: () => {
+  return /* @__PURE__ */ React.createElement("section", { className: "jt-platform", "aria-label": "JT \uB9AC\uD3EC\uD2B8 \u2014 \uC138\uAE08 \uACC4\uC0B0 \uC5D4\uC9C4" }, /* @__PURE__ */ React.createElement("div", { className: "jt-platform__inner" }, /* @__PURE__ */ React.createElement("div", { className: "jt-kicker reveal" }, "JT REPORT \xB7 \uAC80\uC99D \uACC4\uC0B0 \uC5D4\uC9C4"), /* @__PURE__ */ React.createElement("h2", { className: "jt-platform__title reveal", "data-delay": "1" }, /* @__PURE__ */ React.createElement("span", { className: "jt-platform__line" }, "\uACC4\uC0B0\uD558\uACE0 \xB7 \uC0C1\uB2F4\uD558\uACE0 \xB7 \uB9E1\uAE30\uACE0"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__line jt-platform__line--brand" }, /* @__PURE__ */ React.createElement("img", { className: "jt-platform__logo", src: "project/assets/logo_symbol.png", alt: "\uC81C\uC774\uD2F0 \uC138\uBB34\uBC95\uC778" }), /* @__PURE__ */ React.createElement("span", null, "\uD558\uB098\uB85C."))), /* @__PURE__ */ React.createElement("p", { className: "jt-platform__sub reveal", "data-delay": "2" }, "\uC138\uBC95\uC744 \uAC00\uB974\uCE58\uB294 \uC138\uBB34\uC0AC\uAC00 ", /* @__PURE__ */ React.createElement("strong", null, "\uC9C1\uC811 \uC124\uACC4\uD55C \uAC80\uC99D \uACC4\uC0B0 \uC5D4\uC9C4"), ". \uC591\uB3C4\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC\uBD80\uD130 \uC885\uD569\uC18C\uB4DD\uC138\xB7\uBC95\uC778 \uC804\uD658\uAE4C\uC9C0 \uC9C1\uC811 \uACC4\uC0B0\uD574 \uBCF4\uACE0 \u2014 \uD310\uB2E8\uACFC \uAD00\uB9AC\uB294 \uC804\uBB38\uAC00\uC640 \uB05D\uAE4C\uC9C0 \uD568\uAED8\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("ol", { className: "jt-platform__steps reveal", "data-delay": "3" }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-n" }, "01"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-t" }, "\uC9C1\uC811 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-d" }, "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uBB34\uB8CC\xB75\uBD84")), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-n" }, "02"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-t" }, "\uC804\uBB38\uAC00 \uC0C1\uB2F4"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-d" }, "\uACB0\uACFC\uB97C \uB4E4\uACE0 \uBC14\uB85C \uC5F0\uACB0")), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-n" }, "03"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-t" }, "\uC885\uD569 \uAD00\uB9AC"), /* @__PURE__ */ React.createElement("span", { className: "jt-platform__step-d" }, "\uC2E0\uACE0\xB7\uC808\uC138\uB97C \uB05D\uAE4C\uC9C0"))), /* @__PURE__ */ React.createElement("div", { className: "jt-platform__cta reveal", "data-delay": "4" }, /* @__PURE__ */ React.createElement(
+    "a",
+    {
+      className: "jt-btn jt-btn--primary",
+      href: "/calculators/",
+      style: { textDecoration: "none" },
+      onClick: (e) => {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        setRoute("report");
+      },
+      onKeyDown: (e) => {
+        if (e.key === " ") {
+          e.preventDefault();
+          setRoute("report");
+        }
+      }
+    },
+    "\uACC4\uC0B0\uAE30 \uBCF4\uB7EC\uAC00\uAE30 ",
+    /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192")
+  ), /* @__PURE__ */ React.createElement("a", { className: "jt-link jt-platform__link", onClick: () => {
     window.jtTrackCta("booking", "home_report");
     setRoute("booking");
   }, role: "button", tabIndex: 0, onKeyDown: (e) => {
@@ -1267,28 +1290,7 @@ function JTQuote() {
 window.JTQuote = JTQuote;
 function JTInsightCard({ a, i }) {
   const cat = String(a.tag || "\uC778\uC0AC\uC774\uD2B8").split("\xB7").pop().trim();
-  const go = () => {
-    if (a.slug) window.location.href = "/insights/" + a.slug + ".html";
-  };
-  return /* @__PURE__ */ React.createElement(
-    "article",
-    {
-      className: "jt-icard reveal",
-      "data-delay": Math.min(i, 5),
-      role: "button",
-      tabIndex: 0,
-      onClick: go,
-      onKeyDown: (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          go();
-        }
-      }
-    },
-    /* @__PURE__ */ React.createElement("div", { className: "jt-icard__top" }, /* @__PURE__ */ React.createElement("span", { className: "jt-icard__cat" }, cat), /* @__PURE__ */ React.createElement("span", { className: "jt-icard__date" }, a.date)),
-    /* @__PURE__ */ React.createElement("h3", { className: "jt-icard__title" }, a.title),
-    /* @__PURE__ */ React.createElement("span", { className: "jt-icard__go" }, "\uC77D\uAE30 ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192"))
-  );
+  return /* @__PURE__ */ React.createElement("article", { className: "jt-icard reveal", "data-delay": Math.min(i, 5) }, /* @__PURE__ */ React.createElement("div", { className: "jt-icard__top" }, /* @__PURE__ */ React.createElement("span", { className: "jt-icard__cat" }, cat), /* @__PURE__ */ React.createElement("span", { className: "jt-icard__date" }, a.date)), /* @__PURE__ */ React.createElement("h3", { className: "jt-icard__title" }, a.title), a.slug ? /* @__PURE__ */ React.createElement("a", { className: "jt-icard__go", href: "/insights/" + a.slug + ".html", style: { textDecoration: "none" } }, "\uC77D\uAE30 ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192")) : /* @__PURE__ */ React.createElement("span", { className: "jt-icard__go" }, "\uC77D\uAE30 ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192")));
 }
 window.JTInsightCard = JTInsightCard;
 function JTInsightsPreview({ setRoute, limit }) {

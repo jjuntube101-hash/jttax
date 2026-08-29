@@ -142,7 +142,11 @@ function JTReportHome({ setRoute }) {
           <li><span className="jt-platform__step-n">03</span><span className="jt-platform__step-t">종합 관리</span><span className="jt-platform__step-d">신고·절세를 끝까지</span></li>
         </ol>
         <div className="jt-platform__cta reveal" data-delay="4">
-          <button className="jt-btn jt-btn--primary" onClick={() => setRoute('report')}>계산기 보러가기 <span className="jt-arrow">→</span></button>
+          {/* 크롤러용 실링크(/calculators/) + 사용자는 종전대로 SPA 리포트 허브 —
+              홈에 내부 <a>가 하나도 없으면 검색·AI 크롤러가 내부 페이지로 못 간다 (260830 SEO 파일럿 확정 #1) */}
+          <a className="jt-btn jt-btn--primary" href="/calculators/" style={{ textDecoration: 'none' }}
+            onClick={(e) => { if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return; e.preventDefault(); setRoute('report'); }}
+            onKeyDown={(e) => { if (e.key === ' ') { e.preventDefault(); setRoute('report'); } }}>계산기 보러가기 <span className="jt-arrow">→</span></a>
           <a className="jt-link jt-platform__link" onClick={() => { window.jtTrackCta('booking', 'home_report'); setRoute('booking'); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.jtTrackCta('booking', 'home_report'); setRoute('booking'); } }}>먼저 상담부터 →</a>
         </div>
       </div>
@@ -466,16 +470,20 @@ window.JTQuote = JTQuote;
 // 인사이트 카드 (홈·목록 공용)
 function JTInsightCard({ a, i }) {
   const cat = String(a.tag || '인사이트').split('·').pop().trim();
-  const go = () => { if (a.slug) window.location.href = '/insights/' + a.slug + '.html'; };
+  // 카드의 유일한 상호작용 요소는 내부 <a> 하나 — CSS 스트레치 링크(a.jt-icard__go::after)가
+  // 히트 영역을 카드 전체로 늘려 «카드 아무 데나 클릭»을 유지한다. article 에 onClick 을 두면
+  // 중첩 상호작용(Codex R2-F1) 또는 키보드 게이트(jsx 스모크) 중 하나를 깬다 (260830)
   return (
-    <article className="jt-icard reveal" data-delay={Math.min(i, 5)} role="button" tabIndex={0}
-      onClick={go} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }}>
+    <article className="jt-icard reveal" data-delay={Math.min(i, 5)}>
       <div className="jt-icard__top">
         <span className="jt-icard__cat">{cat}</span>
         <span className="jt-icard__date">{a.date}</span>
       </div>
       <h3 className="jt-icard__title">{a.title}</h3>
-      <span className="jt-icard__go">읽기 <span className="jt-arrow">→</span></span>
+      {/* 크롤러·키보드·마우스 공용 실링크 (260830 SEO 파일럿 확정 #1) */}
+      {a.slug
+        ? <a className="jt-icard__go" href={'/insights/' + a.slug + '.html'} style={{ textDecoration: 'none' }}>읽기 <span className="jt-arrow">→</span></a>
+        : <span className="jt-icard__go">읽기 <span className="jt-arrow">→</span></span>}
     </article>);
 
 }

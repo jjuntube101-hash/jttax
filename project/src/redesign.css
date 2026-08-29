@@ -815,6 +815,11 @@
 .jt-icard__title{ font-size: 19px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.4; margin: 0 0 12px; color: var(--fg-1); }
 .jt-icard__excerpt{ font-size: 14px; color: var(--fg-2); line-height: 1.7; margin: 0 0 22px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .jt-icard__go{ margin-top: auto; font-size: 13px; font-weight: 700; color: #000; display: inline-flex; align-items: center; gap: 8px; }
+/* 스트레치 링크 — 카드의 유일한 상호작용 요소는 내부 <a> 하나다(260830 Codex R2-F1 + jsx 스모크 키보드 게이트 동시 충족).
+   앵커의 히트 영역을 카드 전체로 늘려 «카드 아무 데나 클릭»을 유지하되, article 에는 onClick 을 두지 않는다 */
+.jt-icard{ position: relative; }
+a.jt-icard__go::after{ content: ''; position: absolute; inset: 0; }
+a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
 .jt-icard__go .jt-arrow{ transition: transform .2s; }
 .jt-icard:hover .jt-icard__go .jt-arrow{ transform: translateX(4px); }
 

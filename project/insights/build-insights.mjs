@@ -243,7 +243,9 @@ ${GA_HEAD_SNIPPET}
 
   <article class="jt-legal" style="max-width:720px;margin:0 auto;padding:56px 24px;">
     <div class="jt-legal__meta">${a.tag} · ${a.date}</div>
-    <h2 style="margin-bottom:24px;">${a.title}</h2>
+    <!-- 글 제목은 h1 — 페이지에 h1 이 없으면 검색·AI 크롤러가 대표 제목을 못 잡는다
+         (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
+    <h1 style="margin-bottom:24px;font-size:1.5em;">${a.title}</h1>
     <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">${a.excerpt}</p>
     ${a.html}
 
