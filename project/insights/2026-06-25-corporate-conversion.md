@@ -1,6 +1,7 @@
 ---
 title: "법인전환 개인사업자 세금 비교 2026 — 전환 시기·손익분기, 법인 바꾸면 세금 줄까?"
 date: 2026-06-25
+updated: 2026-08-30
 tag: "INSIGHT · CORPORATE TAX"
 excerpt: "법인전환 개인사업자 세금 비교, 세율만 보면 함정입니다. 사업 이익 2억 원 기준 종합소득세 6,096만 원 vs 법인 전환 2,069만 원 차이와 전환 시기·손익분기 신호, 법인 전환 시뮬레이터로 두 숫자만 넣어 5초 만에 비교하는 법까지 정리했습니다."
 slug: corporate-conversion
@@ -89,7 +90,8 @@ author: "제이티 세무법인"
 - **③ 두 세부담을 나란히 봅니다.** '개인 유지 시 종합소득세'와 '법인 전환 시 법인세 + 대표 급여 근로소득세'를 한자리에서 비교해 줍니다.
 - **④ 대표 연봉을 1,000만 원 단위로 바꿔가며 '법인세 + 대표 급여 근로소득세'의 합계가 가장 작아지는 지점을 찾습니다.** 연봉을 높이면 법인세는 줄지만 근로소득세가 늘고, 낮추면 반대여서, 어느 선이 균형인지는 사람마다 다릅니다.
 
-[숫자로 보기] 사업 이익 2억 원, 대표 연봉 6천만 원을 넣었다고 가정합니다(단순 가정).
+숫자로 보면 이렇습니다. 사업 이익 2억 원, 대표 연봉 6천만 원을 넣었다고 가정합니다(단순 가정).
+
 - 개인 유지: 종합소득세 약 **6,096만 원**(지방소득세 포함)
 - 법인 전환: 법인세 약 **1,540만 원** + 대표 급여 근로소득세 약 **529만 원** = 약 **2,069만 원**
 
@@ -118,6 +120,6 @@ author: "제이티 세무법인"
 <div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
 <div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
 <div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">법인 전환 시뮬레이터</div>
-<div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">작년 사업 이익과 대표 연봉, 두 숫자만 넣으면<br/>개인(종합소득세)과 법인(법인세＋대표 급여) 세부담을 즉시 비교</div>
-<a href="/#/report/corporate" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">내 세금 5초 만에 비교하기 →</a>
+<div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">글을 읽고도 내 경우가 애매하다면,<br/>이익·연봉 조합을 바꿔 가며 균형점부터 직접 확인해 보세요</div>
+<a href="/#/report/corporate" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">내 숫자로 균형점 찾기 →</a>
 </div>

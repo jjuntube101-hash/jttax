@@ -53,6 +53,7 @@ export const CALCULATORS = [
   // ───────────────────────── 양도소득세 ─────────────────────────
   {
     slug: 'capital-gains-tax', sub: 'cgt',
+    chips: ['2026-tax-reform-capital-gains', 'acquisition-tax', 'property-tax', 'comprehensive-real-estate-tax', 'gift-tax', 'inheritance-tax'],
     metaTitle: '양도소득세 계산기 — 1세대1주택 비과세·장기보유특별공제 자동',
     h1: '양도소득세 계산기',
     metaDesc: '집·부동산을 팔 때 내는 양도소득세를 검증 엔진으로 계산합니다. 1세대1주택 비과세, 일시적 2주택, 장기보유특별공제, 다주택 중과까지 5분이면 끝.',
@@ -92,6 +93,7 @@ export const CALCULATORS = [
       { q: '양도세는 언제까지 신고하나요?', a: '부동산을 양도한 날이 속한 달의 말일부터 2개월 이내에 예정신고·납부하는 것이 원칙입니다. 구체적 기한과 가산세는 사안에 따라 다를 수 있으니 상담으로 확인하세요.' },
     ],
     related: [
+      { slug: 'capital-gains-tax-traps', title: '양도세 계산의 함정 5가지 — 장특공·필요경비' },
       { slug: 'one-house-cgt-exemption', title: '1세대 1주택 양도세 비과세, 어디까지 되나' },
       { slug: 'multi-house-cgt-surcharge-2026', title: '2026년 다주택 양도세 중과 정리' },
     ],
@@ -100,6 +102,7 @@ export const CALCULATORS = [
   // ───────────────────────── 증여세 ─────────────────────────
   {
     slug: 'gift-tax', sub: 'gift',
+    chips: ['inheritance-tax', 'capital-gains-tax', 'acquisition-tax', '2026-tax-reform-capital-gains', 'property-tax', 'income-tax'],
     metaTitle: '증여세 계산기 — 증여재산공제·10년 합산·부담부증여',
     h1: '증여세 계산기',
     metaDesc: '재산을 무상으로 줄 때 내는 증여세를 관계·금액만 넣으면 바로 계산합니다. 배우자·자녀 증여재산공제, 10년 합산, 혼인·출산공제, 부담부증여까지 반영.',
@@ -138,6 +141,7 @@ export const CALCULATORS = [
       { q: '증여세는 언제까지 신고하나요?', a: '증여받은 날이 속한 달의 말일부터 3개월 이내에 신고·납부하는 것이 원칙입니다. 기한 내 신고하면 신고세액공제(3%)를 받습니다.' },
     ],
     related: [
+      { slug: 'gift-tax-exemption-limit', title: '증여세 면제한도 2026 — 자녀·배우자 얼마까지' },
       { slug: 'gift-tax-saving', title: '증여세 절세, 10년 합산을 이용하는 법' },
       { slug: 'burdened-gift', title: '부담부증여, 빚을 함께 넘길 때의 세금' },
       { slug: 'spouse-gift-carryover-tax', title: '배우자 증여 후 양도 — 이월과세 함정' },
@@ -147,6 +151,7 @@ export const CALCULATORS = [
   // ───────────────────────── 상속세 ─────────────────────────
   {
     slug: 'inheritance-tax', sub: 'inheritance',
+    chips: ['gift-tax', 'capital-gains-tax', 'comprehensive-real-estate-tax', 'property-tax', 'acquisition-tax', 'income-tax'],
     metaTitle: '상속세 계산기 — 일괄공제·배우자공제·사전증여 합산',
     h1: '상속세 계산기',
     metaDesc: '상속재산과 가족 구성만 넣으면 예상 상속세를 검증 엔진으로 계산합니다. 일괄공제, 배우자상속공제, 금융재산공제, 10년 내 사전증여 합산까지 반영.',
@@ -184,6 +189,7 @@ export const CALCULATORS = [
       { q: '상속세 신고는 언제까지 하나요?', a: '상속개시일(사망일)이 속한 달의 말일부터 6개월 이내에 신고·납부하는 것이 원칙입니다. 기한을 놓치면 가산세가 붙으므로 일정 관리가 중요합니다.' },
     ],
     related: [
+      { slug: 'inheritance-tax-exemption-limit', title: '상속세 면제한도 2026 — 배우자 10억·무배우자 5억' },
       { slug: 'inheritance-tax-basics', title: '상속세 기초 — 공제부터 신고까지' },
       { slug: 'family-business-succession', title: '가업승계와 상속세' },
     ],
@@ -192,6 +198,7 @@ export const CALCULATORS = [
   // ───────────────────────── 종합소득세 ─────────────────────────
   {
     slug: 'income-tax', sub: 'income',
+    chips: ['value-added-tax', 'net-salary', 'incorporation-simulator', 'youthstartup', 'capital-gains-tax', 'gift-tax'],
     metaTitle: '종합소득세 계산기 — 사업·프리랜서·근로 소득 합산',
     h1: '종합소득세 계산기',
     metaDesc: '사업·프리랜서·근로·금융 소득을 합산한 종합소득세를 검증 엔진으로 계산합니다. 인적공제·자녀세액공제·연금저축 공제까지 반영해 5월 신고를 준비하세요.',
@@ -237,6 +244,7 @@ export const CALCULATORS = [
   // ───────────────────────── 부가가치세 ─────────────────────────
   {
     slug: 'value-added-tax', sub: 'vat',
+    chips: ['income-tax', 'incorporation-simulator', 'net-salary', 'youthstartup', 'capital-gains-tax', 'property-tax'],
     metaTitle: '부가가치세 계산기 — 일반·간이과세자 매출·매입 부가세',
     h1: '부가가치세(VAT) 계산기',
     metaDesc: '일반·간이과세자의 매출·매입만 넣으면 낼 부가가치세(또는 환급액)를 검증 엔진으로 바로 계산합니다. 매입세액·신용카드 공제와 신고기한, 간이과세 납부면제까지 반영합니다.',
@@ -282,6 +290,7 @@ export const CALCULATORS = [
   // ───────────────────────── 법인 전환 시뮬레이터 ─────────────────────────
   {
     slug: 'incorporation-simulator', sub: 'corporate',
+    chips: ['income-tax', 'value-added-tax', 'net-salary', 'youthstartup', 'gift-tax', 'inheritance-tax'],
     metaTitle: '법인 전환 시뮬레이터 — 개인사업자 vs 법인 세부담 비교',
     h1: '법인 전환 시뮬레이터',
     metaDesc: '개인사업자 이익과 대표 연봉만 넣으면, 개인(종합소득세)과 법인(법인세+대표 급여 근로소득세)의 세부담을 검증 엔진으로 바로 비교합니다.',
@@ -318,6 +327,7 @@ export const CALCULATORS = [
       { q: '세금 말고 또 무엇을 봐야 하나요?', a: '4대보험 부담 변화, 가지급금·대표이사 자금 관리, 설립·기장·청산 비용, 대외 신용도 등을 함께 봐야 합니다. 이 부분은 사안별 차이가 커 상담을 권합니다.' },
     ],
     related: [
+      { slug: 'corporate-conversion', title: '개인사업자 vs 법인전환 — 세금 실계산 비교' },
       { slug: 'family-business-succession', title: '가업승계, 법인이라면 무엇이 다른가' },
       { slug: 'vat-basics', title: '사업자라면 알아야 할 부가가치세 기초' },
     ],
@@ -326,6 +336,7 @@ export const CALCULATORS = [
   // ───────────────────────── 취득세 ─────────────────────────
   {
     slug: 'acquisition-tax', sub: 'acquisition',
+    chips: ['property-tax', 'comprehensive-real-estate-tax', 'capital-gains-tax', 'gift-tax', 'inheritance-tax', '2026-tax-reform-property-tax'],
     metaTitle: '취득세 계산기 — 다주택 중과·생애최초 감면·농특세',
     h1: '취득세 계산기',
     metaDesc: '집·부동산을 살 때(매매·증여·상속·신축) 내는 취득세를 계산합니다. 다주택 중과, 조정대상지역, 생애최초 감면, 농어촌특별세·지방교육세까지 반영.',
@@ -369,6 +380,7 @@ export const CALCULATORS = [
   // ───────────────────────── 재산세 ─────────────────────────
   {
     slug: 'property-tax', sub: 'property',
+    chips: ['comprehensive-real-estate-tax', 'acquisition-tax', 'capital-gains-tax', '2026-tax-reform-property-tax', 'gift-tax', 'income-tax'],
     metaTitle: '재산세 계산기 — 공시가격·1세대1주택 특례·세부담상한',
     h1: '재산세 계산기',
     metaDesc: '집·건물·토지 보유 시 매년 내는 재산세를 공시가격만 넣으면 계산합니다. 공정시장가액비율, 1세대1주택 특례, 도시지역분, 세부담 상한까지 반영.',
@@ -405,6 +417,7 @@ export const CALCULATORS = [
       { q: '공시가격이 올랐는데 재산세도 그만큼 오르나요?', a: '세부담 상한 때문에 전년 대비 일정 비율 이상은 오르지 않습니다. 그래서 공시가격 상승률과 재산세 상승률이 항상 같지는 않습니다.' },
     ],
     related: [
+      { slug: 'property-tax-2026-calculation', title: '2026 재산세 계산법 — 공시가격별 세액표' },
       { slug: 'property-holding-tax-june1', title: '6월 1일, 보유세의 기준이 되는 날' },
     ],
   },
@@ -412,6 +425,7 @@ export const CALCULATORS = [
   // ───────────────────────── 종합부동산세 ─────────────────────────
   {
     slug: 'comprehensive-real-estate-tax', sub: 'comprehensive',
+    chips: ['property-tax', 'capital-gains-tax', 'acquisition-tax', '2026-tax-reform-property-tax', 'inheritance-tax', 'income-tax'],
     metaTitle: '종합부동산세 계산기 — 1세대1주택 12억 공제·세액공제',
     h1: '종합부동산세 계산기',
     metaDesc: '6월 1일 기준 보유 주택 공시가격 합계에 매기는 종합부동산세를 계산합니다. 1세대1주택 12억·일반 9억 공제, 연령·보유 세액공제, 다주택 중과까지 반영.',
@@ -448,6 +462,7 @@ export const CALCULATORS = [
       { q: '종부세는 언제 내나요?', a: '과세기준일은 6월 1일이고, 납부는 매년 12월에 합니다. 공시가격 합계와 보유 주택 수에 따라 대상 여부가 달라집니다.' },
     ],
     related: [
+      { slug: 'comprehensive-real-estate-tax-2026', title: '2026 종부세 계산법 — 1주택 12억 이하 0원' },
       { slug: 'property-holding-tax-june1', title: '6월 1일, 보유세의 기준이 되는 날' },
     ],
   },
@@ -455,6 +470,7 @@ export const CALCULATORS = [
   // ───────────────────────── 4대보험·실수령 ─────────────────────────
   {
     slug: 'net-salary', sub: 'insurance',
+    chips: ['income-tax', 'value-added-tax', 'incorporation-simulator', 'youthstartup', 'gift-tax', 'capital-gains-tax'],
     metaTitle: '4대보험·실수령액 계산기 — 2026년 요율 자동 반영',
     h1: '4대보험·실수령 계산기',
     metaDesc: '세전 월급만 넣으면 국민연금·건강보험·장기요양·고용보험과 근로소득세를 떼고 실수령액을 즉시 계산합니다. 2026년 4대보험 요율을 자동 반영합니다.',
@@ -490,6 +506,7 @@ export const CALCULATORS = [
       { q: '부양가족을 넣으면 실수령액이 늘어나나요?', a: '부양가족·자녀가 있으면 근로소득세가 줄어 실수령액이 늘 수 있습니다. 계산기의 「부양가족 넣어 정확히」 단계에서 반영해 보세요.' },
     ],
     related: [
+      { slug: 'net-salary-2026', title: '2026 연봉 실수령액표 — 4천~7천 구간별' },
       { slug: 'side-job-income-tax', title: '월급 외 소득이 있다면 — 종합소득세' },
     ],
   },

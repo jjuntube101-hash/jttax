@@ -77,7 +77,17 @@ ${c.related.map(r => `        <li><a href="/insights/${r.slug}.html">${esc(r.tit
       </ul>
     </section>`
     : '';
-  const otherCalcs = CALCULATORS.filter(o => o.slug !== c.slug).slice(0, 6)
+  // «다른 계산기» 칩: 데이터의 chips(주제 클러스터)가 있으면 그 순서대로, 없으면 종전처럼 앞 6개
+  // — 배열 앞 6개를 그대로 자르던 종전 방식은 페이지 주제와 무관한 고정 칩을 만들었다(260830 전수감사 L3).
+  //   chips 의 슬러그 오타는 조용히 빠지지 않고 빌드를 멈춘다(fail-loud).
+  const chipList = (c.chips && c.chips.length)
+    ? c.chips.map((s) => {
+        const hit = CALCULATORS.find(o => o.slug === s);
+        if (!hit) throw new Error(`[chips] ${c.slug}: 알 수 없는 슬러그 "${s}"`);
+        return hit;
+      })
+    : CALCULATORS.filter(o => o.slug !== c.slug).slice(0, 6);
+  const otherCalcs = chipList
     .map(o => `        <a class="jt-cc-chip" href="/calculators/${o.slug}.html">${esc(o.h1)}</a>`).join('\n');
 
   return `<!doctype html>

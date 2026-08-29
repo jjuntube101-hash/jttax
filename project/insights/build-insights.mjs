@@ -141,6 +141,16 @@ async function loadArticles() {
       title: meta.title,
       date: meta.date.replace(/-/g, '.'),
       dateISO: meta.date,
+      // 갱신일: 프론트매터 updated 가 있으면 그 날, 없으면 발행일 — 글을 고칠 때 updated 를
+      // 올려야 검색·AI 가 «최신화됨»을 기계적으로 안다 (260830 전수감사 Q3)
+      // 형식·순서가 틀리면 조용히 넘기지 않고 빌드를 멈춘다 (Codex R1-F2 fail-loud)
+      updatedISO: (() => {
+        // 키 자체가 없을 때만 발행일 폴백 — «updated:»만 적힌 빈 값은 오기재이므로 아래 검증에서 멈춘다 (Codex R2-F1)
+        if (meta.updated === undefined) return meta.date;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(meta.updated)) throw new Error(`[updated] ${meta.title}: 형식은 YYYY-MM-DD — "${meta.updated}"`);
+        if (meta.updated < meta.date) throw new Error(`[updated] ${meta.title}: 갱신일(${meta.updated})이 발행일(${meta.date})보다 이릅니다`);
+        return meta.updated;
+      })(),
       tag: meta.tag || 'INSIGHT',
       excerpt: meta.excerpt || '',
       author: meta.author || '제이티 세무법인',
@@ -199,6 +209,7 @@ function renderArticlePage(a) {
   <meta property="og:image" content="${ogImageHref()}">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="${a.dateISO}">
+  <meta property="article:modified_time" content="${a.updatedISO}">
   <meta property="article:author" content="${esc(a.author)}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(a.title)}">
@@ -224,6 +235,7 @@ ${GA_HEAD_SNIPPET}
     "headline": ${JSON.stringify(a.title)},
     "image": ${JSON.stringify(ogImageHref())},
     "datePublished": ${JSON.stringify(a.dateISO)},
+    "dateModified": ${JSON.stringify(a.updatedISO)},
     "author": { "@type": "Organization", "name": ${JSON.stringify(a.author)} },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
     "description": ${JSON.stringify(a.excerpt)},
