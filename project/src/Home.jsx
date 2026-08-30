@@ -171,26 +171,6 @@ function JTTeaserBand({ kicker, title, sub, ctaLabel, onGo }) {
 }
 window.JTTeaserBand = JTTeaserBand;
 
-// ============ Hook Ticker (infinite marquee) ============
-function JTTicker() {
-  const hooks = window.JT_DATA.hooks || [];
-  const row = hooks.concat(hooks).concat(hooks);
-  return (
-    <div className="jt-ticker" aria-hidden="true">
-      <div className="jt-ticker__track">
-        {row.map((h, i) =>
-        <span className="jt-ticker__item" key={i}>
-            <em>{h.k}</em>
-            <span>{h.v}</span>
-            <i className="jt-ticker__dot">◆</i>
-          </span>
-        )}
-      </div>
-    </div>);
-
-}
-window.JTTicker = JTTicker;
-
 // ============ Proof / Scenarios (benchmark: law-firm "case results") ============
 function JTProof({ setRoute }) {
   const items = window.JT_DATA.scenarios;
@@ -241,213 +221,51 @@ function JTProof({ setRoute }) {
 }
 window.JTProof = JTProof;
 
-// ============ 정체성 밴드 — "세 개의 동사" (집행·강의·설계) ============
-function JTCreds() {
+// ============ 정체성 밴드 — «한 사안을, 세 대표가 봅니다» (260830 카피 패키지 C-1) ============
+// 종전 «세 개의 동사»는 리드(집행)와 열 제목(검증)이 어긋났고(전수검사 A7) 이현준 단독 서사였다.
+// 3인 대표 체제(사용자 결재 F-3)에 맞춰 재산·설계·장부의 «세 시선» 구조로 재작성.
+// 문안 정본: 브랜딩/세무법인/홈페이지/인물브랜딩카피_260830.md §1 (코덱스 수렴본)
+function JTCreds({ setRoute }) {
   return (
     <section className="jt-ident">
       <div className="jt-ident__inner">
         <div className="jt-ident__head reveal">
           <div className="jt-kicker">WHY JT · 우리가 누구인가</div>
-          <h2 className="jt-ident__h2">감이 아니라,<br /><em>이력으로</em> 증명합니다.</h2>
-          <p className="jt-ident__lead">제이티는 세금을 <b>세 방향에서</b> 다뤄본 사람들입니다 — 집행하고, 가르치고, 설계합니다.</p>
+          <h2 className="jt-ident__h2">한 사안을,<br /><em>세 대표가</em> 봅니다.</h2>
+          <p className="jt-ident__lead">세금 문제는 한 과목이 아닙니다. 재산의 문제이면서, 구조의 문제이면서, 장부의 문제입니다. 그래서 제이티는 대표세무사 세 명이 각자의 전문 영역에서 같은 사안을 봅니다 — 누락 가능성을 낮추기 위해 정해 둔, 저희의 기본 검토 방식입니다.</p>
         </div>
         <div className="jt-ident__grid">
           <div className="jt-ident__col reveal">
-            <div className="jt-ident__en">Verified · 검증</div>
-            <div className="jt-ident__verb">검증<br />합니다</div>
-            <p className="jt-ident__body">세액 계산 엔진을 <b>직접 개발</b>해 씁니다. 모든 계산 단계에 <b>근거 조문</b>이 붙고, 홈택스·위택스 모의계산과 대조해 검증합니다.</p>
-            <div className="jt-ident__foot">숫자에 근거가 붙어야, 신고가 방어됩니다.</div>
+            <div className="jt-ident__en">Assets · 김민석 대표세무사</div>
+            <div className="jt-ident__verb">재산의<br />시선</div>
+            <p className="jt-ident__body">양도·상속·증여와 <b>세무조사·불복</b>. «이 재산에 지금 무슨 일이 생기는가»를 봅니다.</p>
+            <div className="jt-ident__foot">억울한 세금은 다퉈볼 수 있습니다 — 순서와 기한이 있을 뿐입니다.</div>
           </div>
           <div className="jt-ident__col reveal" data-delay="1">
-            <div className="jt-ident__en">Taught · 강의</div>
-            <div className="jt-ident__verb">가르칩니다</div>
-            {/* 수강생 학습앱 — 배너·CTA 를 따로 만들지 않고 «이력 문장»에 넣는다.
-                일반 방문자에게는 「지금도 실제로 가르치고 있다」는 증거로 읽히고,
-                수험생에게는 들어가는 문이 된다. 두 결론을 한 블록에 섞지 않는다.
-                ⚠ 260809: 처음엔 JTAuthority 카드에 넣었는데 그 컴포넌트는 홈에서
-                  **렌더되지 않는 죽은 코드**였다(라이브 DOM 에 .jt-authority 0개).
-                  「파일에 있다」와 「화면에 있다」는 다른 일이다.
-                  링크에 인라인 style 을 두지 않는다 — 전역 `a` 규칙이 이미
-                  --fg-link(모노크롬 잉크)+밑줄을 준다. 종전의 color:inherit 은
-                  반전 카드용 잔재였고 사이트 링크 규약을 덮고 있었다 (Codex P2). */}
-            <p className="jt-ident__body">공무원학원 <b>세법 강사</b>, 대학 <b>겸임교수</b>, 세법 기본서·구조노트·가상자산 가이드의 <b>저자</b>입니다. 수강생용 학습앱 <a href="https://class.jttax.co.kr" target="_blank" rel="noopener" onClick={() => { if (window.jtTrackCta) window.jtTrackCta('class_app', 'ident'); }}>class.jttax.co.kr</a> 을 직접 운영합니다.</p>
-            <div className="jt-ident__foot">법을 가르치는 사람이 당신의 신고를 직접 봅니다.</div>
+            <div className="jt-ident__en">Design · 이현준 대표세무사</div>
+            <div className="jt-ident__verb">설계의<br />시선</div>
+            {/* 수강생 학습앱 링크는 «지금도 가르치고 있다»는 증거이자 수험생의 입구 — 유지 (260809 설계) */}
+            <p className="jt-ident__body">가상자산·신종업종·종합 컨설팅. «구조를 바꾸면 숫자가 어떻게 달라지는가»를 봅니다. 공무원학원 <b>세법 강사</b>·세법 교재 <b>저자</b>이며, 수강생용 학습앱 <a href="https://class.jttax.co.kr" target="_blank" rel="noopener" onClick={() => { if (window.jtTrackCta) window.jtTrackCta('class_app', 'ident'); }}>class.jttax.co.kr</a> 을 직접 운영합니다.</p>
+            <div className="jt-ident__foot">가르치는 사람의 의무는 정확함입니다.</div>
           </div>
           <div className="jt-ident__col reveal" data-delay="2">
-            <div className="jt-ident__en">Designed · 설계</div>
-            <div className="jt-ident__verb">설계합니다</div>
-            <p className="jt-ident__body">양도·증여·상속·법인 — <b>담당 세무사</b>가 전담합니다. 단순 신고가 아니라 <b>구조</b>를 설계합니다.</p>
-            <div className="jt-ident__foot">신고 전 설계가, 신고 후 5년의 가산세를 막습니다.</div>
+            <div className="jt-ident__en">Books · 김가환 대표세무사</div>
+            <div className="jt-ident__verb">장부의<br />시선</div>
+            <p className="jt-ident__body">결산·기장·신고 운영. <b>투자를 유치한 회사들의 월 기장</b>을 맡습니다 — 투자사에 보고되는 장부는 대충 만들 수 없습니다.</p>
+            <div className="jt-ident__foot">연말의 세금은 매월의 기록 위에서 계산됩니다.</div>
           </div>
+        </div>
+        <div className="reveal" data-delay="3" style={{ marginTop: 28, textAlign: 'right' }}>
+          <a className="jt-link" href="/experts/" style={{ textDecoration: 'none' }}
+            onClick={(e) => { if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return; e.preventDefault(); if (setRoute) setRoute('about', 'team'); }}>
+            전문가 소개 보기 →
+          </a>
         </div>
       </div>
     </section>);
 
 }
 window.JTCreds = JTCreds;
-
-// ============ 권위월 — 검증 가능한 이력 (라이트 프레임) ============
-function JTAuthority() {
-  return (
-    <section className="jt-authority">
-      <div className="jt-section__head reveal">
-        <div className="jt-kicker">CREDENTIALS · 이력으로 증명</div>
-        <h2 className="jt-h2 jt-display-h2">기관이 자문을 구하고,<br />공무원이 배우는 전문성.</h2>
-      </div>
-      <div className="jt-authority__grid">
-        <div className="jt-authority__card reveal">
-          <div className="jt-authority__label">01 · Engine</div>
-          <div className="jt-authority__title">직접 만든<br />검증 계산 엔진</div>
-          <ul className="jt-authority__list">
-            <li><span className="jt-tick">—</span><span>모든 계산 단계에 근거 조문 표시</span></li>
-            <li><span className="jt-tick">—</span><span>홈택스·위택스 모의계산 대조 검증</span></li>
-            <li><span className="jt-tick">—</span><span>2026년 개정 세법 반영</span></li>
-          </ul>
-        </div>
-        <div className="jt-authority__card reveal jt-authority__card--inv" data-delay="1">
-          <div className="jt-authority__label">02 · Academia</div>
-          <div className="jt-authority__title">가르치고, 쓰는 세무사들</div>
-          <ul className="jt-authority__list">
-            <li><span className="jt-tick">—</span><span>해커스공무원 세법 강사</span></li>
-            <li><span className="jt-tick">—</span><span>동남보건대 세무회계학과 겸임교수</span></li>
-          </ul>
-          <div className="jt-authority__books">
-            <div className="jt-authority__book">세법 기본서</div>
-            <div className="jt-authority__book">세법 구조노트</div>
-            <div className="jt-authority__book">가상자산 가이드</div>
-          </div>
-        </div>
-        <div className="jt-authority__card reveal" data-delay="2">
-          <div className="jt-authority__label">03 · Trust</div>
-          <div className="jt-authority__title">기관이 자문을 구하는 전문성</div>
-          <ul className="jt-authority__list">
-            <li><span className="jt-tick">—</span><span>서울교통공사 자문위원</span></li>
-            <li><span className="jt-tick">—</span><span>한국데이터산업진흥원 평가위원</span></li>
-            <li><span className="jt-tick">—</span><span>前 삼성세무서 납세보호위원</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>);
-
-}
-window.JTAuthority = JTAuthority;
-
-// ============ Stats with count-up ============
-function JTStatItem({ num, unit, kr, en }) {
-  const target = parseInt(num, 10);
-  const [val, setRef] = window.useCountUp(target, 1400);
-  return (
-    <div className="jt-stat" ref={setRef}>
-      <div className="jt-stat__num">
-        <span>{val}</span><em>{unit}</em>
-      </div>
-      <div className="jt-stat__kr">{kr}</div>
-      <div className="jt-stat__en">{en}</div>
-    </div>);
-
-}
-function JTStats() {
-  const items = window.JT_DATA.stats;
-  return (
-    <section className="jt-section jt-section--tight">
-      <div className="jt-stats">
-        {items.map((s) => <JTStatItem key={s.kr} {...s} />)}
-      </div>
-    </section>);
-
-}
-window.JTStats = JTStats;
-
-// ============ Services grid (home preview) ============
-function JTServicesGrid({ setRoute, setDetailOpen, detailOpen, variant }) {
-  const all = window.JT_DATA.services;
-  const list = variant === 'list';
-  const mobile = typeof window !== 'undefined' && window.innerWidth <= 760;
-  return (
-    <section className="jt-section">
-      <div className="jt-section__head jt-section__head--split reveal">
-        <div
-          onClick={() => setRoute('services')}
-          style={{ cursor: 'pointer' }}
-          role="link"
-          tabIndex={0}
-          onKeyDown={(e) => {if (e.key === 'Enter' || e.key === ' ') {e.preventDefault();setRoute('services');}}}>
-
-          <div className="jt-kicker">SERVICES · 업무분야</div>
-          <h2 className="jt-h2 jt-display-h2">근거에 기반한<br />다섯 개 전문 영역.</h2>
-        </div>
-        <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link" onClick={() => setRoute('services')}>전체 업무분야 →</a>
-      </div>
-      {list ?
-      <ul className="jt-insights" style={{ borderTop: '1px solid var(--border-1)' }}>
-          {all.map((s, i) =>
-        <li key={s.num} className="jt-insights__row reveal" data-delay={Math.min(i, 4)} onClick={() => setRoute('services')}
-            role="link" tabIndex={0} onKeyDown={window.jtKeyActivate}>
-              <span className="jt-insights__num">{s.num}</span>
-              <span className="jt-insights__title">{s.kr}</span>
-              <span className="jt-insights__tag">{s.en}</span>
-              <span className="jt-insights__date">{s.short}</span>
-              <span className="jt-arrow">→</span>
-            </li>
-        )}
-        </ul> :
-
-      <div className="jt-services" style={{ gridTemplateColumns: mobile ? '1fr' : 'repeat(2, 1fr)' }}>
-          {all.slice(0, 4).map((s, i) =>
-        <article
-          key={s.num}
-          className="jt-service reveal"
-          data-delay={Math.min(i, 4)}
-          role="link" tabIndex={0}
-          onClick={() => setRoute('services')}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRoute('services'); } }}>
-
-              <header className="jt-service__head">
-                <span>{s.num} · {s.en}</span>
-                <span className="jt-arrow">{detailOpen === i ? '×' : '→'}</span>
-              </header>
-              <h3 className="jt-service__title">{s.kr}</h3>
-              <p className="jt-service__desc">{s.desc}</p>
-              {detailOpen === i &&
-          <>
-                  <ul className="jt-service__list">
-                    {s.points.map((p) =>
-              <li key={p.b}><span className="jt-tick">—</span><span><b>{p.b}</b> — <span style={{ color: 'var(--fg-2)' }}>{p.s}</span></span></li>
-              )}
-                  </ul>
-                  <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate}
-              className="jt-link"
-              onClick={(e) => {e.stopPropagation();setRoute('services');}}
-              style={{ marginTop: 20, display: 'inline-block' }}>
-
-                    자세히 보기 →
-                  </a>
-                </>
-          }
-            </article>
-        )}
-          <article className="jt-service reveal" data-delay="4" onClick={() => setRoute('services')}
-          role="link" tabIndex={0} onKeyDown={window.jtKeyActivate} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gridColumn: mobile ? 'auto' : 'span 2', minHeight: 220 }}>
-            <header className="jt-service__head">
-              <span>{all[4].num} · {all[4].en}</span>
-              <span className="jt-arrow">→</span>
-            </header>
-            <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap: 32, alignItems: 'end' }}>
-              <div>
-                <h3 className="jt-service__title">{all[4].kr}</h3>
-                <p className="jt-service__desc">{all[4].desc}</p>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <span className="jt-link">전체 업무분야 보기 →</span>
-              </div>
-            </div>
-          </article>
-        </div>
-      }
-    </section>);
-
-}
-window.JTServicesGrid = JTServicesGrid;
 
 // ============ 대표 인용 (따뜻한 풀쿼트, 라이트) ============
 function JTQuote() {
@@ -536,39 +354,6 @@ function JTCta({ setRoute }) {
 }
 window.JTCta = JTCta;
 
-// ============ Team Preview (담당 세무사 4인) ============
-function JTTeamPreview({ setRoute }) {
-  const profiles = window.JT_DATA.teamProfiles;
-  return (
-    <section className="jt-section">
-      <div className="jt-section__head jt-section__head--split reveal">
-        <div>
-          <div className="jt-kicker">TEAM · 담당 세무사</div>
-          <h2 className="jt-h2 jt-display-h2">담당 세무사가<br />각자의 전문 영역을 맡습니다.</h2>
-        </div>
-        <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link" onClick={() => setRoute('about', 'team')}>전체 구성원 보기 →</a>
-      </div>
-      <div className="jt-team-preview">
-        {profiles.map((p, i) =>
-        <article key={p.code} className={`jt-team-preview__card reveal ${i === 0 ? 'is-lead' : ''}`} data-delay={Math.min(i, 3)}>
-            <div className="jt-team-preview__avatar" style={{ position: 'relative', overflow: 'hidden', width: 120, height: 120, flexShrink: 0 }}>
-              {p.photo && <img src={p.photo} alt={p.kr} onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
-              {p.code}
-            </div>
-            <div className="jt-team-preview__role">{p.role}</div>
-            <h3 className="jt-team-preview__name">{p.kr}</h3>
-            <div className="jt-team-preview__focus">{p.focus}</div>
-          </article>
-        )}
-      </div>
-      <p className="jt-team-preview__note reveal">
-        ※ 프로필 사진과 실명은 상담 예약 후 배정되는 담당자 안내 시 공개됩니다.
-      </p>
-    </section>);
-
-}
-window.JTTeamPreview = JTTeamPreview;
-
 // ============ Fees section removed per brief ============
 
 // ============ Channels (다양한 상담 채널) ============
@@ -593,8 +378,9 @@ function JTChannels({ setRoute }) {
           </a>
           <a className="jt-channels__card" href={window.jtKakaoUrl()} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'channels')}>
             <div className="jt-channels__label">카카오톡 채널</div>
-            <div className="jt-channels__big">{window.JT_DATA.firm.kakaoSearchId}</div>
-            <div className="jt-channels__sub">1:1 채팅 상담 · 자료 전송 가능 · 영업일 24h 내 회신</div>
+            {/* 채널 검색 ID 대신 라벨 표기 (260830 사용자 결재 F-6 — 종전엔 빈 문자열이 렌더됐다 A6) */}
+            <div className="jt-channels__big">1:1 채팅 상담</div>
+            <div className="jt-channels__sub">채널에서 바로 채팅 · 자료 전송 가능 · 영업일 24h 내 회신</div>
           </a>
         </div>
       </div>

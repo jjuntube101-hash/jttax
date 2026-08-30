@@ -30,14 +30,14 @@ function JTAbout({ setRoute, initialTab }) {
           <>
               <h1>가르치고, 검증하고,<br />글로 남깁니다.</h1>
               <p className="jt-page-hero__sub">
-                제이티 세무법인는 공무원학원 세법 강사 이현준 대표세무사와 법인 회계 실무에 강한 김가환 세무사가 함께합니다. 감이 아닌 근거로 일하고, 일한 내용은 모두 문서로 남깁니다.
+                제이티 세무법인은 김민석·이현준·김가환 세 대표세무사가 함께합니다. 재산·설계·장부, 각자의 전문 영역에서 같은 사안을 보고 — 감이 아닌 근거로 일하며, 일한 내용은 모두 문서로 남깁니다.
               </p>
             </> :
 
           <>
               <h1>가르치고, 집필하고,<br />설계해 본 사람들.</h1>
               <p className="jt-page-hero__sub">
-                세무공무원 세법 강의와 세법 교재 집필, 법인 회계 실무를 거친 세무사들이 귀하의 사안을 함께 봅니다.
+                공무원 수험 세법 강의와 세법 교재 집필, 조세불복·법인 회계 실무를 거친 세 대표세무사가 귀하의 사안을 함께 봅니다.
               </p>
             </>
           }
@@ -103,8 +103,8 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
           </div>
           <div className="jt-matrix__cell">
             <div className="jt-matrix__tag">Practice</div>
-            <div className="jt-matrix__n">2<em>인</em></div>
-            <div className="jt-matrix__l">대표세무사 · 세무사<br />분야별 전담 체제</div>
+            <div className="jt-matrix__n">3<em>인</em></div>
+            <div className="jt-matrix__l">공동대표 세무사<br />분야별 전담 체제</div>
           </div>
         </div>
       </section>
@@ -233,9 +233,6 @@ function JTAboutTeam({ D, setRoute }) {
         )}
       </div>
 
-      <p className="jt-team__note">
-
-      </p>
     </section>);
 
 }

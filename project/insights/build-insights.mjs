@@ -249,7 +249,7 @@ ${GA_HEAD_SNIPPET}
       <img src="/project/assets/logo_symbol.png" width="28" alt=""/> 제이티 세무법인
     </a>
     <span style="margin-left:auto;font-size:13px;color:#666;">
-      <a href="/#insights" style="color:inherit;">← 모든 인사이트</a>
+      <a href="/#/insights" style="color:inherit;">← 모든 인사이트</a>
     </span>
   </header>
 
@@ -267,7 +267,7 @@ ${GA_HEAD_SNIPPET}
     </div>
 
     <div style="margin-top:48px;display:flex;gap:12px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
       <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>
   </article>

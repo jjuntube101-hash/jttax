@@ -13,7 +13,7 @@ function JTContact({ setRoute }) {
           <div className="jt-page-hero__crumb"><span>CONTACT</span><span>·</span><span>오시는 길</span></div>
           <h1>강남에<br/>자리잡았습니다.</h1>
           <p className="jt-page-hero__sub">
-            강남대로 중심부, 강남역·신논현역 도보 5분 거리. 방문 상담은 사전 예약을 부탁드립니다.
+            강남대로 중심부, 강남역 4번 출구 도보 2분. 방문 상담은 사전 예약을 부탁드립니다.
           </p>
         </div>
       </section>
@@ -38,11 +38,11 @@ function JTContact({ setRoute }) {
               </li>
               <li>
                 <span className="jt-map__key">KakaoTalk</span>
-                <span className="jt-map__val"><a href={window.jtKakaoUrl()} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'contact')}>{D.kakaoSearchId}</a><br/><small style={{color: 'var(--fg-3)'}}>카카오톡에서 검색 후 채널 추가</small></span>
+                <span className="jt-map__val"><a href={window.jtKakaoUrl()} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'contact')}>1:1 채팅 상담</a><br/><small style={{color: 'var(--fg-3)'}}>카카오톡 채널에서 바로 채팅</small></span>
               </li>
               <li>
                 <span className="jt-map__key">Subway</span>
-                <span className="jt-map__val">2호선 · 신분당선 강남역 11번 출구 도보 5분<br/>9호선 신논현역 6번 출구 도보 6분</span>
+                <span className="jt-map__val">2호선 · 신분당선 강남역 4번 출구 도보 2분</span>
               </li>
               <li>
                 <span className="jt-map__key">Hours</span>
@@ -148,7 +148,9 @@ function JTBooking({ setRoute }) {
         </section>
         <section className="jt-section">
           <div className="jt-confirm">
-            <div className="jt-kicker">REQUEST RECEIVED — #{Math.floor(100000 + Math.random() * 900000)}</div>
+            {/* 접수번호 = payload 로 실제 전송되는 접수ID(jtAttribution 의 sid) — 종전의 별개 난수는
+                접수 메일과 대조가 안 돼 추적이 불가능했다 (260830 전수검사 A9) */}
+            <div className="jt-kicker">REQUEST RECEIVED — #{(window.jtAttribution && window.jtAttribution().sid) || '—'}</div>
             <h2 className="jt-h2">상담 접수가 완료되었습니다.</h2>
             <p className="jt-body">
               영업일 기준 <b>24시간 이내</b>에 담당 세무사가 <b>기재해 주신 연락처</b>로 직접 연락드립니다.<br/>

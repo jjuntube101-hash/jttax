@@ -178,14 +178,17 @@ const ROOT = path.join(__dirname, '..');
   };
   const firmKr = pickData('nameKr');
   const rep = pickData('representative');
-  if (!firmKr || !rep) {
-    bad.push('Data.jsx — nameKr / representative 를 읽지 못했습니다 (구조 변경?)');
+  /* 표시의무(시행령 §33①)의 성명은 «광고 담당 지정 소속 세무사»다 — 대표자 표기(3인 공동대표,
+     260830 결재 F-3)와 개념이 다르므로 필드를 분리했다. 정적 푸터의 성명은 adAccountant 를 본다. */
+  const adAcct = pickData('adAccountant');
+  if (!firmKr || !rep || !adAcct) {
+    bad.push('Data.jsx — nameKr / representative / adAccountant 를 읽지 못했습니다 (구조 변경?)');
   } else {
     if (meta.FIRM !== firmKr) bad.push(`site-meta.FIRM「${meta.FIRM}」≠ Data.jsx.nameKr「${firmKr}」`);
-    if (!meta.TAX_ACCOUNTANT.includes(rep)) bad.push(`site-meta.TAX_ACCOUNTANT「${meta.TAX_ACCOUNTANT}」에 Data.jsx.representative「${rep}」가 없습니다`);
+    if (!meta.TAX_ACCOUNTANT.includes(adAcct)) bad.push(`site-meta.TAX_ACCOUNTANT「${meta.TAX_ACCOUNTANT}」에 Data.jsx.adAccountant「${adAcct}」가 없습니다`);
   }
   const FIRM = firmKr || meta.FIRM;
-  const NAME = rep || '이현준';
+  const NAME = adAcct || '이현준';
 
   /* index.html 이 자산 버전의 SSOT */
   const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
@@ -238,7 +241,15 @@ const ROOT = path.join(__dirname, '..');
     return fs.readdirSync(p).filter((f) => f.endsWith('.html')).map((f) => `${dir}/${f}`);
   };
 
-  const generated = [...listHtml('insights'), ...listHtml('calculators')];
+  /* 상업 랜딩(260830 신설): services/experts/about 디렉터리 + 루트 consult.html.
+     생성기는 build-commercial.mjs — 여기 등록하지 않으면 신설 페이지의 푸터 표시의무·
+     CSS 버전 검사가 통째로 비므로(게이트 공동), 디렉터리를 늘릴 때 이 목록도 같이 늘린다. */
+  const commercialDirs = ['services', 'experts', 'about'];
+  const commercialPages = [
+    ...commercialDirs.flatMap((d) => listHtml(d)),
+    ...(fs.existsSync(path.join(ROOT, 'consult.html')) ? ['consult.html'] : []),
+  ];
+  const generated = [...listHtml('insights'), ...listHtml('calculators'), ...commercialPages];
   const desk = listHtml('desk');
 
   /* custom:true = 빌더가 «덮어쓰지 않는» 수기 페이지. 정규식으로 소스를 긁지 않고
@@ -266,6 +277,58 @@ const ROOT = path.join(__dirname, '..');
   listHtml('calculators').map((f) => path.basename(f, '.html'))
     .filter((s) => s !== 'index' && !calcSlugs.includes(s))
     .forEach((s) => bad.push(`calculators/${s}.html — calculators.data.mjs 에 없는 고아 페이지입니다(허브에서 못 찾는데 색인은 됩니다). 등재하거나 삭제하세요`));
+
+  /* 상업 랜딩도 같은 고아 대조: 데이터에서 지우면 HTML 도 지워야 한다 (sitemap 이 디렉터리를 통째 열거하므로) */
+  const commMod = await import(url.pathToFileURL(path.join(__dirname, 'commercial', 'commercial.data.mjs')).href);
+  const svcSlugs = commMod.SERVICES.map((s) => s.slug);
+  const expSlugs = commMod.EXPERTS.map((e) => e.slug);
+  if (svcSlugs.length === 0 || expSlugs.length === 0) bad.push('commercial.data.mjs — SERVICES/EXPERTS 가 비어 있습니다 (데이터 구조 확인)');
+  listHtml('services').map((f) => path.basename(f, '.html'))
+    .filter((s) => s !== 'index' && !svcSlugs.includes(s))
+    .forEach((s) => bad.push(`services/${s}.html — commercial.data.mjs 에 없는 고아 페이지입니다. 등재하거나 삭제하세요`));
+  listHtml('experts').map((f) => path.basename(f, '.html'))
+    .filter((s) => s !== 'index' && !expSlugs.includes(s))
+    .forEach((s) => bad.push(`experts/${s}.html — commercial.data.mjs 에 없는 고아 페이지입니다. 등재하거나 삭제하세요`));
+
+  /* 데이터 → 산출물 «역방향» 존재 검사 (260830, 코덱스 017-R1-F2): 빌더 회귀로 데이터의
+     slug 가 생성되지 않으면 위의 고아 검사(파일→데이터)로는 못 잡는다 — 반대 방향도 센다. */
+  for (const sl of svcSlugs) {
+    if (!fs.existsSync(path.join(ROOT, 'services', `${sl}.html`))) bad.push(`services/${sl}.html — 데이터엔 있는데 산출물이 없습니다(빌더 회귀)`);
+  }
+  for (const sl of expSlugs) {
+    if (!fs.existsSync(path.join(ROOT, 'experts', `${sl}.html`))) bad.push(`experts/${sl}.html — 데이터엔 있는데 산출물이 없습니다(빌더 회귀)`);
+  }
+  for (const req of ['services/index.html', 'experts/index.html', 'about/index.html', 'consult.html']) {
+    if (!fs.existsSync(path.join(ROOT, req))) bad.push(`${req} — 필수 상업 랜딩 산출물이 없습니다`);
+  }
+
+  /* sitemap ↔ 파일시스템 «집합» 대조 (260830, 코덱스 011-R1-F5 → 017-R1-F2 강화):
+     개수만 세면 «한쪽에서 빠지고 다른 쪽에서 늘어난» 상쇄를 못 잡는다 — URL 집합을 양방향 비교한다. */
+  {
+    const SITE_URL = 'https://www.jttax.co.kr';
+    const toUrl = (rel) => {
+      if (!rel.includes('/')) return `${SITE_URL}/${rel}`;
+      const dir = rel.slice(0, rel.indexOf('/'));
+      const file = rel.slice(rel.indexOf('/') + 1);
+      return file === 'index.html' ? `${SITE_URL}/${dir}/` : `${SITE_URL}/${rel}`;
+    };
+    const expectedSet = new Set([`${SITE_URL}/`,
+      ...[...listHtml('insights'), ...listHtml('calculators'), ...commercialPages].map(toUrl)]);
+    const sm = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
+    const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    const locSet = new Set(locs);
+    for (const u of expectedSet) if (!locSet.has(u)) bad.push(`sitemap.xml — 누락 URL: ${u} (파일은 있는데 sitemap 에 없습니다)`);
+    for (const u of locSet) if (!expectedSet.has(u)) bad.push(`sitemap.xml — 유령 URL: ${u} (sitemap 에 있는데 파일이 없습니다)`);
+  }
+
+  /* SPA 예약 딥링크 회귀검사 (260830, 코덱스 017-R1-F1): 라우터는 «#/» 접두 해시만 인식한다
+     (App.jsx JTRouter.parse). «/#booking» 류(#/ 아님)는 예약 화면이 아니라 홈으로 떨어지는
+     죽은 링크 — 실제로 정적 44장이 이 상태로 라이브였다. 정적 산출물 전수에서 금지한다. */
+  for (const rel of [...generated, ...desk]) {
+    const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    const badHash = html.match(/href="\/#(?!\/)[^"]*"/);
+    if (badHash) bad.push(`${rel} — 라우터가 인식 못 하는 해시 링크 ${badHash[0]} (형식은 «/#/route» — App.jsx JTRouter 참조)`);
+  }
 
   /* ⚠️ 이 아래 방어선 검사들의 «남은 한계» (260808 Codex P2a R4 P1):
      문자열·구조만 본다. 「렌더 오류가 났을 때 실제로 그 화면이 뜨는가」는 브라우저가

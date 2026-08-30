@@ -23,7 +23,7 @@ const isCI = !!(process.env.CI && process.env.CI !== 'false');
    ⚠️ 260810 번들 도입: project/dist/app.js 가 «방문자가 실제로 받는 코드»다.
       이걸 빠뜨리면 소스를 고치고 번들을 안 만들거나 커밋에서 누락해도 게이트가 녹색이고,
       라이브는 옛 코드로 돈다(Codex R1 P0). */
-const TARGETS = ['insights', 'calculators', 'sitemap.xml', 'project/src/Data.jsx', 'project/dist'];
+const TARGETS = ['insights', 'calculators', 'services', 'experts', 'about', 'consult.html', 'sitemap.xml', 'project/src/Data.jsx', 'project/dist'];  // 260830 상업 랜딩 추가 (코덱스 017-R2-F1)
 
 function sh(cmd) {
   return execSync(cmd, { cwd: require('path').join(__dirname, '..'), encoding: 'utf8' });

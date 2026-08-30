@@ -157,7 +157,7 @@ ${GA_HEAD_SNIPPET}
 
     <div class="jt-cc-cta">
       <a href="${appUrl}" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
+      <a href="/#/booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
     <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
 
@@ -213,7 +213,7 @@ ${otherCalcs}
     </div>
 
     <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
       <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_bottom')">카톡 상담</a>
     </div>
   </main>
@@ -291,7 +291,7 @@ ${cards}
     </div>
     <div style="margin-top:40px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/report" class="jt-btn jt-btn--primary">계산기 허브 열기 →</a>
-      <a href="/#booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_index')">세무사 상담</a>
+      <a href="/#/booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_index')">세무사 상담</a>
     </div>
   </main>
 ${footerHtml()}

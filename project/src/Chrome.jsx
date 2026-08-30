@@ -13,6 +13,18 @@ function jtKeyActivate(e) {
 }
 window.jtKeyActivate = jtKeyActivate;
 
+/* 실링크(<a href>) 위에서 SPA 라우팅을 우선하는 클릭 핸들러 팩토리 (260830 상업 랜딩).
+   보조키(새 탭)·중클릭이면 href 로 정적 페이지에 가게 두고, 일반 클릭만 SPA 로 돌린다
+   — 홈 계산기 CTA(Home.jsx, 260830 SEO 파일럿 확정 #1)와 같은 패턴의 공용화. */
+function jtNavGo(fn) {
+  return function (e) {
+    if (e && (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0)) return;
+    if (e && e.preventDefault) e.preventDefault();
+    fn();
+  };
+}
+window.jtNavGo = jtNavGo;
+
 
 
 // 카톡 상담 링크 — 모바일은 1:1 채팅 바로 열기, PC는 채널 홈으로(로그인 에러 화면 회피)
@@ -248,12 +260,14 @@ function JTNav({ route, setRoute }) {
         <img src="project/assets/logo_symbol.png" alt="" style={{ height: 26 }} />
         <span style={{ fontWeight: 700, letterSpacing: '-0.01em', marginLeft: 8 }}>제이티 세무법인</span>
       </a>
+      {/* 크롤러용 실링크 + 사용자는 SPA (260830 상업 랜딩 — 계산기 CTA와 같은 «실링크+JS 우선» 패턴).
+          jtGo(href 보존 조건: 보조키·중클릭)는 아래 jtNavGo 헬퍼로 통일한다. */}
       <nav className="jt-nav__links">
-        <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'about' ? 'active' : ''} onClick={() => setRoute('about')}>회사소개</a>
+        <a href="/about/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'about' ? 'active' : ''} onClick={jtNavGo(() => setRoute('about'))}>회사소개</a>
         <div className="jt-nav__dd-wrap" onMouseEnter={openSvc} onMouseLeave={closeSvc}>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate}
+          <a href="/services/" tabIndex={0} role="link" onKeyDown={jtKeyActivate}
             className={`jt-nav__dd-trigger ${route === 'services' ? 'active' : ''}`}
-            onClick={() => setRoute('services')}
+            onClick={jtNavGo(() => setRoute('services'))}
             aria-haspopup="true"
             aria-expanded={svcOpen}
           >
@@ -262,7 +276,7 @@ function JTNav({ route, setRoute }) {
           {svcOpen && (
             <div className="jt-nav__dd" onMouseEnter={openSvc} onMouseLeave={closeSvc}>
               {services.map((s) => (
-                <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={s.num} className="jt-nav__dd-item" onClick={() => goService(s.kr)}>
+                <a href={s.slug ? `/services/${s.slug}.html` : '/services/'} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={s.num} className="jt-nav__dd-item" onClick={jtNavGo(() => goService(s.kr))}>
                   <span className="jt-nav__dd-num">{s.num}</span>
                   <span className="jt-nav__dd-label">
                     <span className="jt-nav__dd-kr">{s.kr}</span>
@@ -271,16 +285,16 @@ function JTNav({ route, setRoute }) {
                 </a>
               ))}
               <div className="jt-nav__dd-sep" role="separator"></div>
-              <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} className="jt-nav__dd-item jt-nav__dd-item--all" onClick={() => goService(null)}>
+              <a href="/services/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className="jt-nav__dd-item jt-nav__dd-item--all" onClick={jtNavGo(() => goService(null))}>
                 <span className="jt-nav__dd-all-label">전체 업무분야 보기</span>
                 <span className="jt-arrow">→</span>
               </a>
             </div>
           )}
         </div>
-        <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'report' ? 'active' : ''} onClick={() => setRoute('report')}>세금 계산기</a>
+        <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'report' ? 'active' : ''} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
         <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'insights' ? 'active' : ''} onClick={() => setRoute('insights')}>인사이트</a>
-        <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'contact' ? 'active' : ''} onClick={() => setRoute('contact')}>오시는 길</a>
+        <a href="/consult.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'contact' ? 'active' : ''} onClick={jtNavGo(() => setRoute('contact'))}>오시는 길</a>
       </nav>
       <div className="jt-nav__cta">
         <span className="jt-nav__phone">T. {window.JT_DATA.firm.phone}</span>
@@ -293,8 +307,10 @@ function JTNav({ route, setRoute }) {
       </div>
       {menuOpen && (
         <div className="jt-navmenu">
-          {[['about', '회사소개'], ['services', '업무분야'], ['report', '세금 계산기'], ['insights', '인사이트'], ['contact', '오시는 길']].map(([r, l]) => (
-            <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={() => { setRoute(r); setMenuOpen(false); }}>{l}</a>
+          {[['about', '회사소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '인사이트', null], ['contact', '오시는 길', '/consult.html']].map(([r, l, h]) => (
+            h
+              ? <a href={h} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={jtNavGo(() => { setRoute(r); setMenuOpen(false); })}>{l}</a>
+              : <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={() => { setRoute(r); setMenuOpen(false); }}>{l}</a>
           ))}
           <a className="jt-navmenu__phone" href={`tel:${window.JT_DATA.firm.phone}`} onClick={() => window.jtTrackCta('call', 'nav')}>T. {window.JT_DATA.firm.phone}</a>
           <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'nav'); setRoute('booking'); setMenuOpen(false); }}>상담 예약 <span className="jt-arrow">→</span></button>
@@ -418,23 +434,23 @@ function JTFooter({ setRoute }) {
         </div>
         <div className="jt-footer__col">
           <h4>Company</h4>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('about')}>회사소개</a>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('about', 'team')}>전문가</a>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('report')}>세금 계산기</a>
+          <a href="/about/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about'))}>회사소개</a>
+          <a href="/experts/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about', 'team'))}>전문가</a>
+          <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
           <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('insights')}>인사이트</a>
         </div>
         <div className="jt-footer__col">
           <h4>Services</h4>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('services')}>양도·상속·증여</a>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('services')}>세무조사 대응</a>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('services')}>기장·세금 신고</a>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('services')}>세금 종합 컨설팅</a>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('services')}>경정청구</a>
+          <a href="/services/asset-transfer.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>양도·상속·증여</a>
+          <a href="/services/tax-audit.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>세무조사 대응</a>
+          <a href="/services/bookkeeping.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>기장·세금 신고</a>
+          <a href="/services/consulting.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>세금 종합 컨설팅</a>
+          <a href="/services/tax-refund.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>경정청구</a>
         </div>
         <div className="jt-footer__col">
           <h4>Contact</h4>
           <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => { window.jtTrackCta('booking', 'footer'); setRoute('booking'); }}>상담 예약</a>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('contact')}>오시는 길</a>
+          <a href="/consult.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('contact'))}>오시는 길</a>
           <a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'footer')}>전화 문의</a>
         </div>
       </div>

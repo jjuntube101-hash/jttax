@@ -91,4 +91,4 @@ author: "제이티 세무법인"
 
 두 방식의 세금은 계산기로 직접 비교할 수 있지만, **어느 쪽을 택할지는 배우자상속공제·자산 상승률·10년 타이밍이 얽혀 사람마다 갈립니다.** 숫자는 나왔는데 판단이 서지 않는다면, 제이티 세무법인이 자산승계 전체 그림을 그려 도와드리겠습니다.
 
-<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">증여 vs 상속, 우리 집은 어느 쪽이 유리할까요? 제이티 세무법인이 사례에 맞춰 설계해 드립니다.</p><a href="/#booking" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">자산승계 상담 받기 →</a></div>
+<div style="margin:24px 0;padding:18px 20px;border:1px solid #d4dce6;border-radius:10px;background:#fbfcfd;"><p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#42566e;">증여 vs 상속, 우리 집은 어느 쪽이 유리할까요? 제이티 세무법인이 사례에 맞춰 설계해 드립니다.</p><a href="/#/booking" style="display:inline-block;padding:10px 20px;background:#ffffff;color:#3b5b80;text-decoration:none;border-radius:7px;font-size:13.5px;font-weight:700;border:1px solid #3b5b80;">자산승계 상담 받기 →</a></div>

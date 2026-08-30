@@ -156,7 +156,7 @@ function App() {
           <div>
             <JTBrandMoment setRoute={setRoute} />
             <JTHero setRoute={setRoute} />
-            <JTCreds />
+            <JTCreds setRoute={setRoute} />
             <JTReportHome setRoute={setRoute} />
             <JTTeaserBand kicker="SERVICES · 업무분야" title="근거에 기반한 다섯 개 전문 영역." sub={window.JT_DATA.services.map(s => s.kr).join('   ·   ')} ctaLabel="전체 업무분야 보기" onGo={() => setRoute('services')} />
             <JTTeaserBand kicker="TEAM · 담당 세무사" title="담당 세무사가 직접." sub="세법을 가르치고 집필해 온 세무사들이 각자의 전문 영역에서 직접 맡습니다." ctaLabel="전문가 소개 보기" onGo={() => setRoute('about', 'team')} />
@@ -260,7 +260,7 @@ class JTErrorBoundary extends React.Component {
       phone: F.phone || '02-554-6405',
       kakaoChannelUrl: F.kakaoChannelUrl || F.kakaoChatUrl || 'https://pf.kakao.com/_CcxlJG',
       nameKr: F.nameKr || '제이티 세무법인',
-      representative: F.representative || '이현준',
+      representative: F.representative || '김민석·이현준·김가환',
     };
     return (
       <div style={{ maxWidth: 640, margin: '0 auto', padding: '80px 24px', fontFamily: 'Pretendard, system-ui, sans-serif', color: '#0B0B0F' }}>
@@ -278,7 +278,7 @@ class JTErrorBoundary extends React.Component {
         </div>
         {/* 세무사법 시행령 §33① 표시의무 — 화면이 깨져도 사무소명·세무사 성명은 남긴다 */}
         <p style={{ fontSize: 12, color: '#888', marginTop: 32 }}>
-          {D.nameKr || '제이티 세무법인'}{D.representative ? ` · 대표 세무사 ${D.representative}` : ''}
+          {D.nameKr || '제이티 세무법인'}{D.representative ? ` · 대표 ${D.representative} · 담당 세무사 이현준` : ''}
         </p>
       </div>
     );

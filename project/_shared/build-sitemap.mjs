@@ -54,6 +54,11 @@ export async function writeSitemap(repoRoot, site) {
   const dirs = [
     { dir: 'calculators', freq: 'monthly', priority: '0.9' }, // 계산기 랜딩(고가치)
     { dir: 'insights', freq: 'monthly', priority: '0.8' },     // 인사이트 글
+    // 상업 랜딩 (260830 신설 — build-commercial.mjs 산출. 수기 sitemap 추가 금지:
+    // 여기 열거되지 않은 디렉터리의 URL 은 다음 빌드가 삭제한다)
+    { dir: 'services', freq: 'monthly', priority: '0.9' },     // 업무분야
+    { dir: 'experts', freq: 'monthly', priority: '0.8' },      // 전문가
+    { dir: 'about', freq: 'monthly', priority: '0.8' },        // 회사소개
   ];
   for (const d of dirs) {
     let files = [];
@@ -73,6 +78,14 @@ export async function writeSitemap(repoRoot, site) {
       const lastmod = d.dir === 'insights' ? (insightDates.get(slug) || null) : null;
       urls.push({ loc, lastmod, freq: d.freq, priority });
     }
+  }
+
+  // 루트 단일 페이지 — 상담+오시는 길 (260830 신설). 파일이 실제로 있을 때만 등재한다.
+  try {
+    await readFile(join(repoRoot, 'consult.html'));
+    urls.push({ loc: `${site}/consult.html`, lastmod: null, freq: 'monthly', priority: '0.9' });
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

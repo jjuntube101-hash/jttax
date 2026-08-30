@@ -217,20 +217,8 @@
   background: var(--jt-darkbg) !important;
   color: var(--fg-inverse) !important;
 }
-.jt-team-preview__card.is-lead {
-  background: var(--jt-darkbg) !important;
-  color: var(--fg-inverse) !important;
-}
-.jt-team-preview__card.is-lead:hover { background: var(--jt-darkbg-2) !important; }
 
 /* — Ticker (was pure black) — keep dark for marquee texture, but warm */
-.jt-ticker {
-  background: var(--jt-darkbg) !important;
-  color: var(--fg-inverse) !important;
-}
-.jt-ticker::before { background: linear-gradient(90deg, var(--jt-darkbg), transparent) !important; }
-.jt-ticker::after  { background: linear-gradient(-90deg, var(--jt-darkbg), transparent) !important; }
-.jt-ticker__item span { color: var(--fg-inverse) !important; }
 
 /* — Mobile sticky CTA bar — light, with warm dark primary button */
 .jt-mcta {
@@ -266,8 +254,6 @@
 }
 
 /* — Stat numbers / borders (#000 → ink-800) — */
-.jt-stat { border-top-color: var(--jt-ink-800) !important; }
-.jt-stat__num { color: var(--fg-1) !important; }
 
 /* — Service detail nums and section heads — */
 .jt-service-detail__num { color: var(--fg-1) !important; }
@@ -275,7 +261,6 @@
 .jt-proof__delta { color: var(--fg-1) !important; }
 .jt-proof__grid { border-top-color: var(--jt-ink-800) !important; }
 .jt-team-row { border-top-color: var(--jt-ink-800) !important; }
-.jt-team-preview { border-top-color: var(--jt-ink-800) !important; }
 .jt-fees__list { border-top-color: var(--jt-ink-800) !important; }
 
 /* — Form chip active — */
@@ -861,22 +846,6 @@ button { font-family: inherit; }
 .jt-creds__desc { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.6; margin: 0; }
 
 /* ========== Stats ========== */
-.jt-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
-.jt-stat { border-top: 2px solid #000; padding-top: 20px; }
-.jt-stat__num {
-  font-family: var(--font-display-en);
-  font-weight: 900;
-  font-size: 80px;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: #000;
-  display: flex;
-  align-items: baseline;
-  font-feature-settings: "tnum";
-}
-.jt-stat__num em { font-family: var(--font-sans-kr); font-style: normal; font-size: 22px; font-weight: 700; margin-left: 6px; letter-spacing: -0.01em; }
-.jt-stat__kr { font-size: 15px; color: var(--fg-1); margin-top: 14px; font-weight: 600; letter-spacing: -0.01em; }
-.jt-stat__en { font-family: var(--font-sans-en); font-size: 10px; letter-spacing: var(--tr-widest); text-transform: uppercase; color: var(--fg-3); margin-top: 6px; }
 
 /* ========== Services grid ========== */
 .jt-services {
@@ -1148,12 +1117,6 @@ button { font-family: inherit; }
 .jt-team__card--featured .jt-team__bio li time { color: rgba(255,255,255,.5); }
 
 /* ========== Team (About > 전문가 탭) — 신규 카드 ========== */
-.jt-team__note {
-  margin: 48px 0 0;
-  font-size: 13px;
-  color: var(--fg-3);
-  text-align: center;
-}
 
 /* ----- 회장 (featured) ----- */
 .jt-team-feature {
@@ -1742,41 +1705,6 @@ button { font-family: inherit; }
 }
 
 /* ========== Hook ticker (marquee) ========== */
-.jt-ticker {
-  background: #000;
-  color: #fff;
-  border-top: 1px solid rgba(255,255,255,.08);
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  overflow: hidden;
-  padding: 18px 0;
-  position: relative;
-}
-.jt-ticker::before, .jt-ticker::after {
-  content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2; pointer-events: none;
-}
-.jt-ticker::before { left: 0; background: linear-gradient(90deg, #000, transparent); }
-.jt-ticker::after  { right: 0; background: linear-gradient(-90deg, #000, transparent); }
-.jt-ticker__track {
-  display: inline-flex; gap: 56px; white-space: nowrap;
-  animation: jt-ticker-scroll 48s linear infinite;
-  padding-left: 56px;
-}
-.jt-ticker__item {
-  display: inline-flex; align-items: baseline; gap: 14px;
-  font-family: var(--font-display-en, 'Canela', 'Times New Roman', serif);
-  font-size: 22px; letter-spacing: -0.015em;
-}
-.jt-ticker__item em {
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-style: normal; font-size: 11px; letter-spacing: 0.2em;
-  color: rgba(255,255,255,.45);
-}
-.jt-ticker__item span { color: #fff; font-weight: 500; }
-.jt-ticker__dot { font-style: normal; color: rgba(255,255,255,.28); font-size: 10px; }
-@keyframes jt-ticker-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-33.333%); }
-}
 
 /* ========== Proof / Scenarios ========== */
 .jt-proof__note {
@@ -1834,51 +1762,7 @@ button { font-family: inherit; }
 }
 
 /* ============ Team preview (4명 그리드) ============ */
-.jt-team-preview {
-  display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
-  border: 1px solid var(--border-1); border-top: 2px solid #000;
-}
-.jt-team-preview__card {
-  padding: 32px 26px 30px; border-right: 1px solid var(--border-1);
-  display: flex; flex-direction: column; gap: 12px;
-  background: #fff; transition: background .3s;
-}
-.jt-team-preview__card:last-child { border-right: 0; }
-.jt-team-preview__card:hover { background: #FAFAF8; }
-.jt-team-preview__card.is-lead {
-  background: #0B0B0B; color: #fff;
-}
-.jt-team-preview__card.is-lead:hover { background: #111; }
-.jt-team-preview__avatar {
-  width: 48px; height: 48px; border: 1px solid currentColor;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em;
-}
-.jt-team-preview__role {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em;
-  text-transform: uppercase; opacity: .7;
-}
-.jt-team-preview__name {
-  font-family: var(--font-display-kr); font-size: 22px; line-height: 1.25;
-  letter-spacing: -0.02em; margin: 0; font-weight: 600;
-}
-.jt-team-preview__focus {
-  font-size: 13px; line-height: 1.55; font-weight: 500;
-  padding-top: 10px; border-top: 1px solid;
-  border-color: rgba(0,0,0,.1);
-}
-.jt-team-preview__card.is-lead .jt-team-preview__focus { border-color: rgba(255,255,255,.15); }
-.jt-team-preview__career {
-  font-size: 12px; line-height: 1.55; opacity: .7;
-}
-.jt-team-preview__note {
-  margin: 20px 0 0; font-size: 12px; color: var(--fg-3); text-align: right;
-}
 @media (max-width: 960px) {
-  .jt-team-preview { grid-template-columns: 1fr 1fr; }
-  .jt-team-preview__card { border-bottom: 1px solid var(--border-1); }
-  .jt-team-preview__card:nth-child(2) { border-right: 0; }
-  .jt-team-preview__card:nth-last-child(-n+2) { border-bottom: 0; }
 }
 
 /* ============ Fees guide ============ */
@@ -2086,7 +1970,6 @@ button { font-family: inherit; }
 /* ========== Responsive ========== */
 @media (max-width: 1100px) {
   .jt-services { grid-template-columns: 1fr 1fr; }
-  .jt-stats { grid-template-columns: 1fr 1fr; }
   .jt-creds__grid { grid-template-columns: 1fr; }
   .jt-creds__item { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.15); }
   .jt-service-detail { grid-template-columns: 1fr; gap: 24px; }
@@ -2109,7 +1992,6 @@ button { font-family: inherit; }
   .jt-page-hero h1 { font-size: 56px; }
   .jt-h2 { font-size: 32px; }
   .jt-cta h2 { font-size: 36px; }
-  .jt-services, .jt-stats, .jt-form, .jt-footer__grid { grid-template-columns: 1fr; }
   .jt-insights__row { grid-template-columns: 40px 1fr 24px; }
   .jt-insights__tag, .jt-insights__date { display: none; }
   .jt-stepper { flex-direction: column; }
