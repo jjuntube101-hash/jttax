@@ -17,7 +17,7 @@
 import { writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICES, EXPERTS, TEAM_MODEL, ABOUT, CONSULT } from './commercial.data.mjs';
+import { SERVICES, EXPERTS, TEAM_MODEL, ABOUT, CONSULT, CREATORS } from './commercial.data.mjs';
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
@@ -90,6 +90,11 @@ const STYLE = `  <style>
     .jt-cm-lead .n{font-size:18px;font-weight:800;}
     .jt-cm-lead p{margin:0;font-size:14px;color:#555;line-height:1.6;}
     .jt-cm-close{margin:36px 0 0;padding:22px 24px;border-left:3px solid #0B0B0F;background:#FAFAF8;font-size:16px;line-height:1.7;font-style:italic;color:#333;}
+    .jt-cr-card{display:flex;flex-direction:column;gap:10px;padding:22px 24px;}
+    .jt-cr-card .jt-btn{align-self:flex-start;margin-top:6px;}
+    .jt-cr-kicker{margin:0;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;}
+    .jt-cr-links{margin:4px 0 0;line-height:2.0;font-size:14px;}
+    .jt-cr-proof{font-size:14px;color:#666;border-left:3px solid #0B0B0F;padding:6px 0 6px 14px;margin:0 0 28px;}
   </style>`;
 
 function headHtml({ title, desc, keywords, url, ldBlocks }) {
@@ -507,6 +512,86 @@ ${footerHtml()}
 </html>`;
 }
 
+/* ── 크리에이터 허브 (/creators.html — 성장기획 1단계) ──────────── */
+function renderCreatorsPage() {
+  const url = `${SITE}/creators.html`;
+  const pageLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${CREATORS.metaTitle} | ${FIRM}`,
+    image: ogImageHref(),
+    url,
+    description: CREATORS.metaDesc,
+  };
+  const VALID_PATH_ID = /^(first|side|mcn)$/;
+  const cards = CREATORS.paths.map(p => {
+    if (!VALID_PATH_ID.test(p.id)) throw new Error(`[creators] 경로 id 오류: ${JSON.stringify(p.id)} — first|side|mcn 만 허용합니다(GA4 creator_path 값과 한 몸).`);
+    const links = p.links.map(l =>
+      `        <li><a href="${l.href}" onclick="jtCreatorPath('${p.id}')">${esc(l.label)} →</a></li>`
+    ).join('\n');
+    return `      <div class="jt-cc-card jt-cr-card">
+        <p class="jt-cr-kicker">${esc(p.label)}</p>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.desc)}</p>
+        <ul class="jt-cc-links jt-cr-links">
+${links}
+        </ul>
+        <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtCreatorPath('${p.id}');jtTrackCta('booking','creators_${p.id}')">이 상황으로 상담 예약 →</a>
+      </div>`;
+  }).join('\n');
+  return headHtml({
+    title: `${CREATORS.metaTitle} | ${FIRM}`, desc: CREATORS.metaDesc, keywords: CREATORS.keywords, url,
+    ldBlocks: [pageLd, crumbLd([['홈', `${SITE}/`], ['크리에이터 세금 안내', url]])],
+  }) + `
+  <script>
+    /* 경로 계측 — 성장기획 §1단계 수렴 스펙(귀속 = 최초 선택 고정):
+       jt_creator_path 는 «세션 최초 1회만» 저장하고 GA4 path_select 도 그때만 발화한다.
+       이후 다른 경로를 눌러도 덮어쓰지도 재발화하지도 않는다 — 한 세션 = 정확히 한 경로.
+       저장이 실패(스토리지 차단)하면 이벤트도 내보내지 않는다 — 분모(GA4)와
+       분자(접수 메일의 크리에이터경로)가 어긋나지 않게 같은 성공 경로에 묶는다. */
+    function jtCreatorPath(p) {
+      try {
+        if (sessionStorage.getItem('jt_creator_path')) return;
+        sessionStorage.setItem('jt_creator_path', p);
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'path_select', { creator_path: p });
+        }
+      } catch (_e) {}
+    }
+  </script>
+  <main class="jt-cc-wrap">
+    <nav class="jt-cc-crumb"><a href="/">홈</a> › 크리에이터 세금 안내</nav>
+    <h1>${esc(CREATORS.h1)}</h1>
+    <p class="jt-cc-lede">${esc(CREATORS.lede)}</p>
+    <p class="jt-cr-proof">${esc(CREATORS.proof)}</p>
+
+    <div class="jt-cc-grid">
+${cards}
+    </div>
+
+    <section class="jt-cc-sec">
+      <h2>어느 경로든, 이어달리기로 진행됩니다</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">${esc(CREATORS.handoff)}</p>
+      <div class="jt-cc-chips" style="margin-top:12px;">
+        <a class="jt-cc-chip" href="${CREATORS.bookkeepingHref}">기장·세금 신고 서비스 보기</a>
+        <a class="jt-cc-chip" href="/experts/lee-hyunjun.html">이현준 대표세무사 프로필</a>
+        <a class="jt-cc-chip" href="/experts/kim-gahwan.html">김가환 대표세무사 프로필</a>
+      </div>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>${esc(CONSULT.hook.title)}</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">${esc(CONSULT.hook.body)}</p>
+    </section>
+
+${DISCLAIMER}
+${CTA_BOTTOM}
+  </main>
+${footerHtml()}
+</body>
+</html>`;
+}
+
 /* ── 실행 ──────────────────────────────────────────────────────── */
 async function main() {
   const svcDir = join(REPO_ROOT, 'services');
@@ -529,7 +614,8 @@ async function main() {
   await writeFile(join(expDir, 'index.html'), renderExpertsIndex()); n++;
   await writeFile(join(aboutDir, 'index.html'), renderAboutPage()); n++;
   await writeFile(join(REPO_ROOT, 'consult.html'), renderConsultPage()); n++;
-  console.log(`✓ 상업 랜딩 ${n}장 생성 → /services /experts /about /consult.html`);
+  await writeFile(join(REPO_ROOT, 'creators.html'), renderCreatorsPage()); n++;
+  console.log(`✓ 상업 랜딩 ${n}장 생성 → /services /experts /about /consult.html /creators.html`);
   const total = await writeSitemap(REPO_ROOT, SITE);
   console.log(`✓ sitemap.xml 갱신 (${total} URL)`);
 }

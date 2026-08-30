@@ -80,12 +80,18 @@ export async function writeSitemap(repoRoot, site) {
     }
   }
 
-  // 루트 단일 페이지 — 상담+오시는 길 (260830 신설). 파일이 실제로 있을 때만 등재한다.
-  try {
-    await readFile(join(repoRoot, 'consult.html'));
-    urls.push({ loc: `${site}/consult.html`, lastmod: null, freq: 'monthly', priority: '0.9' });
-  } catch (e) {
-    if (e.code !== 'ENOENT') throw e;
+  // 루트 단일 페이지 — 상담+오시는 길, 크리에이터 허브 (260830 신설). 파일이 실제로 있을 때만 등재한다.
+  const rootSingles = [
+    { file: 'consult.html', priority: '0.9' },
+    { file: 'creators.html', priority: '0.9' },   // 성장기획 1단계 — build-commercial.mjs 산출
+  ];
+  for (const r of rootSingles) {
+    try {
+      await readFile(join(repoRoot, r.file));
+      urls.push({ loc: `${site}/${r.file}`, lastmod: null, freq: 'monthly', priority: r.priority });
+    } catch (e) {
+      if (e.code !== 'ENOENT') throw e;
+    }
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

@@ -245,9 +245,10 @@ const ROOT = path.join(__dirname, '..');
      생성기는 build-commercial.mjs — 여기 등록하지 않으면 신설 페이지의 푸터 표시의무·
      CSS 버전 검사가 통째로 비므로(게이트 공동), 디렉터리를 늘릴 때 이 목록도 같이 늘린다. */
   const commercialDirs = ['services', 'experts', 'about'];
+  const commercialRootSingles = ['consult.html', 'creators.html'];   // 루트 단일 페이지도 같은 셸 게이트를 받는다
   const commercialPages = [
     ...commercialDirs.flatMap((d) => listHtml(d)),
-    ...(fs.existsSync(path.join(ROOT, 'consult.html')) ? ['consult.html'] : []),
+    ...commercialRootSingles.filter((f) => fs.existsSync(path.join(ROOT, f))),
   ];
   const generated = [...listHtml('insights'), ...listHtml('calculators'), ...commercialPages];
   const desk = listHtml('desk');
@@ -298,7 +299,7 @@ const ROOT = path.join(__dirname, '..');
   for (const sl of expSlugs) {
     if (!fs.existsSync(path.join(ROOT, 'experts', `${sl}.html`))) bad.push(`experts/${sl}.html — 데이터엔 있는데 산출물이 없습니다(빌더 회귀)`);
   }
-  for (const req of ['services/index.html', 'experts/index.html', 'about/index.html', 'consult.html']) {
+  for (const req of ['services/index.html', 'experts/index.html', 'about/index.html', 'consult.html', 'creators.html']) {
     if (!fs.existsSync(path.join(ROOT, req))) bad.push(`${req} — 필수 상업 랜딩 산출물이 없습니다`);
   }
 

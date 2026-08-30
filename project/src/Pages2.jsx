@@ -179,6 +179,12 @@ function JTBooking({ setRoute }) {
     setSubmitting(true);
     setSubmitError('');
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
+    /* 크리에이터 허브(/creators.html)에서 경로를 고른 세션이면 그 값을 접수에 병합한다.
+       jt_preferred_topic 과 달리 «지우지 않는다» — 귀속 규칙이 «세션 최초 선택 고정»이라
+       같은 세션의 재접수에도 같은 경로가 실려야 분모(GA4 path_select)와 어긋나지 않는다.
+       (성장기획_크리에이터SEO_260830.md §1단계 계측 스펙) */
+    const creatorPath = (() => { try { return sessionStorage.getItem('jt_creator_path') || ''; } catch (_) { return ''; } })();
+    const CREATOR_PATH_LABEL = { first: 'first(첫 정산)', side: 'side(직장 겸업)', mcn: 'mcn(팀·MCN)' };
     const payload = {
       _subject: `[JT 상담예약] ${form.topic} · ${form.name}`,
       구분: 'BOOKING',
@@ -189,6 +195,8 @@ function JTBooking({ setRoute }) {
       연락처: form.phone,
       선호채널: form.channel,
       문의내용: form.msg || '—',
+      // 값이 없으면 필드 자체를 생략한다 — KPI 대시보드가 «크리에이터경로 없음 = 일반 접수»로 읽는다
+      ...(creatorPath ? { 크리에이터경로: CREATOR_PATH_LABEL[creatorPath] || creatorPath } : {}),
       접수시각: new Date().toLocaleString('ko-KR'),
       // 어느 채널이 이 상담을 만들었는지 — 최초 진입 시점의 값이 보존된다 (Chrome.jsx)
       ...window.jtAttributionFields('booking_form'),
@@ -393,7 +401,7 @@ function JTBooking({ setRoute }) {
                 {/* ⚠️ 수집 항목은 «실제로 보내는 것»과 반드시 일치해야 한다 (개인정보 보호법 §15①).
                     260808 에 유입 출처(접수ID·유입경로·랜딩페이지)를 payload 에 추가하면서
                     이 문구에 반영하지 않아 고지와 실제가 어긋나 있었다 (Codex R1 P1). */}
-                <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 세무 상담 접수·응대 및 결과 회신<br />· <strong>항목</strong>: (필수) 성명, 연락처, 문의분야 / (선택) 이메일, 회사명, 선호 연락채널, 문의내용 — 선택 항목은 적지 않으셔도 접수됩니다<br />· <strong>함께 전송되는 접속 정보</strong>: 접수번호(임의 생성), 유입 매체(예: 검색·광고), 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각. 문의가 어느 경로로 들어왔는지 확인하고 중복 접수를 가려내기 위한 것입니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년(상법 §33 상업장부 보존기간에 준함). 기간 경과 시 지체 없이 파기<br />· <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 필수 항목 없이는 접수가 불가하므로, 거부하실 경우 전화·카카오톡·이메일로 상담을 신청해 주십시오.<br />수집된 정보는 상담 응대 목적에 한해 사용되며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.
+                <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 세무 상담 접수·응대 및 결과 회신<br />· <strong>항목</strong>: (필수) 성명, 연락처, 문의분야 / (선택) 이메일, 회사명, 선호 연락채널, 문의내용 — 선택 항목은 적지 않으셔도 접수됩니다<br />· <strong>함께 전송되는 접속 정보</strong>: 접수번호(임의 생성), 유입 매체(예: 검색·광고), 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각, 크리에이터 경로(크리에이터 안내 페이지에서 상황을 선택한 경우에만). 문의가 어느 경로로 들어왔는지 확인하고 중복 접수를 가려내기 위한 것입니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년(상법 §33 상업장부 보존기간에 준함). 기간 경과 시 지체 없이 파기<br />· <strong>거부할 권리</strong>: 동의를 거부하실 수 있습니다. 다만 필수 항목 없이는 접수가 불가하므로, 거부하실 경우 전화·카카오톡·이메일로 상담을 신청해 주십시오.<br />수집된 정보는 상담 응대 목적에 한해 사용되며, 별도 동의 없이 마케팅 용도로 활용하지 않습니다.
               </span>
             </label>
 
