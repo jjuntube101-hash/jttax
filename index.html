@@ -41,6 +41,18 @@
   <link rel="apple-touch-icon" sizes="180x180" href="project/assets/appletouchicon.png?v=21">
   <link rel="manifest" href="manifest.json">
 
+  <!-- WebSite 구조화 데이터 — 사이트명 인식용 (성장기획 260830 기술 소보수: 종전 0건).
+       구글은 이 블록의 name 으로 검색 결과의 «사이트 이름»을 정한다. 사이트당 홈에 1개만. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "제이티 세무법인",
+    "alternateName": "JT TAX CORP.",
+    "url": "https://www.jttax.co.kr/"
+  }
+  </script>
+
   <!-- 구조화 데이터 (JSON-LD) — 검색엔진에 비즈니스 정보를 제공 -->
   <script type="application/ld+json">
   {
