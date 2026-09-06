@@ -387,6 +387,10 @@ function JTReportCorporate({ setRoute, onBack }) {
 
           {calc.precise && typeof JTReportConvert === 'function' && (
             <JTReportConvert
+              calcId="corporate"
+              completeEligible={true}
+              precise={calc.precise}
+              quick={report.quick}
               reportType="법인 전환"
               reportSummary={`사업이익 ${formatWon(Number(answers.businessIncome) || 0)} → ${favorable ? '법인 유리' : '개인 유리'} ${formatWon(Math.abs(calc.indivTotal - calc.corpTotal))}`}
               reportDetail={buildCorpDetail(answers, calc, commentary)}

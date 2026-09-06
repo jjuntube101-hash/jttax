@@ -209,7 +209,7 @@ function JTReportInsurance({ setRoute, onBack }) {
           calc.taxMonthly = Math.round(calc.taxYear / 12);
           calc.localMonthly = Math.round(calc.localYear / 12);
           calc.precise = true;
-        } else if (c) { calc.taxErr = true; calc.taxMonthly = 0; calc.localMonthly = 0; console.warn('4대보험 세금 엔진 응답 무결성 실패', c); }
+        } else { calc.taxErr = true; calc.taxMonthly = 0; calc.localMonthly = 0; console.warn('4대보험 세금 엔진 응답 무결성 실패', c); }   // 260906 Codex R2-F2: c 가 null 인 경우도 taxErr
       } catch (e) { console.warn('4대보험 세금 엔진 연결 실패', e); calc.taxErr = true; calc.taxMonthly = 0; calc.localMonthly = 0; }
 
       calc.net = monthly - ins.total - (calc.taxMonthly || 0) - (calc.localMonthly || 0);
@@ -305,6 +305,10 @@ function JTReportInsurance({ setRoute, onBack }) {
 
           {typeof JTReportConvert === 'function' && (
             <JTReportConvert
+              calcId="insurance"
+              completeEligible={!calc.taxErr}
+              precise={calc.precise}
+              quick={report.quick}
               reportType="4대보험·실수령"
               reportTag="BOOKKEEPING"
               reportSummary={`세전 ${wonExact(calc.monthly)} → 월 실수령 ${wonExact(calc.net)}`}

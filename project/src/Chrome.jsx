@@ -43,6 +43,10 @@ window.jtKakaoUrl = function () {
 // 기존 이벤트(mcta_* 등)는 과거 데이터 연속성을 위해 그대로 두고, cta_click을 추가 발화한다.
 // gtag 미로드 환경(로컬 실행·광고차단)에서는 조용히 무시 — 에러를 내지 않는다.
 window.jtTrackCta = function (channel, location, extra) {
+  /* 260906 C0 — 예약 CTA 를 누른 «최초» 위치를 세션에 남긴다(booking_origin).
+     booking_submit 에 동봉해 «어느 버튼에서 온 예약인가»를 GA4 에서 셀 수 있게 한다.
+     계측이 본업을 망치지 않게 별도 try 로 감싼다. */
+  try { if (channel === 'booking' && window.jtBookingOrigin) window.jtBookingOrigin.record(location); } catch (_e0) {}
   try {
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
@@ -62,6 +66,66 @@ window.jtEvent = function (name, params) {
     if (typeof window.gtag === 'function') window.gtag('event', name, params || {});
   } catch (_e) {}
 };
+
+// ============ 예약 유래 (booking_origin) — 260906 C0 계측 ============
+/* 왜 필요한가: booking_submit 은 topic·channel 만 보내 «홈에서 시작한 예약»을 셀 수 없었다
+   (개편계획_v2_260906 A-7 · Codex R2-F4). 홈 개편(C3+C4) 전후 «홈 유래 예약률» 기준선을
+   재려면 예약 CTA 를 누른 위치(location)와 그때의 route 를 세션 최초 1회 고정해 둔다.
+   설계 원칙 — ①jtAttribution 과 같은 «최초 1회 고정·덮어쓰기 금지» ②location 은 소스의
+   jtTrackCta('booking', …) 리터럴 폐집합(ALLOWED)만, 밖의 값은 'other' ③금액·개인정보 없음
+   ④전역 UI(nav·sticky·footer)는 모든 화면에 뜨므로 route 로 홈 유래를 가른다. */
+window.jtBookingOrigin = (function () {
+  var KEY = 'jt_booking_origin_v1';
+  // ⚠️ 폐집합 — tests_booking_origin.js 가 소스의 jtTrackCta('booking', '…') 리터럴 전수와 대조한다
+  var ALLOWED = ['contact', 'cta_band', 'faq', 'footer', 'hero', 'home_report', 'nav', 'proof',
+    'report_banner', 'report_cgt_result', 'report_hub', 'report_result', 'report_slots', 'services', 'sticky'];
+  /* route 도 폐집합 — App.jsx JT_KNOWN_ROUTES 와 같은 목록(App 은 ORDER 상 뒤에 로드되므로 여기 복제,
+     tests_booking_origin.js 가 두 목록의 일치를 검사). ⚠️ hash 의 첫 조각을 그대로 보내면
+     '#/person@example.com' 같은 조작 URL 의 문자열이 GA4 로 나간다(Codex R1-F1) → 목록 밖은 'unknown'. */
+  var ROUTES = ['home', 'services', 'team', 'about', 'insights', 'report', 'contact', 'booking', 'privacy', 'terms'];
+  var mem = null;
+  function route() {
+    try {
+      var h = String(window.location.hash || '');
+      if (h.indexOf('#/') !== 0) return 'home';
+      var p = h.replace(/^#\//, '').split('/').filter(Boolean);
+      var r = p[0] || 'home';
+      return ROUTES.indexOf(r) >= 0 ? r : 'unknown';
+    } catch (_e) { return 'unknown'; }
+  }
+  // 저장소에서 복원한 값도 폐집합으로 재검증한다 — 저장소를 손으로 고쳐 넣은 값이 GA4 로 새지 않게
+  function sanitize(p) {
+    if (!p || p.v !== 1) return null;
+    var loc = ALLOWED.indexOf(p.location) >= 0 ? p.location : 'other';
+    var rt = ROUTES.indexOf(p.route) >= 0 ? p.route : 'unknown';
+    return { v: 1, location: loc, route: rt, at: String(p.at || '').slice(0, 30) };
+  }
+  function read() {
+    if (mem) return mem;
+    try {
+      var raw = sessionStorage.getItem(KEY);
+      if (raw) { var p = sanitize(JSON.parse(raw)); if (p) { mem = p; return mem; } }
+    } catch (_e) {}
+    return null;
+  }
+  return {
+    ALLOWED: ALLOWED,
+    record: function (location) {
+      if (read()) return;                                   // 세션 최초 1회 고정 — 덮어쓰지 않는다
+      var loc = ALLOWED.indexOf(location) >= 0 ? location : 'other';
+      var rec = { v: 1, location: loc, route: route(), at: new Date().toISOString() };
+      mem = rec;
+      try { sessionStorage.setItem(KEY, JSON.stringify(rec)); } catch (_e) {}
+    },
+    get: function () { return read(); },
+    // booking_submit 에 동봉할 파라미터 — 기록이 없으면(정적 페이지·직접 진입) 'none'
+    params: function () {
+      var o = read();
+      return o ? { booking_origin: o.location, booking_origin_route: o.route || 'unknown' }
+               : { booking_origin: 'none', booking_origin_route: 'unknown' };
+    }
+  };
+})();
 
 // ============ 유입 출처 보존 (attribution) ============
 /* 왜 필요한가 (260808):

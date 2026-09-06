@@ -1411,6 +1411,9 @@ cautions 3개, saving_ideas 2~3개.`;
         {!cgtBlocked && (
         <JTReportConvert
           setRoute={setRoute}
+          calcId="cgt"
+          completeEligible={true}
+          precise={calc.precise}
           reportType="양도소득세 간이 계산"
           reportTag="LEGACY"
           reportSummary={`총 세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}

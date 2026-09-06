@@ -572,6 +572,10 @@ function JTReportComprehensive({ setRoute, onBack }) {
 
           {typeof JTReportConvert === 'function' && (
             <JTReportConvert
+              calcId="comprehensive"
+              completeEligible={true}
+              precise={calc.precise}
+              quick={report.quick}
               reportType="종합부동산세"
               reportSummary={`주택 ${answers.housingCount === 'one' ? '1채' : answers.housingCount === 'two' ? '2채' : '3채+'} 공시합계 ${formatWon(Number(answers.totalValue) || 0)} → 연 ${formatWon(calc.totalTax)}`}
               reportDetail={buildCompDetail(answers, calc, commentary)}

@@ -500,7 +500,7 @@ function JTReportCrypto({ setRoute, setSubRoute, onBack }) {
           <button className="jt-btn jt-btn--ghost" onClick={() => setSubRoute && setSubRoute('reform-cgt')}>2026 세제개편안 양도세는? →</button>
         </div>
 
-        <JTReportCta setRoute={setRoute} />
+        <JTReportCta setRoute={setRoute} calcId="crypto" completeEligible={!!result} />
         <section className="jt-report-result__section">
           <h3 style={{ fontSize: 16, marginBottom: 4 }}>다른 세금도 계산해 보세요</h3>
           <p style={{ fontSize: 13.5, color: '#7b756b', margin: '0 0 12px' }}>모두 무료 · 로그인 불필요 · 입력값을 계정에 저장하지 않습니다. 계산 방식(브라우저 계산 / 세액 엔진 / AI)은 도구마다 달라, 각 화면 상단에 표시됩니다.</p>

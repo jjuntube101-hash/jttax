@@ -381,7 +381,8 @@ function JTReportYouthStartup({ setRoute, onBack }) {
       const body = mapAnswersToYouth(answers, industryMatch, regionInfo);
       const ej = await callYouthEngine(body);
       const calc = ej && ej.calc;
-      if (!calc) throw new Error('판정 결과를 받지 못했습니다.');
+      // 260906 Codex R2-F3 — 빈 객체 {} 도 «결과 없음»으로 본다(undefined 감면율 렌더·calc_complete 오발화 방지)
+      if (!calc || typeof calc !== 'object' || !Object.keys(calc).length) throw new Error('판정 결과를 받지 못했습니다.');
       const rep = { calc, quick: phase === 'quick' };
       setReport(rep);
       if (phase === 'quick') setQuickReport(rep);
@@ -569,6 +570,9 @@ function JTReportYouthStartup({ setRoute, onBack }) {
 
           {typeof JTReportConvert === 'function' && (
             <JTReportConvert
+              calcId="youthstartup"
+              completeEligible={!!calc}
+              quick={report.quick}
               reportType="청년창업 세액감면"
               reportSummary={`${meta.label} · 감면율 ${calc.reduction_rate}%${calc.estimated_annual_reduction != null ? ' · 예상 ' + formatWon(calc.estimated_annual_reduction) : ''}`}
               reportDetail={buildYSDetail(answers, calc, industryMatch, regionInfo)}

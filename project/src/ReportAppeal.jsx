@@ -130,6 +130,8 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
       const match = txt.match(/\{[\s\S]*\}/);
       if (!match) throw new Error('JSON 추출 실패');
       const data = JSON.parse(match[0]);
+      // 260906 Codex R2-F1 — 빈 객체·형식 불일치 응답은 «결과»가 아니다 → 폴백 경로로
+      if (!data || typeof data.grade !== 'string') throw new Error('응답 형식 불일치');
       setReport(data);
     } catch (e) {
       console.error(e);
@@ -142,6 +144,7 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
       else if (postAudit || reasonCount >= 2) grade = 'HIGH';
       else if (hasValidTiming && reasonCount >= 1) grade = 'MID';
       setReport({
+        fallback: true,   // 260906 — 엔진 실패 폴백 표지: calc_complete 집계에서 제외(Codex R2-F1)
         grade,
         grade_label: {HIGH:'가능성 높음', MID:'검토 가치 있음', LOW:'가능성 낮음', NONE:'대상 아님'}[grade],
         summary: '분석 요청이 지연되어 입력값 기반 기본 판정을 먼저 안내드립니다. 정밀 검토는 담당 세무사가 이어받겠습니다.',
@@ -235,6 +238,8 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
         <JTReportDisclaimer dataFlow="ai" variant="inline" />
         <JTReportConvert
           setRoute={setRoute}
+          calcId="appeal"
+          completeEligible={!!report && !report.fallback}
           reportType="경정청구 가능성 진단"
           reportTag="APPEAL"
           reportSummary={`${report.grade_label || report.grade || ''} · ${report.summary || ''}`}

@@ -1395,7 +1395,7 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
           <button className="jt-btn jt-btn--ghost" onClick={() => setSubRoute && setSubRoute('reform-cre')}>종부세는 얼마나 달라지나 →</button>
         </div>
 
-        <JTReportCta setRoute={setRoute} />
+        <JTReportCta setRoute={setRoute} calcId="reform-cgt" completeEligible={!!result} />
         <RfCrossLinks setSubRoute={setSubRoute} exclude={[]} />
         <JTReportDisclaimer dataFlow="lookup" variant="inline" />
       </div>
@@ -1614,7 +1614,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
           <button className="jt-btn jt-btn--ghost" onClick={() => setSubRoute && setSubRoute('reform-cgt')}>양도세는 얼마나 달라지나 →</button>
         </div>
 
-        <JTReportCta setRoute={setRoute} />
+        <JTReportCta setRoute={setRoute} calcId="reform-cre" completeEligible={!!result} />
         <RfCrossLinks setSubRoute={setSubRoute} exclude={[]} />
         <JTReportDisclaimer dataFlow="lookup" variant="inline" />
       </div>

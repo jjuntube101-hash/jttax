@@ -180,8 +180,50 @@ function JTReportDisclaimer({ variant, dataFlow }) {
 }
 window.JTReportDisclaimer = JTReportDisclaimer;
 
+// ============ calc_complete 이벤트 — 세션당 calc_id 1회 (260906 A1) ============
+// «결과가 확정된» 계산기에서만, 개인정보·금액 없이 완료를 계측한다. 공용 컴포넌트
+// (JTReportCta·JTReportConvert) 양쪽에서 같은 규칙으로 쓰기 위해 여기 한 곳에 둔다.
+// 이 파일이 두 컴포넌트보다 먼저 로드되므로(ORDER 계약), window 에 걸어 두면
+// 뒤에 로드되는 파일에서도 그대로 쓸 수 있다.
+// 중복 방지: sessionStorage 에 calc_id 목록을 적재하고, 접근이 막히면(프라이빗 모드 등)
+// 모듈 스코프 메모리 Set 으로 대체한다. ⚠️ 계약 범위(Codex R2-F4): 저장소가 살아 있으면 «브라우저 세션당 1회»,
+// 저장소가 막힌 환경(프라이빗 모드·차단)에서는 «문서 생명주기(로드)당 1회»까지만 보장한다 — 새로고침·BFCache
+// 미복원 재진입은 새 문서라 다시 1회 셀 수 있다. 이 환경은 GA4 자체도 대개 차단되므로 분석 영향은 제한적이다.
+if (typeof window !== 'undefined' && !window.jtCalcComplete) {
+  const JT_CALC_COMPLETE_KEY = 'jt_calc_complete_v1';
+  const jtCalcCompleteMem = new Set();
+  window.jtCalcComplete = function (calcId, extra) {
+    if (!calcId) return;
+    let already = false;
+    try {
+      const raw = window.sessionStorage.getItem(JT_CALC_COMPLETE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      const list = Array.isArray(parsed) ? parsed : [];
+      if (list.indexOf(calcId) >= 0) {
+        already = true;
+      } else {
+        list.push(calcId);
+        window.sessionStorage.setItem(JT_CALC_COMPLETE_KEY, JSON.stringify(list));
+      }
+    } catch (_e) {
+      if (jtCalcCompleteMem.has(calcId)) already = true;
+      else jtCalcCompleteMem.add(calcId);
+    }
+    if (already) return;
+    // ⛔ 금액·세액·주소·연락처·성명 등 개인정보·계산값은 절대 담지 않는다.
+    const params = Object.assign({ calc_id: calcId }, extra || {});
+    Object.keys(params).forEach(function (k) { if (params[k] === undefined) delete params[k]; });
+    window.jtEvent('calc_complete', params);
+  };
+}
+
 // ============ 공통 CTA 바 (진단 결과 하단) ============
-function JTReportCta({ setRoute }) {
+function JTReportCta({ setRoute, calcId, completeEligible, precise, quick }) {
+  useReportEffect(function () {
+    if (completeEligible === true && calcId && window.jtCalcComplete) {
+      window.jtCalcComplete(calcId, { precise: precise, quick: quick });
+    }
+  }, [completeEligible, calcId, precise, quick]);
   return (
     <div className="jt-report-cta">
       <div className="jt-report-cta__txt">

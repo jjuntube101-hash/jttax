@@ -820,6 +820,10 @@ function JTReportGift({ setRoute, onBack }) {
           {!giftBlocked && (
           <JTReportConvert
             setRoute={setRoute}
+            calcId="gift"
+            completeEligible={true}
+            precise={calc.precise}
+            quick={report.quick}
             reportType={isBurdened ? '부담부증여 통합 계산' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')}
             reportTag="LEGACY"
             reportSummary={`총 세부담 ${formatWon(calc.totalTax)}${isBurdened ? ' (부담부)' : ' / 과세표준 ' + formatWon(calc.taxBase)} / ${commentary.headline || ''}`}

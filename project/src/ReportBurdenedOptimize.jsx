@@ -297,6 +297,9 @@ function JTReportBurden({ setRoute, onBack }) {
 
               {calc.precise && typeof JTReportConvert === 'function' && (
                 <JTReportConvert
+                  calcId="burden"
+                  completeEligible={true}
+                  precise={calc.precise}
                   reportType="부담부증여 최적화"
                   reportTag="LEGACY"
                   reportSummary={`단순증여 ${bgWon(calc.noDebt)} · 최대 절세 여력 ${bgWon(calc.savings)}`}

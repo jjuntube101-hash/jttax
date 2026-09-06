@@ -308,6 +308,9 @@ function JTReportCompare({ setRoute, onBack }) {
 
               {calc.precise && typeof JTReportConvert === 'function' && (
                 <JTReportConvert
+                  calcId="compare"
+                  completeEligible={true}
+                  precise={calc.precise}
                   reportType="처분방법 비교 (증여·매매·상속)"
                   reportTag="LEGACY"
                   reportSummary={`증여 ${cmpWon((sc['증여'] || {})['총세부담'])} · 매매 ${cmpWon((sc['매매'] || {})['총세부담'])} · 상속 ${cmpWon((sc['상속'] || {})['총세부담'])} (세액만)`}

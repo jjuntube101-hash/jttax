@@ -659,6 +659,10 @@ function JTReportInheritance({ setRoute, onBack }) {
           {!inhBlocked && (
           <JTReportConvert
             setRoute={setRoute}
+            calcId="inheritance"
+            completeEligible={true}
+            precise={calc.precise}
+            quick={report.quick}
             reportType={calc.precise ? '상속세 정밀 계산' : '상속세 간이 계산'}
             reportTag="LEGACY"
             reportSummary={`총 납부세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}

@@ -230,7 +230,9 @@ function JTBooking({ setRoute }) {
       }
       /* jtEvent 로 감싸는 이유 — gtag 가 throw 하면(광고차단기 등) 이 자리가 catch 로
          빠져 «접수는 됐는데 실패 화면»이 뜬다. 계측이 접수를 망치지 않게 한다. */
-      window.jtEvent('booking_submit', { topic: form.topic, channel: form.channel });
+      // 260906 C0 — 예약 유래(booking_origin·route)를 동봉한다. 개인정보·금액 없음 (Chrome.jsx jtBookingOrigin)
+      window.jtEvent('booking_submit', Object.assign({ topic: form.topic, channel: form.channel },
+        (window.jtBookingOrigin ? window.jtBookingOrigin.params() : {})));
       setDone(true);
     } catch (e) {
       const D = window.JT_DATA.firm;

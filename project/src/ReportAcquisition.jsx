@@ -697,6 +697,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
           {!acqBlocked && (
           <JTReportConvert
             setRoute={setRoute}
+            calcId="acquisition"
+            completeEligible={true}
+            precise={calc.precise}
+            quick={report.quick}
             reportType={calc.precise ? '취득세 정밀 계산' : '취득세 간이 계산'}
             reportTag="LEGACY"
             reportSummary={`총 납부세액 ${formatWon(calc.totalTax)} / ${answers.acquisitionType}·${answers.propertyType} / ${commentary.headline || ''}`}

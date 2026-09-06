@@ -319,6 +319,7 @@ function JTReportVat({ setRoute, onBack }) {
               </div>
               {typeof JTReportConvert === 'function' && (
                 <JTReportConvert reportType="부가가치세 계산" reportTag="BOOKKEEPING"
+                  calcId="vat" completeEligible={true} precise={calc.precise}
                   reportSummary="면세사업자 — 부가세 면제"
                   reportDetail={buildVatDetail(answers, calc)} kakaoSummary={buildVatKakao(answers, calc)} setRoute={setRoute} />
               )}
@@ -388,6 +389,9 @@ function JTReportVat({ setRoute, onBack }) {
 
               {typeof JTReportConvert === 'function' && (
                 <JTReportConvert
+                  calcId="vat"
+                  completeEligible={true}
+                  precise={calc.precise}
                   reportType="부가가치세 계산"
                   reportTag="BOOKKEEPING"
                   reportSummary={`${calc.businessType} · ${calc.isRefund ? '예상 환급 ' + vatWon(calc.refund) : '예상 납부 ' + vatWon(calc.netTax)}`}

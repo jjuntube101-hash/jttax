@@ -783,6 +783,10 @@ function JTReportProperty({ setRoute, onBack }) {
               Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
           {typeof JTReportConvert === 'function' && !propBlocked && (
             <JTReportConvert
+              calcId="property"
+              completeEligible={true}
+              precise={calc.precise}
+              quick={report.quick}
               reportType="재산세"
               reportSummary={`${answers.propertyKind} 공시 ${formatWon(Number(answers.standardValue) || 0)} → 연 ${formatWon(calc.totalTax)}`}
               reportDetail={buildPropDetail(answers, calc, commentary)}

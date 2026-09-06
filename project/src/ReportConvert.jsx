@@ -9,7 +9,7 @@
    6. PDF 소프트 게이트 (이메일 입력 시 PDF)
 */
 
-const { useState: useCvtState, useMemo: useCvtMemo } = React;
+const { useState: useCvtState, useMemo: useCvtMemo, useEffect: useCvtEffect } = React;
 
 // ===== 1. 검토 배너 =====
 function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDetail, kakaoSummary }) {
@@ -535,7 +535,13 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
 window.JTConvertPdfGate = JTConvertPdfGate;
 
 // ===== 통합 랩퍼 =====
-function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, kakaoSummary, urgent }) {
+function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, kakaoSummary, urgent, calcId, completeEligible, precise, quick }) {
+  // calc_complete — «결과가 확정된» 계산기에서만 발화 (jtCalcComplete 정의는 Report.jsx, 세션당 1회)
+  useCvtEffect(function () {
+    if (completeEligible === true && calcId && window.jtCalcComplete) {
+      window.jtCalcComplete(calcId, { precise: precise, quick: quick });
+    }
+  }, [completeEligible, calcId, precise, quick]);
   return (
     <>
       <JTConvertBanner setRoute={setRoute} urgent={urgent} reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} kakaoSummary={kakaoSummary} />

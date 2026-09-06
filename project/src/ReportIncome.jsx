@@ -414,6 +414,10 @@ function JTReportIncome({ setRoute, onBack }) {
 
               {calc.precise && typeof JTReportConvert === 'function' && (
                 <JTReportConvert
+                  calcId="income"
+                  completeEligible={true}
+                  precise={calc.precise}
+                  quick={report.quick}
                   reportType="종합소득세 계산"
                   reportTag="BOOKKEEPING"
                   reportSummary={`과세표준 ${formatWon(calc.taxBase)} · 예상 총부담 ${formatWon(calc.total)}`}

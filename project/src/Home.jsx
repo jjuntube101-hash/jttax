@@ -380,7 +380,8 @@ function JTChannels({ setRoute }) {
             <div className="jt-channels__label">카카오톡 채널</div>
             {/* 채널 검색 ID 대신 라벨 표기 (260830 사용자 결재 F-6 — 종전엔 빈 문자열이 렌더됐다 A6) */}
             <div className="jt-channels__big">1:1 채팅 상담</div>
-            <div className="jt-channels__sub">채널에서 바로 채팅 · 자료 전송 가능 · 영업일 24h 내 회신</div>
+            {/* 260906 결재 H-5 — 카톡 채널을 «개정·기한 안내» 재방문 장치로 정식화(분기 1회 이상 발송, 채널 추가 보상 없음) */}
+            <div className="jt-channels__sub">채널에서 바로 채팅 · 자료 전송 가능 · 영업일 24h 내 회신 · 세법 개정·신고기한 안내(분기 1회 이상)</div>
           </a>
         </div>
       </div>
