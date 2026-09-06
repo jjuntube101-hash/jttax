@@ -140,6 +140,32 @@
   /* ---------- Layout ---------- */
   --container-max: 1280px;
   --gutter:        24px;
+
+  /* ---------- 장부(괘선) 토큰 — 홈 개편 v2 A-1 S1 (260906, 계획 v2.5) ----------
+     값의 정본 = 완성본 목업 디자인캔버스_260902/extract_260906/Main.dc.html 실측
+     (border-bottom 1px #cccccc 23곳 · border-top 2px #000 11곳 · repeat(12, …) 9곳 · 112px|1fr 5곳 · 숫자 ui-monospace 26곳).
+     ⚠️ 아직 어떤 선택자도 참조하지 않는다 — 렌더 diff 0 이 이 커밋(C2)의 계약이다. 장부화 C3+C4 가 redesign.css 에서 쓴다.
+     괘선은 CI 무채색만(hair=ink-300 · rule/thick=순흑). */
+  --rule-hair:      1px solid var(--jt-ink-300);   /* 행 구분선 (#cccccc) */
+  --rule-thin:      1px solid var(--jt-ink-900);   /* 표 머리·구획 */
+  --rule-thick:     2px solid var(--jt-ink-900);   /* 마스트헤드·1면 상단 */
+  --grid-cols:      12;                            /* 12열 마스트헤드 (좌 표제 8 / 우 계산표 4) */
+  --grid-gap:       24px;
+  --grid-label:     112px;                         /* 괘선 행 «112px | 1fr» 의 라벨 열 */
+  --font-num:       ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;  /* 금액·세율 (tabular) */
+
+  /* ---------- 상태색 3계 — P1a (계획 v2.5 A-1 S1) ----------
+     «아이덴티티는 모노톤, 이해를 돕는 의미색은 허용»(260815 판정). 전부 WCAG 4.5:1 이상 —
+     흰 바탕 / 연한 바탕 대비(260906 계산): ok 7.72 / 6.69 · warn 7.41 / 6.60 · danger 7.61 / 6.33.
+     출처: danger 만 목업 States.dc.html(#8c3a2e) 실값이고, ok·warn 과 세 -bg 는 목업에 없어 이 커밋에서
+     접근성 기준(4.5:1)으로 정한 값이다 — C3+C4 에서 목업 States 를 확장할 때 그 값으로 동기화한다(TASK-020 R1-F4).
+     빨강은 «틀리는 자리»에만(차단·오류). */
+  --st-ok:          #1f5e3a;
+  --st-ok-bg:       #e8f1ea;
+  --st-warn:        #7a4b00;
+  --st-warn-bg:     #fbf1dc;
+  --st-danger:      #8c3a2e;
+  --st-danger-bg:   #f6e7e4;
 }
 
 /* ===========================================================

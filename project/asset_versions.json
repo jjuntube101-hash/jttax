@@ -1,19 +1,19 @@
 {
   "project/dist/app.js": {
-    "v": "9",
-    "sha256": "9bf9f5db22981d5c4a2b41a5dde48468a3adfbb66d665065363ddef1a325ccdd"
+    "v": "10",
+    "sha256": "de196380bcb7e83fc896f8c8b033281ec16541b2167637f313ef735cbfe46900"
   },
   "project/src/styles.css": {
-    "v": "26",
-    "sha256": "6731b4140821815653350d08b6e2627aa08e383b9c9031c21190f4491cb524fd"
+    "v": "27",
+    "sha256": "b58652dd50760b592a9b909c44d2dac15f3fd2126485a6a8eb9ba5f9991e6aa5"
   },
   "project/src/redesign.css": {
     "v": "49",
     "sha256": "424bb5f0994c9bba9c7ae9d572b1edfe9ece541de5a48e372f52e57a000944f5"
   },
   "project/src/colors_and_type.css": {
-    "v": "2",
-    "sha256": "ba4ab89ead5c38173aa8ba89e27ed1615150ed82bc257ad7d7d4e747dc801d58"
+    "v": "3",
+    "sha256": "bdeb321ef20ab7313a3181a3500024d341285e0ccf518b81ed54e86b9d05575c"
   },
   "project/assets/og-image.png": {
     "v": "2",
