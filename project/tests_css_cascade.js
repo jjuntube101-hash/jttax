@@ -37,16 +37,20 @@
 
 const fs = require('fs');
 const path = require('path');
-
+/* ── 검사 대상 = index.html 이 «실제로 로드하는 순서»의 시트 전부 (260906 C1 확장) ─────
+   styles.css(v26) → redesign.css(v49). styles.css:2 는 @import 로 colors_and_type.css 를 끌어오므로
+   캐스케이드 순서는 colors_and_type → styles(나머지) → redesign 이다. 파서·로더는 css_cascade_lib.js.
+   ⛔ 세 장을 그대로 이어붙이지 않는다 — 이유는 lib 머리말(«@import prelude»).
+   자기시험용 환경변수(운영 실행에서는 절대 설정되지 않는다 — tests_css_cascade_selftest.js 만 쓴다):
+     CSS_CASCADE_TARGET  = redesign.css 자리에 끼울 «결함 주입 사본» 경로 (260809 부터 있던 것)
+     CSS_CASCADE_SOURCES = JSON {"project/src/styles.css": "사본경로", ...} — 루트 상대경로 이름으로 시트를 바꿔 끼운다 */
 const ROOT = path.join(__dirname, '..');
-/* 자기시험용 — 원본을 건드리지 않고 «결함을 주입한 사본»을 검사시킬 수 있게 한다.
-   운영 실행에서는 절대 설정되지 않는다(tests_css_cascade_selftest.js 만 쓴다). */
-const CSS_PATH = process.env.CSS_CASCADE_TARGET
-  ? path.resolve(process.env.CSS_CASCADE_TARGET)
-  : path.join(ROOT, 'project', 'src', 'redesign.css');
+const lib = require('./css_cascade_lib.js');
+const { maskOut, splitTop, expand, mediaText } = lib;
+const overrides = lib.envOverrides(process.env);
 
-const SHEET_NOTE = 'index.html 은 styles.css 도 로드한다 — 히어로 선택자가 없어 대상에서 제외했다. ' +
-                   '거기에 .jt-brandmoment 류가 생기면 이 게이트를 그 파일까지 확장해야 한다.';
+const SHEET_NOTE = '특정도가 «다른» 선택자끼리의 승패·인라인 style·JS 가 덮는 값은 이 게이트 밖이다 — ' +
+                   '브라우저 computed style(신선 로드 4해상도)로 보완한다(계획 v2.5 A-1).';
 
 /* ── 알려진 기존 위반 (260809 등재) ───────────────────────────────────────
    히어로 작업 중 이 게이트를 새로 만들면서 «전부터 있던» 위반 5건이 같이 드러났다.
@@ -73,6 +77,32 @@ const KNOWN = [
   { key: 'SEL .jt-report-feature',
     실측: 'DOM 0개',
     사유: '보고서 변환 페이지 개편 때 사라진 클래스. 규칙만 남았다.' },
+  /* ── 260906 C1: 검사 범위를 styles.css 까지 넓히자 드러난 «구 디자인 잔재» 21건 ──
+     전부 styles.css 의 미디어쿼리 압축 규칙이 겨냥하는 클래스인데 JSX·HTML 어디에도 없다
+     (구 히어로 jt-hero__*·구 팀 카드 jt-team*·수수료표 jt-fees__*·jt-creds 등). 이번 범위(게이트 확장,
+     라이브 시각 변화 0)에서는 손대지 않고 등재만 한다 — 장부화 C3+C4 가 styles.css 구 블록을
+     지우면서 «순감소»시키고, 해소되면 아래 STALE 검사가 예외 삭제를 요구한다. */
+  { key: 'SEL .jt-hero__scope', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-hero__pledge', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-hero__copyswitch', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-hero__copyswitch-btn', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-team-feature', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-team-feature__head', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-team-feature__avatar', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-team-feature__name', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-team-feature__grid', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-team-feature__bio', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-hero__impact', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-hero__impact-cell', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-hero__impact-num', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-fees__row', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-fees__range', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-team__card', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-section--inverse', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-creds', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-hero__meta', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-hero__tagrow', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
+  { key: 'SEL .jt-team__card--featured', 실측: 'DOM 0개', 사유: 'styles.css 구 디자인 잔재(260906 C1 등재) — C3+C4 에서 제거.' },
 ];
 const knownSeen = new Set();
 
@@ -82,203 +112,84 @@ function fail(code, msg, key) {
   fails.push(code + '  ' + msg);
 }
 
-/* ══ CSS 파서 ═══════════════════════════════════════════════════════════════
-   ⚠️ 260809 Codex R1 P1-1·P1-2 로 재작성했다. 초판은 주석·중괄호·쉼표를 «원문»에서
-      직접 찾아, 문자열 리터럴 안의 그것들에 속았다. 실제 피해가 이미 있었다 —
-      `:where(h1,h2,h3,...)` 4건이 쉼표에서 잘려 `:where(h1` 같은 «없는 선택자»가
-      규칙 목록에 들어가 있었다.
 
-   해법: 원문과 «같은 길이»의 마스크를 만들어 주석·문자열 내부를 공백으로 지운다.
-   구조(중괄호·세미콜론·쉼표·괄호)는 마스크에서 찾고, 텍스트는 원문에서 자른다.
-   길이가 같으므로 오프셋이 그대로 통하고 줄번호도 어긋나지 않는다. */
-/* @param structural — true 면 «구조 탐색용»(문자열·식별자 이스케이프까지 공백),
-                       false 면 «텍스트 추출용»(주석만 공백).
-   ⚠️ 260809 Codex R3 P1: 초판은 구조용 마스크에서 선택자까지 잘라, 정상 CSS 인
-      `.jt-brand\6d oment`(= .jt-brandmoment) 가 `.jt-brand   oment` 로 «의미가 바뀐 채»
-      저장됐다. 구조는 구조용으로 찾고 텍스트는 텍스트용에서 잘라야 한다. */
-function maskOut(css, structural) {
-  if (structural === undefined) structural = true;
-  const m = css.split('');
-  const blank = (from, to) => {
-    for (let k = from; k < to && k < css.length; k++) {
-      if (m[k] !== '\n' && m[k] !== '\r') m[k] = ' ';
-    }
-  };
-  let i = 0;
-  while (i < css.length) {
-    const ch = css[i];
-    if (ch === '/' && css[i + 1] === '*') {
-      const end = css.indexOf('*/', i + 2);
-      const stop = end < 0 ? css.length : end + 2;
-      blank(i, stop); i = stop; continue;
-    }
-    if ((ch === '"' || ch === "'") && structural) {
-      let k = i + 1;
-      while (k < css.length) {
-        if (css[k] === '\\') {
-          // CSS 는 역슬래시+개행(CRLF 포함)을 «이어짐»으로 본다 — 여기서 끊으면
-          // 그 뒤 구조 문자가 파서에 노출된다 (260809 Codex R2 P1-3).
-          if (css[k + 1] === '\r' && css[k + 2] === '\n') { k += 3; continue; }
-          k += 2; continue;
-        }
-        if (css[k] === ch) { k++; break; }
-        if (css[k] === '\n' || css[k] === '\r') break;   // 이스케이프 안 된 개행에서 끝
-        k++;
+const loaded = lib.loadSheets({ root: ROOT, overrides });
+const sheets = loaded.sheets;
+const rules = lib.parseSheets(sheets);
+/* 메시지의 자리 표기 — «파일:줄». 3장을 한 캐스케이드로 보므로 줄번호만으로는 어느 파일인지 모른다. */
+const at = (x) => (x.file ? x.file + ':' : '') + x.line + '행';
+
+console.log('[css-cascade] 규칙 ' + rules.length + '개 · 선언 ' + lib.declCount() + '개 — ' +
+            sheets.map((s) => s.name + '(' + s.ruleCount + ')').join(' → ') + '  (index.html 로드 순서, @import 인라인)');
+{
+  const remote = sheets.reduce((n, s) => n + s.imports.filter((i) => !lib.resolveImport(i.spec, s.path)).length, 0);
+  const local = sheets.reduce((n, s) => n + s.imports.filter((i) => lib.resolveImport(i.spec, s.path)).length, 0);
+  console.log('  ⓘ @import 처리: 로컬 ' + local + '건 인라인 · 원격(폰트) ' + remote + '건 제거' +
+              (loaded.external ? ' · index.html 외부 스타일시트 ' + loaded.external + '건은 읽지 않음' : '') + '. ' + SHEET_NOTE);
+}
+
+/* ── ⓪ @import 가 prelude 에 «남아 있지 않은가» (C1 신설 검사 ①) ──────────────────────
+   @import 문이 지워지지 않고 남으면 파서가 `@import …  .jt-btn--primary{` 를 «@ 로 시작하는 prelude
+   하나»로 읽어 그 뒤 첫 블록을 통째로 건너뛴다 — 그러면 이후 검사 전부가 «한 블록 빠진 캐스케이드»를
+   본다. 세미콜론이 빠진 @import 는 브라우저도 그 블록을 버리므로(잘못된 at-rule) 잡는 것이 맞다.
+   자기시험 NC-B1(주입 규칙이 잡히는가)·NC-B2(세미콜론 빠진 @import)가 이 검사를 음성으로 확인한다. */
+{
+  for (const s of sheets) {
+    /* «읽되 계산 못 하는» 문법은 fail-closed — 계약 경계 밖(TASK-020 R3-F3·R4-F2). 조용히 건너뛰면 «본 척»이다. */
+    for (const u of s.unsupported || []) {
+      if (u.kind === 'import-layer') {
+        fail('CSS-IMPORT-LAYER',
+          `${s.name}:${u.line}행 ${u.what}: 캐스케이드 레이어는 이 게이트가 계산하지 못한다(@layer 미지원 — 레이어 순서·` +
+          `important 역순이 필요). 미디어 조건으로 «오인해 적용»하지 않고 막는다. 레이어를 쓰려면 게이트를 먼저 확장하라.`);
+      } else {
+        fail('CSS-UNSUPPORTED-SYNTAX',
+          `${s.name}:${u.line}행 ${u.what} (${u.kind}): 이 게이트의 계약 밖 문법이다(@layer 블록·후행 @layer/@namespace 문·` +
+          `@container·@scope·CSS nesting·알 수 없는 at-rule). 캐스케이드에 영향을 주는데 계산하지 못하므로 «건너뛰지 않고» 막는다 — ` +
+          `게이트(css_cascade_lib.js)를 먼저 확장하거나 그 문법을 쓰지 마라.`);
       }
-      blank(i, k); i = k; continue;
     }
-    /* CSS 식별자 이스케이프 — `.a\,b` 나 `.a\(b\)` 의 `\,` `\(` `\)` 는 구조 문자가
-       아니라 «이름의 일부»다. 마스크에서 지워야 splitTop 이 안 속는다. */
-    if (structural && ch === '\\' && i + 1 < css.length && css[i + 1] !== '\n' && css[i + 1] !== '\r') {
-      blank(i, i + 2); i += 2; continue;
-    }
-    i++;
-  }
-  return m.join('');
-}
-
-/* CSS 선택자의 이스케이프를 «실제 문자»로 되돌린다.
-   ⚠️ 260809 Codex R3 P1: `.jt-brandmoment__slog\61 n` 은 브라우저에게
-      `.jt-brandmoment__slogan` 과 «같은 선택자»다. 표기를 그대로 두면 검사 대상과
-      매칭되지 않아 그 규칙이 통째로 안 보인다 — 조용히 못 보는 쪽이라 더 나쁘다.
-   형식: \XXXXXX(16진 1~6자리, 뒤에 공백 하나 소비 — CRLF 는 «둘이 아니라 하나») 또는 \C.
-   0·서로게이트(D800~DFFF)·범위 초과는 스펙대로 U+FFFD 로 (260809 Codex R4 P2). */
-function unescapeSelector(s) {
-  return s.replace(/\\([0-9a-fA-F]{1,6})(?:\r\n|[ \t\n\r\f])?|\\([^\n\r\f])/g, (m, hex, ch) => {
-    if (!hex) return ch;
-    const cp = parseInt(hex, 16);
-    if (!cp || cp > 0x10FFFF || (cp >= 0xD800 && cp <= 0xDFFF)) return '�';
-    try { return String.fromCodePoint(cp); } catch (_e) { return '�'; }
-  });
-}
-
-function lineOf(css, offset) {
-  let n = 1;
-  for (let i = 0; i < offset && i < css.length; i++) if (css[i] === '\n') n++;
-  return n;
-}
-
-/* 마스크에서 «괄호 깊이 0» 인 구분자로만 자른다. :is(.a,.b) 나 clamp(a,b,c) 를 지킨다. */
-function splitTop(text, masked, from, to, sep) {
-  const out = [];
-  let depth = 0, start = from;
-  for (let i = from; i < to; i++) {
-    const c = masked[i];
-    if (c === '(') depth++;
-    else if (c === ')') depth = Math.max(0, depth - 1);
-    else if (c === sep && depth === 0) { out.push([start, i]); start = i + 1; }
-  }
-  out.push([start, to]);
-  return out.map(([a, b]) => ({ from: a, to: b, text: text.slice(a, b) }));
-}
-
-let declSeq = 0;   /* 선언 «하나하나»에 순번을 준다.
-   ⚠️ 초판은 규칙 단위로만 순번을 매겨, 같은 규칙 안의 뒤 선언이 앞 선언을 이기는 것을
-      반영하지 못했다(260809 Codex R1 P1-4). 예: { padding:100px; padding-top:10px } 는
-      실제 승자가 10px 인데 100px 로 계산했다. */
-
-function parseDecls(text, masked, from, to) {
-  const out = [];
-  for (const seg of splitTop(text, masked, from, to, ';')) {
-    let colon = -1;
-    let depth = 0;
-    for (let i = seg.from; i < seg.to; i++) {
-      const c = masked[i];
-      if (c === '(') depth++;
-      else if (c === ')') depth = Math.max(0, depth - 1);
-      else if (c === ':' && depth === 0) { colon = i; break; }
-    }
-    if (colon < 0) continue;
-    const prop = text.slice(seg.from, colon).trim().toLowerCase();
-    const value = text.slice(colon + 1, seg.to).trim();
-    if (!prop || prop.startsWith('--') || /\s/.test(prop)) continue;
-    out.push({ prop, value, important: /!\s*important\s*$/i.test(value), seq: declSeq++ });
-  }
-  return out;
-}
-
-function parseRules(css, masked, textMask) {
-  const rules = [];   // {selector, decls, media, line}
-
-  function scan(from, to, media) {
-    let j = from;
-    while (j < to) {
-      const open = masked.indexOf('{', j);
-      if (open < 0 || open >= to) break;
-
-      let depth = 1, k = open + 1;
-      while (k < to && depth > 0) {
-        if (masked[k] === '{') depth++;
-        else if (masked[k] === '}') depth--;
-        k++;
-      }
-      const bodyFrom = open + 1, bodyTo = k - 1;
-
-      /* ⛔ prelude·선언은 «마스크»에서 자른다. 원본에서 자르면 주석이 그대로 딸려와
-         선택자가 된다 — 재작성 직후 실제로 규칙 목록에 「/* 간이 계산기의 …」 같은
-         가짜 선택자가 들어가 .jt-brandmoment 가 0개로 나왔다(260809). 마스크는 주석·
-         문자열을 «같은 길이의 공백»으로 지우므로 오프셋과 줄번호는 그대로 통한다. */
-      const rawPrelude = textMask.slice(j, open);
-      const prelude = rawPrelude.trim();
-      // 줄번호는 «선택자의 첫 글자» 기준. j 는 앞 규칙이 끝난 자리라 그대로 쓰면
-      // 사이의 빈 줄·주석만큼 위로 어긋난다(260809 자기시험에서 적발).
-      const lead = rawPrelude.length - rawPrelude.replace(/^\s*/, '').length;
-      const startOff = j + lead;
-
-      if (prelude.startsWith('@')) {
-        const name = (prelude.match(/^@([a-z-]+)/i) || [])[1] || '';
-        /* ⚠️ 조건을 «문자열로 이어 붙이지» 않는다. `A, B` + ' AND ' + `C` 는
-           (A OR B) AND C 가 아니라 A OR (B AND C) 로 읽힌다 — 260809 Codex R2 P1-1.
-           배열로 쌓고 «전부 만족» 으로 평가한다.
-           @supports 는 미디어 조건이 아니므로 따로 표시한다(같은 평가기에 넣으면
-           해석 실패로 전부 보류가 된다 — R2 P1-5). */
-        if (name === 'media') {
-          const cond = prelude.slice(name.length + 1).trim();
-          scan(bodyFrom, bodyTo, (media || []).concat([{ kind: 'media', cond }]));
-        } else if (name === 'supports') {
-          const cond = prelude.slice(name.length + 1).trim();
-          scan(bodyFrom, bodyTo, (media || []).concat([{ kind: 'supports', cond }]));
-        }
-        // @keyframes / @font-face 등은 캐스케이드 대상이 아니라 건너뛴다
-      } else if (prelude) {
-        const decls = parseDecls(textMask, masked, bodyFrom, bodyTo);
-        for (const sel of splitTop(textMask, masked, j + lead, open, ',')) {
-          const s = sel.text.trim();
-          if (!s) continue;
-          rules.push({ selector: unescapeSelector(s), decls, media: media && media.length ? media : null, line: lineOf(css, startOff) });
-        }
-      }
-      j = k;
+    const left = maskOut(s.raw, true).match(/@import\b/gi);
+    if (left) {
+      fail('CSS-IMPORT-PRELUDE',
+        `${s.name}: 브라우저가 무시하거나 못 읽는 @import 문 ${left.length}건이 남았다(세미콜론 누락 · 두 문이 붙음 · 다른 규칙 뒤/` +
+        `블록 안 · 첫 @import 뒤의 @layer 문 · layer() 등). 이 게이트는 그런 시트를 «적용한 척» 하지 않고 막는다 — @import 를 ` +
+        `시트 머리에 \`@import url("…");\` 형태로 두어라(계획 v2.5 A-1 R1-F1, TASK-020 R2-F1·R3-F1).`);
     }
   }
-
-  scan(0, css.length, null);
-  return rules;
+  const first = rules.filter((r) => r.file === 'project/src/styles.css').sort((a, b) => a.line - b.line)[0];
+  console.log('  ⓪ @import 제거 후 styles.css 첫 규칙: ' + (first ? at(first) + ' ' + first.selector : '(없음)'));
 }
 
-/* shorthand → longhand. 값은 보지 않는다 — shorthand 는 «항상» 하위 속성을 전부 설정한다. */
-const SHORTHAND = {
-  padding: ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'],
-  margin: ['margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
-  inset: ['top', 'right', 'bottom', 'left'],
-  gap: ['row-gap', 'column-gap'],
-  'grid-gap': ['row-gap', 'column-gap'],
-};
-const expand = (prop) => SHORTHAND[prop] || [prop];
-
-/* 조건 배열을 사람이 읽는 한 줄로. KNOWN key·메시지가 이 표기를 쓴다. */
-function mediaText(media) {
-  if (!media) return '';
-  return media.map((x) => (x.kind === 'supports' ? '@supports ' + x.cond : x.cond)).join(' AND ');
+/* ── ⓪-2 파일 간 덮어쓰기 «재고» (C1 신설 검사 ②) ───────────────────────────────
+   같은 선택자·속성을 두 파일이 «무조건 규칙»으로 선언한 자리. 정상 덮어쓰기(뒤 파일이 이김)는
+   장부화(C3+C4)에서 styles.css 구 블록을 지우며 순감소시킬 «숫자»이고, 역전(뒤 파일이 앞 파일의
+   !important 에 짐)은 «썼는데 안 먹는» 그 사고라 FAIL 로 올린다. 등재된 기존분은 KNOWN(`XFILE …`). */
+{
+  const byKey = new Map();
+  for (const r of rules) {
+    if (r.media) continue;
+    for (const d of r.decls) for (const lh of expand(d.prop)) {
+      const key = r.selector + '||' + lh;
+      if (!byKey.has(key)) byKey.set(key, []);
+      byKey.get(key).push({ file: r.file, line: r.line, important: d.important, seq: d.seq });
+    }
+  }
+  let forward = 0, blocked = 0;
+  for (const [key, list] of byKey) {
+    if (new Set(list.map((x) => x.file)).size < 2) continue;
+    let best = list[0];
+    for (const x of list) if ((x.important && !best.important) || (x.important === best.important && x.seq > best.seq)) best = x;
+    const last = list[list.length - 1];
+    if (best.file === last.file) { forward++; continue; }
+    blocked++;
+    const cut = key.indexOf('||');
+    fail('CSS-XFILE-BLOCKED',
+      `${key.slice(0, cut)} 의 ${key.slice(cut + 2)}: 뒤 파일 ${at(last)} 의 «무조건» 선언이 앞 파일 ${at(best)} 의 ` +
+      `!important 에 막혀 적용되지 않는다. 뒤 파일의 의도가 죽어 있다 — 앞 규칙의 !important 를 걷어내거나 뒤 선언을 옮겨라.`,
+      'XFILE ' + key.slice(0, cut) + ' | ' + key.slice(cut + 2));
+  }
+  console.log('  ⓪-2 파일 간 덮어쓰기: 정상(뒤 파일이 이김) ' + forward + '건 · 역전(앞 파일 !important 에 막힘) ' + blocked + '건');
 }
-
-const raw = fs.readFileSync(CSS_PATH, 'utf8');
-const masked = maskOut(raw, true);
-const textMask = maskOut(raw, false);
-const rules = parseRules(raw, masked, textMask);
-
-console.log('[css-cascade] 규칙 ' + rules.length + '개 · 선언 ' + declSeq + '개 — ' + path.relative(ROOT, CSS_PATH));
-console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
 
 /* ── ① 미디어쿼리가 무조건 규칙에 덮여 «절대 적용되지 않는» 선언 ──────────
    CSS 캐스케이드(같은 특정도):
@@ -292,7 +203,7 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
       for (const lh of expand(d.prop)) {
         const key = r.selector + '||' + lh;
         if (!byKey.has(key)) byKey.set(key, []);
-        byKey.get(key).push({ media: r.media, important: d.important, seq: d.seq, line: r.line, prop: d.prop });
+        byKey.get(key).push({ media: r.media, important: d.important, seq: d.seq, line: r.line, file: r.file, prop: d.prop });
       }
     }
   }
@@ -311,8 +222,8 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
       if (killer) {
         dead++;
         fail('CSS-DEAD-MQ',
-          `${selector} 의 ${lh}: @media(${mediaText(m.media)}) 안 ${m.line}행 선언이 ` +
-          `${killer.line}행의 «무조건» 규칙(${killer.prop}${killer.important ? ' !important' : ''})에 덮여 ` +
+          `${selector} 의 ${lh}: @media(${mediaText(m.media)}) 안 ${at(m)} 선언이 ` +
+          `${at(killer)}의 «무조건» 규칙(${killer.prop}${killer.important ? ' !important' : ''})에 덮여 ` +
           `어떤 화면에서도 적용되지 않는다. 미디어쿼리 블록을 그 규칙 «뒤»로 옮겨라.`,
           `${selector} | ${lh} | ${mediaText(m.media)}`);
       }
@@ -358,7 +269,7 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
       seen.add(name);
       dead++;
       fail('CSS-DEAD-SEL',
-        `.${name} 를 겨냥한 압축 규칙(${r.line}행, @media ${mediaText(r.media)})이 있는데 ` +
+        `.${name} 를 겨냥한 압축 규칙(${at(r)}, @media ${mediaText(r.media)})이 있는데 ` +
         `그 클래스가 JSX·HTML 어디에도 없다. 요소를 갈아치우고 규칙만 남은 것이다.`,
         'SEL .' + name);
     }
@@ -423,13 +334,17 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
   /* 중첩된 조건 배열 전체를 평가 — «전부» 만족해야 참.
      ⚠️ 문자열로 이어 붙이지 않는 이유가 여기 있다. 부모가 `A, B`(OR)이고 자식이 `C`면
         올바른 뜻은 (A OR B) AND C 인데, 이어 붙이면 A OR (B AND C) 가 된다 (Codex R2 P1-1).
-     @supports 는 «기능 지원» 질의라 뷰포트로 판정할 수 없다. 이 프로젝트가 쓰는 것은
-     display:grid 류의 «오늘날 전부 지원되는» 기능뿐이므로 참으로 두되, 쓰이기 시작하면
-     보류로 바꿔야 한다 — 그래서 건수를 따로 센다. */
+     @supports(및 조건부 @import 의 supports(…))는 «기능 지원» 질의라 뷰포트로 판정할 수 없다.
+     260809 초판은 «오늘날 전부 지원되는 기능뿐»이라며 참으로 뒀는데, 그러면 거짓인 조건의 규칙을 승자로
+     계산해 구멍을 메운 척한다(TASK-020 R2-F2). 이제 lib.supportsMatches 가 확정하는 단일 선언
+     (display:grid 류)만 참, 나머지는 «보류» — 승자를 바꿀 수 있으면 CSS-UNDECIDED 로 FAIL. */
   function mediaMatches(media, vp) {
     let unknown = false;
     for (const part of media) {
-      if (part.kind === 'supports') continue;   // 지원 질의는 뷰포트로 판정 불가 — 참으로 둔다(아래 고지)
+      if (part.kind === 'supports') {
+        if (lib.supportsMatches(part.cond) !== true) unknown = true;
+        continue;
+      }
       const r = oneQuery(part.cond, vp);
       if (r === false) return false;
       if (r === null) unknown = true;
@@ -454,7 +369,7 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
           보류_미디어++;
           for (const d of r.decls) {
             if (expand(d.prop).includes(longhand)) {
-              보류후보.push({ line: r.line, media: mediaText(r.media), important: d.important, seq: d.seq });
+              보류후보.push({ line: r.line, file: r.file, media: mediaText(r.media), important: d.important, seq: d.seq });
             }
           }
           continue;
@@ -463,7 +378,7 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
       }
       for (const d of r.decls) {
         if (!expand(d.prop).includes(longhand)) continue;
-        const cand = { media: r.media, important: d.important, seq: d.seq, line: r.line, value: d.value };
+        const cand = { media: r.media, important: d.important, seq: d.seq, line: r.line, file: r.file, value: d.value };
         if (!best) { best = cand; continue; }
         if (cand.important && !best.important) best = cand;
         else if (cand.important === best.important && cand.seq > best.seq) best = cand;
@@ -481,6 +396,12 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
     return { best, blocked };
   }
 
+  /* 길이 값의 «모양» 검사 — 정식 문법 전체가 아니라, 이 저장소가 쓰는 형태(px·vw·vh·rem·em·%·0·auto·clamp/min/max/calc/var·전역 키워드)만.
+     여기서 걸리면 «무효 값이 승자가 되는 것»을 통과시키지 않는다(TASK-020 R5-F2). */
+  const looksLikeLength = (v) => {
+    const s = String(v).replace(/!\s*important\s*$/i, '').trim();
+    return /^(0|auto|inherit|initial|unset|revert|-?\d+(?:\.\d+)?(px|rem|em|vh|vw|%|svh|dvh|lvh))$/i.test(s) || /^(clamp|min|max|calc|var)\(/i.test(s);
+  };
   const TARGETS = [
     { sel: '.jt-brandmoment', prop: 'padding-top', 뭐: '히어로 위 여백' },
     { sel: '.jt-bm-primary', prop: 'height', 뭐: '로고 높이' },
@@ -490,7 +411,7 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
   const 보류FAIL = (vp, sel, prop, b) => {
     blockedN++;
     fail('CSS-UNDECIDED',
-      `${vp.w}×${vp.h}(${vp.이름}): ${sel} 의 ${prop} 을 정하는 규칙 중 ${b.line}행 ` +
+      `${vp.w}×${vp.h}(${vp.이름}): ${sel} 의 ${prop} 을 정하는 규칙 중 ${at(b)} ` +
       `@media(${b.media}) 를 «해석하지 못했다». 이 조건이 실제로는 승자일 수 있어 판정을 낼 수 없다. ` +
       `게이트가 이해하는 형태(px 단위 max-/min-width·height, and·콤마 결합)로 바꾸거나 ` +
       `tests_css_cascade.js 의 matchOne 을 넓혀라. ⛔ 「모르니까 통과」로 두지 않는다.`);
@@ -501,11 +422,20 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
       const { best: w, blocked } = winner(t.sel, t.prop, vp);
       if (blocked) 보류FAIL(vp, t.sel, t.prop, blocked);
       if (!w) { fail('CSS-HERO-NONE', `${vp.w}×${vp.h}(${vp.이름}): ${t.sel} 의 ${t.prop} 을 정하는 규칙이 없다.`); continue; }
+      /* 값이 «길이로 읽히지 않으면» 브라우저는 그 선언을 버리고 다음 후보를 쓴다(CSS Syntax 3 §8). 게이트는 값을 검증하지
+         않으므로(260809 설계) 그런 승자를 «본 척» 하지 않고 보류로 올린다(TASK-020 R5-F2). 검사 대상 속성에 한정. */
+      if (!looksLikeLength(w.value)) {
+        blockedN++;
+        fail('CSS-UNDECIDED',
+          `${vp.w}×${vp.h}(${vp.이름}): ${t.sel} 의 ${t.prop} 승자 «${w.value}»(${at(w)})를 길이로 읽지 못했다 — 브라우저는 무효 값을 ` +
+          `버리고 다른 규칙을 쓰므로 판정을 낼 수 없다. 값을 px·vw·vh·rem·em·%·clamp/min/max/calc/var 형태로 쓰거나 looksLikeLength 를 넓혀라.`);
+        continue;
+      }
       if (!w.media) {
         holes++;
         fail('CSS-HERO-HOLE',
           `${vp.w}×${vp.h}(${vp.이름})에서 ${t.뭐}(${t.sel} ${t.prop})가 ` +
-          `«압축 규칙에 안 걸리고» ${w.line}행 기본값 «${w.value}» 을 그대로 쓴다. ` +
+          `«압축 규칙에 안 걸리고» ${at(w)} 기본값 «${w.value}» 을 그대로 쓴다. ` +
           `첫 화면에서 「세액 계산」 버튼이 접힐 수 있는 구간이다 — 브라우저에서 실측하고 구간 규칙을 넣어라.`);
       }
     }
@@ -558,7 +488,7 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
       /* 길이식을 계산 못 하면 하한을 «확인하지 못한» 것이다. 로그만 찍고 통과하면
          그게 곧 「안 본 것을 봤다고 말하는 일」이다(260809 Codex R2 P2). */
       fail('CSS-UNDECIDED',
-        `${vp.w}×${vp.h}(${vp.이름}): 슬로건 크기 «${w.value}»(${w.line}행)를 계산하지 못해 ` +
+        `${vp.w}×${vp.h}(${vp.이름}): 슬로건 크기 «${w.value}»(${at(w)})를 계산하지 못해 ` +
         `하한 ${SLOGAN_MIN}px 준수를 확인할 수 없다. px·vw·vh·clamp·min·max 로 쓰거나 evalLen 을 넓혀라.`);
       continue;
     }
@@ -566,7 +496,7 @@ console.log('  ⓘ 검사 대상은 이 파일 하나다. ' + SHEET_NOTE);
       small++;
       fail('CSS-SLOGAN-SMALL',
         `${vp.w}×${vp.h}(${vp.이름})에서 첫 화면 슬로건이 ${px.toFixed(1)}px 로 그려진다 ` +
-        `(하한 ${SLOGAN_MIN}px). ${w.line}행 «${w.value}» 이 이 폭에서 하한까지 떨어진 것이다. ` +
+        `(하한 ${SLOGAN_MIN}px). ${at(w)} «${w.value}» 이 이 폭에서 하한까지 떨어진 것이다. ` +
         `브랜드 문장을 지키려고 안 2 를 골랐다 — 이 크기면 그 이유가 사라진다.`);
     }
   }

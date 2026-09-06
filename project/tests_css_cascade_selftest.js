@@ -259,6 +259,223 @@ check('NC-18 16진 이스케이프 뒤 CRLF 를 개행 하나로 소비하는가
   original + '\n@media (max-width: 640px){ .jt-brandmoment__slog\\61\r\nn{ font-size: 20px !important; } }\n',
   'CSS-SLOGAN-SMALL');
 
+/* ── C1 (260906) — 3장 확장·@import 인라인·브레이크포인트 게이트 음성 시험 ─────────────
+   게이트가 styles.css(+@import colors_and_type.css)·redesign.css 를 한 캐스케이드로 읽게 되면서
+   «못 보는 쪽»이 하나 더 생겼다: @import 문. 옛 파서는 `@import …; .jt-btn--primary{` 를 prelude
+   하나로 읽어 첫 블록을 통째로 건너뛰었다(계획 v2.5 A-1 R1-F1). 아래 넷이 그 구멍과 새 게이트를 «음성»으로 확인한다.
+   NC-B1: styles.css 의 @import «바로 뒤»에 죽은 미디어 규칙 주입 → 첫 블록까지 읽는다면 CSS-DEAD-MQ
+          (styles.css:15 의 !important 무조건 규칙에 덮이므로). 건너뛰면 조용히 통과한다.
+   NC-B2: styles.css @import 의 세미콜론을 지움(브라우저도 그 뒤 블록을 버리는 형태) → CSS-IMPORT-PRELUDE
+   NC-B3: redesign.css 사본에 허용 구간 밖 폭(700px) 규칙 주입 → tests_css_breakpoints.js 가 CSS-BP-NEW
+   NC-B4: 등재된 비표준 폭(760px)에 규칙 하나 더 → CSS-BP-GROW */
+const BP_GATE = path.join(__dirname, 'tests_css_breakpoints.js');
+const stylesOriginal = fs.readFileSync(path.join(ROOT, 'project', 'src', 'styles.css'), 'utf8');
+function runWith(gate, env, 이름, 기대코드) {
+  const r = spawnSync(process.execPath, [gate], { env: { ...process.env, ...env }, encoding: 'utf8' });
+  const out = (r.stdout || '') + (r.stderr || '');
+  const 잡음 = 기대코드 === 'PASS' ? r.status === 0 : (r.status !== 0 && out.indexOf(기대코드) >= 0);
+  results.push({ 이름, 기대코드, 잡음, exit: r.status });
+  console.log((잡음 ? '  ✓' : '  ✗') + ' ' + 이름 + '  → ' + (잡음 ? (기대코드 === 'PASS' ? 'PASS' : '잡음(' + 기대코드 + ')') : 'FAIL: 놓쳤다 exit=' + r.status));
+  if (!잡음) console.log(out.split('\n').slice(0, 8).map((l) => '      ' + l).join('\n'));
+}
+function stylesProbe(css) {
+  const p = path.join(tmpDir, 'styles-probe.css');
+  fs.writeFileSync(p, css);
+  return { CSS_CASCADE_SOURCES: JSON.stringify({ 'project/src/styles.css': p }) };
+}
+{
+  const injected = stylesOriginal.replace(/(@import[^;]*;)/, '$1\n@media (max-width: 640px){ .jt-btn--primary{ background: red; } }');
+  if (injected === stylesOriginal) {
+    console.log('  ✗ NC-B1 준비 실패 — styles.css 의 @import 를 못 찾았다');
+    results.push({ 이름: 'NC-B1 @import 뒤 죽은 규칙', 잡음: false, exit: -1 });
+  } else {
+    runWith(GATE, stylesProbe(injected), 'NC-B1 @import 바로 뒤 죽은 미디어 규칙 주입 → 첫 블록까지 읽고 잡는가', 'CSS-DEAD-MQ');
+  }
+}
+{
+  const noSemi = stylesOriginal.replace(/(@import[^;]*);/, '$1');
+  if (noSemi === stylesOriginal) {
+    console.log('  ✗ NC-B2 준비 실패 — styles.css 의 @import 를 못 찾았다');
+    results.push({ 이름: 'NC-B2 세미콜론 빠진 @import', 잡음: false, exit: -1 });
+  } else {
+    runWith(GATE, stylesProbe(noSemi), 'NC-B2 세미콜론 빠진 @import 가 첫 블록을 삼키면 알리는가', 'CSS-IMPORT-PRELUDE');
+  }
+}
+{
+  const p = path.join(tmpDir, 'bp-probe.css');
+  fs.writeFileSync(p, original);
+  runWith(BP_GATE, { CSS_CASCADE_TARGET: p }, '양성 대조군(브레이크포인트 게이트, 원본 무개조)', 'PASS');
+  fs.writeFileSync(p, original + '\n@media (max-width: 700px){ .jt-x{ padding: 1px; } }\n');
+  runWith(BP_GATE, { CSS_CASCADE_TARGET: p }, 'NC-B3 허용 구간 밖 폭(700px) 규칙 주입 → 새 브레이크포인트', 'CSS-BP-NEW');
+  fs.writeFileSync(p, original + '\n@media (max-width: 760px){ .jt-x{ padding: 1px; } }\n');
+  runWith(BP_GATE, { CSS_CASCADE_TARGET: p }, 'NC-B4 등재된 비표준 폭(760px)에 규칙 추가 → 증가 검출', 'CSS-BP-GROW');
+}
+
+/* ── TASK-260906-020 R1 반영분의 음성·양성 시험 ────────────────────────────────────
+   NC-B5: 세미콜론이 빠져 두 @import 가 «한 문»으로 붙은 형태 — 브라우저는 둘 다 버린다. 게이트가 첫 것을
+          «읽은 척» 인라인하면 안 된다 → CSS-IMPORT-PRELUDE (R1-F1 ②)
+   NC-B6: 중첩 @media (min-width:641px){ @media (max-width:1024px){…} } 는 «합치면» 태블릿 구간 —
+          층마다 따로 분류하면 비표준 2건 위양성이 난다 → 브레이크포인트 게이트 PASS 여야 한다 (R1-F3)
+   NC-B7: 라이브러리 단위 — 조건부 @import(print·supports) 의 조건 보존(R1-F1 ①), <link> 의 rel 토큰 집합·
+          등호 공백·무인용 href(R1-F2), 같은 시트 두 번 링크 시 두 번 적용(R1-F2) */
+{
+  const twice = stylesOriginal.replace(/(@import[^;]*);/, '$1\n$1;');
+  if (twice === stylesOriginal) {
+    console.log('  ✗ NC-B5 준비 실패 — styles.css 의 @import 를 못 찾았다');
+    results.push({ 이름: 'NC-B5 붙은 @import', 잡음: false, exit: -1 });
+  } else {
+    runWith(GATE, stylesProbe(twice), 'NC-B5 세미콜론 없이 붙은 두 @import 를 «읽은 척» 하지 않는가', 'CSS-IMPORT-PRELUDE');
+  }
+  const p = path.join(tmpDir, 'bp-nested.css');
+  fs.writeFileSync(p, original + '\n@media (min-width: 641px){ @media (max-width: 1024px){ .jt-x{ padding: 1px; } } }\n');
+  runWith(BP_GATE, { CSS_CASCADE_TARGET: p }, 'NC-B6 중첩 @media 를 AND 로 합쳐 태블릿 구간으로 인정하는가', 'PASS');
+}
+
+/* ── TASK-260906-020 R2 반영분 ─────────────────────────────────────────────────────
+   NC-B8: 다른 규칙 «뒤»의 @import — 브라우저가 무시한다. 로더가 읽어 들이면 안 되고, 남긴 @import 는 ⓪ 이 잡는다.
+   NC-B9: @media 블록 «안»의 @import — 같다.
+   NC-B10: 정적으로 확정 못 하는 supports(…) 조건부 @import 가 히어로 검사 대상 속성의 «승자»가 될 수 있는 규칙을
+           끌어오면 → 참으로 두지 말고 CSS-UNDECIDED 로 올려야 한다(R2-F2). */
+{
+  const trailing = stylesOriginal + '\n.jt-x{ padding: 1px; }\n@import url("./colors_and_type.css?v=3");\n';
+  runWith(GATE, stylesProbe(trailing), 'NC-B8 다른 규칙 뒤의 @import 를 읽어 들이지 않고 알리는가', 'CSS-IMPORT-PRELUDE');
+  const nested = stylesOriginal + '\n@media screen{ @import url("./colors_and_type.css?v=3"); .jt-y{ padding: 1px; } }\n';
+  runWith(GATE, stylesProbe(nested), 'NC-B9 블록 안의 @import 를 읽어 들이지 않고 알리는가', 'CSS-IMPORT-PRELUDE');
+  /* 히어로 대상 속성은 전부 !important 라 시트 «머리»의 @import 규칙은 뒤 규칙을 못 이긴다(앞 순번). 그래서
+     «승자를 바꿀 수 있는» 자리는 redesign.css «끝»의 @supports 블록이다 — 조건부 @import 와 같은 supportsMatches 경로. */
+  const p2 = path.join(tmpDir, 'supports-probe.css');
+  fs.writeFileSync(p2, original + '\n@supports (display: definitely-unsupported){ .jt-brandmoment{ padding-top: 1px !important; } }\n');
+  runWith(GATE, { CSS_CASCADE_TARGET: p2 }, 'NC-B10 확정 못 하는 @supports 조건이 승자를 바꿀 수 있으면 보류로 FAIL 하는가', 'CSS-UNDECIDED');
+  fs.writeFileSync(p2, original + '\n@supports (display: grid){ .jt-brandmoment{ padding-top: 60px !important; } }\n');
+  runWith(GATE, { CSS_CASCADE_TARGET: p2 }, 'NC-B11 확정 가능한 @supports (display: grid) 는 참으로 두어 통과하는가', 'PASS');
+  /* TASK-020 R3-F1·F3: @import 사이 @layer 문 / layer() import → 게이트 단위 */
+  const layered = stylesOriginal.replace(/(@import[^;]*;)/, '$1\n@layer base;\n$1');
+  runWith(GATE, stylesProbe(layered), 'NC-B12 첫 @import 뒤 @layer 문이 끼면 그 뒤 @import 를 무효로 보고 알리는가', 'CSS-IMPORT-PRELUDE');
+  const layerImport = stylesOriginal.replace(/(@import[^;]*?)\s*;/, '$1 layer(base);');
+  runWith(GATE, stylesProbe(layerImport), 'NC-B13 layer() @import 는 fail-closed 전용 오류로 막는가', 'CSS-IMPORT-LAYER');
+  /* TASK-020 R4-F2: 계약 밖 문법을 «조용히 건너뛰지» 않는가 — 각각 검사 대상 승자를 바꿀 수 있는 선언을 품긴다 */
+  const p3 = path.join(tmpDir, 'unsupported-probe.css');
+  const cases = [
+    ['NC-B12b 후행 @layer 문(규칙 사이)', '\n@layer late;\n.jt-brandmoment{ padding-top: 1px !important; }\n'],
+    ['NC-B14a @layer 블록', '\n@layer theme { .jt-brandmoment{ padding-top: 1px !important; } }\n'],
+    ['NC-B14b @container 블록', '\n@container (min-width: 1px) { .jt-brandmoment{ padding-top: 1px !important; } }\n'],
+    ['NC-B14c @scope 블록', '\n@scope (.jt-app) { .jt-brandmoment{ padding-top: 1px !important; } }\n'],
+    ['NC-B14d CSS nesting', '\n.jt-app{ color: red; .jt-brandmoment{ padding-top: 1px !important; } }\n'],
+  ];
+  for (const [이름, css] of cases) {
+    fs.writeFileSync(p3, original + css);
+    runWith(GATE, { CSS_CASCADE_TARGET: p3 }, 이름 + ' → fail-closed 로 막는가', 'CSS-UNSUPPORTED-SYNTAX');
+  }
+  /* TASK-020 R5: 대소문자 @IMPORT(범위 안) · 무효 값 승자(보류) · 시트 끝 후행 문(fail-closed) */
+  fs.writeFileSync(p3, original + '\n@layer late;\n');
+  runWith(GATE, { CSS_CASCADE_TARGET: p3 }, 'NC-B17 시트 «끝»의 후행 @layer 문(뒤에 블록 없음) → fail-closed 로 막는가', 'CSS-UNSUPPORTED-SYNTAX');
+  const invalidVal = original.replace(/\.jt-brandmoment\{ padding-top: 28px !important;/, '.jt-brandmoment{ padding-top: definitely-invalid !important;');
+  if (invalidVal === original) {
+    console.log('  ✗ NC-B16 준비 실패 — 모바일 padding-top: 28px 규칙을 못 찾았다');
+    results.push({ 이름: 'NC-B16 무효 값 승자', 잡음: false, exit: -1 });
+  } else {
+    fs.writeFileSync(p3, invalidVal);
+    runWith(GATE, { CSS_CASCADE_TARGET: p3 }, 'NC-B16 검사 대상 속성의 승자 값이 길이로 안 읽히면 보류로 FAIL 하는가', 'CSS-UNDECIDED');
+  }
+}
+{
+  const lib = require('./css_cascade_lib.js');
+  const unit = (이름, ok, detail) => {
+    results.push({ 이름, 기대코드: 'UNIT', 잡음: !!ok, exit: ok ? 0 : 1 });
+    console.log((ok ? '  ✓' : '  ✗') + ' ' + 이름 + (ok ? '' : '  → FAIL: ' + detail));
+  };
+  const s1 = lib.stripImports('@import url("a.css") print;\n@import url(b.css) supports(display: grid) screen and (max-width: 600px);\n.x{color:red}');
+  unit('NC-B7a 조건부 @import 의 미디어 조건 보존', s1.imports.length === 2 && s1.imports[0].conds.length === 1 && s1.imports[0].conds[0].cond === 'print', JSON.stringify(s1.imports));
+  unit('NC-B7b supports(…) 와 미디어 조건을 각각 보존', s1.imports[1] && s1.imports[1].conds.length === 2 && s1.imports[1].conds[0].kind === 'supports' && s1.imports[1].conds[0].cond === 'display: grid' && s1.imports[1].conds[1].cond === 'screen and (max-width: 600px)', JSON.stringify(s1.imports));
+  unit('NC-B7c @import 를 지운 뒤 첫 규칙이 남는가', /\.x\{color:red\}/.test(s1.text) && !/@import/.test(s1.text), s1.text);
+  const a1 = lib.parseLinkAttrs('<link rel="next stylesheet" href="b.css">');
+  const a2 = lib.parseLinkAttrs('<link rel = "stylesheet" href="c.css">');
+  const a3 = lib.parseLinkAttrs('<link rel="stylesheet" href=d.css>');
+  unit('NC-B7d <link rel> 토큰 집합·등호 공백·무인용 href 를 읽는가',
+    a1.rel === 'next stylesheet' && a1.href === 'b.css' && a2.rel === 'stylesheet' && a2.href === 'c.css' && a3.href === 'd.css',
+    JSON.stringify([a1, a2, a3]));
+  /* 같은 시트를 두 번 링크하면 두 번 적용 — 작은 가짜 저장소로 확인 */
+  const fakeRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'csscascade-root-'));
+  fs.mkdirSync(path.join(fakeRoot, 'css'));
+  fs.writeFileSync(path.join(fakeRoot, 'css', 'a.css'), '@import url("./b.css") print;\n.a{padding:1px}');
+  fs.writeFileSync(path.join(fakeRoot, 'css', 'b.css'), '.b{padding:2px}');
+  fs.writeFileSync(path.join(fakeRoot, 'index.html'), '<link rel="stylesheet" href="css/a.css?v=1">\n<link rel = stylesheet href=css/a.css media="print">');
+  const loaded = lib.loadSheets({ root: fakeRoot });
+  const rules = lib.parseSheets(loaded.sheets);
+  const names = loaded.sheets.map((s) => s.name);
+  unit('NC-B7e 같은 시트 두 번 링크 → 두 번 적용, @import 는 부모 앞',
+    names.join(',') === 'css/b.css,css/a.css,css/b.css,css/a.css', names.join(','));
+  const bRule = rules.find((r) => r.selector === '.b');
+  const a2Rule = rules.filter((r) => r.selector === '.a')[1];
+  unit('NC-B7f 조건부 @import·<link media> 조건이 규칙에 붙는가',
+    bRule && bRule.media && bRule.media[0].cond === 'print' && a2Rule && a2Rule.media && a2Rule.media[0].cond === 'print',
+    JSON.stringify({ b: bRule && bRule.media, a2: a2Rule && a2Rule.media }));
+  /* R5-F1: 대소문자 섞인 @IMPORT 도 유효 — b.css 가 시트 목록에 들어와야 한다 */
+  fs.writeFileSync(path.join(fakeRoot, 'css', 'a.css'), '@IMPORT "b.css";\n.a{padding:1px}');
+  {
+    const up = lib.loadSheets({ root: fakeRoot });
+    const upRules = lib.parseSheets(up.sheets);
+    unit('NC-B15 `@IMPORT "b.css";` 를 유효 import 로 읽어 b.css 규칙을 포함하는가',
+      up.sheets.some((s) => s.name === 'css/b.css') && upRules.some((r) => r.selector === '.b') && upRules.some((r) => r.selector === '.a'),
+      up.sheets.map((s) => s.name).join(','));
+  }
+  /* R6-F1·F2: 속성명·!important 의 CSS 이스케이프 / R6-F3: HTML 주석 속 <link> */
+  {
+    const src = '.x{padding-\\74op:1px!important}\n.y{padding-top:1px !\\69mportant}';
+    const r = lib.parseRules(src, lib.maskOut(src, true), lib.maskOut(src, false), 'probe.css');
+    lib.takeParseNotes();
+    const dx = r.find((q) => q.selector === '.x'), dy = r.find((q) => q.selector === '.y');
+    unit('NC-B18a 이스케이프된 속성명(padding-\\74op)을 padding-top 으로 읽는가', dx && dx.decls.length === 1 && dx.decls[0].prop === 'padding-top' && dx.decls[0].important === true, JSON.stringify(dx && dx.decls));
+    unit('NC-B18b 이스케이프된 !\\69mportant 를 important 로 읽는가', dy && dy.decls[0].important === true, JSON.stringify(dy && dy.decls));
+    const src2 = '.z{padding-top:4px \\21 important}';
+    const r2 = lib.parseRules(src2, lib.maskOut(src2, true), lib.maskOut(src2, false), 'probe.css');
+    lib.takeParseNotes();
+    const dz = r2.find((q) => q.selector === '.z');
+    unit('NC-B19 `\\21 important`(ident 하나)는 important 가 «아니고» 값도 길이로 안 읽히는가', dz && dz.decls[0].important === false && /\\21/.test(dz.decls[0].value), JSON.stringify(dz && dz.decls));
+  }
+  fs.writeFileSync(path.join(fakeRoot, 'css', 'fake.css'), '.fake{padding:9px}');
+  fs.writeFileSync(path.join(fakeRoot, 'index.html'), '<!-- <link rel="stylesheet" href="css/fake.css"> -->\n<link rel="stylesheet" href="css/a.css">');
+  {
+    const cm = lib.loadSheets({ root: fakeRoot });
+    unit('NC-B18c HTML 주석 속 <link> 는 시트로 읽지 않는가', !cm.sheets.some((s) => s.name === 'css/fake.css') && cm.sheets.some((s) => s.name === 'css/a.css'), cm.sheets.map((s) => s.name).join(','));
+  }
+  fs.writeFileSync(path.join(fakeRoot, 'index.html'), '<link rel="stylesheet" href="css/a.css?v=1">\n<link rel = stylesheet href=css/a.css media="print">');
+  fs.writeFileSync(path.join(fakeRoot, 'css', 'a.css'), '@import url("./b.css") print;\n.a{padding:1px}');
+  fs.writeFileSync(path.join(fakeRoot, 'css', 'b.css'), '@import url("./a.css");\n.b{padding:2px}');
+  let cyc = '';
+  try { lib.loadSheets({ root: fakeRoot }); } catch (e) { cyc = String(e.message); }
+  unit('NC-B7g @import 순환(a→b→a)을 오류로 막는가', /순환/.test(cyc), cyc || '(예외 없음)');
+  unit('NC-B7h supportsMatches — 확정 가능한 단일 선언만 참, 나머지는 보류(null)',
+    lib.supportsMatches('(display: grid)') === true && lib.supportsMatches('display: flex') === true &&
+    lib.supportsMatches('(display: definitely-unsupported)') === null && lib.supportsMatches('not (display: grid)') === null &&
+    lib.supportsMatches('(display: grid) and (gap: 1px)') === null && lib.supportsMatches('selector(:has(a))') === null,
+    [lib.supportsMatches('(display: grid)'), lib.supportsMatches('(display: definitely-unsupported)'), lib.supportsMatches('not (display: grid)')].join(','));
+  const s2 = lib.stripImports('.x{color:red}\n@import url("late.css");\n@media screen{ @import url("in.css"); }');
+  unit('NC-B7i 머리 밖(규칙 뒤·블록 안) @import 는 수집하지 않고 남기는가', s2.imports.length === 0 && (s2.text.match(/@import/g) || []).length === 2, JSON.stringify(s2.imports) + ' / ' + s2.text);
+  const s3 = lib.stripImports('@charset "utf-8";\n@layer base, theme;\n@import url("a.css");\n.x{color:red}');
+  unit('NC-B7j @charset·@layer 문 뒤의 @import 는 머리로 인정하는가', s3.imports.length === 1 && s3.imports[0].spec === 'a.css', JSON.stringify(s3.imports));
+  {
+    /* R4-F1: 머리의 @charset·@layer 문이 남아 뒤 첫 규칙(.x)을 삼키지 않는가 — 파싱 결과에 .x 가 정확히 1개 */
+    const m3 = lib.maskOut(s3.text, true), t3 = lib.maskOut(s3.text, false);
+    const r3 = lib.parseRules(s3.text, m3, t3, 'probe.css');
+    const notes3 = lib.takeParseNotes();
+    unit('NC-B7j2 머리 @charset·@layer 문을 지운 뒤 첫 일반 규칙 .x 가 파싱되는가', r3.filter((r) => r.selector === '.x').length === 1 && notes3.length === 0, JSON.stringify({ rules: r3.map((r) => r.selector), notes3 }));
+  }
+  /* TASK-020 R3 반영분 */
+  const s4 = lib.stripImports('@import url("a.css");\n@layer x;\n@import url("b.css");\n.x{color:red}');
+  unit('NC-B7k 첫 @import 뒤에 @layer 문이 끼면 그 뒤 @import 는 무효(남김)', s4.imports.length === 1 && s4.imports[0].spec === 'a.css' && /@import url\("b\.css"\)/.test(s4.text), JSON.stringify(s4.imports) + ' / ' + s4.text.replace(/\s+/g, ' '));
+  const s5 = lib.stripImports('@layer a { .y{color:blue} }\n@import url("a.css");\n.x{color:red}');
+  unit('NC-B7k2 @layer «블록» 뒤의 @import 는 무효(남김)', s5.imports.length === 0 && /@import/.test(s5.text), JSON.stringify(s5.imports));
+  const bad = ['gap: .', 'gap: 1.2.3px', 'gap: 1px 2px', 'grid-template-columns: definitely-unsupported', 'grid-template-columns: 1fr 1fr', 'aspect-ratio: x', 'aspect-ratio: 16 / 9', 'position: nope', 'object-fit: nope', 'display: table-cell-ish'];
+  const badOut = bad.map((c) => lib.supportsMatches('(' + c + ')'));
+  unit('NC-B7l supportsMatches — 속성마다 무효·복잡 값은 참으로 확정하지 않는가(전부 null)', badOut.every((v) => v === null), JSON.stringify(badOut));
+  const good = ['display: grid', 'display: flex', 'position: sticky', 'gap: 0', 'gap: 12px', 'gap: 1.5rem', 'object-fit: cover'];
+  unit('NC-B7l2 supportsMatches — 확정 가능한 정식 값은 참', good.every((c) => lib.supportsMatches('(' + c + ')') === true), JSON.stringify(good.map((c) => lib.supportsMatches('(' + c + ')'))));
+  const s6 = lib.stripImports('@import url("a.css") layer(theme);\n@import url("b.css") layer;\n.x{color:red}');
+  unit('NC-B7m layer()/layer @import 는 수집하지 않고 unsupported 로 알리는가', s6.imports.length === 0 && s6.unsupported.length === 2 && /layer/.test(s6.unsupported[0].what), JSON.stringify(s6));
+  try { fs.rmSync(fakeRoot, { recursive: true, force: true }); } catch (_e) {}
+}
+
 /* ── 정리 ────────────────────────────────────────────────────────────────── */
 try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch (_e) {}
 
@@ -268,4 +485,4 @@ if (놓친것.length) {
                 놓친것.map((r) => r.이름).join(', '));
   process.exit(1);
 }
-console.log('[css-cascade 자기시험] PASS — 주입한 결함 ' + (results.length - 1) + '종 전건 검출 + 원본 위양성 0');
+console.log('[css-cascade 자기시험] PASS — 주입한 결함 ' + results.filter((r) => r.기대코드 !== 'PASS' && r.기대코드 !== 'UNIT').length + '종 전건 검출 + 원본 위양성 0(양성 대조군 ' + results.filter((r) => r.기대코드 === 'PASS').length + ') + 로더 단위 ' + results.filter((r) => r.기대코드 === 'UNIT').length);
