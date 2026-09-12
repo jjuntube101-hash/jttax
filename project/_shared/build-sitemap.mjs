@@ -37,9 +37,14 @@ async function readInsightDates(repoRoot) {
     if (!fm) continue;
     const date = (fm[1].match(/^\s*date:\s*['"]?(\d{4}-\d{2}-\d{2})/m) || [])[1];
     if (!date) continue;
+    /* lastmod 는 갱신일(updated)이 있으면 그것을 쓴다 — 발행일만 쓰면 글을 고쳐도
+       sitemap 이 «안 바뀐 글»이라고 말해 재크롤 신호가 죽는다 (코덱스 260912-003 R1-F1).
+       형식·순서(발행일 이후) 검증은 build-insights.mjs 가 fail-loud 로 이미 강제하므로,
+       여기서는 같은 조건을 만족하는 값만 채택하고 아니면 date 로 둔다(생성 순서 무관 안전). */
+    const updated = (fm[1].match(/^\s*updated:\s*['"]?(\d{4}-\d{2}-\d{2})/m) || [])[1];
     // slug 계산은 빌더와 «같은 함수»로 한다 — 규칙이 갈라지면 lastmod 가 조용히 빠진다
     const fmSlug = (fm[1].match(/^\s*slug:\s*['"]?([\w-]+)/m) || [])[1];
-    map.set(insightSlug(f, fmSlug), date);
+    map.set(insightSlug(f, fmSlug), (updated && updated >= date) ? updated : date);
   }
   return map;
 }

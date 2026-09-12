@@ -88,6 +88,7 @@ export const SERVICES = [
       { t: '결산', d: '연말 결산·세무조정으로 한 해를 마감합니다.' },
     ],
     handoff: '크리에이터·플랫폼 사업의 업종·과세 판단은 이현준 대표가, 매월 기장·신고 운영은 김가환 대표가 맡는 이어달리기로 진행합니다.',
+    creatorsLink: true,   // 성장기획 색인 인프라(260912 결재) — 허브 내부 링크
     lead: 'kim-gahwan',
     relatedCalcs: ['income-tax', 'value-added-tax', 'net-salary'],
     relatedInsights: [
@@ -116,6 +117,7 @@ export const SERVICES = [
       { t: '의견서', d: '판단 근거를 조문과 함께 의견서로 문서화합니다.' },
       { t: '실행·사후 점검', d: '실행을 지원하고, 전환 후 운영은 김가환 대표의 기장으로 이어집니다.' },
     ],
+    creatorsLink: true,   // 성장기획 색인 인프라(260912 결재)
     lead: 'lee-hyunjun',
     relatedCalcs: ['incorporation-simulator', 'crypto-tax-2027', 'youthstartup'],
     relatedInsights: [

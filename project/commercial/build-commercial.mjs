@@ -217,6 +217,7 @@ ${(s.situations || []).map(x => `      <li>${esc(x)}</li>`).join('\n')}
 ${(s.steps || []).map(st => `        <li><b>${esc(st.t)}</b>${esc(st.d)}</li>`).join('\n')}
       </ol>
 ${s.handoff ? `      <p style="font-size:14px;color:#666;">${esc(s.handoff)}</p>` : ''}
+${s.creatorsLink ? `      <p style="font-size:14px;"><a href="/creators.html" style="color:#1a1a1a;">크리에이터·유튜버라면 — 지금 단계에 맞는 세금 경로부터 확인하기 →</a></p>` : ''}
     </section>
 
 ${leadCard(lead)}
