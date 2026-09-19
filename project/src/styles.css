@@ -1033,7 +1033,7 @@ button { font-family: inherit; }
   margin: 0 auto;
   padding: 96px 48px 64px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
   gap: 48px;
 }
 .jt-footer__brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
@@ -1055,6 +1055,18 @@ button { font-family: inherit; }
   font-size: 11px;
   letter-spacing: var(--tr-wide);
   color: rgba(255,255,255,.5);
+}
+
+/* Footer columns must shrink with their viewport, including long Korean labels. */
+.jt-footer__grid > * { min-width: 0; }
+.jt-footer__addr { overflow-wrap: anywhere; }
+@media (min-width: 641px) and (max-width: 1024px) {
+  .jt-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px; padding-top: 56px; }
+}
+@media (max-width: 640px) {
+  .jt-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 20px; padding-top: 44px; padding-bottom: 32px; }
+  .jt-footer__grid > :first-child { grid-column: 1 / -1; }
+  .jt-footer__bar { flex-direction: column; gap: 12px; line-height: 1.7; }
 }
 
 /* ========== Team ========== */
@@ -1876,6 +1888,8 @@ button { font-family: inherit; }
   margin: 0;
   color: #fff;
 }
+.jt-cta__inner > * { min-width: 0; }
+.jt-cta__inner .jt-row { flex-wrap: wrap; }
 .jt-cta__body { font-size: 15px; color: rgba(255,255,255,.72); line-height: 1.7; margin: 0 0 28px; }
 
 /* ========== Scroll reveal ========== */
@@ -2803,3 +2817,7 @@ button { font-family: inherit; }
   .jt-nav__cta { gap: 8px; }
   .jt-nav__phone { display: none; }   /* 전화번호는 히어로·푸터·상담 버튼에 이미 있다 */
 }
+
+/* HeroCalc presentation moved from inline styles; interaction and amounts unchanged. */
+.jt-herocalc__field { width: 100%; box-sizing: border-box; padding: 11px 12px; font-size: 15px; font-family: inherit; border: 1px solid rgba(255,255,255,.22); border-radius: 9px; background: rgba(255,255,255,.06); color: inherit; }
+.jt-herocalc__label { display: block; font-size: 12px; letter-spacing: .02em; opacity: .7; margin-bottom: 6px; }

@@ -60,7 +60,7 @@ console.log('[css-cascade 자기시험] 결함 주입 → 잡히는지 확인');
    파일 «끝»에 무조건 규칙을 하나 붙이면, 앞의 모바일 압축 블록이 통째로 죽는다.
    이번 실사고와 정확히 같은 모양이다. */
 check('NC-1 ① 미디어쿼리를 덮는 무조건 규칙을 파일 끝에 주입',
-  original + '\n.jt-bm-primary{ height: 300px !important; }\n',
+  original + '\n.jt-brandmoment{ padding-top: 300px !important; }\n',
   'CSS-DEAD-MQ');
 
 /* ── NC-2 ② 대상이 사라진 압축 규칙 ───────────────────────────────────────
@@ -74,7 +74,7 @@ check('NC-2 ② 존재하지 않는 클래스를 겨냥한 압축 규칙 주입'
    배포 전 실제로 있었던 구멍(-93px)의 재현이다. */
 {
   const cut = original.replace(
-    /@media \(min-width: 641px\) and \(max-width: 1024px\) and \(max-height: 1100px\)\{[\s\S]*?\n\}/,
+    /@media \(min-width: 641px\) and \(max-width: 1024px\) \{[\s\S]*?\n\}/,
     '/* (자기시험) 태블릿 블록 제거 */');
   if (cut === original) {
     console.log('  ✗ NC-3 준비 실패 — 태블릿 블록을 못 찾았다(정규식이 소스와 어긋났다)');
@@ -88,14 +88,13 @@ check('NC-2 ② 존재하지 않는 클래스를 겨냥한 압축 규칙 주입'
    KNOWN 에 등재된 위반 하나를 «고쳐» 놓으면 STALE 이 떠야 한다.
    이게 안 되면 예외 목록은 시간이 지나 「조용한 통과」 장치가 된다. */
 {
-  // ⚠️ .jt-report-feature 는 파일에 11군데 있다. 지워야 하는 것은 «미디어쿼리 안의
-  //    압축 규칙» 하나뿐이다 — 첫 매치를 지우면 엉뚱한 308행이 지워지고 시험이
-  //    조용히 실패한다(초판이 실제로 그랬다). grid-template-columns 로 특정한다.
+  // 현재 DOM에 없는 .jt-report-feature를 겨냥한 860px 압축 블록을 지우면
+  // 해당 KNOWN dead-selector 예외가 해소되어야 한다.
   const noFeature = original.replace(
-    /\n\s*\.jt-report-feature \{ grid-template-columns[^}]*\}/,
+    /@media \(max-width: 860px\)\s*\{\s*\.jt-report-feature\s*\{[^}]*\}\s*\}/,
     '\n  /* (자기시험) 압축 규칙 제거 */');
   if (noFeature === original) {
-    console.log('  ✗ NC-4 준비 실패 — 미디어쿼리 안의 .jt-report-feature 압축 규칙을 못 찾았다');
+    console.log('  ✗ NC-4 준비 실패 — .jt-report-feature 860px 압축 규칙을 못 찾았다');
     results.push({ 이름: 'NC-4 예외 해소 감지', 잡음: false, exit: -1 });
   } else {
     check('NC-4 KNOWN 항목을 고쳐 두면 「예외가 낡았다」고 알리는가', noFeature, 'CSS-STALE-KNOWN');
@@ -108,15 +107,9 @@ check('NC-2 ② 존재하지 않는 클래스를 겨냥한 압축 규칙 주입'
    ⚠️ 이 계산이 맞다는 근거: 같은 CSS 로 브라우저에서 잰 값이 375×812 에서 30px,
       375×640 에서 26px 이었고 evalLen 의 계산과 일치했다(260809 실측). */
 {
-  const noMobileSlogan = original.replace(
-    /\n\s*\.jt-brandmoment__slogan\{ font-size: clamp\(28px, 8vw, 40px\) !important; \}/,
-    '\n  /* (자기시험) 모바일 슬로건 규칙 제거 */');
-  if (noMobileSlogan === original) {
-    console.log('  ✗ NC-5 준비 실패 — 모바일 슬로건 규칙을 못 찾았다');
-    results.push({ 이름: 'NC-5 슬로건 하한', 잡음: false, exit: -1 });
-  } else {
-    check('NC-5 ④ 모바일 슬로건 규칙 제거 → 24px 로 떨어지는가', noMobileSlogan, 'CSS-SLOGAN-SMALL');
-  }
+  check('NC-5 ④ 모바일 슬로건을 20px로 낮추면 잡는가',
+    original + '\n@media (max-width: 640px){ .jt-brandmoment__slogan{ font-size: 20px !important; } }\n',
+    'CSS-SLOGAN-SMALL');
 }
 
 /* ══ 260809 Codex R1 지적으로 추가한 케이스 ═══════════════════════════════
@@ -184,8 +177,8 @@ check('NC-9 중첩 길이 함수 min(8vw,20px) 계산 (375px 에서 20px)',
    첫 조각만 보는 파서는 이 블록을 없는 것으로 보고 768×1024 에 구멍이 있다고 한다. */
 {
   const orCond = original.replace(
-    '@media (min-width: 641px) and (max-width: 1024px) and (max-height: 1100px){',
-    '@media (min-width: 3000px), (min-width: 641px) and (max-width: 1024px) and (max-height: 1100px){');
+    '@media (min-width: 641px) and (max-width: 1024px) {',
+    '@media (min-width: 3000px), (min-width: 641px) and (max-width: 1024px) {');
   if (orCond === original) {
     console.log('  ✗ NC-10 준비 실패 — 태블릿 블록 조건을 못 찾았다');
     results.push({ 이름: 'NC-10 콤마 OR', 잡음: false, exit: -1 });
@@ -243,14 +236,11 @@ check('NC-16 유니코드 이스케이프 선택자의 «뜻»을 보존하는�
   original + '\n@media (max-width: 640px){ .jt-brandmoment__slog\\61 n{ font-size: 20px !important; } }\n',
   'CSS-SLOGAN-SMALL');
 
-/* NC-17 «어차피 지는» 보류 규칙까지 배포를 막지는 않는가 (R3 P1 — 위양성 방지)
-   범위 문법 (width <= 640px) 은 정상 CSS 인데 이 게이트가 못 읽는다. 그렇다고
-   해석 못 하는 규칙이 «있기만 하면» FAIL 하면, 확정 승자에게 어차피 지는 규칙
-   때문에도 배포가 막힌다 — 그러면 사람이 게이트를 꺼 버린다.
-   여기서는 !important 없이(= 파일 끝 78px !important 를 못 이김) 넣어, 조용해야 한다.
-   ⛔ 반대로 «이길 수 있는» 보류는 NC-11 이 FAIL 로 잡는다. 두 시험이 한 쌍이다. */
-checkPass('NC-17 확정 승자에게 지는 보류 규칙은 조용히 넘어가는가',
-  original + '\n@media (width <= 640px){ .jt-bm-primary{ height: 999px; } }\n', 1);
+/* NC-17 해석 못 한 조건이 확정 승자에게 지면 죽은 미디어 선언으로 보고한다. */
+check('NC-17 확정 승자에게 지는 보류 규칙도 죽은 미디어로 알리는가',
+  original + '\n.jt-brandmoment{ padding-top: 60px !important; }' +
+  '\n@media (width <= 640px){ .jt-brandmoment{ padding-top: 999px; } }\n',
+  'CSS-DEAD-MQ');
 
 /* NC-18 이스케이프 뒤 CRLF 를 «개행 하나»로 소비하는가 (R4 P2)
    CSS 전처리에서 CRLF 는 개행 한 개다. \r 만 소비하고 \n 을 남기면 선택자에
@@ -369,14 +359,8 @@ function stylesProbe(css) {
   /* TASK-020 R5: 대소문자 @IMPORT(범위 안) · 무효 값 승자(보류) · 시트 끝 후행 문(fail-closed) */
   fs.writeFileSync(p3, original + '\n@layer late;\n');
   runWith(GATE, { CSS_CASCADE_TARGET: p3 }, 'NC-B17 시트 «끝»의 후행 @layer 문(뒤에 블록 없음) → fail-closed 로 막는가', 'CSS-UNSUPPORTED-SYNTAX');
-  const invalidVal = original.replace(/\.jt-brandmoment\{ padding-top: 28px !important;/, '.jt-brandmoment{ padding-top: definitely-invalid !important;');
-  if (invalidVal === original) {
-    console.log('  ✗ NC-B16 준비 실패 — 모바일 padding-top: 28px 규칙을 못 찾았다');
-    results.push({ 이름: 'NC-B16 무효 값 승자', 잡음: false, exit: -1 });
-  } else {
-    fs.writeFileSync(p3, invalidVal);
-    runWith(GATE, { CSS_CASCADE_TARGET: p3 }, 'NC-B16 검사 대상 속성의 승자 값이 길이로 안 읽히면 보류로 FAIL 하는가', 'CSS-UNDECIDED');
-  }
+  fs.writeFileSync(p3, original + '\n@media (max-width: 640px){ .jt-brandmoment{ padding-top: definitely-invalid !important; } }\n');
+  runWith(GATE, { CSS_CASCADE_TARGET: p3 }, 'NC-B16 검사 대상 속성의 승자 값이 길이로 안 읽히면 보류로 FAIL 하는가', 'CSS-UNDECIDED');
 }
 {
   const lib = require('./css_cascade_lib.js');

@@ -1,9 +1,5 @@
-/* ===========================================================
-   JT 세무법인 — 홈 재설계 (에디토리얼 페이퍼 톤 · production)
-   한 톤(웜 크림) 안에서 층을 쌓고, 에스프레소는 CTA 한 곳만.
-   styles.css 다음에 로드되어 신규 섹션을 정의합니다.
-   =========================================================== */
-:root {
+
+:root{
   --jt-espresso:    #141414;     /* 단 하나의 검정면 — CTA 전용 (로고 검정) */
   --jt-espresso-fg: #FAFAF8;
   --jt-espresso-fg2: rgba(250,250,248,.74);
@@ -11,33 +7,8 @@
   --jt-amber:       var(--jt-accent);
   --jt-amber-soft:  var(--jt-accent-soft);
 }
-
-/* tonal layers */
-.jt-layer-1 { background: var(--bg-2); }
-.jt-layer-2 { background: var(--bg-3); }
-
-/* ───────── 상황형 히어로 ───────── */
-.jt-sithero {
-  padding: 84px 48px 0;
-  text-align: center;
-  background: var(--bg-1);
-}
-.jt-sithero__inner { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
-.jt-sithero__greet {
-  display: inline-flex; align-items: center; gap: 12px;
-  padding: 11px 22px 11px 18px;
-  background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
-  border: 1px solid var(--border-1);
-  border-radius: 999px; font-size: 15px; font-weight: 400; color: var(--fg-2); margin-bottom: 26px;
-  box-shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 6px 18px -12px rgba(0,0,0,.2);
-  max-width: 600px;
-}
-.jt-sithero__greet b { color: var(--fg-1); font-weight: 700; }
-.jt-sithero__greet-wave {
-  font-size: 18px; line-height: 1; flex-shrink: 0;
-  transform-origin: 70% 70%;
-  animation: jt-wave 2.4s ease-in-out infinite;
-}
+.jt-layer-1{ background: var(--bg-2); }
+.jt-layer-2{ background: var(--bg-3); }
 @keyframes jt-wave {
   0%, 60%, 100% { transform: rotate(0deg); }
   10% { transform: rotate(14deg); }
@@ -46,251 +17,143 @@
   40% { transform: rotate(-4deg); }
   50% { transform: rotate(10deg); }
 }
-@media (prefers-reduced-motion: reduce) { .jt-sithero__greet-wave { animation: none; } }
-.jt-sithero__title {
-  font-family: var(--font-display-kr);
-  font-size: clamp(38px, 5.2vw, 64px);
-  line-height: 1.05; letter-spacing: -0.03em; font-weight: 400;
-  margin: 14px 0 0; color: var(--fg-1);
-  word-break: keep-all; text-wrap: balance; max-width: 16em;
-}
-.jt-sithero__sub {
-  font-size: clamp(16px, 1.4vw, 18px); line-height: 1.7; color: var(--fg-2);
-  margin: 22px auto 0; max-width: 600px;
-}
-
-.jt-sits {
-  max-width: var(--container-max); margin: 0 auto;
-  padding: 48px 48px 0;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-}
-.jt-sit {
-  background: var(--bg-1); border: 1px solid var(--border-1); padding: 28px 26px 26px;
-  display: flex; flex-direction: column; min-height: 208px; cursor: pointer; position: relative;
-  transition: border-color .2s, transform .2s, box-shadow .2s;
-  text-align: left;
-}
-.jt-sit:hover { border-color: var(--fg-1); transform: translateY(-3px); box-shadow: 0 18px 40px -22px rgba(26,24,20,.32); }
-.jt-sit__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-.jt-sit__ico {
-  width: 44px; height: 44px; border: 1px solid var(--border-2); border-radius: 50%;
-  display: grid; place-items: center; font-size: 20px;
-}
-.jt-sit__num { font-family: var(--font-sans-en); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-3); font-weight: 600; }
-.jt-sit__sit { font-size: 13px; color: var(--fg-3); margin-bottom: 6px; line-height: 1.45; }
-.jt-sit__t { font-size: 22px; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 8px; color: var(--fg-1); }
-.jt-sit__d { font-size: 13.5px; color: var(--fg-2); line-height: 1.6; margin: 0; flex: 1; }
-.jt-sit__go { font-family: var(--font-sans-en); font-size: 12px; letter-spacing: 0.06em; color: var(--jt-amber); margin-top: 16px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
-.jt-sit--general { background: transparent; border-style: dashed; border-color: var(--border-2); }
-.jt-sit--general:hover { background: var(--bg-3); border-style: solid; }
-.jt-sit--general .jt-sit__ico { border-style: dashed; }
-
-/* ───────── 정체성 밴드 (세 동사, 라이트) ───────── */
-.jt-ident {
-  background: var(--bg-2);
-  border-top: 1px solid var(--border-1); border-bottom: 1px solid var(--border-1);
-  padding: 96px 0;
-}
-.jt-ident__inner { max-width: var(--container-max); margin: 0 auto; padding: 0 48px; }
-.jt-ident__head { max-width: 800px; margin-bottom: 52px; }
-.jt-ident__h2 {
-  font-family: var(--font-display-kr); font-weight: 400;
-  font-size: clamp(34px, 4vw, 52px); line-height: 1.08; letter-spacing: -0.03em;
-  margin: 16px 0 0; color: var(--fg-1);
-}
-.jt-ident__h2 em {
-  font-style: normal;
-  background: linear-gradient(180deg, transparent 62%, var(--jt-amber-soft) 62%, var(--jt-amber-soft) 92%, transparent 92%);
-  padding: 0 .05em;
-}
-.jt-ident__lead { font-size: 18px; line-height: 1.7; color: var(--fg-2); margin: 22px 0 0; }
-.jt-ident__lead b { color: var(--fg-1); font-weight: 600; }
-.jt-ident__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--fg-1); }
-.jt-ident__col { padding: 38px 32px 0; border-right: 1px solid var(--border-1); display: flex; flex-direction: column; }
-.jt-ident__col:first-child { padding-left: 0; }
-.jt-ident__col:last-child { border-right: 0; padding-right: 0; }
-.jt-ident__en { font-family: var(--font-sans-en); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--jt-amber); font-weight: 700; margin-bottom: 18px; }
-.jt-ident__verb { font-family: var(--font-display-kr); font-size: clamp(28px, 2.6vw, 36px); letter-spacing: -0.02em; line-height: 1.04; color: var(--fg-1); margin-bottom: 18px; }
-.jt-ident__body { font-size: 15px; line-height: 1.65; color: var(--fg-2); margin: 0 0 22px; }
-.jt-ident__body b { color: var(--fg-1); font-weight: 600; }
-.jt-ident__foot { padding-top: 18px; border-top: 1px dashed var(--border-2); font-size: 13.5px; line-height: 1.55; color: var(--fg-3); font-style: italic; }
-
-/* ───────── 권위월 (라이트 프레임) ───────── */
-
-/* ───────── 회장 인용 (따뜻한 풀쿼트, 라이트) ───────── */
-.jt-pullquote {
+.jt-pullquote{
   background: var(--bg-2);
   border-top: 1px solid var(--border-1); border-bottom: 1px solid var(--border-1);
   padding: 96px 48px;
 }
-.jt-pullquote__inner { max-width: var(--container-max); margin: 0 auto; }
-.jt-pullquote__mark { font-family: var(--font-display-en); font-size: 80px; line-height: .5; color: var(--jt-amber); display: block; margin-bottom: 20px; }
-.jt-pullquote__p { font-size: clamp(24px, 2.4vw, 32px); font-weight: 500; line-height: 1.4; letter-spacing: -0.02em; color: var(--fg-1); max-width: 900px; margin: 0 0 30px; text-wrap: pretty; }
-.jt-pullquote__by { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--fg-2); }
-.jt-pullquote__by b { color: var(--fg-1); font-weight: 700; }
-.jt-pullquote__avatar { width: 46px; height: 46px; border: 1px solid var(--border-2); display: grid; place-items: center; font-family: var(--font-display-en); font-weight: 900; font-size: 14px; color: var(--fg-2); }
-
-/* ───────── CTA — 단 하나의 에스프레소 ───────── */
-.jt-cta { background: var(--jt-espresso) !important; }
-.jt-cta h2, .jt-cta__inner h2 { color: var(--jt-espresso-fg) !important; }
-.jt-cta__body { color: var(--jt-espresso-fg2) !important; }
-.jt-cta .jt-kicker { color: rgba(250,250,248,.6) !important; }
-.jt-cta .jt-btn--onDark { background: var(--jt-espresso-fg) !important; color: var(--jt-espresso) !important; }
-.jt-cta .jt-btn--ghostOnDark { background: transparent !important; color: var(--jt-espresso-fg) !important; border-color: rgba(250,250,248,.4) !important; }
-
-/* ═════════ B+D 배경 — 종이 그레인 + 거대 고스트 JT ═════════ */
-.jt-app::after {
+.jt-pullquote__inner{ max-width: var(--container-max); margin: 0 auto; }
+.jt-pullquote__mark{ font-family: var(--font-display-en); font-size: 80px; line-height: .5; color: var(--jt-amber); display: block; margin-bottom: 20px; }
+.jt-pullquote__p{ font-size: clamp(24px, 2.4vw, 32px); font-weight: 500; line-height: 1.4; letter-spacing: -0.02em; color: var(--fg-1); max-width: 900px; margin: 0 0 30px; text-wrap: pretty; }
+.jt-pullquote__by{ display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--fg-2); }
+.jt-pullquote__by b{ color: var(--fg-1); font-weight: 700; }
+.jt-pullquote__avatar{ width: 46px; height: 46px; border: 1px solid var(--border-2); display: grid; place-items: center; font-family: var(--font-display-en); font-weight: 900; font-size: 14px; color: var(--fg-2); }
+.jt-cta{ background: var(--jt-espresso) !important; }
+.jt-cta h2, .jt-cta__inner h2{ color: var(--jt-espresso-fg) !important; }
+.jt-cta__body{ color: var(--jt-espresso-fg2) !important; }
+.jt-cta .jt-kicker{ color: rgba(250,250,248,.6) !important; }
+.jt-cta .jt-btn--onDark{ background: var(--jt-espresso-fg) !important; color: var(--jt-espresso) !important; }
+.jt-cta .jt-btn--ghostOnDark{ background: transparent !important; color: var(--jt-espresso-fg) !important; border-color: rgba(250,250,248,.4) !important; }
+.jt-app::after{
   content: ""; position: fixed; inset: 0; z-index: 9000; pointer-events: none; opacity: .4;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
-/* 히어로: 고스트 JT + 상단 헤어라인 */
-.jt-sithero { position: relative; overflow: hidden; }
-.jt-sithero::before {
-  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("../assets/jt-mark.png") no-repeat right -36px bottom -28px;
-  background-size: min(32vw, 360px) auto; opacity: .05;
-}
-.jt-sithero > * { position: relative; z-index: 1; }
-/* CTA(검정면): 고스트 JT 화이트 */
-.jt-cta { position: relative; overflow: hidden; }
-.jt-cta::before {
+.jt-cta{ position: relative; overflow: hidden; }
+.jt-cta::before{
   content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background: url("../assets/jt-mark.png") no-repeat right -28px bottom -22px;
   background-size: min(36vw, 400px) auto; opacity: .12; filter: invert(1);
 }
-.jt-cta__inner { position: relative; z-index: 1; }
-/* 정체성 밴드: 라디얼 깊이 */
-.jt-ident { position: relative; overflow: hidden; }
-.jt-ident::after {
-  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: radial-gradient(120% 80% at 85% -10%, rgba(255,255,255,.7), transparent 55%), radial-gradient(100% 70% at 0% 110%, rgba(18,18,18,.03), transparent 55%);
-}
-.jt-ident__inner { position: relative; z-index: 1; }
-
-/* ───────── nav 로고 크게 ───────── */
-.jt-nav__brand img { height: 40px !important; }
-.jt-nav__brand span {
+.jt-cta__inner{ position: relative; z-index: 1; }
+.jt-nav__brand img{ height: 40px !important; }
+.jt-nav__brand span{
   font-family: var(--font-display-kr); font-weight: 400; font-size: 21px;
   letter-spacing: -0.02em; color: var(--fg-1); line-height: 1; white-space: nowrap;
 }
-.jt-nav__brand { flex-shrink: 0; }
-.jt-footer__brand span { white-space: nowrap; }
-
-/* ───────── 권위월 · 검정면 카드 (로고 반전 아이덴티티) ───────── */
-
-/* 정체성 밴드 / 권위월 공통 깊이 — 모노 섹션 리듬 */
-
-/* ───────── JT 리포트 · 준비 중 카드 ───────── */
-.jt-report-soon {
+.jt-nav__brand{ flex-shrink: 0; }
+.jt-footer__brand span{ white-space: nowrap; }
+.jt-report-soon{
   background: var(--bg-1); border: 1px dashed var(--border-2);
   padding: 28px 26px 24px; display: flex; flex-direction: column;
   position: relative; min-height: 200px;
 }
-.jt-report-soon__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
-.jt-report-soon__badge {
+.jt-report-soon__top{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.jt-report-soon__badge{
   font-family: var(--font-sans-en); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--fg-3); border: 1px solid var(--border-2); border-radius: 999px; padding: 3px 10px; font-weight: 600; white-space: nowrap;
 }
-.jt-report-soon h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 10px; color: var(--fg-1); }
-.jt-report-soon__star { color: var(--fg-1); font-size: 15px; }
-.jt-report-soon__d { font-size: 14px; line-height: 1.6; color: var(--fg-2); margin: 0; flex: 1; }
-.jt-report-soon__foot {
+.jt-report-soon h3{ font-size: 22px; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 10px; color: var(--fg-1); }
+.jt-report-soon__star{ color: var(--fg-1); font-size: 15px; }
+.jt-report-soon__d{ font-size: 14px; line-height: 1.6; color: var(--fg-2); margin: 0; flex: 1; }
+.jt-report-soon__foot{
   margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--border-1);
   font-family: var(--font-sans-en); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3);
 }
-.jt-report-soon__note { margin-top: 32px; text-align: center; font-size: 14px; color: var(--fg-3); }
-
-/* ───────── JT 리포트 · 라이브 6종 계산기 그리드 (지금 쓸 수 있는) ───────── */
-.jt-report-live-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-@media (max-width: 920px) { .jt-report-live-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .jt-report-live-grid { grid-template-columns: 1fr; } }
-/* A안(모노톤 강화): 세목 아이콘 + 노력신호 칩 + 버튼형 CTA — 카드가 '눌러야 하는 도구'로 읽히게 */
-.jt-report-live {
+.jt-report-soon__note{ margin-top: 32px; text-align: center; font-size: 14px; color: var(--fg-3); }
+.jt-report-live-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 920px) {
+.jt-report-live-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) {
+.jt-report-live-grid{ grid-template-columns: 1fr; } }
+.jt-report-live{
   background: var(--bg-1); border: 1px solid var(--border-1); border-radius: 14px;
   padding: 22px 22px 20px; display: flex; flex-direction: column; min-height: 236px;
   cursor: pointer; outline: none;
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
-.jt-report-live:hover, .jt-report-live:focus-visible {
+.jt-report-live:hover, .jt-report-live:focus-visible{
   transform: translateY(-3px); box-shadow: 0 16px 34px rgba(18,18,18,.13); border-color: var(--jt-ink-800);
 }
-.jt-report-live__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.jt-report-live__icon {
+.jt-report-live__top{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.jt-report-live__icon{
   width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
   background: var(--jt-ink-800); color: var(--bg-1);
   display: flex; align-items: center; justify-content: center;
   font-size: 15px; font-weight: 700; letter-spacing: -.03em;
 }
-.jt-report-live__cat {
+.jt-report-live__cat{
   font-size: 11.5px; font-weight: 700; letter-spacing: -.01em;
   color: var(--fg-2); background: var(--bg-2); border: 1px solid var(--border-1); border-radius: 999px; padding: 4px 11px;
 }
-.jt-report-live__badge {
+.jt-report-live__badge{
   display: inline-flex; align-items: center; gap: 5px;
   font-family: var(--font-sans-en); font-size: 9.5px; letter-spacing: .16em; color: var(--fg-3); font-weight: 700;
 }
-.jt-report-live__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--jt-ink-800); }
-.jt-report-live__heads { display: inline-flex; align-items: center; gap: 8px; }
-.jt-report-live h3 { font-size: 20px; font-weight: 700; letter-spacing: -.025em; margin: 0 0 8px; color: var(--fg-1); }
-.jt-report-live__d { font-size: 13px; line-height: 1.6; color: var(--fg-2); margin: 0; flex: 1; }
-.jt-report-live__meta { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 0; }
-.jt-report-live__chip {
+.jt-report-live__dot{ width: 6px; height: 6px; border-radius: 50%; background: var(--jt-ink-800); }
+.jt-report-live__heads{ display: inline-flex; align-items: center; gap: 8px; }
+.jt-report-live h3{ font-size: 20px; font-weight: 700; letter-spacing: -.025em; margin: 0 0 8px; color: var(--fg-1); }
+.jt-report-live__d{ font-size: 13px; line-height: 1.6; color: var(--fg-2); margin: 0; flex: 1; }
+.jt-report-live__meta{ display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 0; }
+.jt-report-live__chip{
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 11.5px; font-weight: 500; color: var(--fg-2);
   background: var(--bg-2); border: 1px solid var(--border-1); border-radius: 999px; padding: 3px 10px;
 }
-.jt-report-live__foot { margin-top: 14px; }
-.jt-report-live__cta {
+.jt-report-live__foot{ margin-top: 14px; }
+.jt-report-live__cta{
   display: flex; align-items: center; justify-content: center; gap: 7px;
   width: 100%; padding: 11px 14px; border-radius: 9px;
   background: var(--jt-ink-800); color: var(--bg-1);
   font-weight: 700; font-size: 14.5px; letter-spacing: -.01em;
   transition: background .18s ease;
 }
-.jt-report-live:hover .jt-report-live__cta { background: #000; }
-.jt-report-live__cta .jt-arrow { display: inline-block; transition: transform .18s ease; }
-.jt-report-live:hover .jt-report-live__cta .jt-arrow { transform: translateX(4px); }
-.jt-report-grid--soon { padding-top: 4px; }
-.jt-report-grid--soon .jt-report-soon { opacity: .9; }
-
-/* ───────── 위저드(문항) A안 톤 일관 — 둥근 모서리·클릭 어포던스 (styles.css override) ───────── */
-.jt-report-q__opt { border-radius: 12px; transition: border-color .18s ease, background .18s ease, transform .18s ease; }
-.jt-report-q__opt:hover { transform: translateY(-1px); border-color: var(--jt-ink-800); background: var(--jt-ink-050); }
-.jt-report-q__opt.is-selected { border-color: #000; background: #000; color: #fff; }
-.jt-report-q__textarea, .jt-report-q__input { border-radius: 9px; }
-.jt-report-shell__bar { height: 3px; border-radius: 999px; }
-.jt-report-shell__bar > div { border-radius: 999px; }
-
-/* ───────── 결과 — 핵심 박스 카드 톤 일관 ───────── */
-.jt-report-result__grade { border-radius: 16px; }
-
-/* ───────── JT 리포트 · 사업자/법인 도구 (법인 전환 시뮬레이터) ───────── */
-.jt-report-biz { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 22px; align-items: stretch; }
-@media (max-width: 760px) { .jt-report-biz { grid-template-columns: 1fr; } }
-.jt-report-biz__note {
+.jt-report-live:hover .jt-report-live__cta{ background: #000; }
+.jt-report-live__cta .jt-arrow{ display: inline-block; transition: transform .18s ease; }
+.jt-report-live:hover .jt-report-live__cta .jt-arrow{ transform: translateX(4px); }
+.jt-report-grid--soon{ padding-top: 4px; }
+.jt-report-grid--soon .jt-report-soon{ opacity: .9; }
+.jt-report-q__opt{ border-radius: 12px; transition: border-color .18s ease, background .18s ease, transform .18s ease; }
+.jt-report-q__opt:hover{ transform: translateY(-1px); border-color: var(--jt-ink-800); background: var(--jt-ink-050); }
+.jt-report-q__opt.is-selected{ border-color: #000; background: #000; color: #fff; }
+.jt-report-q__textarea, .jt-report-q__input{ border-radius: 9px; }
+.jt-report-shell__bar{ height: 3px; border-radius: 999px; }
+.jt-report-shell__bar > div{ border-radius: 999px; }
+.jt-report-result__grade{ border-radius: 16px; }
+.jt-report-biz{ display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 22px; align-items: stretch; }
+@media (max-width: 760px) {
+.jt-report-biz{ grid-template-columns: 1fr; } }
+.jt-report-biz__note{
   background: var(--bg-1); border: 1px solid var(--border-1); border-left: 3px solid var(--jt-ink-800);
   padding: 26px 28px; display: flex; flex-direction: column; justify-content: center; border-radius: 4px;
 }
-.jt-report-biz__note h4 { font-size: 16px; font-weight: 700; margin: 0 0 10px; color: var(--fg-1); letter-spacing: -.02em; }
-.jt-report-biz__note p { font-size: 13.5px; line-height: 1.68; color: var(--fg-2); margin: 0 0 8px; }
-.jt-report-biz__note p:last-child { margin-bottom: 0; }
-
-/* ───────── JT 리포트 · 대표 라이브 도구 (양도세 계산기) — 라이트(상단 다크 히어로와 대비) ───────── */
-.jt-report-feature {
+.jt-report-biz__note h4{ font-size: 16px; font-weight: 700; margin: 0 0 10px; color: var(--fg-1); letter-spacing: -.02em; }
+.jt-report-biz__note p{ font-size: 13.5px; line-height: 1.68; color: var(--fg-2); margin: 0 0 8px; }
+.jt-report-biz__note p:last-child{ margin-bottom: 0; }
+.jt-report-feature{
   background: var(--bg-1); color: var(--fg-1);
   border: 1px solid var(--border-1); border-top: 3px solid var(--jt-ink-800);
   padding: 44px 48px; margin: 0 0 56px;
   display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 44px;
   box-shadow: var(--shadow-3);
 }
-.jt-report-feature__live {
+.jt-report-feature__live{
   display: inline-flex; align-items: center; gap: 9px;
   font-family: var(--font-sans-en); text-transform: uppercase;
   letter-spacing: 0.16em; font-size: 12px; font-weight: 700;
   color: var(--fg-2); margin-bottom: 18px;
 }
-.jt-report-feature__dot {
+.jt-report-feature__dot{
   width: 8px; height: 8px; border-radius: 999px; background: var(--jt-ink-900);
   animation: jtFeatPulse 2.2s var(--ease-out) infinite;
 }
@@ -299,235 +162,152 @@
   70%  { box-shadow: 0 0 0 10px rgba(176,123,58,0); }
   100% { box-shadow: 0 0 0 0 rgba(176,123,58,0); }
 }
-.jt-report-feature h2 {
+.jt-report-feature h2{
   color: var(--fg-1); font-size: clamp(28px, 3.6vw, 42px);
   font-weight: 800; letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 14px;
 }
-.jt-report-feature__d {
+.jt-report-feature__d{
   color: var(--fg-2); font-size: 16px; line-height: 1.6; margin: 0; max-width: 560px;
 }
-.jt-report-feature__meta {
+.jt-report-feature__meta{
   margin-top: 18px; display: flex; gap: 20px; flex-wrap: wrap;
   font-size: 13px; color: var(--fg-3);
 }
-.jt-report-feature__cta { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
-.jt-report-feature .jt-btn--primary {
+.jt-report-feature__cta{ display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.jt-report-feature .jt-btn--primary{
   background: var(--jt-ink-800) !important; color: var(--bg-1) !important; border-color: var(--jt-ink-800) !important;
   font-size: 16px; padding: 16px 30px; white-space: nowrap;
 }
-.jt-report-feature .jt-btn--primary:hover { background: var(--jt-ink-900) !important; border-color: var(--jt-ink-900) !important; }
-.jt-report-feature__sub { font-size: 12px; color: var(--fg-3); text-align: center; }
+.jt-report-feature .jt-btn--primary:hover{ background: var(--jt-ink-900) !important; border-color: var(--jt-ink-900) !important; }
+.jt-report-feature__sub{ font-size: 12px; color: var(--fg-3); text-align: center; }
 @media (max-width: 860px) {
-  .jt-report-feature { grid-template-columns: 1fr; padding: 34px 26px; gap: 24px; }
+.jt-report-feature{ grid-template-columns: 1fr; padding: 34px 26px; gap: 24px; }
 }
-
-/* JT 리포트 상담배너 — 카톡(ghostOnDark) 버튼 가시성: 다크 배너 위 흰색 강제 */
-.jt-convert-banner .jt-btn--ghostOnDark {
+.jt-convert-banner .jt-btn--ghostOnDark{
   background: transparent !important; color: #fff !important; border-color: rgba(255,255,255,.5) !important;
 }
-.jt-convert-banner .jt-btn--ghostOnDark:hover {
+.jt-convert-banner .jt-btn--ghostOnDark:hover{
   background: rgba(255,255,255,.1) !important; color: #fff !important; border-color: #fff !important;
 }
-
-/* ───────── 톤 일관성: 미니 다크 카드 → 라이트 강조 ───────── */
-/* 팀 프리뷰 대표(회장) 카드: 다크 대신 진한 크림 + 잉크 상단선 */
-
-/* ───────── 반응형 ───────── */
-@media (max-width: 960px) {
-  .jt-sits { grid-template-columns: repeat(2, 1fr); }
-  .jt-ident__grid { grid-template-columns: 1fr; }
-  .jt-ident__col { border-right: 0; border-bottom: 1px solid var(--border-1); padding: 28px 0; }
-  .jt-ident__col:last-child { border-bottom: 0; }
-}
 @media (max-width: 640px) {
-  .jt-sithero { padding: 56px 20px 0; }
-  .jt-sits { grid-template-columns: 1fr; padding: 36px 20px 0; }
-  .jt-ident, .jt-pullquote { padding-left: 20px; padding-right: 20px; }
-  .jt-nav__brand span { font-size: 18px; }
-  .jt-nav__brand img { height: 34px !important; }
+.jt-pullquote{ padding-left: 20px; padding-right: 20px; }
+.jt-nav__brand span{ font-size: 18px; }
+.jt-nav__brand img{ height: 34px !important; }
 }
-
-/* ───────── 근거의 벽 · 자격 매트릭스 (회사소개) ───────── */
-.jt-matrix {
+.jt-matrix{
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
   border-top: 2px solid var(--fg-1); border-left: 1px solid var(--border-1); margin-top: 44px;
 }
-.jt-matrix__cell {
+.jt-matrix__cell{
   border-right: 1px solid var(--border-1); border-bottom: 1px solid var(--border-1);
   padding: 30px 26px; min-height: 152px; display: flex; flex-direction: column;
 }
-.jt-matrix__tag { font-family: var(--font-sans-en); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--jt-amber); font-weight: 700; margin-bottom: 14px; }
-.jt-matrix__n { font-family: var(--font-display-kr); font-size: clamp(36px, 4vw, 52px); line-height: 1; letter-spacing: -0.03em; color: var(--fg-1); }
-.jt-matrix__n em { font-family: var(--font-sans-kr); font-style: normal; font-size: 14px; font-weight: 600; color: var(--fg-2); margin-left: 3px; }
-.jt-matrix__l { font-size: 13.5px; color: var(--fg-2); margin-top: auto; line-height: 1.5; padding-top: 18px; }
+.jt-matrix__tag{ font-family: var(--font-sans-en); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--jt-amber); font-weight: 700; margin-bottom: 14px; }
+.jt-matrix__n{ font-family: var(--font-display-kr); font-size: clamp(36px, 4vw, 52px); line-height: 1; letter-spacing: -0.03em; color: var(--fg-1); }
+.jt-matrix__n em{ font-family: var(--font-sans-kr); font-style: normal; font-size: 14px; font-weight: 600; color: var(--fg-2); margin-left: 3px; }
+.jt-matrix__l{ font-size: 13.5px; color: var(--fg-2); margin-top: auto; line-height: 1.5; padding-top: 18px; }
 @media (max-width: 760px) {
-  .jt-matrix { grid-template-columns: 1fr 1fr; }
+.jt-matrix{ grid-template-columns: 1fr 1fr; }
 }
-
-/* ═════════ 배경 강화 — 정밀 라인 그리드(A) + 고스트 모노그램(B) ═════════ */
-/* A) 전역 미세 컬럼 그리드 — 라이트 영역에만 은은히(다크 섹션엔 multiply로 사라짐) */
-.jt-app::before {
+.jt-app::before{
   content: ""; position: fixed; inset: 0; z-index: 8999; pointer-events: none;
   background-image: repeating-linear-gradient(90deg,
     rgba(18,18,18,0.030) 0, rgba(18,18,18,0.030) 1px, transparent 1px, transparent 116px);
   mix-blend-mode: multiply;
 }
 @media (max-width: 640px) {
-  .jt-app::before { background-image: repeating-linear-gradient(90deg,
+.jt-app::before{ background-image: repeating-linear-gradient(90deg,
     rgba(18,18,18,0.028) 0, rgba(18,18,18,0.028) 1px, transparent 1px, transparent 84px); }
 }
-
-/* B) 고스트 모노그램 — 주요 섹션에 추가 (히어로/CTA는 기존 + 강화됨) */
-.jt-ident::before {
-  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("../assets/jt-mark.png") no-repeat right 5% center;
-  background-size: min(24vw, 280px) auto; opacity: .045;
-}
-.jt-pullquote { position: relative; overflow: hidden; }
-.jt-pullquote::before {
+.jt-pullquote{ position: relative; overflow: hidden; }
+.jt-pullquote::before{
   content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background: url("../assets/jt-mark.png") no-repeat right 6% bottom 10%;
   background-size: min(24vw, 280px) auto; opacity: .05;
 }
-.jt-pullquote__inner { position: relative; z-index: 1; }
+.jt-pullquote__inner{ position: relative; z-index: 1; }
 
 /* ═════════ 모바일 반응형 보정 (내부 페이지 그리드) ═════════ */
 @media (max-width: 760px) {
-  .jt-service-detail { grid-template-columns: 1fr; gap: 16px; padding: 40px 0; }
-  .jt-service-detail__num { font-size: 40px; }
-  .jt-service-detail__body h3 { font-size: 24px; }
-  .jt-service-detail__body p { font-size: 15px; max-width: none; }
-  .jt-services { grid-template-columns: 1fr; }
-  .jt-philosophy { grid-template-columns: 1fr; }
-  .jt-proof__grid { grid-template-columns: 1fr; }
-  .jt-map { grid-template-columns: 1fr; }
-  .jt-form { grid-template-columns: 1fr; }
+.jt-service-detail{ grid-template-columns: 1fr; gap: 16px; padding: 40px 0; }
+.jt-service-detail__num{ font-size: 40px; }
+.jt-service-detail__body h3{ font-size: 24px; }
+.jt-service-detail__body p{ font-size: 15px; max-width: none; }
+.jt-services{ grid-template-columns: 1fr; }
+.jt-philosophy{ grid-template-columns: 1fr; }
+.jt-proof__grid{ grid-template-columns: 1fr; }
+.jt-map{ grid-template-columns: 1fr; }
+.jt-form{ grid-template-columns: 1fr; }
 }
-
-/* ═════════ 모바일 친화: 네비 햄버거 메뉴 · 카톡 배너 · 여백/타이포 ═════════ */
-/* 카톡 상담 배너 */
-.jt-kakao-cta {
+.jt-kakao-cta{
   display: flex; align-items: center; justify-content: space-between; gap: 14px;
   background: #FEE500; color: #191919; padding: 16px 22px; margin-bottom: 36px;
   border-radius: 4px; text-decoration: none;
 }
-.jt-kakao-cta__msg { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; line-height: 1.45; }
-.jt-kakao-cta__msg b { font-weight: 800; }
-.jt-kakao-cta__go { font-weight: 800; white-space: nowrap; }
-
-/* 네비 햄버거 (기본 숨김 → 모바일 노출) */
-.jt-nav__burger { display: none; }
-.jt-navmenu { display: none; }
+.jt-kakao-cta__msg{ display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; line-height: 1.45; }
+.jt-kakao-cta__msg b{ font-weight: 800; }
+.jt-kakao-cta__go{ font-weight: 800; white-space: nowrap; }
+.jt-nav__burger{ display: none; }
+.jt-navmenu{ display: none; }
 
 @media (max-width: 760px) {
-  /* 네비: 상단 예약버튼 숨기고 햄버거 노출 (예약은 하단 고정바 + 메뉴에 제공) */
-  .jt-nav__book { display: none; }
-  .jt-nav__burger {
+.jt-nav__book{ display: none; }
+.jt-nav__burger{
     display: inline-flex; flex-direction: column; justify-content: center; gap: 5px;
     width: 44px; height: 40px; padding: 0 11px; border: 1px solid var(--border-2);
     background: transparent; cursor: pointer; border-radius: 4px;
   }
-  .jt-nav__burger span { display: block; height: 2px; background: var(--fg-1); transition: transform .2s, opacity .2s; }
-  .jt-nav--menu-open .jt-nav__burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .jt-nav--menu-open .jt-nav__burger span:nth-child(2) { opacity: 0; }
-  .jt-nav--menu-open .jt-nav__burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-  .jt-navmenu {
+.jt-nav__burger span{ display: block; height: 2px; background: var(--fg-1); transition: transform .2s, opacity .2s; }
+.jt-nav--menu-open .jt-nav__burger span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+.jt-nav--menu-open .jt-nav__burger span:nth-child(2){ opacity: 0; }
+.jt-nav--menu-open .jt-nav__burger span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+.jt-navmenu{
     display: flex; flex-direction: column;
     position: absolute; left: 0; right: 0; top: 100%;
     background: var(--bg-1); border-bottom: 1px solid var(--border-1);
     padding: 6px 20px 22px; box-shadow: 0 18px 36px -18px rgba(0,0,0,.28);
   }
-  .jt-navmenu a { padding: 16px 2px; font-size: 17px; font-weight: 500; color: var(--fg-1); text-decoration: none; border-bottom: 1px solid var(--border-1); cursor: pointer; }
-  .jt-navmenu a.is-active { color: var(--jt-amber); }
-  .jt-navmenu__phone { font-family: var(--font-sans-en); color: var(--fg-2); }
-  .jt-navmenu .jt-btn { margin-top: 18px; justify-content: center; }
-
-  /* 카톡 배너 — 세로 정렬로 글자 깨짐 방지 */
-  .jt-kakao-cta { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px 18px; }
-  .jt-kakao-cta__msg { font-size: 15px; align-items: flex-start; }
-
-  /* 섹션 여백·타이포 모바일 축소 */
-  .jt-section { padding: 56px 20px; }
-  .jt-section__head { margin-bottom: 36px; }
-  .jt-section__head--split { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .jt-h2 { font-size: 30px; }
-  .jt-page-hero { padding: 92px 20px 52px; }
-  .jt-page-hero__mark { width: 200px; right: -24px; bottom: -36px; }
-  .jt-page-hero h1 { font-size: clamp(30px, 8.5vw, 42px); }
+.jt-navmenu a{ padding: 16px 2px; font-size: 17px; font-weight: 500; color: var(--fg-1); text-decoration: none; border-bottom: 1px solid var(--border-1); cursor: pointer; }
+.jt-navmenu a.is-active{ color: var(--jt-amber); }
+.jt-navmenu__phone{ font-family: var(--font-sans-en); color: var(--fg-2); }
+.jt-navmenu .jt-btn{ margin-top: 18px; justify-content: center; }
+.jt-kakao-cta{ flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px 18px; }
+.jt-kakao-cta__msg{ font-size: 15px; align-items: flex-start; }
+.jt-section{ padding: 56px 20px; }
+.jt-section__head{ margin-bottom: 36px; }
+.jt-section__head--split{ flex-direction: column; align-items: flex-start; gap: 12px; }
+.jt-h2{ font-size: 30px; }
+.jt-page-hero{ padding: 92px 20px 52px; }
+.jt-page-hero__mark{ width: 200px; right: -24px; bottom: -36px; }
+.jt-page-hero h1{ font-size: clamp(30px, 8.5vw, 42px); }
 }
 
 /* 컨테이너 여백 — 모바일 이중 여백 방지(리포트·고지 섹션) */
 @media (max-width: 760px) {
-  .jt-container { padding: 0 20px; }
+.jt-container{ padding: 0 20px; }
 }
 
 /* ═════════ 모바일 강제 스택 — 그리드 미접힘/세로글자 원천 차단 ═════════ */
 @media (max-width: 1024px) {
-  .jt-service-detail { display: block !important; padding: 36px 0 !important; }
-  .jt-service-detail__num { margin-bottom: 10px; font-size: 40px !important; }
-  .jt-service-detail__body, .jt-service-detail__side { width: 100% !important; max-width: 100% !important; }
-  .jt-service-detail__body { margin: 8px 0 20px; }
-  .jt-service-detail__body p { max-width: 100% !important; }
-  .jt-services { grid-template-columns: 1fr !important; }
+.jt-service-detail{ display: block !important; padding: 36px 0 !important; }
+.jt-service-detail__num{ margin-bottom: 10px; font-size: 40px !important; }
+.jt-service-detail__body, .jt-service-detail__side{ width: 100% !important; max-width: 100% !important; }
+.jt-service-detail__body{ margin: 8px 0 20px; }
+.jt-service-detail__body p{ max-width: 100% !important; }
+.jt-services{ grid-template-columns: 1fr !important; }
 }
-
-/* ===================================================================
-   PHASE A — 한글 줄바꿈 안전화 + 섹션 제목 디스플레이 서체 통일
-   =================================================================== */
-/* 한글은 어절 단위로만 줄바꿈(단어 중간 끊김 방지). 명시도 0(:where)이라 기존 규칙 안 깨짐 */
-:where(h1,h2,h3,h4,.jt-h1,.jt-h2,.jt-h3,.jt-display-h2,p,li,dt,dd,blockquote){ word-break: keep-all; }
-:where(h1,h2,h3,h4,.jt-h1,.jt-h2,.jt-h3,.jt-display-h2){ text-wrap: balance; }
+:where(h1,h2,h3,h4, .jt-h1, .jt-h2, .jt-h3, .jt-display-h2,p,li,dt,dd,blockquote){ word-break: keep-all; }
+:where(h1,h2,h3,h4, .jt-h1, .jt-h2, .jt-h3, .jt-display-h2){ text-wrap: balance; }
 :where(p,li,dd,blockquote){ text-wrap: pretty; }
-/* 영문·번호·이메일 등은 keep-all 제외(좁은 화면 넘침 방지) */
-.jt-channels__big, .en-caps, .mono, .jt-nav__phone, .jt-map__val a { word-break: normal; overflow-wrap: anywhere; }
-
-/* 섹션 헤드라인 전용 디스플레이 서체(.jt-h2엔 전역 적용 안 하고, 이 클래스를 단 곳만) */
+.jt-channels__big, .en-caps, .mono, .jt-nav__phone, .jt-map__val a{ word-break: normal; overflow-wrap: anywhere; }
 .jt-display-h2{
   font-family: var(--font-display-kr);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 1.12;
 }
-
-/* ===================================================================
-   PHASE B — 통일 모노톤 라인 아이콘(이모지 대체)
-   =================================================================== */
-.jt-sit__ico{ font-size: 0; }              /* 이모지 폰트크기 잔재 무력화 */
-.jt-sit__ico svg{ width: 26px; height: 26px; color: var(--fg-1); display: block; }
-.jt-sit:hover .jt-sit__ico svg{ color: var(--jt-ink-900); }
 .jt-mcta__ico svg{ width: 22px; height: 22px; display: block; }
 .jt-mcta__ico{ display: inline-flex; }
-
-/* ===================================================================
-   PHASE C — Brand Moment (로고+슬로건 다크 앵커, CI quiet zone)
-   =================================================================== */
-.jt-brandmoment{
-  background: #000; color: #fff;
-  padding: clamp(80px, 13vw, 168px) 24px;
-  text-align: center; position: relative; overflow: hidden;
-}
-/* CI: 로고는 복잡한 패턴/이미지 위 금지 → 텍스처 억제(정숙 영역) */
-.jt-brandmoment::before, .jt-brandmoment::after{ content: none !important; background: none !important; }
-.jt-brandmoment__inner{ max-width: 1000px; margin: 0 auto; }
-.jt-brandmoment__logo{
-  height: clamp(120px, 17vw, 220px); width: auto;
-  margin: 0 auto clamp(28px, 4vw, 48px); display: block;
-}
-.jt-brandmoment__slogan{
-  font-family: var(--font-display-kr); font-weight: 400;
-  font-size: clamp(44px, 8vw, 112px); line-height: 1.02; letter-spacing: -0.035em;
-  color: #fff; margin: 0; word-break: keep-all;
-}
-.jt-brandmoment__slogan .reveal{ display: inline-block; }
-.jt-brandmoment__sub{
-  margin: clamp(26px, 3.5vw, 40px) auto 0; max-width: 46ch;
-  color: rgba(255,255,255,.62); font-size: clamp(15px, 1.7vw, 19px); line-height: 1.75;
-}
-
-/* ── 히어로 간이 계산기 (260809 결재 「안 2」) ────────────────────────────
-   다크 히어로 «안»에 얹히는 카드. 브랜드 문장을 지키면서 도구를 첫 화면에 둔다.
-   ⚠️ 시안의 걱정거리가 「작은 화면에서 스크롤해야 보인다」였다 —
-      모바일에서는 로고·슬로건 여백을 줄여 계산기가 첫 화면에 들어오게 한다. */
 .jt-herocalc{
   max-width: 560px; margin: clamp(30px,4vw,44px) auto 0; text-align: left;
   background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.14);
@@ -563,10 +343,10 @@
 }
 .jt-herocalc__why{ font-size: 13.5px; color: #9fe0bd; margin-top: 6px; line-height: 1.6; }
 .jt-herocalc__why strong{ color: #fff; font-weight: 700; }
-/* 범위 표시 — 두 금액이 한 줄에 들어가야 하므로 조금 작게, 물결은 흐리게 */
 .jt-herocalc__amount{ word-break: keep-all; }
 .jt-herocalc__tilde{ opacity: .45; margin: 0 2px; font-weight: 400; }
-@media (max-width: 640px){ .jt-herocalc__amount{ font-size: clamp(22px,6.4vw,30px); } }
+@media (max-width: 640px){
+.jt-herocalc__amount{ font-size: clamp(22px,6.4vw,30px); } }
 .jt-herocalc__assume{ font-size: 12.5px; color: rgba(255,255,255,.55); line-height: 1.6; margin-top: 10px; }
 .jt-herocalc__more{
   margin-top: 12px; padding: 0; border: 0; background: none; cursor: pointer;
@@ -578,140 +358,35 @@
 .jt-herocalc__note strong{ color: rgba(255,255,255,.78); font-weight: 600; }
 
 @media (max-width: 640px){
-  /* ⚠️ 실측(375×812): 로고 168 + 여백 때문에 계산기 상단이 587px, 「세액 계산」 버튼이
-     960px 로 첫 화면 «밖»이었다. 시안이 걱정한 바로 그 지점이다.
-     → 로고를 더 줄이고 입력을 2열로 접어 버튼을 화면 안으로 끌어올린다.
-     ⛔ 슬로건·부제는 건드리지 않는다(브랜드 문장 유지가 안 2 를 고른 이유). */
-  /* ⚠️ .jt-brandmoment 의 padding 은 여기서 정하지 않는다 — 아래 689행의 무조건
-     규칙이 «뒤»에 있어 !important 끼리 붙으면 그쪽이 이긴다(미디어쿼리는 우선순위를
-     올려 주지 않는다). 모바일 여백은 파일 «맨 끝» 블록에서 덮는다. 260809 실사고.
-     같은 이유로 logowrap 의 margin-bottom(907행에 덮임)과 슬로건 font-size(730행에
-     덮임)도 여기서 빼고 끝 블록으로 옮겼다 — 여기 두면 «쓴 값이 안 먹는다». */
-  .jt-brandmoment__sub{ margin-top: 12px; font-size: 14px; }
-  .jt-herocalc{ margin-top: 18px; padding: 14px; }
-  /* 2열 유지 — 한 칸씩 쌓으면 높이가 두 배가 되어 버튼이 접힌다 */
-  .jt-herocalc__grid{ grid-template-columns: 1fr 1fr; gap: 10px; }
-  .jt-herocalc__head{ margin-bottom: 12px; }
-  .jt-herocalc__go{ margin-top: 13px; }
-  /* iOS 는 16px 미만 입력에 자동 확대를 건다 — 확대되면 레이아웃이 튄다 */
-  .jt-herocalc__grid select, .jt-herocalc__grid input{ font-size: 16px !important; padding: 10px 10px; }
+.jt-herocalc{ margin-top: 18px; padding: 14px; }
+.jt-herocalc__grid{ grid-template-columns: 1fr 1fr; gap: 10px; }
+.jt-herocalc__head{ margin-bottom: 12px; }
+.jt-herocalc__go{ margin-top: 13px; }
+.jt-herocalc__grid select, .jt-herocalc__grid input{ font-size: 16px !important; padding: 10px 10px; }
 }
 
 /* reveal 안전망(중요): 모션 비선호/JS 미동작 시에도 콘텐츠 보이게 */
 @media (prefers-reduced-motion: reduce){
-  .reveal{ opacity: 1 !important; transform: none !important; }
+.reveal{ opacity: 1 !important; transform: none !important; }
 }
-
-/* ===================================================================
-   피드백 반영 — 히어로 후킹↑ · 카드 클릭 어포던스↑ · 로고 각인↑
-   =================================================================== */
-/* (1) 히어로 타이틀 대형화: "지금, 어떤 상황이신가요?"가 주역 */
-.jt-sithero__title{
-  font-size: clamp(46px, 8.4vw, 108px) !important;
-  line-height: 0.98 !important; letter-spacing: -0.04em !important;
-  max-width: 13em !important; margin-top: 8px !important;
-}
-.jt-sithero__sub{ font-size: clamp(16px, 1.5vw, 19px) !important; max-width: 560px; }
-
-/* (2) 히어로 JT 마크 — 크고 또렷하게(각인) */
-.jt-sithero::before{
-  background-size: min(48vw, 660px) auto !important;
-  opacity: .08 !important; right: -90px !important; bottom: -70px !important;
-}
-
-/* (3) 상황 카드: '클릭하는 거구나'가 즉시 보이도록 — 하단에 원형 화살표 액션 */
-.jt-sit{ border-width: 1.5px !important; }
-.jt-sit:hover{
-  border-color: #000 !important; transform: translateY(-5px) !important;
-  box-shadow: 0 26px 52px -26px rgba(0,0,0,.42) !important;
-}
-.jt-sit:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
-.jt-sit__t{ font-size: 23px !important; }
-.jt-sit__go{
-  color: #000 !important; font-weight: 700 !important;
-  font-family: var(--font-sans-kr) !important; font-size: 13.5px !important; letter-spacing: 0 !important;
-  margin-top: 18px !important; padding-top: 15px; border-top: 1px solid var(--border-1);
-  justify-content: space-between;
-}
-.jt-sit__go .jt-arrow{
-  width: 28px; height: 28px; border-radius: 50%; background: #000; color: #fff;
-  display: inline-grid; place-items: center; font-size: 13px; flex-shrink: 0; transition: transform .2s;
-}
-.jt-sit:hover .jt-sit__go .jt-arrow{ transform: translateX(3px); }
-
-/* (4) 브랜드 모먼트 로고 — 크게(각인) */
-.jt-brandmoment{ padding-top: clamp(96px,14vw,190px) !important; padding-bottom: clamp(96px,14vw,190px) !important; }
-.jt-brandmoment__logo{ height: clamp(150px, 24vw, 300px) !important; }
-
-/* (5) ★CI 로고 교정 — nav: 정식 Secondary(가로) 락업 사용 */
 .jt-nav__brand img{ height: 44px !important; width: auto; }
-@media (max-width: 600px){ .jt-nav__brand img{ height: 38px !important; } }
-
-/* ===================================================================
-   피드백 3 — 세로줄 제거(거슬림) → 프리미엄 그레인 + 고스트 JT, 타이틀 정중앙
-   =================================================================== */
-/* 배경: 거슬리는 세로 라인 그리드 제거. 2026 프리미엄 벤치마크 = 미세 필름 그레인 */
+@media (max-width: 600px){
+.jt-nav__brand img{ height: 38px !important; } }
 .jt-app::before{ background-image: none !important; }
 .jt-app::after{ opacity: .3 !important; }
-/* 히어로 고스트 JT 모노그램을 텍스처의 주역으로(로고 활용↑) */
-.jt-sithero::before{ opacity: .15 !important; }
-
-/* 타이틀 정중앙 — 760px 박스를 넘쳐 우측으로 쏠리던 현상 교정 */
-.jt-sithero__inner{ max-width: 1240px !important; }
-.jt-sithero__title{
-  width: 100% !important; text-align: center !important;
-  font-size: clamp(28px, 7vw, 98px) !important;
-}
-/* footer: 정식 Primary 화이트 락업(세로형) 사용 */
 .jt-footer__brand img{ filter: none !important; height: 78px !important; width: auto; opacity: 1 !important; }
-
-/* ===================================================================
-   피드백 2 — 한 줄 대형 타이틀 · 로고 강조(>슬로건) · 배경 질감
-   =================================================================== */
-/* (1) "지금, 어떤 상황이신가요?" 한 줄 + 대형, 중앙 정렬 */
-.jt-sithero__inner{ text-align: center; }
-.jt-sithero .jt-kicker{ display: inline-flex; align-items: center; justify-content: center; }
-.jt-sithero__title{
-  white-space: nowrap !important;
-  font-size: clamp(28px, 7.2vw, 102px) !important;
-  max-width: none !important; line-height: 1.02 !important;
-  margin-left: auto !important; margin-right: auto !important;
-}
-.jt-sithero__sub{ margin-left: auto !important; margin-right: auto !important; }
-
-/* (2) 브랜드 모먼트: 로고를 주역으로(각인), 슬로건은 보조 */
-.jt-brandmoment__logo{ height: clamp(200px, 32vw, 460px) !important; margin-bottom: clamp(22px,3vw,40px) !important; }
-.jt-brandmoment__slogan{ font-size: clamp(24px, 3.6vw, 52px) !important; color: rgba(255,255,255,.9) !important; }
-.jt-brandmoment__sub{ color: rgba(255,255,255,.55) !important; }
-
-/* (3) 배경 질감 — 정밀 컬럼 그리드 강화 + 그레인 톤다운
-       (라이트 영역에만; 다크 섹션은 multiply로 자동 소거 → 브랜드모먼트/푸터 깨끗) */
-.jt-app::before{ background-image: none !important; }  /* 세로줄 제거(피드백) — 이전 그리드 강화 취소 */
+.jt-app::before{ background-image: none !important; }
 .jt-app::after{ opacity: .3 !important; }
-
-/* ===================================================================
-   피드백 4 — 히어로 카드↔다음 섹션 여백 + 그레인 강화
-   =================================================================== */
-.jt-sithero{ padding-bottom: clamp(84px, 10vw, 132px) !important; }  /* 카드와 브랜드모먼트 사이 숨 공간 */
-.jt-app::after{ opacity: .5 !important; }                            /* 그레인 더 세게 */
-
-/* ===================================================================
-   피드백 5 — 줄바꿈 전수(상속) + disclaimer 보정 + 회장 사진 아바타 + 그레인↑
-   =================================================================== */
-/* word-break는 상속 속성 → 루트에 1회 = div/span 포함 모든 한글에 적용 */
+.jt-app::after{ opacity: .5 !important; }
 .jt-app{ word-break: keep-all; }
-/* 영문/숫자/긴 토큰만 예외(overflow 방지) */
 .jt-app :where(.en-caps, .mono, .jt-channels__big, .jt-nav__phone){ word-break: normal; overflow-wrap: anywhere; }
 .jt-app a[href^="mailto:"], .jt-app a[href^="tel:"]{ word-break: normal; overflow-wrap: anywhere; }
-/* 공개자료 disclaimer: mono·우측정렬 → 본문 sans·좌측·가독 폭 */
 .jt-proof__note{
   font-family: var(--font-sans-kr) !important; text-align: left !important;
   max-width: 460px !important; letter-spacing: 0 !important; font-size: 12.5px !important; line-height: 1.7 !important;
 }
-/* 회장 인용 아바타: 'JT' 글자 → 실제 사진(흑백). 사진 실패 시 'JT' 폴백 노출 */
 .jt-pullquote__avatar{ position: relative; overflow: hidden; }
 .jt-pullquote__avatar img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; filter: grayscale(1); }
-/* 그레인 더 강하게 */
 .jt-app::after{ opacity: .72 !important; }
 
 /* ===================================================================
@@ -720,42 +395,21 @@
 @keyframes jt-rise { from { opacity: 0; transform: translateY(36px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
 /* 과감한 타이틀 등장 — 멀리서 + 강한 블러 + 살짝 확대 (영화 타이틀) */
 @keyframes jt-title-in { 0% { opacity: 0; transform: translateY(92px) scale(.94); filter: blur(24px); } 100% { opacity: 1; transform: none; filter: blur(0); } }
-
-/* (1) 히어로 로드 진입 — 키커 → 대형 타이틀(과감) → 서브, 시차 크게 */
-.jt-sithero .jt-kicker{ animation: jt-rise .8s var(--ease-out) both; }
-.jt-sithero__title{ animation: jt-title-in 1.35s .18s cubic-bezier(.16,1,.3,1) both; }
-.jt-sithero__sub{ animation: jt-rise 1s .62s var(--ease-out) both; }
-
-/* (2) 전역 스크롤 reveal 고급화 — 떠오르며 또렷해짐(블러업). transition-delay(data-delay)는 보존 */
 .reveal{ transition-property: opacity, transform !important; transition-duration: .8s !important; transition-timing-function: var(--ease-out) !important; }
 .reveal[data-delay="5"]{ transition-delay: .5s; }
 
-/* (3) 상황 카드 — 시차로 하나씩 떠오름 (data-delay 0~5) */
-.jt-sit.reveal{ transform: translateY(40px) scale(.98); }
-.jt-sit.reveal.is-visible{ transform: none; }
-
-/* (4) 브랜드 모먼트 로고 — 스케일·블러로 '각인'되며 등장 */
-.jt-brandmoment__logo.reveal{ transform: translateY(34px) scale(.92); }
-.jt-brandmoment__logo.reveal.is-visible{ transform: none; }
-
 /* (5) 히어로 고스트 JT — 은은히 숨쉬는 모션(살아있는 느낌) */
 @keyframes jt-breathe { 0%,100% { transform: scale(1); opacity: .085; } 50% { transform: scale(1.05); opacity: .12; } }
-.jt-sithero::before{ animation: jt-breathe 10s ease-in-out infinite; transform-origin: 82% 78%; }
 
 @media (prefers-reduced-motion: reduce){
-  .jt-sithero .jt-kicker, .jt-sithero__title, .jt-sithero__sub{ animation: none !important; }
-  .reveal{ filter: none !important; }
-  .jt-sit.reveal, .jt-brandmoment__logo.reveal{ transform: none !important; }
-  .jt-sithero::before{ animation: none !important; }
+.reveal{ filter: none !important; }
 }
-
-/* ===================================================================
-   인사이트 카드 (표 → 카드: 카테고리 칩 + 제목 + 요약 + 읽기)
-   =================================================================== */
 .jt-icards{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .jt-icards--3{ grid-template-columns: repeat(3, 1fr); }
-@media (max-width: 960px){ .jt-icards, .jt-icards--3{ grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px){ .jt-icards, .jt-icards--3{ grid-template-columns: 1fr; } }
+@media (max-width: 960px){
+.jt-icards, .jt-icards--3{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px){
+.jt-icards, .jt-icards--3{ grid-template-columns: 1fr; } }
 .jt-icard{
   display: flex; flex-direction: column; padding: 30px 30px 26px;
   border: 1px solid var(--border-1); background: var(--bg-1); cursor: pointer; min-height: 210px;
@@ -769,41 +423,19 @@
 .jt-icard__title{ font-size: 19px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.4; margin: 0 0 12px; color: var(--fg-1); }
 .jt-icard__excerpt{ font-size: 14px; color: var(--fg-2); line-height: 1.7; margin: 0 0 22px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .jt-icard__go{ margin-top: auto; font-size: 13px; font-weight: 700; color: #000; display: inline-flex; align-items: center; gap: 8px; }
-/* 스트레치 링크 — 카드의 유일한 상호작용 요소는 내부 <a> 하나다(260830 Codex R2-F1 + jsx 스모크 키보드 게이트 동시 충족).
-   앵커의 히트 영역을 카드 전체로 늘려 «카드 아무 데나 클릭»을 유지하되, article 에는 onClick 을 두지 않는다 */
 .jt-icard{ position: relative; }
 a.jt-icard__go::after{ content: ''; position: absolute; inset: 0; }
 a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
 .jt-icard__go .jt-arrow{ transition: transform .2s; }
 .jt-icard:hover .jt-icard__go .jt-arrow{ transform: translateX(4px); }
-
-/* ===================================================================
-   내부 페이지도 과감한 진입 모션 (회사소개·업무분야·리포트·인사이트·오시는길·상담)
-   =================================================================== */
 .jt-page-hero{ overflow: hidden; }
 .jt-page-hero__crumb{ animation: jt-rise .75s var(--ease-out) both; }
 .jt-page-hero h1{ animation: jt-title-in 1.2s .12s cubic-bezier(.16,1,.3,1) both; }
 .jt-page-hero__sub{ animation: jt-rise 1s .44s var(--ease-out) both; }
-/* 페이지 헤더의 고스트 심볼도 은은히 살아있게 */
 .jt-page-hero__mark{ animation: jt-breathe 11s ease-in-out infinite; transform-origin: 80% 30%; }
 @media (prefers-reduced-motion: reduce){
-  .jt-page-hero__crumb, .jt-page-hero h1, .jt-page-hero__sub, .jt-page-hero__mark{ animation: none !important; }
+.jt-page-hero__crumb, .jt-page-hero h1, .jt-page-hero__sub, .jt-page-hero__mark{ animation: none !important; }
 }
-
-/* ===================================================================
-   히어로 상황 카드 — 긴장 한 줄(hook) 복원 (다이어트 유지: 짧은 회색 한 줄)
-   =================================================================== */
-.jt-sit__hook{
-  margin-top: 6px;
-  font-size: clamp(13px, 1.25vw, 14.5px);
-  line-height: 1.5;
-  color: var(--fg-2, #4b4b4b);
-}
-.jt-sit--general .jt-sit__hook{ color: var(--fg-3, #6b6b6b); }
-
-/* ===================================================================
-   JT 리포트(플랫폼형) — 계산 엔진 차별화 + 계산→상담→관리 퍼널. 로고 락업 강조.
-   =================================================================== */
 .jt-platform{
   padding: clamp(74px, 9vw, 130px) 24px;
   text-align: center;
@@ -854,99 +486,17 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
 }
 .jt-platform__link{ cursor: pointer; }
 @media (max-width: 560px){
-  .jt-platform__steps{ flex-direction: column; gap: 18px; align-items: stretch; }
-  .jt-platform__steps li{ flex-direction: row; justify-content: center; gap: 10px; }
+.jt-platform__steps{ flex-direction: column; gap: 18px; align-items: stretch; }
+.jt-platform__steps li{ flex-direction: row; justify-content: center; gap: 10px; }
 }
-
-/* ===================================================================
-   브랜드 모먼트 — 진짜 벡터 draw-on (정품 .ai → 인라인 SVG, 획별 stroke 트레이스)
-   심볼→한글→영문 순으로 외곽선이 그려진 뒤 채워짐 → 글로우 플래시 → 호흡.
-   모노톤·CSS only·기하 무왜곡(정품 경로)·reduced-motion 가드.
-   =================================================================== */
-.jt-brandmoment__logowrap{
-  position: relative; display: inline-block;
-  margin: 0 auto clamp(28px, 4vw, 48px);
-}
-.jt-brandmoment__logowrap.reveal{ opacity: 1 !important; }        /* draw가 reveal */
-.jt-bm-logosvg{
-  display: block; margin: 0; overflow: visible;
-  height: clamp(168px, 27vw, 372px); width: auto;
-}
-/* 기본(그리기 전): 외곽선만, 채움 0 */
-.jt-bm-logosvg path{
-  fill: #fff; fill-opacity: 0;
-  stroke: #fff; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round;
-  stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke;
-}
-/* 심볼(2) → 한글(7) → 영문(10) 순차 외곽선 트레이스 + 채움 + 외곽선 소거 — ★1회만(진입 시) */
-@keyframes jt-bm-stroke   { to { stroke-dashoffset: 0; } }
-@keyframes jt-bm-fillin   { to { fill-opacity: 1; } }
-@keyframes jt-bm-strokeout{ to { stroke-opacity: 0; } }
-.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--symbol path{
-  animation: jt-bm-stroke .85s ease-out both, jt-bm-fillin .45s .72s both, jt-bm-strokeout .3s 1.05s both;
-}
-.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--korean path{
-  animation: jt-bm-stroke .72s .32s ease-out both, jt-bm-fillin .4s .98s both, jt-bm-strokeout .3s 1.3s both;
-}
-.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--latin  path{
-  animation: jt-bm-stroke .72s .52s ease-out both, jt-bm-fillin .4s 1.16s both, jt-bm-strokeout .3s 1.5s both;
-}
-
-/* 다 그려진 직후 한 번 '확' → 이후 '은은한 글로우 펄스' (로고는 그대로, 빛만 ~3.4초마다 번짐, 재드로 X) */
-@keyframes jt-bm-logo-flash{
-  0%   { filter: brightness(1)   drop-shadow(0 0 0 rgba(255,255,255,0)); }
-  30%  { filter: brightness(1.4) drop-shadow(0 0 60px rgba(255,255,255,.7)); }
-  100% { filter: brightness(1)   drop-shadow(0 0 0 rgba(255,255,255,0)); }
-}
-@keyframes jt-bm-logo-pulse{
-  0%,100% { filter: brightness(1)    drop-shadow(0 0 5px  rgba(255,255,255,.10)); }
-  45%     { filter: brightness(1.25) drop-shadow(0 0 52px rgba(255,255,255,.65)); }
-}
-.jt-brandmoment__logowrap.reveal.is-visible .jt-bm-logosvg{
-  animation: jt-bm-logo-flash 1.0s 1.5s both, jt-bm-logo-pulse 3s ease-in-out 2.4s infinite;
-}
-
-/* 슬로건: 아주 크게서 '쾅' + 착지 되튐 — 로고 그려진 뒤 순차 */
-@keyframes jt-bm-slam{
-  0%   { opacity: 0; transform: scale(1.62) translateY(10px); filter: blur(22px); letter-spacing: .2em; }
-  60%  { opacity: 1; transform: scale(.965) translateY(0);    filter: blur(0);     letter-spacing: -0.05em; }
-  80%  { transform: scale(1.015); }
-  100% { opacity: 1; transform: scale(1);     filter: blur(0);  letter-spacing: -0.035em; }
-}
-.jt-brandmoment__slogan .reveal.is-visible{
-  animation: jt-bm-slam 1.05s cubic-bezier(.2,.85,.2,1.12) both;
-}
-.jt-brandmoment__slogan .reveal[data-delay="1"].is-visible{ animation-delay: 1.7s; }
-.jt-brandmoment__slogan .reveal[data-delay="2"].is-visible{ animation-delay: 2.0s; }
-
-
-@media (prefers-reduced-motion: reduce){
-  .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--symbol path,
-  .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--korean path,
-  .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-g--latin path,
-  .jt-brandmoment__logowrap.reveal.is-visible .jt-bm-logosvg,
-  .jt-brandmoment__slogan .reveal.is-visible,
-  .jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before{ animation: none !important; }
-  .jt-bm-logosvg path{ fill-opacity: 1 !important; stroke-opacity: 0 !important; stroke-dashoffset: 0 !important; }
-  .jt-brandmoment::before{ opacity: .45 !important; transform: translate(-50%,-50%) scale(1) !important; }
-}
-
-/* ===================================================================
-   상시 노출 로고마크 — 좌하단 고정 JT 심볼 (은은·배경 따라 자동 대비)
-   difference 블렌드로 다크/라이트 어디서나 보임. 모바일은 sticky CTA 충돌 방지로 숨김.
-   =================================================================== */
 .jt-logomark-fix{
   position: fixed; left: clamp(16px, 2.2vw, 28px); bottom: clamp(14px, 2vw, 22px);
   z-index: 40; pointer-events: none;
   width: clamp(30px, 3.4vw, 44px); height: auto;
   fill: #808080; opacity: .6;   /* 투명 SVG·은은한 회색 — 라이트/다크 양쪽서 보임, 박스 없음 */
 }
-@media (max-width: 820px){ .jt-logomark-fix{ display: none; } }
-
-/* ===================================================================
-   티저 밴드 — 홈 하단 임팩트 요약(큰 헤드라인 + 한 줄 요약 + 더보기 → 페이지)
-   카드 그리드 대신 짧고 강한 밴드. 클릭=페이지 이동.
-   =================================================================== */
+@media (max-width: 820px){
+.jt-logomark-fix{ display: none; } }
 .jt-teaser{
   padding: clamp(64px, 9vw, 116px) 24px;
   border-top: 1px solid var(--border-1);
@@ -964,8 +514,7 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
   margin: 0 0 24px; max-width: 840px; word-break: keep-all;
 }
 .jt-teaser__more{ font-size: 15px; font-weight: 700; }
-.jt-teaser__inner:hover .jt-teaser__more,
-.jt-teaser__inner:focus-visible .jt-teaser__more{ text-decoration: underline; }
+.jt-teaser__inner:hover .jt-teaser__more, .jt-teaser__inner:focus-visible .jt-teaser__more{ text-decoration: underline; }
 
 
 /* ⚠️ 이 블록은 파일 «끝»에 있어야 한다 — 앞쪽(693행 근처)에 로고·패딩을 !important 로
@@ -977,95 +526,17 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
    ⛔ 슬로건·부제는 줄이지 않는다 — 브랜드 문장을 지키는 것이 안 2 를 고른 이유다.
    줄이는 것은 «여백과 로고»뿐이다. */
 @media (max-height: 900px) and (min-width: 641px){
-  .jt-brandmoment{ padding-top: clamp(40px,5vh,64px) !important; padding-bottom: clamp(40px,5vh,64px) !important; }
-  /* 로고 높이는 아래 «공식 Primary 로고» 절의 .jt-bm-primary 가 정본이다 */
-  .jt-brandmoment__logowrap{ margin-bottom: clamp(14px,2vh,24px); }
-  .jt-brandmoment__sub{ margin-top: clamp(14px,2vh,22px); }
-  .jt-herocalc{ margin-top: clamp(18px,2.4vh,28px); }
+.jt-herocalc{ margin-top: clamp(18px,2.4vh,28px); }
 }
 /* 아주 낮은 화면(가로 모드 노트북 등)은 한 단계 더.
    ⚠️ 260809 재측정: 1280×720 에서 「세액 계산」 버튼이 729px 로 «9px» 넘쳐 있었다.
       종전엔 계산기 상단만 보고 「첫 화면 안」이라 판정했는데, 정작 눌러야 하는 것은
       버튼이다. 판정 기준을 카드 상단이 아니라 «버튼 하단»으로 바꿨다. */
 @media (max-height: 720px) and (min-width: 641px){
-  .jt-brandmoment{ padding-top: 20px !important; padding-bottom: 32px !important; }
-  .jt-herocalc__head{ margin-bottom: 12px; }
+.jt-herocalc__head{ margin-bottom: 12px; }
 }
-
-
-/* ── 공식 Primary 로고 (CI 가이드 준수, 260809) ──────────────────────────
-   ⛔ 금지사항: 배치 변경·기울기·비율 변경 / 지정색 외 사용 / 복잡한 배경 위 사용.
-      → 이미지 하나를 그대로 쓰고, width:auto 로 «비율을 브라우저가 보존»하게 한다.
-      높이만 화면 크기에 따라 조절한다. 색은 흰색 자산 + 검정 배경(지정색). */
-.jt-bm-primary{
-  display: block; margin: 0 auto; width: auto;
-  height: clamp(150px, 22vw, 300px);
-  /* 정숙 영역 — 로고 주위에 다른 요소가 붙지 않게 */
-  padding: 0;
-}
-@media (max-height: 900px) and (min-width: 641px){
-  .jt-bm-primary{ height: clamp(104px, 15vh, 160px) !important; }
-}
-@media (max-height: 720px) and (min-width: 641px){
-  .jt-bm-primary{ height: 78px !important; }   /* 88 → 78: 버튼을 첫 화면에 넣기 위해 */
-}
-@media (max-width: 640px){
-  .jt-bm-primary{ height: 92px !important; }
-}
-
-/* 입력 밑 «원 단위 읽기» 보조 — 0 을 세지 않게 (260809 사용자 지시) */
 .jt-herocalc__read{ font-size: 12px; color: rgba(255,255,255,.62); margin-top: 5px; letter-spacing: .01em; }
-/* 조정대상지역은 한 줄 전체를 쓴다 — 문장이 길고, 이 하나가 세액을 8배까지 바꾼다 */
 .jt-herocalc__wide{ grid-column: 1 / -1; }
-
-/* ── 로고 뒤 빛 — «은은하게, 천천히» (260809 사용자 결정) ──────────────────
-   한 번 껐다가 되살린다. 대표님 판단: 빛은 두되 더 약하고 느리게.
-   CI 금지사항은 «복잡한 패턴/이미지 위 사용 금지»다 — 단색 위의 «부드러운 광량 변화»는
-   패턴이 아니라고 보고 유지하되, 로고 판독을 방해하지 않도록 아래를 지킨다:
-     · 최대 불투명도 .12 → .06 (절반). 흰 로고와의 대비를 깎지 않는 수준
-     · 등장 1.7s → 4.5s, 호흡 7s → 16s. «움직임»이 아니라 «머무름»으로 느껴지게
-     · 로고 «뒤»에만 (z-index 0, 콘텐츠는 1). 크기도 로고보다 넓게 퍼뜨려 경계가 안 보이게
-     · 동작 최소화 설정이면 애니메이션 없이 «고정된 은은함»만
-   ⚠️ 되돌리려면 이 블록의 opacity 를 0 으로 두거나 content:none 으로 바꾸면 된다. */
-.jt-brandmoment::after{ content: none !important; }
-.jt-brandmoment::before{
-  content: '' !important;
-  background: radial-gradient(closest-side,
-    rgba(255,255,255,.06), rgba(255,255,255,.02) 48%, transparent 74%) !important;
-  position: absolute; left: 50%; top: 42%;
-  width: min(1400px, 150vw); height: min(1100px, 140vh);
-  transform: translate(-50%, -50%) scale(.85);
-  z-index: 0; pointer-events: none;
-  /* ⚠️ 여기를 opacity:0 으로 두면 «:has() 를 모르는 브라우저»에서 빛이 영영 안 뜬다
-     (아래 애니메이션이 :has() 로만 걸리기 때문). 기본을 «보이는 값»으로 두고,
-     :has() 가 되는 브라우저에서는 애니메이션이 0 에서 시작해 서서히 차오른다.
-     즉 지원 여부와 무관하게 «항상 은은한 빛»이 있고, 되는 곳에서만 등장 연출이 붙는다. */
-  opacity: .45;
-  animation: none;
-}
-/* ⚠️ 이 한 줄이 «콘텐츠를 빛 위로» 올린다 — 옛 플레어 블록을 22줄 통째로 지울 때
-   함께 날아갔다(260809 Codex P2 가 지적, git 이력으로 확인).
-   없으면 positioned ::before 가 일반 흐름 콘텐츠 «위»에 합성될 수 있다. */
-.jt-brandmoment__inner{ position: relative; z-index: 1; }
-@keyframes jt-bm-glow-in{
-  from { opacity: 0;   transform: translate(-50%,-50%) scale(.85); }
-  to   { opacity: .55; transform: translate(-50%,-50%) scale(1); }
-}
-@keyframes jt-bm-glow-breathe{
-  0%,100% { opacity: .45; transform: translate(-50%,-50%) scale(1); }
-  50%     { opacity: .7;  transform: translate(-50%,-50%) scale(1.04); }
-}
-.jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before{
-  animation: jt-bm-glow-in 4.5s ease-out both, jt-bm-glow-breathe 16s ease-in-out 4.5s infinite !important;
-}
-/* 동작 최소화를 원하는 분께는 «움직이지 않는» 은은함만 */
-@media (prefers-reduced-motion: reduce){
-  .jt-brandmoment::before{ opacity: .45 !important; animation: none !important;
-    transform: translate(-50%,-50%) scale(1) !important; }
-  .jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before{ animation: none !important; }
-}
-
-/* 간이 계산기의 «범위» 고지 — 주택만 계산한다는 사실을 숫자 앞에 밝힌다 (260809) */
 .jt-herocalc__scope{
   margin: -6px 0 14px; font-size: 12.5px; line-height: 1.6; color: rgba(255,255,255,.58);
 }
@@ -1087,43 +558,305 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
    ⛔ 슬로건·부제는 줄이지 않는다 — 브랜드 문장을 지키는 것이 안 2 를 고른 이유.
       줄이는 것은 여백·로고·카드 내부 간격뿐이다. */
 @media (max-width: 640px){
-  .jt-brandmoment{ padding-top: 28px !important; padding-bottom: 40px !important; }
-  .jt-bm-primary{ height: 78px !important; }
-  /* 슬로건은 «키우는» 쪽이다. 730행의 무조건 규칙 clamp(24px,3.6vw,52px)!important 가
-     모바일에서 3.6vw=13.5px → 하한 24px 로 떨어져, 첫 화면 브랜드 문장이 본문보다
-     겨우 큰 크기로 나오고 있었다(실측 24px). 브랜드 문장을 지키려고 안 2 를 고른
-     것이므로 여기서 되살린다 — 위 634행의 clamp(32px,9vw,44px) 는 730행에 덮여
-     한 번도 적용된 적이 없다. */
-  .jt-brandmoment__slogan{ font-size: clamp(28px, 8vw, 40px) !important; }
-  .jt-brandmoment__logowrap{ margin-bottom: 10px; }
-  .jt-brandmoment__sub{ margin-top: 8px; }
-  .jt-herocalc{ margin-top: 12px; padding: 12px; }
-  .jt-herocalc__head{ margin-bottom: 8px; }
-  .jt-herocalc__grid{ gap: 8px; }
-  .jt-herocalc__scope{ margin: -4px 0 10px; }
-  .jt-herocalc__go{ margin-top: 12px; }
-}
-/* 태블릿 세로(768×1024). 여기가 «어느 압축 규칙에도 안 걸리는» 구멍이었다 —
-   max-width:640 도 아니고 max-height:900 도 아니라 기본값(여백 107px·로고 169px)이
-   그대로 먹어 버튼이 1117px, 화면 밖 93px 였다. 실측으로 확인.
-   ⛔ max-height:1100 을 단 이유: iPad Pro 세로(1024×1366)처럼 «정말 긴» 화면까지
-      줄이면 로고가 공연히 작아진다. 거기는 기본값으로도 버튼이 들어온다. */
-@media (min-width: 641px) and (max-width: 1024px) and (max-height: 1100px){
-  .jt-brandmoment{ padding-top: 32px !important; padding-bottom: 48px !important; }
-  .jt-bm-primary{ height: 110px !important; }
+.jt-herocalc{ margin-top: 12px; padding: 12px; }
+.jt-herocalc__head{ margin-bottom: 8px; }
+.jt-herocalc__grid{ gap: 8px; }
+.jt-herocalc__scope{ margin: -4px 0 10px; }
+.jt-herocalc__go{ margin-top: 12px; }
 }
 
 /* 브라우저 주소창·하단바까지 감안한 «진짜» 짧은 화면(375×640 = iPhone SE 실효).
    실측으로 여기서도 버튼까지 넣었다 — 656px 로 16px 모자랐던 것을 여백에서만 뽑았다.
    ⛔ 로고를 더 줄이지 않는다(58px 이 각인의 하한). 슬로건·부제도 그대로. */
 @media (max-width: 640px) and (max-height: 700px){
-  .jt-brandmoment{ padding-top: 12px !important; padding-bottom: 28px !important; }
-  .jt-bm-primary{ height: 58px !important; }
-  .jt-brandmoment__slogan{ font-size: 26px !important; }
-  .jt-brandmoment__sub{ margin-top: 4px; font-size: 13px; }
-  .jt-herocalc{ padding: 10px; }
-  .jt-herocalc__head{ margin-bottom: 6px; }
-  .jt-herocalc__scope{ margin: -4px 0 6px; }
-  .jt-herocalc__grid select, .jt-herocalc__grid input{ padding: 8px 10px; }
-  .jt-herocalc__go{ margin-top: 8px; padding: 11px 16px; }
+.jt-herocalc{ padding: 10px; }
+.jt-herocalc__head{ margin-bottom: 6px; }
+.jt-herocalc__scope{ margin: -4px 0 6px; }
+.jt-herocalc__grid select, .jt-herocalc__grid input{ padding: 8px 10px; }
+.jt-herocalc__go{ margin-top: 8px; padding: 11px 16px; }
+}
+
+/* 260919: 승인 A 장부 문법 — 12열, 밝은 계산표, 괘선 색인과 인물 에디토리얼.
+   홈 내부에 한정한다. 계산 필드의 동작과 데이터는 HeroCalc에 그대로 둔다. */
+.jt-page-home::after { content: none; }
+.jt-page-home .jt-logomark-fix { display: none; }
+.jt-home-ledger { --ledger-gutter: 48px; --ledger-gap: 24px; background: var(--bg-1); }
+.jt-home-ledger section { scroll-margin-top: 100px; }
+.jt-ledger-label { display: flex; align-items: center; gap: 18px; color: var(--fg-2); font: 500 11px/1.6 var(--font-sans-en); letter-spacing: .12em; }
+.jt-ledger-label > span:first-child { font-family: var(--font-mono); color: var(--fg-3); }
+.jt-ledger-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; min-height: 44px; color: var(--fg-1); text-decoration: none; font-size: 14px; font-weight: 600; }
+.jt-ledger-link > span { font-size: 19px; font-weight: 400; }
+.jt-ledger-link:hover { text-decoration: underline; text-underline-offset: 5px; }
+.jt-ledger-button { display: inline-flex; align-items: center; justify-content: space-between; gap: 52px; min-height: 52px; padding: 13px 22px; border: 1px solid var(--border-strong); color: var(--fg-1); font-size: 14px; font-weight: 600; text-decoration: none; transition: background .18s, color .18s; }
+.jt-ledger-button:hover { background: var(--jt-black); color: var(--fg-inverse); }
+.jt-home-ledger a:focus-visible, .jt-home-ledger button:focus-visible { outline: 2px solid var(--fg-1); outline-offset: 4px; }
+
+/* 첫면: 8열 표제 / 4열 계산표. 검정 면 대신 세로 괘선으로 구분한다. */
+.jt-brandmoment { padding: 48px var(--ledger-gutter) 0; border-bottom: 1px solid var(--border-strong); background: var(--bg-1); color: var(--fg-1); }
+.jt-brandmoment__inner { max-width: var(--container-max); margin: 0 auto; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--ledger-gap); align-items: stretch; }
+.jt-brandmoment__copy { grid-column: 1 / 9; display: flex; flex-direction: column; min-width: 0; padding: 0 32px 42px 0; border-right: 1px solid var(--border-2); }
+.jt-brandmoment__eyebrow { display: flex; align-items: center; gap: 26px; font: 500 11px/1.6 var(--font-sans-en); letter-spacing: .14em; color: var(--fg-2); margin-bottom: 38px; }
+.jt-brandmoment__eyebrow > span + span { padding-left: 26px; border-left: 1px solid var(--border-2); }
+.jt-brandmoment__slogan { margin: 0; font-family: var(--font-display-kr); font-size: clamp(76px, 8.7vw, 126px); font-weight: 400; letter-spacing: -.055em; line-height: 1.02; color: var(--jt-black); word-break: keep-all; }
+.jt-brandmoment__sub { margin: 26px 0 28px; font-size: 18px; line-height: 1.8; color: var(--fg-2); word-break: keep-all; }
+.jt-brandmoment__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 30px; }
+.jt-brandmoment__index { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: auto; padding-top: 46px; font-size: 12px; color: var(--fg-3); }
+.jt-brandmoment__index span + span::before { content: '/'; margin-right: 22px; color: var(--border-2); }
+.jt-brandmoment__tool { grid-column: 9 / 13; min-width: 0; padding-bottom: 36px; color: var(--fg-1); }
+.jt-brandmoment__tool-intro { display: flex; align-items: center; justify-content: space-between; gap: 12px; font: 500 10px/1.6 var(--font-sans-en); letter-spacing: .12em; color: var(--fg-3); margin-bottom: 16px; }
+.jt-brandmoment__tool-intro span:last-child { font-family: var(--font-sans-kr); letter-spacing: 0; font-size: 12px; }
+.jt-brandmoment__tools-link { display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin-top: 12px; border-top: 1px solid var(--border-2); color: var(--fg-1); text-decoration: none; font-size: 12px; }
+.jt-brandmoment__tools-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* 112px 라벨 열. 긴 동적 질문은 표의 전폭 행을 사용해 문구를 자르지 않는다. */
+.jt-brandmoment__tool .jt-herocalc { max-width: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; backdrop-filter: none; color: var(--fg-1); }
+.jt-brandmoment__tool .jt-herocalc__head { padding-bottom: 12px; margin-bottom: 10px; border-bottom: 2px solid var(--border-strong); font: 700 17px/1.4 var(--font-sans-kr); letter-spacing: -.02em; color: var(--fg-1); }
+.jt-brandmoment__tool .jt-herocalc__scope { margin: 0 0 10px; font-size: 12px; line-height: 1.65; color: var(--fg-2); }
+.jt-brandmoment__tool .jt-herocalc__inline { color: var(--fg-1); }
+.jt-brandmoment__tool .jt-herocalc__grid { grid-template-columns: minmax(0, 1fr); gap: 0; border-top: 1px solid var(--border-2); }
+.jt-brandmoment__tool .jt-herocalc__grid > div { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 0 10px; align-items: center; min-width: 0; padding: 7px 0; border-bottom: 1px solid var(--border-2); }
+.jt-brandmoment__tool .jt-herocalc__label { display: block; margin: 0; font-size: 12px; line-height: 1.55; letter-spacing: 0; opacity: 1; color: var(--fg-2); }
+.jt-brandmoment__tool .jt-herocalc__field { display: block; min-width: 0; min-height: 42px; padding: 7px 4px; border: 0; border-radius: 0; background: transparent; color: var(--fg-1); font-size: 15px; font-family: var(--font-sans-kr); line-height: 1.5; box-shadow: none; }
+.jt-brandmoment__tool input.jt-herocalc__field { font-family: var(--font-mono); letter-spacing: -.04em; }
+.jt-brandmoment__tool .jt-herocalc__field::placeholder { color: var(--fg-3); opacity: 1; }
+.jt-brandmoment__tool .jt-herocalc__field:focus-visible { outline: 2px solid var(--fg-1); outline-offset: 1px; background: var(--bg-2); }
+.jt-brandmoment__tool .jt-herocalc__grid > .jt-herocalc__wide { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 12px 0 7px; border-bottom-color: var(--border-strong); }
+.jt-brandmoment__tool .jt-herocalc__wide .jt-herocalc__label > span { display: block; font-size: 12px; }
+.jt-brandmoment__tool .jt-herocalc__wide .jt-herocalc__field { width: 100%; }
+.jt-brandmoment__tool .jt-herocalc__hint, .jt-brandmoment__tool .jt-herocalc__read { grid-column: 2; margin: 0 0 4px; font-size: 12px; color: var(--fg-2); line-height: 1.5; }
+.jt-brandmoment__tool .jt-herocalc__hint { text-decoration: underline; text-underline-offset: 3px; }
+.jt-brandmoment__tool .jt-herocalc__go { min-height: 48px; margin-top: 16px; padding: 14px 16px; border: 1px solid var(--jt-black); border-radius: 0; background: var(--jt-black); color: var(--fg-inverse); font-family: var(--font-sans-kr); font-size: 15px; }
+.jt-brandmoment__tool .jt-herocalc__go:disabled { opacity: .5; }
+.jt-brandmoment__tool .jt-herocalc__note { margin: 12px 0 0; color: var(--fg-2); font-size: 12px; line-height: 1.6; }
+.jt-brandmoment__tool .jt-herocalc__note strong { color: var(--fg-1); }
+.jt-brandmoment__tool .jt-herocalc__out { border: 0; border-top: 2px solid var(--border-strong); border-bottom: 1px solid var(--border-2); border-radius: 0; padding: 16px 0; margin-top: 20px; background: transparent; }
+.jt-brandmoment__tool .jt-herocalc__outlabel, .jt-brandmoment__tool .jt-herocalc__assume { color: var(--fg-2); line-height: 1.7; }
+.jt-brandmoment__tool .jt-herocalc__amount { font-family: var(--font-mono); font-size: clamp(24px, 2.4vw, 34px); line-height: 1.35; letter-spacing: -.05em; color: var(--fg-1); overflow-wrap: anywhere; }
+.jt-brandmoment__tool .jt-herocalc__why { color: var(--fg-2); border-left: 2px solid var(--border-strong); padding-left: 12px; margin-top: 12px; }
+.jt-brandmoment__tool .jt-herocalc__why strong, .jt-brandmoment__tool .jt-herocalc__more { color: var(--fg-1); }
+.jt-brandmoment__tool .jt-herocalc__more { min-height: 44px; text-align: left; }
+
+/* 인물 한 장 + 동등한 3열 소개. 사진의 얼굴 위에는 글자를 올리지 않는다. */
+.jt-ident { padding: 54px var(--ledger-gutter) 0; background: var(--bg-1); }
+.jt-ident__inner { max-width: var(--container-max); margin: 0 auto; }
+.jt-ident__head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--ledger-gap); align-items: start; padding: 22px 0 30px; border-top: 2px solid var(--border-strong); }
+.jt-ident__head .jt-ledger-label { grid-column: 1 / 4; padding-top: 7px; }
+.jt-ident__h2 { grid-column: 4 / 9; margin: 0; font: 400 clamp(36px, 3.8vw, 52px)/1.12 var(--font-display-kr); letter-spacing: -.04em; color: var(--fg-1); }
+.jt-ident__lead { grid-column: 9 / 13; justify-self: end; align-self: end; margin: 0 0 3px; font-size: 14px; line-height: 1.8; color: var(--fg-2); }
+.jt-team-editorial { margin: 0; }
+.jt-team-editorial > img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 8.5; object-fit: cover; object-position: center 45%; filter: grayscale(1); background: var(--bg-2); }
+.jt-team-editorial figcaption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 20px; padding: 12px 0 20px; font-size: 12px; line-height: 1.5; color: var(--fg-3); }
+.jt-ident__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--border-strong); border-bottom: 1px solid var(--border-strong); }
+.jt-person { min-width: 0; padding: 24px 28px 16px; border-right: 1px solid var(--border-2); display: flex; flex-direction: column; }
+.jt-person:first-child { padding-left: 0; }
+.jt-person:last-child { padding-right: 0; border-right: 0; }
+.jt-person__heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; }
+.jt-person__heading h3 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -.04em; line-height: 1.4; }
+.jt-person__heading > span { font-size: 12px; color: var(--fg-3); }
+.jt-person__heading .jt-person__number { margin-right: auto; font-family: var(--font-mono); }
+.jt-person__focus { font-size: 14px; font-weight: 600; line-height: 1.6; margin: 18px 0 10px; }
+.jt-person__summary { font-size: 14px; color: var(--fg-2); line-height: 1.8; margin: 0 0 18px; word-break: keep-all; }
+.jt-person__link { display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin-top: auto; border-top: 1px solid var(--border-1); text-decoration: none; color: var(--fg-1); font-size: 12px; }
+.jt-person__link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.jt-ident__more { display: flex; justify-content: flex-end; padding-top: 16px; }
+.jt-ident__more .jt-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 12px; border: 0; }
+
+/* 상황 6행. 넓은 화면에서는 각 행의 상황과 업무명이 같은 기준선에 놓인다. */
+.jt-sithero { padding: 78px var(--ledger-gutter); background: var(--bg-1); }
+.jt-sithero__ledger { max-width: var(--container-max); margin: 0 auto; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--ledger-gap); }
+.jt-sithero__inner { grid-column: 1 / 4; padding-right: 18px; }
+.jt-sithero__title { margin: 25px 0 20px; font: 400 clamp(32px, 3.1vw, 44px)/1.14 var(--font-display-kr); letter-spacing: -.04em; color: var(--fg-1); }
+.jt-sithero__sub { margin: 0; font-size: 14px; line-height: 1.8; color: var(--fg-2); }
+.jt-sithero__inner > .jt-ledger-link { margin-top: 26px; font-size: 13px; }
+.jt-sits { grid-column: 4 / 13; display: flex; flex-direction: column; border-top: 2px solid var(--border-strong); }
+.jt-sit { display: grid; grid-template-columns: 36px minmax(0, 1fr) 156px 20px; gap: 16px; align-items: center; min-height: 80px; padding: 16px 0; border-bottom: 1px solid var(--border-2); color: var(--fg-1); text-decoration: none; transition: background .18s; }
+.jt-sit:last-child { border-bottom-color: var(--border-strong); }
+.jt-sit:hover { background: var(--bg-2); }
+.jt-sit__num { font: 400 12px/1.5 var(--font-mono); color: var(--fg-3); }
+.jt-sit__sit { font-size: clamp(16px, 1.45vw, 21px); font-weight: 600; letter-spacing: -.03em; line-height: 1.45; }
+.jt-sit__t { font-size: 12px; color: var(--fg-2); line-height: 1.6; }
+.jt-sit__go { font-size: 22px; line-height: 1; transition: transform .18s; }
+.jt-sit:hover .jt-sit__go { transform: translate(2px, -2px); }
+
+/* 자료와 대화의 장면. 7열 사진과 5열 설명으로 초반 단체사진과 리듬을 달리한다. */
+.jt-method { padding: 0 var(--ledger-gutter) 78px; }
+.jt-method__inner { max-width: var(--container-max); margin: 0 auto; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--ledger-gap); border-top: 2px solid var(--border-strong); padding-top: 26px; }
+.jt-method__head { grid-column: 8 / 13; grid-row: 1; padding-left: 20px; }
+.jt-method__head h2 { margin: 24px 0 18px; font: 400 clamp(34px, 3.4vw, 48px)/1.15 var(--font-display-kr); letter-spacing: -.04em; }
+.jt-method__head > p { margin: 0; color: var(--fg-2); font-size: 14px; line-height: 1.8; }
+.jt-method__figure { grid-column: 1 / 8; grid-row: 1 / 4; margin: 0; align-self: start; }
+.jt-method__figure img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; object-position: center; filter: grayscale(1); background: var(--bg-2); }
+.jt-method__figure figcaption { padding-top: 10px; color: var(--fg-3); font-size: 12px; line-height: 1.6; }
+.jt-method__steps { grid-column: 8 / 13; grid-row: 2; list-style: none; padding: 0 0 0 20px; margin: 28px 0 0; }
+.jt-method__steps li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 16px; padding: 18px 0; border-top: 1px solid var(--border-2); }
+.jt-method__steps li > span { padding-top: 3px; color: var(--fg-3); font: 400 11px/1.6 var(--font-mono); }
+.jt-method__steps h3 { margin: 0 0 5px; font-size: 17px; line-height: 1.5; letter-spacing: -.025em; font-weight: 600; }
+.jt-method__steps p { margin: 0; font-size: 13px; color: var(--fg-2); line-height: 1.75; }
+.jt-method__link { grid-column: 8 / 13; grid-row: 3; margin-left: 20px; border-top: 1px solid var(--border-strong); font-size: 12px; }
+.jt-method--text .jt-method__head { grid-column: 1 / 6; grid-row: 1 / 3; padding-left: 0; }
+.jt-method--text .jt-method__steps { grid-column: 6 / 13; grid-row: 1; margin-top: 0; padding-left: 0; }
+.jt-method--text .jt-method__link { grid-column: 6 / 13; grid-row: 2; margin-left: 0; }
+
+/* 읽을거리와 질문도 같은 장부 안에서 조판한다. */
+.jt-home-ledger .jt-home-insights, .jt-home-ledger .jt-home-faq { max-width: calc(var(--container-max) + var(--ledger-gutter) * 2); padding: 0 var(--ledger-gutter) 78px; }
+.jt-home-ledger .jt-home-insights .jt-section__head { border-top: 2px solid var(--border-strong); padding-top: 24px; margin-bottom: 28px; }
+.jt-home-ledger .jt-home-insights .jt-h2 { margin-top: 22px; font-size: clamp(32px, 3.4vw, 46px); line-height: 1.2; }
+.jt-home-ledger .jt-home-insights .jt-icards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--border-strong); border-bottom: 1px solid var(--border-strong); }
+.jt-home-ledger .jt-home-insights .jt-icard { min-height: 220px; padding: 24px 28px 18px; border: 0; border-right: 1px solid var(--border-2); transition: background .18s; }
+.jt-home-ledger .jt-home-insights .jt-icard:first-child { padding-left: 0; }
+.jt-home-ledger .jt-home-insights .jt-icard:last-child { padding-right: 0; border-right: 0; }
+.jt-home-ledger .jt-home-insights .jt-icard:hover { transform: none; box-shadow: none; background: var(--bg-2); }
+.jt-home-ledger .jt-home-insights .jt-icard__cat { padding: 0; border: 0; font-size: 11px; color: var(--fg-2); letter-spacing: .02em; }
+.jt-home-ledger .jt-home-insights .jt-icard__date { font-size: 11px; }
+.jt-home-ledger .jt-home-insights .jt-icard__title { font-size: 21px; line-height: 1.5; font-weight: 600; letter-spacing: -.035em; margin-bottom: 26px; }
+.jt-home-ledger .jt-home-insights .jt-icard__go { justify-content: space-between; min-height: 44px; font-size: 12px; }
+.jt-home-ledger .jt-home-faq { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--ledger-gap); }
+.jt-home-ledger .jt-home-faq > .jt-section__head { grid-column: 1 / 4; grid-row: 1 / 3; margin: 0; }
+.jt-home-ledger .jt-home-faq .jt-h2 { margin-top: 24px; font-size: clamp(30px, 2.9vw, 40px); line-height: 1.2; }
+.jt-home-ledger .jt-home-faq > div:not(.jt-section__head) { grid-column: 4 / 13; min-width: 0; }
+.jt-home-ledger .jt-home-faq > div:last-child { padding-top: 2px; }
+.jt-home-ledger .jt-cta { padding: 64px var(--ledger-gutter); }
+.jt-home-ledger .jt-cta::before { content: none; }
+.jt-home-ledger .jt-cta__inner { grid-template-columns: 1fr 1fr; gap: 48px; }
+.jt-home-ledger .jt-cta h2 { font-size: clamp(38px, 4.3vw, 60px); line-height: 1.12; margin-top: 22px; }
+.jt-home-ledger .jt-cta a:focus-visible, .jt-home-ledger .jt-cta button:focus-visible { outline-color: var(--fg-inverse); }
+.jt-home-ledger .jt-channels__inner { max-width: calc(var(--container-max) + var(--ledger-gutter) * 2); padding: 36px var(--ledger-gutter) 40px; }
+.jt-home-ledger .jt-channels__grid { margin-top: 18px; border-left: 0; border-right: 0; background: transparent; }
+.jt-home-ledger .jt-channels__card { padding: 22px 26px; min-width: 0; }
+.jt-home-ledger .jt-channels__card:first-child { padding-left: 0; }
+.jt-home-ledger .jt-channels__card:last-child { padding-right: 0; }
+.jt-home-ledger .jt-channels__big { font-size: clamp(20px, 2vw, 26px); }
+.jt-home-ledger .jt-channels__sub { display: flex; justify-content: space-between; gap: 16px; margin-top: 2px; font-size: 12px; }
+.jt-home-ledger .jt-channels__label { font-size: 12px; letter-spacing: .02em; }
+
+/* 대표 소개 페이지의 기존 원본 프로필 표현은 유지한다. */
+.jt-team-card__avatar { position: relative; width: 100%; height: auto; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-2); }
+.jt-team-card__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: grayscale(1); }
+.jt-team-card__initials { display: grid; height: 100%; place-items: center; }
+.jt-team-card__head { display: block; }
+.jt-team-card__role { margin-top: 18px; }
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .jt-home-ledger { --ledger-gutter: 32px; --ledger-gap: 20px; }
+  .jt-brandmoment { padding-top: 38px; }
+  .jt-brandmoment__copy { grid-column: 1 / 8; padding-right: 20px; }
+  .jt-brandmoment__tool { grid-column: 8 / 13; }
+  .jt-brandmoment__slogan { font-size: clamp(50px, 7.7vw, 78px); }
+  .jt-brandmoment__eyebrow { flex-direction: column; align-items: flex-start; gap: 7px; margin-bottom: 28px; font-size: 10px; }
+  .jt-brandmoment__eyebrow > span + span { border: 0; padding-left: 0; }
+  .jt-brandmoment__sub { font-size: 16px; }
+  .jt-brandmoment__sub br { display: none; }
+  .jt-brandmoment__index { gap: 8px 14px; }
+  .jt-brandmoment__index span + span::before { margin-right: 14px; }
+  .jt-brandmoment__tool .jt-herocalc__grid > div { grid-template-columns: 84px minmax(0, 1fr); gap: 0 6px; }
+  .jt-brandmoment__tool .jt-herocalc__grid > .jt-herocalc__wide { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .jt-brandmoment__tool .jt-herocalc__field { font-size: 14px; }
+  .jt-brandmoment__tool .jt-herocalc__head { font-size: 15px; }
+  .jt-ident__head .jt-ledger-label { grid-column: 1 / 5; }
+  .jt-ident__h2 { grid-column: 5 / 13; font-size: 44px; }
+  .jt-ident__lead { grid-column: 5 / 13; justify-self: start; margin-top: 18px; }
+  .jt-person { padding-left: 18px; padding-right: 18px; }
+  .jt-person__heading .jt-person__number { width: 100%; }
+  .jt-person__heading h3 { font-size: 25px; }
+  .jt-sithero { padding-top: 64px; padding-bottom: 64px; }
+  .jt-sithero__inner { grid-column: 1 / 5; padding-right: 8px; }
+  .jt-sits { grid-column: 5 / 13; }
+  .jt-sit { grid-template-columns: 26px minmax(0, 1fr) 20px; gap: 4px 12px; min-height: 90px; }
+  .jt-sit__num { grid-row: 1 / 3; }
+  .jt-sit__sit { grid-column: 2; font-size: 17px; }
+  .jt-sit__t { grid-column: 2; }
+  .jt-sit__go { grid-column: 3; grid-row: 1 / 3; }
+  .jt-method__head, .jt-method__steps, .jt-method__link { grid-column: 7 / 13; padding-left: 0; }
+  .jt-method__figure { grid-column: 1 / 7; margin-top: 5px; }
+  .jt-method__head h2 { font-size: 36px; }
+  .jt-method__head p br { display: none; }
+  .jt-method__link { margin-left: 0; }
+  .jt-home-ledger .jt-home-insights .jt-icard { padding-left: 18px; padding-right: 18px; }
+  .jt-home-ledger .jt-home-insights .jt-icard__top { flex-wrap: wrap; gap: 5px 12px; }
+  .jt-home-ledger .jt-home-insights .jt-icard__title { font-size: 18px; }
+  .jt-home-ledger .jt-cta__inner { gap: 32px; }
+  .jt-home-ledger .jt-channels__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .jt-home-ledger .jt-channels__card { padding-left: 18px; padding-right: 18px; border-bottom: 0; }
+}
+@media (max-width: 640px) {
+  .jt-home-ledger { --ledger-gutter: 20px; --ledger-gap: 16px; }
+  .jt-ledger-label { font-size: 10px; gap: 14px; }
+  .jt-brandmoment { padding-top: 28px; }
+  .jt-brandmoment__inner { display: flex; flex-direction: column; }
+  .jt-brandmoment__copy { padding: 0 0 28px; border-right: 0; }
+  .jt-brandmoment__eyebrow { gap: 12px; margin-bottom: 26px; font-size: 9px; letter-spacing: .1em; }
+  .jt-brandmoment__eyebrow > span + span { padding-left: 12px; }
+  .jt-brandmoment__slogan { font-size: clamp(55px, 14.6vw, 88px); letter-spacing: -.05em; line-height: 1.08; }
+  .jt-brandmoment__sub { font-size: 15px; margin: 22px 0 24px; line-height: 1.8; }
+  .jt-brandmoment__actions { gap: 10px 24px; }
+  .jt-brandmoment__actions .jt-ledger-button { gap: 34px; padding: 11px 17px; min-height: 48px; font-size: 13px; }
+  .jt-brandmoment__actions .jt-ledger-link { gap: 16px; font-size: 13px; }
+  .jt-brandmoment__index { gap: 6px 13px; padding-top: 30px; font-size: 11px; }
+  .jt-brandmoment__index span + span::before { margin-right: 13px; }
+  .jt-brandmoment__tool { padding: 24px 0 28px; border-top: 1px solid var(--border-strong); }
+  .jt-brandmoment__tool-intro { margin-bottom: 12px; }
+  .jt-brandmoment__tool .jt-herocalc__grid > div { padding: 5px 0; }
+  .jt-brandmoment__tool .jt-herocalc__grid > .jt-herocalc__wide { padding-top: 10px; }
+  .jt-brandmoment__tool .jt-herocalc__amount { font-size: 28px; }
+  .jt-ident { padding-top: 36px; }
+  .jt-ident__head { display: flex; flex-direction: column; gap: 18px; padding-top: 18px; padding-bottom: 24px; }
+  .jt-ident__head .jt-ledger-label { padding-top: 0; }
+  .jt-ident__h2 { font-size: 36px; }
+  .jt-ident__lead { align-self: start; font-size: 13px; }
+  .jt-team-editorial > img { aspect-ratio: auto; object-fit: contain; }
+  .jt-team-editorial figcaption { flex-direction: column; gap: 5px; padding: 10px 0 18px; font-size: 11px; }
+  .jt-ident__grid { grid-template-columns: minmax(0, 1fr); }
+  .jt-person, .jt-person:first-child, .jt-person:last-child { padding: 22px 0 10px; border-right: 0; border-bottom: 1px solid var(--border-2); }
+  .jt-person:last-child { border-bottom: 0; }
+  .jt-person__heading { gap: 12px; }
+  .jt-person__heading .jt-person__number { margin-right: 8px; }
+  .jt-person__heading h3 { font-size: 26px; }
+  .jt-person__focus { margin-top: 14px; }
+  .jt-person__summary { margin-bottom: 12px; font-size: 13px; }
+  .jt-ident__more { padding-top: 8px; }
+  .jt-sithero { padding-top: 46px; padding-bottom: 48px; }
+  .jt-sithero__ledger { display: flex; flex-direction: column; }
+  .jt-sithero__inner { padding-right: 0; }
+  .jt-sithero__title { font-size: 34px; margin: 20px 0 16px; }
+  .jt-sithero__title br { display: none; }
+  .jt-sithero__sub { font-size: 13px; }
+  .jt-sithero__sub br { display: none; }
+  .jt-sithero__inner > .jt-ledger-link { margin: 10px 0 18px; }
+  .jt-sit { grid-template-columns: 26px minmax(0, 1fr) 20px; gap: 4px 12px; min-height: 86px; padding: 15px 0; }
+  .jt-sit__num { grid-row: 1 / 3; font-size: 11px; }
+  .jt-sit__sit { grid-column: 2; font-size: 17px; }
+  .jt-sit__t { grid-column: 2; font-size: 12px; }
+  .jt-sit__go { grid-column: 3; grid-row: 1 / 3; }
+  .jt-method { padding-bottom: 48px; }
+  .jt-method__inner { display: flex; flex-direction: column; padding-top: 20px; }
+  .jt-method__head { padding-left: 0; }
+  .jt-method__head h2 { margin: 20px 0 16px; font-size: 36px; }
+  .jt-method__head > p { font-size: 13px; }
+  .jt-method__figure { margin-top: 24px; }
+  .jt-method__figure img { aspect-ratio: auto; object-fit: contain; }
+  .jt-method__figure figcaption { font-size: 11px; }
+  .jt-method__steps { padding-left: 0; margin-top: 22px; }
+  .jt-method--text .jt-method__steps { margin-top: 22px; }
+  .jt-method__steps li { padding: 18px 0; }
+  .jt-method__link { margin-left: 0; }
+  .jt-home-ledger .jt-home-insights, .jt-home-ledger .jt-home-faq { padding-bottom: 48px; }
+  .jt-home-ledger .jt-home-insights .jt-section__head { align-items: start; gap: 10px; flex-direction: column; margin-bottom: 16px; padding-top: 18px; }
+  .jt-home-ledger .jt-home-insights .jt-h2 { margin-top: 20px; font-size: 32px; }
+  .jt-home-ledger .jt-home-insights .jt-icards { grid-template-columns: minmax(0, 1fr); }
+  .jt-home-ledger .jt-home-insights .jt-icard, .jt-home-ledger .jt-home-insights .jt-icard:first-child, .jt-home-ledger .jt-home-insights .jt-icard:last-child { padding: 22px 0 12px; min-height: 0; border: 0; border-bottom: 1px solid var(--border-2); }
+  .jt-home-ledger .jt-home-insights .jt-icard:last-child { border-bottom: 0; }
+  .jt-home-ledger .jt-home-insights .jt-icard__top { margin-bottom: 12px; }
+  .jt-home-ledger .jt-home-insights .jt-icard__title { font-size: 20px; margin-bottom: 10px; }
+  .jt-home-ledger .jt-home-faq { display: block; }
+  .jt-home-ledger .jt-home-faq > .jt-section__head { margin-bottom: 26px; }
+  .jt-home-ledger .jt-home-faq .jt-h2 { font-size: 32px; margin-top: 20px; }
+  .jt-home-ledger .jt-home-faq .jt-h2 br { display: none; }
+  .jt-home-ledger .jt-cta { padding-top: 44px; padding-bottom: 44px; }
+  .jt-home-ledger .jt-cta__inner { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .jt-home-ledger .jt-cta h2 { font-size: 38px; }
+  .jt-home-ledger .jt-cta__body { font-size: 14px; line-height: 1.8; margin-bottom: 22px; }
+  .jt-home-ledger .jt-channels__inner { padding-top: 28px; padding-bottom: 28px; }
+  .jt-home-ledger .jt-channels__grid { grid-template-columns: minmax(0, 1fr); }
+  .jt-home-ledger .jt-channels__card, .jt-home-ledger .jt-channels__card:first-child, .jt-home-ledger .jt-channels__card:last-child { padding: 20px 0; }
+  .jt-home-ledger .jt-channels__big { font-size: 25px; }
 }

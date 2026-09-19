@@ -315,59 +315,54 @@ console.log('\n════ ⑥ 히어로 배치 — 첫 화면에서 보여야 
 }
 
 console.log('\n════════════════════');
-console.log('\n════ ⑦ 로고 — CI 가이드 준수 ════\n');
+console.log('\n════ ⑦ 12열 장부형 홈 — 구조·동선 계약 ════\n');
 {
-  /* ⛔ CI 가이드(HEAZ, 2026) 금지사항: 배치 변경·기울기·비율 변경.
-     Primary Logo 는 «심볼 + 제이티 세무법인 + JT TAX CORP.» 가 하나로 잠긴 덩어리다.
-     ★ 실제 위반 (260809, 사용자 지적) — 심볼만 SVG 로 그리고 회사명을 Pretendard 800,
-       영문을 모노스페이스 자간 .35em 으로 «다시 조판»했다. 가이드의 헤드라인 서체는
-       Sandoll 격동고딕2 이고 자간·굵기도 공식 락업과 달랐다.
-     → 공식 자산을 «그대로» 쓰는지, 손조판이 돌아오지 않았는지 검사한다. */
   const home = fs.readFileSync(SRC('Home.jsx'), 'utf8');
-  eq('공식 Primary 로고 자산을 사용', /logo_primary_white\.png/.test(home), true);
-  eq('로고 파일 실존', fs.existsSync(path.join(__dirname, 'assets', 'logo_primary_white.png')), true);
+  const chrome = fs.readFileSync(SRC('Chrome.jsx'), 'utf8');
+  const css = fs.readFileSync(SRC('redesign.css'), 'utf8');
+  eq('공식 내비 심볼 자산을 사용', /project\/assets\/logo_symbol\.png/.test(chrome), true);
+  eq('내비 심볼 파일 실존', fs.existsSync(path.join(__dirname, 'assets', 'logo_symbol.png')), true);
+  eq('내비 심볼 비율 보존', /\.jt-nav__brand img\{[^}]*width:\s*auto/.test(css), true);
+  const navHeights = [...css.matchAll(/\.jt-nav__brand img\{[^}]*height:\s*(\d+)px/g)].map((m) => Number(m[1]));
+  eq('내비 심볼 높이 상한 44px', navHeights.length > 0 && Math.max(...navHeights) <= 44, true);
+  const brand = home.slice(home.indexOf('function JTBrandMoment'), home.indexOf('window.JTBrandMoment'));
+  eq('첫면에 폐기한 검정 락업이 없음', /jt-bm-primary|logo_primary_white/.test(brand), false);
+  eq('브랜드 문장이 홈의 h1', /<h1 className=\"jt-brandmoment__slogan\">/.test(home), true);
+  eq('상담은 실제 예약 링크', /href=\"\/#\/booking\"/.test(home), true);
+  eq('업무 분야는 실제 정적 링크', /href=\"\/services\/\"/.test(home), true);
+  const copyAt = home.indexOf('jt-brandmoment__copy');
+  const toolAt = home.indexOf('jt-brandmoment__tool');
+  eq('상담·업무 설명이 계산기보다 먼저', copyAt >= 0 && toolAt > copyAt, true);
+  eq('첫면이 12열 8/4로 구성됨',
+    /\.jt-brandmoment__copy\s*\{[^}]*grid-column:\s*1\s*\/\s*9/.test(css) &&
+    /\.jt-brandmoment__tool\s*\{[^}]*grid-column:\s*9\s*\/\s*13/.test(css), true);
+  eq('태블릿에서 첫면이 7/5로 재배치됨',
+    /@media \(min-width: 641px\) and \(max-width: 1024px\)\s*\{[\s\S]*?\.jt-brandmoment__copy\s*\{[^}]*grid-column:\s*1\s*\/\s*8[\s\S]*?\.jt-brandmoment__tool\s*\{[^}]*grid-column:\s*8\s*\/\s*13/.test(css), true);
+  eq('계산 입력행이 112px 라벨 열과 필드 열을 가짐',
+    /\.jt-brandmoment__tool \.jt-herocalc__grid > div\s*\{[^}]*grid-template-columns:\s*112px\s+minmax\(0,\s*1fr\)/.test(css), true);
+  eq('상황 색인이 여섯 행을 렌더함', (home.match(/num: '0[1-6]'/g) || []).length === 6, true);
+  // 분야 전달 계약: 홈 slug 집합 == 예약 폼 허용 목록, 값은 폼 topics 의 k 와 글자까지 일치.
   {
-    const css = fs.readFileSync(SRC('redesign.css'), 'utf8');
-    const rule = (css.match(/\.jt-bm-primary\{[^}]*\}/) || [''])[0];
-    eq('로고 너비를 강제하지 않음 (비율 보존)', /width:\s*auto/.test(rule), true);
-    eq('로고에 변형(transform) 없음', /transform:/.test(rule), false);
+    const pages2 = fs.readFileSync(SRC('Pages2.jsx'), 'utf8');
+    const homeSlugs = [...home.matchAll(/topic: '([^']*)', slug: '([a-z]+)'/g)].map((m) => [m[2], m[1]]);
+    const mapSrc = (pages2.match(/const JT_BOOKING_SLUGS = \{([^}]*)\}/) || [])[1] || '';
+    const formSlugs = [...mapSrc.matchAll(/([a-z]+): '([^']*)'/g)].map((m) => [m[1], m[2]]);
+    const formKeys = [...pages2.matchAll(/\{ k: '([^']+)', d: /g)].map((m) => m[1]);
+    const norm = (a) => JSON.stringify(a.slice().sort());
+    eq('상황 색인 slug 6개가 예약 폼 허용 목록과 같음', homeSlugs.length === 6 && norm(homeSlugs) === norm(formSlugs), true);
+    eq('slug 가 가리키는 분야가 예약 폼 선택지에 실재', formSlugs.every(([, t]) => t === '' || formKeys.includes(t)), true);
+    eq('상황 링크가 slug 를 주소에 담음', /href=\{'\/#\/booking\/' \+ s\.slug\}/.test(home), true);
+    eq('일반 상담은 저장된 분야를 지움', /else sessionStorage\.removeItem\('jt_preferred_topic'\)/.test(home), true);
+    eq('예약 폼은 허용 목록의 slug 만 해석', /hasOwnProperty\.call\(JT_BOOKING_SLUGS, sub\)/.test(pages2), true);
   }
-  const a = home.indexOf('jt-brandmoment__logowrap');
-  const b = home.indexOf('jt-brandmoment__slogan');
-  const hero = a >= 0 && b > a ? home.slice(a, b) : '';
-  eq('로고 영역 추출', hero.length > 0, true);
-  /* 손조판이 돌아오면 잡는다 — 회사명·영문을 «본문 서체»로 다시 쓰는 것이 그 신호다 */
-  eq('로고 영역에 회사명 손조판 없음', />제이티 세무법인</.test(hero), false);
-  eq('로고 영역에 JT TAX CORP. 손조판 없음', />JT TAX CORP/.test(hero), false);
-  eq('심볼만 따로 그리는 SVG 없음', /jt-bm-logosvg/.test(home), false);
-  eq('로고 alt 가 락업 내용을 담음', /alt=\"제이티 세무법인 JT TAX CORP\./.test(home), true);
-  /* CI: 복잡한 패턴·이미지 위 금지 — 로고 영역은 단색이어야 한다(정숙 영역).
-     파일 안에서 «끄는 규칙»과 «켜는 규칙»이 싸운 적이 있어 마지막 판정을 본다. */
-  {
-    const css = fs.readFileSync(SRC('redesign.css'), 'utf8');
-    const last = css.lastIndexOf('.jt-brandmoment::before');
-    const tail = last >= 0 ? css.slice(last, last + 320) : '';
-    /* 빛은 «되살렸다»(사용자 결정) — 대신 로고 판독을 방해하지 않는 선을 지킨다:
-       최대 불투명도 .06 이하 · 등장 4s 이상 · 동작 최소화 설정이면 애니메이션 없음 */
-    /* ⚠️ 처음엔 파일 «전체»에서 밝은 rgba 를 찾아, 로고와 무관한 규칙(.18)까지 잡아
-       위양성이 났다. 로고 배경 블록 «안»만 본다. */
-    const glow = ([...css.matchAll(/\.jt-brandmoment::before\{[^}]*\}/g)]
-      .map((m) => m[0]).find((b) => /radial-gradient/.test(b))) || '';
-    eq('로고 뒤 빛이 은은함 (불투명도 .06 이하)',
-      /rgba\(255,255,255,\.06\)/.test(glow) && !/rgba\(255,255,255,\.(?:0[7-9]|[1-9]\d)\)/.test(glow), true);
-    eq('로고 뒤 빛이 천천히 (4s 이상)', /jt-bm-glow-in 4\.5s/.test(css), true);
-    eq('동작 최소화 시 애니메이션 없음', /prefers-reduced-motion[\s\S]{0,220}animation: none !important/.test(css), true);
-    /* ⚠️ :has() 를 모르는 브라우저에서는 애니메이션이 안 걸린다 — 기본 opacity 가 0 이면
-       그 브라우저에서 빛이 «영영 안 뜬다». 기본을 보이는 값으로 둔다. */
-    eq('빛 기본값이 보이는 값 (:has() 미지원 폴백)', /opacity: \.45;/.test(glow), true);
-    eq('빛이 클릭을 가로채지 않음', /pointer-events: none/.test(glow), true);
-    eq('빛이 콘텐츠 뒤에 (z-index 0)', /z-index: 0/.test(glow), true);
-    /* ⚠️ ::before 만 z-index:0 이라고 콘텐츠가 위인 게 «아니다» — 일반 흐름 요소는
-       스택 컨텍스트에 없어서 positioned 요소 아래로 갈 수 있다. inner 를 명시적으로 올린다.
-       (이 규칙을 옛 블록 삭제 때 함께 날렸던 적이 있다) */
-    eq('브랜드 콘텐츠가 빛보다 위',
-      /\.jt-brandmoment__inner\{[^}]*position: relative[^}]*z-index: 1/.test(css), true);
-  }
+  eq('단체·논의 사진 두 장을 홈에 둠', /team-editorial-260919\.png/.test(home) && /team-discussion-260919\.png/.test(home), true);
+  eq('인물 사진은 승인 전 비노출 플래그', /const JT_TEAM_IMAGES_APPROVED\s*=\s*false\s*;/.test(home), true);
+  eq('두 인물 사진 figure가 승인 플래그로 감싸짐',
+    /JT_TEAM_IMAGES_APPROVED\s*&&\s*<figure className="jt-team-editorial">[\s\S]*?team-editorial-260919\.png/.test(home) &&
+    /JT_TEAM_IMAGES_APPROVED\s*&&\s*<figure className="jt-method__figure">[\s\S]*?team-discussion-260919\.png/.test(home), true);
+  eq('홈에서만 grain 오버레이를 제거', /\.jt-page-home::after\s*\{\s*content:\s*none/.test(css), true);
+  eq('모바일에서 소개 다음 계산기를 세로로 쌓음',
+    /@media \(max-width: 640px\)\s*\{[\s\S]*?\.jt-brandmoment__inner\s*\{[^}]*display:\s*flex[^}]*flex-direction:\s*column/.test(css), true);
 }
 
 console.log(`히어로 계산기 게이트 실패 ${fail}건`);

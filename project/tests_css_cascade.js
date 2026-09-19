@@ -62,18 +62,12 @@ const SHEET_NOTE = '특정도가 «다른» 선택자끼리의 승패·인라인
       고친 뒤 «같은 선택자·같은 속성»의 새 위반이 다른 조건에서 생겨도 조용히
       통과한다(260809 Codex R1 P1-6). 형식: `선택자 | 속성 | 미디어조건`. */
 const KNOWN = [
-  { key: '.jt-sithero | padding-bottom | (max-width: 640px)',
-    실측: '84px (모바일 의도는 0px)',
-    사유: '상황 카드와 히어로 사이 여백. 첫 화면 밖이라 이번 범위에서 제외.' },
   { key: '.jt-nav__brand img | height | (max-width: 640px)',
     실측: '38px (의도 34px — 600px 이하 블록이 대신 이김)',
     사유: '4px 차이이고 넘침도 없다. 나란히 있는 두 규칙을 정리할 때 함께.' },
   { key: '.jt-app::before | background-image | (max-width: 640px)',
     실측: 'none (모바일 격자 배경이 안 나옴)',
     사유: '700행이 배경 격자를 전역 제거한 «뒤»에 남은 잔재로 보인다. 디자인 판단 필요.' },
-  { key: '.jt-brandmoment:has(.jt-brandmoment__logowrap.is-visible)::before | animation | (prefers-reduced-motion: reduce)',
-    실측: '무해 — 뒤쪽에 같은 의도의 reduced-motion 블록이 또 있어 실제로는 꺼진다',
-    사유: '중복 선언. 지우면 되지만 동작에 영향이 없어 범위 밖.' },
   { key: 'SEL .jt-report-feature',
     실측: 'DOM 0개',
     사유: '보고서 변환 페이지 개편 때 사라진 클래스. 규칙만 남았다.' },
@@ -400,12 +394,11 @@ console.log('[css-cascade] 규칙 ' + rules.length + '개 · 선언 ' + lib.decl
      여기서 걸리면 «무효 값이 승자가 되는 것»을 통과시키지 않는다(TASK-020 R5-F2). */
   const looksLikeLength = (v) => {
     const s = String(v).replace(/!\s*important\s*$/i, '').trim();
-    return /^(0|auto|inherit|initial|unset|revert|-?\d+(?:\.\d+)?(px|rem|em|vh|vw|%|svh|dvh|lvh))$/i.test(s) || /^(clamp|min|max|calc|var)\(/i.test(s);
+    /* padding 축약형에서는 첫 값이 top이다. 나머지 좌우·하단 값은 이 검사 범위가 아니다. */
+    const top = s.split(/\s+/)[0];
+    return /^(0|auto|inherit|initial|unset|revert|-?\d+(?:\.\d+)?(px|rem|em|vh|vw|%|svh|dvh|lvh))$/i.test(top) || /^(clamp|min|max|calc|var)\(/i.test(top);
   };
-  const TARGETS = [
-    { sel: '.jt-brandmoment', prop: 'padding-top', 뭐: '히어로 위 여백' },
-    { sel: '.jt-bm-primary', prop: 'height', 뭐: '로고 높이' },
-  ];
+  const TARGETS = [{ sel: '.jt-brandmoment', prop: 'padding-top', 뭐: '히어로 위 여백' }];
 
   let holes = 0, blockedN = 0;
   const 보류FAIL = (vp, sel, prop, b) => {
@@ -431,7 +424,9 @@ console.log('[css-cascade] 규칙 ' + rules.length + '개 · 선언 ' + lib.decl
           `버리고 다른 규칙을 쓰므로 판정을 낼 수 없다. 값을 px·vw·vh·rem·em·%·clamp/min/max/calc/var 형태로 쓰거나 looksLikeLength 를 넓혀라.`);
         continue;
       }
-      if (!w.media) {
+      /* 데스크톱은 계산기가 우측 패널에 있어 기본 장부 여백을 쓸 수 있다. 모바일·태블릿만
+         스택 레이아웃에 맞춘 별도 여백을 반드시 이겨야 한다. */
+      if (!w.media && vp.w <= 1024) {
         holes++;
         fail('CSS-HERO-HOLE',
           `${vp.w}×${vp.h}(${vp.이름})에서 ${t.뭐}(${t.sel} ${t.prop})가 ` +

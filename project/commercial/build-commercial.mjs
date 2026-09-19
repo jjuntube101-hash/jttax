@@ -11,8 +11,7 @@
 //   /consult.html               — 상담+오시는 길 (FAQPage + BreadcrumbList)
 // 그리고 공유 sitemap 을 갱신한다 (build-sitemap.mjs — 신설 디렉터리 열거 포함).
 //
-// ⛔ 광고규제(세무사법 §12조의7·시행령 §33): 문안은 코덱스 수렴본(인물브랜딩카피_260830.md)
-//    외의 표현을 임의로 추가하지 않는다. 실적 수치·우월 표현·결과 단정 금지.
+// ⛔ 광고규제(세무사법 §12조의7·시행령 §33): 확인되지 않은 실적 수치·우월 표현·결과 단정 금지.
 
 import { writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
@@ -71,6 +70,12 @@ const STYLE = `  <style>
     .jt-cc-card{border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:16px 18px;background:#FAFAF8;}
     .jt-cc-card h3{margin:0 0 6px;font-size:16px;}
     .jt-cc-card p{margin:0;font-size:14px;color:#555;line-height:1.6;}
+    .jt-cc-grid--experts{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .jt-cc-portrait{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center top;background:#eee;}
+    .jt-cc-card .jt-cc-portrait{margin:0 0 14px;}
+    .jt-cc-expert-intro{display:grid;grid-template-columns:180px minmax(0,1fr);gap:24px;align-items:start;}
+    .jt-cc-expert-intro .jt-cc-lede{margin-bottom:0;}
+    @media(max-width:600px){.jt-cc-grid--experts{grid-template-columns:1fr;}.jt-cc-expert-intro{grid-template-columns:1fr;}.jt-cc-expert-intro .jt-cc-portrait{max-width:180px;}}
     .jt-cc-links{list-style:none;padding:0;}
     .jt-cc-links a{color:#1a1a1a;text-decoration:none;border-bottom:1px solid rgba(0,0,0,.15);}
     .jt-cc-chips{display:flex;gap:8px;flex-wrap:wrap;}
@@ -154,7 +159,7 @@ const DISCLAIMER = `    <div class="jt-cc-disc">
 
 function leadCard(e, note) {
   return `    <section class="jt-cc-sec">
-      <h2>담당 대표세무사</h2>
+      <h2>관련 대표세무사 프로필</h2>
       <div class="jt-cm-lead">
         <span class="r">Managing Partner</span>
         <span class="n">${esc(e.name)} 대표세무사</span>
@@ -264,18 +269,18 @@ function renderServicesIndex() {
   const cards = SERVICES.map(s => `      <a class="jt-cc-card" style="display:block;text-decoration:none;color:#0B0B0F;" href="/services/${s.slug}.html">
         <h3>${esc(s.kr)}</h3>
         <p>${esc(s.lede)}</p>
-        <p style="margin-top:10px;font-weight:600;font-size:13px;">담당: ${esc(expertBySlug(s.lead, 'services-index').name)} 대표세무사 →</p>
+        <p style="margin-top:10px;font-weight:600;font-size:13px;">업무 안내 보기 →</p>
       </a>`).join('\n');
   return headHtml({
     title: `업무분야 — 양도상속증여·세무조사·기장·컨설팅·경정청구 | ${FIRM}`,
-    desc: '양도·상속·증여, 세무조사 대응, 기장·세금 신고, 세금 종합 컨설팅, 경정청구 — 다섯 영역을 세 대표세무사가 분야별 전담으로 진행합니다.',
+    desc: '기장·세금 신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구까지 사업과 재산의 세무 업무를 안내합니다.',
     keywords: '강남 세무법인, 세무법인 업무, 상속 세무, 세무조사 대응, 기장 대행, 경정청구', url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['업무분야', url]])],
   }) + `
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › 업무분야</nav>
     <h1>다섯 개의 전문 영역. 하나의 호흡.</h1>
-    <p class="jt-cc-lede">양도·상속·증여부터 세무조사 대응, 기장, 경정청구까지 — 의사결정 이전부터 사후 관리까지 세 대표세무사가 분야별 전담으로 진행합니다.</p>
+    <p class="jt-cc-lede">기장·신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구까지 사업과 재산의 세금 문제를 폭넓게 살핍니다.</p>
     <div class="jt-cc-grid">
 ${cards}
     </div>
@@ -294,6 +299,8 @@ function renderExpertPage(e) {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: `${e.name} 세무사`,
+    // 정적 셸 게이트는 모든 페이지의 OG·Twitter·JSON-LD 이미지를 공용 OG와 일치시킨다.
+    // 개인 사진은 아래 프로필 본문에 표시한다.
     image: ogImageHref(),
     jobTitle: '대표세무사',
     url,
@@ -304,30 +311,43 @@ function renderExpertPage(e) {
     const s = serviceBySlug(slug, `experts/${e.slug}.services`);
     return `        <a class="jt-cc-chip" href="/services/${s.slug}.html">${esc(s.kr)}</a>`;
   }).join('\n');
+  const profileSections = [
+    ['실무 경력', e.practice],
+    ['자문 · 대외활동', e.advisory],
+    ['교육 활동', e.teaching],
+    ['저서', e.books],
+    ['학력', e.education],
+    ['자격', e.qualifications],
+  ].filter(([, entries]) => entries && entries.length);
   return headHtml({
     title: `${e.name} 세무사 — ${e.headline} | ${FIRM}`, desc: e.metaDesc, keywords: e.keywords, url,
     ldBlocks: [personLd, crumbLd([['홈', `${SITE}/`], ['전문가', `${SITE}/experts/`], [`${e.name} 세무사`, url]])],
   }) + `
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/experts/">전문가</a> › ${esc(e.name)} 세무사</nav>
-    <p style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#999;margin:0 0 8px;">Managing Partner · 대표세무사</p>
-    <h1>${esc(e.headline)}</h1>
-    <p class="jt-cc-lede">${esc(e.lede)}</p>
+    <div class="jt-cc-expert-intro">
+      <img class="jt-cc-portrait" src="${esc(e.photo)}" alt="${esc(e.name)} 대표세무사" width="180" height="240">
+      <div>
+        <p style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#999;margin:0 0 8px;">Managing Partner · 대표세무사</p>
+        <h1>${esc(e.name)} 대표세무사 · ${esc(e.headline)}</h1>
+        <p class="jt-cc-lede">${esc(e.lede)}</p>
+      </div>
+    </div>
 
     <section class="jt-cc-sec">
-      <h2>전문 업무 영역</h2>
+      <h2>주요 실무</h2>
       <p style="font-size:16px;line-height:1.7;color:#333;">${esc(e.focus)}</p>
       <div class="jt-cc-chips" style="margin-top:12px;">
 ${svcChips}
       </div>
     </section>
 
-    <section class="jt-cc-sec">
-      <h2>경력 · 활동</h2>
+${profileSections.map(([heading, entries]) => `    <section class="jt-cc-sec">
+      <h2>${esc(heading)}</h2>
       <ul>
-${(e.credentials || []).map(c => `      <li>${esc(c)}</li>`).join('\n')}
+${entries.map(entry => `        <li>${esc(heading === '저서' ? `『${entry}』` : entry)}</li>`).join('\n')}
       </ul>
-    </section>
+    </section>`).join('\n')}
 
     <div class="jt-cm-close">${esc(e.closing)}</div>
 
@@ -356,6 +376,7 @@ function renderExpertsIndex() {
     },
   };
   const views = TEAM_MODEL.views.map(v => `      <a class="jt-cc-card" style="display:block;text-decoration:none;color:#0B0B0F;" href="/experts/${assertSlug(v.slug, 'team-model')}.html">
+        <img class="jt-cc-portrait" src="${esc(expertBySlug(v.slug, 'team-model').photo)}" alt="${esc(v.name)} 대표세무사" loading="lazy" width="210" height="280">
         <p style="margin:0 0 4px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;">${esc(v.view)}</p>
         <h3>${esc(v.name)} 대표세무사</h3>
         <p>${esc(v.d)}</p>
@@ -363,7 +384,7 @@ function renderExpertsIndex() {
       </a>`).join('\n');
   return headHtml({
     title: `전문가 — 세 명의 대표세무사 | ${FIRM}`,
-    desc: '재산의 시선, 설계의 시선, 장부의 시선. 제이티 세무법인은 대표세무사 세 명이 각자의 전문 영역에서 같은 사안을 봅니다.',
+    desc: '김민석·이현준·김가환 대표세무사의 실무 경력과 활동을 소개합니다. 세 대표 모두 사업과 재산의 세금 문제를 폭넓게 다룹니다.',
     keywords: '강남 세무사, 제이티 세무법인 세무사, 대표세무사, 김민석 세무사, 이현준 세무사, 김가환 세무사', url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['전문가', url]])],
   }) + `
@@ -371,15 +392,9 @@ function renderExpertsIndex() {
     <nav class="jt-cc-crumb"><a href="/">홈</a> › 전문가</nav>
     <h1>${esc(TEAM_MODEL.title)}</h1>
     <p class="jt-cc-lede">${esc(TEAM_MODEL.lede)}</p>
-    <div class="jt-cc-grid">
+    <div class="jt-cc-grid jt-cc-grid--experts">
 ${views}
     </div>
-    <section class="jt-cc-sec">
-      <h2>경계에 걸치는 일은, 이어달리기로</h2>
-      <ul>
-${TEAM_MODEL.handoffs.map(h => `      <li>${esc(h)}</li>`).join('\n')}
-      </ul>
-    </section>
 ${DISCLAIMER}
 ${CTA_BOTTOM}
   </main>
@@ -571,7 +586,7 @@ ${cards}
     </div>
 
     <section class="jt-cc-sec">
-      <h2>어느 경로든, 이어달리기로 진행됩니다</h2>
+      <h2>어느 경로든, 기장·신고까지 이어집니다</h2>
       <p style="font-size:16px;line-height:1.75;color:#333;">${esc(CREATORS.handoff)}</p>
       <div class="jt-cc-chips" style="margin-top:12px;">
         <a class="jt-cc-chip" href="${CREATORS.bookkeepingHref}">기장·세금 신고 서비스 보기</a>

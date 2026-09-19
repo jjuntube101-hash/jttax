@@ -45,14 +45,14 @@ const BANDS = [
    등재 시점의 실측이다. 장부화(C3+C4)가 styles.css 구 블록을 지우면 STALE 이 뜨고, 그때 n 을 내린다.
    ⚠️ 새 항목을 «추가»하는 것은 이 게이트의 목적에 반한다 — 새 폭이 필요하면 세 구간 중 하나로 맞춰라. */
 const KNOWN = [   // 260906 C1 실측: 13종 · 규칙 147개 (키 = 루트 상대경로 | and-조각을 정렬한 절)
-  { key: 'project/src/redesign.css | (max-height: 720px) and (min-width: 641px)', n: 3 },
-  { key: 'project/src/redesign.css | (max-height: 900px) and (min-width: 641px)', n: 5 },
+  { key: 'project/src/redesign.css | (max-height: 720px) and (min-width: 641px)', n: 1 },
+  { key: 'project/src/redesign.css | (max-height: 900px) and (min-width: 641px)', n: 1 },
   { key: 'project/src/redesign.css | (max-width: 1024px)', n: 7 },
   { key: 'project/src/redesign.css | (max-width: 760px)', n: 32 },
   { key: 'project/src/redesign.css | (max-width: 820px)', n: 1 },
   { key: 'project/src/redesign.css | (max-width: 860px)', n: 1 },
   { key: 'project/src/redesign.css | (max-width: 920px)', n: 1 },
-  { key: 'project/src/redesign.css | (max-width: 960px)', n: 6 },
+  { key: 'project/src/redesign.css | (max-width: 960px)', n: 2 },
   { key: 'project/src/styles.css | (max-width: 1024px) and (min-width: 761px)', n: 4 },
   { key: 'project/src/styles.css | (max-width: 1100px)', n: 16 },
   { key: 'project/src/styles.css | (max-width: 720px)', n: 18 },

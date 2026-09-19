@@ -1,5 +1,7 @@
 /* global React */
 const { useState: useStateHome, useEffect: useEffectHome, useRef: useRefHome } = React;
+// User rejected generated faces on 260919. Keep composites hidden pending selection.
+const JT_TEAM_IMAGES_APPROVED = false;
 
 // ============ 상황 카드 라인 아이콘 (절제된 stroke) ============
 function JTSitIcon({ name }) {
@@ -31,86 +33,78 @@ window.JTIcon = JTSitIcon;
 // ============ 상황별 진입 카드 (히어로) ============
 // 6개 = 서비스 5분야 + 일반상담. topic은 booking/services 분야 자동선택 키와 매칭.
 const JT_SITUATIONS = [
-{ ico: 'home', num: '01', sit: '집·재산을 팔거나, 물려주거나 받는다', t: '양도·상속·증여', hook: '시점이 곧 금액입니다.', d: '시점이 곧 금액입니다. 신고 전 절세 구간과 이전 구조를 먼저 설계합니다.', topic: '양도·상속·증여' },
-{ ico: 'corp', num: '02', sit: '법인·개인사업체 운영 중', t: '법인·개인 사업 운영', hook: '매월이 12월 결산을 만듭니다.', d: '매월 결산이 12월 결산을 만듭니다. 기장·신고부터 법인 구조까지.', topic: '기장·세금 신고' },
-{ ico: 'audit', num: '03', sit: '세무서에서 연락이 왔다', t: '세무조사 대응', hook: '첫 답변이 결과를 가릅니다.', d: '첫 답변이 결과를 가릅니다. 통지 단계부터 세무사가 함께합니다.', topic: '세무조사 대응' },
-{ ico: 'refund', num: '04', sit: '이미 낸 세금이 억울하다', t: '경정·환급', hook: '5년 안이면 늦지 않았습니다.', d: '5년 이내면 늦지 않았습니다. 과오납 세금을 돌려받을 권리를 검토합니다.', topic: '경정청구' },
-{ ico: 'consult', num: '05', sit: '큰 결정을 앞두고 있다', t: '세금 컨설팅', hook: '결정 전에, 숫자로 비교하세요.', d: '법인 전환·지분 재구성 전, 여러 시나리오의 총 부담을 수치로 비교합니다.', topic: '세금 종합 컨설팅' },
-{ ico: 'chat', num: '06', sit: '어디에 속하는지 모르겠다', t: '일반 상담', hook: '상황만 말씀해 주세요.', d: '괜찮습니다. 상황만 말씀해 주시면 담당 분야와 다음 절차를 안내합니다.', topic: '', general: true }];
+// slug 는 새 탭·주소 복사에서도 분야가 전달되게 하는 링크 키 — 예약 폼(Pages2 JT_BOOKING_SLUGS)의 허용 목록과 같아야 한다.
+{ ico: 'home', num: '01', sit: '재산을 팔거나 물려줄 때', t: '양도·상속·증여', d: '거래와 이전에 따른 세금, 신고에 필요한 사항을 검토합니다.', topic: '양도·상속·증여', slug: 'asset' },
+{ ico: 'corp', num: '02', sit: '사업의 매월과 연말을 준비할 때', t: '기장·세금 신고', d: '법인과 개인사업자의 장부, 결산과 세금 신고를 다룹니다.', topic: '기장·세금 신고', slug: 'bookkeeping' },
+{ ico: 'audit', num: '03', sit: '세무서에서 통지를 받았을 때', t: '세무조사 대응', d: '통지 내용과 자료를 확인하고 대응할 쟁점을 정리합니다.', topic: '세무조사 대응', slug: 'audit' },
+{ ico: 'refund', num: '04', sit: '지난 신고를 다시 살펴볼 때', t: '경정청구', d: '신고 내용과 증빙을 바탕으로 정정 가능성을 검토합니다.', topic: '경정청구', slug: 'refund' },
+{ ico: 'consult', num: '05', sit: '사업의 중요한 결정을 앞두고', t: '기업 자문·세무 컨설팅', d: '법인 전환과 사업 구조 변경에 따른 세무 사항을 살핍니다.', topic: '세금 종합 컨설팅', slug: 'consulting' },
+{ ico: 'chat', num: '06', sit: '무엇부터 해야 할지 막막할 때', t: '일반 상담', d: '현재 상황을 알려주시면 필요한 업무와 절차를 안내합니다.', topic: '', slug: 'general', general: true }];
 
 
-// ============ Hero — 상황별 진입 ============
+// ============ 상황 색인 — 3열 표제 / 9열 괘선 목록 ============
 function JTHero({ setRoute }) {
-  /* 260808: 컬럼 수를 window.innerWidth 로 읽어 «인라인 style» 로 박고 있었다.
-     리사이즈 리스너가 없어 값이 갱신되지 않는데, 인라인은 CSS 미디어쿼리를 이기므로
-     기기를 회전하거나 창을 줄이면 옛 컬럼 수가 그대로 남았다(가로→세로에서 3열 잘림).
-     redesign.css 가 이미 같은 분기(3열 / ≤960 2열 / ≤640 1열)를 갖고 있어
-     인라인을 지우기만 하면 된다. */
   const pick = (s) => {
-    if (s.topic) {try {sessionStorage.setItem('jt_preferred_topic', s.topic);} catch (e) {}}
+    // 일반 상담은 앞서 다른 메뉴에서 저장된 분야를 지운다 — 남겨 두면 예약 폼에 엉뚱한 분야가 선택된다.
+    try { if (s.topic) sessionStorage.setItem('jt_preferred_topic', s.topic); else sessionStorage.removeItem('jt_preferred_topic'); } catch (e) {}
     window.jtTrackCta('booking', 'hero');
     setRoute('booking');
   };
   return (
-    <section className="jt-sithero">
+    <section className="jt-sithero" id="home-services" aria-labelledby="home-services-title">
+      <div className="jt-sithero__ledger">
       <div className="jt-sithero__inner">
-        <div className="jt-kicker">WHERE TO START · 상황별 안내</div>
-        <h2 className="jt-sithero__title">지금, 어떤 상황이신가요?</h2>
-        <p className="jt-sithero__sub">세금은 상황마다 답이 다릅니다.</p>
+        <div className="jt-ledger-label"><span>02</span> WHERE TO START</div>
+        <h2 className="jt-sithero__title" id="home-services-title">지금, 어떤<br />상황이신가요?</h2>
+        <p className="jt-sithero__sub">기장과 신고부터 재산의 이전까지.<br />지금 필요한 업무에서 시작하세요.</p>
+        <a className="jt-ledger-link" href="/services/">전체 업무 분야 <span aria-hidden="true">↗</span></a>
       </div>
       <div className="jt-sits">
-        {JT_SITUATIONS.map((s, i) => <div
+        {JT_SITUATIONS.map((s) => <a
             key={s.num}
-            data-delay={Math.min(i, 5)}
-            className={`jt-sit reveal ${s.general ? 'jt-sit--general' : ''}`}
-            role="button"
-            tabIndex={0}
-            onClick={() => pick(s)}
-            onKeyDown={(e) => {if (e.key === 'Enter' || e.key === ' ') {e.preventDefault();pick(s);}}}>
-            <div className="jt-sit__top">
-              <div className="jt-sit__ico" aria-hidden="true"><JTSitIcon name={s.ico} /></div>
-              <span className="jt-sit__num">{s.num}</span>
-            </div>
-            <div className="jt-sit__sit">{s.sit}</div>
-            {s.hook && <div className="jt-sit__hook">{s.hook}</div>}
-            <div className="jt-sit__t">{s.t}</div>
-            <div className="jt-sit__go">{s.general ? '편하게 문의' : '이 상황 상담'} <span className="jt-arrow">→</span></div>
-          </div>
+            className={`jt-sit ${s.general ? 'jt-sit--general' : ''}`}
+            href={'/#/booking/' + s.slug}
+            onClick={(e) => { if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return; e.preventDefault(); pick(s); }}>
+            <span className="jt-sit__num">{s.num}</span>
+            <span className="jt-sit__sit">{s.sit}</span>
+            <span className="jt-sit__t">{s.t}</span>
+            <span className="jt-sit__go" aria-hidden="true">↗</span>
+          </a>
         )}
+      </div>
       </div>
     </section>);
 
 }
 window.JTHero = JTHero;
 
-// ============ Brand Moment — 로고 + 슬로건 (다크 앵커) ============
+// ============ Brand Moment — 전체 업무를 소개하는 장부형 첫 화면 ============
 function JTBrandMoment({ setRoute }) {
   return (
     <section className="jt-brandmoment" aria-label="제이티 세무법인">
       <div className="jt-brandmoment__inner">
-        <div className="jt-brandmoment__logowrap reveal">
-          {/* ⛔ CI 가이드(HEAZ, 2026) — Primary Logo 는 «심볼 + 제이티 세무법인 + JT TAX CORP.»
-              가 하나로 잠긴 덩어리이고, 금지사항에 «배치 변경·비율 변경»이 명시돼 있다.
-              종전엔 심볼만 SVG 로 그리고 회사명을 Pretendard 800, 영문을 모노스페이스로
-              «다시 조판»했다 — 서체도 자간도 공식 락업과 달랐다(가이드 위반).
-              → 공식 자산(logo_primary_white_transparent.png)을 그대로 쓴다.
-              비율은 width:auto 로 보존하고, 배경은 단색 검정(정숙 영역)이다. */}
-          <img className="jt-bm-primary" src="project/assets/logo_primary_white.png"
-            alt="제이티 세무법인 JT TAX CORP." width="900" height="667" />
+        <div className="jt-brandmoment__copy">
+          <div className="jt-brandmoment__eyebrow">
+            <span>JT TAX CORP.</span><span>BUSINESS &amp; PROPERTY</span>
+          </div>
+          <h1 className="jt-brandmoment__slogan">근거 위에서,<br />끝까지.</h1>
+          <p className="jt-brandmoment__sub">
+            사업의 매일과 재산의 중요한 순간.<br />
+            사실을 살피고, 판단의 근거를 세웁니다.
+          </p>
+          <div className="jt-brandmoment__actions">
+            <a className="jt-ledger-button" href="/#/booking"
+              onClick={(e) => { if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return; e.preventDefault(); window.jtTrackCta('booking', 'hero'); setRoute('booking'); }}>상담 문의 <span aria-hidden="true">↗</span></a>
+            <a className="jt-ledger-link" href="/services/">업무 분야 보기 <span aria-hidden="true">→</span></a>
+          </div>
+          <div className="jt-brandmoment__index"><span>기장·신고</span><span>재산 세무</span><span>기업 자문</span><span>조사·불복</span></div>
         </div>
-        {/* 260808: 페이지의 h1 은 여기다. 종전엔 이 슬로건이 h2 이고 아래 상황
-            섹션 제목이 h1 이라 문서 개요가 뒤집혀 있었다(검색엔진이 페이지 주제를
-            「지금, 어떤 상황이신가요?」로 읽는다). CSS 는 전부 클래스 셀렉터라 영향 없음. */}
-        <h1 className="jt-brandmoment__slogan">
-          <span className="reveal" data-delay="1">근거 위에서,</span>{' '}
-          <span className="reveal" data-delay="2">끝까지.</span>
-        </h1>
-        <p className="jt-brandmoment__sub reveal" data-delay="3">
-          세금은 감이 아니라 근거로 다툽니다. 먼저 숫자부터 확인해 보세요.
-        </p>
-        {/* 260809 결재 「안 2」 — 브랜드 문장을 지키면서 도구를 첫 화면에 둔다.
-            세액 계산은 검증된 jt-tax-engine 이 하고 이 컴포넌트는 «묻고 보여주기»만 한다. */}
-        {window.JTHeroCalc ? <window.JTHeroCalc /> : null}
+        <aside className="jt-brandmoment__tool" aria-label="양도세 간이 계산">
+          <div className="jt-brandmoment__tool-intro"><span>QUICK TAX CHECK</span><span>주택 기준</span></div>
+          {/* 기존 엔진·동적 질문·결과 상태·계측은 변경하지 않는다. */}
+          {window.JTHeroCalc ? <window.JTHeroCalc /> : null}
+          <a className="jt-brandmoment__tools-link" href="/calculators/">전체 세금 계산기 보기 <span aria-hidden="true">→</span></a>
+        </aside>
       </div>
     </section>);
 
@@ -132,9 +126,8 @@ function JTReportHome({ setRoute }) {
           </span>
         </h2>
         <p className="jt-platform__sub reveal" data-delay="2">
-          세법을 가르치는 세무사가 <strong>직접 설계한 검증 계산 엔진</strong>.
-          양도·상속·증여부터 종합소득세·법인 전환까지 직접 계산해 보고 —
-          판단과 관리는 전문가와 끝까지 함께하세요.
+          양도·상속·증여부터 종합소득세·법인 전환까지.<br />
+          계산 결과와 적용 조건을 확인하고, 개별 사안의 판단이 필요할 때 상담으로 이어가세요.
         </p>
         <ol className="jt-platform__steps reveal" data-delay="3">
           <li><span className="jt-platform__step-n">01</span><span className="jt-platform__step-t">직접 계산</span><span className="jt-platform__step-d">검증 엔진으로 무료·5분</span></li>
@@ -221,51 +214,62 @@ function JTProof({ setRoute }) {
 }
 window.JTProof = JTProof;
 
-// ============ 정체성 밴드 — «한 사안을, 세 대표가 봅니다» (260830 카피 패키지 C-1) ============
-// 종전 «세 개의 동사»는 리드(집행)와 열 제목(검증)이 어긋났고(전수검사 A7) 이현준 단독 서사였다.
-// 3인 대표 체제(사용자 결재 F-3)에 맞춰 재산·설계·장부의 «세 시선» 구조로 재작성.
-// 문안 정본: 브랜딩/세무법인/홈페이지/인물브랜딩카피_260830.md §1 (코덱스 수렴본)
-function JTCreds({ setRoute }) {
+// ============ 대표 소개 — 공통 실무와 각자의 경험 ============
+function JTCreds() {
+  const slugs = { '김민석': 'kim-minseok', '이현준': 'lee-hyunjun', '김가환': 'kim-gahwan' };
   return (
-    <section className="jt-ident">
+    <section className="jt-ident" id="home-team" aria-labelledby="home-team-title">
       <div className="jt-ident__inner">
-        <div className="jt-ident__head reveal">
-          <div className="jt-kicker">WHY JT · 우리가 누구인가</div>
-          <h2 className="jt-ident__h2">한 사안을,<br /><em>세 대표가</em> 봅니다.</h2>
-          <p className="jt-ident__lead">세금 문제는 한 과목이 아닙니다. 재산의 문제이면서, 구조의 문제이면서, 장부의 문제입니다. 그래서 제이티는 대표세무사 세 명이 각자의 전문 영역에서 같은 사안을 봅니다 — 누락 가능성을 낮추기 위해 정해 둔, 저희의 기본 검토 방식입니다.</p>
+        <div className="jt-ident__head">
+          <div className="jt-ledger-label"><span>01</span> THE PEOPLE AT JT</div>
+          <h2 className="jt-ident__h2" id="home-team-title">세 사람의 경험,<br />제이티의 이름으로.</h2>
+          <p className="jt-ident__lead">담당할 사람을 먼저 알아보세요.<br />세 대표세무사의 실무와 경력을 소개합니다.</p>
         </div>
+        {JT_TEAM_IMAGES_APPROVED && <figure className="jt-team-editorial">
+          <img src="/project/assets/people/team-editorial-260919.png" alt="제이티 세무법인 세 대표세무사의 단체 초상 — AI 연출 이미지" width="1672" height="941" loading="lazy" decoding="async" />
+          <figcaption><span>김민석 · 이현준 · 김가환 대표세무사</span><span>대표 사진 기반 AI 연출 이미지</span></figcaption>
+        </figure>}
         <div className="jt-ident__grid">
-          <div className="jt-ident__col reveal">
-            <div className="jt-ident__en">Assets · 김민석 대표세무사</div>
-            <div className="jt-ident__verb">재산의<br />시선</div>
-            <p className="jt-ident__body">양도·상속·증여와 <b>세무조사·불복</b>. «이 재산에 지금 무슨 일이 생기는가»를 봅니다.</p>
-            <div className="jt-ident__foot">억울한 세금은 다퉈볼 수 있습니다 — 순서와 기한이 있을 뿐입니다.</div>
-          </div>
-          <div className="jt-ident__col reveal" data-delay="1">
-            <div className="jt-ident__en">Design · 이현준 대표세무사</div>
-            <div className="jt-ident__verb">설계의<br />시선</div>
-            {/* 수강생 학습앱 링크는 «지금도 가르치고 있다»는 증거이자 수험생의 입구 — 유지 (260809 설계) */}
-            <p className="jt-ident__body">가상자산·신종업종·종합 컨설팅. «구조를 바꾸면 숫자가 어떻게 달라지는가»를 봅니다. 공무원학원 <b>세법 강사</b>·세법 교재 <b>저자</b>이며, 수강생용 학습앱 <a href="https://class.jttax.co.kr" target="_blank" rel="noopener" onClick={() => { if (window.jtTrackCta) window.jtTrackCta('class_app', 'ident'); }}>class.jttax.co.kr</a> 을 직접 운영합니다.</p>
-            <div className="jt-ident__foot">가르치는 사람의 의무는 정확함입니다.</div>
-          </div>
-          <div className="jt-ident__col reveal" data-delay="2">
-            <div className="jt-ident__en">Books · 김가환 대표세무사</div>
-            <div className="jt-ident__verb">장부의<br />시선</div>
-            <p className="jt-ident__body">결산·기장·신고 운영. <b>투자를 유치한 회사들의 월 기장</b>을 맡습니다 — 투자사에 보고되는 장부는 대충 만들 수 없습니다.</p>
-            <div className="jt-ident__foot">연말의 세금은 매월의 기록 위에서 계산됩니다.</div>
-          </div>
+          {window.JT_DATA.team.partners.map((p, i) => (
+            <article className="jt-person" key={p.name}>
+              <div className="jt-person__heading"><span className="jt-person__number">0{i + 1}</span><h3>{p.name}</h3><span>대표세무사</span></div>
+              <p className="jt-person__focus">{p.titleKr}</p>
+              <p className="jt-person__summary">{p.summary}</p>
+              <a className="jt-person__link" href={'/experts/' + slugs[p.name] + '.html'}>경력과 주요 업무 <span aria-hidden="true">↗</span></a>
+            </article>
+          ))}
         </div>
-        <div className="reveal" data-delay="3" style={{ marginTop: 28, textAlign: 'right' }}>
-          <a className="jt-link" href="/experts/" style={{ textDecoration: 'none' }}
-            onClick={(e) => { if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return; e.preventDefault(); if (setRoute) setRoute('about', 'team'); }}>
-            전문가 소개 보기 →
-          </a>
-        </div>
+        <div className="jt-ident__more"><a className="jt-link" href="/experts/">대표세무사 소개 모두 보기 →</a></div>
       </div>
     </section>);
-
 }
 window.JTCreds = JTCreds;
+
+// ============ 업무 방식 — 자료에서 판단, 실행으로 이어지는 한 장 ============
+function JTMethod() {
+  return (
+    <section className={JT_TEAM_IMAGES_APPROVED ? 'jt-method' : 'jt-method jt-method--text'} aria-labelledby="home-method-title">
+      <div className="jt-method__inner">
+        <div className="jt-method__head">
+          <div className="jt-ledger-label"><span>03</span> HOW WE WORK</div>
+          <h2 id="home-method-title">숫자만으로<br />끝나지 않는 일.</h2>
+          <p>계산에 담기지 않는 사실까지 살핍니다.<br />자료를 확인하고, 필요한 판단과 절차를 함께 정리합니다.</p>
+        </div>
+        {JT_TEAM_IMAGES_APPROVED && <figure className="jt-method__figure">
+          <img src="/project/assets/people/team-discussion-260919.png" alt="자료를 함께 살피며 논의하는 세 대표세무사 — AI 연출 이미지" width="1536" height="1024" loading="lazy" decoding="async" />
+          <figcaption>대표 사진 기반 AI 연출 이미지</figcaption>
+        </figure>}
+        <ol className="jt-method__steps">
+          <li><span>01</span><div><h3>먼저, 사실을 확인합니다.</h3><p>현재 상황과 일정, 보유한 자료에서 검토할 내용을 찾습니다.</p></div></li>
+          <li><span>02</span><div><h3>판단의 근거를 정리합니다.</h3><p>적용할 요건과 쟁점을 살피고, 선택에 필요한 내용을 설명합니다.</p></div></li>
+          <li><span>03</span><div><h3>다음 절차를 함께 준비합니다.</h3><p>상담 결과에 따라 신고와 대응에 필요한 업무를 안내합니다.</p></div></li>
+        </ol>
+        <a className="jt-ledger-link jt-method__link" href="/about/">제이티 세무법인 알아보기 <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  );
+}
+window.JTMethod = JTMethod;
 
 // ============ 대표 인용 (따뜻한 풀쿼트, 라이트) ============
 function JTQuote() {
@@ -310,13 +314,13 @@ window.JTInsightCard = JTInsightCard;
 function JTInsightsPreview({ setRoute, limit }) {
   const items = window.JT_DATA.insights.slice(0, limit || 4);
   return (
-    <section className="jt-section">
+    <section className="jt-section jt-home-insights">
       <div className="jt-section__head jt-section__head--split reveal">
         <div>
-          <div className="jt-kicker">INSIGHTS · 최근 글</div>
+          <div className="jt-ledger-label"><span>04</span> INSIGHTS</div>
           <h2 className="jt-h2 jt-display-h2">실무에 바로 쓰는 해설.</h2>
         </div>
-        <a tabIndex={0} role="link" onKeyDown={window.jtKeyActivate} className="jt-link" onClick={() => setRoute('insights')}>전체 보기 →</a>
+        <a href="/insights/" className="jt-ledger-link" onClick={(e) => { if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return; e.preventDefault(); setRoute('insights'); }}>전체 글 보기 <span aria-hidden="true">↗</span></a>
       </div>
       <div className="jt-icards">
         {items.map((a, i) => <JTInsightCard key={a.slug || a.title} a={a} i={i} />)}
@@ -336,9 +340,7 @@ function JTCta({ setRoute }) {
           <h2>신고·결정 이전에<br />먼저 물어보세요.</h2>
         </div>
         <div className="reveal" data-delay="1">
-          <p className="jt-cta__body">
-            세무조사 통지, 상속 개시, 법인 설립, 경정청구 — 시점이 곧 금액이 되는 일입니다. 첫 의사결정을 함께 세우겠습니다. 첫 상담(쟁점 확인·방향 안내)은 무료입니다.
-          </p>
+          <p className="jt-cta__body">어떤 업무가 필요한지 몰라도 괜찮습니다.<br />현재 상황을 알려주시면 검토할 내용과 다음 절차를 안내합니다.</p>
           <div className="jt-row jt-row--gap-3">
             <button className="jt-btn jt-btn--onDark jt-btn--lg" onClick={() => { window.jtTrackCta('booking', 'cta_band'); setRoute('booking'); }}>
               상담 예약 <span className="jt-arrow">→</span>
@@ -361,27 +363,24 @@ function JTChannels({ setRoute }) {
   return (
     <section className="jt-channels">
       <div className="jt-channels__inner">
-        <div className="reveal">
-          <div className="jt-kicker">CHANNELS · 편한 방식으로</div>
-          <h2 className="jt-h2 jt-display-h2">전화가 부담스러우면,<br />카톡·이메일로도 됩니다.</h2>
-        </div>
+        <div className="jt-ledger-label"><span>CONTACT</span> 편한 방법으로 문의하세요.</div>
         <div className="jt-channels__grid reveal" data-delay="1">
           <a className="jt-channels__card" href={`tel:${window.JT_DATA.firm.phone}`} onClick={() => window.jtTrackCta('call', 'channels')}>
             <div className="jt-channels__label">전화 상담</div>
             <div className="jt-channels__big">{window.JT_DATA.firm.phone}</div>
-            <div className="jt-channels__sub">평일 09:30–17:30 · 초기 응답 24h 이내</div>
+            <div className="jt-channels__sub">평일 09:30–17:30 <span aria-hidden="true">↗</span></div>
           </a>
           <a className="jt-channels__card" href={`mailto:${window.JT_DATA.firm.email}`} onClick={() => window.jtTrackCta('email', 'channels')}>
             <div className="jt-channels__label">이메일</div>
             <div className="jt-channels__big">{window.JT_DATA.firm.email}</div>
-            <div className="jt-channels__sub">자료 첨부 가능 · 영업일 기준 24h 내 회신</div>
+            <div className="jt-channels__sub">검토할 자료를 함께 보내주세요. <span aria-hidden="true">↗</span></div>
           </a>
           <a className="jt-channels__card" href={window.jtKakaoUrl()} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'channels')}>
             <div className="jt-channels__label">카카오톡 채널</div>
             {/* 채널 검색 ID 대신 라벨 표기 (260830 사용자 결재 F-6 — 종전엔 빈 문자열이 렌더됐다 A6) */}
             <div className="jt-channels__big">1:1 채팅 상담</div>
             {/* 260906 결재 H-5 — 카톡 채널을 «개정·기한 안내» 재방문 장치로 정식화(분기 1회 이상 발송, 채널 추가 보상 없음) */}
-            <div className="jt-channels__sub">채널에서 바로 채팅 · 자료 전송 가능 · 영업일 24h 내 회신 · 세법 개정·신고기한 안내(분기 1회 이상)</div>
+            <div className="jt-channels__sub">채팅 문의 · 세법 개정·신고기한 안내 <span aria-hidden="true">↗</span></div>
           </a>
         </div>
       </div>
@@ -396,10 +395,10 @@ function JTFaq({ setRoute }) {
   const [open, setOpen] = useStateHome(-1);
   if (!items.length) return null;
   return (
-    <section className="jt-section">
+    <section className="jt-section jt-home-faq">
       <div className="jt-section__head reveal">
-        <div className="jt-kicker">FAQ · 자주 묻는 질문</div>
-        <h2 className="jt-h2 jt-display-h2">궁금한 점을<br />먼저 풀어드립니다.</h2>
+        <div className="jt-ledger-label"><span>05</span> BEFORE WE MEET</div>
+        <h2 className="jt-h2 jt-display-h2">상담 전에<br />궁금한 것들.</h2>
       </div>
       <div style={{ borderTop: '1px solid var(--border-1)' }}>
         {items.map((it, i) =>

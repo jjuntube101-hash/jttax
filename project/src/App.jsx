@@ -153,19 +153,17 @@ function App() {
       <JTNav route={route} setRoute={setRoute} />
       <main className="jt-main">
         {route === 'home' && (
-          <div>
+          <div className="jt-home-ledger">
             <JTBrandMoment setRoute={setRoute} />
-            <JTHero setRoute={setRoute} />
             <JTCreds setRoute={setRoute} />
-            <JTReportHome setRoute={setRoute} />
-            <JTTeaserBand kicker="SERVICES · 업무분야" title="근거에 기반한 다섯 개 전문 영역." sub={window.JT_DATA.services.map(s => s.kr).join('   ·   ')} ctaLabel="전체 업무분야 보기" onGo={() => setRoute('services')} />
-            <JTTeaserBand kicker="TEAM · 담당 세무사" title="담당 세무사가 직접." sub="세법을 가르치고 집필해 온 세무사들이 각자의 전문 영역에서 직접 맡습니다." ctaLabel="전문가 소개 보기" onGo={() => setRoute('about', 'team')} />
+            <JTHero setRoute={setRoute} />
+            <JTMethod />
             {tweaks.showQuote && <JTQuote />}
             {tweaks.showProof !== false && <JTProof setRoute={setRoute} />}
             <JTInsightsPreview setRoute={setRoute} limit={3} />
-            <JTChannels setRoute={setRoute} />
             <JTFaq setRoute={setRoute} />
             <JTCta setRoute={setRoute} />
+            <JTChannels setRoute={setRoute} />
           </div>
         )}
         {route === 'services' && <div><JTServicesPage setRoute={setRoute} /></div>}

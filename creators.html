@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="유튜버·인플루언서·플랫폼 사업자의 세금은 단계마다 쟁점이 다릅니다. 첫 정산, 직장 겸업, 팀·MCN 운영 — 세 경로로 나눠 지금 확인할 것과 계산 도구를 안내합니다.">
   <meta name="twitter:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
   <link rel="icon" href="/project/assets/logo_symbol.png">
-  <link rel="stylesheet" href="/project/src/styles.css?v=27">
+  <link rel="stylesheet" href="/project/src/styles.css?v=29">
   <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
   <script>
@@ -52,6 +52,12 @@
     .jt-cc-card{border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:16px 18px;background:#FAFAF8;}
     .jt-cc-card h3{margin:0 0 6px;font-size:16px;}
     .jt-cc-card p{margin:0;font-size:14px;color:#555;line-height:1.6;}
+    .jt-cc-grid--experts{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .jt-cc-portrait{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center top;background:#eee;}
+    .jt-cc-card .jt-cc-portrait{margin:0 0 14px;}
+    .jt-cc-expert-intro{display:grid;grid-template-columns:180px minmax(0,1fr);gap:24px;align-items:start;}
+    .jt-cc-expert-intro .jt-cc-lede{margin-bottom:0;}
+    @media(max-width:600px){.jt-cc-grid--experts{grid-template-columns:1fr;}.jt-cc-expert-intro{grid-template-columns:1fr;}.jt-cc-expert-intro .jt-cc-portrait{max-width:180px;}}
     .jt-cc-links{list-style:none;padding:0;}
     .jt-cc-links a{color:#1a1a1a;text-decoration:none;border-bottom:1px solid rgba(0,0,0,.15);}
     .jt-cc-chips{display:flex;gap:8px;flex-wrap:wrap;}
@@ -144,8 +150,8 @@
     </div>
 
     <section class="jt-cc-sec">
-      <h2>어느 경로든, 이어달리기로 진행됩니다</h2>
-      <p style="font-size:16px;line-height:1.75;color:#333;">크리에이터·인플루언서 사안은 업종·과세 판단(이현준 대표) → 매월 기장·신고(김가환 대표)의 이어달리기로 진행합니다.</p>
+      <h2>어느 경로든, 기장·신고까지 이어집니다</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">크리에이터·인플루언서 사안은 업종·과세 판단부터 매월 기장·신고까지 이어서 진행합니다.</p>
       <div class="jt-cc-chips" style="margin-top:12px;">
         <a class="jt-cc-chip" href="/services/bookkeeping.html">기장·세금 신고 서비스 보기</a>
         <a class="jt-cc-chip" href="/experts/lee-hyunjun.html">이현준 대표세무사 프로필</a>

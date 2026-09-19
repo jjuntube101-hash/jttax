@@ -28,16 +28,16 @@ function JTAbout({ setRoute, initialTab }) {
           <div className="jt-page-hero__crumb"><span>ABOUT</span><span>·</span><span>회사소개</span></div>
           {tab === 'company' ?
           <>
-              <h1>가르치고, 검증하고,<br />글로 남깁니다.</h1>
+              <h1>사업과 재산의 세금 문제를<br />함께 살핍니다.</h1>
               <p className="jt-page-hero__sub">
-                제이티 세무법인은 김민석·이현준·김가환 세 대표세무사가 함께합니다. 재산·설계·장부, 각자의 전문 영역에서 같은 사안을 보고 — 감이 아닌 근거로 일하며, 일한 내용은 모두 문서로 남깁니다.
+                제이티 세무법인은 김민석·이현준·김가환 세 대표세무사가 기장·신고, 재산 관련 세무, 기업 자문과 세무조사 대응 등 폭넓은 실무를 다룹니다. 사안의 사실관계와 근거를 확인하고 기록합니다.
               </p>
             </> :
 
           <>
-              <h1>가르치고, 집필하고,<br />설계해 본 사람들.</h1>
+              <h1>세 명의 대표세무사,<br />각자의 실무 경력.</h1>
               <p className="jt-page-hero__sub">
-                공무원 수험 세법 강의와 세법 교재 집필, 조세불복·법인 회계 실무를 거친 세 대표세무사가 귀하의 사안을 함께 봅니다.
+                세 대표 모두 다양한 세무 문제를 다룹니다. 각자의 사무소 운영, 기업 자문, 재산세제, 기장·결산 경험과 교육·저술 활동을 소개합니다.
               </p>
             </>
           }
@@ -87,24 +87,24 @@ function JTAboutCompany({ D, setRoute, onSeeTeam }) {
         </div>
         <div className="jt-matrix reveal">
           <div className="jt-matrix__cell">
+            <div className="jt-matrix__tag">Practice</div>
+            <div className="jt-matrix__n">3<em>인</em></div>
+            <div className="jt-matrix__l">대표세무사<br />사업·재산 세무 실무</div>
+          </div>
+          <div className="jt-matrix__cell">
+            <div className="jt-matrix__tag">Since</div>
+            <div className="jt-matrix__n">2020</div>
+            <div className="jt-matrix__l">이현준 세무사<br />제이티세무회계 개업</div>
+          </div>
+          <div className="jt-matrix__cell">
+            <div className="jt-matrix__tag">Firm</div>
+            <div className="jt-matrix__n">2026</div>
+            <div className="jt-matrix__l">제이티 세무법인 설립<br />세 대표세무사가 함께</div>
+          </div>
+          <div className="jt-matrix__cell">
             <div className="jt-matrix__tag">Response</div>
             <div className="jt-matrix__n">24<em>h</em></div>
             <div className="jt-matrix__l">초기 응답 기준<br />영업일 24시간 이내</div>
-          </div>
-          <div className="jt-matrix__cell">
-            <div className="jt-matrix__tag">Academia</div>
-            <div className="jt-matrix__n">3<em>권</em></div>
-            <div className="jt-matrix__l">세법 기본서·세법 구조노트<br />국세청이 온다(가상자산 세금) 저자</div>
-          </div>
-          <div className="jt-matrix__cell">
-            <div className="jt-matrix__tag">Teaching</div>
-            <div className="jt-matrix__n">겸임<em>교수</em></div>
-            <div className="jt-matrix__l">공무원학원 세법 강사<br />대학 세무회계학과</div>
-          </div>
-          <div className="jt-matrix__cell">
-            <div className="jt-matrix__tag">Practice</div>
-            <div className="jt-matrix__n">3<em>인</em></div>
-            <div className="jt-matrix__l">공동대표 세무사<br />분야별 전담 체제</div>
           </div>
         </div>
       </section>
@@ -165,9 +165,9 @@ function JTAboutTeam({ D, setRoute }) {
         {D.partners.map((p) =>
         <article key={p.name} className="jt-team-card reveal">
             <div className="jt-team-card__head">
-              <div className="jt-team-card__avatar" style={{ position: 'relative', overflow: 'hidden', width: 140, height: 140, flexShrink: 0 }}>
-                {p.photo && <img src={p.photo} alt={p.name} onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />}
-                {p.initials}
+              <div className="jt-team-card__avatar">
+                <span className="jt-team-card__initials" aria-hidden="true">{p.initials}</span>
+                {p.photo && <img className="jt-team-card__photo" src={p.photo} alt={`${p.name} 대표세무사`} loading="lazy" decoding="async" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
               </div>
               <div className="jt-team-card__role">{p.role}</div>
             </div>
@@ -179,10 +179,52 @@ function JTAboutTeam({ D, setRoute }) {
 
             {p.scope && p.scope.length > 0 &&
           <div className="jt-team-card__block">
-                <div className="jt-team-card__block-head">전문 업무범위</div>
+                <div className="jt-team-card__block-head">주요 실무</div>
                 <ul className="jt-team-card__books">
                   {p.scope.map((s, i) =>
               <li key={i}>{s}</li>
+              )}
+                </ul>
+              </div>
+          }
+
+            <div className="jt-team-card__block">
+              <div className="jt-team-card__block-head">실무 경력</div>
+              <ul className="jt-team-card__bio">
+                {p.bio.map((b, i) =>
+              <li key={i}><time>{b.y}</time><span>{b.t}</span></li>
+              )}
+              </ul>
+            </div>
+
+            {p.advisory && p.advisory.length > 0 &&
+          <div className="jt-team-card__block">
+                <div className="jt-team-card__block-head">자문 · 대외활동</div>
+                <ul className="jt-team-card__bio">
+                  {p.advisory.map((b, i) =>
+              <li key={i}><time>{b.y}</time><span>{b.t}</span></li>
+              )}
+                </ul>
+              </div>
+          }
+
+            {p.teaching && p.teaching.length > 0 &&
+          <div className="jt-team-card__block">
+                <div className="jt-team-card__block-head">교육 활동</div>
+                <ul className="jt-team-card__bio">
+                  {p.teaching.map((b, i) =>
+              <li key={i}><time>{b.y}</time><span>{b.t}</span></li>
+              )}
+                </ul>
+              </div>
+          }
+
+            {p.books && p.books.length > 0 &&
+          <div className="jt-team-card__block">
+                <div className="jt-team-card__block-head">저서</div>
+                <ul className="jt-team-card__books">
+                  {p.books.map((b, i) =>
+              <li key={i}>『{b}』</li>
               )}
                 </ul>
               </div>
@@ -194,26 +236,6 @@ function JTAboutTeam({ D, setRoute }) {
                 <ul className="jt-team-card__bio">
                   {p.education.map((b, i) =>
               <li key={i}><time>{b.y}</time><span>{b.t}</span></li>
-              )}
-                </ul>
-              </div>
-          }
-
-            <div className="jt-team-card__block">
-              <div className="jt-team-card__block-head">경력 · 활동</div>
-              <ul className="jt-team-card__bio">
-                {p.bio.map((b, i) =>
-              <li key={i}><time>{b.y}</time><span>{b.t}</span></li>
-              )}
-              </ul>
-            </div>
-
-            {p.books && p.books.length > 0 &&
-          <div className="jt-team-card__block">
-                <div className="jt-team-card__block-head">저서</div>
-                <ul className="jt-team-card__books">
-                  {p.books.map((b, i) =>
-              <li key={i}>『{b}』</li>
               )}
                 </ul>
               </div>

@@ -286,10 +286,6 @@ function JTHeroCalc() {
     window.location.href = '/calculators/';
   };
 
-  const field = { width: '100%', boxSizing: 'border-box', padding: '11px 12px', fontSize: 15, fontFamily: 'inherit',
-    border: '1px solid rgba(255,255,255,.22)', borderRadius: 9, background: 'rgba(255,255,255,.06)', color: 'inherit' };
-  const labelSt = { display: 'block', fontSize: 12, letterSpacing: '.02em', opacity: .7, marginBottom: 6 };
-
   return (
     <div className="jt-herocalc reveal" data-delay="4">
       <div className="jt-herocalc__head">양도소득세 · 간이 계산 <span style={{opacity:.7}}>· 주택</span></div>
@@ -303,11 +299,11 @@ function JTHeroCalc() {
 
       <div className="jt-herocalc__grid">
         <div>
-          <label style={labelSt} htmlFor="hc-houses">보유 주택 수</label>
+          <label className="jt-herocalc__label" htmlFor="hc-houses">보유 주택 수</label>
           {/* ⚠️ 주택 수를 바꾸면 조정지역 질문이 «다른 질문»이 된다(1주택=취득 당시 / 다주택=지금).
               그런데 이전 답이 그대로 남아 있으면 «취득 당시 예»가 «지금 예»로 조용히 재해석된다
               (260809 Codex P1). 1주택↔다주택 경계를 넘을 때 답을 되돌린다. */}
-          <select id="hc-houses" style={field} value={houses} onChange={touched(e => {
+          <select id="hc-houses" className="jt-herocalc__field" value={houses} onChange={touched(e => {
             const prevMulti = Number(houses) > 1;
             const nextMulti = Number(e.target.value) > 1;
             if (prevMulti !== nextMulti) setZone('no');
@@ -319,11 +315,11 @@ function JTHeroCalc() {
           </select>
         </div>
         <div>
-          <label style={labelSt} htmlFor="hc-date">취득일</label>
+          <label className="jt-herocalc__label" htmlFor="hc-date">취득일</label>
           {/* ⚠️ 1주택에서는 조정지역을 «취득할 당시» 기준으로 묻는다 — 취득일이 바뀌면
               그 답은 더 이상 유효하지 않다(지정 전후로 날짜를 옮기면 사실이 뒤집힌다).
               날짜를 바꾸면 답을 되돌린다 (260809 Codex P1). 다주택은 «지금» 기준이라 무관. */}
-          <input id="hc-date" type="date" style={field} value={acqDate} max={maxDate}
+          <input id="hc-date" type="date" className="jt-herocalc__field" value={acqDate} max={maxDate}
             onFocus={() => setMaxDate(kstToday())}
             onChange={touched(e => {
               if (Number(houses) === 1) setZone('no');
@@ -331,16 +327,16 @@ function JTHeroCalc() {
             })} />
         </div>
         <div>
-          <label style={labelSt} htmlFor="hc-acq">취득가</label>
-          <input id="hc-acq" type="text" inputMode="numeric" placeholder="예: 500,000,000" style={field}
+          <label className="jt-herocalc__label" htmlFor="hc-acq">취득가</label>
+          <input id="hc-acq" type="text" inputMode="numeric" placeholder="예: 500,000,000" className="jt-herocalc__field"
             value={shown(acqPrice, acq)}
             onChange={touched(e => setAcqPrice(e.target.value))} />
           {acqPrice && acq === null && <div className="jt-herocalc__hint">숫자로 적어 주세요 (「5억」·「5억 3000만」도 됩니다)</div>}
           {acq > 0 && <div className="jt-herocalc__read">{hcReadable(acq)}</div>}
         </div>
         <div>
-          <label style={labelSt} htmlFor="hc-sale">양도가</label>
-          <input id="hc-sale" type="text" inputMode="numeric" placeholder="예: 900,000,000" style={field}
+          <label className="jt-herocalc__label" htmlFor="hc-sale">양도가</label>
+          <input id="hc-sale" type="text" inputMode="numeric" placeholder="예: 900,000,000" className="jt-herocalc__field"
             value={shown(salePrice, sale)}
             onChange={touched(e => setSalePrice(e.target.value))} />
           {salePrice && sale === null && <div className="jt-herocalc__hint">숫자로 적어 주세요 (「9억」도 됩니다)</div>}
@@ -352,7 +348,7 @@ function JTHeroCalc() {
               그때는 두 경우를 다 계산해 범위로 답한다 — 한쪽으로 단정하지 않는다. */}
           {/* 주택 수에 따라 «묻는 시점»이 달라진다 — 실측으로 확인한 지배 요인만 묻는다.
               엉뚱한 시점을 물으면 답을 받아도 세액이 안 바뀌어 사용자가 속는다. */}
-          <label style={labelSt} htmlFor="hc-zone">
+          <label className="jt-herocalc__label" htmlFor="hc-zone">
             {Number(houses) > 1
               ? '지금 조정대상지역인가요?'
               : '취득할 당시 조정대상지역이었나요?'}
@@ -360,7 +356,7 @@ function JTHeroCalc() {
               {Number(houses) > 1 ? ' (다주택 중과를 가릅니다)' : ' (비과세 거주요건을 가릅니다)'}
             </span>
           </label>
-          <select id="hc-zone" style={field} value={zone} onChange={touched(e => setZone(e.target.value))}>
+          <select id="hc-zone" className="jt-herocalc__field" value={zone} onChange={touched(e => setZone(e.target.value))}>
             <option value="no">아니요</option>
             <option value="unknown">모르겠습니다 — 두 경우를 다 보여드립니다</option>
             <option value="yes">예</option>

@@ -104,6 +104,8 @@ function JTContact({ setRoute }) {
 window.JTContact = JTContact;
 
 // ============ Booking form (multi-step) ============
+// 홈 상황 색인(Home.jsx JT_SITUATIONS.slug)과 같은 폐집합. 값은 아래 topics 의 k 와 글자까지 같아야 한다.
+const JT_BOOKING_SLUGS = { asset: '양도·상속·증여', bookkeeping: '기장·세금 신고', audit: '세무조사 대응', refund: '경정청구', consulting: '세금 종합 컨설팅', general: '' };
 function JTBooking({ setRoute }) {
   const [step, setStep] = useStatePg2(1);
   const preferredSlot = (() => { try { return sessionStorage.getItem('jt_preferred_slot') || ''; } catch(_){ return ''; } })();
@@ -112,6 +114,9 @@ function JTBooking({ setRoute }) {
       const t = sessionStorage.getItem('jt_preferred_topic') || '';
       // 한 번 사용 후 비움 — 다음 진입 시 영향 X
       if (t) sessionStorage.removeItem('jt_preferred_topic');
+      // 새 탭·주소 복사 진입(#/booking/<slug>)은 저장소가 비어 있다 — 허용 목록의 slug 만 분야로 해석한다.
+      const sub = (window.JTRouter && window.JTRouter.parse().sub) || '';
+      if (Object.prototype.hasOwnProperty.call(JT_BOOKING_SLUGS, sub)) return JT_BOOKING_SLUGS[sub];
       return t;
     } catch(_){ return ''; }
   })();
