@@ -367,6 +367,23 @@ console.log('\n════ ⑦ 12열 장부형 홈 — 구조·동선 계약 �
       eq('허용 목록 밖 slug 는 분야가 되지 않음', resolve('constructor', ''), '');
       eq('허용 목록 밖 slug 는 저장값으로 폴백', resolve('person@example.com', '경정청구'), '경정청구');
     }
+    // 주소 → slug 도 실행해 본다. 이 함수가 끊기면 위 해석 검사가 전부 통과해도 새 탭 진입이 죽는다 (260920 Astra R3-F2).
+    const hashDecl = (pages2.match(/function jtBookingSlugFromHash\(\) \{[\s\S]*?\n\}/) || [''])[0];
+    let fromHash = null;
+    try { fromHash = new Function('window', hashDecl + '\nreturn jtBookingSlugFromHash;'); } catch (e) {}
+    const viaHash = (parsed, stored) => {
+      if (!fromHash || !resolve) return '(실행 불가)';
+      const fakeWindow = { JTRouter: { parse: () => parsed } };
+      return resolve(fromHash(fakeWindow)(), stored);
+    };
+    eq('#/booking/audit 주소가 끝까지 분야로 이어짐', viaHash({ router: true, route: 'booking', sub: 'audit' }, ''), '세무조사 대응');
+    eq('다른 화면의 sub 는 예약 분야가 되지 않음', viaHash({ router: true, route: 'report', sub: 'audit' }, ''), '');
+    eq('라우터가 없어도 저장값으로 폴백', (fromHash && resolve) ? resolve(fromHash({})(), '경정청구') : '(실행 불가)', '경정청구');
+    // 처리방침 게이트(tests_form_submit)가 canNext*·canSubmit 식을 고정하므로 그 식은 두고, 제출 함수에서 다시 본다.
+    const submitFn = pages2.slice(pages2.indexOf('const submitBooking = async'), pages2.indexOf('setSubmitting(true)'));
+    eq('제출 직전 분야가 비면 분야 단계로 복귀(전송 전)', /if \(!canNext1\) \{ setStep\(1\); return; \}/.test(submitFn), true);
+    eq('제출 직전 연락처가 비면 연락처 단계로 복귀(전송 전)', /if \(!canNext2\) \{ setStep\(2\); return; \}/.test(submitFn), true);
+    eq('일반 상담으로 주소가 바뀌면 분야 선택 단계로 복귀', /if \(!t\) setStep\(1\);/.test(pages2), true);
     eq('해석 결과가 폼의 제출 분야 초기값으로 들어감', /topic:\s*preferredTopic,/.test(pages2) && /useStatePg2\(\(\) => \{[\s\S]*?return jtResolveBookingTopic\(jtBookingSlugFromHash\(\), stored\);/.test(pages2), true);
     eq('저장소 예외가 slug 해석을 막지 않음(예외 경계 분리)', /try \{ stored = sessionStorage\.getItem\('jt_preferred_topic'\) \|\| ''; \} catch\(_\)\{\}/.test(pages2), true);
     eq('선택 안내는 실제 제출 분야와 같을 때만 노출', /\{preferredTopic && form\.topic === preferredTopic && \(/.test(pages2), true);

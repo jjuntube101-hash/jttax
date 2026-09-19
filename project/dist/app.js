@@ -1518,6 +1518,7 @@ function JTBooking({ setRoute }) {
       const t = JT_BOOKING_SLUGS[sub];
       setPreferredTopic(t);
       setForm((f) => __spreadProps(__spreadValues({}, f), { topic: t }));
+      if (!t) setStep(1);
     };
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
@@ -1546,6 +1547,14 @@ function JTBooking({ setRoute }) {
   const canSubmit = form.consent && form.consentIntl;
   const submitBooking = async () => {
     if (!canSubmit || submitting) return;
+    if (!canNext1) {
+      setStep(1);
+      return;
+    }
+    if (!canNext2) {
+      setStep(2);
+      return;
+    }
     setSubmitting(true);
     setSubmitError("");
     const w3fKey = window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey || "";

@@ -141,6 +141,7 @@ function JTBooking({ setRoute }) {
       const t = JT_BOOKING_SLUGS[sub];
       setPreferredTopic(t);
       setForm((f) => ({ ...f, topic: t }));
+      if (!t) setStep(1); // 일반 상담으로 바뀌면 분야가 비므로 분야 선택 단계로 돌아간다(입력한 연락처는 유지)
     };
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
@@ -198,6 +199,9 @@ function JTBooking({ setRoute }) {
 
   const submitBooking = async () => {
     if (!canSubmit || submitting) return;
+    // 분야·연락처는 제출 직전에 다시 본다 — 주소 변경 등으로 비워진 채 뒤 단계에 남았으면 해당 단계로 돌려보낸다.
+    if (!canNext1) { setStep(1); return; }
+    if (!canNext2) { setStep(2); return; }
     setSubmitting(true);
     setSubmitError('');
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
