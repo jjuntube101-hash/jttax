@@ -355,6 +355,16 @@ console.log('\n════ ⑦ 12열 장부형 홈 — 구조·동선 계약 �
     eq('일반 상담은 저장된 분야를 지움', /else sessionStorage\.removeItem\('jt_preferred_topic'\)/.test(home), true);
     eq('예약 폼은 허용 목록의 slug 만 해석', /hasOwnProperty\.call\(JT_BOOKING_SLUGS, sub\)/.test(pages2), true);
   }
+  // 디벨롭 계약(260919): 첫면은 정적, 이중 괘선은 의사요소, FAQ 는 클래스 조판, 모션은 reduced-motion 에서 꺼짐.
+  {
+    eq('첫면(슬로건·계산표·상담 링크)에 reveal 을 걸지 않음', /className="[^"]*reveal/.test(brand), false);
+    eq('이중 괘선은 top:4px 의사요소', /\.jt-ident__head::before,[^{]*\{[^}]*top:\s*4px[^}]*border-top:\s*1px solid var\(--border-strong\)/.test(css), true);
+    const faq = home.slice(home.indexOf('function JTFaq'), home.indexOf('window.JTFaq'));
+    eq('홈 FAQ 에 인라인 style 이 없음', /style=\{\{/.test(faq), false);
+    eq('홈 FAQ 버튼이 aria-expanded 를 유지', /aria-expanded=\{open === i\}/.test(faq), true);
+    eq('무사진판 세로 기준선은 --text 선택자에만', /\.jt-method--text \.jt-method__steps\s*\{[^}]*border-left:\s*1px/.test(css) && !/(?<!\.jt-method--text )\.jt-method__steps\s*\{[^}]*border-left:\s*1px/.test(css), true);
+    eq('새 전환은 reduced-motion 에서 꺼짐', /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.jt-sit,[^}]*transition:\s*none/.test(css), true);
+  }
   eq('단체·논의 사진 두 장을 홈에 둠', /team-editorial-260919\.png/.test(home) && /team-discussion-260919\.png/.test(home), true);
   eq('인물 사진은 승인 전 비노출 플래그', /const JT_TEAM_IMAGES_APPROVED\s*=\s*false\s*;/.test(home), true);
   eq('두 인물 사진 figure가 승인 플래그로 감싸짐',

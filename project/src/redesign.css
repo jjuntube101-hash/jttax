@@ -729,6 +729,45 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
 .jt-home-ledger .jt-channels__sub { display: flex; justify-content: space-between; gap: 16px; margin-top: 2px; font-size: 12px; }
 .jt-home-ledger .jt-channels__label { font-size: 12px; letter-spacing: .02em; }
 
+/* 260919 디벨롭 — 장부 문법 안에서의 다듬기. 첫면(슬로건·계산표·상담 링크)에는 모션을 걸지 않는다.
+   이중 괘선: 굵은 선 4px 아래에 가는 선 하나. 주요 구분부(01 인물·03 업무 방식·04 읽을거리)에만 둔다. */
+.jt-ident__head, .jt-method__inner, .jt-home-ledger .jt-home-insights .jt-section__head { position: relative; }
+.jt-ident__head::before, .jt-method__inner::before, .jt-home-ledger .jt-home-insights .jt-section__head::before { content: ''; position: absolute; left: 0; right: 0; top: 4px; border-top: 1px solid var(--border-strong); pointer-events: none; }
+/* 첫면 계산표는 등장 효과 없이 바로 보인다 — HeroCalc 가 자체로 갖는 reveal 을 홈 첫면에서만 무력화(컴포넌트는 불변). */
+.jt-brandmoment__tool .jt-herocalc.reveal { opacity: 1; transform: none; }
+/* 번호는 같은 폭의 숫자로 맞춘다. 대표 번호는 한 단계만 키운다(이름보다 앞서지 않게). */
+.jt-ledger-label > span:first-child, .jt-sit__num, .jt-person__number, .jt-method__steps li > span, .jt-faq__n { font-variant-numeric: tabular-nums; }
+.jt-person__heading .jt-person__number { font-size: 18px; line-height: 1; color: var(--fg-1); }
+/* 마우스와 키보드가 같은 반응을 받는다. */
+.jt-sit__num { transition: color .18s; }
+.jt-sit:focus-visible { background: var(--bg-2); }
+.jt-sit:hover .jt-sit__num, .jt-sit:focus-visible .jt-sit__num { color: var(--fg-1); }
+.jt-sit:focus-visible .jt-sit__go { transform: translate(2px, -2px); }
+.jt-ledger-link > span, .jt-ledger-button > span, .jt-person__link > span, .jt-brandmoment__tools-link > span { display: inline-block; transition: transform .18s; }
+.jt-ledger-link:hover > span, .jt-ledger-link:focus-visible > span, .jt-ledger-button:hover > span, .jt-ledger-button:focus-visible > span, .jt-person__link:hover > span, .jt-person__link:focus-visible > span, .jt-brandmoment__tools-link:hover > span, .jt-brandmoment__tools-link:focus-visible > span { transform: translateX(3px); }
+.jt-ledger-button:focus-visible { background: var(--jt-black); color: var(--fg-inverse); }
+/* 무사진판 업무 방식: 세 단계를 한 줄의 세로 기준선에 건다. 사진판과 공유하는 선택자에는 넣지 않는다. */
+.jt-method--text .jt-method__steps { border-left: 1px solid var(--border-strong); padding-left: 28px; }
+.jt-method--text .jt-method__steps li:first-child { border-top: 0; padding-top: 4px; }
+.jt-method--text .jt-method__steps li > span { font-size: 13px; color: var(--fg-1); }
+.jt-method--text .jt-method__link { margin-left: 29px; }
+/* FAQ — 종전 인라인 스타일을 장부 클래스로 옮겼다. 열림은 조건부 렌더 그대로(전환 없음). */
+.jt-faq__list { border-top: 1px solid var(--border-strong); }
+.jt-faq__item { border-bottom: 1px solid var(--border-1); }
+.jt-faq__q { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px 4px; border: 0; background: none; color: var(--fg-1); font: inherit; text-align: left; cursor: pointer; transition: background .18s; }
+.jt-faq__q:hover { background: var(--bg-2); }
+.jt-faq__qtext { display: flex; align-items: baseline; gap: 14px; }
+.jt-faq__n { font: 400 12px/1.5 var(--font-mono); color: var(--fg-3); }
+.jt-faq__t { font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+.jt-faq__sign { flex-shrink: 0; font-size: 22px; line-height: 1; color: var(--fg-2); }
+.jt-faq__a { margin: 0; padding: 0 4px 28px 44px; font-size: 16px; line-height: 1.75; color: var(--fg-2); }
+.jt-faq__foot { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+.jt-faq__foot > span { font-size: 15px; color: var(--fg-2); }
+@media (prefers-reduced-motion: reduce) {
+  .jt-sit, .jt-sit__num, .jt-sit__go, .jt-faq__q, .jt-ledger-button, .jt-ledger-link > span, .jt-ledger-button > span, .jt-person__link > span, .jt-brandmoment__tools-link > span { transition: none; }
+  .jt-sit:hover .jt-sit__go, .jt-sit:focus-visible .jt-sit__go, .jt-ledger-link:hover > span, .jt-ledger-link:focus-visible > span, .jt-ledger-button:hover > span, .jt-ledger-button:focus-visible > span, .jt-person__link:hover > span, .jt-person__link:focus-visible > span, .jt-brandmoment__tools-link:hover > span, .jt-brandmoment__tools-link:focus-visible > span { transform: none; }
+}
+
 /* 대표 소개 페이지의 기존 원본 프로필 표현은 유지한다. */
 .jt-team-card__avatar { position: relative; width: 100%; height: auto; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-2); }
 .jt-team-card__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: grayscale(1); }
@@ -836,9 +875,14 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
   .jt-method__figure img { aspect-ratio: auto; object-fit: contain; }
   .jt-method__figure figcaption { font-size: 11px; }
   .jt-method__steps { padding-left: 0; margin-top: 22px; }
-  .jt-method--text .jt-method__steps { margin-top: 22px; }
+  .jt-method--text .jt-method__steps { margin-top: 22px; border-left: 0; padding-left: 0; }
+  .jt-method--text .jt-method__steps li:first-child { border-top: 1px solid var(--border-2); padding-top: 18px; }
   .jt-method__steps li { padding: 18px 0; }
   .jt-method__link { margin-left: 0; }
+  .jt-method--text .jt-method__link { margin-left: 0; }
+  .jt-faq__q { padding: 20px 2px; }
+  .jt-faq__t { font-size: 17px; }
+  .jt-faq__a { padding: 0 2px 24px 40px; font-size: 15px; }
   .jt-home-ledger .jt-home-insights, .jt-home-ledger .jt-home-faq { padding-bottom: 48px; }
   .jt-home-ledger .jt-home-insights .jt-section__head { align-items: start; gap: 10px; flex-direction: column; margin-bottom: 16px; padding-top: 18px; }
   .jt-home-ledger .jt-home-insights .jt-h2 { margin-top: 20px; font-size: 32px; }

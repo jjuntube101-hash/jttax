@@ -53,7 +53,7 @@ function JTHero({ setRoute }) {
   return (
     <section className="jt-sithero" id="home-services" aria-labelledby="home-services-title">
       <div className="jt-sithero__ledger">
-      <div className="jt-sithero__inner">
+      <div className="jt-sithero__inner reveal">
         <div className="jt-ledger-label"><span>02</span> WHERE TO START</div>
         <h2 className="jt-sithero__title" id="home-services-title">지금, 어떤<br />상황이신가요?</h2>
         <p className="jt-sithero__sub">기장과 신고부터 재산의 이전까지.<br />지금 필요한 업무에서 시작하세요.</p>
@@ -220,7 +220,7 @@ function JTCreds() {
   return (
     <section className="jt-ident" id="home-team" aria-labelledby="home-team-title">
       <div className="jt-ident__inner">
-        <div className="jt-ident__head">
+        <div className="jt-ident__head reveal">
           <div className="jt-ledger-label"><span>01</span> THE PEOPLE AT JT</div>
           <h2 className="jt-ident__h2" id="home-team-title">세 사람의 경험,<br />제이티의 이름으로.</h2>
           <p className="jt-ident__lead">담당할 사람을 먼저 알아보세요.<br />세 대표세무사의 실무와 경력을 소개합니다.</p>
@@ -250,7 +250,7 @@ function JTMethod() {
   return (
     <section className={JT_TEAM_IMAGES_APPROVED ? 'jt-method' : 'jt-method jt-method--text'} aria-labelledby="home-method-title">
       <div className="jt-method__inner">
-        <div className="jt-method__head">
+        <div className="jt-method__head reveal">
           <div className="jt-ledger-label"><span>03</span> HOW WE WORK</div>
           <h2 id="home-method-title">숫자만으로<br />끝나지 않는 일.</h2>
           <p>계산에 담기지 않는 사실까지 살핍니다.<br />자료를 확인하고, 필요한 판단과 절차를 함께 정리합니다.</p>
@@ -400,27 +400,28 @@ function JTFaq({ setRoute }) {
         <div className="jt-ledger-label"><span>05</span> BEFORE WE MEET</div>
         <h2 className="jt-h2 jt-display-h2">상담 전에<br />궁금한 것들.</h2>
       </div>
-      <div style={{ borderTop: '1px solid var(--border-1)' }}>
+      <div className="jt-faq__list">
         {items.map((it, i) =>
-          <div key={i} className="reveal" style={{ borderBottom: '1px solid var(--border-1)' }} data-delay={Math.min(i, 4)}>
+          <div key={i} className="jt-faq__item reveal" data-delay={Math.min(i, 4)}>
             <button
+              className="jt-faq__q"
               aria-expanded={open === i}
-              onClick={() => setOpen(open === i ? -1 : i)}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 16, justifyContent: 'space-between', background: 'none', border: 0, textAlign: 'left', padding: '24px 4px', cursor: 'pointer', font: 'inherit', color: 'var(--fg-1)' }}>
-              <span style={{ display: 'flex', gap: 14, alignItems: 'baseline' }}>
-                <span style={{ fontFamily: 'var(--font-sans-en)', fontSize: 13, color: 'var(--fg-3)' }}>{String(i + 1).padStart(2, '0')}</span>
-                <span style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em' }}>{it.q}</span>
+              aria-controls={open === i ? 'jt-home-faq-a' + i : undefined}
+              onClick={() => setOpen(open === i ? -1 : i)}>
+              <span className="jt-faq__qtext">
+                <span className="jt-faq__n">{String(i + 1).padStart(2, '0')}</span>
+                <span className="jt-faq__t">{it.q}</span>
               </span>
-              <span className="jt-arrow" style={{ fontSize: 22, lineHeight: 1, color: 'var(--fg-2)', flexShrink: 0 }}>{open === i ? '−' : '+'}</span>
+              <span className="jt-arrow jt-faq__sign" aria-hidden="true">{open === i ? '−' : '+'}</span>
             </button>
             {open === i &&
-              <p style={{ margin: 0, padding: '0 4px 28px 44px', fontSize: 16, lineHeight: 1.75, color: 'var(--fg-2)' }}>{it.a}</p>
+              <p className="jt-faq__a" id={'jt-home-faq-a' + i}>{it.a}</p>
             }
           </div>
         )}
       </div>
-      <div className="reveal" style={{ marginTop: 36, display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
-        <span style={{ color: 'var(--fg-2)', fontSize: 15 }}>더 궁금한 점이 있으신가요?</span>
+      <div className="jt-faq__foot reveal">
+        <span>더 궁금한 점이 있으신가요?</span>
         <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'faq'); setRoute('booking'); }}>무료 상담 신청 <span className="jt-arrow">→</span></button>
       </div>
     </section>);
