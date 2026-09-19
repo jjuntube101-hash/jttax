@@ -353,11 +353,34 @@ console.log('\n════ ⑦ 12열 장부형 홈 — 구조·동선 계약 �
     eq('slug 가 가리키는 분야가 예약 폼 선택지에 실재', formSlugs.every(([, t]) => t === '' || formKeys.includes(t)), true);
     eq('상황 링크가 slug 를 주소에 담음', /href=\{'\/#\/booking\/' \+ s\.slug\}/.test(home), true);
     eq('일반 상담은 저장된 분야를 지움', /else sessionStorage\.removeItem\('jt_preferred_topic'\)/.test(home), true);
-    eq('예약 폼은 허용 목록의 slug 만 해석', /hasOwnProperty\.call\(JT_BOOKING_SLUGS, sub\)/.test(pages2), true);
+    // 문자열이 아니라 «동작»을 본다 — 해석 함수를 소스에서 꺼내 실행한다 (260920 Astra R2-F4).
+    const mapDecl = (pages2.match(/const JT_BOOKING_SLUGS = \{[^}]*\};/) || [''])[0];
+    const fnDecl = (pages2.match(/function jtResolveBookingTopic\(sub, stored\) \{[\s\S]*?\n\}/) || [''])[0];
+    let resolve = null;
+    try { resolve = new Function(mapDecl + '\n' + fnDecl + '\nreturn jtResolveBookingTopic;')(); } catch (e) {}
+    eq('해석 함수를 소스에서 꺼내 실행할 수 있음', typeof resolve, 'function');
+    if (resolve) {
+      eq('slug 6개가 각자의 분야로 해석됨', homeSlugs.every(([slug, topic]) => resolve(slug, '') === topic), true);
+      eq('주소의 slug 가 오래된 저장값보다 우선', resolve('audit', '경정청구'), '세무조사 대응');
+      eq('일반 상담 slug 는 오래된 저장값을 무시하고 빈 선택', resolve('general', '경정청구'), '');
+      eq('slug 가 없으면 저장값을 사용', resolve('', '경정청구'), '경정청구');
+      eq('허용 목록 밖 slug 는 분야가 되지 않음', resolve('constructor', ''), '');
+      eq('허용 목록 밖 slug 는 저장값으로 폴백', resolve('person@example.com', '경정청구'), '경정청구');
+    }
+    eq('해석 결과가 폼의 제출 분야 초기값으로 들어감', /topic:\s*preferredTopic,/.test(pages2) && /useStatePg2\(\(\) => \{[\s\S]*?return jtResolveBookingTopic\(jtBookingSlugFromHash\(\), stored\);/.test(pages2), true);
+    eq('저장소 예외가 slug 해석을 막지 않음(예외 경계 분리)', /try \{ stored = sessionStorage\.getItem\('jt_preferred_topic'\) \|\| ''; \} catch\(_\)\{\}/.test(pages2), true);
+    eq('선택 안내는 실제 제출 분야와 같을 때만 노출', /\{preferredTopic && form\.topic === preferredTopic && \(/.test(pages2), true);
+    eq('제출 payload 의 문의분야는 form.topic', /문의분야['"]?\s*:\s*form\.topic/.test(pages2), true);
   }
   // 디벨롭 계약(260919): 첫면은 정적, 이중 괘선은 의사요소, FAQ 는 클래스 조판, 모션은 reduced-motion 에서 꺼짐.
   {
     eq('첫면(슬로건·계산표·상담 링크)에 reveal 을 걸지 않음', /className="[^"]*reveal/.test(brand), false);
+    // 자식 HeroCalc 는 자체 reveal 을 갖는다 — 그 경우 첫면 무력화 규칙이 반드시 있어야 한다 (260920 Astra R2-F5).
+    const heroSrc = fs.readFileSync(SRC('HeroCalc.jsx'), 'utf8');
+    const calcHasReveal = /className="jt-herocalc[^"]*\breveal\b/.test(heroSrc);
+    const neutral = (css.match(/\.jt-brandmoment__tool \.jt-herocalc\.reveal\s*\{([^}]*)\}/) || [])[1] || '';
+    eq('계산표의 reveal 은 첫면에서 무력화됨(opacity 1·transform none)',
+      !calcHasReveal || (/opacity:\s*1\b/.test(neutral) && /transform:\s*none/.test(neutral)), true);
     eq('이중 괘선은 top:4px 의사요소', /\.jt-ident__head::before,[^{]*\{[^}]*top:\s*4px[^}]*border-top:\s*1px solid var\(--border-strong\)/.test(css), true);
     const faq = home.slice(home.indexOf('function JTFaq'), home.indexOf('window.JTFaq'));
     eq('홈 FAQ 에 인라인 style 이 없음', /style=\{\{/.test(faq), false);

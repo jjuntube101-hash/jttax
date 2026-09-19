@@ -1463,6 +1463,18 @@ function JTContact({ setRoute }) {
 }
 window.JTContact = JTContact;
 const JT_BOOKING_SLUGS = { asset: "\uC591\uB3C4\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC", bookkeeping: "\uAE30\uC7A5\xB7\uC138\uAE08 \uC2E0\uACE0", audit: "\uC138\uBB34\uC870\uC0AC \uB300\uC751", refund: "\uACBD\uC815\uCCAD\uAD6C", consulting: "\uC138\uAE08 \uC885\uD569 \uCEE8\uC124\uD305", general: "" };
+function jtResolveBookingTopic(sub, stored) {
+  if (Object.prototype.hasOwnProperty.call(JT_BOOKING_SLUGS, sub)) return JT_BOOKING_SLUGS[sub];
+  return stored || "";
+}
+function jtBookingSlugFromHash() {
+  try {
+    const r = window.JTRouter && window.JTRouter.parse();
+    return r && r.route === "booking" && r.sub || "";
+  } catch (_) {
+    return "";
+  }
+}
 function JTBooking({ setRoute }) {
   const [step, setStep] = useStatePg2(1);
   const preferredSlot = (() => {
@@ -1472,17 +1484,18 @@ function JTBooking({ setRoute }) {
       return "";
     }
   })();
-  const preferredTopic = (() => {
+  const [preferredTopic, setPreferredTopic] = useStatePg2(() => {
+    let stored = "";
     try {
-      const t = sessionStorage.getItem("jt_preferred_topic") || "";
-      if (t) sessionStorage.removeItem("jt_preferred_topic");
-      const sub = window.JTRouter && window.JTRouter.parse().sub || "";
-      if (Object.prototype.hasOwnProperty.call(JT_BOOKING_SLUGS, sub)) return JT_BOOKING_SLUGS[sub];
-      return t;
+      stored = sessionStorage.getItem("jt_preferred_topic") || "";
     } catch (_) {
-      return "";
     }
-  })();
+    try {
+      if (stored) sessionStorage.removeItem("jt_preferred_topic");
+    } catch (_) {
+    }
+    return jtResolveBookingTopic(jtBookingSlugFromHash(), stored);
+  });
   const [form, setForm] = useStatePg2({
     topic: preferredTopic,
     name: "",
@@ -1498,6 +1511,17 @@ function JTBooking({ setRoute }) {
     consentIntl: false
   });
   const set = (k) => (e) => setForm(__spreadProps(__spreadValues({}, form), { [k]: e.target && e.target.type === "checkbox" ? e.target.checked : e.target.value }));
+  useEffectPg2(() => {
+    const onHash = () => {
+      const sub = jtBookingSlugFromHash();
+      if (!Object.prototype.hasOwnProperty.call(JT_BOOKING_SLUGS, sub)) return;
+      const t = JT_BOOKING_SLUGS[sub];
+      setPreferredTopic(t);
+      setForm((f) => __spreadProps(__spreadValues({}, f), { topic: t }));
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
   const [done, setDone] = useStatePg2(false);
   const [submitting, setSubmitting] = useStatePg2(false);
   const [submitError, setSubmitError] = useStatePg2("");
@@ -1590,7 +1614,7 @@ function JTBooking({ setRoute }) {
     },
     /* @__PURE__ */ React.createElement("span", { className: "jt-kakao-cta__msg" }, /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true", style: { flexShrink: 0, display: "inline-flex" } }, React.createElement(window.JTIcon, { name: "chat" })), /* @__PURE__ */ React.createElement("span", null, "\uD3FC \uC791\uC131\uC774 \uBC88\uAC70\uB85C\uC6B0\uC138\uC694? ", /* @__PURE__ */ React.createElement("b", null, "\uCE74\uCE74\uC624\uD1A1\uC73C\uB85C 1:1 \uBC14\uB85C \uC0C1\uB2F4"), "\uD558\uC138\uC694.")),
     /* @__PURE__ */ React.createElement("span", { className: "jt-kakao-cta__go" }, "\uCE74\uD1A1 \uC0C1\uB2F4 \u2192")
-  ), /* @__PURE__ */ React.createElement("div", { className: "jt-stepper" }, /* @__PURE__ */ React.createElement("div", { className: `jt-stepper__step ${step >= 1 ? step > 1 ? "is-done" : "is-active" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__num" }, "1"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__label" }, "\uBB38\uC758 \uBD84\uC57C"), /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__sub" }, "TOPIC"))), /* @__PURE__ */ React.createElement("div", { className: `jt-stepper__step ${step >= 2 ? step > 2 ? "is-done" : "is-active" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__num" }, "2"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__label" }, "\uC5F0\uB77D\uCC98"), /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__sub" }, "CONTACT"))), /* @__PURE__ */ React.createElement("div", { className: `jt-stepper__step ${step >= 3 ? "is-active" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__num" }, "3"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__label" }, "\uB0B4\uC6A9 \uD655\uC778"), /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__sub" }, "CONFIRM")))), step === 1 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-kicker" }, "STEP 1 \xB7 \uC5B4\uB5A4 \uC0AC\uC548\uC778\uAC00\uC694?"), /* @__PURE__ */ React.createElement("h2", { className: "jt-h2", style: { marginBottom: preferredTopic ? 24 : 40 } }, "\uC0C1\uB2F4 \uBD84\uC57C\uB97C \uC120\uD0DD\uD574 \uC8FC\uC138\uC694."), preferredTopic && /* @__PURE__ */ React.createElement("div", { className: "jt-booking__prefill", style: { marginBottom: 32 } }, /* @__PURE__ */ React.createElement("span", { className: "jt-booking__prefill-dot", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-booking__prefill-label" }, "\uC120\uD0DD\uB41C \uBD84\uC57C"), /* @__PURE__ */ React.createElement("div", { className: "jt-booking__prefill-topic" }, preferredTopic)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-booking__prefill-clear", onClick: () => setForm(__spreadProps(__spreadValues({}, form), { topic: "" })) }, "\uBCC0\uACBD")), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12 } }, topics.map((t) => /* @__PURE__ */ React.createElement(
+  ), /* @__PURE__ */ React.createElement("div", { className: "jt-stepper" }, /* @__PURE__ */ React.createElement("div", { className: `jt-stepper__step ${step >= 1 ? step > 1 ? "is-done" : "is-active" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__num" }, "1"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__label" }, "\uBB38\uC758 \uBD84\uC57C"), /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__sub" }, "TOPIC"))), /* @__PURE__ */ React.createElement("div", { className: `jt-stepper__step ${step >= 2 ? step > 2 ? "is-done" : "is-active" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__num" }, "2"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__label" }, "\uC5F0\uB77D\uCC98"), /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__sub" }, "CONTACT"))), /* @__PURE__ */ React.createElement("div", { className: `jt-stepper__step ${step >= 3 ? "is-active" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__num" }, "3"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__label" }, "\uB0B4\uC6A9 \uD655\uC778"), /* @__PURE__ */ React.createElement("div", { className: "jt-stepper__sub" }, "CONFIRM")))), step === 1 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-kicker" }, "STEP 1 \xB7 \uC5B4\uB5A4 \uC0AC\uC548\uC778\uAC00\uC694?"), /* @__PURE__ */ React.createElement("h2", { className: "jt-h2", style: { marginBottom: preferredTopic && form.topic === preferredTopic ? 24 : 40 } }, "\uC0C1\uB2F4 \uBD84\uC57C\uB97C \uC120\uD0DD\uD574 \uC8FC\uC138\uC694."), preferredTopic && form.topic === preferredTopic && /* @__PURE__ */ React.createElement("div", { className: "jt-booking__prefill", style: { marginBottom: 32 } }, /* @__PURE__ */ React.createElement("span", { className: "jt-booking__prefill-dot", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "jt-booking__prefill-label" }, "\uC120\uD0DD\uB41C \uBD84\uC57C"), /* @__PURE__ */ React.createElement("div", { className: "jt-booking__prefill-topic" }, preferredTopic)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-booking__prefill-clear", onClick: () => setForm(__spreadProps(__spreadValues({}, form), { topic: "" })) }, "\uBCC0\uACBD")), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12 } }, topics.map((t) => /* @__PURE__ */ React.createElement(
     "button",
     {
       key: t.k,

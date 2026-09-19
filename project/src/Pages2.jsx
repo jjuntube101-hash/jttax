@@ -106,20 +106,25 @@ window.JTContact = JTContact;
 // ============ Booking form (multi-step) ============
 // 홈 상황 색인(Home.jsx JT_SITUATIONS.slug)과 같은 폐집합. 값은 아래 topics 의 k 와 글자까지 같아야 한다.
 const JT_BOOKING_SLUGS = { asset: '양도·상속·증여', bookkeeping: '기장·세금 신고', audit: '세무조사 대응', refund: '경정청구', consulting: '세금 종합 컨설팅', general: '' };
+// 주소의 slug 가 허용 목록에 있으면 그것이 우선, 없으면 저장소 값. 순수 함수 — tests_hero_calc 가 꺼내 실행한다.
+function jtResolveBookingTopic(sub, stored) {
+  if (Object.prototype.hasOwnProperty.call(JT_BOOKING_SLUGS, sub)) return JT_BOOKING_SLUGS[sub];
+  return stored || '';
+}
+function jtBookingSlugFromHash() {
+  try { const r = window.JTRouter && window.JTRouter.parse(); return (r && r.route === 'booking' && r.sub) || ''; } catch(_){ return ''; }
+}
 function JTBooking({ setRoute }) {
   const [step, setStep] = useStatePg2(1);
   const preferredSlot = (() => { try { return sessionStorage.getItem('jt_preferred_slot') || ''; } catch(_){ return ''; } })();
-  const preferredTopic = (() => {
-    try {
-      const t = sessionStorage.getItem('jt_preferred_topic') || '';
-      // 한 번 사용 후 비움 — 다음 진입 시 영향 X
-      if (t) sessionStorage.removeItem('jt_preferred_topic');
-      // 새 탭·주소 복사 진입(#/booking/<slug>)은 저장소가 비어 있다 — 허용 목록의 slug 만 분야로 해석한다.
-      const sub = (window.JTRouter && window.JTRouter.parse().sub) || '';
-      if (Object.prototype.hasOwnProperty.call(JT_BOOKING_SLUGS, sub)) return JT_BOOKING_SLUGS[sub];
-      return t;
-    } catch(_){ return ''; }
-  })();
+  // 진입 시 한 번만 정한다. 저장소 접근이 막혀도(예외) 주소의 slug 해석은 독립적으로 수행한다.
+  const [preferredTopic, setPreferredTopic] = useStatePg2(() => {
+    let stored = '';
+    try { stored = sessionStorage.getItem('jt_preferred_topic') || ''; } catch(_){}
+    // 한 번 사용 후 비움 — 다음 진입 시 영향 X
+    try { if (stored) sessionStorage.removeItem('jt_preferred_topic'); } catch(_){}
+    return jtResolveBookingTopic(jtBookingSlugFromHash(), stored);
+  });
   const [form, setForm] = useStatePg2({
     topic: preferredTopic,
     name: '', company: '', email: '', phone: '',
@@ -128,6 +133,18 @@ function JTBooking({ setRoute }) {
     consentIntl: false,
   });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target && e.target.type === 'checkbox' ? e.target.checked : e.target.value });
+  // 같은 화면에서 주소의 slug 만 바뀌면(#/booking/asset → /audit) 분야만 맞추고 작성 중인 다른 값은 유지한다.
+  useEffectPg2(() => {
+    const onHash = () => {
+      const sub = jtBookingSlugFromHash();
+      if (!Object.prototype.hasOwnProperty.call(JT_BOOKING_SLUGS, sub)) return;
+      const t = JT_BOOKING_SLUGS[sub];
+      setPreferredTopic(t);
+      setForm((f) => ({ ...f, topic: t }));
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
   const [done, setDone] = useStatePg2(false);
   const [submitting, setSubmitting] = useStatePg2(false);
   const [submitError, setSubmitError] = useStatePg2('');
@@ -291,8 +308,9 @@ function JTBooking({ setRoute }) {
         {step === 1 && (
           <div>
             <div className="jt-kicker">STEP 1 · 어떤 사안인가요?</div>
-            <h2 className="jt-h2" style={{marginBottom: preferredTopic ? 24 : 40}}>상담 분야를 선택해 주세요.</h2>
-            {preferredTopic && (
+            <h2 className="jt-h2" style={{marginBottom: (preferredTopic && form.topic === preferredTopic) ? 24 : 40}}>상담 분야를 선택해 주세요.</h2>
+            {/* 안내는 실제 제출될 form.topic 과 같을 때만 — 사용자가 다른 분야로 바꾸면 사라진다 */}
+            {preferredTopic && form.topic === preferredTopic && (
               <div className="jt-booking__prefill" style={{marginBottom: 32}}>
                 <span className="jt-booking__prefill-dot" aria-hidden="true"></span>
                 <div>
