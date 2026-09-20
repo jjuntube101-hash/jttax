@@ -195,11 +195,21 @@ const ACQ_QS = [
        신혼부부 감면(§36의2)은 산식이 생애최초 템플릿을 복제해 법정 「50% 경감」과 다르고
        조문에 일몰 표시가 남아 있어 제외한다. 귀농주택은 엔진이 인용한 근거조문이 존재하지
        않아 제외한다. 두 항목은 선택지로 만들지 않는다. */
-    sub: '생애최초로 집을 사면(본인·배우자 모두 무주택, 취득가액 12억 이하, 미성년 제외) 취득세를 최대 200만원까지 감면받습니다(지방세특례제한법 §36의3, 2028년 말까지). 자녀 출산·양육 감면은 지방세특례제한법 §36의5입니다. 작은 빌라·도시형생활주택·다가구주택이나 인구감소지역 주택은 300만원까지 가능하니 상담에서 확인하세요. ' + ACQ_REDUCTION_NOTE,
+    sub: '생애최초로 집을 사면(본인·배우자 모두 무주택, 취득가액 12억 이하, 미성년 제외) 취득세를 최대 200만원까지 감면받습니다(지방세특례제한법 §36의3, 2028년 말까지). 자녀 출산·양육 감면은 지방세특례제한법 §36의5입니다. 작은 빌라·도시형생활주택·다가구주택이나 인구감소지역 주택은 300만원까지 가능하니 상담에서 확인하세요. 앞에서 「2채 이상」 또는 「일시적 2주택」이라고 답하셨다면 생애최초 선택지가 나오지 않습니다 — 같은 법 §36의3③이 「주택을 소유한 사실이 없는 것으로 보는」 사정(상속 소수지분 등)에 해당하시면 계산기 대신 상담에서 확인하세요. ' + ACQ_REDUCTION_NOTE,
     showIf: (a) => a.propertyType === '주택' && acqIsPaid(a) && !acqIsCorporate(a),
+    /* ★ 260921 R2-F1 [P0]. 생애최초(§36의3①)는 «본인·배우자 모두 무주택»이 요건이다
+       — 조문대조표 2편 1번(법제처 원문 조회 260921, 조회한 법령 시행일 2026-06-02).
+       취득 후 2채 이상이거나 종전 주택등을 들고 있는 «일시적 2주택»은 그 요건과 양립할 수
+       없는데, 종전에는 선택지가 그대로 떠서 엔진에 감면 플래그가 갔다(실측: 공매·2주택·
+       일시적2주택 «예»에 생애최초를 고르면 housing_count 1 + 생애최초 감면이 함께 전송).
+       선택지의 4번째 원소 = «그 선택지가 보일 조건». acqNormalizeAnswers 가 같은 조건으로
+       옛 답도 지운다 — 숨기기와 지우기를 한 곳에서 정의한다.
+       ⛔ §36의3③ 의 「소유한 사실이 없는 것으로 보는」 사정은 이 계산기가 판정하지 못하므로
+          숨기는 대신 위 sub 문구로 상담을 안내한다(길을 막지 않는다). */
     opts: [
       ['none', '해당 없음', '감면 없음'],
-      ['first', '생애최초 주택 구입', '지특법 §36의3 · 최대 200만원'],
+      ['first', '생애최초 주택 구입', '지특법 §36의3 · 최대 200만원',
+        (a) => (Number(a.housingCount) || 1) === 1 && a.temporaryTwoHouse !== 'yes'],
       ['childbirth', '자녀 출산·양육 (출산양육 감면)', '지특법 §36의5'],
     ],
   },
@@ -243,6 +253,51 @@ const ACQ_QS = [
   },
 ];
 
+/* ══════════════════════════════════════════════════════════════════════════
+   ★ 답 정규화 — «지금 화면에 보이지 않는 질문의 옛 답»을 한 곳에서 끊는다 (260921 R2)
+
+   ▣ 왜 이 함수 하나인가
+     Codex R2 가 낸 P0 1건·P1 1건·P2 1건은 «사례»가 달랐을 뿐 원인이 하나였다 —
+     `setAns` 는 답을 병합만 하고 지우지 않으므로, 분기를 바꾸면 숨은 답이 그대로 남아
+       · 공매 일시적2주택에 생애최초 감면이 함께 전송되고 (R2-F1, 양립 불가한 사실관계)
+       · 증여로 바꿨는데 법인 답이 남아 «고칠 수 없는 차단»이 생기고 (R2-F2)
+       · 농지로 바꿨는데 주택 시가표준액이 요청에 남았다 (R2-F3).
+     사례마다 조건을 덧대면 다음 분기에서 또 난다. 그래서 «매퍼·차단 검사·요약·표시»가
+     전부 이 함수를 거친 답만 보게 한다.
+
+   ▣ 무엇을 남기나 — 두 층
+     ① 질문 층: 지금 답을 기준으로 `showIf` 가 참인 질문의 답만 남긴다.
+        ACQ_QS 순서대로 «이미 정규화된 답»을 보며 판정하므로, 위에서 지운 답이
+        아래 질문의 노출 판정에 되살아나지 않는다.
+     ② 선택지 층: 선택지에 노출 조건(4번째 원소)이 붙어 있으면, 그 조건을 만족하지 않는
+        값은 지운다. 질문은 보이는데 «그 선택지만» 못 고르게 된 경우를 잡는다(R2-F1).
+
+   ▣ 지운 결과 «차단이 풀리는» 경우를 어떻게 다루나
+     지워서 필수 답이 비면 차단되는 것은 정상이다(사용자가 다시 답하면 된다).
+     반대로 차단이 풀리는 경우는 «그 답이 애초에 계산에 들어가지 않는» 허위 차단뿐이어야
+     한다. project/tests_acq_flow.js ⑥ 이 도달 가능한 조합을 전수로 훑어 그 목록을 고정한다.
+   ══════════════════════════════════════════════════════════════════════════ */
+function acqOptionAvailable(opt, answers) {
+  const cond = opt && opt[3];
+  return typeof cond === 'function' ? !!cond(answers) : true;
+}
+/* 지금 고를 수 있는 선택지 — 렌더와 정규화가 «같은 함수»를 쓴다(두 벌이면 어긋난다) */
+function acqVisibleOpts(q, answers) {
+  return (q.opts || []).filter((o) => acqOptionAvailable(o, answers));
+}
+function acqNormalizeAnswers(answers) {
+  const raw = answers || {};
+  const out = {};
+  for (const q of ACQ_QS) {
+    if (q.showIf && !q.showIf(out)) continue;          // ① 질문 층
+    const v = raw[q.id];
+    if (v === undefined || v === null || v === '') continue;
+    if (q.opts && !acqVisibleOpts(q, out).some((o) => o[0] === v)) continue;   // ② 선택지 층
+    out[q.id] = v;
+  }
+  return out;
+}
+
 /* 화면 propertyType → 엔진 property_type.
    ⚠️ 농지는 property_type 만 '농지' 로 보내면 «4%»가 나온다 (260921 fly.dev 실측:
       property_type='농지' 단독 → 8,000,000 / is_farmland=true → 6,000,000).
@@ -260,7 +315,11 @@ const ACQ_PROPERTY_TYPE = {
 /* 화면 acquisitionType → 엔진 acquisition_type (엔진 허용값: 유상취득/상속/증여/원시취득/공매/재산분할) */
 const ACQ_ACQUISITION_TYPE = { '매매': '유상취득', '증여': '증여', '상속': '상속', '신축': '원시취득', '공매': '공매', '재산분할': '재산분할' };
 
-function mapAnswersToAcquisition(a) {
+function mapAnswersToAcquisition(rawA) {
+  /* ★ 엔진 경계에서 한 번 더 정규화한다 (260921 R2). 호출자가 이미 정규화해서 넘기지만,
+     «엔진으로 나가는 마지막 문»이라 여기서도 닫는다 — 정규화는 멱등이라 두 번 해도 같다.
+     이 한 줄이 R2-F3(농지로 바꿨는데 남은 주택 시가표준액)을 부류째 막는다. */
+  const a = acqNormalizeAnswers(rawA);
   const isHousing = a.propertyType === '주택';
   const isPurchase = acqIsPaid(a);   // 유상거래(매매·공매)만 다주택 중과·생애최초 감면 대상
   const isCorp = acqIsCorporate(a);
@@ -282,7 +341,11 @@ function mapAnswersToAcquisition(a) {
     if (a.isRegulatedArea === 'yes') body.is_regulated_area = true;
     // 생애최초 감면(§36의3): reduction_type을 보내야 적용.
     //   300만(1호)은 '아파트 제외'+가액요건이라 면적만으론 자동판정 불가 → 보수적 200만(2호) 기본, 300만은 상담.
-    if (a.reduction === 'first') { body.reduction_type = '생애최초'; body.is_first_home_buyer = true; }
+    //   ★ 260921 R2-F1: «본인·배우자 무주택»(§36의3①)과 양립하지 않는 조합은 여기서도 거부한다.
+    //     선택지 노출 조건·정규화가 이미 막지만, 엔진으로 나가는 문은 두 번 잠근다.
+    if (a.reduction === 'first' && (Number(a.housingCount) || 1) === 1 && a.temporaryTwoHouse !== 'yes') {
+      body.reduction_type = '생애최초'; body.is_first_home_buyer = true;
+    }
     // 출산·양육 감면(§36의5): 260921 검증에서 산식이 조문과 일치함을 확인한 항목.
     //   ⛔ 신혼부부(§36의2)·귀농주택은 선택지에 두지 않으므로 여기서도 보내지 않는다.
     if (a.reduction === 'childbirth') { body.reduction_type = '출산양육'; body.is_childbirth = true; }
@@ -296,7 +359,8 @@ function mapAnswersToAcquisition(a) {
   }
   // 증여 취득세: 시가표준액 + 조정 12% 중과(지§13의2②). 단 1세대1주택자→배우자·직계존비속 증여는 12% 제외(② 단서).
   if (a.acquisitionType === '증여') {
-    if (Number(a.standardValue) > 0) body.standard_value = Number(a.standardValue);
+    // ★ 260921 R2-F3: 시가표준액 문항은 «증여 주택»에만 보인다 — 보내는 쪽에도 같은 조건을 건다.
+    if (isHousing && Number(a.standardValue) > 0) body.standard_value = Number(a.standardValue);
     if (isHousing && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes') {
       const std = Number(a.standardValue) || Number(a.propertyValue) || 0;
       if (std >= 300_000_000) body.gift_regulated_over_3b = true;
@@ -526,6 +590,24 @@ async function callAcqEngine(body) {
 /* ── 「이 계산에 넣지 않은 것」 ──────────────────────────────────────────────
    실제로 이 결과에서 «빠진» 항목만 적는다. 세율·요건을 새로 서술하지 않는다.
    (Astra 설계안 블록 4 채택 — 「계산에 넣지 않았다」는 사실 진술만) */
+/* ── 결과 화면 «안내 문구» 허용 목록 (260921 R2-F4) ─────────────────────────
+   종전에는 중과 안내가 조건 없이 렌더돼, 법인 주택 중과(§13의2①1호) 결과에도 개인용
+   「일시적 2주택 등으로 중과가 빠질 수 있으니」가 붙었다 — 법인에는 그 특례가 없다.
+   문구를 분기별 «허용 목록»으로 바꾼다: 어느 분기에 무엇이 붙는지를 한 곳에서 정하고,
+   목록에 없는 분기에는 아무것도 붙지 않는다(새 유형이 늘어도 기본값이 «안 붙음»이다). */
+function acqNoticeKey(a) {
+  if (a.propertyType === '주택' && acqIsPaid(a) && acqIsCorporate(a)) return 'corporate';
+  /* 개인 유상 주택(매매·공매)만 일시적 2주택 특례를 탄다 — 260921 실측으로 공매도 매매와
+     같게 동작함을 확인했다(8억 일시적2주택 → 2.33%). 그 밖(증여 중과 등)은 중립 문구. */
+  if (a.propertyType === '주택' && acqIsPaid(a)) return 'personalHousePaid';
+  return 'other';
+}
+const ACQ_HEAVY_NOTICE = {
+  corporate: '법인·단체 명의 주택 취득에 적용되는 중과입니다(지방세법 §13의2①1호). 개인의 일시적 2주택 특례는 해당하지 않습니다. 법인의 설립 시기·소재지에 따라 달리 볼 사정이 있으면 상담에서 확인하세요.',
+  personalHousePaid: '일시적 2주택 등으로 중과가 빠질 수 있으니 해당되면 상담으로 확인하세요.',
+  other: '중과 여부는 취득 원인과 사실관계에 따라 달라집니다 — 해당 여부는 상담에서 확인하세요.',
+};
+
 function acqExcludedItems(a) {
   const out = ['시·도 조례에 따른 추가 경감·감면 — 아래 「소재지 시·도 감면 조례」 칸의 원문을 직접 확인해야 합니다.'];
   if (a.reduction && a.reduction !== 'none') out.push('감면 요건 심사 — ' + ACQ_REDUCTION_NOTE);
@@ -596,7 +678,11 @@ window.JTAcqOrdinanceCard = JTAcqOrdinanceCard;
 
 function JTReportAcquisition({ setRoute, onBack }) {
   const [step, setStep] = useAcqState(0);
-  const [answers, setAnswers] = useAcqState({});
+  /* ★ 260921 R2: 상태에 담기는 것은 «원본 답»이고(setAns 는 병합만 한다), 화면·매퍼·차단
+     검사가 보는 것은 정규화를 거친 답이다. 이름을 answers 로 둬서 «이 컴포넌트 안에서는
+     정규화된 답만 answers 다»를 강제한다 — 아래 어디서도 rawAnswers 를 직접 쓰지 않는다. */
+  const [rawAnswers, setAnswers] = useAcqState({});
+  const answers = acqNormalizeAnswers(rawAnswers);
   const [loading, setLoading] = useAcqState(false);
   const [report, setReport] = useAcqState(null);
   const [err, setErr] = useAcqState(null);
@@ -692,6 +778,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
   const canNext = () => {
     if (cur.freeform) return true;
     if (cur.numeric) { if (cur.optional) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
+    /* answers 는 정규화된 답이다 — 분기를 바꿔 «못 고르게 된» 옛 선택지는 여기서 비어 있고,
+       그래서 다음으로 넘어가지 못하고 다시 답하게 된다 (260921 R2). */
     return !!answers[cur.id];
   };
 
@@ -919,7 +1007,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
               </table>
               {calc.heavyApplied && calc.heavyReason && (
                 <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginTop: 12, borderRadius: 8 }}>
-                  ⚠️ 중과 적용: {calc.heavyReason}. 일시적 2주택 등으로 중과가 빠질 수 있으니 해당되면 상담으로 확인하세요.
+                  ⚠️ 중과 적용: {calc.heavyReason}. {ACQ_HEAVY_NOTICE[acqNoticeKey(answers)]}
                 </div>
               )}
               {calc.deadline && <p style={{ fontSize: 13, opacity: 0.8, marginTop: 8 }}>신고·납부 기한: {calc.deadline}</p>}
@@ -1051,7 +1139,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
           )}
           {cur.opts && (
             <div className="jt-report-q__opts">
-              {cur.opts.map(([v, label, hint]) => {
+              {/* 노출 조건이 붙은 선택지는 조건을 만족할 때만 보인다 — 정규화와 «같은 함수»를 쓴다 */}
+              {acqVisibleOpts(cur, answers).map(([v, label, hint]) => {
                 const selected = answers[cur.id] === v;
                 return (
                   <button key={v} className={`jt-report-q__opt ${selected ? 'is-selected' : ''}`} onClick={() => setAns(cur.id, v)}>

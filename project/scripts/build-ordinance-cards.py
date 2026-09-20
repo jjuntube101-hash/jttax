@@ -14,8 +14,11 @@
    회귀 시험 project/tests_acq_flow.js ④ 가 매퍼 출력 불변을 고정한다.
 
 ⛔ 산출물에 법제처 API 사용자 ID(OC) 를 넣지 않는다.
-   도구가 돌려주는 source_url 에는 OC 가 없지만(tools/ordinance.py), 여기서도 한 번 더
-   검사해 값이 섞여 들어오면 파일을 쓰지 않고 실패한다.
+   도구가 돌려주는 source_url 에는 OC 가 없지만(tools/ordinance.py), 그 «불변식»에 기대지
+   않는다. ①모든 문자열에서 `OC=` 질의 인자를 먼저 «제거»하고 ②그러고도 `OC=` 가 남아 있으면
+   파일을 쓰지 않고 실패한다. ③이 검사는 get_oc() 조회 성공 여부와 «무관하게» 항상 돈다.
+   (260921 Codex R2-F6: 종전에는 검사가 `if oc:` 안에 있어, get_oc() 가 예외를 던지면
+    OC 가 섞인 apiUrl 이 그대로 기록될 수 있었다.)
 
 불완전하면 «쓰지 않는다»
    status != "OK" 이거나 completeness.complete 가 거짓이면 파일을 건드리지 않고 종료코드 1.
@@ -51,6 +54,35 @@ VIEWER_URL = "https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq={serial}"
 def fail(msg):
     sys.stderr.write("[build-ordinance-cards] 실패: %s\n" % msg)
     sys.exit(1)
+
+
+# `?OC=xxx` / `&OC=xxx` 질의 인자 하나를 통째로 지운다. 대소문자 무시.
+_OC_PARAM = re.compile(r"(?i)([?&])OC=[^&#\"'\s]*&?")
+
+
+def strip_oc(value):
+    """문자열에서 OC 질의 인자를 제거한다. OC 값을 몰라도(get_oc 실패) 동작한다.
+
+    `?OC=a&target=b` → `?target=b` / `?target=b&OC=a` → `?target=b`
+    URL 이 아닌 값은 그대로 돌려준다(치환 대상이 없으므로).
+    """
+    if not isinstance(value, str):
+        return value
+    prev = None
+    out = value
+    while prev != out:                       # `?OC=a&OC=b` 처럼 여러 번 붙은 경우까지
+        prev = out
+        out = _OC_PARAM.sub(lambda m: m.group(1), out)
+    return out.replace("?&", "?").rstrip("?&")
+
+
+def strip_oc_deep(obj):
+    """dict/list/str 를 재귀로 훑어 OC 질의 인자를 제거한다."""
+    if isinstance(obj, dict):
+        return {k: strip_oc_deep(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [strip_oc_deep(v) for v in obj]
+    return strip_oc(obj)
 
 
 def main():
@@ -121,12 +153,17 @@ def main():
         "generatedAt": today,
         "cards": cards,
     }
-    text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
 
-    # OC 유출 방지 — 값이 짧아 오탐이 날 수 있으므로 «URL 질의 인자 형태»와 원문 모두 본다.
-    if oc:
-        if re.search(r"[?&]OC=", text, re.I) or oc in text:
-            fail("산출물에 법제처 API 사용자 ID(OC) 로 보이는 값이 섞였습니다 — 파일을 쓰지 않았습니다.")
+    # ── OC 유출 방지 (260921 Codex R2-F6) ─────────────────────────────────
+    # ① 먼저 «제거»한다 — OC 값을 몰라도(get_oc 실패) 질의 인자 형태로 지울 수 있다.
+    payload = strip_oc_deep(payload)
+    text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    # ② 제거한 뒤에도 남아 있으면 «쓰지 않는다». 이 검사는 oc 조회 성공 여부와 무관하게 돈다.
+    if re.search(r"[?&]OC=", text, re.I):
+        fail("산출물에서 OC 질의 인자를 제거하지 못했습니다 — 파일을 쓰지 않았습니다.")
+    # ③ 값을 알고 있으면 원문에 그대로 박힌 경우까지 본다(질의 인자 형태가 아닌 유출).
+    if oc and oc in text:
+        fail("산출물에 법제처 API 사용자 ID(OC) 로 보이는 값이 섞였습니다 — 파일을 쓰지 않았습니다.")
 
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:

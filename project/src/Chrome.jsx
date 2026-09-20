@@ -503,7 +503,8 @@ function JTFooter({ setRoute }) {
           <a href="/about/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about'))}>회사소개</a>
           <a href="/experts/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about', 'team'))}>전문가</a>
           <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('insights')}>인사이트</a>
+          {/* 260921: 내비와 같은 이유로 푸터의 인사이트에도 실 href 를 붙였다 (정적 허브 신설) */}
+          <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('insights'))}>인사이트</a>
         </div>
         <div className="jt-footer__col">
           <h4>Services</h4>

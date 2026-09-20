@@ -66,6 +66,8 @@ const M = loadDecls([
   'acqIsPaid', 'acqIsCorporate', 'acqNewTypeSelected',
   'ACQ_REDUCTION_NOTE', 'ACQ_REGIONS', 'ACQ_QS',
   'ACQ_PROPERTY_TYPE', 'ACQ_ACQUISITION_TYPE',
+  'acqOptionAvailable', 'acqVisibleOpts', 'acqNormalizeAnswers',
+  'acqNoticeKey', 'ACQ_HEAVY_NOTICE',
   'mapAnswersToAcquisition', 'acqFallbackGaps', 'acqIsQuick', 'acqFirstOpenQuestion',
 ]);
 
@@ -80,10 +82,14 @@ console.log('\n════ ① 빠른 계산에서 «돌아갈 길 없는 차�
 /* 사용자가 «빠른 계산» 단계를 순서대로 답해 나가는 것을 그대로 흉내 낸다.
    시나리오에 없는 문항이 quick 에 새로 생기면 그때 실패한다 — 「몰래 늘어난 필수 문항」이
    곧 새로운 막다른 길이기 때문이다. */
+/* ⚠️ 260921 R2-F5: 컴포넌트가 실제로 하는 일을 그대로 따라간다 —
+   ① 상태에는 «원본 답»이 쌓이고(setAns 는 병합만 한다) ② 화면·판정은 acqNormalizeAnswers
+   를 거친 답만 본다 ③ 선택지는 acqVisibleOpts 가 고른다. 셋 다 실제 소스 함수를 쓴다. */
 function walkQuick(scenario, label) {
-  const answers = {};
+  const raw = {};                 // = 컴포넌트의 rawAnswers
   const asked = [];
   for (let guard = 0; guard < 40; guard++) {
+    const answers = M.acqNormalizeAnswers(raw);      // = 컴포넌트의 answers
     const visible = M.ACQ_QS.filter((q) => !q.showIf || q.showIf(answers));
     const quick = visible.filter((q) => M.acqIsQuick(q, answers));
     const next = quick.find((q) => {
@@ -93,12 +99,19 @@ function walkQuick(scenario, label) {
     if (!next) break;
     if (!Object.prototype.hasOwnProperty.call(scenario, next.id)) {
       eq(`${label} · quick 문항 「${next.id}」이 시나리오에 없습니다 (필수 문항이 늘어났는지 확인)`, false, true);
-      return { answers, asked };
+      return { answers, raw, asked };
     }
-    answers[next.id] = scenario[next.id];
+    const want = scenario[next.id];
+    /* 선택지 문항이면 «지금 고를 수 있는» 선택지여야 한다 — 시나리오가 사라진 선택지를
+       고르려 하면 그건 시험이 화면과 어긋난 것이므로 실패시킨다. */
+    if (next.opts && !M.acqVisibleOpts(next, answers).some((o) => o[0] === want)) {
+      eq(`${label} · 「${next.id}」 선택지 「${want}」는 지금 고를 수 없습니다`, false, true);
+      return { answers: M.acqNormalizeAnswers(raw), raw, asked };
+    }
+    raw[next.id] = want;
     asked.push(next.id);
   }
-  return { answers, asked };
+  return { answers: M.acqNormalizeAnswers(raw), raw, asked };
 }
 
 const SC_2HOUSE = {
@@ -411,6 +424,212 @@ console.log('\n════ ⑤ 취득세 허브·인사이트 허브로 들어�
   for (const bad of ['유일', '업계 최초', '국내 최초', '1위', '최고', '환급받을', '가장 유리', '확정 세액', '무료']) {
     eq(`취득세 허브에 금지 표현 「${bad}」가 없다`, hubHtml.includes(bad), false);
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ⑥ 분기를 바꾼 뒤 «숨은 옛 답»이 계산에 들어가지 않는가 (260921 Codex R2)
+
+   R2-F1(P0)·R2-F2(P1)·R2-F3(P2)는 사례가 달랐을 뿐 원인이 하나였다 —
+   `setAns` 가 답을 병합만 해서, 분기를 바꿔도 «지금 화면에 없는 질문의 답»이 남았다.
+   그래서 사례가 아니라 «부류»를 고정한다: payload 의 모든 필드가 지금 보이는 질문에서
+   나왔는가 + 정규화가 차단에 구멍을 내지 않는가.
+   ══════════════════════════════════════════════════════════════════════ */
+console.log('\n════ ⑥ 분기 전환 뒤 숨은 옛 답이 새지 않는가 ════');
+
+/* payload 필드 → 그 값을 만드는 «질문». 필드가 있는데 그 질문이 안 보이면 누설이다. */
+const FIELD_SOURCE = {
+  property_value: ['propertyValue'],
+  acquisition_type: ['acquisitionType'],
+  property_type: ['propertyType'],
+  is_housing: ['propertyType'],
+  is_farmland: ['propertyType'],
+  exclusive_area: ['exclusiveArea'],
+  is_corporate: ['acquirerType'],
+  housing_count: ['housingCount'],
+  is_temporary_two_house: ['housingCount', 'temporaryTwoHouse'],
+  is_regulated_area: ['isRegulatedArea'],
+  reduction_type: ['reduction'],
+  is_first_home_buyer: ['reduction'],
+  is_childbirth: ['reduction'],
+  standard_value: ['standardValue'],
+  gift_regulated_over_3b: ['isRegulatedArea'],
+};
+
+console.log('\n  ── 구체 사례 (Codex R2 재현 경로) ──');
+{
+  /* R2-F1 [P0] — 공매 2주택·일시적2주택 «예» 인데 생애최초를 고른 상태 */
+  const raw = { acquisitionType: '공매', propertyType: '주택', acquirerType: 'individual',
+    propertyValue: '500000000', housingCount: '2', exclusiveArea: '84',
+    isRegulatedArea: 'no', temporaryTwoHouse: 'yes', reduction: 'first', region: '경기도' };
+  const redQ = M.ACQ_QS.find((q) => q.id === 'reduction');
+  eq('R2-F1 · 일시적 2주택에서는 생애최초 선택지가 «보이지 않는다»',
+     M.acqVisibleOpts(redQ, raw).some((o) => o[0] === 'first'), false);
+  eq('R2-F1 · 2채 이상에서도 생애최초 선택지가 보이지 않는다',
+     M.acqVisibleOpts(redQ, { ...raw, temporaryTwoHouse: 'no' }).some((o) => o[0] === 'first'), false);
+  eq('R2-F1 · 1채·일시적2주택 아님이면 생애최초 선택지는 그대로 있다 (과잉 제한 방지)',
+     M.acqVisibleOpts(redQ, { ...raw, housingCount: '1', temporaryTwoHouse: undefined }).some((o) => o[0] === 'first'), true);
+  eq('R2-F1 · 정규화가 그 옛 답을 지운다', M.acqNormalizeAnswers(raw).reduction, undefined);
+  const p = M.mapAnswersToAcquisition(raw);
+  eq('R2-F1 · 엔진에 생애최초 감면이 가지 않는다', 'reduction_type' in p || 'is_first_home_buyer' in p, false);
+  eq('R2-F1 · 일시적 2주택 자체는 그대로 전달된다 (차단 조건 불변)', p.is_temporary_two_house, true);
+  /* ⚠️ 위 두 줄은 «정규화»만으로도 통과한다 — 매퍼의 2차 방어선을 지우면 잡히지 않는다
+     (260921 결함 주입 NC-R2 로 확인). 층이 하나 무너져도 다른 층이 남아 있는지는
+     배선으로 못 박는다. 아래 두 줄이 그 «남은 층»을 고정한다. */
+  const mapperSrc = M.mapAnswersToAcquisition.toString();
+  eq('R2-F1 · 매퍼가 감면을 보내기 전에 주택 수·일시적2주택을 «다시» 본다 (2차 방어선)',
+     /reduction === 'first'[\s\S]{0,140}housingCount[\s\S]{0,80}temporaryTwoHouse/.test(mapperSrc), true);
+  eq('R2-F1 · 매퍼가 엔진 경계에서 다시 정규화한다',
+     /acqNormalizeAnswers\(/.test(mapperSrc), true);
+}
+{
+  /* R2-F2 [P1] — 법인 주택 매매에서 증여로 전환 */
+  const raw = { acquisitionType: '증여', propertyType: '주택', acquirerType: 'corporate',
+    propertyValue: '400000000', exclusiveArea: '84', isRegulatedArea: 'no', region: 'unknown' };
+  const gaps = M.acqFallbackGaps(M.acqNormalizeAnswers(raw), ENGINE_DOWN);
+  eq('R2-F2 · 증여로 바꾸면 법인 사유로 차단되지 않는다', gaps.some((g) => g.includes('법인')), false);
+  eq('R2-F2 · payload 에 is_corporate 가 없다', 'is_corporate' in M.mapAnswersToAcquisition(raw), false);
+  eq('R2-F2 · 신규 유형 판정에서도 법인이 빠진다', M.acqNewTypeSelected(M.acqNormalizeAnswers(raw)), false);
+  /* 반대로 «지금 법인인» 경우에는 여전히 막혀야 한다 — 차단을 약화시키지 않았다 */
+  const corp = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'corporate',
+    propertyValue: '500000000', exclusiveArea: '84', region: 'unknown' };
+  eq('R2-F2 · 실제 법인 주택 매매는 그대로 차단된다',
+     M.acqFallbackGaps(M.acqNormalizeAnswers(corp), ENGINE_DOWN).some((g) => g.includes('법인')), true);
+}
+{
+  /* R2-F3 [P2] — 증여 주택에서 농지로 전환 */
+  const raw = { acquisitionType: '증여', propertyType: '농지', standardValue: '400000000',
+    propertyValue: '200000000', region: 'unknown' };
+  eq('R2-F3 · 정규화가 주택용 시가표준액을 지운다', M.acqNormalizeAnswers(raw).standardValue, undefined);
+  eq('R2-F3 · payload 에 standard_value 가 남지 않는다',
+     'standard_value' in M.mapAnswersToAcquisition(raw), false);
+  const gift = { acquisitionType: '증여', propertyType: '주택', standardValue: '400000000',
+    propertyValue: '200000000', exclusiveArea: '84', isRegulatedArea: 'yes', region: 'unknown' };
+  eq('R2-F3 · 증여 «주택»에서는 시가표준액이 그대로 간다 (과잉 제거 방지)',
+     M.mapAnswersToAcquisition(gift).standard_value, 400000000);
+  /* 위와 같은 이유로 매퍼의 2차 방어선도 배선으로 고정한다 (NC-R4 로 확인) */
+  eq('R2-F3 · 매퍼가 시가표준액을 보내기 전에 주택 여부를 «다시» 본다 (2차 방어선)',
+     /isHousing && Number\(a\.standardValue\) > 0/.test(M.mapAnswersToAcquisition.toString()), true);
+}
+{
+  /* 감면은 서로 배타적인가 — 단일 문항이라 구조상 하나만 고를 수 있어야 한다 */
+  const base = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual',
+    propertyValue: '400000000', housingCount: '1', exclusiveArea: '84', region: 'unknown' };
+  for (const v of ['none', 'first', 'childbirth']) {
+    const p = M.mapAnswersToAcquisition({ ...base, reduction: v });
+    eq(`감면 「${v}」 · 생애최초와 출산양육이 동시에 가지 않는다`,
+       (p.is_first_home_buyer === true) && (p.is_childbirth === true), false);
+  }
+  eq('감면 문항은 하나뿐이다 (동시 선택이 구조상 불가능)',
+     M.ACQ_QS.filter((q) => /reduction/i.test(q.id)).length, 1);
+}
+
+console.log('\n  ── 부류 고정: 도달 가능한 조합 전수 ──');
+{
+  const DOM = {
+    acquisitionType: ['매매', '증여', '상속', '신축', '공매', '재산분할'],
+    propertyType: ['주택', '상가', '오피스텔_주거용', '농지', '토지', '분양권'],
+    acquirerType: [undefined, 'individual', 'corporate'],
+    housingCount: [undefined, '1', '2', '3'],
+    exclusiveArea: ['', '84', '86'],
+    isRegulatedArea: [undefined, 'yes', 'no', 'unsure'],
+    temporaryTwoHouse: [undefined, 'yes', 'no'],
+    reduction: [undefined, 'none', 'first', 'childbirth'],
+    standardValue: ['', '400000000'],
+    giftOneHouseException: [undefined, 'yes', 'no'],
+  };
+  const KEYS = Object.keys(DOM);
+  /* 간이 폴백(fallbackAcqTax)에 «계산 경로가 없는» payload — 엔진이 죽으면 반드시 막혀야 한다 */
+  const beyondFallback = (p) => !!p.reduction_type || p.is_corporate === true || p.is_farmland === true
+    || ['공매', '재산분할'].includes(p.acquisition_type)
+    || ['오피스텔_주거용', '오피스텔_업무용', '농지'].includes(p.property_type);
+
+  let total = 0, leak = 0, holeDown = 0, holeOk = 0, notIdem = 0;
+  const leakSample = [], holeSample = [];
+  (function sweep(i, a) {
+    if (i === KEYS.length) {
+      total++;
+      const norm = M.acqNormalizeAnswers(a);
+      const p = M.mapAnswersToAcquisition(a);
+      /* ⓐ payload 의 모든 필드가 «지금 보이는 질문»에서 나왔는가 */
+      for (const k of Object.keys(p)) {
+        const srcs = FIELD_SOURCE[k];
+        if (!srcs) { leak++; if (leakSample.length < 3) leakSample.push('미등록 필드 ' + k); continue; }
+        for (const s of srcs) {
+          const q = M.ACQ_QS.find((x) => x.id === s);
+          if (q && q.showIf && !q.showIf(norm)) {
+            leak++; if (leakSample.length < 3) leakSample.push(k + ' ← 숨은 문항 ' + s + ' / ' + JSON.stringify(norm));
+          }
+        }
+      }
+      /* ⓑ 정규화가 차단에 구멍을 내지 않는가 */
+      if (beyondFallback(p) && M.acqFallbackGaps(norm, ENGINE_DOWN).length === 0) {
+        holeDown++; if (holeSample.length < 3) holeSample.push('엔진장애 ' + JSON.stringify(norm));
+      }
+      /* 엔진이 «없는 필드»를 유리하게 가정하는 자리(면적 미입력·다주택 조정 미응답)는
+         엔진이 살아 있어도 막혀야 한다. is_regulated_area 는 «아니오»일 때 일부러 안 보내며
+         엔진 기본값이 비조정임을 260921 실측으로 확인했으므로 «답이 없는 경우»만 본다. */
+      const needArea = p.is_housing === true && p.exclusive_area === undefined;
+      const needReg = (p.housing_count || 0) >= 2 && !['yes', 'no'].includes(norm.isRegulatedArea);
+      if ((needArea || needReg) && M.acqFallbackGaps(norm, ENGINE_OK).length === 0) {
+        holeOk++; if (holeSample.length < 6) holeSample.push('엔진정상 ' + JSON.stringify(norm));
+      }
+      /* ⓒ 정규화는 멱등이어야 한다 — 아니면 «몇 번 거쳤는가»에 따라 결과가 갈린다 */
+      if (JSON.stringify(M.acqNormalizeAnswers(norm)) !== JSON.stringify(norm)) notIdem++;
+      return;
+    }
+    const k = KEYS[i];
+    for (const v of DOM[k]) { if (v === undefined) delete a[k]; else a[k] = v; sweep(i + 1, a); }
+    delete a[k];
+  })(0, { propertyValue: '500000000', region: 'unknown' });
+
+  console.log(`      (조합 ${total.toLocaleString('en-US')}건 전수)`);
+  eq('payload 의 모든 필드가 «지금 보이는 질문»에서 나온다', leak ? leakSample.join(' | ') : 0, 0);
+  eq('폴백이 못 다루는 payload 는 엔진 장애 시 «반드시» 막힌다', holeDown ? holeSample.join(' | ') : 0, 0);
+  eq('엔진이 유리하게 가정하는 미응답은 엔진이 살아 있어도 막힌다', holeOk ? holeSample.join(' | ') : 0, 0);
+  eq('정규화는 멱등이다', notIdem, 0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ⑦ 결과 안내 문구 허용 목록 · 조례 스크립트의 OC 불변식 (260921 Codex R2)
+   ══════════════════════════════════════════════════════════════════════ */
+console.log('\n════ ⑦ 중과 안내 문구가 분기별 허용 목록을 따르는가 ════');
+{
+  const corp = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'corporate' };
+  const person = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual' };
+  const auction = { acquisitionType: '공매', propertyType: '주택', acquirerType: 'individual' };
+  const gift = { acquisitionType: '증여', propertyType: '주택' };
+  eq('법인 주택 유상취득 → corporate 문구', M.acqNoticeKey(corp), 'corporate');
+  eq('개인 주택 매매 → personalHousePaid 문구', M.acqNoticeKey(person), 'personalHousePaid');
+  eq('개인 주택 공매 → personalHousePaid 문구 (실측상 매매와 같은 규정)', M.acqNoticeKey(auction), 'personalHousePaid');
+  eq('증여 주택 → other(중립) 문구', M.acqNoticeKey(gift), 'other');
+  eq('법인 문구에 「일시적 2주택」 권유가 없다 (R2-F4)',
+     /일시적 2주택 등으로 중과가 빠질/.test(M.ACQ_HEAVY_NOTICE.corporate), false);
+  eq('중립 문구에도 「일시적 2주택」 권유가 없다',
+     /일시적 2주택 등으로 중과가 빠질/.test(M.ACQ_HEAVY_NOTICE.other), false);
+  eq('개인 유상 주택 문구에는 종전 안내가 그대로 있다 (기능 후퇴 방지)',
+     /일시적 2주택/.test(M.ACQ_HEAVY_NOTICE.personalHousePaid), true);
+  /* 화면이 그 허용 목록을 실제로 쓰는가 — 하드코딩된 옛 문장이 남아 있으면 안 된다 */
+  const resultArea = code.slice(code.indexOf('calc.heavyApplied && calc.heavyReason'));
+  eq('결과 화면이 ACQ_HEAVY_NOTICE 를 쓴다', /ACQ_HEAVY_NOTICE\[acqNoticeKey\(/.test(resultArea), true);
+  eq('결과 화면에 옛 하드코딩 문장이 남아 있지 않다',
+     /중과 적용: \{calc\.heavyReason\}\. 일시적 2주택/.test(code), false);
+}
+
+console.log('\n════ ⑦-b 조례 스크립트가 OC 를 «항상» 검사하는가 ════');
+{
+  const PY = path.join(__dirname, 'scripts', 'build-ordinance-cards.py');
+  const py = fs.readFileSync(PY, 'utf8');
+  eq('산출 직전에 OC 질의 인자를 제거한다', /payload = strip_oc_deep\(payload\)/.test(py), true);
+  /* 검사가 `if oc:` 블록 «안»에 있으면 get_oc() 실패 시 통째로 건너뛴다 (R2-F6) —
+     들여쓰기 4칸(= main 본문)에 있어야 한다. */
+  const line = py.split(/\r?\n/).find((l) => /re\.search\(r"\[\?&\]OC=/.test(l));
+  eq('OC 검사 줄을 찾았다', !!line, true);
+  /* ⚠️ 「들여쓰기 4칸」만 보면 `if oc and re.search(...)` 를 통과시킨다 — 그러면 get_oc()
+     실패 시 다시 건너뛴다(260921 결함 주입 NC-R6 로 확인). 조건에 oc 가 «없어야» 한다. */
+  eq('OC 검사가 조건 블록 밖(들여쓰기 4칸)에 있다', line ? /^ {4}if /.test(line) : false, true);
+  eq('OC 검사 조건에 oc 값이 섞여 있지 않다 (get_oc 실패와 무관하게 돈다)',
+     line ? /^ {4}if re\.search\(/.test(line.trimEnd()) : false, true);
+  eq('oc 값을 알 때의 추가 검사는 그대로 남아 있다', /if oc and oc in text:/.test(py), true);
 }
 
 console.log(`\n════════════════════\n취득세 입력 흐름 실패 ${fails}건`);

@@ -11,3 +11,7 @@ project/codex-*
 # 세무법인 공식 도메인에서 열리면 곤란하다(라이브 200 실측). 빌드에는 불필요.
 project/insights/README.md
 .selftest-backup/
+
+# Python 캐시 (조례 스크립트 import 시 생김 — 산출물 아님)
+__pycache__/
+*.pyc
