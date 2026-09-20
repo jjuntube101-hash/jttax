@@ -7475,18 +7475,49 @@ function acqFormatStepValue(name, amount, note) {
   if (amount === 0 && (/구간|판정|유형|유예|특례/.test(label) || /해당\s*없음|무주택|비주택/.test(String(note || "")))) return "\u2014";
   return formatWon(amount);
 }
+function acqIsPaid(a) {
+  return a.acquisitionType === "\uB9E4\uB9E4" || a.acquisitionType === "\uACF5\uB9E4";
+}
+function acqIsCorporate(a) {
+  return a.acquirerType === "corporate";
+}
+function acqNewTypeSelected(a) {
+  return a.acquisitionType === "\uACF5\uB9E4" || a.acquisitionType === "\uC7AC\uC0B0\uBD84\uD560" || a.propertyType === "\uB18D\uC9C0" || a.propertyType === "\uC624\uD53C\uC2A4\uD154_\uC8FC\uAC70\uC6A9" || a.propertyType === "\uC624\uD53C\uC2A4\uD154_\uC5C5\uBB34\uC6A9" || acqIsCorporate(a) || a.reduction === "childbirth";
+}
+const ACQ_REDUCTION_NOTE = "\u26A0\uFE0F \uAC10\uBA74 \uC694\uAC74(\uB098\uC774\xB7\uC18C\uB4DD\xB7\uC8FC\uD0DD \uAC00\uC561\xB7\uAE30\uC874 \uC8FC\uD0DD \uCC98\uBD84 \uC5EC\uBD80\xB7\uC138\uB300 \uAD6C\uC131 \uB4F1)\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uD655\uC778\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uACC4\uC0B0 \uACB0\uACFC\uB294 \u300C\uC694\uAC74\uC744 \uAC16\uCDC4\uB2E4\uACE0 \uAC00\uC815\uD55C \uAE08\uC561\u300D\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uD574\uB2F9 \uC5EC\uBD80\uB294 \uC8FC\uBBFC\uB4F1\uB85D\uB4F1\uBCF8\xB7\uAC00\uC871\uAD00\uACC4\uC99D\uBA85\uC11C\xB7\uB9E4\uB9E4\uACC4\uC57D\uC11C\uB97C \uB4E4\uACE0 \uBB3C\uAC74 \uC18C\uC7AC\uC9C0 \uC2DC\xB7\uAD70\xB7\uAD6C\uCCAD \uC138\uBB34\uACFC \uB610\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC\uC5D0\uAC8C \uD655\uC778\uD558\uC138\uC694.";
+const ACQ_REGIONS = [
+  "\uC11C\uC6B8\uD2B9\uBCC4\uC2DC",
+  "\uBD80\uC0B0\uAD11\uC5ED\uC2DC",
+  "\uB300\uAD6C\uAD11\uC5ED\uC2DC",
+  "\uC778\uCC9C\uAD11\uC5ED\uC2DC",
+  "\uAD11\uC8FC\uAD11\uC5ED\uC2DC",
+  "\uB300\uC804\uAD11\uC5ED\uC2DC",
+  "\uC6B8\uC0B0\uAD11\uC5ED\uC2DC",
+  "\uC138\uC885\uD2B9\uBCC4\uC790\uCE58\uC2DC",
+  "\uACBD\uAE30\uB3C4",
+  "\uAC15\uC6D0\uD2B9\uBCC4\uC790\uCE58\uB3C4",
+  "\uCDA9\uCCAD\uBD81\uB3C4",
+  "\uCDA9\uCCAD\uB0A8\uB3C4",
+  "\uC804\uBD81\uD2B9\uBCC4\uC790\uCE58\uB3C4",
+  "\uC804\uB77C\uB0A8\uB3C4",
+  "\uACBD\uC0C1\uBD81\uB3C4",
+  "\uACBD\uC0C1\uB0A8\uB3C4",
+  "\uC81C\uC8FC\uD2B9\uBCC4\uC790\uCE58\uB3C4"
+];
 const ACQ_QS = [
   {
     id: "acquisitionType",
     tier: "quick",
     section: "\uC5B4\uB5BB\uAC8C \uCDE8\uB4DD",
     q: "\uBD80\uB3D9\uC0B0\uC744 \uC5B4\uB5BB\uAC8C \uCDE8\uB4DD\uD558\uC168\uB098\uC694?",
-    sub: "\uCDE8\uB4DD \uC6D0\uC778\uC5D0 \uB530\uB77C \uC138\uC728\uC774 \uD06C\uAC8C \uB2E4\uB985\uB2C8\uB2E4 \u2014 \uB9E4\uB9E4(\uC720\uC0C1)\xB7\uC99D\uC5EC\xB7\uC0C1\uC18D\xB7\uC2E0\uCD95\uC774 \uAC01\uAC01 \uB2E4\uB978 \uC138\uC728\uC744 \uC801\uC6A9\uD569\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA711).",
+    sub: "\uCDE8\uB4DD \uC6D0\uC778\uC5D0 \uB530\uB77C \uC138\uC728\uC774 \uD06C\uAC8C \uB2E4\uB985\uB2C8\uB2E4 \u2014 \uB9E4\uB9E4(\uC720\uC0C1)\xB7\uC99D\uC5EC\xB7\uC0C1\uC18D\xB7\uC2E0\uCD95\uC774 \uAC01\uAC01 \uB2E4\uB978 \uC138\uC728\uC744 \uC801\uC6A9\uD569\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA711). \uACC4\uC57D\uC11C\xB7\uB4F1\uAE30\uC6D0\uC778\uC5D0 \uC801\uD78C \uC0AC\uC2E4\uB300\uB85C \uACE0\uB974\uC138\uC694.",
     opts: [
       ["\uB9E4\uB9E4", "\uC0AC\uC11C \uCDE8\uB4DD (\uB9E4\uB9E4\xB7\uBD84\uC591)", "\uC720\uC0C1\uCDE8\uB4DD \u2014 \uC8FC\uD0DD 1~3%(\uC911\uACFC 8\xB712%)\xB7\uBE44\uC8FC\uD0DD 4%"],
       ["\uC99D\uC5EC", "\uC99D\uC5EC\uB85C \uBC1B\uC74C", "\uC99D\uC5EC \uCDE8\uB4DD \u2014 \uC8FC\uD0DD 3.5%(\uC870\uC815 3\uC5B5\u2191 12%)"],
       ["\uC0C1\uC18D", "\uC0C1\uC18D\uC73C\uB85C \uBC1B\uC74C", "\uC0C1\uC18D \uCDE8\uB4DD \u2014 \uC8FC\uD0DD 2.8% (1\uC8FC\uD0DD \uD2B9\uB840 0.8%\uC740 \uC0C1\uB2F4)"],
-      ["\uC2E0\uCD95", "\uC0C8\uB85C \uC9C0\uC74C (\uC6D0\uC2DC\uCDE8\uB4DD)", "\uC6D0\uC2DC\uCDE8\uB4DD 2.8%"]
+      ["\uC2E0\uCD95", "\uC0C8\uB85C \uC9C0\uC74C (\uC6D0\uC2DC\uCDE8\uB4DD)", "\uC6D0\uC2DC\uCDE8\uB4DD 2.8%"],
+      ["\uACF5\uB9E4", "\uACF5\uB9E4\uB85C \uB099\uCC30\uBC1B\uC74C", "\uD55C\uAD6D\uC790\uC0B0\uAD00\uB9AC\uACF5\uC0AC(\uC628\uBE44\uB4DC)\xB7\uC138\uBB34\uC11C \uACF5\uB9E4"],
+      ["\uC7AC\uC0B0\uBD84\uD560", "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560\uB85C \uC774\uC804\uBC1B\uC74C", "\uD611\uC758\xB7\uC7AC\uD310\uC0C1 \uC7AC\uC0B0\uBD84\uD560 \uB4F1\uAE30"]
     ]
   },
   {
@@ -7494,13 +7525,28 @@ const ACQ_QS = [
     tier: "quick",
     section: "\uBB34\uC5C7\uC744 \uCDE8\uB4DD",
     q: "\uCDE8\uB4DD\uD55C \uBD80\uB3D9\uC0B0\uC740 \uBB34\uC5C7\uC778\uAC00\uC694?",
-    sub: "\uC8FC\uD0DD\uC778\uC9C0 \uC544\uB2CC\uC9C0\uC5D0 \uB530\uB77C \uC138\uC728\xB7\uC911\uACFC\xB7\uAC10\uBA74\uC774 \uC644\uC804\uD788 \uB2E4\uB985\uB2C8\uB2E4. \uC2E4\uC81C \uC0B4\uB358 \uC8FC\uAC70\uC6A9 \uC624\uD53C\uC2A4\uD154\uC740 \u300C\uC8FC\uD0DD\u300D\uC73C\uB85C \uBCF4\uC544 \uC8FC\uD0DD \uC218\xB7\uC911\uACFC \uD310\uC815\uC744 \uBC1B\uC744 \uC218 \uC788\uC73C\uB2C8 \uD574\uB2F9\uB418\uBA74 \uC0C1\uB2F4\uC5D0\uC11C \uC54C\uB824\uC8FC\uC138\uC694. \uBD84\uC591\uAD8C\xB7\uC870\uD569\uC6D0\uC785\uC8FC\uAD8C\uC740 \u300C\uAD8C\uB9AC\u300D\uB77C\uC11C \uCDE8\uB4DD \uB2E8\uACC4\uC5D4 \uCDE8\uB4DD\uC138\uAC00 \uC5C6\uACE0, \uC900\uACF5\xB7\uC794\uAE08 \uB54C \uC8FC\uD0DD\uBD84 \uCDE8\uB4DD\uC138\uAC00 \uB530\uB85C \uB098\uC635\uB2C8\uB2E4.",
+    sub: "\uC8FC\uD0DD\uC778\uC9C0 \uC544\uB2CC\uC9C0\uC5D0 \uB530\uB77C \uC138\uC728\xB7\uC911\uACFC\xB7\uAC10\uBA74\uC774 \uC644\uC804\uD788 \uB2E4\uB985\uB2C8\uB2E4. \uC624\uD53C\uC2A4\uD154\uC740 \uAC74\uCD95\uBB3C\uB300\uC7A5 \uC6A9\uB3C4\uAC00 \uAE30\uC900\uC774\uB77C \uC2E4\uC81C \uC0AC\uC6A9 \uC6A9\uB3C4\uB97C \uD568\uAED8 \uC5EC\uCB64\uBD05\uB2C8\uB2E4 \u2014 \uC8FC\uAC70\uC6A9\uC73C\uB85C \uC4F0\uB294 \uC624\uD53C\uC2A4\uD154\uC774 \u300C\uC8FC\uD0DD \uC218\u300D\uC5D0 \uB4E4\uC5B4\uAC08 \uC218 \uC788\uB294\uC9C0\uB294 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694. \uBD84\uC591\uAD8C\xB7\uC870\uD569\uC6D0\uC785\uC8FC\uAD8C\uC740 \u300C\uAD8C\uB9AC\u300D\uB77C\uC11C \uCDE8\uB4DD \uB2E8\uACC4\uC5D4 \uCDE8\uB4DD\uC138\uAC00 \uC5C6\uACE0, \uC900\uACF5\xB7\uC794\uAE08 \uB54C \uC8FC\uD0DD\uBD84 \uCDE8\uB4DD\uC138\uAC00 \uB530\uB85C \uB098\uC635\uB2C8\uB2E4.",
     opts: [
       ["\uC8FC\uD0DD", "\uC8FC\uD0DD (\uC544\uD30C\uD2B8\xB7\uBE4C\uB77C\xB7\uB2E8\uB3C5)", "1~3% \uAE30\uBCF8 \xB7 \uB2E4\uC8FC\uD0DD\xB7\uC870\uC815\uC9C0\uC5ED \uC911\uACFC \uAC00\uB2A5"],
-      ["\uC0C1\uAC00", "\uC0C1\uAC00\xB7\uC624\uD53C\uC2A4\uD154\xB7\uAC74\uBB3C (\uBE44\uC8FC\uD0DD)", "4% \uB2E8\uC77C"],
-      ["\uD1A0\uC9C0", "\uD1A0\uC9C0", "4% (\uB18D\uC9C0 3%\xB7\uC0C1\uC18D\uB18D\uC9C0 2.3%)"],
+      ["\uC0C1\uAC00", "\uC0C1\uAC00\xB7\uC0AC\uBB34\uC2E4\xB7\uAC74\uBB3C (\uBE44\uC8FC\uD0DD)", "4% \uB2E8\uC77C"],
+      ["\uC624\uD53C\uC2A4\uD154_\uC8FC\uAC70\uC6A9", "\uC624\uD53C\uC2A4\uD154 \u2014 \uC8FC\uAC70\uC6A9\uC73C\uB85C \uC0AC\uC6A9", "\uAC74\uCD95\uBB3C\uB300\uC7A5 \uC6A9\uB3C4 \uAE30\uC900\uC73C\uB85C \uACC4\uC0B0"],
+      ["\uC624\uD53C\uC2A4\uD154_\uC5C5\uBB34\uC6A9", "\uC624\uD53C\uC2A4\uD154 \u2014 \uC5C5\uBB34\uC6A9\uC73C\uB85C \uC0AC\uC6A9", "\uAC74\uCD95\uBB3C\uB300\uC7A5 \uC6A9\uB3C4 \uAE30\uC900\uC73C\uB85C \uACC4\uC0B0"],
+      ["\uB18D\uC9C0", "\uB18D\uC9C0 (\uC804\xB7\uB2F5\xB7\uACFC\uC218\uC6D0)", "\uC9C0\uBAA9\xB7\uD604\uD669\uC774 \uB18D\uC9C0\uC778 \uD1A0\uC9C0"],
+      ["\uD1A0\uC9C0", "\uD1A0\uC9C0 (\uB18D\uC9C0 \uC678)", "\uB300\uC9C0\xB7\uC784\uC57C \uB4F1"],
       ["\uBD84\uC591\uAD8C", "\uBD84\uC591\uAD8C (\uC544\uD30C\uD2B8 \uB4F1 \uCCAD\uC57D \uB2F9\uCCA8)", "\uCDE8\uB4DD \uB2E8\uACC4 \uBE44\uB300\uC0C1 (0\uC6D0) \xB7 \uC900\uACF5\xB7\uC794\uAE08 \uC2DC \uBD80\uACFC"],
       ["\uC785\uC8FC\uAD8C", "\uC870\uD569\uC6D0\uC785\uC8FC\uAD8C (\uC7AC\uAC1C\uBC1C\xB7\uC7AC\uAC74\uCD95)", "\uAD8C\uB9AC \uCDE8\uB4DD \uBE44\uB300\uC0C1 (0\uC6D0) \xB7 \uC900\uACF5 \uC2DC \uBCC4\uB3C4"]
+    ]
+  },
+  {
+    id: "acquirerType",
+    tier: "quick",
+    section: "\uCDE8\uB4DD \uBA85\uC758",
+    q: "\uB204\uAD6C \uBA85\uC758\uB85C \uCDE8\uB4DD\uD558\uC2DC\uB098\uC694?",
+    sub: "\uB4F1\uAE30 \uBA85\uC758 \uAE30\uC900\uC785\uB2C8\uB2E4. \uAC1C\uC778\uC0AC\uC5C5\uC790\uB294 \u300C\uAC1C\uC778\u300D\uC785\uB2C8\uB2E4. \uBC95\uC778\xB7\uB2E8\uCCB4 \uBA85\uC758\uB85C \uC8FC\uD0DD\uC744 \uC720\uC0C1\uCDE8\uB4DD\uD558\uBA74 \uC8FC\uD0DD \uC218\uC640 \uBB34\uAD00\uD558\uAC8C \uB2E4\uB978 \uADDC\uC815\uC774 \uC801\uC6A9\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA713\uC7582\u24601\uD638).",
+    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && acqIsPaid(a),
+    opts: [
+      ["individual", "\uAC1C\uC778 \uBA85\uC758 (\uAC1C\uC778\uC0AC\uC5C5\uC790 \uD3EC\uD568)", "\uC8FC\uD0DD \uC218\xB7\uC870\uC815\uC9C0\uC5ED\uC73C\uB85C \uD310\uC815"],
+      ["corporate", "\uBC95\uC778\xB7\uB2E8\uCCB4 \uBA85\uC758", "\uC8FC\uD0DD \uC218\uC640 \uBB34\uAD00\uD558\uAC8C \uC911\uACFC"]
     ]
   },
   {
@@ -7519,7 +7565,7 @@ const ACQ_QS = [
     section: "\uC8FC\uD0DD \uC218",
     q: "\uCDE8\uB4DD \uD6C4 \uBCF4\uC720\uD558\uAC8C \uB418\uB294 \uC8FC\uD0DD\uC740 \uBAA8\uB450 \uBA87 \uCC44\uC778\uAC00\uC694? (\uC774 \uC8FC\uD0DD \uD3EC\uD568)",
     sub: "\uCDE8\uB4DD\uC138 \uB2E4\uC8FC\uD0DD \uC911\uACFC\uB294 \u300C\uCDE8\uB4DD \uACB0\uACFC \uBCF4\uC720 \uC8FC\uD0DD \uC218\u300D\uB85C \uD310\uC815\uD569\uB2C8\uB2E4. \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC740 2\uC8FC\uD0DD 8%\xB73\uC8FC\uD0DD \uC774\uC0C1 12%, \uBE44\uC870\uC815\uC9C0\uC5ED\uC740 3\uC8FC\uD0DD 8%\xB74\uC8FC\uD0DD \uC774\uC0C1 12%\uB85C \uC911\uACFC\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA713\uC7582). \uBD84\uC591\uAD8C\xB7\uC785\uC8FC\uAD8C\xB7\uC8FC\uAC70\uC6A9 \uC624\uD53C\uC2A4\uD154\uB3C4 \uC8FC\uD0DD \uC218\uC5D0 \uD3EC\uD568\uB420 \uC218 \uC788\uC5B4\uC694 \u2014 \uD5F7\uAC08\uB9AC\uBA74 \uC0C1\uB2F4\uC5D0\uC11C \uC815\uD655\uD788 \uBD10\uB4DC\uB9BD\uB2C8\uB2E4.",
-    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && a.acquisitionType === "\uB9E4\uB9E4",
+    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && acqIsPaid(a) && !acqIsCorporate(a),
     opts: [
       ["1", "1\uCC44 (\uC774 \uC9D1\uBFD0)", "\uAE30\uBCF8\uC138\uC728 1~3%"],
       ["2", "2\uCC44", "\uC870\uC815\uC9C0\uC5ED 8% \uC911\uACFC \xB7 \uBE44\uC870\uC815 \uC77C\uBC18\uC138\uC728"],
@@ -7546,8 +7592,13 @@ const ACQ_QS = [
     id: "isRegulatedArea",
     section: "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED",
     q: "\uCDE8\uB4DD\uD55C \uC8FC\uD0DD\uC774 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC5D0 \uC788\uB098\uC694?",
-    sub: "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC740 \uB2E4\uC8FC\uD0DD \uC911\uACFC(\uB9E4\uB9E4)\xB7\uC99D\uC5EC \uC911\uACFC(\uC2DC\uAC00\uD45C\uC900 3\uC5B5\u2191)\uAC00 \uC801\uC6A9\uB418\uB294 \uC9C0\uC5ED\uC785\uB2C8\uB2E4. \uD604\uC7AC \uC11C\uC6B8 \uAC15\uB0A8\xB7\uC11C\uCD08\xB7\uC1A1\uD30C\xB7\uC6A9\uC0B0\uB9CC \uD574\uB2F9(\uC218\uC2DC \uBCC0\uACBD \u2014 \uAD6D\uD1A0\uBD80 \uACE0\uC2DC \uD655\uC778). \uD655\uC2E4\uD558\uC9C0 \uC54A\uC73C\uBA74 \u300C\uBAA8\uB974\uACA0\uC5B4\uC694\u300D\uB97C \uACE0\uB974\uC138\uC694 \u2014 \uC911\uACFC \uC5EC\uBD80\uAC00 \uAC08\uB9AC\uB294 \uACBD\uC6B0\uC5D0\uB294 \uAE08\uC561\uC744 \uB0B4\uC9C0 \uC54A\uACE0 \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD569\uB2C8\uB2E4.",
-    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && (a.acquisitionType === "\uB9E4\uB9E4" || a.acquisitionType === "\uC99D\uC5EC"),
+    sub: "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC740 \uB2E4\uC8FC\uD0DD \uC911\uACFC(\uB9E4\uB9E4\xB7\uACF5\uB9E4)\xB7\uC99D\uC5EC \uC911\uACFC(\uC2DC\uAC00\uD45C\uC900 3\uC5B5\u2191)\uAC00 \uC801\uC6A9\uB418\uB294 \uC9C0\uC5ED\uC785\uB2C8\uB2E4. \uD604\uC7AC \uC11C\uC6B8 \uAC15\uB0A8\xB7\uC11C\uCD08\xB7\uC1A1\uD30C\xB7\uC6A9\uC0B0\uB9CC \uD574\uB2F9(\uC218\uC2DC \uBCC0\uACBD \u2014 \uAD6D\uD1A0\uBD80 \uACE0\uC2DC \uD655\uC778). \uD655\uC2E4\uD558\uC9C0 \uC54A\uC73C\uBA74 \u300C\uBAA8\uB974\uACA0\uC5B4\uC694\u300D\uB97C \uACE0\uB974\uC138\uC694 \u2014 \uC911\uACFC \uC5EC\uBD80\uAC00 \uAC08\uB9AC\uB294 \uACBD\uC6B0\uC5D0\uB294 \uAE08\uC561\uC744 \uB0B4\uC9C0 \uC54A\uACE0 \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD569\uB2C8\uB2E4.",
+    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && (acqIsPaid(a) || a.acquisitionType === "\uC99D\uC5EC") && !acqIsCorporate(a),
+    /* ★ 260921 (Astra R1-F5): 이 답이 «없으면 계산 전 게이트가 막는» 분기에서는 quick 으로
+       올린다. 종전에는 상세 단계에만 있어서, 2주택 매매·주택 증여로 빠른 계산을 누르면
+       「조정지역 미입력」 차단 화면에 닿고 그 화면에는 돌아갈 길이 없었다.
+       ⛔ 차단 «조건»은 그대로다 — 묻는 «위치»만 앞으로 옮긴 것이다. */
+    quickIf: (a) => a.propertyType === "\uC8FC\uD0DD" && !acqIsCorporate(a) && (acqIsPaid(a) && (Number(a.housingCount) || 1) >= 2 || a.acquisitionType === "\uC99D\uC5EC"),
     /* ★ 「아니오 / 모름」을 한 칸에 묶으면 «모름»이 «비조정»으로 계산돼 중과가 통째로
        빠진다(260806 Codex P1). 모름은 따로 받아 폴백을 차단한다. */
     opts: [["yes", "\uB124, \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED", "\uC911\uACFC \uAC00\uB2A5"], ["no", "\uC544\uB2C8\uC624 (\uBE44\uC870\uC815)", "\uAE30\uBCF8 \uC138\uC728"], ["unsure", "\uBAA8\uB974\uACA0\uC5B4\uC694", "\uC0C1\uB2F4 \uC548\uB0B4"]]
@@ -7569,18 +7620,23 @@ const ACQ_QS = [
     /* 특례 대상은 «종전 주택등을 1개 보유한 1세대»뿐이다(시행령 §28의5①) — 취득 후 3채 이상이면
        애초에 일시적 2주택이 아니다. >= 2 로 두면 3주택자에게도 물어보고, 「예」를 고르면
        주택 수가 1로 줄어 엔진이 중과를 빼 버린다 (260806 Codex P1). */
-    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && a.acquisitionType === "\uB9E4\uB9E4" && (Number(a.housingCount) || 1) === 2,
+    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && acqIsPaid(a) && !acqIsCorporate(a) && (Number(a.housingCount) || 1) === 2,
     opts: [["yes", "\uB124, \uC885\uC804 \uC8FC\uD0DD\uB4F1 1\uAC1C\uB97C 3\uB144 \uB0B4 \uCC98\uBD84 \uC608\uC815", "\uC911\uACFC \uC81C\uC678 (1~3%)"], ["no", "\uC544\uB2C8\uC624 / \uACC4\uC18D \uBCF4\uC720", "\uC911\uACFC \uC801\uC6A9 (8~12%)"]]
   },
   {
     id: "reduction",
     section: "\uAC10\uBA74",
     q: "\uCDE8\uB4DD\uC138 \uAC10\uBA74 \uB300\uC0C1\uC5D0 \uD574\uB2F9\uD558\uB098\uC694?",
-    sub: "\uC0DD\uC560\uCD5C\uCD08\uB85C \uC9D1\uC744 \uC0AC\uBA74(\uBCF8\uC778\xB7\uBC30\uC6B0\uC790 \uBAA8\uB450 \uBB34\uC8FC\uD0DD, \uCDE8\uB4DD\uAC00\uC561 12\uC5B5 \uC774\uD558, \uBBF8\uC131\uB144 \uC81C\uC678) \uCDE8\uB4DD\uC138\uB97C \uCD5C\uB300 200\uB9CC\uC6D0\uAE4C\uC9C0 \uAC10\uBA74\uBC1B\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95 \xA736\uC7583, 2028\uB144 \uB9D0\uAE4C\uC9C0). \uC2E0\uD63C\uBD80\uBD80\uAC00 \uCC98\uC74C \uC0AC\uB294 \uC9D1\uB3C4 \uC5EC\uAE30\uC5D0 \uD3EC\uD568\uB429\uB2C8\uB2E4. \uC791\uC740 \uBE4C\uB77C\xB7\uB3C4\uC2DC\uD615\uC0DD\uD65C\uC8FC\uD0DD\xB7\uB2E4\uAC00\uAD6C\uC8FC\uD0DD\uC774\uB098 \uC778\uAD6C\uAC10\uC18C\uC9C0\uC5ED \uC8FC\uD0DD\uC740 300\uB9CC\uC6D0\uAE4C\uC9C0 \uAC00\uB2A5\uD558\uB2C8 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.",
-    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && a.acquisitionType === "\uB9E4\uB9E4",
+    /* ⛔ 선택지는 «엔진 산식이 조문과 대조된 것»만 둔다 (260921 `01_엔진검증.md` §4).
+       신혼부부 감면(§36의2)은 산식이 생애최초 템플릿을 복제해 법정 「50% 경감」과 다르고
+       조문에 일몰 표시가 남아 있어 제외한다. 귀농주택은 엔진이 인용한 근거조문이 존재하지
+       않아 제외한다. 두 항목은 선택지로 만들지 않는다. */
+    sub: "\uC0DD\uC560\uCD5C\uCD08\uB85C \uC9D1\uC744 \uC0AC\uBA74(\uBCF8\uC778\xB7\uBC30\uC6B0\uC790 \uBAA8\uB450 \uBB34\uC8FC\uD0DD, \uCDE8\uB4DD\uAC00\uC561 12\uC5B5 \uC774\uD558, \uBBF8\uC131\uB144 \uC81C\uC678) \uCDE8\uB4DD\uC138\uB97C \uCD5C\uB300 200\uB9CC\uC6D0\uAE4C\uC9C0 \uAC10\uBA74\uBC1B\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95 \xA736\uC7583, 2028\uB144 \uB9D0\uAE4C\uC9C0). \uC790\uB140 \uCD9C\uC0B0\xB7\uC591\uC721 \uAC10\uBA74\uC740 \uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95 \xA736\uC7585\uC785\uB2C8\uB2E4. \uC791\uC740 \uBE4C\uB77C\xB7\uB3C4\uC2DC\uD615\uC0DD\uD65C\uC8FC\uD0DD\xB7\uB2E4\uAC00\uAD6C\uC8FC\uD0DD\uC774\uB098 \uC778\uAD6C\uAC10\uC18C\uC9C0\uC5ED \uC8FC\uD0DD\uC740 300\uB9CC\uC6D0\uAE4C\uC9C0 \uAC00\uB2A5\uD558\uB2C8 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694. " + ACQ_REDUCTION_NOTE,
+    showIf: (a) => a.propertyType === "\uC8FC\uD0DD" && acqIsPaid(a) && !acqIsCorporate(a),
     opts: [
       ["none", "\uD574\uB2F9 \uC5C6\uC74C", "\uAC10\uBA74 \uC5C6\uC74C"],
-      ["first", "\uC0DD\uC560\uCD5C\uCD08 \uC8FC\uD0DD \uAD6C\uC785 (\uC2E0\uD63C\uBD80\uBD80 \uCCAB \uC9D1 \uD3EC\uD568)", "\uCD5C\uB300 200\uB9CC\uC6D0 \uAC10\uBA74"]
+      ["first", "\uC0DD\uC560\uCD5C\uCD08 \uC8FC\uD0DD \uAD6C\uC785", "\uC9C0\uD2B9\uBC95 \xA736\uC7583 \xB7 \uCD5C\uB300 200\uB9CC\uC6D0"],
+      ["childbirth", "\uC790\uB140 \uCD9C\uC0B0\xB7\uC591\uC721 (\uCD9C\uC0B0\uC591\uC721 \uAC10\uBA74)", "\uC9C0\uD2B9\uBC95 \xA736\uC7585"]
     ]
   },
   {
@@ -7604,6 +7660,16 @@ const ACQ_QS = [
     opts: [["yes", "\uB124, 1\uC138\uB300 1\uC8FC\uD0DD\uC790\uAC00 \uAC00\uC871\uC5D0\uAC8C \uC99D\uC5EC", "12% \uC911\uACFC \uC81C\uC678 (3.5%)"], ["no", "\uC544\uB2C8\uC624 / \uBAA8\uB984", "12% \uC911\uACFC \uC801\uC6A9"]]
   },
   {
+    id: "region",
+    tier: "quick",
+    section: "\uC18C\uC7AC\uC9C0",
+    q: "\uBB3C\uAC74\uC774 \uC788\uB294 \uC2DC\xB7\uB3C4\uB294 \uC5B4\uB514\uC778\uAC00\uC694?",
+    /* ⛔ 이 답은 «세액 계산에 쓰지 않는다». 시도세 감면 조례 «원문»을 안내하기 위해서만
+       쓰고, 엔진 payload 에는 넣지 않는다. 시도 선택으로 조정대상지역을 추정하지도 않는다. */
+    sub: "\uC138\uC561 \uACC4\uC0B0\uC5D0\uB294 \uC4F0\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC2DC\xB7\uB3C4\uB9C8\uB2E4 \u300C\uB3C4\uC138(\uC2DC\uC138) \uAC10\uBA74 \uC870\uB840\u300D\uAC00 \uB530\uB85C \uC788\uC5B4\uC11C, \uADF8 \uC6D0\uBB38\uC744 \uCC3E\uC544 \uB4DC\uB9AC\uAE30 \uC704\uD574\uC11C\uB9CC \uC501\uB2C8\uB2E4. \uBAA8\uB974\uC2DC\uBA74 \u300C\uC120\uD0DD \uC548 \uD568\u300D\uC744 \uACE0\uB974\uC138\uC694 \u2014 \uC138\uC561\uC740 \uADF8\uB300\uB85C \uACC4\uC0B0\uB429\uB2C8\uB2E4.",
+    opts: ACQ_REGIONS.map((r) => [r, r, "\uC870\uB840 \uC6D0\uBB38 \uC548\uB0B4"]).concat([["unknown", "\uC120\uD0DD \uC548 \uD568 / \uBAA8\uB974\uACA0\uC5B4\uC694", "\uC870\uB840 \uC548\uB0B4 \uC0DD\uB7B5"]])
+  },
+  {
     id: "context",
     section: "\uCD94\uAC00 \uC0AC\uD56D",
     q: "\uCD94\uAC00\uB85C \uC54C\uB824\uC8FC\uC2E4 \uB0B4\uC6A9\uC774 \uC788\uB098\uC694? (\uC120\uD0DD)",
@@ -7615,22 +7681,40 @@ const ACQ_QS = [
     placeholder: "\uC608: \uBD84\uC591\uBC1B\uC740 \uC624\uD53C\uC2A4\uD154\uC744 \uC8FC\uAC70\uC6A9\uC73C\uB85C \uC0AC\uC6A9 / \uC0C1\uC18D\uBC1B\uC740 \uB18D\uC9C0 \uB4F1"
   }
 ];
+const ACQ_PROPERTY_TYPE = {
+  "\uC8FC\uD0DD": "\uC8FC\uD0DD",
+  "\uC0C1\uAC00": "\uC0C1\uAC00\uC0AC\uBB34\uC2E4",
+  "\uC624\uD53C\uC2A4\uD154_\uC8FC\uAC70\uC6A9": "\uC624\uD53C\uC2A4\uD154_\uC8FC\uAC70\uC6A9",
+  "\uC624\uD53C\uC2A4\uD154_\uC5C5\uBB34\uC6A9": "\uC624\uD53C\uC2A4\uD154_\uC5C5\uBB34\uC6A9",
+  "\uB18D\uC9C0": "\uB18D\uC9C0",
+  "\uD1A0\uC9C0": "\uD1A0\uC9C0",
+  "\uBD84\uC591\uAD8C": "\uBD84\uC591\uAD8C",
+  "\uC785\uC8FC\uAD8C": "\uC870\uD569\uC6D0\uC785\uC8FC\uAD8C"
+};
+const ACQ_ACQUISITION_TYPE = { "\uB9E4\uB9E4": "\uC720\uC0C1\uCDE8\uB4DD", "\uC99D\uC5EC": "\uC99D\uC5EC", "\uC0C1\uC18D": "\uC0C1\uC18D", "\uC2E0\uCD95": "\uC6D0\uC2DC\uCDE8\uB4DD", "\uACF5\uB9E4": "\uACF5\uB9E4", "\uC7AC\uC0B0\uBD84\uD560": "\uC7AC\uC0B0\uBD84\uD560" };
 function mapAnswersToAcquisition(a) {
   const isHousing = a.propertyType === "\uC8FC\uD0DD";
-  const isPurchase = a.acquisitionType === "\uB9E4\uB9E4";
+  const isPurchase = acqIsPaid(a);
+  const isCorp = acqIsCorporate(a);
   const body = {
     property_value: Number(a.propertyValue) || 0,
-    acquisition_type: { "\uB9E4\uB9E4": "\uC720\uC0C1\uCDE8\uB4DD", "\uC99D\uC5EC": "\uC99D\uC5EC", "\uC0C1\uC18D": "\uC0C1\uC18D", "\uC2E0\uCD95": "\uC6D0\uC2DC\uCDE8\uB4DD" }[a.acquisitionType] || "\uC720\uC0C1\uCDE8\uB4DD",
-    property_type: isHousing ? "\uC8FC\uD0DD" : a.propertyType === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0" : a.propertyType === "\uBD84\uC591\uAD8C" ? "\uBD84\uC591\uAD8C" : a.propertyType === "\uC785\uC8FC\uAD8C" ? "\uC870\uD569\uC6D0\uC785\uC8FC\uAD8C" : "\uC0C1\uAC00\uC0AC\uBB34\uC2E4",
+    acquisition_type: ACQ_ACQUISITION_TYPE[a.acquisitionType] || "\uC720\uC0C1\uCDE8\uB4DD",
+    property_type: ACQ_PROPERTY_TYPE[a.propertyType] || "\uC0C1\uAC00\uC0AC\uBB34\uC2E4",
     is_housing: isHousing
   };
+  if (a.propertyType === "\uB18D\uC9C0") body.is_farmland = true;
   if (isHousing && Number(a.exclusiveArea) > 0) body.exclusive_area = Number(a.exclusiveArea);
-  if (isHousing && isPurchase) {
+  if (isHousing && isPurchase && isCorp) body.is_corporate = true;
+  if (isHousing && isPurchase && !isCorp) {
     body.housing_count = Number(a.housingCount) || 1;
     if (a.isRegulatedArea === "yes") body.is_regulated_area = true;
     if (a.reduction === "first") {
       body.reduction_type = "\uC0DD\uC560\uCD5C\uCD08";
       body.is_first_home_buyer = true;
+    }
+    if (a.reduction === "childbirth") {
+      body.reduction_type = "\uCD9C\uC0B0\uC591\uC721";
+      body.is_childbirth = true;
     }
     if (a.temporaryTwoHouse === "yes" && (Number(a.housingCount) || 1) === 2) {
       body.is_temporary_two_house = true;
@@ -7693,6 +7777,18 @@ function acqFallbackGaps(answers, calc) {
     {
       when: answers.propertyType === "\uC8FC\uD0DD" && answers.acquisitionType === "\uB9E4\uB9E4" && hc >= 3 && answers.temporaryTwoHouse === "yes",
       why: "3\uC8FC\uD0DD \uC774\uC0C1\uC740 \xAB\uC77C\uC2DC\uC801 2\uC8FC\uD0DD\xBB \uD2B9\uB840 \uB300\uC0C1\uC774 \uC544\uB2D9\uB2C8\uB2E4(\uC2DC\uD589\uB839 \xA728\uC7585\u2460 \u2014 \uC885\uC804 \uC8FC\uD0DD\uB4F1 1\uAC1C\uB97C \uBCF4\uC720\uD55C \uC138\uB300\uB9CC). \uC8FC\uD0DD \uC218\uB97C \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694."
+    },
+    /* ★ 260921 «추가»(기존 조건은 그대로 둔다). 공매는 엔진에서 매매와 완전히 같은 주택 규정을
+       타므로(실측: 공매 8억 2주택 조정 = 67,200,000 = 매매 동일 입력), 매매에만 걸려 있던
+       위 두 ①층 차단을 공매에도 «같은 이유로» 건다. 안 걸면 공매 다주택자에게 조정지역을
+       안 물은 채 엔진이 비조정으로 가정해 8% ↔ 1~3% 가 통째로 갈린다. */
+    {
+      when: answers.propertyType === "\uC8FC\uD0DD" && answers.acquisitionType === "\uACF5\uB9E4" && hc >= 2 && regUnknown,
+      why: "\uACF5\uB9E4\uB85C \uCDE8\uB4DD\uD55C \uB2E4\uC8FC\uD0DD\uC778\uB370 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC5EC\uBD80\uAC00 \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uC911\uACFC \uC5EC\uBD80\uAC00 \uAC08\uB9BD\uB2C8\uB2E4(8% \u2194 1~3%)."
+    },
+    {
+      when: answers.propertyType === "\uC8FC\uD0DD" && answers.acquisitionType === "\uACF5\uB9E4" && hc >= 3 && answers.temporaryTwoHouse === "yes",
+      why: "3\uC8FC\uD0DD \uC774\uC0C1\uC740 \xAB\uC77C\uC2DC\uC801 2\uC8FC\uD0DD\xBB \uD2B9\uB840 \uB300\uC0C1\uC774 \uC544\uB2D9\uB2C8\uB2E4(\uC2DC\uD589\uB839 \xA728\uC7585\u2460 \u2014 \uC885\uC804 \uC8FC\uD0DD\uB4F1 1\uAC1C\uB97C \uBCF4\uC720\uD55C \uC138\uB300\uB9CC). \uC8FC\uD0DD \uC218\uB97C \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694."
     }
   ]);
   if (calc.precise) return unknown;
@@ -7719,9 +7815,61 @@ function acqFallbackGaps(answers, calc) {
     {
       when: answers.acquisitionType === "\uC0C1\uC18D" && answers.propertyType === "\uC8FC\uD0DD",
       why: "\uC8FC\uD0DD \uC0C1\uC18D \u2014 \uBB34\uC8FC\uD0DD 1\uAC00\uAD6C 1\uC8FC\uD0DD \uC0C1\uC18D\uC758 0.8% \uD2B9\uB840\uB97C \uAC04\uC774 \uACC4\uC0B0\uC774 \uD310\uC815\uD558\uC9C0 \uBABB\uD569\uB2C8\uB2E4."
+    },
+    /* ★ 260921 «추가»(기존 항목은 손대지 않는다) — 이번에 새로 노출한 유형은 간이 폴백
+       (fallbackAcqTax)에 계산 경로가 «아예 없다». 폴백은 이 유형들을 매매·비주택 분기로
+       흘려보내 조용히 다른 세율을 낸다. 그래서 엔진이 죽으면 전부 막는다.
+       ⛔ 여기 조건을 좁히거나 지우면 그 순간 틀린 금액이 나간다. */
+    {
+      when: answers.acquisitionType === "\uACF5\uB9E4",
+      why: "\uACF5\uB9E4 \uCDE8\uB4DD \u2014 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uACF5\uB9E4 \uCDE8\uB4DD \uACBD\uB85C\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4(\uB9E4\uB9E4 \uC138\uC728\uB85C \uD758\uB7EC\uAC00 \uAC10\uBA74\xB7\uC911\uACFC \uD310\uC815\uC774 \uC5B4\uAE0B\uB0A9\uB2C8\uB2E4)."
+    },
+    {
+      when: answers.acquisitionType === "\uC7AC\uC0B0\uBD84\uD560",
+      why: "\uC7AC\uC0B0\uBD84\uD560 \uCDE8\uB4DD \u2014 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uC7AC\uC0B0\uBD84\uD560 \uC138\uC728(\uC9C0\uBC29\uC138\uBC95 \xA715\u2460)\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."
+    },
+    {
+      when: answers.propertyType === "\uB18D\uC9C0",
+      why: "\uB18D\uC9C0 \u2014 \uAC04\uC774 \uACC4\uC0B0\uC774 \uB18D\uC9C0 \uC138\uC728(\uC720\uC0C1 3%\xB7\uC0C1\uC18D 2.3%)\uACFC \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uB97C \uB2E4\uB8E8\uC9C0 \uBABB\uD558\uACE0 \uC77C\uBC18 \uD1A0\uC9C0\uC728\uC744 \uC801\uC6A9\uD569\uB2C8\uB2E4."
+    },
+    {
+      when: answers.propertyType === "\uC624\uD53C\uC2A4\uD154_\uC8FC\uAC70\uC6A9" || answers.propertyType === "\uC624\uD53C\uC2A4\uD154_\uC5C5\uBB34\uC6A9",
+      why: "\uC624\uD53C\uC2A4\uD154 \u2014 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uC624\uD53C\uC2A4\uD154 \uACBD\uB85C\uAC00 \uC5C6\uC5B4 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uAC00 \uBE60\uC9D1\uB2C8\uB2E4."
+    },
+    {
+      when: answers.acquirerType === "corporate",
+      why: "\uBC95\uC778\xB7\uB2E8\uCCB4 \uBA85\uC758 \uCDE8\uB4DD \u2014 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uBC95\uC778 \uC911\uACFC(\uC9C0\uBC29\uC138\uBC95 \xA713\uC7582\u24601\uD638)\uAC00 \uC5C6\uC5B4 \uC138\uAE08\uC774 \xAB\uD6E8\uC52C \uC801\uAC8C\xBB \uB098\uC635\uB2C8\uB2E4."
+    },
+    {
+      when: answers.reduction === "childbirth",
+      why: "\uC790\uB140 \uCD9C\uC0B0\xB7\uC591\uC721 \uAC10\uBA74(\uC9C0\uD2B9\uBC95 \xA736\uC7585) \u2014 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uC774 \uAC10\uBA74\uC774 \uC5C6\uC5B4 \uC138\uAE08\uC774 \xAB\uB9CE\uAC8C\xBB \uB098\uC635\uB2C8\uB2E4."
     }
   ]));
 }
+function acqIsQuick(q, answers) {
+  return q.tier === "quick" || typeof q.quickIf === "function" && q.quickIf(answers);
+}
+function acqFirstOpenQuestion(answers) {
+  const visible = ACQ_QS.filter((q) => !q.showIf || q.showIf(answers));
+  const unsure = visible.find((q) => answers[q.id] === "unsure");
+  if (unsure) return unsure;
+  return visible.find((q) => {
+    if (q.freeform || !acqIsQuick(q, answers)) return false;
+    const v = answers[q.id];
+    if (v === void 0 || v === null || v === "") return true;
+    return !!q.numeric && !(Number(v) > 0);
+  }) || null;
+}
+const ACQ_NEW_TYPE_COMMENTARY = {
+  headline: "\uC774\uBC88 \uACC4\uC0B0\uC740 \uAC80\uC99D \uC5D4\uC9C4\uC774 \uB0B8 \uAE08\uC561\uC774\uBA70, \uC694\uAC74 \uD655\uC778\uC774 \uD544\uC694\uD55C \uD56D\uBAA9\uC774 \uB0A8\uC544 \uC788\uC2B5\uB2C8\uB2E4.",
+  cautions: [
+    { title: "\uC2E0\uACE0\xB7\uB0A9\uBD80 \uAE30\uD55C", detail: "\uC720\uC0C1\uCDE8\uB4DD(\uB9E4\uB9E4\xB7\uACF5\uB9E4)\uC740 \uCDE8\uB4DD\uC77C\uBD80\uD130 60\uC77C, \uC99D\uC5EC \uB4F1 \uBB34\uC0C1\uCDE8\uB4DD\uC740 \uCDE8\uB4DD\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130 3\uAC1C\uC6D4, \uC0C1\uC18D\uC740 \uC0C1\uC18D\uAC1C\uC2DC\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130 6\uAC1C\uC6D4(\uC678\uAD6D\uC5D0 \uC8FC\uC18C\uB97C \uB454 \uC0C1\uC18D\uC778\uC774 \uC788\uC73C\uBA74 9\uAC1C\uC6D4) \uC774\uB0B4\uC5D0 \uC2E0\uACE0\xB7\uB0A9\uBD80\uD574\uC57C \uD569\uB2C8\uB2E4. \uAE30\uD55C \uB9D0\uC77C\uC774 \uD1A0\uC694\uC77C\xB7\uACF5\uD734\uC77C\xB7\uB300\uCCB4\uACF5\uD734\uC77C\uC774\uBA74 \uADF8 \uB2E4\uC74C \uB0A0\uAE4C\uC9C0\uC785\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA720\u2460, \uC9C0\uBC29\uC138\uAE30\uBCF8\uBC95 \xA724)." },
+    { title: "\uC694\uAC74\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uD655\uC778\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4", detail: ACQ_REDUCTION_NOTE },
+    { title: "\uBB3C\uAC74 \uAD6C\uBD84\uC740 \uB300\uC7A5\uC774 \uAE30\uC900\uC785\uB2C8\uB2E4", detail: "\uC624\uD53C\uC2A4\uD154\uC758 \uC8FC\uAC70\uC6A9\xB7\uC5C5\uBB34\uC6A9, \uD1A0\uC9C0\uC758 \uB18D\uC9C0 \uC5EC\uBD80\uB294 \uAC74\uCD95\uBB3C\uB300\uC7A5\xB7\uD1A0\uC9C0\uB300\uC7A5(\uC9C0\uBAA9)\uACFC \uC2E4\uC81C \uC0AC\uC6A9 \uD604\uD669\uC73C\uB85C \uD310\uC815\uD569\uB2C8\uB2E4. \uB300\uC7A5\uACFC \uC2E4\uC81C\uAC00 \uB2E4\uB974\uBA74 \uC138\uC561\uB3C4 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uB2C8 \uB4F1\uAE30\uC0AC\uD56D\uC99D\uBA85\uC11C\xB7\uB300\uC7A5\uC744 \uB4E4\uACE0 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694." }
+  ],
+  saving_ideas: [],
+  followup: ["\uB9E4\uB9E4\xB7\uB099\uCC30\xB7\uC7AC\uC0B0\uBD84\uD560 \uB4F1 \uCDE8\uB4DD \uC6D0\uC778\uC744 \uC54C \uC218 \uC788\uB294 \uACC4\uC57D\uC11C \uB610\uB294 \uD310\uACB0\uBB38", "\uB4F1\uAE30\uC0AC\uD56D\uC99D\uBA85\uC11C", "\uAC74\uCD95\uBB3C\uB300\uC7A5\xB7\uD1A0\uC9C0\uB300\uC7A5", "\uC2DC\uAC00\uD45C\uC900\uC561(\uACF5\uC2DC\uAC00\uACA9)"]
+};
 function buildAcqDetail(answers, calc, commentary) {
   const L = ["\u25A0 \uACE0\uAC1D \uC785\uB825 \uC815\uBCF4"];
   ACQ_QS.forEach((q) => {
@@ -7805,6 +7953,37 @@ async function callAcqEngine(body) {
   }
   throw lastErr;
 }
+function acqExcludedItems(a) {
+  const out = ["\uC2DC\xB7\uB3C4 \uC870\uB840\uC5D0 \uB530\uB978 \uCD94\uAC00 \uACBD\uAC10\xB7\uAC10\uBA74 \u2014 \uC544\uB798 \u300C\uC18C\uC7AC\uC9C0 \uC2DC\xB7\uB3C4 \uAC10\uBA74 \uC870\uB840\u300D \uCE78\uC758 \uC6D0\uBB38\uC744 \uC9C1\uC811 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4."];
+  if (a.reduction && a.reduction !== "none") out.push("\uAC10\uBA74 \uC694\uAC74 \uC2EC\uC0AC \u2014 " + ACQ_REDUCTION_NOTE);
+  if (a.context) out.push("\u300C\uCD94\uAC00 \uC0AC\uD56D\u300D\uC5D0 \uC801\uC5B4 \uC8FC\uC2E0 \uB0B4\uC6A9 \u2014 \uC0C1\uB2F4 \uB54C \uCC38\uACE0\uD558\uBA70 \uC138\uC561 \uACC4\uC0B0\uC5D0\uB294 \uB4E4\uC5B4\uAC00\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+  out.push("\uAC00\uC0B0\uC138\xB7\uAC00\uC0B0\uAE08, \uB4F1\uAE30 \uBE44\uC6A9, \uAD6D\uBBFC\uC8FC\uD0DD\uCC44\uAD8C \uB4F1 \uC138\uAE08\uC774 \uC544\uB2CC \uBE44\uC6A9.");
+  if (a.acquisitionType === "\uC0C1\uC18D") out.push("\uBB34\uC8FC\uD0DD 1\uAC00\uAD6C 1\uC8FC\uD0DD \uC0C1\uC18D \uD2B9\uB840 \uD574\uB2F9 \uC5EC\uBD80 \u2014 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uD310\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
+  if (a.propertyType === "\uC624\uD53C\uC2A4\uD154_\uC8FC\uAC70\uC6A9") out.push("\uC8FC\uAC70\uC6A9 \uC624\uD53C\uC2A4\uD154\uC774 \uB2E4\uB978 \uC8FC\uD0DD\uC758 \u300C\uC8FC\uD0DD \uC218\u300D\uC5D0 \uB4E4\uC5B4\uAC00\uB294\uC9C0 \uC5EC\uBD80 \u2014 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uD310\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
+  if (a.acquirerType === "corporate") out.push("\uBC95\uC778\uC758 \uC124\uB9BD \uC2DC\uAE30\xB7\uC18C\uC7AC\uC9C0(\uB300\uB3C4\uC2DC \uB4F1)\uC5D0 \uB530\uB978 \uBCC4\uB3C4 \uADDC\uC815 \uD574\uB2F9 \uC5EC\uBD80.");
+  return out;
+}
+const ACQ_ORDINANCE_SEARCH = "https://www.law.go.kr/ordinSc.do?menuId=3&subMenuId=27&tabMenuId=136&query=";
+const ACQ_ORD_BOX = { background: "var(--bg-1,#f7f5f0)", border: "1px solid #dfe3dc", borderRadius: 10, padding: "14px 16px", lineHeight: 1.65 };
+function JTAcqOrdinanceCard({ region }) {
+  if (!region || region === "unknown") {
+    return /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC18C\uC7AC\uC9C0 \uC2DC\xB7\uB3C4 \uAC10\uBA74 \uC870\uB840"), /* @__PURE__ */ React.createElement("div", { style: ACQ_ORD_BOX }, "\uBB3C\uAC74\uC774 \uC788\uB294 \uC2DC\xB7\uB3C4\uB97C \uACE0\uB974\uC9C0 \uC54A\uC73C\uC168\uC2B5\uB2C8\uB2E4. \uC2DC\xB7\uB3C4\uB9C8\uB2E4 \u300C\uB3C4\uC138(\uC2DC\uC138) \uAC10\uBA74 \uC870\uB840\u300D\uAC00 \uB530\uB85C \uC788\uC5B4, \uC18C\uC7AC\uC9C0\uB97C \uC815\uD558\uBA74 \uADF8 \uC6D0\uBB38 \uC704\uCE58\uB97C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4. ", /* @__PURE__ */ React.createElement("strong", null, "\uC870\uB840 \uB0B4\uC6A9\uC740 \uC5B4\uB290 \uACBD\uC6B0\uB4E0 \uC774 \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")));
+  }
+  const store = typeof window !== "undefined" && window.JT_ORDINANCE_CARDS || null;
+  const card = store && store.cards && store.cards[region];
+  const searchUrl = ACQ_ORDINANCE_SEARCH + encodeURIComponent(region + " \uAC10\uBA74 \uC870\uB840");
+  if (!card) {
+    return /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, region, " \uAC10\uBA74 \uC870\uB840"), /* @__PURE__ */ React.createElement("div", { style: ACQ_ORD_BOX }, "\uC774 \uC2DC\xB7\uB3C4\uC758 \uC2DC\uB3C4\uC138 \uAC10\uBA74 \uC870\uB840\uC5D0 \uCD94\uAC00 \uACBD\uAC10 \uADDC\uC815\uC774 \uC788\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uBC95\uC81C\uCC98 \uC790\uCE58\uBC95\uADDC \uC6D0\uBB38\uC5D0\uC11C \uD655\uC778\uD558\uC2ED\uC2DC\uC624.", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10 } }, /* @__PURE__ */ React.createElement("a", { className: "jt-btn jt-btn--ghost", href: searchUrl, target: "_blank", rel: "noopener" }, "\uBC95\uC81C\uCC98 \uC790\uCE58\uBC95\uADDC\uC5D0\uC11C \uCC3E\uC544\uBCF4\uAE30 (\uC0C8 \uCC3D) \u2192")), /* @__PURE__ */ React.createElement("p", { style: { margin: "10px 0 0", fontSize: 13, opacity: 0.85 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC774 \uACC4\uC0B0\uC5D0\uB294 \uB123\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."))));
+  }
+  const ymd = (s) => String(s || "").length === 8 ? `${s.slice(0, 4)}.${s.slice(4, 6)}.${s.slice(6, 8)}` : s || "";
+  const daysSince = (() => {
+    const t = Date.parse(card.fetchedAt);
+    return isNaN(t) ? null : Math.floor((Date.now() - t) / 864e5);
+  })();
+  const stale = daysSince !== null && daysSince > 30;
+  return /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, card.region, " \xB7 ", card.ordinanceName, " ", card.articleLabel), /* @__PURE__ */ React.createElement("div", { style: ACQ_ORD_BOX }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 13.5, opacity: 0.85 } }, "\uC2DC\uD589\uC77C ", ymd(card.effectiveDate), " \xB7 \uACF5\uD3EC\uBC88\uD638 \uC81C", card.promulgationNo, "\uD638 \xB7 \uC790\uCE58\uBC95\uADDC\uC77C\uB828\uBC88\uD638 ", card.ordinanceSerial, " \xB7 \uC870\uD68C\uC77C ", card.fetchedAt, stale && /* @__PURE__ */ React.createElement("strong", { style: { color: "#a35a00" } }, " \xB7 \uAC31\uC2E0 \uD655\uC778 \uD544\uC694(\uC870\uD68C \uD6C4 ", daysSince, "\uC77C \uACBD\uACFC)")), /* @__PURE__ */ React.createElement("pre", { style: { whiteSpace: "pre-wrap", wordBreak: "keep-all", fontFamily: "inherit", fontSize: 14.5, margin: "0 0 12px", padding: "12px 14px", background: "#fff", border: "1px solid rgba(0,0,0,.08)", borderRadius: 8 } }, card.articleText), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px" } }, "\uC774 \uC870\uBB38\uC774 \uC801\uC6A9\uB418\uB294 \uB300\uC0C1\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uC0B0\uC5C5\uB2E8\uC9C0 \uB4F1\uC5D0 \uAD00\uD55C \uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95 \uC81C78\uC870\uC758 \uAC10\uBA74 \uB300\uC0C1\uC790"), "\uC785\uB2C8\uB2E4. \uD574\uB2F9\uD558\uB294\uC9C0\uB294 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4 \u2014 \uBB3C\uAC74\uC774 \uC0B0\uC5C5\uB2E8\uC9C0\xB7\uC0B0\uC5C5\uAE30\uC220\uB2E8\uC9C0 \uC548\uC5D0 \uC788\uB294\uC9C0, \uC5B4\uB5A4 \uC6A9\uB3C4\uB85C \uC4F0\uB294\uC9C0, \uAC10\uBA74 \uD6C4 \uCC98\uBD84\xB7\uC6A9\uB3C4 \uBCC0\uACBD\uC774 \uC788\uC5C8\uB294\uC9C0\uB97C \uBD84\uC591\uACC4\uC57D\uC11C\xB7\uC0AC\uC5C5\uACC4\uD68D\uC11C\xB7\uB4F1\uAE30\uC0AC\uD56D\uC99D\uBA85\uC11C\uB85C \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px" } }, /* @__PURE__ */ React.createElement("strong", null, "\uC774 \uACC4\uC0B0\uC5D0\uB294 \uB123\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."), " \uC704 \uACBD\uAC10\uB960\uC740 \uC138\uC561\uC5D0 \uBC18\uC601\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("a", { className: "jt-btn jt-btn--ghost", href: card.sourceUrl, target: "_blank", rel: "noopener" }, "\uBC95\uC81C\uCC98 \uC6D0\uBB38 \uBCF4\uAE30 (\uC0C8 \uCC3D) \u2192")));
+}
+window.JTAcqOrdinanceCard = JTAcqOrdinanceCard;
 function JTReportAcquisition({ setRoute, onBack }) {
   const [step, setStep] = useAcqState(0);
   const [answers, setAnswers] = useAcqState({});
@@ -7880,7 +8059,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
     }
   };
   const allVisible = ACQ_QS.filter((q) => !q.showIf || q.showIf(answers));
-  const visibleQs = phase === "quick" ? allVisible.filter((q) => q.tier === "quick") : allVisible.filter((q) => q.tier !== "quick");
+  const visibleQs = allVisible.filter((q) => acqIsQuick(q, answers) === (phase === "quick"));
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
@@ -7938,6 +8117,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       }
       let commentary;
       try {
+        if (acqNewTypeSelected(answers)) throw new Error("\uC2E0\uADDC \uC720\uD615 \u2014 \uC790\uB3D9 \uD574\uC124 \uBBF8\uC0AC\uC6A9");
         if (!(window.claude && window.claude.complete)) throw new Error("claude \uBBF8\uAC00\uC6A9");
         const prompt = `\uB108\uB294 \uD55C\uAD6D \uC138\uBB34\uC0AC\uB2E4. \uC544\uB798 \uCDE8\uB4DD\uC138 \uACC4\uC0B0\uC744 \uBCF4\uACE0 JSON\uC73C\uB85C\uB9CC \uB2F5\uD558\uB77C.
 \uCDE8\uB4DD\uC6D0\uC778:${answers.acquisitionType} \uC885\uB958:${answers.propertyType} \uAC00\uC561:${formatWon(Number(answers.propertyValue) || 0)} \uCD1D\uC138\uC561:${formatWon(calc.totalTax)}
@@ -7974,6 +8154,19 @@ function JTReportAcquisition({ setRoute, onBack }) {
     setPhase("detail");
     setStep(0);
   };
+  const goToQuestion = (q) => {
+    setReport(null);
+    if (!q) {
+      setPhase("quick");
+      setStep(0);
+      return;
+    }
+    const ph = acqIsQuick(q, answers) ? "quick" : "detail";
+    const list = ACQ_QS.filter((x) => !x.showIf || x.showIf(answers)).filter((x) => acqIsQuick(x, answers) === (ph === "quick"));
+    const i = list.indexOf(q);
+    setPhase(ph);
+    setStep(i >= 0 ? i : 0);
+  };
   const goNext = () => {
     if (isLast) runAnalysis();
     else setStep((s) => s + 1);
@@ -8000,15 +8193,16 @@ function JTReportAcquisition({ setRoute, onBack }) {
     const acqArea = Number(answers.exclusiveArea) || 0;
     const acqGaps = acqFallbackGaps(answers, calc);
     const acqBlocked = acqGaps.length > 0;
+    const acqOpenQ = acqFirstOpenQuestion(answers);
     if (acqBlocked) {
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: acqGaps, onRetry: runAnalysis, reason: acqFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: acqGaps, onRetry: runAnalysis, reason: acqFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 14, lineHeight: 1.6 } }, acqOpenQ ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uBB38\uD56D: ", /* @__PURE__ */ React.createElement("strong", null, acqOpenQ.q), /* @__PURE__ */ React.createElement("br", null), "\uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB2E4\uB978 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC785\uB825\uC73C\uB85C \uB3CC\uC544\uAC00 \uC55E\uC120 \uB2F5(\uD2B9\uD788 \uC8FC\uD0DD \uC218)\uC744 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => goToQuestion(acqOpenQ) }, acqOpenQ ? "\uBE60\uC9C4 \uC9C8\uBB38\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30 \u2192" : "\uC785\uB825 \uC218\uC815\uD558\uB7EC \uB3CC\uC544\uAC00\uAE30 \u2192"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setPhase("quick");
         setStep(0);
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: calc.precise ? "\uCDE8\uB4DD\uC138 \uC815\uBC00 \uACC4\uC0B0" : "\uCDE8\uB4DD\uC138 \uAC04\uC774 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, acqBlocked && /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: acqGaps, onRetry: runAnalysis }), !acqBlocked && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uCDE8\uB4DD\uC138(\uCD1D\uC561)" : calc.precise ? "\uCD1D \uB0A9\uBD80\uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)" : "\uCD94\uC815 \uB0A9\uBD80\uC138\uC561 \xB7 \uAC04\uC774"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.totalTax > 0 && calc.appliedRate && calc.appliedRate !== "-" && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, color: "var(--jt-ink-700,#444)" } }, answers.acquisitionType, " \xB7 ", formatWon(Number(answers.propertyValue) || 0), " \xB7 ", answers.propertyType, " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", /* @__PURE__ */ React.createElement("strong", null, calc.appliedRate), "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), (answers.propertyType === "\uBD84\uC591\uAD8C" || answers.propertyType === "\uC785\uC8FC\uAD8C") && /* @__PURE__ */ React.createElement("div", { style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, answers.propertyType, "\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uAD8C\uB9AC\uB97C \uC0B4 \uB54C \uCDE8\uB4DD\uC138\uAC00 \uBD80\uACFC\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(0\uC6D0)"), " \u2014 \uC9C0\uBC29\uC138\uBC95 \xA77\u2460\uC0C1 \uCDE8\uB4DD\uC138 \uACFC\uC138\uB300\uC0C1(\uBD80\uB3D9\uC0B0\uB4F1)\uC5D0 \uBBF8\uD3EC\uD568. \uB098\uC911\uC5D0 ", /* @__PURE__ */ React.createElement("strong", null, "\uC900\uACF5\xB7\uC794\uAE08\uC73C\uB85C \uADF8 \uC8FC\uD0DD\uC744 \uCDE8\uB4DD\uD558\uB294 \uC2DC\uC810\uC5D0 \uADF8 \uC8FC\uD0DD\uBD84 \uCDE8\uB4DD\uC138"), "\uAC00 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC785\uC8FC\uAD8C\uC740 \uC815\uBE44\uC0AC\uC5C5\uC5D0 \uB530\uB77C \xA77\u246F \uBCC4\uB3C4 \uBC1C\uC0DD). \uB9E4\uB9E4\uAC00 \uC804\uCCB4\uC5D0 \uC8FC\uD0DD \uCDE8\uB4DD\uC138\uB97C \uB9E4\uAE30\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !report.quick && answers.acquisitionType === "\uC0C1\uC18D" && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, "\uBB34\uC8FC\uD0DD 1\uAC00\uAD6C\uAC00 1\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uBC1B\uC73C\uBA74 ", /* @__PURE__ */ React.createElement("strong", null, "0.8% \uD2B9\uB840\uC138\uC728"), "(\uC9C0\uBC29\uC138\uBC95 \xA715\u2460)\uC774 \uC801\uC6A9\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD604\uC7AC \uACC4\uC0B0\uC740 \uC77C\uBC18 \uC0C1\uC18D ", /* @__PURE__ */ React.createElement("strong", null, "\uBCF8\uC138 2.8%"), "(\uC9C0\uBC29\uAD50\uC721\uC138\uB97C \uB354\uD574 \uC2E4\uD6A8 2.96%) \uAE30\uC900\uC774\uB2C8, \uD574\uB2F9\uB418\uBA74 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694."), answers.propertyType === "\uD1A0\uC9C0" && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, "\uD604\uC7AC \uACC4\uC0B0\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uC77C\uBC18 \uD1A0\uC9C0 \uBCF8\uC138 4%"), "(\uC9C0\uBC29\uAD50\uC721\uC138\uB97C \uB354\uD574 \uC2E4\uD6A8 4.6%) \uAE30\uC900\uC785\uB2C8\uB2E4. ", /* @__PURE__ */ React.createElement("strong", null, "\uB18D\uC9C0(\uC804\xB7\uB2F5\xB7\uACFC\uC218\uC6D0)"), "\uB294 \uC720\uC0C1\uCDE8\uB4DD 3%\xB7\uC0C1\uC18D 2.3%\uB85C \uC138\uC728\uC774 \uB2E4\uB974\uB2C8, \uB18D\uC9C0\uB77C\uBA74 \uC0C1\uB2F4\uC5D0\uC11C \uC815\uD655\uD788 \uD655\uC778\uD558\uC138\uC694(\uC9C0\uBC29\uC138\uBC95 \xA711\u24601\uD638\xB77\uD638)."), !calc.precise && !acqBlocked && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, "\uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB418\uC5B4 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC04\uC774 \uCD94\uC815"), "\uC73C\uB85C \uBCF4\uC5EC\uB4DC\uB9BD\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("strong", null, "\uBC18\uC601\uD55C \uAC83"), ": ", /* @__PURE__ */ React.createElement("strong", null, "\uC77C\uBC18"), " \uCDE8\uB4DD\uC720\uD615\uBCC4 \uC138\uC728 \xB7 6~9\uC5B5 \uAD6C\uAC04 \uC0B0\uC2DD \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uB2E4\uC8FC\uD0DD \uC911\uACFC"), "(\uC870\uC815 2\uC8FC\uD0DD\xB7\uBE44\uC870\uC815 3\uC8FC\uD0DD 8.4% / \uADF8 \uC774\uC0C1 12.4%) \xB7 \uC9C0\uBC29\uAD50\uC721\uC138.", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("strong", null, "\uBC18\uC601\uD558\uC9C0 \uC54A\uC740 \uAC83"), ": ", /* @__PURE__ */ React.createElement("strong", null, "\uC0DD\uC560\uCD5C\uCD08 \uAC10\uBA74"), " \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "85\u33A1 \uCD08\uACFC \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"), " \xB7 \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uB4F1 \uC911\uACFC\uBC30\uC81C \uD2B9\uB840 \xB7 \uBC95\uC778 \uCDE8\uB4DD \xB7 \uB18D\uC9C0 \uD2B9\uB840 \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uBB34\uC8FC\uD0DD 1\uAC00\uAD6C 1\uC8FC\uD0DD \uC0C1\uC18D 0.8% \uD2B9\uB840"), ". \uC815\uBC00 \uACC4\uC0B0\uC5D0\uC11C \uBC18\uC601\uB429\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: runAnalysis }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), answers.acquisitionType === "\uC99D\uC5EC" ? "\uC99D\uC5EC \uC8FC\uD0DD\uC774 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uACE0 \uC2DC\uAC00\uD45C\uC900\uC561 3\uC5B5\uC6D0 \uC774\uC0C1\uC774\uBA74 12%\uB85C \uC911\uACFC\uB3FC\uC694(\uC77C\uBC18 3.5%\uC758 3\uBC30 \uC774\uC0C1). \u300C\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30\u300D\uC5D0\uC11C \uC870\uC815\uC9C0\uC5ED\xB7\uC2DC\uAC00\uD45C\uC900\uC561\uC744 \uC785\uB825\uD574 \uD655\uC778\uD558\uC138\uC694." : answers.acquisitionType === "\uC0C1\uC18D" ? "\uBB34\uC8FC\uD0DD \uAC00\uAD6C\uAC00 1\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uBC1B\uC73C\uBA74 0.8% \uD2B9\uB840\uC138\uC728\uC774 \uC801\uC6A9\uB420 \uC218 \uC788\uC5B4\uC694(\uD604\uC7AC\uB294 \uC77C\uBC18 2.8% \uAE30\uC900)." : answers.acquisitionType === "\uC2E0\uCD95" ? "\uC2E0\uCD95(\uC6D0\uC2DC\uCDE8\uB4DD)\uC740 \uBCF4\uD1B5 \uD45C\uC900\uC138\uC728 2.8%\uC608\uC694. \uD070 \uD3C9\uD615(85\u33A1 \uCD08\uACFC)\uC774\uBA74 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uAC00 \uC870\uAE08 \uB354 \uBD99\uC2B5\uB2C8\uB2E4." : "\uD070 \uD3C9\uD615(85\u33A1 \uCD08\uACFC)\uC774\uBA74 \uC138\uAE08\uC774 \uC870\uAE08 \uB298\uACE0, \uC0DD\uC560\uCD5C\uCD08\uBA74 \uCD5C\uB300 200\uB9CC\uC6D0 \uC904\uC5B4\uC694. \uC870\uC815\uC9C0\uC5ED\xB7\uC8FC\uD0DD \uC218\uC5D0 \uB530\uB77C \uC911\uACFC\uB420 \uC218\uB3C4 \uC788\uC73C\uB2C8 \uD655\uC778\uD574\uBCF4\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), calc.precise && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728", calc.heavyApplied ? " (\uC911\uACFC)" : ""), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.acqTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.farmTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 (85\u33A1 \uCD08\uACFC)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.farmTax))), calc.reductionAmt > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAC10\uBA74 (", calc.reductionType, ")"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.reductionAmt))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.heavyApplied && calc.heavyReason && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC911\uACFC \uC801\uC6A9: ", calc.heavyReason, ". \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uB4F1\uC73C\uB85C \uC911\uACFC\uAC00 \uBE60\uC9C8 \uC218 \uC788\uC73C\uB2C8 \uD574\uB2F9\uB418\uBA74 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694."), calc.deadline && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.8, marginTop: 8 } }, "\uC2E0\uACE0\xB7\uB0A9\uBD80 \uAE30\uD55C: ", calc.deadline)), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${acqFmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, acqFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"], s["\uBE44\uACE0"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC9C0\uBC29\uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uACFC\uC138\uD45C\uC900(\uC2DC\uAC00\uD45C\uC900\uC561)\xB7\uC8FC\uD0DD \uC218\xB7\uC911\uACFC\xB7\uAC10\uBA74 \uC694\uAC74\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC720\uC0C1\uCDE8\uB4DD 60\uC77C\xB7\uC99D\uC5EC \uB4F1 \uBB34\uC0C1\uCDE8\uB4DD 3\uAC1C\uC6D4(\uCDE8\uB4DD\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130)\xB7\uC0C1\uC18D 6\uAC1C\uC6D4(\uC0C1\uC18D\uAC1C\uC2DC\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130, \uC678\uAD6D \uAC70\uC8FC \uC0C1\uC18D\uC778\uC774 \uC788\uC73C\uBA74 9\uAC1C\uC6D4)\uC774\uACE0, \uAE30\uD55C \uB9D0\uC77C\uC774 \uACF5\uD734\uC77C\uC774\uBA74 \uADF8 \uB2E4\uC74C \uB0A0\uAE4C\uC9C0\uC785\uB2C8\uB2E4. \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), !acqBlocked && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: calc.precise ? "\uCDE8\uB4DD\uC138 \uC815\uBC00 \uACC4\uC0B0" : "\uCDE8\uB4DD\uC138 \uAC04\uC774 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, acqBlocked && /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: acqGaps, onRetry: runAnalysis }), !acqBlocked && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uCDE8\uB4DD\uC138(\uCD1D\uC561)" : calc.precise ? "\uCD1D \uB0A9\uBD80\uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)" : "\uCD94\uC815 \uB0A9\uBD80\uC138\uC561 \xB7 \uAC04\uC774"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.totalTax > 0 && calc.appliedRate && calc.appliedRate !== "-" && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, color: "var(--jt-ink-700,#444)" } }, answers.acquisitionType, " \xB7 ", formatWon(Number(answers.propertyValue) || 0), " \xB7 ", answers.propertyType, " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", /* @__PURE__ */ React.createElement("strong", null, calc.appliedRate), "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), (answers.propertyType === "\uBD84\uC591\uAD8C" || answers.propertyType === "\uC785\uC8FC\uAD8C") && /* @__PURE__ */ React.createElement("div", { style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, answers.propertyType, "\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uAD8C\uB9AC\uB97C \uC0B4 \uB54C \uCDE8\uB4DD\uC138\uAC00 \uBD80\uACFC\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(0\uC6D0)"), " \u2014 \uC9C0\uBC29\uC138\uBC95 \xA77\u2460\uC0C1 \uCDE8\uB4DD\uC138 \uACFC\uC138\uB300\uC0C1(\uBD80\uB3D9\uC0B0\uB4F1)\uC5D0 \uBBF8\uD3EC\uD568. \uB098\uC911\uC5D0 ", /* @__PURE__ */ React.createElement("strong", null, "\uC900\uACF5\xB7\uC794\uAE08\uC73C\uB85C \uADF8 \uC8FC\uD0DD\uC744 \uCDE8\uB4DD\uD558\uB294 \uC2DC\uC810\uC5D0 \uADF8 \uC8FC\uD0DD\uBD84 \uCDE8\uB4DD\uC138"), "\uAC00 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC785\uC8FC\uAD8C\uC740 \uC815\uBE44\uC0AC\uC5C5\uC5D0 \uB530\uB77C \xA77\u246F \uBCC4\uB3C4 \uBC1C\uC0DD). \uB9E4\uB9E4\uAC00 \uC804\uCCB4\uC5D0 \uC8FC\uD0DD \uCDE8\uB4DD\uC138\uB97C \uB9E4\uAE30\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !report.quick && answers.acquisitionType === "\uC0C1\uC18D" && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, "\uBB34\uC8FC\uD0DD 1\uAC00\uAD6C\uAC00 1\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uBC1B\uC73C\uBA74 ", /* @__PURE__ */ React.createElement("strong", null, "0.8% \uD2B9\uB840\uC138\uC728"), "(\uC9C0\uBC29\uC138\uBC95 \xA715\u2460)\uC774 \uC801\uC6A9\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD604\uC7AC \uACC4\uC0B0\uC740 \uC77C\uBC18 \uC0C1\uC18D ", /* @__PURE__ */ React.createElement("strong", null, "\uBCF8\uC138 2.8%"), "(\uC9C0\uBC29\uAD50\uC721\uC138\uB97C \uB354\uD574 \uC2E4\uD6A8 2.96%) \uAE30\uC900\uC774\uB2C8, \uD574\uB2F9\uB418\uBA74 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694."), answers.propertyType === "\uD1A0\uC9C0" && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, "\uD604\uC7AC \uACC4\uC0B0\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uC77C\uBC18 \uD1A0\uC9C0 \uBCF8\uC138 4%"), "(\uC9C0\uBC29\uAD50\uC721\uC138\uB97C \uB354\uD574 \uC2E4\uD6A8 4.6%) \uAE30\uC900\uC785\uB2C8\uB2E4. ", /* @__PURE__ */ React.createElement("strong", null, "\uB18D\uC9C0(\uC804\xB7\uB2F5\xB7\uACFC\uC218\uC6D0)"), "\uB294 \uC138\uC728\uC774 \uB2EC\uB77C \uBCC4\uB3C4 \uD56D\uBAA9\uC73C\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4 \u2014 \uB18D\uC9C0\uB77C\uBA74 \u300C\uBB34\uC5C7\uC744 \uCDE8\uB4DD\u300D \uBB38\uD56D\uC5D0\uC11C ", /* @__PURE__ */ React.createElement("strong", null, "\uB18D\uC9C0"), "\uB97C \uACE0\uB974\uC138\uC694(\uC9C0\uBC29\uC138\uBC95 \xA711\u24601\uD638\xB77\uD638)."), !calc.precise && !acqBlocked && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, "\uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB418\uC5B4 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC04\uC774 \uCD94\uC815"), "\uC73C\uB85C \uBCF4\uC5EC\uB4DC\uB9BD\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("strong", null, "\uBC18\uC601\uD55C \uAC83"), ": ", /* @__PURE__ */ React.createElement("strong", null, "\uC77C\uBC18"), " \uCDE8\uB4DD\uC720\uD615\uBCC4 \uC138\uC728 \xB7 6~9\uC5B5 \uAD6C\uAC04 \uC0B0\uC2DD \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uB2E4\uC8FC\uD0DD \uC911\uACFC"), "(\uC870\uC815 2\uC8FC\uD0DD\xB7\uBE44\uC870\uC815 3\uC8FC\uD0DD 8.4% / \uADF8 \uC774\uC0C1 12.4%) \xB7 \uC9C0\uBC29\uAD50\uC721\uC138.", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("strong", null, "\uBC18\uC601\uD558\uC9C0 \uC54A\uC740 \uAC83"), ": ", /* @__PURE__ */ React.createElement("strong", null, "\uC0DD\uC560\uCD5C\uCD08 \uAC10\uBA74"), " \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "85\u33A1 \uCD08\uACFC \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"), " \xB7 \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uB4F1 \uC911\uACFC\uBC30\uC81C \uD2B9\uB840 \xB7 \uBC95\uC778 \uCDE8\uB4DD \xB7 \uB18D\uC9C0 \uD2B9\uB840 \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uBB34\uC8FC\uD0DD 1\uAC00\uAD6C 1\uC8FC\uD0DD \uC0C1\uC18D 0.8% \uD2B9\uB840"), ". \uC815\uBC00 \uACC4\uC0B0\uC5D0\uC11C \uBC18\uC601\uB429\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: runAnalysis }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), answers.acquisitionType === "\uC99D\uC5EC" ? "\uC99D\uC5EC \uC911\uACFC(\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\xB7\uC2DC\uAC00\uD45C\uC900\uC561 3\uC5B5\uC6D0 \uC774\uC0C1\uC774\uBA74 12%)\uB294 \uC55E\uC5D0\uC11C \uACE0\uB974\uC2E0 \uC870\uC815\uC9C0\uC5ED \uB2F5\uC73C\uB85C \uC774\uBBF8 \uBC18\uC601\uD588\uC5B4\uC694. \uB2E4\uB9CC \uC2DC\uAC00\uD45C\uC900\uC561\uC740 \uC55E\uC758 \uAE08\uC561\uC73C\uB85C \uB300\uC2E0 \uD310\uB2E8\uD588\uC73C\uB2C8, \u300C\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30\u300D\uC5D0\uC11C \uACF5\uC2DC\uAC00\uACA9(\uC2DC\uAC00\uD45C\uC900\uC561)\uACFC 1\uC138\uB300 1\uC8FC\uD0DD\uC790\uC758 \uAC00\uC871 \uC99D\uC5EC \uC5EC\uBD80\uB97C \uB123\uC5B4 \uD655\uC778\uD558\uC138\uC694." : answers.acquisitionType === "\uC0C1\uC18D" ? "\uBB34\uC8FC\uD0DD \uAC00\uAD6C\uAC00 1\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uBC1B\uC73C\uBA74 0.8% \uD2B9\uB840\uC138\uC728\uC774 \uC801\uC6A9\uB420 \uC218 \uC788\uC5B4\uC694(\uD604\uC7AC\uB294 \uC77C\uBC18 2.8% \uAE30\uC900)." : answers.acquisitionType === "\uC2E0\uCD95" ? "\uC2E0\uCD95(\uC6D0\uC2DC\uCDE8\uB4DD)\uC740 \uBCF4\uD1B5 \uD45C\uC900\uC138\uC728 2.8%\uC608\uC694. \uD070 \uD3C9\uD615(85\u33A1 \uCD08\uACFC)\uC774\uBA74 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uAC00 \uC870\uAE08 \uB354 \uBD99\uC2B5\uB2C8\uB2E4." : "\uD070 \uD3C9\uD615(85\u33A1 \uCD08\uACFC)\uC774\uBA74 \uC138\uAE08\uC774 \uC870\uAE08 \uB298\uACE0, \uC0DD\uC560\uCD5C\uCD08\uBA74 \uCD5C\uB300 200\uB9CC\uC6D0 \uC904\uC5B4\uC694. \uC870\uC815\uC9C0\uC5ED\xB7\uC8FC\uD0DD \uC218\uC5D0 \uB530\uB77C \uC911\uACFC\uB420 \uC218\uB3C4 \uC788\uC73C\uB2C8 \uD655\uC778\uD574\uBCF4\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), calc.precise && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728", calc.heavyApplied ? " (\uC911\uACFC)" : ""), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.acqTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.farmTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 (85\u33A1 \uCD08\uACFC)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.farmTax))), calc.reductionAmt > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAC10\uBA74 (", calc.reductionType, ")"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.reductionAmt))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.heavyApplied && calc.heavyReason && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC911\uACFC \uC801\uC6A9: ", calc.heavyReason, ". \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uB4F1\uC73C\uB85C \uC911\uACFC\uAC00 \uBE60\uC9C8 \uC218 \uC788\uC73C\uB2C8 \uD574\uB2F9\uB418\uBA74 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694."), calc.deadline && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.8, marginTop: 8 } }, "\uC2E0\uACE0\xB7\uB0A9\uBD80 \uAE30\uD55C: ", calc.deadline)), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${acqFmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, acqFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"], s["\uBE44\uACE0"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC774 \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC740 \uAC83"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18, lineHeight: 1.75 } }, acqExcludedItems(answers).map((x, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 6 } }, x)))), /* @__PURE__ */ React.createElement(JTAcqOrdinanceCard, { region: answers.region }), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC9C0\uBC29\uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uACFC\uC138\uD45C\uC900(\uC2DC\uAC00\uD45C\uC900\uC561)\xB7\uC8FC\uD0DD \uC218\xB7\uC911\uACFC\xB7\uAC10\uBA74 \uC694\uAC74\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC720\uC0C1\uCDE8\uB4DD 60\uC77C\xB7\uC99D\uC5EC \uB4F1 \uBB34\uC0C1\uCDE8\uB4DD 3\uAC1C\uC6D4(\uCDE8\uB4DD\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130)\xB7\uC0C1\uC18D 6\uAC1C\uC6D4(\uC0C1\uC18D\uAC1C\uC2DC\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130, \uC678\uAD6D \uAC70\uC8FC \uC0C1\uC18D\uC778\uC774 \uC788\uC73C\uBA74 9\uAC1C\uC6D4)\uC774\uACE0, \uAE30\uD55C \uB9D0\uC77C\uC774 \uACF5\uD734\uC77C\uC774\uBA74 \uADF8 \uB2E4\uC74C \uB0A0\uAE4C\uC9C0\uC785\uB2C8\uB2E4. \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), !acqBlocked && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         setRoute,
