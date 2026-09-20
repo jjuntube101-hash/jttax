@@ -737,19 +737,25 @@ function JTReportAcquisition({ setRoute, onBack }) {
         return;
       }
 
-      let commentary;
       /* ★ 260921 (Astra R1-F6): 이번에 새로 노출한 유형(공매·재산분할·농지·오피스텔·법인·
          출산양육 감면)에는 «자동 생성 해설»을 붙이지 않는다. 프롬프트가 받는 것은
          취득원인·물건·가액·총세액뿐이라, 그 유형의 요건·일몰·추징을 모른 채 「절세 아이디어」를
-         지어낸다. 검증된 고정 문구만 쓴다. */
+         지어낸다. 검증된 고정 문구만 쓴다.
+         ⚠️ 종전 초안은 여기서 throw 해서 «아래 catch» 로 빠지게 했는데, 그 catch 가 내놓는
+            것은 «기존 유형용» 폴백 문구다 — 그래서 농지·공매 결과에 「생애최초·신혼부부
+            감면」·「다주택 중과」가 그대로 붙었다(260921 브라우저 실행으로 발견. 구문 검사는
+            못 잡는다). 신규 유형은 catch 를 거치지 않고 «미리» 고정 문구를 넣는다. */
+      const acqNewType = acqNewTypeSelected(answers);
+      let commentary = acqNewType ? ACQ_NEW_TYPE_COMMENTARY : null;
       try {
-        if (acqNewTypeSelected(answers)) throw new Error('신규 유형 — 자동 해설 미사용');
+        if (acqNewType) throw new Error('신규 유형 — 자동 해설 미사용');
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
         const prompt = `너는 한국 세무사다. 아래 취득세 계산을 보고 JSON으로만 답하라.\n취득원인:${answers.acquisitionType} 종류:${answers.propertyType} 가액:${formatWon(Number(answers.propertyValue) || 0)} 총세액:${formatWon(calc.totalTax)}\n{"headline":"한줄요약","cautions":[{"title":"","detail":""}],"saving_ideas":[{"title":"","detail":""}],"followup":["필요자료"]}`;
         const txt = await window.claude.complete(prompt);
         commentary = JSON.parse(txt.match(/\{[\s\S]*\}/)[0]);
       } catch (cErr) {
-        commentary = {
+        if (commentary) { /* 신규 유형 — 위에서 이미 고정 문구를 넣었다. 덮어쓰지 않는다 */ }
+        else commentary = {
           headline: '취득세는 취득 원인·주택 수·조정지역에 따라 세율이 크게 달라집니다.',
           cautions: [
             { title: '취득세 신고·납부 기한', detail: '유상취득(매매)은 취득일부터 60일, 증여 등 무상취득은 취득일이 속한 달 말일부터 3개월, 상속은 상속개시일이 속한 달 말일부터 6개월(외국에 주소를 둔 상속인이 있으면 9개월) 이내에 신고·납부해야 합니다. 기한 말일이 토요일·공휴일·대체공휴일이면 그 다음 날까지입니다. 늦으면 가산세가 붙습니다(지방세법 §20①, 지방세기본법 §24).' },
@@ -880,7 +886,11 @@ function JTReportAcquisition({ setRoute, onBack }) {
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
                 <strong>기본 정보로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 크게 달라질 수 있어요 —<br />
-                {answers.acquisitionType === '증여'
+                {/* 260921: 신규 유형에 「생애최초·평형」 안내가 그대로 뜨던 것을 갈랐다
+                    (농지·공매 결과에서 실제로 그랬다 — 브라우저 확인) */}
+                {acqNewTypeSelected(answers)
+                  ? '금액은 검증 엔진이 낸 값입니다. 다만 물건 구분(오피스텔 용도·농지 여부)과 감면 요건은 이 계산기가 판정하지 않으니, 아래 「이 계산에 넣지 않은 것」을 함께 확인하세요.'
+                  : answers.acquisitionType === '증여'
                   ? '증여 중과(조정대상지역·시가표준액 3억원 이상이면 12%)는 앞에서 고르신 조정지역 답으로 이미 반영했어요. 다만 시가표준액은 앞의 금액으로 대신 판단했으니, 「더 정확히 계산하기」에서 공시가격(시가표준액)과 1세대 1주택자의 가족 증여 여부를 넣어 확인하세요.'
                   : answers.acquisitionType === '상속'
                   ? '무주택 가구가 1주택을 상속받으면 0.8% 특례세율이 적용될 수 있어요(현재는 일반 2.8% 기준).'
@@ -901,7 +911,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
                   <tr><th>적용세율{calc.heavyApplied ? ' (중과)' : ''}</th><td>{calc.appliedRate}</td></tr>
                   <tr><th>취득세 본세</th><td>{formatWon(calc.acqTax)}</td></tr>
                   <tr><th>지방교육세</th><td>{formatWon(calc.eduTax)}</td></tr>
-                  {calc.farmTax > 0 && <tr><th>농어촌특별세 (85㎡ 초과)</th><td>{formatWon(calc.farmTax)}</td></tr>}
+                  {/* 「85㎡ 초과」는 주택에만 해당하는 이유다 — 농지·상가에 붙이면 틀린 설명이 된다(260921) */}
+                  {calc.farmTax > 0 && <tr><th>농어촌특별세{answers.propertyType === '주택' ? ' (85㎡ 초과)' : ''}</th><td>{formatWon(calc.farmTax)}</td></tr>}
                   {calc.reductionAmt > 0 && <tr><th>감면 ({calc.reductionType})</th><td>− {formatWon(calc.reductionAmt)}</td></tr>}
                   <tr><th><strong>총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
                 </tbody>

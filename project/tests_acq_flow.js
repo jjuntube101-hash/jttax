@@ -200,6 +200,30 @@ eq('1주택 매매 84㎡ · 엔진이 죽어도 통과 (과잉 차단 없음)',
 eq('1주택 매매 84㎡ · 새 유형이 아니다 (자동 해설 경로 유지)',
    M.acqNewTypeSelected({ acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', reduction: 'none' }), false);
 
+/* ── 새 유형에 «자동 생성 해설」이 붙지 않는가 (Astra R1-F6) ────────────────
+   ⚠️ 260921 실사고: 「신규 유형이면 throw」로만 갈랐더니 기존 유형용 catch 폴백이
+      그대로 나와, 농지·공매 결과에 「생애최초·신혼부부 감면」·「다주택 중과」가 붙었다.
+      구문 검사로는 안 잡히고 브라우저에서 드러났다. 그래서 «어느 문구가 쓰이는가»를
+      runAnalysis 소스 구조로 고정한다. */
+console.log('\n════ ②-b 새 유형에 자동 해설·기존 절세 문구가 붙지 않는가 ════');
+{
+  const M2 = loadDecls(['ACQ_REDUCTION_NOTE', 'ACQ_NEW_TYPE_COMMENTARY']);
+  const fixed = JSON.stringify(M2.ACQ_NEW_TYPE_COMMENTARY);
+  eq('신규 유형 전용 고정 문구가 있다', !!M2.ACQ_NEW_TYPE_COMMENTARY, true);
+  eq('그 문구의 절세 아이디어는 비어 있다', (M2.ACQ_NEW_TYPE_COMMENTARY.saving_ideas || []).length, 0);
+  eq('그 문구에 「신혼부부」가 없다', fixed.includes('신혼부부'), false);
+  eq('그 문구에 「생애최초」가 없다', fixed.includes('생애최초'), false);
+  eq('그 문구에 감면 요건 미검증 안내가 들어 있다', fixed.includes('이 계산기가 확인하지 않습니다'), true);
+  /* 신규 유형이 «기존 폴백 문구로 떨어지지 않는지»를 배선으로 본다 */
+  const ra = code.slice(code.indexOf('const runAnalysis'), code.indexOf('const goDetail'));
+  eq('runAnalysis 가 신규 유형에 고정 문구를 «미리» 넣는다',
+     /acqNewType\s*\?\s*ACQ_NEW_TYPE_COMMENTARY/.test(ra), true);
+  eq('catch 폴백이 이미 정해진 문구를 덮어쓰지 않는다',
+     /if \(commentary\)[\s\S]{0,120}else commentary = \{/.test(ra), true);
+  /* 기존 폴백 문구 자체에는 종전대로 절세 아이디어가 남아 있어야 한다(기존 유형 경로 유지) */
+  eq('기존 유형 폴백에는 절세 아이디어가 그대로 있다', ra.includes('saving_ideas: ['), true);
+}
+
 /* 공매는 매매와 «같은 주택 규정»을 탄다 — 그래서 매매에 걸린 ①층 차단이 공매에도 걸려야 한다.
    안 걸리면 공매 다주택자에게 조정지역을 묻지 않은 채 엔진이 비조정으로 가정한다. */
 eq('공매 2주택 + 조정 «모름» → 엔진이 살아 있어도 차단 (260921 추가분)',
