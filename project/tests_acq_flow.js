@@ -74,6 +74,15 @@ const M = loadDecls([
 const ENGINE_OK = { precise: true };
 const ENGINE_DOWN = { precise: false };
 
+/* ★ 260921 R3-F2: 앱은 «정규화된 답»만 차단 검사·이동 함수에 넘긴다
+   (ReportAcquisition.jsx 의 `const answers = acqNormalizeAnswers(rawAnswers)`).
+   시험이 원본 답을 직접 넣으면 «실제 앱에서는 일어날 수 없는 경로»를 성공 사례로 굳힌다.
+   그래서 이 파일의 모든 차단·이동 단언은 아래 두 함수를 거친다.
+   (`acqFallbackGaps` 자체의 «판정 규칙»은 tests_fallback_block.js 가 원본 입력으로 따로
+    고정한다 — 그쪽은 «함수» 시험이고, 여기는 «앱 경로» 시험이다.) */
+const GAPS = (a, calc) => M.acqFallbackGaps(M.acqNormalizeAnswers(a), calc);
+const OPENQ = (a) => M.acqFirstOpenQuestion(M.acqNormalizeAnswers(a));
+
 /* ══════════════════════════════════════════════════════════════════════
    ① 되돌아갈 길 없는 차단 화면에 닿지 않는가
    ══════════════════════════════════════════════════════════════════════ */
@@ -130,7 +139,7 @@ for (const [label, sc] of [['2주택 매매', SC_2HOUSE], ['주택 증여', SC_G
   eq(`${label} · 조정대상지역을 «빠른 계산»에서 묻는다 (종전엔 상세 단계에만 있었다)`,
      asked.includes('isRegulatedArea'), true);
   eq(`${label} · 빠른 계산을 정상으로 마치면 입력 차단이 0건이다`,
-     M.acqFallbackGaps(answers, ENGINE_OK).length, 0);
+     GAPS(answers, ENGINE_OK).length, 0);
 }
 
 /* 1주택 매매는 조정지역 답이 없어도 막히지 않는다 — 그 분기까지 quick 으로 끌어올리면
@@ -142,7 +151,7 @@ for (const [label, sc] of [['2주택 매매', SC_2HOUSE], ['주택 증여', SC_G
   }, '1주택 매매');
   eq('1주택 매매 · 조정대상지역은 빠른 계산에서 «묻지 않는다» (과잉 질문 방지)',
      asked.includes('isRegulatedArea'), false);
-  eq('1주택 매매 · 입력 차단 0건', M.acqFallbackGaps(answers, ENGINE_OK).length, 0);
+  eq('1주택 매매 · 입력 차단 0건', GAPS(answers, ENGINE_OK).length, 0);
 }
 
 /* 「모르겠어요」는 여전히 막는다 — 막는 것 자체는 고치지 않았다(차단 조건 불변).
@@ -150,22 +159,33 @@ for (const [label, sc] of [['2주택 매매', SC_2HOUSE], ['주택 증여', SC_G
 {
   const blocked = { ...SC_2HOUSE, isRegulatedArea: 'unsure' };
   eq('조정지역 «모르겠어요» → 여전히 차단된다 (차단 조건은 바꾸지 않았다)',
-     M.acqFallbackGaps(blocked, ENGINE_OK).length > 0, true);
-  const target = M.acqFirstOpenQuestion(blocked);
+     GAPS(blocked, ENGINE_OK).length > 0, true);
+  const target = OPENQ(blocked);
   eq('차단 시 «돌아갈 문항»이 바로 그 조정대상지역 문항이다',
      target && target.id, 'isRegulatedArea');
 }
 {
   const blocked = { ...SC_GIFT, isRegulatedArea: 'unsure' };
   eq('증여 · 조정지역 «모르겠어요» → 차단되고 돌아갈 문항이 그 문항이다',
-     (M.acqFallbackGaps(blocked, ENGINE_OK).length > 0) && M.acqFirstOpenQuestion(blocked).id === 'isRegulatedArea', true);
+     (GAPS(blocked, ENGINE_OK).length > 0) && OPENQ(blocked).id === 'isRegulatedArea', true);
 }
-/* 모든 답이 채워졌는데 막히는 경우(3주택 + 일시적2주택 잔존)도 화면이 죽지 않아야 한다 */
+/* ★ 260921 R3-F2 정정. 종전 이 자리는 «원본 답»을 그대로 넣어 「3주택 + 일시적2주택 잔존이
+   차단된다」를 고정했는데, 앱에서는 그 상태에 닿을 수 없다 — 주택 수를 3으로 바꾸는 순간
+   정규화가 숨은 temporaryTwoHouse 를 지우기 때문이다(그게 R2 에서 넣은 장치의 목적이다).
+   그래서 «앱 경로»에서 실제로 일어나는 일을 고정한다: 잔존 답이 사라지고 3주택으로 계산된다.
+   차단 «규칙» 자체는 tests_fallback_block.js 가 원본 입력으로 계속 지킨다. */
 {
   const stale = { ...SC_2HOUSE, housingCount: '3', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' };
-  eq('3주택 + 일시적2주택 잔존 → 차단', M.acqFallbackGaps(stale, ENGINE_OK).length > 0, true);
-  eq('이때 «빠진 문항»은 없으므로 null 을 돌려준다 (화면이 첫 문항으로 보낸다)',
-     M.acqFirstOpenQuestion(stale), null);
+  const norm = M.acqNormalizeAnswers(stale);
+  eq('3주택으로 바꾸면 숨은 「일시적 2주택 예」가 정규화에서 사라진다', norm.temporaryTwoHouse, undefined);
+  const p = M.mapAnswersToAcquisition(stale);
+  eq('그래서 엔진에 is_temporary_two_house 가 가지 않는다', 'is_temporary_two_house' in p, false);
+  eq('주택 수는 3으로 그대로 간다 (중과가 빠지지 않는다)', p.housing_count, 3);
+  eq('앱 경로에서는 이 상태가 차단되지 않는다 (차단할 사유가 이미 사라졌다)',
+     GAPS(stale, ENGINE_OK).length, 0);
+  /* 원본을 그대로 넣으면 «함수»는 여전히 막는다 — 규칙을 약화시키지 않았다는 확인 */
+  eq('판정 함수 자체는 원본 입력에서 여전히 막는다 (규칙 불변)',
+     M.acqFallbackGaps(stale, ENGINE_OK).length > 0, true);
 }
 
 /* 화면 배선 — 차단 화면에 «돌아가기»가 실제로 있는가.
@@ -203,13 +223,13 @@ const NEW_TYPE_CASES = [
   ['출산양육 감면', { acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', isRegulatedArea: 'no', reduction: 'childbirth' }],
 ];
 for (const [label, ans] of NEW_TYPE_CASES) {
-  eq(`${label} · 엔진이 죽으면 금액을 내지 않는다`, M.acqFallbackGaps(ans, ENGINE_DOWN).length > 0, true);
+  eq(`${label} · 엔진이 죽으면 금액을 내지 않는다`, GAPS(ans, ENGINE_DOWN).length > 0, true);
   eq(`${label} · 새 유형이라고 표시된다 (자동 해설을 붙이지 않는 기준)`, M.acqNewTypeSelected(ans), true);
 }
 /* 반대로 «종전부터 되던» 평범한 입력은 엔진이 죽어도 여전히 통과해야 한다 —
    차단을 넓히면서 정상 이용자를 쫓아내지 않았는지 같이 본다. */
 eq('1주택 매매 84㎡ · 엔진이 죽어도 통과 (과잉 차단 없음)',
-   M.acqFallbackGaps({ acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', reduction: 'none' }, ENGINE_DOWN).length, 0);
+   GAPS({ acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', reduction: 'none' }, ENGINE_DOWN).length, 0);
 eq('1주택 매매 84㎡ · 새 유형이 아니다 (자동 해설 경로 유지)',
    M.acqNewTypeSelected({ acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', reduction: 'none' }), false);
 
@@ -240,9 +260,13 @@ console.log('\n════ ②-b 새 유형에 자동 해설·기존 절세 문
 /* 공매는 매매와 «같은 주택 규정»을 탄다 — 그래서 매매에 걸린 ①층 차단이 공매에도 걸려야 한다.
    안 걸리면 공매 다주택자에게 조정지역을 묻지 않은 채 엔진이 비조정으로 가정한다. */
 eq('공매 2주택 + 조정 «모름» → 엔진이 살아 있어도 차단 (260921 추가분)',
-   M.acqFallbackGaps({ propertyType: '주택', acquisitionType: '공매', exclusiveArea: '84', housingCount: '2', isRegulatedArea: 'unsure' }, ENGINE_OK).length > 0, true);
-eq('공매 3주택 + 일시적2주택 잔존 → 엔진이 살아 있어도 차단 (260921 추가분)',
+   GAPS({ propertyType: '주택', acquisitionType: '공매', acquirerType: 'individual', exclusiveArea: '84', housingCount: '2', isRegulatedArea: 'unsure' }, ENGINE_OK).length > 0, true);
+/* ★ R3-F2 정정: 앱 경로에서는 3주택으로 바꾸는 순간 정규화가 잔존 「예」를 지운다.
+   판정 «함수» 자체는 원본 입력에서 여전히 막는다 — 둘을 나눠서 고정한다. */
+eq('공매 3주택 + 일시적2주택 잔존 → 판정 함수는 원본 입력에서 막는다 (규칙 불변)',
    M.acqFallbackGaps({ propertyType: '주택', acquisitionType: '공매', exclusiveArea: '84', housingCount: '3', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' }, ENGINE_OK).length > 0, true);
+eq('공매 3주택 · 앱 경로에서는 잔존 답이 사라져 주택 수 3으로 계산된다',
+   M.mapAnswersToAcquisition({ propertyType: '주택', acquisitionType: '공매', acquirerType: 'individual', propertyValue: '800000000', exclusiveArea: '84', housingCount: '3', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' }).housing_count, 3);
 
 /* 매퍼가 공매를 유상거래로 보내는가 — 안 보내면 중과·감면이 통째로 빠진다 */
 {
@@ -485,7 +509,7 @@ console.log('\n  ── 구체 사례 (Codex R2 재현 경로) ──');
   /* R2-F2 [P1] — 법인 주택 매매에서 증여로 전환 */
   const raw = { acquisitionType: '증여', propertyType: '주택', acquirerType: 'corporate',
     propertyValue: '400000000', exclusiveArea: '84', isRegulatedArea: 'no', region: 'unknown' };
-  const gaps = M.acqFallbackGaps(M.acqNormalizeAnswers(raw), ENGINE_DOWN);
+  const gaps = GAPS(raw, ENGINE_DOWN);
   eq('R2-F2 · 증여로 바꾸면 법인 사유로 차단되지 않는다', gaps.some((g) => g.includes('법인')), false);
   eq('R2-F2 · payload 에 is_corporate 가 없다', 'is_corporate' in M.mapAnswersToAcquisition(raw), false);
   eq('R2-F2 · 신규 유형 판정에서도 법인이 빠진다', M.acqNewTypeSelected(M.acqNormalizeAnswers(raw)), false);
@@ -493,7 +517,7 @@ console.log('\n  ── 구체 사례 (Codex R2 재현 경로) ──');
   const corp = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'corporate',
     propertyValue: '500000000', exclusiveArea: '84', region: 'unknown' };
   eq('R2-F2 · 실제 법인 주택 매매는 그대로 차단된다',
-     M.acqFallbackGaps(M.acqNormalizeAnswers(corp), ENGINE_DOWN).some((g) => g.includes('법인')), true);
+     GAPS(corp, ENGINE_DOWN).some((g) => g.includes('법인')), true);
 }
 {
   /* R2-F3 [P2] — 증여 주택에서 농지로 전환 */
@@ -509,6 +533,51 @@ console.log('\n  ── 구체 사례 (Codex R2 재현 경로) ──');
   /* 위와 같은 이유로 매퍼의 2차 방어선도 배선으로 고정한다 (NC-R4 로 확인) */
   eq('R2-F3 · 매퍼가 시가표준액을 보내기 전에 주택 여부를 «다시» 본다 (2차 방어선)',
      /isHousing && Number\(a\.standardValue\) > 0/.test(M.mapAnswersToAcquisition.toString()), true);
+}
+{
+  /* R3-F1 [P0] — 조정대상지역 증여 주택에서 시가표준액이 비었을 때.
+     (이 «시가로 대신 판정» 동작은 분기점 a71b83f 에도 있었다 — 이번 브랜치가 만든 것이 아니다) */
+  const noStd = { acquisitionType: '증여', propertyType: '주택', propertyValue: '800000000',
+    exclusiveArea: '84', isRegulatedArea: 'yes', giftOneHouseException: 'no',
+    standardValue: '', region: 'unknown' };
+  eq('R3-F1 · 시가(취득가액)로 증여 중과를 «확정»하지 않는다',
+     'gift_regulated_over_3b' in M.mapAnswersToAcquisition(noStd), false);
+  eq('R3-F1 · 그 대신 엔진이 살아 있어도 차단한다', GAPS(noStd, ENGINE_OK).length > 0, true);
+  eq('R3-F1 · 차단 사유가 시가표준액 건이다',
+     GAPS(noStd, ENGINE_OK).some((g) => g.includes('시가표준액')), true);
+  eq('R3-F1 · 「빠진 질문으로 돌아가기」가 시가표준액 문항을 가리킨다',
+     (OPENQ(noStd) || {}).id, 'standardValue');
+  const sq = M.ACQ_QS.find((q) => q.id === 'standardValue');
+  eq('R3-F1 · 시가표준액을 그 분기의 «결과 화면보다 앞»에서 묻는다',
+     M.acqIsQuick(sq, M.acqNormalizeAnswers(noStd)), true);
+  /* 값이 있으면 종전대로 판정한다 — 과잉 차단이 아니다 */
+  const with4 = { ...noStd, standardValue: '400000000' };
+  eq('R3-F1 · 시가표준액 4억이면 중과 파생값이 그대로 간다',
+     M.mapAnswersToAcquisition(with4).gift_regulated_over_3b, true);
+  eq('R3-F1 · 그때는 차단하지 않는다', GAPS(with4, ENGINE_OK).length, 0);
+  const with2 = { ...noStd, standardValue: '250000000' };
+  eq('R3-F1 · 시가표준액 2.5억이면 시가가 8억이어도 중과가 아니다',
+     'gift_regulated_over_3b' in M.mapAnswersToAcquisition(with2), false);
+  eq('R3-F1 · 그때도 차단하지 않는다 (값을 확인했으므로)', GAPS(with2, ENGINE_OK).length, 0);
+  /* 1세대1주택 가족 증여 예외면 시가표준액을 묻지도, 막지도 않는다 */
+  const exc = { ...noStd, giftOneHouseException: 'yes' };
+  eq('R3-F1 · 1세대1주택 가족 증여면 시가표준액을 묻지 않는다',
+     M.acqIsQuick(sq, M.acqNormalizeAnswers(exc)), false);
+  eq('R3-F1 · 그 경우 차단도 하지 않는다', GAPS(exc, ENGINE_OK).length, 0);
+  /* 비조정이면 애초에 중과 판정이 없다 */
+  const nonReg = { acquisitionType: '증여', propertyType: '주택', propertyValue: '800000000',
+    exclusiveArea: '84', isRegulatedArea: 'no', standardValue: '', region: 'unknown' };
+  eq('R3-F1 · 비조정 증여는 시가표준액이 없어도 통과한다 (과잉 차단 방지)',
+     GAPS(nonReg, ENGINE_OK).length, 0);
+}
+{
+  /* 같은 부류 — 필수 답이 없을 때 «다른 값»으로 대신 판정하던 자리 (매퍼 전수 스캔 결과) */
+  const noHc = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual',
+    propertyValue: '800000000', exclusiveArea: '84', region: 'unknown' };
+  eq('주택 수 미응답 → 「1채」로 가정해 계산하지 않고 막는다',
+     GAPS(noHc, ENGINE_OK).some((g) => g.includes('주택 수')), true);
+  eq('주택 수를 답하면 그대로 통과한다',
+     GAPS({ ...noHc, housingCount: '1', reduction: 'none' }, ENGINE_OK).length, 0);
 }
 {
   /* 감면은 서로 배타적인가 — 단일 문항이라 구조상 하나만 고를 수 있어야 한다 */

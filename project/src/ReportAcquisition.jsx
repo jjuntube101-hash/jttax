@@ -213,23 +213,35 @@ const ACQ_QS = [
       ['childbirth', '자녀 출산·양육 (출산양육 감면)', '지특법 §36의5'],
     ],
   },
-  {
-    id: 'standardValue',
-    section: '시가표준액',
-    q: '이 주택의 시가표준액은 얼마인가요? (증여 중과 판정용 · 원)',
-    sub: '앞에서 넣은 「시가」와 달리, 시가표준액은 정부가 매년 정하는 공시가격이에요(보통 시세보다 낮음). 증여 취득세 중과(조정대상지역 12%)를 이 공시가격 3억원 기준으로 따져서 따로 여쭤봅니다. 모르면 비워두세요 — 앞 금액으로 대신 판단합니다.',
-    showIf: (a) => a.acquisitionType === '증여' && a.propertyType === '주택',
-    numeric: true, money: true, optional: true,
-    placeholder: '예: 400,000,000',
-  },
+  /* ★ 260921 R3-F1: 「1세대 1주택 증여 예외」를 시가표준액 «앞»으로 옮겼다.
+     예외에 해당하면 조정지역이어도 중과가 없으므로 시가표준액을 물을 이유가 없다 —
+     순서를 바꾸면 물어야 할 사람에게만 묻게 된다. */
   {
     id: 'giftOneHouseException',
     section: '1세대 1주택 증여',
     q: '증여하는 분이 이 주택 1채만 가진 1세대 1주택자이고, 받는 분이 배우자·자녀·부모인가요?',
     sub: '이 경우 조정대상지역이라도 증여 취득세 12% 중과에서 제외되어 일반 3.5%가 적용됩니다(지방세법 §13의2② 단서). 부모→자녀 1주택 증여가 대표적입니다.',
     showIf: (a) => a.acquisitionType === '증여' && a.propertyType === '주택' && a.isRegulatedArea === 'yes',
+    /* 조정지역 증여는 이 답에 따라 중과가 갈리므로 결과 화면 «앞»에서 묻는다 */
+    quickIf: (a) => a.acquisitionType === '증여' && a.propertyType === '주택' && a.isRegulatedArea === 'yes',
     /* 여기서 「모름」→중과 적용은 «세금이 많게» 나오는 방향이라 안전하다(과소신고 위험 없음). */
     opts: [['yes', '네, 1세대 1주택자가 가족에게 증여', '12% 중과 제외 (3.5%)'], ['no', '아니오 / 모름', '12% 중과 적용']],
+  },
+  {
+    id: 'standardValue',
+    section: '시가표준액',
+    q: '이 주택의 시가표준액은 얼마인가요? (증여 중과 판정용 · 원)',
+    /* ★ 260921 R3-F1 [P0]: 종전 문구는 「모르면 비워두세요 — 앞 금액으로 대신 판단합니다」였고
+       매퍼가 실제로 «시가»를 시가표준액 대신 써서 3억 기준을 넘긴 것으로 «확정»했다.
+       시가는 시가표준액보다 크기 마련이라, 실제 시가표준액이 3억 미만인 사람에게도 12% 중과가
+       붙는다. 값을 추측으로 대체하지 않는다 — 없으면 판정하지 않고 차단한다(acqFallbackGaps). */
+    sub: '앞에서 넣은 「시가」와 달리, 시가표준액은 정부가 매년 정하는 공시가격이에요(보통 시세보다 낮습니다). 증여 취득세 중과는 이 공시가격 3억원을 기준으로 갈립니다(지방세법 §13의2②·같은 법 시행령 §28의6①). ⛔ 앞의 시가로 대신 판단하지 않습니다 — 조정대상지역 증여인데 이 값이 없으면 중과 여부를 확정할 수 없어 금액을 내지 않고 안내로 넘어갑니다. 아래 주소 조회로 자동으로 채울 수 있고, 부동산공시가격알리미(realtyprice.kr)에서도 확인하실 수 있어요.',
+    showIf: (a) => a.acquisitionType === '증여' && a.propertyType === '주택',
+    /* 조정지역 증여이고 1세대1주택 예외가 아니면 «결과 화면보다 먼저» 묻는다 */
+    quickIf: (a) => a.acquisitionType === '증여' && a.propertyType === '주택'
+      && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes',
+    numeric: true, money: true, optional: true,
+    placeholder: '예: 400,000,000',
   },
   {
     id: 'region',
@@ -361,9 +373,15 @@ function mapAnswersToAcquisition(rawA) {
   if (a.acquisitionType === '증여') {
     // ★ 260921 R2-F3: 시가표준액 문항은 «증여 주택»에만 보인다 — 보내는 쪽에도 같은 조건을 건다.
     if (isHousing && Number(a.standardValue) > 0) body.standard_value = Number(a.standardValue);
-    if (isHousing && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes') {
-      const std = Number(a.standardValue) || Number(a.propertyValue) || 0;
-      if (std >= 300_000_000) body.gift_regulated_over_3b = true;
+    /* ★ 260921 R3-F1 [P0]. 종전에는 시가표준액이 비면 «시가»로 대신 판정했다
+       (`Number(a.standardValue) || Number(a.propertyValue)`) — 분기점 a71b83f 에도 있던
+       코드이고 이번 브랜치가 만든 것은 아니다. 시가는 시가표준액보다 크기 마련이라,
+       실제 시가표준액이 3억 미만인 사람에게도 12% 중과가 «확정»돼 표시됐다.
+       ⛔ 이제 «명시적으로 입력·조회된» 시가표준액만 본다. 없으면 이 파생값을 만들지 않고,
+          acqFallbackGaps 가 그 조합을 아예 차단한다(엔진이 살아 있어도). */
+    if (isHousing && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes'
+        && Number(a.standardValue) >= 300_000_000) {
+      body.gift_regulated_over_3b = true;
     }
   }
   return body;
@@ -440,6 +458,20 @@ function acqFallbackGaps(answers, calc) {
     { when: answers.propertyType === '주택' && answers.acquisitionType === '공매'
             && hc >= 3 && answers.temporaryTwoHouse === 'yes',
       why: '3주택 이상은 «일시적 2주택» 특례 대상이 아닙니다(시행령 §28의5① — 종전 주택등 1개를 보유한 세대만). 주택 수를 다시 확인해 주세요.' },
+    /* ★ 260921 «추가» (Codex R3-F1 [P0]). 조정대상지역 증여 주택에서 증여 중과는
+       «시가표준액» 3억원으로 갈린다(지방세법 §13의2②·시행령 §28의6① — 01_엔진검증 A5).
+       그 값이 없으면 판정할 수 없다. 종전에는 «시가»로 대신 판정해 3억 미만인 사람에게도
+       12% 중과가 확정돼 표시됐다. 추측으로 메우지 않고 막는다 — 엔진이 살아 있어도(①층). */
+    { when: answers.propertyType === '주택' && answers.acquisitionType === '증여'
+            && answers.isRegulatedArea === 'yes' && answers.giftOneHouseException !== 'yes'
+            && !(Number(answers.standardValue) > 0),
+      why: '조정대상지역 증여인데 시가표준액(공시가격)을 넣지 않으셨습니다 — 증여 중과 12%는 이 «시가표준액» 3억원으로 갈리는데, 앞에서 넣은 시가로 대신 판단하면 실제로는 중과 대상이 아닌 분께 3배 넘는 세금을 보여 드리게 됩니다.' },
+    /* ★ 260921 «추가». 주택 수는 중과를 가르는 필수 답인데 미응답이면 매퍼가 «1채»를 기본값으로
+       쓴다. 화면 흐름은 답을 강제하므로 평시에는 닿지 않지만, 「필수 입력이 없을 때 다른 값으로
+       대신 판정한다」는 같은 부류라 여기서 닫는다. */
+    { when: answers.propertyType === '주택' && (answers.acquisitionType === '매매' || answers.acquisitionType === '공매')
+            && answers.acquirerType !== 'corporate' && !(Number(answers.housingCount) > 0),
+      why: '취득 후 보유하게 되는 주택 수가 정해지지 않았습니다 — 다주택 중과 여부가 갈립니다.' },
   ]);
   /* ── ② 여기부터는 «간이 폴백만»의 한계 — 엔진이 살아 있으면 엔진이 제대로 푼다 ── */
   if (calc.precise) return unknown;

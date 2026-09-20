@@ -7656,25 +7656,36 @@ const ACQ_QS = [
       ["childbirth", "\uC790\uB140 \uCD9C\uC0B0\xB7\uC591\uC721 (\uCD9C\uC0B0\uC591\uC721 \uAC10\uBA74)", "\uC9C0\uD2B9\uBC95 \xA736\uC7585"]
     ]
   },
-  {
-    id: "standardValue",
-    section: "\uC2DC\uAC00\uD45C\uC900\uC561",
-    q: "\uC774 \uC8FC\uD0DD\uC758 \uC2DC\uAC00\uD45C\uC900\uC561\uC740 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC99D\uC5EC \uC911\uACFC \uD310\uC815\uC6A9 \xB7 \uC6D0)",
-    sub: "\uC55E\uC5D0\uC11C \uB123\uC740 \u300C\uC2DC\uAC00\u300D\uC640 \uB2EC\uB9AC, \uC2DC\uAC00\uD45C\uC900\uC561\uC740 \uC815\uBD80\uAC00 \uB9E4\uB144 \uC815\uD558\uB294 \uACF5\uC2DC\uAC00\uACA9\uC774\uC5D0\uC694(\uBCF4\uD1B5 \uC2DC\uC138\uBCF4\uB2E4 \uB0AE\uC74C). \uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC911\uACFC(\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED 12%)\uB97C \uC774 \uACF5\uC2DC\uAC00\uACA9 3\uC5B5\uC6D0 \uAE30\uC900\uC73C\uB85C \uB530\uC838\uC11C \uB530\uB85C \uC5EC\uCB64\uBD05\uB2C8\uB2E4. \uBAA8\uB974\uBA74 \uBE44\uC6CC\uB450\uC138\uC694 \u2014 \uC55E \uAE08\uC561\uC73C\uB85C \uB300\uC2E0 \uD310\uB2E8\uD569\uB2C8\uB2E4.",
-    showIf: (a) => a.acquisitionType === "\uC99D\uC5EC" && a.propertyType === "\uC8FC\uD0DD",
-    numeric: true,
-    money: true,
-    optional: true,
-    placeholder: "\uC608: 400,000,000"
-  },
+  /* ★ 260921 R3-F1: 「1세대 1주택 증여 예외」를 시가표준액 «앞»으로 옮겼다.
+     예외에 해당하면 조정지역이어도 중과가 없으므로 시가표준액을 물을 이유가 없다 —
+     순서를 바꾸면 물어야 할 사람에게만 묻게 된다. */
   {
     id: "giftOneHouseException",
     section: "1\uC138\uB300 1\uC8FC\uD0DD \uC99D\uC5EC",
     q: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC774 \uC774 \uC8FC\uD0DD 1\uCC44\uB9CC \uAC00\uC9C4 1\uC138\uB300 1\uC8FC\uD0DD\uC790\uC774\uACE0, \uBC1B\uB294 \uBD84\uC774 \uBC30\uC6B0\uC790\xB7\uC790\uB140\xB7\uBD80\uBAA8\uC778\uAC00\uC694?",
     sub: "\uC774 \uACBD\uC6B0 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uB77C\uB3C4 \uC99D\uC5EC \uCDE8\uB4DD\uC138 12% \uC911\uACFC\uC5D0\uC11C \uC81C\uC678\uB418\uC5B4 \uC77C\uBC18 3.5%\uAC00 \uC801\uC6A9\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA713\uC7582\u2461 \uB2E8\uC11C). \uBD80\uBAA8\u2192\uC790\uB140 1\uC8FC\uD0DD \uC99D\uC5EC\uAC00 \uB300\uD45C\uC801\uC785\uB2C8\uB2E4.",
     showIf: (a) => a.acquisitionType === "\uC99D\uC5EC" && a.propertyType === "\uC8FC\uD0DD" && a.isRegulatedArea === "yes",
+    /* 조정지역 증여는 이 답에 따라 중과가 갈리므로 결과 화면 «앞»에서 묻는다 */
+    quickIf: (a) => a.acquisitionType === "\uC99D\uC5EC" && a.propertyType === "\uC8FC\uD0DD" && a.isRegulatedArea === "yes",
     /* 여기서 「모름」→중과 적용은 «세금이 많게» 나오는 방향이라 안전하다(과소신고 위험 없음). */
     opts: [["yes", "\uB124, 1\uC138\uB300 1\uC8FC\uD0DD\uC790\uAC00 \uAC00\uC871\uC5D0\uAC8C \uC99D\uC5EC", "12% \uC911\uACFC \uC81C\uC678 (3.5%)"], ["no", "\uC544\uB2C8\uC624 / \uBAA8\uB984", "12% \uC911\uACFC \uC801\uC6A9"]]
+  },
+  {
+    id: "standardValue",
+    section: "\uC2DC\uAC00\uD45C\uC900\uC561",
+    q: "\uC774 \uC8FC\uD0DD\uC758 \uC2DC\uAC00\uD45C\uC900\uC561\uC740 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC99D\uC5EC \uC911\uACFC \uD310\uC815\uC6A9 \xB7 \uC6D0)",
+    /* ★ 260921 R3-F1 [P0]: 종전 문구는 「모르면 비워두세요 — 앞 금액으로 대신 판단합니다」였고
+       매퍼가 실제로 «시가»를 시가표준액 대신 써서 3억 기준을 넘긴 것으로 «확정»했다.
+       시가는 시가표준액보다 크기 마련이라, 실제 시가표준액이 3억 미만인 사람에게도 12% 중과가
+       붙는다. 값을 추측으로 대체하지 않는다 — 없으면 판정하지 않고 차단한다(acqFallbackGaps). */
+    sub: "\uC55E\uC5D0\uC11C \uB123\uC740 \u300C\uC2DC\uAC00\u300D\uC640 \uB2EC\uB9AC, \uC2DC\uAC00\uD45C\uC900\uC561\uC740 \uC815\uBD80\uAC00 \uB9E4\uB144 \uC815\uD558\uB294 \uACF5\uC2DC\uAC00\uACA9\uC774\uC5D0\uC694(\uBCF4\uD1B5 \uC2DC\uC138\uBCF4\uB2E4 \uB0AE\uC2B5\uB2C8\uB2E4). \uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC911\uACFC\uB294 \uC774 \uACF5\uC2DC\uAC00\uACA9 3\uC5B5\uC6D0\uC744 \uAE30\uC900\uC73C\uB85C \uAC08\uB9BD\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA713\uC7582\u2461\xB7\uAC19\uC740 \uBC95 \uC2DC\uD589\uB839 \xA728\uC7586\u2460). \u26D4 \uC55E\uC758 \uC2DC\uAC00\uB85C \uB300\uC2E0 \uD310\uB2E8\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4 \u2014 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC99D\uC5EC\uC778\uB370 \uC774 \uAC12\uC774 \uC5C6\uC73C\uBA74 \uC911\uACFC \uC5EC\uBD80\uB97C \uD655\uC815\uD560 \uC218 \uC5C6\uC5B4 \uAE08\uC561\uC744 \uB0B4\uC9C0 \uC54A\uACE0 \uC548\uB0B4\uB85C \uB118\uC5B4\uAC11\uB2C8\uB2E4. \uC544\uB798 \uC8FC\uC18C \uC870\uD68C\uB85C \uC790\uB3D9\uC73C\uB85C \uCC44\uC6B8 \uC218 \uC788\uACE0, \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C\uB3C4 \uD655\uC778\uD558\uC2E4 \uC218 \uC788\uC5B4\uC694.",
+    showIf: (a) => a.acquisitionType === "\uC99D\uC5EC" && a.propertyType === "\uC8FC\uD0DD",
+    /* 조정지역 증여이고 1세대1주택 예외가 아니면 «결과 화면보다 먼저» 묻는다 */
+    quickIf: (a) => a.acquisitionType === "\uC99D\uC5EC" && a.propertyType === "\uC8FC\uD0DD" && a.isRegulatedArea === "yes" && a.giftOneHouseException !== "yes",
+    numeric: true,
+    money: true,
+    optional: true,
+    placeholder: "\uC608: 400,000,000"
   },
   {
     id: "region",
@@ -7760,9 +7771,8 @@ function mapAnswersToAcquisition(rawA) {
   }
   if (a.acquisitionType === "\uC99D\uC5EC") {
     if (isHousing && Number(a.standardValue) > 0) body.standard_value = Number(a.standardValue);
-    if (isHousing && a.isRegulatedArea === "yes" && a.giftOneHouseException !== "yes") {
-      const std = Number(a.standardValue) || Number(a.propertyValue) || 0;
-      if (std >= 3e8) body.gift_regulated_over_3b = true;
+    if (isHousing && a.isRegulatedArea === "yes" && a.giftOneHouseException !== "yes" && Number(a.standardValue) >= 3e8) {
+      body.gift_regulated_over_3b = true;
     }
   }
   return body;
@@ -7826,6 +7836,21 @@ function acqFallbackGaps(answers, calc) {
     {
       when: answers.propertyType === "\uC8FC\uD0DD" && answers.acquisitionType === "\uACF5\uB9E4" && hc >= 3 && answers.temporaryTwoHouse === "yes",
       why: "3\uC8FC\uD0DD \uC774\uC0C1\uC740 \xAB\uC77C\uC2DC\uC801 2\uC8FC\uD0DD\xBB \uD2B9\uB840 \uB300\uC0C1\uC774 \uC544\uB2D9\uB2C8\uB2E4(\uC2DC\uD589\uB839 \xA728\uC7585\u2460 \u2014 \uC885\uC804 \uC8FC\uD0DD\uB4F1 1\uAC1C\uB97C \uBCF4\uC720\uD55C \uC138\uB300\uB9CC). \uC8FC\uD0DD \uC218\uB97C \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694."
+    },
+    /* ★ 260921 «추가» (Codex R3-F1 [P0]). 조정대상지역 증여 주택에서 증여 중과는
+       «시가표준액» 3억원으로 갈린다(지방세법 §13의2②·시행령 §28의6① — 01_엔진검증 A5).
+       그 값이 없으면 판정할 수 없다. 종전에는 «시가»로 대신 판정해 3억 미만인 사람에게도
+       12% 중과가 확정돼 표시됐다. 추측으로 메우지 않고 막는다 — 엔진이 살아 있어도(①층). */
+    {
+      when: answers.propertyType === "\uC8FC\uD0DD" && answers.acquisitionType === "\uC99D\uC5EC" && answers.isRegulatedArea === "yes" && answers.giftOneHouseException !== "yes" && !(Number(answers.standardValue) > 0),
+      why: "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC99D\uC5EC\uC778\uB370 \uC2DC\uAC00\uD45C\uC900\uC561(\uACF5\uC2DC\uAC00\uACA9)\uC744 \uB123\uC9C0 \uC54A\uC73C\uC168\uC2B5\uB2C8\uB2E4 \u2014 \uC99D\uC5EC \uC911\uACFC 12%\uB294 \uC774 \xAB\uC2DC\uAC00\uD45C\uC900\uC561\xBB 3\uC5B5\uC6D0\uC73C\uB85C \uAC08\uB9AC\uB294\uB370, \uC55E\uC5D0\uC11C \uB123\uC740 \uC2DC\uAC00\uB85C \uB300\uC2E0 \uD310\uB2E8\uD558\uBA74 \uC2E4\uC81C\uB85C\uB294 \uC911\uACFC \uB300\uC0C1\uC774 \uC544\uB2CC \uBD84\uAED8 3\uBC30 \uB118\uB294 \uC138\uAE08\uC744 \uBCF4\uC5EC \uB4DC\uB9AC\uAC8C \uB429\uB2C8\uB2E4."
+    },
+    /* ★ 260921 «추가». 주택 수는 중과를 가르는 필수 답인데 미응답이면 매퍼가 «1채»를 기본값으로
+       쓴다. 화면 흐름은 답을 강제하므로 평시에는 닿지 않지만, 「필수 입력이 없을 때 다른 값으로
+       대신 판정한다」는 같은 부류라 여기서 닫는다. */
+    {
+      when: answers.propertyType === "\uC8FC\uD0DD" && (answers.acquisitionType === "\uB9E4\uB9E4" || answers.acquisitionType === "\uACF5\uB9E4") && answers.acquirerType !== "corporate" && !(Number(answers.housingCount) > 0),
+      why: "\uCDE8\uB4DD \uD6C4 \uBCF4\uC720\uD558\uAC8C \uB418\uB294 \uC8FC\uD0DD \uC218\uAC00 \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uB2E4\uC8FC\uD0DD \uC911\uACFC \uC5EC\uBD80\uAC00 \uAC08\uB9BD\uB2C8\uB2E4."
     }
   ]);
   if (calc.precise) return unknown;
