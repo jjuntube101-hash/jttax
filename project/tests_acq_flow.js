@@ -66,9 +66,9 @@ const M = loadDecls([
   'acqIsPaid', 'acqIsCorporate', 'acqNewTypeSelected',
   'ACQ_REDUCTION_NOTE', 'ACQ_REGIONS', 'ACQ_QS',
   'ACQ_PROPERTY_TYPE', 'ACQ_ACQUISITION_TYPE',
-  'acqOptionAvailable', 'acqVisibleOpts', 'acqNormalizeAnswers',
+  'acqOptionAvailable', 'acqVisibleOpts', 'acqAnswerLabel', 'acqNormalize', 'acqNormalizeAnswers',
   'acqNoticeKey', 'ACQ_HEAVY_NOTICE',
-  'mapAnswersToAcquisition', 'acqFallbackGaps', 'acqIsQuick', 'acqFirstOpenQuestion',
+  'mapAnswersToAcquisition', 'fallbackAcqTax', 'acqFallbackGaps', 'acqIsQuick', 'acqFirstOpenQuestion',
 ]);
 
 const ENGINE_OK = { precise: true };
@@ -656,6 +656,132 @@ console.log('\n  ── 부류 고정: 도달 가능한 조합 전수 ──');
   eq('폴백이 못 다루는 payload 는 엔진 장애 시 «반드시» 막힌다', holeDown ? holeSample.join(' | ') : 0, 0);
   eq('엔진이 유리하게 가정하는 미응답은 엔진이 살아 있어도 막힌다', holeOk ? holeSample.join(' | ') : 0, 0);
   eq('정규화는 멱등이다', notIdem, 0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ⑥-b 정규화의 «두 불변식» (260921 Codex R4)
+
+   R4-F1 은 「1주택에서 생애최초를 고른 뒤 2주택·일시적2주택으로 바꾸면 폴백 차단이 풀려
+   5,500,000원이 나온다」였다. 지우는 동작 자체는 옳다 — 그 사용자의 «현재 사실관계»는
+   처음부터 2주택으로 넣은 사용자와 같고, 두 경로의 결과가 달라지면 그게 오히려 결함이다.
+   옛 답을 근거로 차단을 유지하면 «화면에 보이지 않는 질문 때문에 고칠 수 없는 차단»이
+   다시 생긴다 — R2-F2 에서 닫은 바로 그 구멍이다.
+   그래서 동작은 그대로 두고 «두 가지»를 못 박는다.
+     I-A 경로 무관성 — 정규화된 답으로 낸 요청·차단은, 같은 답을 처음부터 순서대로 넣은
+         경로의 결과와 «같다».
+     I-B 풀린 차단의 사유 — 원본에서는 막히는데 정규화 뒤 안 막히는 조합은, 전부
+         «지워진 답이 있고 그 사유가 hidden(안 보이는 질문)·option(못 고르는 선택지)»
+         뿐이어야 한다. 아무것도 안 지웠는데 차단이 풀리면 실패한다.
+   ══════════════════════════════════════════════════════════════════════ */
+console.log('\n════ ⑥-b 정규화: 경로 무관성 + 풀린 차단의 사유 ════');
+{
+  /* R4-F1 의 그 입력으로 «두 경로»를 직접 비교한다 */
+  const changed = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual',
+    propertyValue: '500000000', housingCount: '2', exclusiveArea: '84',
+    isRegulatedArea: 'no', temporaryTwoHouse: 'yes', reduction: 'first', region: 'unknown' };
+  const fresh = { ...changed }; delete fresh.reduction;   // 처음부터 2주택으로 넣은 사용자
+  eq('R4-F1 · 분기를 바꾼 경로와 처음부터 넣은 경로의 요청 본문이 같다',
+     JSON.stringify(M.mapAnswersToAcquisition(changed)), JSON.stringify(M.mapAnswersToAcquisition(fresh)));
+  eq('R4-F1 · 두 경로의 차단 결과가 같다 (엔진 장애)',
+     JSON.stringify(GAPS(changed, ENGINE_DOWN)), JSON.stringify(GAPS(fresh, ENGINE_DOWN)));
+  eq('R4-F1 · 두 경로의 간이 계산 금액이 같다',
+     M.fallbackAcqTax(M.acqNormalizeAnswers(changed)), M.fallbackAcqTax(M.acqNormalizeAnswers(fresh)));
+  /* 조용히 지우지 않는다 — 무엇을 왜 뺐는지 목록으로 돌려준다 */
+  const dr = M.acqNormalize(changed).dropped;
+  eq('R4-F1 · 지워진 답을 목록으로 돌려준다', dr.length, 1);
+  eq('R4-F1 · 그 항목이 생애최초 감면이다', dr[0] && dr[0].id, 'reduction');
+  eq('R4-F1 · 사유가 「지금 고를 수 없는 선택지」다', dr[0] && dr[0].reason, 'option');
+  eq('R4-F1 · 사람이 읽을 라벨이 들어 있다', !!(dr[0] && dr[0].label), true);
+  /* 안내 문구가 세액·환급을 예단하지 않는다 */
+  const noticeSrc = code.slice(code.indexOf('function JTAcqDroppedNotice'), code.indexOf('window.JTAcqDroppedNotice'));
+  eq('제외 안내 컴포넌트를 찾았다', noticeSrc.length > 200, true);
+  for (const bad of ['환급', '세금이 늘', '세금이 줄', '더 내', '덜 내', '유리']) {
+    eq(`제외 안내에 예단 표현 「${bad}」가 없다`, noticeSrc.includes(bad), false);
+  }
+  eq('결과 화면과 차단 화면이 «둘 다» 제외 안내를 렌더한다',
+     (code.match(/<JTAcqDroppedNotice dropped=\{acqDropped\} \/>/g) || []).length >= 2, true);
+}
+
+{
+  const DOM = {
+    acquisitionType: ['매매', '증여', '상속', '신축', '공매', '재산분할'],
+    propertyType: ['주택', '상가', '오피스텔_주거용', '농지', '토지', '분양권'],
+    acquirerType: [undefined, 'individual', 'corporate'],
+    housingCount: [undefined, '1', '2', '3'],
+    exclusiveArea: ['', '84', '86'],
+    isRegulatedArea: [undefined, 'yes', 'no', 'unsure'],
+    temporaryTwoHouse: [undefined, 'yes', 'no'],
+    reduction: [undefined, 'none', 'first', 'childbirth'],
+    standardValue: ['', '400000000'],
+    giftOneHouseException: [undefined, 'yes', 'no'],
+  };
+  const KEYS = Object.keys(DOM);
+  const CALCS = [['엔진정상', ENGINE_OK], ['엔진장애', ENGINE_DOWN]];
+  /* 「같은 답을 처음부터 순서대로 넣은 경로」 — 문항 순서대로, 그때그때 보이는 질문·
+     고를 수 있는 선택지만 채워 나간다(컴포넌트의 입력 흐름과 같다). */
+  const replayFresh = (src) => {
+    const out = {};
+    for (const q of M.ACQ_QS) {
+      if (q.showIf && !q.showIf(out)) continue;
+      const v = src[q.id];
+      if (v === undefined || v === null || v === '') continue;
+      if (q.opts && !M.acqVisibleOpts(q, out).some((o) => o[0] === v)) continue;
+      out[q.id] = v;
+    }
+    return out;
+  };
+
+  let total = 0, pathDiff = 0, badRelease = 0, badReason = 0, zeroAmount = 0;
+  const pathSample = [], relSample = [];
+  (function sweep(i, a) {
+    if (i === KEYS.length) {
+      total++;
+      const norm = M.acqNormalize(a).answers;
+      const dropped = M.acqNormalize(a).dropped;
+      /* ── I-A 경로 무관성 ──────────────────────────────────────────
+         ⚠️ replay 는 «정규화 결과»가 아니라 «원본»에서 출발해야 한다. norm 에서 출발하면
+            이미 지워진 값이 입력에도 없어, 정규화가 «보이는 답까지 지우는» 회귀를 못 잡는다
+            (260921 결함 주입 NC-U4 로 확인). 원본에서 출발하면 질문 목록을 독립적으로 훑는
+            이 걸음과 정규화가 «서로 대조»된다. */
+      const fr = replayFresh(a);
+      if (JSON.stringify(fr) !== JSON.stringify(norm)
+          || JSON.stringify(M.mapAnswersToAcquisition(norm)) !== JSON.stringify(M.mapAnswersToAcquisition(fr))
+          || CALCS.some(([, c]) => JSON.stringify(M.acqFallbackGaps(norm, c)) !== JSON.stringify(M.acqFallbackGaps(fr, c)))) {
+        pathDiff++; if (pathSample.length < 3) pathSample.push(JSON.stringify({ norm, fr }));
+      }
+      /* ── I-B 풀린 차단의 사유 ───────────────────────────────────── */
+      for (const [lab, c] of CALCS) {
+        const gr = M.acqFallbackGaps(a, c), gn = M.acqFallbackGaps(norm, c);
+        if (!(gr.length > 0 && gn.length === 0)) continue;
+        if (dropped.length === 0) {          // 아무것도 안 지웠는데 차단이 풀렸다 = 진짜 구멍
+          badRelease++; if (relSample.length < 3) relSample.push(lab + ' ' + JSON.stringify(a));
+        } else if (!dropped.every((d) => d.reason === 'hidden' || d.reason === 'option')) {
+          badReason++; if (relSample.length < 3) relSample.push('사유불명 ' + JSON.stringify(dropped));
+        }
+      }
+      /* ── 차단된 조합에서 «숫자»가 화면에 나가지 않는가 ───────────────
+         간이 계산은 금액을 «만들어» 둔다(분양권·입주권만 0원). 그 금액이 화면에 닿지 않는
+         이유는 오직 차단뿐이므로, 차단이 걸린 조합에서 금액이 «존재»한다는 사실을 고정한다.
+         (차단 화면 서브트리에 금액 표현이 없다는 것은 tests_fallback_block.js ③ 이 본다) */
+      if (M.acqFallbackGaps(norm, ENGINE_DOWN).length > 0) {
+        const rights = norm.propertyType === '분양권' || norm.propertyType === '입주권';
+        if (!rights && !(M.fallbackAcqTax(norm) > 0)) zeroAmount++;
+      }
+      return;
+    }
+    const k = KEYS[i];
+    for (const v of DOM[k]) { if (v === undefined) delete a[k]; else a[k] = v; sweep(i + 1, a); }
+    delete a[k];
+  })(0, { propertyValue: '500000000', region: 'unknown' });
+
+  console.log(`      (조합 ${total.toLocaleString('en-US')}건 전수)`);
+  eq('I-A 정규화된 답 = 같은 답을 처음부터 넣은 경로 (답 집합·요청 본문·차단 전부)',
+     pathDiff ? pathSample.join(' | ') : 0, 0);
+  eq('I-B 차단이 풀린 조합에는 «지워진 답»이 반드시 있다', badRelease ? relSample.join(' | ') : 0, 0);
+  eq('I-B 지워진 사유는 hidden(안 보이는 질문)·option(못 고르는 선택지)뿐이다',
+     badReason ? relSample.join(' | ') : 0, 0);
+  eq('차단된 조합에서 간이 계산은 «금액을 만들어» 둔다 (화면에 못 나가게 막는 것이 차단이다)',
+     zeroAmount, 0);
 }
 
 /* ══════════════════════════════════════════════════════════════════════

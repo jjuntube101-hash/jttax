@@ -297,18 +297,42 @@ function acqOptionAvailable(opt, answers) {
 function acqVisibleOpts(q, answers) {
   return (q.opts || []).filter((o) => acqOptionAvailable(o, answers));
 }
-function acqNormalizeAnswers(answers) {
+/* ★ 260921 R4-F1: 정규화는 «무엇을 지웠는지»도 함께 돌려준다.
+   지우는 동작 자체는 옳다 — 분기를 바꾼 사용자의 «현재 사실관계»는 그 답을 처음부터 그렇게
+   넣은 사용자와 같고, 두 경로의 결과가 같아야 한다(tests_acq_flow ⑦-c 가 전수로 고정).
+   그런데 «조용히» 지우면 사용자는 자기가 고른 감면이 빠진 줄 모른다. 그래서 목록을 내보내
+   결과·차단 화면이 「이 답은 지금 조건에서 해당하지 않아 계산에서 제외했다」고 알린다.
+   reason 은 두 가지뿐이다 — 'hidden'(그 질문이 지금 보이지 않음) / 'option'(그 선택지를
+   지금 고를 수 없음). 이 둘 밖의 이유로 지우는 일이 생기면 시험이 실패한다. */
+function acqNormalize(answers) {
   const raw = answers || {};
   const out = {};
+  const dropped = [];
   for (const q of ACQ_QS) {
-    if (q.showIf && !q.showIf(out)) continue;          // ① 질문 층
     const v = raw[q.id];
-    if (v === undefined || v === null || v === '') continue;
-    if (q.opts && !acqVisibleOpts(q, out).some((o) => o[0] === v)) continue;   // ② 선택지 층
+    const hasValue = !(v === undefined || v === null || v === '');
+    if (q.showIf && !q.showIf(out)) {                  // ① 질문 층
+      if (hasValue) dropped.push({ id: q.id, section: q.section || '', q: q.q || q.id, value: v, label: acqAnswerLabel(q, v), reason: 'hidden' });
+      continue;
+    }
+    if (!hasValue) continue;
+    if (q.opts && !acqVisibleOpts(q, out).some((o) => o[0] === v)) {            // ② 선택지 층
+      dropped.push({ id: q.id, section: q.section || '', q: q.q || q.id, value: v, label: acqAnswerLabel(q, v), reason: 'option' });
+      continue;
+    }
     out[q.id] = v;
   }
-  return out;
+  return { answers: out, dropped };
 }
+/* 답 값을 사람이 읽는 라벨로 — 선택지면 라벨, 금액이면 원 단위, 면적이면 ㎡ */
+function acqAnswerLabel(q, v) {
+  if (q.opts) { const o = q.opts.find((x) => x[0] === v); if (o) return o[1]; }
+  /* formatWon 은 먼저 로드된 파일의 전역이다 — 시험이 이 함수만 떼어 실행할 수도 있어 폴백을 둔다 */
+  if (q.numeric && q.money) return (typeof formatWon === 'function' ? formatWon(Number(v)) : Number(v).toLocaleString('ko-KR') + '원');
+  if (q.numeric) return v + '㎡';
+  return String(v);
+}
+function acqNormalizeAnswers(answers) { return acqNormalize(answers).answers; }
 
 /* 화면 propertyType → 엔진 property_type.
    ⚠️ 농지는 property_type 만 '농지' 로 보내면 «4%»가 나온다 (260921 fly.dev 실측:
@@ -622,6 +646,31 @@ async function callAcqEngine(body) {
 /* ── 「이 계산에 넣지 않은 것」 ──────────────────────────────────────────────
    실제로 이 결과에서 «빠진» 항목만 적는다. 세율·요건을 새로 서술하지 않는다.
    (Astra 설계안 블록 4 채택 — 「계산에 넣지 않았다」는 사실 진술만) */
+/* ── 「계산에서 제외한 옛 답」 안내 (260921 R4-F1) ──────────────────────────
+   분기를 바꾸면 정규화가 옛 답을 지운다. 그 동작은 옳지만(현재 사실관계로 계산한다),
+   조용히 지우면 사용자는 자기가 고른 답이 빠진 줄 모른다. 그래서 «무엇을 왜 뺐는지»만
+   중립적으로 알린다.
+   ⛔ 세액·환급을 예단하는 표현을 쓰지 않는다 — 「세금이 늘어납니다」·「더 받을 수 있습니다」
+      류 금지. 사실 진술과 「다시 고르려면 그 조건부터 바꿔야 한다」는 안내까지만. */
+function JTAcqDroppedNotice({ dropped }) {
+  if (!dropped || dropped.length === 0) return null;
+  return (
+    <div style={{ background: 'var(--bg-1,#f7f5f0)', border: '1px solid #dfe3dc', borderRadius: 10, padding: '14px 16px', marginBottom: 16, lineHeight: 1.7 }}>
+      <strong style={{ display: 'block', marginBottom: 6 }}>앞에서 고르신 답 중 지금 조건에 해당하지 않는 것이 있어 계산에서 제외했습니다</strong>
+      <ul style={{ margin: '0 0 8px', paddingLeft: 18 }}>
+        {dropped.map((d, i) => (
+          <li key={i} style={{ marginBottom: 4 }}>
+            <strong>{d.section || d.id}</strong> — 「{d.label}」
+            <span style={{ opacity: 0.8 }}>{d.reason === 'option' ? ' (지금 조건에서는 고를 수 없는 선택지입니다)' : ' (지금 조건에서는 묻지 않는 항목입니다)'}</span>
+          </li>
+        ))}
+      </ul>
+      <p style={{ margin: 0, fontSize: 13.5, opacity: 0.85 }}>지금 답하신 조건으로만 계산했습니다. 위 항목을 다시 반영하려면 앞 단계로 돌아가 해당 조건부터 바꿔 주세요.</p>
+    </div>
+  );
+}
+window.JTAcqDroppedNotice = JTAcqDroppedNotice;
+
 /* ── 결과 화면 «안내 문구» 허용 목록 (260921 R2-F4) ─────────────────────────
    종전에는 중과 안내가 조건 없이 렌더돼, 법인 주택 중과(§13의2①1호) 결과에도 개인용
    「일시적 2주택 등으로 중과가 빠질 수 있으니」가 붙었다 — 법인에는 그 특례가 없다.
@@ -714,7 +763,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
      검사가 보는 것은 정규화를 거친 답이다. 이름을 answers 로 둬서 «이 컴포넌트 안에서는
      정규화된 답만 answers 다»를 강제한다 — 아래 어디서도 rawAnswers 를 직접 쓰지 않는다. */
   const [rawAnswers, setAnswers] = useAcqState({});
-  const answers = acqNormalizeAnswers(rawAnswers);
+  const acqNorm = acqNormalize(rawAnswers);
+  const answers = acqNorm.answers;
+  /* 정규화가 «실제로 입력했던» 답을 지운 목록 — 결과·차단 화면이 그대로 알린다 (R4-F1) */
+  const acqDropped = acqNorm.dropped;
   const [loading, setLoading] = useAcqState(false);
   const [report, setReport] = useAcqState(null);
   const [err, setErr] = useAcqState(null);
@@ -942,6 +994,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       return (
         <div className="jt-container">
           <JTReportShell title="취득세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            <JTAcqDroppedNotice dropped={acqDropped} />
             <JTFallbackBlocked gaps={acqGaps} onRetry={runAnalysis} reason={acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
             {/* ★ 260921 (Astra R1-F5): 되돌아갈 길을 준다. 종전엔 「처음부터 다시」뿐이라
                 답을 전부 버려야만 빠진 항목을 채울 수 있었다. 다른 답은 그대로 둔다. */}
@@ -963,6 +1016,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
     return (
       <div className="jt-container">
         <JTReportShell title="취득세 계산 결과" subtitle={calc.precise ? '취득세 정밀 계산' : '취득세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTAcqDroppedNotice dropped={acqDropped} />
           {acqBlocked && <JTFallbackBlocked gaps={acqGaps} onRetry={runAnalysis} />}
           {!acqBlocked && (
           <div className="jt-report-result__grade jt-grade-mid">
