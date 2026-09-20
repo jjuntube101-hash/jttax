@@ -86,6 +86,45 @@ export const ORDER = [
       Codex R1 이 이 오해를 정정했다.) */
 const TARGET = 'es2017';
 
+/* ── 시·도 감면 조례 «원문 안내» 스냅샷 (260921 신설) ───────────────────────
+   project/data/ordinance-cards.json 은 법제처 API 에서 받아 둔 «읽기 전용 원문»이다
+   (생성: python project/scripts/build-ordinance-cards.py).
+   ⛔ 세액 계산에 반영하지 않는다 — 화면(JTAcqOrdinanceCard)은 원문·시행일·조회일만 보여 주고
+      「이 계산에는 넣지 않았습니다」를 함께 표시한다.
+   새 .jsx 파일을 만들지 않기 위해(계획의 「하지 않는 것」) 번들 «머리»에 전역으로 주입한다.
+   ORDER·TARGET 계약은 손대지 않는다.
+
+   조회일로부터 30일이 지나면 경고한다 — 조례는 바뀌는데 스냅샷은 안 바뀌기 때문이다.
+   경고만 하고 빌드를 멈추지는 않는다(화면이 조회일과 「갱신 확인 필요」를 함께 보여 준다). */
+const ORDINANCE_JSON = path.join(ROOT, 'project', 'data', 'ordinance-cards.json');
+const ORDINANCE_STALE_DAYS = 30;
+
+export function readOrdinanceCards({ warn = true } = {}) {
+  if (!fs.existsSync(ORDINANCE_JSON)) {
+    if (warn) console.warn('⚠️  조례 스냅샷이 없습니다 (project/data/ordinance-cards.json). 화면은 「원문 안내」만 표시합니다 — python project/scripts/build-ordinance-cards.py 로 생성하세요.');
+    return { cards: {} };
+  }
+  let data;
+  try { data = JSON.parse(fs.readFileSync(ORDINANCE_JSON, 'utf8')); }
+  catch (e) {
+    throw new Error('project/data/ordinance-cards.json 파싱 실패: ' + e.message +
+      ' — 깨진 스냅샷을 번들에 넣으면 취득세 결과 화면이 통째로 죽습니다.');
+  }
+  const cards = (data && data.cards) || {};
+  if (warn) {
+    for (const [region, c] of Object.entries(cards)) {
+      const t = Date.parse(c && c.fetchedAt);
+      if (isNaN(t)) { console.warn(`⚠️  조례 스냅샷 [${region}] 의 조회일(fetchedAt)을 읽지 못했습니다.`); continue; }
+      const days = Math.floor((Date.now() - t) / 86400000);
+      if (days > ORDINANCE_STALE_DAYS) {
+        console.warn(`⚠️  조례 스냅샷 [${region} ${c.ordinanceName || ''} ${c.articleLabel || ''}] 조회일이 ${days}일 지났습니다(기준 ${ORDINANCE_STALE_DAYS}일).` +
+          ' python project/scripts/build-ordinance-cards.py 로 다시 받으세요.');
+      }
+    }
+  }
+  return data || { cards: {} };
+}
+
 export function buildBundle({ write = true } = {}) {
   const parts = [];
   const missing = [];
@@ -128,7 +167,12 @@ export function buildBundle({ write = true } = {}) {
     '',
   ].join('\n');
 
-  const bundle = header + parts.join('\n');
+  /* 조례 스냅샷은 «데이터»라 ORDER 앞(=Data.jsx 보다도 앞)에 둔다. 어느 컴포넌트가
+     읽어도 이미 정의돼 있게 하려는 것뿐이고, 실행 순서 계약에는 영향을 주지 않는다. */
+  const ordinance = '\n/* ────────── project/data/ordinance-cards.json (읽기 전용 원문 안내 · 세액 미반영) ────────── */\n'
+    + 'window.JT_ORDINANCE_CARDS = ' + JSON.stringify(readOrdinanceCards({ warn: write })) + ';\n';
+
+  const bundle = header + ordinance + parts.join('\n');
 
   if (write) {
     fs.mkdirSync(OUT_DIR, { recursive: true });

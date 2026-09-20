@@ -292,18 +292,51 @@ console.log('\n════ ④ 조례 카드의 경감률이 매퍼 출력에 �
   eq('payload 에 조례·소재지 관련 키가 없다', leaked.join(',') || '-', '-');
 
   /* 카드 렌더 코드가 세액 계산에 손대지 않는가 — 계산 함수를 부르지 않는 것으로 고정 */
+  /* ⚠️ 여는 중괄호를 «첫 {» 로 잡으면 매개변수 구조분해 `({ region })` 에 걸려 본문이
+     통째로 빠진다 — 그러면 아래 금지어 검사가 «빈 문자열»을 통과시킨다(게이트가 비는 전형).
+     함수 «몸통»의 여는 중괄호부터 센다. */
   const cardSrc = (() => {
     const head = 'function JTAcqOrdinanceCard(';
     const i = code.indexOf(head);
     if (i < 0) return '';
-    let d = 0, j = code.indexOf('{', i), started = false;
-    while (j < code.length) { const ch = code[j]; if (ch === '{') { d++; started = true; } else if (ch === '}') { d--; } j++; if (started && d === 0) break; }
+    const bodyStart = code.indexOf(') {', i);
+    if (bodyStart < 0) return '';
+    let d = 1, j = bodyStart + 3;
+    while (j < code.length && d > 0) { const ch = code[j]; if (ch === '{') d++; else if (ch === '}') d--; j++; }
     return code.slice(i, j);
   })();
-  eq('조례 카드 컴포넌트를 찾았다', cardSrc.length > 0, true);
+  eq('조례 카드 컴포넌트를 찾았다', cardSrc.length > 500, true);
+  eq('조례 카드 본문을 «실제로» 잘라냈다 (매개변수 괄호에서 끊기지 않았다)',
+     cardSrc.includes('JT_ORDINANCE_CARDS'), true);
   for (const banned of ['fallbackAcqTax', 'mapAnswersToAcquisition', 'totalTax', 'acqTax']) {
     eq(`조례 카드가 «${banned}» 를 건드리지 않는다`, cardSrc.includes(banned), false);
   }
+  eq('조례 카드가 「이 계산에는 넣지 않았습니다」를 표시한다', cardSrc.includes('이 계산에는 넣지 않았습니다'), true);
+}
+
+/* 스냅샷 파일 자체 — «비어 있어도 통과»하지 않게 내용을 본다 */
+{
+  const JSON_PATH = path.join(__dirname, 'data', 'ordinance-cards.json');
+  const BUNDLE = path.join(__dirname, 'dist', 'app.js');
+  eq('조례 스냅샷 파일이 있다', fs.existsSync(JSON_PATH), true);
+  if (fs.existsSync(JSON_PATH)) {
+    const raw = fs.readFileSync(JSON_PATH, 'utf8');
+    let data = null;
+    try { data = JSON.parse(raw); } catch (e) { eq('조례 스냅샷이 유효한 JSON 이다', e.message, '(파싱 성공)'); }
+    if (data) {
+      const entries = Object.entries(data.cards || {});
+      eq('조례 스냅샷에 카드가 1장 이상 있다', entries.length > 0, true);
+      for (const [region, c] of entries) {
+        for (const k of ['ordinanceName', 'ordinanceSerial', 'effectiveDate', 'promulgationNo', 'articleLabel', 'articleText', 'fetchedAt', 'sourceUrl']) {
+          eq(`조례 [${region}] · ${k} 가 비어 있지 않다`, !!(c && c[k]), true);
+        }
+        eq(`조례 [${region}] · 계산 미반영 표시`, c.appliedToCalculation, false);
+      }
+    }
+    /* 법제처 API 사용자 ID(OC)가 산출물에 섞이면 공개 저장소로 나간다 */
+    eq('조례 스냅샷에 OC 질의 인자가 없다', /[?&]OC=/i.test(raw), false);
+  }
+  eq('번들이 조례 스냅샷을 전역으로 싣는다', fs.existsSync(BUNDLE) && fs.readFileSync(BUNDLE, 'utf8').includes('window.JT_ORDINANCE_CARDS ='), true);
 }
 
 console.log(`\n════════════════════\n취득세 입력 흐름 실패 ${fails}건`);

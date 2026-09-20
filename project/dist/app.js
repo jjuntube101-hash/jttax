@@ -4,6 +4,9 @@
    ⛔ 이 파일을 손으로 고치면 다음 빌드에 덮어써집니다. 소스를 고치고 다시 빌드하세요.
    ⛔ 커밋에서 빠뜨리면 라이브가 «옛 코드»로 돕니다 — tests_build_fresh.js 가 막습니다. */
 
+/* ────────── project/data/ordinance-cards.json (읽기 전용 원문 안내 · 세액 미반영) ────────── */
+window.JT_ORDINANCE_CARDS = {"_note":"법제처 자치법규 API 스냅샷. 세액 계산에 반영하지 않는다(원문 안내 전용). 재생성: python project/scripts/build-ordinance-cards.py","generatedAt":"2026-09-21","cards":{"경기도":{"region":"경기도","ordinanceName":"경기도 도세 감면 조례","ordinanceSerial":"2114419","ordinanceId":"2023930","effectiveDate":"20260304","promulgationDate":"20260304","promulgationNo":"8852","revisionInfo":"일부개정","articleLabel":"제6조","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조(산업단지 등에 대한 감면) \n① 법 제78조제6항에 따라 추가로 경감하는 율은 다음 각 호의 구분에 따른다. <개정 2025.12.31., 2026.3.4.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률: 100분의 25 <개정 2017.5.4., 2026.3.4.>\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률: 100분의 15 <개정 2026.3.4.>\n② 제1항에 따라 취득세를 경감받은 자가 법 제78조제7항에 따라 추징대상이 되는 경우에는 경감된 취득세를 추징한다. [신설 2025.12.31.] <개정 2026.3.4.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2114419","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2114419&type=XML","appliedToCalculation":false}}};
+
 /* ────────── Data.jsx ────────── */
 window.JT_DATA = {
   firm: {
