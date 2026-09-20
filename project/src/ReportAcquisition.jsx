@@ -1065,7 +1065,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
                 {acqNewTypeSelected(answers)
                   ? '금액은 검증 엔진이 낸 값입니다. 다만 물건 구분(오피스텔 용도·농지 여부)과 감면 요건은 이 계산기가 판정하지 않으니, 아래 「이 계산에 넣지 않은 것」을 함께 확인하세요.'
                   : answers.acquisitionType === '증여'
-                  ? '증여 중과(조정대상지역·시가표준액 3억원 이상이면 12%)는 앞에서 고르신 조정지역 답으로 이미 반영했어요. 다만 시가표준액은 앞의 금액으로 대신 판단했으니, 「더 정확히 계산하기」에서 공시가격(시가표준액)과 1세대 1주택자의 가족 증여 여부를 넣어 확인하세요.'
+                  /* ★ 260921 R5-F1: R3 수정 뒤로는 «입력·조회된 시가표준액»만 쓰고, 조정지역
+                     증여인데 그 값이 없으면 계산 자체를 막는다. 「앞 금액으로 대신 판단했다」는
+                     종전 문구는 이제 사실과 다르다 — 실제 동작에 맞춘다. */
+                  ? '증여 중과(조정대상지역·시가표준액 3억원 이상이면 12%)는 앞에서 고르신 조정지역 답과 입력하신 시가표준액으로 판정했어요. 앞의 취득가액(시가)으로 대신 판단하지 않습니다. 「더 정확히 계산하기」에서 남은 항목을 채우면 더 자세히 볼 수 있어요.'
                   : answers.acquisitionType === '상속'
                   ? '무주택 가구가 1주택을 상속받으면 0.8% 특례세율이 적용될 수 있어요(현재는 일반 2.8% 기준).'
                   : answers.acquisitionType === '신축'
@@ -1190,7 +1193,12 @@ function JTReportAcquisition({ setRoute, onBack }) {
           {cur.id === 'standardValue' && (
             <div style={{ background: 'var(--bg-1,#f7f5f0)', border: '1px solid #dfe3dc', borderRadius: 10, padding: '14px 16px', marginBottom: 14 }}>
               <div style={{ fontWeight: 600, marginBottom: 6 }}>🔎 주소로 시가표준액 자동조회 <span style={{ fontWeight: 400, opacity: 0.7, fontSize: 13 }}>(선택 — 아파트·빌라·단독주택)</span></div>
-              <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8, lineHeight: 1.55 }}>증여받는 주택 주소를 넣으면 국토교통부 공시가격(시가표준액)을 찾아 아래 칸에 채워드려요. 모르면 비워두셔도 됩니다.</p>
+              {/* ★ 260921 R5-F1: 「모르면 비워두셔도 됩니다」는 조정지역 증여(1세대1주택 예외 아님)
+                  에서는 사실과 다르다 — 그 분기는 값이 없으면 금액을 내지 않는다. 분기를 갈라 적는다. */}
+              <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8, lineHeight: 1.55 }}>증여받는 주택 주소를 넣으면 국토교통부 공시가격(시가표준액)을 찾아 아래 칸에 채워드려요.
+                {answers.isRegulatedArea === 'yes' && answers.giftOneHouseException !== 'yes'
+                  ? ' 지금은 조정대상지역 증여라 이 값이 있어야 중과 여부를 판정할 수 있어요 — 비워 두면 금액 대신 안내를 보여 드립니다.'
+                  : ' 이 분기에서는 중과 판정에 쓰이지 않으므로 모르면 비워두셔도 됩니다.'}</p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
                   placeholder="예: 서울 종로구 자하문로36길 16-14"
