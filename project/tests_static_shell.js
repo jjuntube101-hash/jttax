@@ -244,7 +244,7 @@ const ROOT = path.join(__dirname, '..');
   /* 상업 랜딩(260830 신설): services/experts/about 디렉터리 + 루트 consult.html.
      생성기는 build-commercial.mjs — 여기 등록하지 않으면 신설 페이지의 푸터 표시의무·
      CSS 버전 검사가 통째로 비므로(게이트 공동), 디렉터리를 늘릴 때 이 목록도 같이 늘린다. */
-  const commercialDirs = ['services', 'experts', 'about'];
+  const commercialDirs = ['services', 'experts', 'about', 'acquisition-tax'];   // 260921 취득세 허브 추가
   const commercialRootSingles = ['consult.html', 'creators.html'];   // 루트 단일 페이지도 같은 셸 게이트를 받는다
   const commercialPages = [
     ...commercialDirs.flatMap((d) => listHtml(d)),
@@ -270,8 +270,9 @@ const ROOT = path.join(__dirname, '..');
   const postSlugs = fs.readdirSync(postsDir)
     .filter((f) => /^\d{4}-\d{2}-\d{2}-.+\.md$/.test(f))
     .map((f) => f.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, ''));
+  /* index 는 원고가 아니라 «허브»다 (260921 신설) — 계산기 허브와 같은 예외 */
   listHtml('insights').map((f) => path.basename(f, '.html'))
-    .filter((s) => !postSlugs.includes(s))
+    .filter((s) => s !== 'index' && !postSlugs.includes(s))
     .forEach((s) => bad.push(`insights/${s}.html — 대응 원고(.md)가 없습니다. 원고를 지웠다면 HTML 도 지우세요(계속 배포됩니다)`));
 
   const calcSlugs = calcMod.CALCULATORS.map((c) => c.slug);
@@ -299,7 +300,8 @@ const ROOT = path.join(__dirname, '..');
   for (const sl of expSlugs) {
     if (!fs.existsSync(path.join(ROOT, 'experts', `${sl}.html`))) bad.push(`experts/${sl}.html — 데이터엔 있는데 산출물이 없습니다(빌더 회귀)`);
   }
-  for (const req of ['services/index.html', 'experts/index.html', 'about/index.html', 'consult.html', 'creators.html']) {
+  for (const req of ['services/index.html', 'experts/index.html', 'about/index.html', 'consult.html', 'creators.html',
+                     'acquisition-tax/index.html', 'insights/index.html']) {
     if (!fs.existsSync(path.join(ROOT, req))) bad.push(`${req} — 필수 상업 랜딩 산출물이 없습니다`);
   }
 

@@ -191,9 +191,22 @@ async function updateDataJsx(arts) {
 }
 
 // ────────────── 단독 글 HTML 렌더링 (/insights/<slug>.html) ──────────────
+/* 취득세 허브(/acquisition-tax/)로 «들어오는 링크»를 다는 글.
+   허브가 sitemap 에만 있고 들어오는 링크가 없으면 검색 계획이 아니다(Astra R1-F7).
+   ⛔ 이 목록은 취득세 글 2편으로 한정한다 — 모든 글 하단에 같은 배너를 붙이면 문맥 없는
+      장식이 되고, 그건 링크가 아니라 소음이다. */
+const ACQ_HUB_ARTICLES = ['acquisition-tax-basics', 'acquisition-tax-rate-guide'];
+const ACQ_HUB_BLOCK = `
+    <div style="margin-top:48px;padding:22px 24px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;border-radius:10px;line-height:1.7;">
+      <div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#888;">취득세</div>
+      <p style="margin:8px 0 12px;font-size:15px;color:#333;">취득세는 «어떤 이유로, 무엇을, 누구 명의로» 취득했는지에 따라 확인할 것이 달라집니다. 내 경우가 어디에 해당하는지부터 살펴보세요.</p>
+      <a href="/acquisition-tax/" style="font-size:15px;color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">취득세, 내 상황부터 확인하기 →</a>
+    </div>`;
+
 function renderArticlePage(a) {
   const shareUrl = `${SITE}/insights/${a.slug}.html`;
   const esc = (s) => String(s).replace(/"/g, '&quot;');
+  const hubBlock = ACQ_HUB_ARTICLES.includes(a.slug) ? ACQ_HUB_BLOCK : '';
   return `<!doctype html>
 <html lang="ko">
 <head>
@@ -249,7 +262,7 @@ ${GA_HEAD_SNIPPET}
       <img src="/project/assets/logo_symbol.png" width="28" alt=""/> 제이티 세무법인
     </a>
     <span style="margin-left:auto;font-size:13px;color:#666;">
-      <a href="/#/insights" style="color:inherit;">← 모든 인사이트</a>
+      <a href="/insights/" style="color:inherit;">← 모든 인사이트</a>
     </span>
   </header>
 
@@ -260,6 +273,7 @@ ${GA_HEAD_SNIPPET}
     <h1 style="margin-bottom:24px;font-size:1.5em;">${a.title}</h1>
     <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">${a.excerpt}</p>
     ${a.html}
+${hubBlock}
 
     <div style="margin-top:64px;padding:32px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;">
       <div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#888;">DISCLAIMER</div>
@@ -277,12 +291,116 @@ ${footerHtml()}
 </html>`;
 }
 
+// ────────── 인사이트 정적 허브 (/insights/index.html) ──────────
+/* 종전엔 인사이트 목록이 SPA 해시(#/insights)에만 있었다. 해시 URL 은 sitemap 에서
+   의도적으로 제외하므로 «글 31편은 색인되는데 그 글들을 모아 주는 페이지는 없는» 상태였다
+   (SEO 전수감사 S1 잔여분, 260921 Astra R1-F13).
+   ⛔ 글 각각의 h1 은 이미 있으므로 건드리지 않는다 — 여기서 만드는 것은 «허브»뿐이다. */
+function renderInsightsIndex(arts) {
+  const url = `${SITE}/insights/`;
+  const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const DESC = '세금 실무에서 자주 부딪히는 주제를 사실과 근거 중심으로 정리한 글 모음입니다. 양도·상속·증여·취득세·보유세·기장과 세무조사 대응까지.';
+  const listLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `인사이트 — 제이티 세무법인`,
+    image: ogImageHref(),
+    url,
+    description: DESC,
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: arts.map((a, i) => ({
+        '@type': 'ListItem', position: i + 1, name: a.title, url: `${SITE}/insights/${a.slug}.html`,
+      })),
+    },
+  };
+  const crumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '홈', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: '인사이트', item: url },
+    ],
+  };
+  const cards = arts.map((a) => `      <a class="jt-ih-card" href="/insights/${a.slug}.html">
+        <span class="jt-ih-meta">${esc(a.tag)} · ${esc(a.date)}</span>
+        <h2>${esc(a.title)}</h2>
+        <p>${esc(a.excerpt)}</p>
+      </a>`).join('\n');
+  return `<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>인사이트 — 세금 실무 해설 | 제이티 세무법인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="${esc(DESC)}">
+  <link rel="canonical" href="${url}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="인사이트 — 세금 실무 해설 | 제이티 세무법인">
+  <meta property="og:description" content="${esc(DESC)}">
+  <meta property="og:url" content="${url}">
+  <meta property="og:image" content="${ogImageHref()}">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="인사이트 — 세금 실무 해설 | 제이티 세무법인">
+  <meta name="twitter:description" content="${esc(DESC)}">
+  <meta name="twitter:image" content="${ogImageHref()}">
+  <link rel="icon" href="/project/assets/logo_symbol.png">
+  <link rel="stylesheet" href="${stylesHref()}">
+${GA_HEAD_SNIPPET}
+  <script type="application/ld+json">${JSON.stringify(listLd)}</script>
+  <script type="application/ld+json">${JSON.stringify(crumbLd)}</script>
+  <style>
+    .jt-ih-wrap{max-width:860px;margin:0 auto;padding:48px 24px 80px;color:#0B0B0F;}
+    .jt-ih-wrap h1{font-size:32px;letter-spacing:-0.02em;margin:0 0 12px;}
+    .jt-ih-lede{font-size:18px;color:#5a5a5a;line-height:1.65;margin:0 0 36px;}
+    .jt-ih-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
+    .jt-ih-card{display:block;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:20px;text-decoration:none;color:#0B0B0F;background:#fff;}
+    .jt-ih-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08);}
+    .jt-ih-meta{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;color:#999;}
+    .jt-ih-card h2{font-size:17px;margin:8px 0;border:0;padding:0;line-height:1.45;}
+    .jt-ih-card p{font-size:13.5px;color:#666;line-height:1.55;margin:0;}
+    .jt-ih-links{margin:40px 0 0;display:flex;gap:8px;flex-wrap:wrap;}
+    .jt-ih-links a{font-size:13px;border:1px solid rgba(0,0,0,.15);border-radius:999px;padding:7px 13px;text-decoration:none;color:#333;background:#fff;}
+  </style>
+</head>
+<body style="background:#fff;">
+  <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
+      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무법인"/> 제이티 세무법인
+    </a>
+    <span style="margin-left:auto;font-size:13px;"><a href="/" style="color:#666;text-decoration:none;">홈 →</a></span>
+  </header>
+  <main class="jt-ih-wrap">
+    <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 인사이트</nav>
+    <h1>인사이트</h1>
+    <p class="jt-ih-lede">${esc(DESC)}</p>
+    <div class="jt-ih-grid">
+${cards}
+    </div>
+    <div class="jt-ih-links">
+      <a href="/acquisition-tax/">취득세, 내 상황부터 확인하기</a>
+      <a href="/calculators/">세금 계산기</a>
+      <a href="/services/">업무분야</a>
+      <a href="/consult.html">상담·오시는 길</a>
+    </div>
+    <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;">
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
+      <a href="http://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
+    </div>
+  </main>
+${footerHtml()}
+</body>
+</html>`;
+}
+
 async function writeArticlePages(arts) {
   await mkdir(ARTICLE_OUT_DIR, { recursive: true });
   for (const a of arts) {
     await writeFile(join(ARTICLE_OUT_DIR, `${a.slug}.html`), renderArticlePage(a));
   }
-  console.log(`✓ 글 페이지 ${arts.length}건 생성 → /insights/`);
+  await writeFile(join(ARTICLE_OUT_DIR, 'index.html'), renderInsightsIndex(arts));
+  console.log(`✓ 글 페이지 ${arts.length}건 + 허브 1장 생성 → /insights/`);
 }
 
 // ────────────── sitemap 갱신 (공유 모듈 — 인사이트+계산기 자동 열거, 해시 URL 제외) ──────────────

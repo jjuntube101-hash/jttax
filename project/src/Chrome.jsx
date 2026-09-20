@@ -357,7 +357,9 @@ function JTNav({ route, setRoute }) {
           )}
         </div>
         <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'report' ? 'active' : ''} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
-        <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'insights' ? 'active' : ''} onClick={() => setRoute('insights')}>인사이트</a>
+        {/* 260921: 인사이트 정적 허브(/insights/)가 생겨 실 href 를 붙였다 —
+            종전엔 href 가 없어 크롤러가 따라갈 수 없었고 보조키·중클릭도 안 먹었다 */}
+        <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'insights' ? 'active' : ''} onClick={jtNavGo(() => setRoute('insights'))}>인사이트</a>
         <a href="/consult.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'contact' ? 'active' : ''} onClick={jtNavGo(() => setRoute('contact'))}>오시는 길</a>
       </nav>
       <div className="jt-nav__cta">
@@ -371,7 +373,7 @@ function JTNav({ route, setRoute }) {
       </div>
       {menuOpen && (
         <div className="jt-navmenu">
-          {[['about', '회사소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '인사이트', null], ['contact', '오시는 길', '/consult.html']].map(([r, l, h]) => (
+          {[['about', '회사소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '인사이트', '/insights/'], ['contact', '오시는 길', '/consult.html']].map(([r, l, h]) => (
             h
               ? <a href={h} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={jtNavGo(() => { setRoute(r); setMenuOpen(false); })}>{l}</a>
               : <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={() => { setRoute(r); setMenuOpen(false); }}>{l}</a>

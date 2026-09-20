@@ -160,6 +160,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/inheritance-tax-basics.html</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>
@@ -319,6 +324,11 @@
   </url>
   <url>
     <loc>https://www.jttax.co.kr/about/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/acquisition-tax/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>

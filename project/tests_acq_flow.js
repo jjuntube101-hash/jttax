@@ -339,5 +339,55 @@ console.log('\n════ ④ 조례 카드의 경감률이 매퍼 출력에 �
   eq('번들이 조례 스냅샷을 전역으로 싣는다', fs.existsSync(BUNDLE) && fs.readFileSync(BUNDLE, 'utf8').includes('window.JT_ORDINANCE_CARDS ='), true);
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   ⑤ 허브로 «들어오는 길»이 있는가
+   sitemap 에만 있고 들어오는 링크가 없으면 검색 계획이 아니다(Astra R1-F7).
+   빌더 회귀로 링크가 조용히 빠지는 것을 막는다.
+   ══════════════════════════════════════════════════════════════════════ */
+console.log('\n════ ⑤ 취득세 허브·인사이트 허브로 들어오는 실 href 가 있는가 ════');
+{
+  const ROOT = path.join(__dirname, '..');
+  const has = (rel, needle) => fs.existsSync(path.join(ROOT, rel)) && fs.readFileSync(path.join(ROOT, rel), 'utf8').includes(needle);
+  const HUB = 'href="/acquisition-tax/"';
+  for (const rel of ['calculators/index.html', 'calculators/acquisition-tax.html',
+                     'insights/acquisition-tax-basics.html', 'insights/acquisition-tax-rate-guide.html',
+                     'insights/index.html']) {
+    eq(`${rel} → 취득세 허브 실 href`, has(rel, HUB), true);
+  }
+  eq('calculators/index.html → 인사이트 허브 실 href', has('calculators/index.html', 'href="/insights/"'), true);
+  eq('취득세 허브가 실제로 생성됐다', fs.existsSync(path.join(ROOT, 'acquisition-tax', 'index.html')), true);
+  eq('인사이트 허브가 실제로 생성됐다', fs.existsSync(path.join(ROOT, 'insights', 'index.html')), true);
+  /* ⚠️ 「파일이 있다」만 보면 빌더가 허브 생성을 멈춰도 낡은 파일이 남아 그냥 통과한다
+     (260921 결함 주입 NC-S3 로 실제 확인 — 「있다」 검사만으로는 못 잡았다).
+     그래서 «허브가 지금 원고 목록과 같은가»를 본다 — 글이 늘거나 줄면 바로 어긋난다. */
+  {
+    const hub = fs.readFileSync(path.join(ROOT, 'insights', 'index.html'), 'utf8');
+    const linked = new Set([...hub.matchAll(/href="\/insights\/([a-z0-9-]+)\.html"/g)].map((m) => m[1]));
+    const built = new Set(fs.readdirSync(path.join(ROOT, 'insights'))
+      .filter((f) => f.endsWith('.html') && f !== 'index.html').map((f) => f.replace(/\.html$/, '')));
+    const missing = [...built].filter((s) => !linked.has(s));
+    const ghost = [...linked].filter((s) => !built.has(s));
+    eq('인사이트 허브가 모든 글을 싣는다 (허브 생성이 멈추면 여기서 어긋난다)', missing.join(',') || '-', '-');
+    eq('인사이트 허브에 없는 글 링크가 없다', ghost.join(',') || '-', '-');
+    eq('인사이트 허브에 글이 실제로 있다', linked.size > 0, true);
+  }
+  /* 홈·전역 메뉴에는 올리지 않는다(C3). 내비 소스에 취득세 항목이 생기면 여기서 잡힌다. */
+  const chrome = fs.readFileSync(path.join(ROOT, 'project', 'src', 'Chrome.jsx'), 'utf8');
+  eq('전역 내비에 취득세 항목을 넣지 않았다', chrome.includes('/acquisition-tax/'), false);
+  eq('전역 내비의 인사이트 링크에 실 href 가 있다', /href="\/insights\/"[^>]*인사이트|인사이트/.test(chrome) && chrome.includes('href="/insights/"'), true);
+  /* FAQPage 는 노출 전략에서 제외했다 (리치 결과 2026-05-07 종료) */
+  eq('취득세 허브에 FAQPage 구조화 데이터가 없다',
+     fs.readFileSync(path.join(ROOT, 'acquisition-tax', 'index.html'), 'utf8').includes('FAQPage'), false);
+  /* sitemap 등재 */
+  const sm = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
+  eq('sitemap 에 취득세 허브가 있다', sm.includes('<loc>https://www.jttax.co.kr/acquisition-tax/</loc>'), true);
+  eq('sitemap 에 인사이트 허브가 있다', sm.includes('<loc>https://www.jttax.co.kr/insights/</loc>'), true);
+  /* 우월·결과 예단 표현 금지 (세무사법 §12조의7·시행령 §33) — 허브 신규 문안 한정 */
+  const hubHtml = fs.readFileSync(path.join(ROOT, 'acquisition-tax', 'index.html'), 'utf8');
+  for (const bad of ['유일', '업계 최초', '국내 최초', '1위', '최고', '환급받을', '가장 유리', '확정 세액', '무료']) {
+    eq(`취득세 허브에 금지 표현 「${bad}」가 없다`, hubHtml.includes(bad), false);
+  }
+}
+
 console.log(`\n════════════════════\n취득세 입력 흐름 실패 ${fails}건`);
 process.exit(fails ? 1 : 0);

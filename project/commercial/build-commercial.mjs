@@ -16,7 +16,7 @@
 import { writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICES, EXPERTS, TEAM_MODEL, ABOUT, CONSULT, CREATORS } from './commercial.data.mjs';
+import { SERVICES, EXPERTS, TEAM_MODEL, ABOUT, CONSULT, CREATORS, ACQ_HUB } from './commercial.data.mjs';
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
@@ -608,6 +608,97 @@ ${footerHtml()}
 </html>`;
 }
 
+/* ── 취득세 허브 (/acquisition-tax/ — 260921 신설) ──────────────────────────
+   기존 계산기 랜딩과 «의도»가 다르다: 랜딩 = 계산하러 온 사람, 허브 = 내 경우가 어디에
+   해당하는지부터 모르는 사람. 홈 전면·전역 메뉴에는 올리지 않고(C3), /calculators/·
+   취득세 랜딩·취득세 글 2편·인사이트 허브에서 «실 href» 로 들어오게 한다(Astra R1-F7).
+   ⛔ FAQPage 구조화 데이터를 쓰지 않는다. ⛔ 법령 요건·세율을 새로 서술하지 않는다. */
+function renderAcquisitionHub() {
+  const url = `${SITE}/${ACQ_HUB.path}/`;
+  const L = ACQ_HUB.links;
+  const calc = calcBySlug('acquisition-tax', 'ACQ_HUB.links.calculator');   // 슬러그 오타는 빌드를 멈춘다
+  void calc;
+  const listLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${ACQ_HUB.metaTitle} — ${FIRM}`,
+    image: ogImageHref(),
+    url,
+    description: ACQ_HUB.metaDesc,
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: ACQ_HUB.groups.map((g, i) => ({
+        '@type': 'ListItem', position: i + 1, name: g.title, url: `${url}#${g.id}`,
+      })),
+    },
+  };
+  const articleLinks = L.articles.map((r) =>
+    `          <a class="jt-cc-chip" href="/insights/${assertSlug(r.slug, 'ACQ_HUB.links.articles')}.html">${esc(r.title)}</a>`).join('\n');
+  const groups = ACQ_HUB.groups.map((g, i) => `      <section class="jt-cc-card" id="${esc(g.id)}">
+        <p style="margin:0 0 4px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;color:#999;">${String(i + 1).padStart(2, '0')}</p>
+        <h2 style="font-size:19px;margin:0 0 6px;border:0;padding:0;">${esc(g.title)}</h2>
+        <p style="margin:0 0 8px;">${esc(g.lead)}</p>
+        <p style="margin:0 0 12px;color:#444;">${esc(g.check)}</p>
+        <div class="jt-cc-chips">
+          <a class="jt-cc-chip" href="${L.calculator.href}">${esc(L.calculator.label)}</a>
+          <a class="jt-cc-chip" href="${L.appeal.href}">${esc(L.appeal.label)}</a>
+          <a class="jt-cc-chip" href="${L.kakao.href}" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','acqhub_${esc(g.id)}')">${esc(L.kakao.label)}</a>
+${articleLinks}
+        </div>
+      </section>`).join('\n');
+  return headHtml({
+    title: `${ACQ_HUB.metaTitle} | ${FIRM}`, desc: ACQ_HUB.metaDesc, keywords: ACQ_HUB.keywords, url,
+    ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['취득세', url]])],
+  }) + `
+  <main class="jt-cc-wrap">
+    <nav class="jt-cc-crumb"><a href="/">홈</a> › 취득세</nav>
+    <h1>${esc(ACQ_HUB.h1)}</h1>
+    <p class="jt-cc-lede">${esc(ACQ_HUB.lede)}</p>
+    <div class="jt-cc-grid">
+${groups}
+    </div>
+
+    <section class="jt-cc-sec">
+      <h2>계산할 수 있는 범위와, 자료를 봐야 하는 범위</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">계산기는 입력하신 사실관계를 검증된 계산 엔진에 그대로 넘겨 금액을 냅니다. 다만 감면 요건(나이·소득·주택 가액·기존 주택 처분 여부 등)과 시·도 조례에 따른 추가 경감은 계산에 넣지 않습니다. 결과 화면이 「이 계산에 넣지 않은 것」으로 그 목록을 함께 보여 드리며, 그 부분은 자료를 봐야 판단할 수 있습니다.</p>
+      <div class="jt-cc-chips" style="margin-top:12px;">
+        <a class="jt-cc-chip" href="${L.calculator.href}">${esc(L.calculator.label)}</a>
+        <a class="jt-cc-chip" href="/calculators/">다른 세금 계산기</a>
+        <a class="jt-cc-chip" href="/insights/">인사이트 전체</a>
+      </div>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>소재지 시·도 감면 조례 원문 찾기</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">시·도마다 「도세(시세) 감면 조례」가 따로 있습니다. 계산기에서 물건이 있는 시·도를 고르면 그 조례의 원문 위치를 안내해 드립니다. 조례 내용은 세액 계산에 넣지 않습니다.</p>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>취득세 관련 글</h2>
+      <div class="jt-cc-chips">
+${articleLinks}
+      </div>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>중개사·법무사께</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">고객에게 계산기 링크를 그대로 건네셔도 됩니다. 등기 전에 확인할 쟁점이 있으면 아래 안내를 참고하세요.</p>
+      <div class="jt-cc-chips" style="margin-top:12px;">
+        <a class="jt-cc-chip" href="/desk/broker.html">중개사 데스크</a>
+        <a class="jt-cc-chip" href="/desk/scrivener.html">법무사 데스크</a>
+      </div>
+    </section>
+
+    <p style="font-size:16px;line-height:1.75;color:#333;">${esc(ACQ_HUB.closing)}</p>
+
+${DISCLAIMER}
+${CTA_BOTTOM}
+  </main>
+${footerHtml()}
+</body>
+</html>`;
+}
+
 /* ── 실행 ──────────────────────────────────────────────────────── */
 async function main() {
   const svcDir = join(REPO_ROOT, 'services');
@@ -631,7 +722,10 @@ async function main() {
   await writeFile(join(aboutDir, 'index.html'), renderAboutPage()); n++;
   await writeFile(join(REPO_ROOT, 'consult.html'), renderConsultPage()); n++;
   await writeFile(join(REPO_ROOT, 'creators.html'), renderCreatorsPage()); n++;
-  console.log(`✓ 상업 랜딩 ${n}장 생성 → /services /experts /about /consult.html /creators.html`);
+  const acqDir = join(REPO_ROOT, ACQ_HUB.path);
+  await mkdir(acqDir, { recursive: true });
+  await writeFile(join(acqDir, 'index.html'), renderAcquisitionHub()); n++;
+  console.log(`✓ 상업 랜딩 ${n}장 생성 → /services /experts /about /consult.html /creators.html /${ACQ_HUB.path}/`);
   const total = await writeSitemap(REPO_ROOT, SITE);
   console.log(`✓ sitemap.xml 갱신 (${total} URL)`);
 }

@@ -198,6 +198,14 @@ ${faqHtml}
       <a href="${appUrl}" class="jt-btn jt-btn--primary">${esc(c.h1)}로 계산하기 →</a>
     </div>
 
+${c.slug === 'acquisition-tax' ? `    <section class="jt-cc-sec">
+      <h2>내 경우는 어디에 해당하나</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">취득한 이유(매매·증여·상속·신축·공매·재산분할)와 물건 종류, 등기 명의에 따라 확인할 것이 달라집니다. 여섯 가지 상황으로 나눠 두었으니 내 경우에 가까운 것을 골라 보세요.</p>
+      <div class="jt-cc-chips" style="margin-top:12px;">
+        <a class="jt-cc-chip" href="/acquisition-tax/">취득세, 내 상황부터 확인하기 →</a>
+      </div>
+    </section>` : ''}
+
 ${relatedHtml}
 
     <section class="jt-cc-sec">
@@ -289,7 +297,16 @@ ${GA_HEAD_SNIPPET}
     <div class="jt-ci-grid">
 ${cards}
     </div>
-    <div style="margin-top:40px;display:flex;gap:12px;flex-wrap:wrap;">
+    <!-- 취득세 허브로 들어오는 링크 (260921) — 계산기 목록은 «계산 의도»,
+         허브는 «내 경우가 어디에 해당하는지» 의도를 받는다 -->
+    <p style="margin:32px 0 0;font-size:15px;line-height:1.7;color:#444;">
+      취득세는 취득한 이유·물건·명의에 따라 확인할 것이 달라집니다 —
+      <a href="/acquisition-tax/" style="color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">취득세, 내 상황부터 확인하기 →</a>
+    </p>
+    <p style="margin:10px 0 0;font-size:15px;line-height:1.7;color:#444;">
+      세금 주제별 해설은 <a href="/insights/" style="color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">인사이트</a>에 모아 두었습니다.
+    </p>
+    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/report" class="jt-btn jt-btn--primary">계산기 허브 열기 →</a>
       <a href="/#/booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_index')">세무사 상담</a>
     </div>

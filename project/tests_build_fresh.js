@@ -26,7 +26,7 @@ const isCI = !!(process.env.CI && process.env.CI !== 'false');
 /* ⚠️ 루트 단일 페이지(consult·creators)를 늘릴 때는 이 목록과 함께
    build-sitemap.mjs(rootSingles)·tests_static_shell.js(commercialRootSingles)도 같이 늘린다 —
    세 곳 중 하나만 빠져도 그 페이지는 해당 게이트에서 조용히 제외된다 (코덱스 021-R1-F1). */
-const TARGETS = ['insights', 'calculators', 'services', 'experts', 'about', 'consult.html', 'creators.html', 'sitemap.xml', 'project/src/Data.jsx', 'project/dist'];  // 260830 상업 랜딩 추가 (코덱스 017-R2-F1) + creators (021-R1-F1)
+const TARGETS = ['insights', 'calculators', 'services', 'experts', 'about', 'acquisition-tax', 'consult.html', 'creators.html', 'sitemap.xml', 'project/src/Data.jsx', 'project/dist'];  // 260830 상업 랜딩 추가 (코덱스 017-R2-F1) + creators (021-R1-F1) + 취득세 허브 (260921)
 
 function sh(cmd) {
   return execSync(cmd, { cwd: require('path').join(__dirname, '..'), encoding: 'utf8' });
