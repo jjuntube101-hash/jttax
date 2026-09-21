@@ -545,7 +545,7 @@ window.JTReportHub = JTReportHub;
 // ============ 라우터 (허브 ↔ 각 진단) ============
 /* ★ 새 계산기를 추가하면 «반드시» 이 배열에도 키를 넣을 것.
    빠뜨리면 딥링크가 조용히 허브로 리다이렉트되고 에러도 안 난다(260804 실측). */
-const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup', 'reform-cgt', 'reform-cre', 'crypto'];
+const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'acq-check', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup', 'reform-cgt', 'reform-cre', 'crypto'];
 const jtNormSub = (s) => (JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : 'hub'); // 모르는 계산기 키 → 허브 (깨진 공유링크 방어)
 
 function JTReportPage({ setRoute }) {
@@ -613,6 +613,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'gift' && <JTReportGift setRoute={setRoute} onBack={back} />}
       {subRoute === 'inheritance' && <JTReportInheritance setRoute={setRoute} onBack={back} />}
       {subRoute === 'acquisition' && <JTReportAcquisition setRoute={setRoute} onBack={back} />}
+      {subRoute === 'acq-check' && <JTReportAcqCheck setRoute={setRoute} onBack={back} />}
       {subRoute === 'property' && <JTReportProperty setRoute={setRoute} onBack={back} />}
       {subRoute === 'comprehensive' && <JTReportComprehensive setRoute={setRoute} onBack={back} />}
       {subRoute === 'corporate' && <JTReportCorporate setRoute={setRoute} onBack={back} />}

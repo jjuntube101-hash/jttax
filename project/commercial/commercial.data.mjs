@@ -414,6 +414,9 @@ export const ACQ_HUB = {
   links: {
     calculator: { href: '/calculators/acquisition-tax.html', label: '취득세 계산기' },
     appeal: { href: '/#/report/appeal', label: '경정청구 가능성 진단' },
+    // 260921 신설 — 「내가 낸 취득세 점검」 접수(재계산기 아님, 서류 점검 접수). 계산 그룹
+    // 칩에는 넣지 않는다(재계산과 헷갈릴 수 있어서) — 아래 별도 섹션 하나에서만 안내한다.
+    acqCheck: { href: '/#/report/acq-check', label: '이미 낸 취득세 점검 접수' },
     kakao: { href: 'https://pf.kakao.com/_CcxlJG/chat', label: '카카오톡으로 물어보기' },
     articles: [
       { slug: 'acquisition-tax-basics', title: '2026 주택 취득세율 — 6억 이하 1%·6억~9억 계산식·9억 초과 3%' },
