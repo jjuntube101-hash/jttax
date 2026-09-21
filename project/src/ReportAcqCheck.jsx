@@ -12,7 +12,7 @@
    ⛔ 동·호수, 주민등록번호, 파일 첨부는 받지 않는다(설계서 2-3).
 */
 
-const { useState: useAcqCkState } = React;
+const { useState: useAcqCkState, useRef: useAcqCkRef } = React;
 
 /* 접수번호 — 순번이 아니라 «추측하기 어려운» 무작위 문자열이어야 한다(설계서 2-3 ⑪ 인접 요구).
    R1-F4: Web Crypto 가 없는 환경에서는 접수번호를 만들지 않는다(null) — 예측 저항성이 없는
@@ -164,9 +164,33 @@ function buildAcqCheckPayload(f, receiptId) {
 }
 window.buildAcqCheckPayload = buildAcqCheckPayload;
 
+/* R4-F2: 제출 가드·전송 객체·메일 본문을 «순수 함수»로 뺀다 — 소스 정규식이 아니라 실제 실행으로
+   시험하기 위해서다(Object.assign(payload, f) 같은 변형은 정규식을 통과한다). submit 은 이 셋만 쓴다. */
+function acqCheckCanSubmit(f, receiptId, submitting) {
+  if (!receiptId || submitting) return false;
+  if (f.consent !== true || f.consentIntl !== true) return false;
+  if (ACQ_CHECK_CONTACT_METHODS.indexOf(f.contactMethod) < 0) return false;
+  if (f.contactMethod === '전화') return validateAcqCheckPhone(f.contactPhone).ok;
+  return true;
+}
+function buildAcqCheckRequest(f, receiptId, accessKey) {
+  const payload = buildAcqCheckPayload(f, receiptId);
+  return { access_key: accessKey, subject: payload._subject, from_name: '홈페이지 취득세 점검 접수', ...payload };
+}
+function buildAcqCheckMailBody(f, receiptId) {
+  const payload = buildAcqCheckPayload(f, receiptId);
+  return Object.keys(payload).map((k) => k + ': ' + payload[k]).join('\n');
+}
+window.acqCheckCanSubmit = acqCheckCanSubmit;
+window.buildAcqCheckRequest = buildAcqCheckRequest;
+window.buildAcqCheckMailBody = buildAcqCheckMailBody;
+
 function JTReportAcqCheck({ setRoute }) {
   const [f, setFRaw] = useAcqCkState(ACQ_CHECK_INIT);
-  const setAns = (id, v) => setFRaw((prev) => ({ ...prev, [id]: v }));
+  /* R4-F1: 전송 중에는 폼 값을 바꾸지 못한다 — 응답을 기다리는 사이 연락 방법을 바꾸면 «보낸 값»과
+     «완료 화면이 약속하는 것»이 어긋난다. 상태 갱신 자체를 막는다(입력란 개수와 무관하게 한 곳에서). */
+  const submittingRef = useAcqCkRef(false);
+  const setAns = (id, v) => setFRaw((prev) => (submittingRef.current ? prev : { ...prev, [id]: v }));
   const set = (k) => (e) => setAns(k, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
   const setMoney = (k) => (e) => window.jtSetNumericAns(setAns, k, e.target.value, true);
 
@@ -177,10 +201,12 @@ function JTReportAcqCheck({ setRoute }) {
   const [done, setDone] = useAcqCkState(false);
   const [error, setError] = useAcqCkState('');
   const [copied, setCopied] = useAcqCkState(false);
+  const [sentMethod, setSentMethod] = useAcqCkState('');   // R4-F1: «실제로 보낸» 연락 방법 — 완료 화면은 이것만 본다
 
   // R2-F3: 연락 방법이 「전화」일 때만 형식을 검증한다(카카오톡은 별도 흐름)
   const phoneCheck = f.contactMethod === '전화' ? validateAcqCheckPhone(f.contactPhone) : { ok: true, digits: '' };
   const togglePostHistoryItem = (item) => setFRaw((prev) => {
+    if (submittingRef.current) return prev;
     const has = prev.postHistoryItems.includes(item);
     return { ...prev, postHistoryItems: has ? prev.postHistoryItems.filter((x) => x !== item) : [...prev.postHistoryItems, item] };
   });
@@ -189,8 +215,7 @@ function JTReportAcqCheck({ setRoute }) {
      (설계서 2-3: 「금액을 다 채우지 못해도 접수됩니다」). 연락 방법만은 예외다 — 접수 자체가
      「자료를 보고 연락드립니다」이므로 연락할 방법이 없으면 접수의 의미가 없다.
      R1-F4·R2-F3: 접수번호가 만들어졌고(크립토 가용), 전화번호 형식이 맞을 때만 제출을 허용한다. */
-  const canSubmit = !!receiptId && f.consent && f.consentIntl && !!f.contactMethod
-    && (f.contactMethod !== '전화' || (f.contactPhone.trim() && phoneCheck.ok)) && !submitting;
+  const canSubmit = acqCheckCanSubmit(f, receiptId, submitting);   // f.consent · f.consentIntl 둘 다 true 여야 한다(순수 함수, R4-F2)
 
   const copyReceiptId = () => {
     try {
@@ -202,29 +227,32 @@ function JTReportAcqCheck({ setRoute }) {
 
   const submit = async () => {
     if (!canSubmit) return;
+    submittingRef.current = true;
     setSubmitting(true); setError('');
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     /* R3-F1·F3: 이 접수에는 공용 유입정보(jtAttributionFields)를 «합치지 않는다».
        utm_* 는 URL 에서 온 사용자 제어 문자열이라 불변식(자유 문자열 0)을 깨고, 세션 식별자(접수ID)는
        이 화면의 동의 문구에 고지하지 않았다. 제출 본문은 buildAcqCheckPayload 의 반환값이 «전부»다. */
     const payload = buildAcqCheckPayload(f, receiptId);
+    const frozen = f;   // 이 시점의 값으로만 보낸다
     let sent = false;
     try {
       if (w3fKey && !w3fKey.includes('REPLACE')) {
         const res = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, from_name: '홈페이지 취득세 점검 접수', ...payload }),
+          body: JSON.stringify(buildAcqCheckRequest(frozen, receiptId, w3fKey)),
         });
         const data = await res.json().catch(() => ({}));
         // 200 + {} 를 성공으로 보면 안 된다 — Web3Forms 는 success 필드로 판정한다
         sent = !!(res.ok && data && data.success === true);
         if (!sent) throw new Error('submit_failed');
       } else {
-        const body = Object.entries(payload).map(([k, v]) => `${k}: ${v}`).join('\n');
+        const body = buildAcqCheckMailBody(frozen, receiptId);
         window.location.href = `mailto:${window.JT_DATA.firm.email}?subject=${encodeURIComponent(payload._subject)}&body=${encodeURIComponent(body)}`;
         throw new Error('mailto_fallback');
       }
+      setSentMethod(payload.연락방법);
       setDone(true);
     } catch (e) {
       const D = window.JT_DATA.firm;
@@ -234,6 +262,7 @@ function JTReportAcqCheck({ setRoute }) {
           : `전송에 실패했습니다. 전화(${D.phone}) 또는 카카오톡으로 다시 시도해 주세요. 접수번호는 ${receiptId} 입니다.`
       );
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
     }
   };
@@ -252,7 +281,7 @@ function JTReportAcqCheck({ setRoute }) {
             <div className="jt-kicker">RECEIPT — #{receiptId}</div>
             {/* R1-F2: 카카오톡을 고르면 저희 쪽에서 먼저 연락할 방법이 없다 — 「먼저 연락드립니다」를
                 약속하지 않고, 채널에서 접수번호를 보내야 접수가 이어진다는 사실을 안내한다. */}
-            {f.contactMethod === '카카오톡 채널' ? (
+            {sentMethod === '카카오톡 채널' ? (
               <>
                 <h2 className="jt-h2">카카오톡 채널에서 접수 번호를 보내 주세요.</h2>
                 <p className="jt-body">

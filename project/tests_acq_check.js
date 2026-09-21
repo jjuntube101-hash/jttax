@@ -61,7 +61,7 @@ function loadAcqCheckModule() {
   if (compIdx < 0) throw new Error('JTReportAcqCheck 를 찾지 못했습니다');
   const header = acqCheckSrc.slice(0, compIdx);
   const names = ['buildAcqCheckPayload', 'validateAcqCheckPhone', 'validateAcqCheckDate', 'acqCheckPick',
-    'acqCheckMoneyValue', 'acqCheckGenId', 'ACQ_CHECK_REGIONS', 'ACQ_CHECK_POST_HISTORY_ITEMS',
+    'acqCheckMoneyValue', 'acqCheckGenId', 'acqCheckCanSubmit', 'buildAcqCheckRequest', 'buildAcqCheckMailBody', 'ACQ_CHECK_REGIONS', 'ACQ_CHECK_POST_HISTORY_ITEMS',
     'ACQ_CHECK_ACQUISITION_TYPES', 'ACQ_CHECK_PROPERTY_TYPES', 'ACQ_CHECK_OWNERSHIP_TYPES',
     'ACQ_CHECK_NOTICE_TYPES', 'ACQ_CHECK_INFO_SOURCES', 'ACQ_CHECK_CONTACT_METHODS'];
   // eslint-disable-next-line no-new-func
@@ -299,7 +299,7 @@ console.log('\n════ (k) R2-F3 — 전화번호: 허용 문자 전체 검
   let d = 1, j = di + doneHead.length;
   while (j < acqCheckSrc.length && d > 0) { const ch = acqCheckSrc[j]; if (ch === '{') d++; else if (ch === '}') d--; j++; }
   const doneBlock = acqCheckSrc.slice(di, j);
-  const kakaoBranch = (doneBlock.match(/f\.contactMethod === '카카오톡 채널' \? \(([\s\S]*?)\) : \(/) || ['', ''])[1];
+  const kakaoBranch = (doneBlock.match(/sentMethod === '카카오톡 채널' \? \(([\s\S]*?)\) : \(/) || ['', ''])[1];
   eq('완료 화면에 카카오톡 분기를 찾았다', kakaoBranch.length > 0, true);
   eq('카카오톡 분기에 「자료를 보고 세무사가 연락드립니다」(전화 전용 문구)가 없다',
      kakaoBranch.includes('자료를 보고 세무사가 연락드립니다'), false);
@@ -446,6 +446,63 @@ console.log('\n════ (R3) 제출 본문은 buildAcqCheckPayload 의 반�
   eq('동의 문구가 유입 경로 정보를 보낸다고 적지 않는다', /유입 매체|첫 방문 경로|제출 위치/.test(code), false);
   eq('처리방침이 취득세 점검 접수에는 유입 경로 정보를 보내지 않는다고 적는다',
      /취득세 점검 접수는 접수번호\(임의 생성\)와 접수 시각만 함께 전송하며 유입 경로 정보는 보내지 않습니다/.test(legalSrc), true);
+}
+
+console.log('\n════ (R4) 제출 가드·전송 객체·메일 본문을 «실행해서» 검사한다 ════');
+{
+  /* R4-F2: 소스 정규식은 Object.assign(payload, f) 나 {...payload, ...rawForm} 같은 변형을 통과시킨다.
+     그래서 submit 이 쓰는 세 순수 함수를 실제로 실행해 결과를 본다 + submit 이 그 셋 말고는
+     전송 내용을 만들지 않음을 확인한다. */
+  const RID = 'ACQCK-TEST00000000';
+  const DIRTY = '서울 강남구 테헤란로 123 101동 202호 900101-1234567';
+  const dirty = { acqDateType: DIRTY, acqDate: DIRTY, sido: DIRTY, acquisitionType: DIRTY, propertyType: DIRTY, ownership: DIRTY,
+    reportedAcqTax: DIRTY, reportedEduTax: DIRTY, reportedFarmTax: DIRTY, reportedTotal: DIRTY, paidAmount: DIRTY, paidDate: DIRTY,
+    postHistory: DIRTY, postHistoryItems: [DIRTY], noticeType: DIRTY, noticeDate: DIRTY, infoSource: DIRTY,
+    contactMethod: '전화', contactPhone: '010-1234-5678', consent: true, consentIntl: true, extraField: DIRTY };
+  const req = M.buildAcqCheckRequest(dirty, RID, 'KEY');
+  const base = M.buildAcqCheckPayload(dirty, RID);
+  const strip = (o) => { const c = { ...o }; delete c.접수시각; return c; };   // 시각은 호출마다 다를 수 있다
+  eq('전송 객체의 키 = 빌더 키 + access_key·subject·from_name',
+     Object.keys(req).sort(), Object.keys(base).concat(['access_key', 'subject', 'from_name']).sort());
+  eq('전송 객체의 값이 빌더 반환값과 같다', strip(Object.fromEntries(Object.entries(req).filter(([k]) => !['access_key', 'subject', 'from_name'].includes(k)))), strip(base));
+  const ser = JSON.stringify(req) + '\n' + M.buildAcqCheckMailBody(dirty, RID);
+  for (const frag of ['테헤란로', '101동', '900101', '강남구', 'extraField']) {
+    eq(`오염 문자열 조각 「${frag}」 이 전송 객체·메일 본문 어디에도 없다`, ser.includes(frag), false);
+  }
+  const mailKeys = M.buildAcqCheckMailBody(dirty, RID).split('\n').map((l) => l.split(': ')[0]).sort();
+  eq('메일 본문의 키 = 빌더 키', mailKeys, Object.keys(base).sort());
+
+  // 동의 네 조합 × 연락 방법 — 실제 호출 결과로 검증
+  const ok = { consent: true, consentIntl: true, contactMethod: '카카오톡 채널', contactPhone: '' };
+  eq('두 동의 + 카카오톡 → 제출 가능', M.acqCheckCanSubmit(ok, RID, false), true);
+  eq('수집 동의만 → 불가', M.acqCheckCanSubmit({ ...ok, consentIntl: false }, RID, false), false);
+  eq('국외 이전 동의만 → 불가', M.acqCheckCanSubmit({ ...ok, consent: false }, RID, false), false);
+  eq('동의 없음 → 불가', M.acqCheckCanSubmit({ ...ok, consent: false, consentIntl: false }, RID, false), false);
+  eq("동의가 true 가 아닌 참 같은 값('yes') → 불가", M.acqCheckCanSubmit({ ...ok, consent: 'yes' }, RID, false), false);
+  eq('접수번호 없음 → 불가', M.acqCheckCanSubmit(ok, null, false), false);
+  eq('전송 중 → 불가(이중 제출 방지)', M.acqCheckCanSubmit(ok, RID, true), false);
+  eq('연락 방법 미선택 → 불가', M.acqCheckCanSubmit({ ...ok, contactMethod: '' }, RID, false), false);
+  eq('허용 목록 밖 연락 방법 → 불가', M.acqCheckCanSubmit({ ...ok, contactMethod: '이메일' }, RID, false), false);
+  eq('전화 + 형식 틀림 → 불가', M.acqCheckCanSubmit({ ...ok, contactMethod: '전화', contactPhone: '주소: 역삼동 010-1234-5678' }, RID, false), false);
+  eq('전화 + 형식 맞음 → 가능', M.acqCheckCanSubmit({ ...ok, contactMethod: '전화', contactPhone: '010-1234-5678' }, RID, false), true);
+
+  // submit 은 위 함수들 말고는 전송 내용을 만들지 않는다
+  const code = stripComments(acqCheckSrc);
+  const submitFn = (code.match(/const submit = async \(\) => \{([\s\S]*?)\n  \};/) || ['', ''])[1];
+  eq('fetch 본문은 buildAcqCheckRequest 의 직렬화다', /body:\s*JSON\.stringify\(buildAcqCheckRequest\(frozen, receiptId, w3fKey\)\)/.test(submitFn), true);
+  eq('메일 본문은 buildAcqCheckMailBody 다', /const body = buildAcqCheckMailBody\(frozen, receiptId\);/.test(submitFn), true);
+  eq('submit 안에 Object.assign 이 없다', /Object\.assign/.test(submitFn), false);
+  eq('submit 안에 객체 펼침(...)이 없다', /\.\.\./.test(submitFn), false);
+  eq('submit 안에서 JSON.stringify 는 1번뿐이다', (submitFn.match(/JSON\.stringify\(/g) || []).length, 1);
+  eq('canSubmit 은 acqCheckCanSubmit 의 결과다', /const canSubmit = acqCheckCanSubmit\(f, receiptId, submitting\);/.test(code), true);
+
+  // R4-F1: 완료 화면은 «보낸» 연락 방법을 보고, 전송 중에는 폼 값이 바뀌지 않는다
+  eq('완료 화면 분기가 sentMethod 를 본다', /sentMethod === '카카오톡 채널'/.test(code), true);
+  const doneIdx = code.indexOf('if (done) {');
+  eq('완료 화면이 현재 입력(f.contactMethod)을 보지 않는다', /f\.contactMethod/.test(code.slice(doneIdx, doneIdx + 3000)), false);
+  eq('성공 시 보낸 연락 방법을 저장한다', /setSentMethod\(payload\.연락방법\);\s*\n\s*setDone\(true\);/.test(code), true);
+  eq('전송 중에는 상태 갱신을 막는다(setAns)', /submittingRef\.current \? prev :/.test(code), true);
+  eq('전송 중에는 체크박스 토글도 막는다', /if \(submittingRef\.current\) return prev;/.test(code), true);
 }
 
 console.log('\n════════════════════');
