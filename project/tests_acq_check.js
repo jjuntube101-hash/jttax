@@ -199,19 +199,31 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
   try { noCryptoValue = fn(); } catch (_e) { threw = true; }
   eq('crypto 없음 · 값을 돌려주지 않는다(null 또는 예외)', threw || noCryptoValue == null, true);
 
-  // crypto.getRandomValues 가 있는 정상 경로는 여전히 「추측하기 어려운」 성질을 지킨다
+  // crypto.getRandomValues 가 있는 정상 경로는 여전히 「추측하기 어려운」 성질을 지킨다.
+  /* 260922: 난수를 «고정 바이트»로 주입한다. 종전에는 Math.random 으로 채우고 결과가 /^\d+$/ 이면
+     FAIL 이었는데, 정상 구현도 바이트가 우연히 전부 0~9 로만 36진 표기되면(실측 약 2,000회에 1회)
+     숫자만 나와 게이트가 간헐 실패했다. 「순번이 아니다」는 형식이 아니라 «출력이 주입한 난수
+     바이트만으로 정해지는가»로 본다 — 순번·시각이 섞였다면 같은 바이트에서 값이 달라진다. */
+  let fillByte = 0xAB;
+  const rngCalls = [];
   const fakeWindow = {
     Uint8Array: Uint8Array,
-    crypto: { getRandomValues: (arr) => { for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256); return arr; } },
+    crypto: { getRandomValues: (arr) => { rngCalls.push(arr.length); arr.fill(fillByte); return arr; } },
   };
   // eslint-disable-next-line no-new-func
   const fn2 = new Function('window', genIdChunk + '\n;return acqCheckGenId;')(fakeWindow);
-  const c = fn2();
-  const d = fn2();
-  eq('crypto 경로 · 접두사 ACQCK-', c.indexOf('ACQCK-'), 0);
-  eq('crypto 경로 · 두 번 만들면 서로 다르다 (순번이면 예측 가능해진다)', c !== d, true);
-  eq('crypto 경로 · 길이가 12자를 넘는다 (추측하기 어려운 길이)', c.length > 12, true);
-  eq('crypto 경로 · 숫자만으로 된 순번 형태가 아니다', /^\d+$/.test(c.replace('ACQCK-', '')), false);
+  const a1 = fn2();
+  const a2 = fn2();
+  fillByte = 0xCD;
+  const b1 = fn2();
+  eq('crypto 경로 · 접두사 ACQCK-', String(a1).indexOf('ACQCK-'), 0);
+  eq('crypto 경로 · getRandomValues 를 호출마다 부른다', rngCalls.length, 3);
+  eq('crypto 경로 · 난수를 8바이트 이상 받는다 (추측하기 어려운 양)', rngCalls.length > 0 && rngCalls.every((n) => n >= 8), true);
+  eq('crypto 경로 · 같은 바이트면 같은 값 (순번·시각이 섞이지 않았다)', a1 === a2, true);
+  eq('crypto 경로 · 바이트가 다르면 값이 다르다 (입력 바이트가 출력에 반영된다)', a1 !== b1, true);
+  eq('crypto 경로 · 길이가 12자를 넘는다 (추측하기 어려운 길이)', String(a1).length > 12 && String(b1).length > 12, true);
+  eq('crypto 경로 · 고정 바이트 0xAB 에서 숫자만으로 된 형태가 아니다 (10진 순번식 표기가 아니다)',
+     /^\d+$/.test(String(a1).replace('ACQCK-', '')), false);
 }
 
 console.log('\n════ (h) 라우팅 배선 — JT_KNOWN_SUBS·번들 ORDER·라우터 렌더 ════');
