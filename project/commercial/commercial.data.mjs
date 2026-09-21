@@ -378,6 +378,25 @@ export const ACQ_HUB = {
       title: '집을 산 개인',
       lead: '매매·분양으로 주택을 취득한 개인.',
       check: '이런 경우라면 확인이 필요합니다 — 취득 후 보유하게 되는 주택이 몇 채인지, 물건이 조정대상지역에 있는지, 전용면적이 얼마인지, 받을 수 있는 감면이 있는지.',
+      /* 260921 글 묶음 1차(근거표 GT-1·GT-2) — slug 만 적는다. 제목은 빌더가 원고(md)의
+         frontmatter 에서 읽는다(제목을 두 곳에 적으면 한쪽이 낡는다). 없는 slug 는 빌드를 멈춘다.
+         여기에는 «사기 전에 묻는 질문»과 «이미 낸 뒤에 묻는 질문»을 둔다. 구청과 어긋난 뒤의
+         질문은 아래 recapture 묶음에 둔다. */
+      articleGroups: [
+        { label: '사기 전에', slugs: [
+          'acquisition-tax-household-separate-family', 'acquisition-tax-acquisition-date',
+          'acquisition-tax-temporary-two-houses', 'acquisition-tax-house-count',
+          'acquisition-tax-first-home-reduction', 'acquisition-tax-first-home-no-house-test',
+          'acquisition-tax-childbirth-reduction', 'acquisition-tax-newlywed-reduction-ended',
+        ] },
+        { label: '이미 냈다면', slugs: [
+          'acquisition-tax-correction-claim-deadline',
+          'acquisition-tax-household-overpaid', 'acquisition-tax-acquisition-date-overpaid',
+          'acquisition-tax-temporary-two-houses-overpaid', 'acquisition-tax-house-count-inherited-share',
+          'acquisition-tax-reduction-missed-claim', 'acquisition-tax-first-home-inherited-share',
+          'acquisition-tax-childbirth-reduction-missed', 'acquisition-tax-newlywed-reduction-past',
+        ] },
+      ],
     },
     {
       id: 'business-corporate',
@@ -408,6 +427,15 @@ export const ACQ_HUB = {
       title: '추징 통지를 받은 사람',
       lead: '감면받은 취득세를 다시 내라는 통지나, 세액이 더 나왔다는 고지를 받은 경우.',
       check: '이런 경우라면 확인이 필요합니다 — 받은 문서가 어떤 종류인지(안내문·고지서·과세예고), 언제 받았는지, 어떤 사유가 적혀 있는지. 문서 종류를 모르면 대응 절차와 기한을 판단할 수 없습니다.',
+      articleGroups: [
+        { label: '구청과 판단이 갈렸다면', slugs: [
+          'acquisition-tax-correction-claim-rejected',
+          'acquisition-tax-household-dispute', 'acquisition-tax-acquisition-date-dispute',
+          'acquisition-tax-temporary-two-houses-dispute', 'acquisition-tax-house-count-dispute',
+          'acquisition-tax-first-home-recapture', 'acquisition-tax-first-home-no-house-dispute',
+          'acquisition-tax-childbirth-one-house-dispute',
+        ] },
+      ],
     },
   ],
   /* 묶음마다 같은 네 갈래로 연결한다 — 계산기 / 관련 글 2편 / 경정청구 진단 / 카톡 상담 */

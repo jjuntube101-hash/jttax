@@ -14,6 +14,7 @@
 // ⛔ 광고규제(세무사법 §12조의7·시행령 §33): 확인되지 않은 실적 수치·우월 표현·결과 단정 금지.
 
 import { writeFile, mkdir } from 'node:fs/promises';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SERVICES, EXPERTS, TEAM_MODEL, ABOUT, CONSULT, CREATORS, ACQ_HUB } from './commercial.data.mjs';
@@ -21,6 +22,7 @@ import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 import { footerHtml, stylesHref, ogImageHref } from '../_shared/site-meta.mjs';
+import { insightSlug } from '../_shared/insight-slug.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));   // project/commercial
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -48,6 +50,34 @@ function calcBySlug(slug, where) {
   const c = CALCULATORS.find(x => x.slug === slug);
   if (!c) throw new Error(`[${where}] 알 수 없는 계산기 슬러그 "${slug}"`);
   return c;
+}
+/* 인사이트 글 — slug → 제목. 제목의 정본은 원고(md) frontmatter 하나다.
+   허브 데이터에는 slug 만 적고 제목은 여기서 읽는다. 원고가 없는 slug 는 빌드를 멈춘다. */
+let _insightTitles = null;
+function insightTitleBySlug(slug, where) {
+  if (!_insightTitles) {
+    _insightTitles = new Map();
+    const dir = join(__dirname, '..', 'insights');
+    for (const f of readdirSync(dir)) {
+      if (!f.endsWith('.md') || f.startsWith('README')) continue;
+      const src = readFileSync(join(dir, f), 'utf8').replace(/\r\n?/g, '\n');
+      const m = src.match(/^---\n([\s\S]*?)\n---\n/);
+      if (!m) continue;
+      const meta = {};
+      for (const line of m[1].split('\n')) {
+        const i = line.indexOf(':');
+        if (i < 0) continue;
+        let v = line.slice(i + 1).trim();
+        if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
+        meta[line.slice(0, i).trim()] = v;
+      }
+      if (meta.title) _insightTitles.set(insightSlug(f, meta.slug), meta.title);
+    }
+  }
+  assertSlug(slug, where);
+  const t = _insightTitles.get(slug);
+  if (!t) throw new Error(`[${where}] 인사이트 원고가 없는 슬러그 "${slug}"`);
+  return t;
 }
 function serviceBySlug(slug, where) {
   const s = SERVICES.find(x => x.slug === slug);
@@ -634,6 +664,12 @@ function renderAcquisitionHub() {
   };
   const articleLinks = L.articles.map((r) =>
     `          <a class="jt-cc-chip" href="/insights/${assertSlug(r.slug, 'ACQ_HUB.links.articles')}.html">${esc(r.title)}</a>`).join('\n');
+  /* 묶음에 딸린 글(260921 글 묶음 1차) — 칩이 아니라 목록으로 둔다(글이 많아 칩으로는 읽히지 않는다) */
+  const groupArticlesHtml = (g) => (g.articleGroups || []).map((ag) => `        <p style="margin:16px 0 6px;font-size:13px;color:#777;">${esc(ag.label)}</p>
+        <ul style="margin:0;padding-left:18px;font-size:15px;line-height:1.8;">
+${ag.slugs.map((sl) => `          <li><a href="/insights/${sl}.html" style="color:#1a1a1a;">${esc(insightTitleBySlug(sl, `ACQ_HUB.groups.${g.id}.articleGroups`))}</a></li>`).join('\n')}
+        </ul>
+`).join('');
   const groups = ACQ_HUB.groups.map((g, i) => `      <section class="jt-cc-card" id="${esc(g.id)}">
         <p style="margin:0 0 4px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;color:#999;">${String(i + 1).padStart(2, '0')}</p>
         <h2 style="font-size:19px;margin:0 0 6px;border:0;padding:0;">${esc(g.title)}</h2>
@@ -645,7 +681,7 @@ function renderAcquisitionHub() {
           <a class="jt-cc-chip" href="${L.kakao.href}" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','acqhub_${esc(g.id)}')">${esc(L.kakao.label)}</a>
 ${articleLinks}
         </div>
-      </section>`).join('\n');
+${groupArticlesHtml(g)}      </section>`).join('\n');
   return headHtml({
     title: `${ACQ_HUB.metaTitle} | ${FIRM}`, desc: ACQ_HUB.metaDesc, keywords: ACQ_HUB.keywords, url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['취득세', url]])],
