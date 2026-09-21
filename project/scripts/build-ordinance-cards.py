@@ -1,12 +1,24 @@
 # -*- coding: utf-8 -*-
-"""시·도 감면 조례 «원문 안내» 카드 스냅샷 생성 (260921 파일럿 1장)
+"""시·도 감면 조례 «원문 안내» 카드 생성 — 17개 시도 전체 (260921 오너 결재로 파일럿 1장→확대)
 
   python project/scripts/build-ordinance-cards.py
 
 무엇을 하나
-  법제처 자치법규 API(jt-law-mcp 의 tools.ordinance)로 「경기도 도세 감면 조례」 제6조를
-  받아, 식별자(조례명·자치법규일련번호·시행일자·공포번호)와 조문 «원문», 조회한 날짜,
-  법제처 원문 링크를 project/data/ordinance-cards.json 에 기록한다.
+  17개 시도 전부에 대해 법제처 자치법규 API(jt-law-mcp 의 tools.acquisition_bundle
+  ._find_sido_ordinance → 내부에서 tools.ordinance.search_ordinance·get_ordinance_detail·
+  tools.acquisition_bundle._find_sido_ordinance_names 를 그대로 쓴다)로 그 시도의
+  「○○시세/도세 감면 조례」의 «오늘 기준 현행» 본문을 받는다.
+  그 조례의 조문 전체 중에서 조내용(원문)에 「제78조」와 「산업단지」가 «함께» 들어 있는
+  조문을 기계적 문자열 포함 검사로 찾는다 — 법령 해석·조문 번호 매핑은 하지 않는다.
+
+  정확히 1개일 때만 그 시도의 카드를 만든다.
+    - 0개  → 「해당 조문 없음」
+    - 2개+ → 「후보 여럿」(후보 조문 번호를 그대로 결과표에 적는다. 임의로 하나를 고르지 않는다)
+    - 조회 자체가 SELECTED 가 아니거나 partial·completeness 가 불완전을 가리키면
+      → 「조회 불완전」(「규정 없음」과 구분한다 — 예: 260921 실측 광주광역시·전라남도는
+      선택 가능한 계보가 REPEALED 라 대체 조례를 기계로 특정할 수 없었다)
+  스크립트는 개별 시도의 실패로 전체를 중단하지 않고, 끝에 17개 시도 결과표를 출력한다.
+  (경기도 도세 감면 조례 제6조가 이 확대의 원본 파일럿 1장이었다 — 260921.)
 
 ⛔ 이 파일의 내용은 «세액 계산에 절대 반영하지 않는다».
    조례의 경감률은 원문 안내용 텍스트일 뿐이며, 화면은 「이 계산에는 넣지 않았습니다」를
@@ -19,11 +31,6 @@
    파일을 쓰지 않고 실패한다. ③이 검사는 get_oc() 조회 성공 여부와 «무관하게» 항상 돈다.
    (260921 Codex R2-F6: 종전에는 검사가 `if oc:` 안에 있어, get_oc() 가 예외를 던지면
     OC 가 섞인 apiUrl 이 그대로 기록될 수 있었다.)
-
-불완전하면 «쓰지 않는다»
-   status != "OK" 이거나 completeness.complete 가 거짓이면 파일을 건드리지 않고 종료코드 1.
-   낡은 스냅샷을 남기는 편이, 반쪽짜리 원문을 「현행 원문」이라고 내보내는 것보다 낫다.
-   (조회일로부터 30일이 지나면 번들 빌드가 경고한다 — project/scripts/build_bundle.mjs)
 """
 import json
 import os
@@ -36,16 +43,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))              # project/scripts
 REPO_ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))    # 저장소 루트
 OUT_PATH = os.path.join(REPO_ROOT, "project", "data", "ordinance-cards.json")
 
-# 파일럿 1장 — 「1개 지역 × 검증된 쟁점 1개」(Astra R1-F11). 늘리기 전에 오너 결재.
-TARGETS = [
-    {
-        "region": "경기도",
-        "name": "경기도 도세 감면 조례",
-        "article_num": "6",
-        # 조문이 가리키는 상위 법령 — 화면의 「확인이 필요합니다」 안내가 이 조를 가리킨다.
-        "upstream": "지방세특례제한법 제78조",
-    },
+# 17개 시도 — project/src/ReportAcquisition.jsx 의 ACQ_REGIONS 와 «글자까지» 같아야 한다.
+# 시험 project/tests_acq_flow.js 가 두 목록을 대조한다(강원특별자치도·전북특별자치도·
+# 세종특별자치시·제주특별자치도 같은 최신 법정 명칭 포함).
+SIDOS = [
+    "서울특별시", "부산광역시", "대구광역시", "인천광역시", "광주광역시", "대전광역시", "울산광역시",
+    "세종특별자치시", "경기도", "강원특별자치도", "충청북도", "충청남도", "전북특별자치도", "전라남도",
+    "경상북도", "경상남도", "제주특별자치도",
 ]
+
+# 카드가 가리키는 상위 법령 — 화면의 「확인이 필요합니다」 안내가 이 조를 가리킨다.
+UPSTREAM = "지방세특례제한법 제78조"
+# 조문 본문(조내용)에 이 둘이 «함께» 있어야 후보로 본다. 기계적 문자열 포함 검사일 뿐이다.
+TARGET_TOKENS = ("제78조", "산업단지")
 
 # 사람이 열어 볼 법제처 원문 페이지 (260921 실측: 200 · title 「자치법규 > 경기도 도세 감면 조례」)
 VIEWER_URL = "https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq={serial}"
@@ -85,14 +95,45 @@ def strip_oc_deep(obj):
     return strip_oc(obj)
 
 
+def find_target_articles(articles):
+    """조내용(원문)에 TARGET_TOKENS 가 «모두» 들어 있는 조문만 골라 돌려준다.
+
+    법령 해석·조문 번호 매핑은 하지 않는다 — 단순 문자열 포함 검사다. 지방세특례제한법
+    제78조 위임에 따른 산업단지 추가 경감 조문은 시도마다 조 번호가 다르므로(제6조·제13조·
+    제8조의3 등, 260921 실측), 번호가 아니라 «본문에 무엇이 적혀 있는가»로 찾는다.
+    """
+    out = []
+    for a in articles:
+        body = a.get("조내용") or ""
+        if all(tok in body for tok in TARGET_TOKENS):
+            out.append(a)
+    return out
+
+
+def describe_incomplete(res):
+    """SELECTED 가 아니거나 불완전한 조회 결과를 사람이 읽을 한 줄로 요약한다."""
+    status = res.get("status") or "UNKNOWN"
+    reasons = res.get("reasons")
+    if reasons:
+        return "%s: %s" % (status, "; ".join(reasons))
+    hint = res.get("hint")
+    if hint:
+        return "%s: %s" % (status, hint)
+    comp = res.get("completeness") or {}
+    if comp.get("issues"):
+        return "%s: %s" % (status, "; ".join(comp["issues"]))
+    return status
+
+
 def main():
     if not os.path.isdir(JT_LAW_MCP):
         fail("jt-law-mcp 경로를 찾지 못했습니다: %s" % JT_LAW_MCP)
     sys.path.insert(0, JT_LAW_MCP)
     try:
-        from tools.ordinance import get_ordinance_detail, get_oc
+        from tools.ordinance import get_oc
+        from tools.acquisition_bundle import _find_sido_ordinance
     except Exception as e:  # noqa: BLE001
-        fail("tools.ordinance 를 불러오지 못했습니다: %s" % e)
+        fail("tools.ordinance / tools.acquisition_bundle 를 불러오지 못했습니다: %s" % e)
 
     oc = ""
     try:
@@ -101,51 +142,66 @@ def main():
         oc = ""
 
     today = datetime.date.today().isoformat()
+    today8 = today.replace("-", "")
     cards = {}
+    report = []  # [(시도, 버킷, 상세문구)]
 
-    for t in TARGETS:
-        res = get_ordinance_detail(region=t["region"], name=t["name"], article_num=t["article_num"])
+    for sido in SIDOS:
+        try:
+            res = _find_sido_ordinance(sido, today8)
+        except Exception as e:  # noqa: BLE001
+            report.append((sido, "조회 불완전", "조회 중 예외: %s" % e))
+            continue
+
         status = res.get("status")
-        if status != "OK":
-            fail("%s / %s 제%s조 — status=%s (%s)"
-                 % (t["region"], t["name"], t["article_num"], status, res.get("hint") or res.get("error") or ""))
         comp = res.get("completeness") or {}
-        if not comp.get("complete"):
-            fail("%s / %s 제%s조 — 조회가 불완전합니다(issues=%s). 반쪽 원문을 «현행»이라고 내보내지 않습니다."
-                 % (t["region"], t["name"], t["article_num"], comp.get("issues")))
+        if status != "SELECTED" or res.get("partial") or not comp.get("complete"):
+            report.append((sido, "조회 불완전", describe_incomplete(res)))
+            continue
 
         arts = res.get("articles") or []
-        if len(arts) != 1:
-            fail("%s 제%s조 — 조문이 %d건입니다(1건이어야 합니다)." % (t["name"], t["article_num"], len(arts)))
-        art = arts[0]
+        hits = find_target_articles(arts)
+        if len(hits) == 0:
+            report.append((sido, "해당 조문 없음",
+                            "「제78조」+「산업단지」를 포함한 조문이 없다(조문 %d개 중)" % len(arts)))
+            continue
+        if len(hits) >= 2:
+            labels = ", ".join(a.get("조표시") or "?" for a in hits)
+            report.append((sido, "후보 여럿", "후보: " + labels))
+            continue
+
+        art = hits[0]
         ident = res.get("identifiers") or {}
         serial = str(ident.get("자치법규일련번호") or "")
-        if not serial:
-            fail("%s — 자치법규일련번호를 읽지 못했습니다." % t["name"])
-
         body = (art.get("조내용") or "").strip()
+        if not serial:
+            report.append((sido, "조회 불완전", "자치법규일련번호를 읽지 못했다"))
+            continue
         if not body:
-            fail("%s 제%s조 — 조문 본문이 비었습니다." % (t["name"], t["article_num"]))
+            report.append((sido, "조회 불완전", "조문 본문이 비었다"))
+            continue
 
-        cards[t["region"]] = {
-            "region": t["region"],
-            "ordinanceName": ident.get("자치법규명") or t["name"],
+        accepted_names = res.get("accepted_names") or []
+        cards[sido] = {
+            "region": sido,
+            "ordinanceName": ident.get("자치법규명") or (accepted_names[0] if accepted_names else ""),
             "ordinanceSerial": serial,
             "ordinanceId": str(ident.get("자치법규ID") or ""),
             "effectiveDate": str(ident.get("시행일자") or ""),
             "promulgationDate": str(ident.get("공포일자") or ""),
             "promulgationNo": str(ident.get("공포번호") or ""),
             "revisionInfo": str(ident.get("제개정정보") or ""),
-            "articleLabel": art.get("조표시") or ("제%s조" % t["article_num"]),
+            "articleLabel": art.get("조표시") or "",
             "articleTitle": art.get("조제목") or "",
             "articleText": body,
-            "upstream": t["upstream"],
+            "upstream": UPSTREAM,
             "fetchedAt": today,
             "sourceUrl": VIEWER_URL.format(serial=serial),
             "apiUrl": res.get("source_url") or "",
             # 화면이 이 값을 계산에 쓰지 않는다는 사실을 데이터에도 박아 둔다.
             "appliedToCalculation": False,
         }
+        report.append((sido, "카드 생성", art.get("조표시") or ""))
 
     payload = {
         "_note": "법제처 자치법규 API 스냅샷. 세액 계산에 반영하지 않는다(원문 안내 전용). "
@@ -168,10 +224,14 @@ def main():
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
-    print("OK  조례 카드 %d장 -> %s (조회일 %s)" % (len(cards), os.path.relpath(OUT_PATH, REPO_ROOT), today))
-    for r, c in cards.items():
-        print("    %s / %s %s / 시행일 %s / 공포 제%s호 / 일련번호 %s"
-              % (r, c["ordinanceName"], c["articleLabel"], c["effectiveDate"], c["promulgationNo"], c["ordinanceSerial"]))
+
+    print("OK  조례 카드 %d/%d 시도 생성 -> %s (조회일 %s)"
+          % (len(cards), len(SIDOS), os.path.relpath(OUT_PATH, REPO_ROOT), today))
+    print()
+    print("시도별 결과:")
+    bucket_order = {"카드 생성": 0, "후보 여럿": 1, "해당 조문 없음": 2, "조회 불완전": 3}
+    for sido, bucket, detail in sorted(report, key=lambda r: (bucket_order.get(r[1], 9), r[0])):
+        print("  [%s] %s — %s" % (bucket, sido, detail))
 
 
 if __name__ == "__main__":

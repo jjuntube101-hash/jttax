@@ -401,6 +401,70 @@ console.log('\n════ ④ 조례 카드의 경감률이 매퍼 출력에 �
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+   ④-b 17개 시도 확대 (260921) — 카드마다 지켜야 할 다섯 가지
+   ══════════════════════════════════════════════════════════════════════ */
+console.log('\n════ ④-b 17개 시도 조례 카드 확대 ════');
+{
+  const JSON_PATH = path.join(__dirname, 'data', 'ordinance-cards.json');
+  const raw = fs.existsSync(JSON_PATH) ? fs.readFileSync(JSON_PATH, 'utf8') : '';
+  const data = raw ? JSON.parse(raw) : { cards: {} };
+  const entries = Object.entries(data.cards || {});
+
+  /* (a) 카드마다 필수 필드가 있고 원문이 비어 있지 않다 (articleTitle·upstream 포함) */
+  const REQUIRED_FIELDS = ['region', 'ordinanceName', 'ordinanceSerial', 'ordinanceId',
+    'effectiveDate', 'promulgationDate', 'promulgationNo', 'articleLabel', 'articleTitle',
+    'articleText', 'upstream', 'fetchedAt', 'sourceUrl'];
+  for (const [region, c] of entries) {
+    for (const k of REQUIRED_FIELDS) {
+      eq(`(a) 조례 [${region}] · ${k} 가 비어 있지 않다`, !!(c && String(c[k] || '').trim()), true);
+    }
+    eq(`(a) 조례 [${region}] · region 필드가 키와 같다`, c.region, region);
+  }
+
+  /* (b) 모든 카드 원문에 「제78조」와 「산업단지」가 들어 있다 */
+  for (const [region, c] of entries) {
+    const body = (c && c.articleText) || '';
+    eq(`(b) 조례 [${region}] 원문에 「제78조」가 있다`, body.includes('제78조'), true);
+    eq(`(b) 조례 [${region}] 원문에 「산업단지」가 있다`, body.includes('산업단지'), true);
+  }
+
+  /* (c) 카드 파일 어디에도 OC= 문자열이 없다 (apiUrl·sourceUrl 포함 전문 재검사) */
+  eq('(c) 조례 스냅샷 전체에 OC= 문자열이 없다', /OC=/i.test(raw), false);
+  for (const [region, c] of entries) {
+    eq(`(c) 조례 [${region}] · apiUrl 에 OC= 가 없다`, /OC=/i.test((c && c.apiUrl) || ''), false);
+    eq(`(c) 조례 [${region}] · sourceUrl 에 OC= 가 없다`, /OC=/i.test((c && c.sourceUrl) || ''), false);
+  }
+
+  /* (d) 시도 선택지(ACQ_REGIONS)와 카드 시도 이름이 «글자까지» 일치한다 */
+  const regionSet = new Set(M.ACQ_REGIONS);
+  for (const region of Object.keys(data.cards || {})) {
+    eq(`(d) 카드 시도명 [${region}] 이 ACQ_REGIONS 선택지에 글자까지 일치한다`, regionSet.has(region), true);
+  }
+  /* 최신 법정 명칭 4곳이 실제로 선택지에 있는가(퇴역 명칭으로 남아있지 않은가) */
+  for (const must of ['강원특별자치도', '전북특별자치도', '세종특별자치시', '제주특별자치도']) {
+    eq(`(d) ACQ_REGIONS 에 최신 명칭 [${must}] 이 있다`, M.ACQ_REGIONS.includes(must), true);
+  }
+
+  /* (e) 조회일이 30일을 넘으면 경고가 나오는 기존 동작이 유지되는가 (정적 검사 —
+     JSX 컴포넌트는 new Function 로 실행할 수 없으므로 ④ 와 같은 방식으로 소스만 본다) */
+  const cardSrcForStale = (() => {
+    const head = 'function JTAcqOrdinanceCard(';
+    const i = code.indexOf(head);
+    if (i < 0) return '';
+    const bodyStart = code.indexOf(') {', i);
+    if (bodyStart < 0) return '';
+    let d = 1, j = bodyStart + 3;
+    while (j < code.length && d > 0) { const ch = code[j]; if (ch === '{') d++; else if (ch === '}') d--; j++; }
+    return code.slice(i, j);
+  })();
+  eq('(e) 화면 컴포넌트가 30일 경과 판정을 그대로 갖고 있다', /daysSince\s*>\s*30/.test(cardSrcForStale), true);
+  eq('(e) 화면 컴포넌트가 「갱신 확인 필요」 경고 문구를 그대로 갖고 있다',
+     cardSrcForStale.includes('갱신 확인 필요'), true);
+  const bundleMjs = fs.readFileSync(path.join(__dirname, 'scripts', 'build_bundle.mjs'), 'utf8');
+  eq('(e) 번들 빌더가 조회일 30일 기준선을 그대로 갖고 있다', /ORDINANCE_STALE_DAYS\s*=\s*30/.test(bundleMjs), true);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
    ⑤ 허브로 «들어오는 길»이 있는가
    sitemap 에만 있고 들어오는 링크가 없으면 검색 계획이 아니다(Astra R1-F7).
    빌더 회귀로 링크가 조용히 빠지는 것을 막는다.
