@@ -140,7 +140,7 @@ console.log('\n════ (c) 동의 없이는 제출 함수가 호출되지 �
   eq('제출 버튼이 canSubmit 으로 disabled 된다', /disabled=\{!canSubmit\}/.test(acqCheckSrc), true);
   eq('제출 버튼이 submit 함수에 연결된다', /onClick=\{submit\}/.test(acqCheckSrc), true);
   eq('submit 이 payload 를 buildAcqCheckPayload(f, receiptId) 로 조립한다(순수 함수 재사용)',
-     /\.\.\.buildAcqCheckPayload\(f, receiptId\)/.test(submitFn), true);
+     /const payload = buildAcqCheckPayload\(f, receiptId\);/.test(submitFn), true);   // R3: 펼쳐 합치지 않고 단독 대입
 }
 
 console.log('\n════ (d) 소스에 자유 서술 입력란이 남아 있지 않다 ════');
@@ -401,6 +401,8 @@ console.log('\n════ (n) R2 불변식 — buildAcqCheckPayload 오염 문
     정보출처: (v) => v === '모름' || M.ACQ_CHECK_INFO_SOURCES.includes(v),
     연락방법: (v) => v === '모름' || M.ACQ_CHECK_CONTACT_METHODS.includes(v),
     연락처: (v) => v === '카카오톡 채널로 연락' || /^\d+$/.test(v),
+    개인정보동의: (v) => v === '동의함' || v === '미동의',   // R3-F2: 고정 문자열
+    국외이전동의: (v) => v === '동의함' || v === '미동의',
     접수시각: (v) => typeof v === 'string' && v.length > 0, // 시스템 생성 — Date().toLocaleString, 사용자 입력 아님
     _subject: (v) => v === `[JT 취득세 점검 접수] ${receiptId}`,
   };
@@ -414,6 +416,36 @@ console.log('\n════ (n) R2 불변식 — buildAcqCheckPayload 오염 문
   const p2 = M.buildAcqCheckPayload({ contactMethod: '전화', contactPhone: '02-강남-1234' }, receiptId);
   eq('허용 문자 밖 전화(한글 섞임)는 거부되어 고정 문자열로만 남는다(연락처가 숫자열이 아니다)',
      /^\d+$/.test(p2.연락처), false);
+}
+
+console.log('\n════ (R3) 제출 본문은 buildAcqCheckPayload 의 반환값이 «전부»다 — 다른 출처와 합치지 않는다 ════');
+{
+  /* R3-F1·F3: R2 의 오염 시험은 빌더 반환값만 봤는데, submit 이 그 뒤에 공용 유입정보
+     (jtAttributionFields — utm_* 는 URL 에서 온 사용자 제어 문자열, 접수ID 는 미고지 세션 식별자)를
+     합치고 있었다. 빌더를 아무리 조여도 «합치는 자리»가 열려 있으면 같은 부류가 되살아난다.
+     그래서 시험의 대상을 «최종 본문을 만드는 코드»로 옮긴다. */
+  const code = stripComments(acqCheckSrc);
+  eq('submit 의 payload 는 buildAcqCheckPayload(f, receiptId) 단독 대입이다',
+     /const\s+payload\s*=\s*buildAcqCheckPayload\(\s*f\s*,\s*receiptId\s*\)\s*;/.test(code), true);
+  eq('이 파일은 jtAttributionFields 를 호출하지 않는다', /jtAttributionFields\s*\(/.test(code), false);
+  eq('payload 에 다른 객체를 펼쳐 넣는 곳은 Web3Forms 본문 1곳뿐이다(access_key·subject·from_name + payload)',
+     (code.match(/\.\.\.\s*(?!payload\b)[A-Za-z_$][\w$.]*\s*\(/g) || []).length, 0);
+  eq('상태 f 를 통째로 직렬화하지 않는다', /JSON\.stringify\(\s*f\s*[,)]/.test(code) || /\.\.\.\s*f\s*[,}]/.test(code.replace(/\{\s*\.\.\.prev/g, '')), false);
+
+  // 동의 기록(R3-F2)
+  const pc = M.buildAcqCheckPayload({ consent: true, consentIntl: true, contactMethod: '카카오톡 채널' }, 'ACQCK-TEST00000000');
+  eq('두 동의 기록이 고정 문자열로 실린다', [pc.개인정보동의, pc.국외이전동의], ['동의함', '동의함']);
+  const pn = M.buildAcqCheckPayload({ consent: 'yes', consentIntl: 1 }, 'ACQCK-TEST00000000');
+  eq('true 가 아닌 값은 동의로 적지 않는다', [pn.개인정보동의, pn.국외이전동의], ['미동의', '미동의']);
+
+  // 전화 허용 문자(R3-F4) — 점은 선언한 집합에 없다
+  eq('010.1234.5678 은 거부된다', M.validateAcqCheckPhone('010.1234.5678').ok, false);
+  eq('010-1234-5678 은 통과한다', M.validateAcqCheckPhone('010-1234-5678'), { ok: true, digits: '01012345678' });
+
+  // 고지와 실제 전송의 일치(R3-F3)
+  eq('동의 문구가 유입 경로 정보를 보낸다고 적지 않는다', /유입 매체|첫 방문 경로|제출 위치/.test(code), false);
+  eq('처리방침이 취득세 점검 접수에는 유입 경로 정보를 보내지 않는다고 적는다',
+     /취득세 점검 접수는 접수번호\(임의 생성\)와 접수 시각만 함께 전송하며 유입 경로 정보는 보내지 않습니다/.test(legalSrc), true);
 }
 
 console.log('\n════════════════════');

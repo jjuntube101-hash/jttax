@@ -8,7 +8,7 @@
       세액·차액·환급 가능성을 계산하지도, 표시하지도 않는다 — 접수 확인만 보여 준다.
    ⛔ 「무료」를 쓰지 않는다. 범위·횟수·유료 전환 조건이 미확정이라 「1차 서류 점검」이라고만 쓴다.
    ⛔ GA4 — 관찰 기간(260921~1003) 동안 이 화면에서는 booking_submit 도, 새 이벤트도
-      발화하지 않는다. jtAttributionFields 는 «접수 메일에 실을 유입 정보»일 뿐 GA4 이벤트가 아니다.
+      발화하지 않는다. 공용 유입정보(jtAttributionFields)도 이 접수에는 합치지 않는다(R3-F1·F3).
    ⛔ 동·호수, 주민등록번호, 파일 첨부는 받지 않는다(설계서 2-3).
 */
 
@@ -37,7 +37,7 @@ window.acqCheckGenId = acqCheckGenId;
 /* R2-F3: 전화번호 — 허용 문자(숫자·하이픈·공백·괄호·+)만으로 이뤄졌는지 먼저 보고, 그 다음
    숫자만 추려 9~11자리·0 시작을 확인한다. 통과해도 payload 에는 원문이 아니라 이 함수가
    돌려주는 «정규화된 숫자열»만 싣는다(제출 본문에 원문이 그대로 남지 않게). */
-const ACQ_CHECK_PHONE_CHARS = /^[0-9\-\s().+]+$/;
+const ACQ_CHECK_PHONE_CHARS = /^[0-9\-\s()+]+$/;   // R3-F4: 점(.)은 선언한 허용 집합에 없다
 function validateAcqCheckPhone(raw) {
   const s = String(raw == null ? '' : raw);
   if (!s.trim() || !ACQ_CHECK_PHONE_CHARS.test(s)) return { ok: false, digits: '' };
@@ -156,6 +156,9 @@ function buildAcqCheckPayload(f, receiptId) {
     정보출처: acqCheckPick(f.infoSource, ACQ_CHECK_INFO_SOURCES),
     연락방법: contactMethod || '모름',
     연락처: contactMethod === '전화' ? phoneCheck.digits : '카카오톡 채널로 연락',
+    // R3-F2: 처리방침이 «모든 폼은 동의 기록을 함께 전송한다»고 고지한다 — 고정 문자열로 싣는다
+    개인정보동의: f.consent === true ? '동의함' : '미동의',
+    국외이전동의: f.consentIntl === true ? '동의함' : '미동의',
     접수시각: new Date().toLocaleString('ko-KR'),
   };
 }
@@ -201,11 +204,10 @@ function JTReportAcqCheck({ setRoute }) {
     if (!canSubmit) return;
     setSubmitting(true); setError('');
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
-    const payload = {
-      ...buildAcqCheckPayload(f, receiptId),
-      // 어느 채널이 이 접수를 만들었는지 — 금액·개인식별정보는 담기지 않는다(Chrome.jsx 주석 참조)
-      ...window.jtAttributionFields('acq_check_form'),
-    };
+    /* R3-F1·F3: 이 접수에는 공용 유입정보(jtAttributionFields)를 «합치지 않는다».
+       utm_* 는 URL 에서 온 사용자 제어 문자열이라 불변식(자유 문자열 0)을 깨고, 세션 식별자(접수ID)는
+       이 화면의 동의 문구에 고지하지 않았다. 제출 본문은 buildAcqCheckPayload 의 반환값이 «전부»다. */
+    const payload = buildAcqCheckPayload(f, receiptId);
     let sent = false;
     try {
       if (w3fKey && !w3fKey.includes('REPLACE')) {
@@ -488,7 +490,7 @@ function JTReportAcqCheck({ setRoute }) {
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
             <input type="checkbox" checked={f.consent} onChange={set('consent')} style={{ marginTop: 3, width: 18, height: 18, accentColor: '#000' }} />
             <span style={{ fontSize: 13, color: 'var(--fg-2)', lineHeight: 1.6 }}>
-              <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 취득세 서류 점검 접수 및 결과 안내<br />· <strong>항목</strong>: 취득일·소재지 시·도·취득 원인·물건 종류·명의와 지분·신고서상 세목별 금액·실제 납부액과 납부일·이후 이력·통지서 종류와 수령일·자료 확인 여부, 연락 방법(선택하신 경우 연락처) — 선택 항목은 비워 두셔도 접수됩니다<br />· <strong>함께 전송되는 접속 정보</strong>: 접수번호(임의 생성), 유입 매체, 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년 · 동의를 거부하실 수 있으며, 거부하시면 이 화면으로는 접수되지 않으나 전화·카카오톡으로 동일하게 문의하실 수 있습니다.
+              <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 취득세 서류 점검 접수 및 결과 안내<br />· <strong>항목</strong>: 취득일·소재지 시·도·취득 원인·물건 종류·명의와 지분·신고서상 세목별 금액·실제 납부액과 납부일·이후 이력·통지서 종류와 수령일·자료 확인 여부, 연락 방법(선택하신 경우 연락처) — 선택 항목은 비워 두셔도 접수됩니다<br />· <strong>함께 전송되는 정보</strong>: 접수번호(임의 생성), 접수 시각, 두 동의의 기록 — 유입 경로 정보는 이 접수에서 보내지 않습니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년 · 동의를 거부하실 수 있으며, 거부하시면 이 화면으로는 접수되지 않으나 전화·카카오톡으로 동일하게 문의하실 수 있습니다.
             </span>
           </label>
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginTop: 16, cursor: 'pointer' }}>

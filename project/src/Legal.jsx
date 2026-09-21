@@ -38,7 +38,8 @@ function JTLegal({ kind, setRoute }) {
         {/* ⚠️ 「공통」이 아니다 — desk 두 폼은 유입 경로 정보를 «전혀 보내지 않는다»
             (FormData 실측: access_key·subject·from_name·office·name·contact·memo·동의2). 종전 문구는
             보내지 않는 것을 보낸다고 고지하고 있었다 (260809 Codex R7 P1). 보내는 곳만 적는다. */}
-        <li><strong>함께 전송</strong>(상담 예약·리포트 회신·PDF 저장·카카오 연결·취득세 점검 접수에 한함): 접수번호(임의 생성), 유입 매체, 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각 — <strong>파트너 파일럿 신청에는 해당하지 않습니다</strong></li>
+        <li><strong>함께 전송</strong>(상담 예약·리포트 회신·PDF 저장·카카오 연결에 한함): 접수번호(임의 생성), 유입 매체, 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각 — <strong>파트너 파일럿 신청에는 해당하지 않습니다</strong></li>
+        <li>취득세 점검 접수는 접수번호(임의 생성)와 접수 시각만 함께 전송하며 유입 경로 정보는 보내지 않습니다</li>
         <li><strong>자동수집항목</strong>: 접속 로그, 쿠키, IP 주소, 브라우저 정보, 방문 일시(Google Analytics)</li>
       </ul>
 
