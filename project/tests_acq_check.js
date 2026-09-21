@@ -205,10 +205,15 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
      숫자만 나와 게이트가 간헐 실패했다. 「순번이 아니다」는 형식이 아니라 «출력이 주입한 난수
      바이트만으로 정해지는가»로 본다 — 순번·시각이 섞였다면 같은 바이트에서 값이 달라진다. */
   let fillByte = 0xAB;
+  let flipAt = -1; // 0 이상이면 그 위치 한 바이트만 0xCD 로 바꾼다
   const rngCalls = [];
   const fakeWindow = {
     Uint8Array: Uint8Array,
-    crypto: { getRandomValues: (arr) => { rngCalls.push(arr.length); arr.fill(fillByte); return arr; } },
+    crypto: { getRandomValues: (arr) => {
+      rngCalls.push(arr.length); arr.fill(fillByte);
+      if (flipAt >= 0 && flipAt < arr.length) arr[flipAt] = 0xCD;
+      return arr;
+    } },
   };
   // eslint-disable-next-line no-new-func
   const fn2 = new Function('window', genIdChunk + '\n;return acqCheckGenId;')(fakeWindow);
@@ -224,6 +229,19 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
   eq('crypto 경로 · 길이가 12자를 넘는다 (추측하기 어려운 길이)', String(a1).length > 12 && String(b1).length > 12, true);
   eq('crypto 경로 · 고정 바이트 0xAB 에서 숫자만으로 된 형태가 아니다 (10진 순번식 표기가 아니다)',
      /^\d+$/.test(String(a1).replace('ACQCK-', '')), false);
+
+  /* Codex R1-F1: 균일한 두 배열만 비교하면 「10바이트를 받아 첫 1바이트만 쓰는」 구현(256가지)도 통과한다.
+     한 위치씩만 바꿔 넣어 «출력을 움직이는 바이트 위치»를 센다. 문턱이 6인 까닭 — 현 구현은 36진 표기를
+     이어 붙여 앞 12자를 쓰므로 0xAB(2글자)에서는 앞 6바이트까지만 출력에 닿는다. 8로 두면 정상 구현이 떨어진다. */
+  fillByte = 0xAB;
+  const callsBefore = rngCalls.length;
+  const flipped = [];
+  for (let i = 0; i < rngCalls[0]; i++) { flipAt = i; flipped.push(fn2()); }
+  flipAt = -1;
+  const moved = flipped.filter((v) => v !== a1);
+  eq('crypto 경로 · 위치별 주입도 매번 getRandomValues 를 거친다', rngCalls.length - callsBefore, rngCalls[0]);
+  eq('crypto 경로 · 출력을 움직이는 바이트 위치가 6곳 이상 (일부 바이트만 쓰는 축소가 아니다)', moved.length >= 6, true);
+  eq('crypto 경로 · 위치가 다르면 값도 서로 다르다 (바이트를 뭉개어 합치지 않는다)', new Set(moved).size, moved.length);
 }
 
 console.log('\n════ (h) 라우팅 배선 — JT_KNOWN_SUBS·번들 ORDER·라우터 렌더 ════');
