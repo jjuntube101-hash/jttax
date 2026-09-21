@@ -213,7 +213,11 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
      Date·performance 를 가짜로 가려 두고 호출할 때마다 400일씩 밀어, 시각이 섞였다면 같은 바이트에서 값이 갈리게 한다. */
   const RealDate = Date;
   let clockMs = RealDate.UTC(2026, 0, 1);
-  function FakeDate(...args) { return args.length ? new RealDate(...args) : new RealDate(clockMs); }
+  function FakeDate(...args) {
+    if (!new.target) return new RealDate(clockMs).toString(); // new 없는 Date() 는 문자열을 돌려준다
+    return args.length ? new RealDate(...args) : new RealDate(clockMs);
+  }
+  FakeDate.prototype = RealDate.prototype; // instanceof Date · Date.prototype 접근을 그대로 둔다(R5 confirm)
   FakeDate.now = () => clockMs;
   FakeDate.UTC = RealDate.UTC;
   FakeDate.parse = RealDate.parse;
