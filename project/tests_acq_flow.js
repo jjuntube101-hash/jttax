@@ -248,11 +248,23 @@ console.log('\n════ ②-b 새 유형에 자동 해설·기존 절세 문
   eq('그 문구에 「생애최초」가 없다', fixed.includes('생애최초'), false);
   /* 260921: 기존 유형용 폴백 문구에도 「신혼부부 감면」이 «절세 여지»로 남아 있었다 — 지특법 §36의2①은
      2020-12-31 일몰(law.go.kr API 260921 조회). 화면에 나가는 문자열(주석 제외) 어디에도 없어야 한다. */
-  const shown = fs.readFileSync(path.join(__dirname, 'src', 'ReportAcquisition.jsx'), 'utf8')
-    .replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1');
-  eq('ReportAcquisition.jsx 의 화면 문자열(주석 제외)에 「신혼부부」가 없다', shown.includes('신혼부부'), false);
+  /* 주석을 정규식으로 걷어내면 문자열 안의 `//`(URL) 뒤를 함께 지워 위음성이 날 수 있다(Codex R6).
+     그래서 구문 분석으로 «문자열·템플릿·JSX 텍스트» 노드만 모아서 본다 — 주석은 애초에 노드가 아니다. */
+  const raSrc = fs.readFileSync(path.join(__dirname, 'src', 'ReportAcquisition.jsx'), 'utf8');
+  const literals = [];
+  (function walk(n) {
+    if (!n || typeof n !== 'object') return;
+    if (Array.isArray(n)) { n.forEach(walk); return; }
+    if (n.type === 'StringLiteral' || n.type === 'JSXText') literals.push(n.value);
+    else if (n.type === 'TemplateElement') literals.push(n.value && (n.value.cooked || n.value.raw) || '');
+    for (const k of Object.keys(n)) { if (k !== 'loc' && k !== 'leadingComments' && k !== 'trailingComments' && k !== 'innerComments') walk(n[k]); }
+  })(require('@babel/parser').parse(raSrc, { sourceType: 'script', plugins: ['jsx'] }).program);
+  eq('문자열 노드를 충분히 모았다(분석이 비어 있지 않다)', literals.length > 300, true);
+  eq('ReportAcquisition.jsx 의 화면 문자열(문자열·템플릿·JSX 텍스트)에 「신혼부부」가 없다',
+     literals.some((s) => String(s).includes('신혼부부')), false);
+  const shown = literals.join('\n');
   eq('기존 유형 폴백의 절세 여지는 「생애최초 주택 구입 감면」(§36의3)이다',
-     /title: '생애최초 주택 구입 감면'[^}]*§36의3/.test(shown), true);
+     literals.includes('생애최초 주택 구입 감면') && literals.some((s) => /최대 200만/.test(s) && /§36의3/.test(s)) && shown.length > 0, true);
   eq('그 문구에 감면 요건 미검증 안내가 들어 있다', fixed.includes('이 계산기가 확인하지 않습니다'), true);
   /* 신규 유형이 «기존 폴백 문구로 떨어지지 않는지»를 배선으로 본다 */
   const ra = code.slice(code.indexOf('const runAnalysis'), code.indexOf('const goDetail'));
