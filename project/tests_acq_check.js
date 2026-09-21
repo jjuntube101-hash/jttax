@@ -207,22 +207,40 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
   let fillByte = 0xAB;
   let filler = null; // 함수면 균일 채움 뒤에 호출해 배열을 덮어쓴다(위치별·표본 주입용)
   const rngCalls = [];
-  const fakeWindow = {
+  /* Codex R3-F1: 호출마다 «새 window · 새 함수 인스턴스»로 돌린다. 하나를 계속 쓰면 window 에 「본 배열 → 순번」을
+     캐시해 두는 상태 기반 순번 구현이 같은 입력엔 같은 값·다른 입력엔 다른 값을 내며 전부 통과한다. */
+  // eslint-disable-next-line no-new-func
+  const mkGenId = new Function('window', genIdChunk + '\n;return acqCheckGenId;');
+  const mkWindow = () => ({
     Uint8Array: Uint8Array,
     crypto: { getRandomValues: (arr) => {
       rngCalls.push(arr.length); arr.fill(fillByte);
       if (filler) filler(arr);
       return arr;
     } },
-  };
-  // eslint-disable-next-line no-new-func
-  const fn2 = new Function('window', genIdChunk + '\n;return acqCheckGenId;')(fakeWindow);
+  });
+  const fn2 = () => mkGenId(mkWindow())();
+  /* ⚠️ 새 window 만 쓰면 반대쪽이 샌다 — window 에 순번을 두고 난수에 섞는 구현은 새 window 에서 순번이 늘 1 이라
+     같은 값을 낸다(결함 주입 M5 가 통과하는 것을 실측). 그래서 «하나의 window 를 계속 쓰는» 함수로도 같은 바이트를
+     되풀이해, 앞선 호출이 뒤 호출의 값을 바꾸지 않는지 본다. 두 방식은 서로의 구멍을 막는다. */
+  const shared = mkGenId(mkWindow());
+  const s1 = shared();
+  const s2 = shared();
+  fillByte = 0xCD;
+  const s3 = shared();
+  fillByte = 0xAB;
+  const s4 = shared();
+  const sharedCalls = rngCalls.length;
   const a1 = fn2();
   const a2 = fn2();
   fillByte = 0xCD;
   const b1 = fn2();
+  eq('crypto 경로 · 문자열을 돌려준다', [typeof a1, typeof a2, typeof b1, typeof s1], ['string', 'string', 'string', 'string']);
+  eq('crypto 경로 · 같은 window 에서 같은 바이트를 되풀이해도 값이 같다 (앞선 호출이 값을 바꾸지 않는다 — 순번·누적 상태 없음)',
+     [s1 === s2, s1 === s4, s1 !== s3], [true, true, true]);
+  eq('crypto 경로 · 같은 window 든 새 window 든 같은 바이트면 같은 값', [s1 === a1, s3 === b1], [true, true]);
   eq('crypto 경로 · 접두사 ACQCK-', String(a1).indexOf('ACQCK-'), 0);
-  eq('crypto 경로 · getRandomValues 를 호출마다 부른다', rngCalls.length, 3);
+  eq('crypto 경로 · getRandomValues 를 호출마다 부른다 (같은 window 4회 + 새 window 3회)', [sharedCalls, rngCalls.length], [4, 7]);
   eq('crypto 경로 · 난수를 8바이트 이상 받는다 (추측하기 어려운 양)', rngCalls.length > 0 && rngCalls.every((n) => n >= 8), true);
   eq('crypto 경로 · 같은 바이트면 같은 값 (순번·시각이 섞이지 않았다)', a1 === a2, true);
   eq('crypto 경로 · 바이트가 다르면 값이 다르다 (입력 바이트가 출력에 반영된다)', a1 !== b1, true);
@@ -232,9 +250,10 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
 
   /* Codex R1-F1·R2-F1·R2-F2 — 「출력에 닿는 난수량을 줄이는 개조」 부류를 두 축으로 닫는다.
      균일한 두 배열만 비교하면 첫 1바이트만 쓰는 구현(256가지)도, 위치마다 1비트만 쓰는 구현(64가지)도 통과했다.
-       ① 위치별: 한 위치에 0~255 를 전부 넣어 유일 출력이 128개 이상(7비트 이상) 나오는 위치가 6곳 이상.
-          현 구현 실측(기준 0xAB) = 256·256·256·256·256·250·1·1·1·1 — 36진 표기를 이어 붙여 앞 12자를 쓰므로
-          2글자 바이트에서는 앞 6바이트까지만 출력에 닿는다. 그래서 위치 문턱은 8 이 아니라 6 이다.
+       ① 위치별: 한 위치에 0~255 를 전부 넣어 나온 유일 출력 수 n 의 log2(n) 을 전 위치에서 더해 40비트 이상.
+          현 구현 실측(기준 0xAB) = 256·256·256·256·256·250·1·1·1·1 → 약 47.97비트 — 36진 표기를 이어 붙여
+          앞 12자를 쓰므로 2글자 바이트에서는 앞 6바이트까지만 출력에 닿는다. 위치마다 7비트를 요구하면 바이트당
+          6비트씩 10곳을 쓰는 정당한 60비트 구현이 떨어진다(R3-F2) — 그래서 위치 수·위치별 문턱이 아니라 합산이다.
        ② 결합: 결정적 LCG 로 만든 배열 65,536개의 출력이 (거의) 전부 달라야 한다. 바이트들을 XOR·합으로 접어
           좁은 공간에 넣으면 ①은 통과해도 여기서 충돌이 쏟아진다(24비트 공간이면 기대 충돌 약 128건).
      ⚠️ 한계: 블랙박스 시험은 엔트로피를 증명하지 못한다. 이 검사가 잡는 것은 대략 2^26 미만으로의 축소까지다.
@@ -249,8 +268,10 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
     perPos.push(seen.size);
   }
   eq('crypto 경로 · 위치별 주입도 매번 getRandomValues 를 거친다', rngCalls.length - callsBefore, nBytes * 256);
-  eq('crypto 경로 · 7비트 이상이 출력에 닿는 바이트 위치가 6곳 이상 (got=위치별 유일 출력 수)',
-     perPos.filter((n) => n >= 128).length >= 6 ? true : perPos, true);
+  const posBits = perPos.reduce((sum, n) => sum + Math.log2(Math.max(n, 1)), 0);
+  eq('crypto 경로 · 위치별로 출력에 닿는 정보량의 합이 40비트 이상 (got=위치별 유일 출력 수)',
+     posBits >= 40 ? true : perPos, true);
+  eq('crypto 경로 · 요청 바이트 수가 호출마다 같다', new Set(rngCalls).size, 1);
 
   const SAMPLES = 65536;
   let lcg = 0x9E3779B9;
