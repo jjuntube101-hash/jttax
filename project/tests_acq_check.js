@@ -205,13 +205,13 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
      숫자만 나와 게이트가 간헐 실패했다. 「순번이 아니다」는 형식이 아니라 «출력이 주입한 난수
      바이트만으로 정해지는가»로 본다 — 순번·시각이 섞였다면 같은 바이트에서 값이 달라진다. */
   let fillByte = 0xAB;
-  let flipAt = -1; // 0 이상이면 그 위치 한 바이트만 0xCD 로 바꾼다
+  let filler = null; // 함수면 균일 채움 뒤에 호출해 배열을 덮어쓴다(위치별·표본 주입용)
   const rngCalls = [];
   const fakeWindow = {
     Uint8Array: Uint8Array,
     crypto: { getRandomValues: (arr) => {
       rngCalls.push(arr.length); arr.fill(fillByte);
-      if (flipAt >= 0 && flipAt < arr.length) arr[flipAt] = 0xCD;
+      if (filler) filler(arr);
       return arr;
     } },
   };
@@ -230,18 +230,38 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
   eq('crypto 경로 · 고정 바이트 0xAB 에서 숫자만으로 된 형태가 아니다 (10진 순번식 표기가 아니다)',
      /^\d+$/.test(String(a1).replace('ACQCK-', '')), false);
 
-  /* Codex R1-F1: 균일한 두 배열만 비교하면 「10바이트를 받아 첫 1바이트만 쓰는」 구현(256가지)도 통과한다.
-     한 위치씩만 바꿔 넣어 «출력을 움직이는 바이트 위치»를 센다. 문턱이 6인 까닭 — 현 구현은 36진 표기를
-     이어 붙여 앞 12자를 쓰므로 0xAB(2글자)에서는 앞 6바이트까지만 출력에 닿는다. 8로 두면 정상 구현이 떨어진다. */
+  /* Codex R1-F1·R2-F1·R2-F2 — 「출력에 닿는 난수량을 줄이는 개조」 부류를 두 축으로 닫는다.
+     균일한 두 배열만 비교하면 첫 1바이트만 쓰는 구현(256가지)도, 위치마다 1비트만 쓰는 구현(64가지)도 통과했다.
+       ① 위치별: 한 위치에 0~255 를 전부 넣어 유일 출력이 128개 이상(7비트 이상) 나오는 위치가 6곳 이상.
+          현 구현 실측(기준 0xAB) = 256·256·256·256·256·250·1·1·1·1 — 36진 표기를 이어 붙여 앞 12자를 쓰므로
+          2글자 바이트에서는 앞 6바이트까지만 출력에 닿는다. 그래서 위치 문턱은 8 이 아니라 6 이다.
+       ② 결합: 결정적 LCG 로 만든 배열 65,536개의 출력이 (거의) 전부 달라야 한다. 바이트들을 XOR·합으로 접어
+          좁은 공간에 넣으면 ①은 통과해도 여기서 충돌이 쏟아진다(24비트 공간이면 기대 충돌 약 128건).
+     ⚠️ 한계: 블랙박스 시험은 엔트로피를 증명하지 못한다. 이 검사가 잡는 것은 대략 2^26 미만으로의 축소까지다.
+        시드가 고정이라 같은 소스에서는 항상 같은 판정이 난다(난수원 비의존). */
   fillByte = 0xAB;
+  const nBytes = rngCalls[0];
   const callsBefore = rngCalls.length;
-  const flipped = [];
-  for (let i = 0; i < rngCalls[0]; i++) { flipAt = i; flipped.push(fn2()); }
-  flipAt = -1;
-  const moved = flipped.filter((v) => v !== a1);
-  eq('crypto 경로 · 위치별 주입도 매번 getRandomValues 를 거친다', rngCalls.length - callsBefore, rngCalls[0]);
-  eq('crypto 경로 · 출력을 움직이는 바이트 위치가 6곳 이상 (일부 바이트만 쓰는 축소가 아니다)', moved.length >= 6, true);
-  eq('crypto 경로 · 위치가 다르면 값도 서로 다르다 (바이트를 뭉개어 합치지 않는다)', new Set(moved).size, moved.length);
+  const perPos = [];
+  for (let i = 0; i < nBytes; i++) {
+    const seen = new Set();
+    for (let v = 0; v < 256; v++) { filler = (arr) => { arr[i] = v; }; seen.add(fn2()); }
+    perPos.push(seen.size);
+  }
+  eq('crypto 경로 · 위치별 주입도 매번 getRandomValues 를 거친다', rngCalls.length - callsBefore, nBytes * 256);
+  eq('crypto 경로 · 7비트 이상이 출력에 닿는 바이트 위치가 6곳 이상 (got=위치별 유일 출력 수)',
+     perPos.filter((n) => n >= 128).length >= 6 ? true : perPos, true);
+
+  const SAMPLES = 65536;
+  let lcg = 0x9E3779B9;
+  filler = (arr) => {
+    for (let i = 0; i < arr.length; i++) { lcg = (Math.imul(lcg, 1664525) + 1013904223) >>> 0; arr[i] = lcg >>> 24; }
+  };
+  const uniq = new Set();
+  for (let n = 0; n < SAMPLES; n++) uniq.add(fn2());
+  filler = null;
+  eq('crypto 경로 · 서로 다른 난수 배열 65,536개가 (거의) 전부 다른 접수번호가 된다 (좁은 공간으로 접지 않는다, got=유일값 수)',
+     uniq.size >= SAMPLES - 8 ? true : uniq.size, true);
 }
 
 console.log('\n════ (h) 라우팅 배선 — JT_KNOWN_SUBS·번들 ORDER·라우터 렌더 ════');
