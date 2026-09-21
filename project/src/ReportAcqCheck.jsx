@@ -30,30 +30,52 @@ function acqCheckGenId() {
 }
 window.acqCheckGenId = acqCheckGenId;
 
-/* R1-F1: 시·군·구 자유입력란 검증 — 선택 항목이라 빈 값은 통과시키지만, 값이 있으면
-   상세주소(동·호수·번지·도로명)가 섞여 국외 제출 본문에 실리지 않게 막는다.
-   순수 함수로 분리해 시험 가능하게 한다. */
-const ACQ_CHECK_SIGUNGU_ERROR = '시·군·구까지만 적어 주세요(예: 성남시 분당구). 동·호수와 도로명은 받지 않습니다.';
-function validateAcqCheckSigungu(raw) {
-  const v = String(raw == null ? '' : raw).trim();
-  if (!v) return { ok: true, value: v };
-  if (/[0-9０-９]/.test(v)) return { ok: false, value: v, message: ACQ_CHECK_SIGUNGU_ERROR }; // (a) 숫자(전각 포함)
-  if (v.length > 15) return { ok: false, value: v, message: ACQ_CHECK_SIGUNGU_ERROR }; // (b) 길이
-  if (!/[시군구]$/.test(v)) return { ok: false, value: v, message: ACQ_CHECK_SIGUNGU_ERROR }; // (c) 시·군·구로 끝나야 함
-  const detailMarkers = ['동 ', '로 ', '길 ', '번지', '호', '아파트', 'APT', 'apt'];
-  for (let i = 0; i < detailMarkers.length; i++) {
-    if (v.indexOf(detailMarkers[i]) >= 0) return { ok: false, value: v, message: ACQ_CHECK_SIGUNGU_ERROR }; // (d) 상세주소 표지
-  }
-  return { ok: true, value: v };
-}
-window.validateAcqCheckSigungu = validateAcqCheckSigungu;
+/* R2-F1: 시·군·구 자유입력란은 우회 사례(전각 공백·줄바꿈·무공백 상세주소, R2 보고서)가
+   나와 «부류를 닫기» 위해 아예 없앴다 — 소재지는 시·도 선택지(f.sido)만 받는다. 시·군·구·
+   상세주소는 세무사가 연락할 때 직접 여쭙는다. */
 
-/* R1-F2: 전화번호 검증 — 숫자만 추려 9~11자리이고 0으로 시작할 때만 통과시킨다. */
+/* R2-F3: 전화번호 — 허용 문자(숫자·하이픈·공백·괄호·+)만으로 이뤄졌는지 먼저 보고, 그 다음
+   숫자만 추려 9~11자리·0 시작을 확인한다. 통과해도 payload 에는 원문이 아니라 이 함수가
+   돌려주는 «정규화된 숫자열»만 싣는다(제출 본문에 원문이 그대로 남지 않게). */
+const ACQ_CHECK_PHONE_CHARS = /^[0-9\-\s().+]+$/;
 function validateAcqCheckPhone(raw) {
-  const digits = String(raw == null ? '' : raw).replace(/[^0-9]/g, '');
-  return digits.length >= 9 && digits.length <= 11 && digits.charAt(0) === '0';
+  const s = String(raw == null ? '' : raw);
+  if (!s.trim() || !ACQ_CHECK_PHONE_CHARS.test(s)) return { ok: false, digits: '' };
+  const digits = s.replace(/[^0-9]/g, '');
+  const ok = digits.length >= 9 && digits.length <= 11 && digits.charAt(0) === '0';
+  return { ok, digits: ok ? digits : '' };
 }
 window.validateAcqCheckPhone = validateAcqCheckPhone;
+
+/* R2 공통: 날짜칸(type="date")은 브라우저가 YYYY-MM-DD 로 주지만, 그 계약을 코드로도
+   못박는다 — 형식을 벗어난 값은 payload 에 싣지 않고 「모름」으로 남긴다(제출은 막지 않음,
+   전부 선택 입력이므로). */
+function validateAcqCheckDate(raw) {
+  const v = String(raw == null ? '' : raw).trim();
+  if (!v) return { ok: true, value: '' };
+  return /^\d{4}-\d{2}-\d{2}$/.test(v) ? { ok: true, value: v } : { ok: false, value: '' };
+}
+window.validateAcqCheckDate = validateAcqCheckDate;
+
+/* R2-F2: 사후이력 상세는 자유 서술 대신 고정 라벨 중 복수 선택으로만 받는다. */
+const ACQ_CHECK_POST_HISTORY_ITEMS = ['수정신고', '경정', '환급', '추가 고지', '모름'];
+
+/* R2 공통: <select> 선택지 폐집합 — JSX 렌더와 payload 화이트리스트가 «같은 배열»을 본다
+   (드리프트 방지). payload 조립은 이 배열들로 다시 한 번 소속을 확인해, DOM 이 아닌 다른
+   경로(예: 상태 조작)로 값이 들어와도 허용 목록 밖이면 고정 문자열 「모름」으로 막는다. */
+const ACQ_CHECK_ACQUISITION_TYPES = ['매매', '증여', '상속', '신축', '공매', '재산분할'];
+const ACQ_CHECK_PROPERTY_TYPES = ['주택', '오피스텔', '상가', '토지'];
+const ACQ_CHECK_OWNERSHIP_TYPES = ['단독', '공동', '법인'];
+const ACQ_CHECK_NOTICE_TYPES = ['결정통지서', '경정통지서', '과세예고통지서', '추징통지서'];
+const ACQ_CHECK_INFO_SOURCES = ['자료를 보고 적었습니다', '기억으로 적었습니다', '둘 다 섞여 있습니다'];
+const ACQ_CHECK_CONTACT_METHODS = ['카카오톡 채널', '전화'];
+
+/* 값이 허용 목록에 없으면 fallback(기본 「모름」)으로 막는다 — payload 화이트리스트의 공용 헬퍼. */
+function acqCheckPick(value, allowed, fallback) {
+  const fb = fallback === undefined ? '모름' : fallback;
+  return allowed.indexOf(value) >= 0 ? value : fb;
+}
+window.acqCheckPick = acqCheckPick;
 
 /* 준비하시면 좋은 자료 — «안내»일 뿐 첨부를 받지 않는다(설계서 2-2). */
 const ACQ_CHECK_DOCS = [
@@ -75,16 +97,69 @@ const ACQ_CHECK_REGIONS = ['서울특별시', '부산광역시', '대구광역�
 
 const ACQ_CHECK_INIT = {
   acqDateType: '', acqDate: '',
-  sido: '', sigungu: '',
+  sido: '',
   acquisitionType: '', propertyType: '', ownership: '',
   reportedAcqTax: '', reportedEduTax: '', reportedFarmTax: '', reportedTotal: '',
   paidAmount: '', paidDate: '',
-  postHistory: '', postHistoryDetail: '',
+  postHistory: '', postHistoryItems: [],
   noticeType: '', noticeDate: '',
   infoSource: '',
   contactMethod: '', contactPhone: '',
   consent: false, consentIntl: false,
 };
+
+/* 숫자열이 아니면 버린다 — jtMoneyDigits 가 이미 정규화해 두지만, 이 함수는 f 를 «믿지 않고»
+   다시 한 번 스스로 확인한다(상태가 다른 경로로 오염돼도 막히도록). */
+function acqCheckMoneyValue(raw) {
+  const v = String(raw == null ? '' : raw);
+  return /^\d+$/.test(v) ? v : '';
+}
+
+/* R2 불변식: payload 의 모든 값은 ①선택지 값 ②숫자만 남긴 금액 ③YYYY-MM-DD 날짜
+   ④정규화된 전화번호(숫자열) ⑤접수번호 ⑥고정 문자열 중 하나여야 한다. 사용자가 친 자유
+   문자열이 하나도 실리지 않도록 payload 조립을 이 순수 함수 하나로 모은다 — window·DOM 을
+   참조하지 않으므로 f 와 receiptId 만 넣고 그대로 시험할 수 있다(음성 시험: 모든 필드를
+   오염 문자열로 채워도 허용 패턴 밖 부분 문자열이 결과에 없어야 한다). 선택지 필드는 DOM 이
+   실제로 그 값만 만들어내더라도, 이 함수 자신이 허용 목록(acqCheckPick)으로 다시 확인한다 —
+   f 가 어떤 경로로 왔는지 이 함수는 모르기 때문이다. */
+function buildAcqCheckPayload(f, receiptId) {
+  const acqDateCheck = validateAcqCheckDate(f.acqDate);
+  const paidDateCheck = validateAcqCheckDate(f.paidDate);
+  const noticeDateCheck = validateAcqCheckDate(f.noticeDate);
+  const contactMethod = acqCheckPick(f.contactMethod, ACQ_CHECK_CONTACT_METHODS, '');
+  const phoneCheck = contactMethod === '전화' ? validateAcqCheckPhone(f.contactPhone) : { ok: true, digits: '' };
+  const postHistory = acqCheckPick(f.postHistory, ['없음', '있음']);
+  const postHistoryItems = Array.isArray(f.postHistoryItems) ? f.postHistoryItems : [];
+  const validPostHistoryItems = postHistoryItems.filter((x) => ACQ_CHECK_POST_HISTORY_ITEMS.indexOf(x) >= 0);
+  const postHistoryLabel = (postHistory === '있음' && validPostHistoryItems.length) ? validPostHistoryItems.join('·') : '—';
+
+  return {
+    _subject: `[JT 취득세 점검 접수] ${receiptId}`,
+    구분: 'ACQ_CHECK',
+    접수번호: receiptId,
+    취득일_구분: f.acqDateType === 'settlement' ? '잔금일' : f.acqDateType === 'registry' ? '등기접수일' : '모름',
+    취득일: acqDateCheck.ok && acqDateCheck.value ? acqDateCheck.value : '모름',
+    소재지_시도: acqCheckPick(f.sido, ACQ_CHECK_REGIONS.concat(['모름'])),
+    취득원인: acqCheckPick(f.acquisitionType, ACQ_CHECK_ACQUISITION_TYPES),
+    물건종류: acqCheckPick(f.propertyType, ACQ_CHECK_PROPERTY_TYPES),
+    명의와지분: acqCheckPick(f.ownership, ACQ_CHECK_OWNERSHIP_TYPES),
+    신고서_취득세: acqCheckMoneyValue(f.reportedAcqTax) || '—',
+    신고서_지방교육세: acqCheckMoneyValue(f.reportedEduTax) || '—',
+    신고서_농어촌특별세: acqCheckMoneyValue(f.reportedFarmTax) || '—',
+    신고서_합계만아는경우: acqCheckMoneyValue(f.reportedTotal) || '—',
+    실제납부액: acqCheckMoneyValue(f.paidAmount) || '—',
+    납부일: paidDateCheck.ok && paidDateCheck.value ? paidDateCheck.value : '모름',
+    사후이력: postHistory,
+    사후이력_상세: postHistoryLabel,
+    통지서_종류: acqCheckPick(f.noticeType, ACQ_CHECK_NOTICE_TYPES.concat(['해당없음'])),
+    통지서_수령일: noticeDateCheck.ok && noticeDateCheck.value ? noticeDateCheck.value : '모름',
+    정보출처: acqCheckPick(f.infoSource, ACQ_CHECK_INFO_SOURCES),
+    연락방법: contactMethod || '모름',
+    연락처: contactMethod === '전화' ? phoneCheck.digits : '카카오톡 채널로 연락',
+    접수시각: new Date().toLocaleString('ko-KR'),
+  };
+}
+window.buildAcqCheckPayload = buildAcqCheckPayload;
 
 function JTReportAcqCheck({ setRoute }) {
   const [f, setFRaw] = useAcqCkState(ACQ_CHECK_INIT);
@@ -100,19 +175,19 @@ function JTReportAcqCheck({ setRoute }) {
   const [error, setError] = useAcqCkState('');
   const [copied, setCopied] = useAcqCkState(false);
 
-  // R1-F1: 시·군·구 자유입력란 검증 — 선택 항목이라 비어 있으면 통과, 값이 있으면 상세주소를 거른다
-  const sigunguCheck = validateAcqCheckSigungu(f.sigungu);
-  // R1-F2: 연락 방법이 「전화」일 때만 형식을 검증한다(카카오톡은 별도 흐름)
-  const phoneOk = f.contactMethod !== '전화' || validateAcqCheckPhone(f.contactPhone);
+  // R2-F3: 연락 방법이 「전화」일 때만 형식을 검증한다(카카오톡은 별도 흐름)
+  const phoneCheck = f.contactMethod === '전화' ? validateAcqCheckPhone(f.contactPhone) : { ok: true, digits: '' };
+  const togglePostHistoryItem = (item) => setFRaw((prev) => {
+    const has = prev.postHistoryItems.includes(item);
+    return { ...prev, postHistoryItems: has ? prev.postHistoryItems.filter((x) => x !== item) : [...prev.postHistoryItems, item] };
+  });
 
   /* 최소 요건 — 두 동의와, «어떻게든 연락은 닿을 방법». 금액·날짜·자료 항목은 전부 비워도 된다
      (설계서 2-3: 「금액을 다 채우지 못해도 접수됩니다」). 연락 방법만은 예외다 — 접수 자체가
      「자료를 보고 연락드립니다」이므로 연락할 방법이 없으면 접수의 의미가 없다.
-     R1-F1·F2·F4: 접수번호가 만들어졌고(크립토 가용), 시·군·구가 유효하고, 전화번호 형식이
-     맞을 때만 제출을 허용한다. */
+     R1-F4·R2-F3: 접수번호가 만들어졌고(크립토 가용), 전화번호 형식이 맞을 때만 제출을 허용한다. */
   const canSubmit = !!receiptId && f.consent && f.consentIntl && !!f.contactMethod
-    && sigunguCheck.ok && phoneOk
-    && (f.contactMethod !== '전화' || f.contactPhone.trim()) && !submitting;
+    && (f.contactMethod !== '전화' || (f.contactPhone.trim() && phoneCheck.ok)) && !submitting;
 
   const copyReceiptId = () => {
     try {
@@ -127,30 +202,7 @@ function JTReportAcqCheck({ setRoute }) {
     setSubmitting(true); setError('');
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     const payload = {
-      _subject: `[JT 취득세 점검 접수] ${receiptId}`,
-      구분: 'ACQ_CHECK',
-      접수번호: receiptId,
-      취득일_구분: f.acqDateType === 'settlement' ? '잔금일' : f.acqDateType === 'registry' ? '등기접수일' : '모름',
-      취득일: f.acqDate || '—',
-      소재지_시도: f.sido || '모름',
-      소재지_시군구: sigunguCheck.value || '—',
-      취득원인: f.acquisitionType || '모름',
-      물건종류: f.propertyType || '모름',
-      명의와지분: f.ownership || '모름',
-      신고서_취득세: f.reportedAcqTax || '—',
-      신고서_지방교육세: f.reportedEduTax || '—',
-      신고서_농어촌특별세: f.reportedFarmTax || '—',
-      신고서_합계만아는경우: f.reportedTotal || '—',
-      실제납부액: f.paidAmount || '—',
-      납부일: f.paidDate || '—',
-      사후이력: f.postHistory || '모름',
-      사후이력_상세: f.postHistoryDetail || '—',
-      통지서_종류: f.noticeType || '모름',
-      통지서_수령일: f.noticeDate || '—',
-      정보출처: f.infoSource || '모름',
-      연락방법: f.contactMethod,
-      연락처: f.contactMethod === '전화' ? f.contactPhone : '카카오톡 채널로 연락',
-      접수시각: new Date().toLocaleString('ko-KR'),
+      ...buildAcqCheckPayload(f, receiptId),
       // 어느 채널이 이 접수를 만들었는지 — 금액·개인식별정보는 담기지 않는다(Chrome.jsx 주석 참조)
       ...window.jtAttributionFields('acq_check_form'),
     };
@@ -285,7 +337,7 @@ function JTReportAcqCheck({ setRoute }) {
             </div>
           )}
 
-          {/* ② 소재지 시·도 / 시·군·구 (동·호수는 받지 않음) */}
+          {/* ② 소재지 — R2-F1: 시·군·구 자유입력란은 없앴다. 시·도 선택지만 받는다. */}
           <div className="jt-field">
             <label>물건 소재지 · 시·도</label>
             <select value={f.sido} onChange={set('sido')}>
@@ -293,12 +345,7 @@ function JTReportAcqCheck({ setRoute }) {
               {ACQ_CHECK_REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
               <option value="모름">모름</option>
             </select>
-          </div>
-          <div className="jt-field">
-            <label>물건 소재지 · 시·군·구 <em>OPTIONAL</em></label>
-            <input type="text" placeholder="예: 강남구 (동·호수는 적지 않으셔도 됩니다)" value={f.sigungu} onChange={set('sigungu')} />
-            {/* R1-F1: 상세주소가 섞이면 제출 전에 막고 이유를 보여 준다 */}
-            {!sigunguCheck.ok && <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#c00' }}>{sigunguCheck.message}</p>}
+            <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--fg-3)' }}>시·군·구와 상세 주소는 받지 않습니다. 필요하면 세무사가 연락드릴 때 여쭙니다.</p>
           </div>
 
           {/* ③ 취득 원인 */}
@@ -306,7 +353,7 @@ function JTReportAcqCheck({ setRoute }) {
             <label>취득 원인</label>
             <select value={f.acquisitionType} onChange={set('acquisitionType')}>
               <option value="">선택해 주세요</option>
-              {['매매', '증여', '상속', '신축', '공매', '재산분할'].map((v) => <option key={v} value={v}>{v}</option>)}
+              {ACQ_CHECK_ACQUISITION_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               <option value="모름">모름</option>
             </select>
           </div>
@@ -316,7 +363,7 @@ function JTReportAcqCheck({ setRoute }) {
             <label>물건 종류</label>
             <select value={f.propertyType} onChange={set('propertyType')}>
               <option value="">선택해 주세요</option>
-              {['주택', '오피스텔', '상가', '토지'].map((v) => <option key={v} value={v}>{v}</option>)}
+              {ACQ_CHECK_PROPERTY_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               <option value="모름">모름</option>
             </select>
           </div>
@@ -326,7 +373,7 @@ function JTReportAcqCheck({ setRoute }) {
             <label>명의와 지분</label>
             <select value={f.ownership} onChange={set('ownership')}>
               <option value="">선택해 주세요</option>
-              {['단독', '공동', '법인'].map((v) => <option key={v} value={v}>{v}</option>)}
+              {ACQ_CHECK_OWNERSHIP_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               <option value="모름">모름</option>
             </select>
           </div>
@@ -373,10 +420,18 @@ function JTReportAcqCheck({ setRoute }) {
               <option value="모름">모름</option>
             </select>
           </div>
+          {/* R2-F2: 자유 서술 대신 고정 라벨 복수 선택으로만 받는다 */}
           {f.postHistory === '있음' && (
-            <div className="jt-field">
-              <label>어떤 것이었는지 <em>OPTIONAL</em></label>
-              <input type="text" maxLength={120} placeholder="예: 2024년에 수정신고" value={f.postHistoryDetail} onChange={set('postHistoryDetail')} />
+            <div className="jt-field jt-field--full">
+              <label>어떤 것이었는지 <em>있는 만큼 선택</em></label>
+              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 6 }}>
+                {ACQ_CHECK_POST_HISTORY_ITEMS.map((item) => (
+                  <label key={item} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, cursor: 'pointer' }}>
+                    <input type="checkbox" checked={f.postHistoryItems.includes(item)} onChange={() => togglePostHistoryItem(item)} />
+                    {item}
+                  </label>
+                ))}
+              </div>
             </div>
           )}
 
@@ -385,7 +440,7 @@ function JTReportAcqCheck({ setRoute }) {
             <label>통지서를 받으셨다면 종류</label>
             <select value={f.noticeType} onChange={set('noticeType')}>
               <option value="">선택해 주세요</option>
-              {['결정통지서', '경정통지서', '과세예고통지서', '추징통지서'].map((v) => <option key={v} value={v}>{v}</option>)}
+              {ACQ_CHECK_NOTICE_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               <option value="해당없음">받은 것 없음</option>
               <option value="모름">모름</option>
             </select>
@@ -402,9 +457,7 @@ function JTReportAcqCheck({ setRoute }) {
             <label>위 내용은 자료를 보고 적으신 건가요, 기억으로 적으신 건가요?</label>
             <select value={f.infoSource} onChange={set('infoSource')}>
               <option value="">선택해 주세요</option>
-              <option value="자료를 보고 적었습니다">자료를 보고 적었습니다</option>
-              <option value="기억으로 적었습니다">기억으로 적었습니다</option>
-              <option value="둘 다 섞여 있습니다">둘 다 섞여 있습니다</option>
+              {ACQ_CHECK_INFO_SOURCES.map((v) => <option key={v} value={v}>{v}</option>)}
               <option value="모름">모름</option>
             </select>
           </div>
@@ -414,8 +467,7 @@ function JTReportAcqCheck({ setRoute }) {
             <label>연락 방법 <em>REQUIRED</em></label>
             <select value={f.contactMethod} onChange={set('contactMethod')} required>
               <option value="">선택해 주세요</option>
-              <option value="카카오톡 채널">카카오톡 채널</option>
-              <option value="전화">전화</option>
+              {ACQ_CHECK_CONTACT_METHODS.map((v) => <option key={v} value={v}>{v}</option>)}
             </select>
             {/* R1-F2: 카카오톡을 고르면 저희가 먼저 연락할 방법이 없다 — 접수 전에 미리 알린다 */}
             {f.contactMethod === '카카오톡 채널' && (
@@ -427,7 +479,7 @@ function JTReportAcqCheck({ setRoute }) {
               <label>연락받으실 전화번호 <em>REQUIRED</em></label>
               <input type="tel" inputMode="tel" autoComplete="tel" placeholder="010-0000-0000" value={f.contactPhone} onChange={set('contactPhone')} />
               {/* R1-F2: 전화번호 형식 검증 — 숫자 9~11자리, 0으로 시작 */}
-              {!phoneOk && f.contactPhone.trim() && <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#c00' }}>전화번호 형식을 확인해 주세요(숫자 9~11자리, 0으로 시작).</p>}
+              {!phoneCheck.ok && f.contactPhone.trim() && <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#c00' }}>전화번호 형식을 확인해 주세요(숫자·하이픈·공백·괄호·+ 만, 숫자 9~11자리·0 시작).</p>}
             </div>
           )}
         </form>
@@ -436,7 +488,7 @@ function JTReportAcqCheck({ setRoute }) {
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
             <input type="checkbox" checked={f.consent} onChange={set('consent')} style={{ marginTop: 3, width: 18, height: 18, accentColor: '#000' }} />
             <span style={{ fontSize: 13, color: 'var(--fg-2)', lineHeight: 1.6 }}>
-              <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 취득세 서류 점검 접수 및 결과 안내<br />· <strong>항목</strong>: 취득일·소재지 시·군·구·취득 원인·물건 종류·명의와 지분·신고서상 세목별 금액·실제 납부액과 납부일·이후 이력·통지서 종류와 수령일·자료 확인 여부, 연락 방법(선택하신 경우 연락처) — 선택 항목은 비워 두셔도 접수됩니다<br />· <strong>함께 전송되는 접속 정보</strong>: 접수번호(임의 생성), 유입 매체, 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년 · 동의를 거부하실 수 있으며, 거부하시면 이 화면으로는 접수되지 않으나 전화·카카오톡으로 동일하게 문의하실 수 있습니다.
+              <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 취득세 서류 점검 접수 및 결과 안내<br />· <strong>항목</strong>: 취득일·소재지 시·도·취득 원인·물건 종류·명의와 지분·신고서상 세목별 금액·실제 납부액과 납부일·이후 이력·통지서 종류와 수령일·자료 확인 여부, 연락 방법(선택하신 경우 연락처) — 선택 항목은 비워 두셔도 접수됩니다<br />· <strong>함께 전송되는 접속 정보</strong>: 접수번호(임의 생성), 유입 매체, 유입 사이트 주소(도메인까지), 첫 방문 경로, 제출 위치, 접수 시각<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년 · 동의를 거부하실 수 있으며, 거부하시면 이 화면으로는 접수되지 않으나 전화·카카오톡으로 동일하게 문의하실 수 있습니다.
             </span>
           </label>
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginTop: 16, cursor: 'pointer' }}>

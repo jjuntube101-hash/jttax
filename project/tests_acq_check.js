@@ -1,5 +1,5 @@
 'use strict';
-/* 「내가 낸 취득세 점검」 접수 회귀 — 260921
+/* 「내가 낸 취득세 점검」 접수 회귀 — 260921, R2(260921 Codex R2) 갱신
 
    설계서(D:\클로드\브랜딩\세무법인\홈페이지\취득세고도화_260921\02_파생계산기_설계.md) §2·§4 를
    화면(ReportAcqCheck.jsx)·허브(build-commercial.mjs → acquisition-tax/index.html)가 그대로
@@ -8,11 +8,18 @@
      (a) 새 컴포넌트 소스·허브 링크 문구에 설계서 §4 금지 문구 + 「무료」가 없다
      (b) 결과(접수 완료) 화면 소스에 금액·차액을 그리는 코드가 없다 — 이 화면은 재계산기가 아니다
      (c) 동의(수집·이용 + 국외이전) 없이는 제출 함수가 호출되지 않는다
-     (d) 제출 본문(payload)에 주소 상세(동·호·지번)·주민등록번호 필드가 없다
+     (d) 소스에 자유 서술 입력란이 남아 있지 않다(<textarea 없음, type="text"는 금액 칸뿐)
      (e) 이 파일에서 booking_submit·gtag·jtEvent·jtTrackCta 가 전혀 발화되지 않는다
          (관찰 기간 260921~1003 — 기존 지표를 오염시키지 않는다)
      (f) 표시의무 문구(「제이티 세무법인 · 광고 담당 세무사 이현준」)가 있다
-     (g) 접수 번호가 순번이 아니다 — 두 번 만들면 다르고, 길이·문자 범위가 고정 형태다
+     (g) 접수 번호가 순번이 아니다 + Web Crypto 없으면 만들지 않는다(R1-F4)
+     (h) 라우팅 배선
+     (i) 입구(들어오는 길)
+     (j) R2-F1 — 시·군·구 자유입력란을 없애고 시·도만 받는다(부류를 닫았다)
+     (k) R2-F3 — 전화번호: 허용 문자 전체 검증 + payload 는 정규화 숫자열만
+     (l) R1-F4/canSubmit 가드 — 접수번호·전화 검증을 요구한다
+     (m) R2-F2 — 사후이력 상세는 고정 라벨 체크박스로만 받는다
+     (n) R2 불변식 — buildAcqCheckPayload 오염 문자열 전수 검사(부류가 닫혔다는 증거)
 
    ⚠️ 주석 안의 「무료를 쓰지 않는다」같은 «규칙 설명»까지 금지어로 잡으면 위양성이 난다.
       그래서 (a)는 블록 주석을 걷어낸 뒤 검사한다. */
@@ -24,6 +31,7 @@ const ROOT = path.join(__dirname, '..');
 const SRC = path.join(__dirname, 'src');
 const ACQ_CHECK = path.join(SRC, 'ReportAcqCheck.jsx');
 const ACQUISITION = path.join(SRC, 'ReportAcquisition.jsx');
+const LEGAL = path.join(SRC, 'Legal.jsx');
 const HUB_HTML = path.join(ROOT, 'acquisition-tax', 'index.html');
 const HUB_BUILDER = path.join(ROOT, 'project', 'commercial', 'build-commercial.mjs');
 const HUB_DATA = path.join(ROOT, 'project', 'commercial', 'commercial.data.mjs');
@@ -37,11 +45,30 @@ function eq(label, got, want) {
 
 const acqCheckSrc = fs.readFileSync(ACQ_CHECK, 'utf8');
 const acquisitionSrc = fs.readFileSync(ACQUISITION, 'utf8');
+const legalSrc = fs.readFileSync(LEGAL, 'utf8');
 const hubHtml = fs.existsSync(HUB_HTML) ? fs.readFileSync(HUB_HTML, 'utf8') : '';
 const hubBuilderSrc = fs.readFileSync(HUB_BUILDER, 'utf8');
 const hubDataSrc = fs.readFileSync(HUB_DATA, 'utf8');
 
 const stripComments = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1');
+
+/* 컴포넌트(JTReportAcqCheck) 앞의 모든 최상위 선언(상수·함수)을 통째로 로드한다 — R2 로
+   payload 조립이 여러 상수·헬퍼로 나뉘었으므로, 하나씩 AST 로 골라내는 대신 «컴포넌트 이전
+   전부»를 실행해 그 안의 이름들을 한 번에 꺼낸다. window.* = ... 대입문이 있어 fakeWindow 를
+   준다(에러 없이 조용히 받아주기만 하면 된다). */
+function loadAcqCheckModule() {
+  const compIdx = acqCheckSrc.indexOf('function JTReportAcqCheck');
+  if (compIdx < 0) throw new Error('JTReportAcqCheck 를 찾지 못했습니다');
+  const header = acqCheckSrc.slice(0, compIdx);
+  const names = ['buildAcqCheckPayload', 'validateAcqCheckPhone', 'validateAcqCheckDate', 'acqCheckPick',
+    'acqCheckMoneyValue', 'acqCheckGenId', 'ACQ_CHECK_REGIONS', 'ACQ_CHECK_POST_HISTORY_ITEMS',
+    'ACQ_CHECK_ACQUISITION_TYPES', 'ACQ_CHECK_PROPERTY_TYPES', 'ACQ_CHECK_OWNERSHIP_TYPES',
+    'ACQ_CHECK_NOTICE_TYPES', 'ACQ_CHECK_INFO_SOURCES', 'ACQ_CHECK_CONTACT_METHODS'];
+  // eslint-disable-next-line no-new-func
+  const fn = new Function('window', 'React', header + '\n;return {' + names.join(',') + '};');
+  return fn({}, { useState: () => [undefined, () => {}] });
+}
+const M = loadAcqCheckModule();
 
 console.log('\n════ (a) 설계서 §4 금지 문구 + 「무료」가 없다 ════');
 {
@@ -112,16 +139,26 @@ console.log('\n════ (c) 동의 없이는 제출 함수가 호출되지 �
      /^\s*if \(!canSubmit\) return;/.test(submitFn), true);
   eq('제출 버튼이 canSubmit 으로 disabled 된다', /disabled=\{!canSubmit\}/.test(acqCheckSrc), true);
   eq('제출 버튼이 submit 함수에 연결된다', /onClick=\{submit\}/.test(acqCheckSrc), true);
+  eq('submit 이 payload 를 buildAcqCheckPayload(f, receiptId) 로 조립한다(순수 함수 재사용)',
+     /\.\.\.buildAcqCheckPayload\(f, receiptId\)/.test(submitFn), true);
 }
 
-console.log('\n════ (d) 제출 본문에 주소 상세·주민번호 필드가 없다 ════');
+console.log('\n════ (d) 소스에 자유 서술 입력란이 남아 있지 않다 ════');
 {
-  const payloadBlock = (acqCheckSrc.match(/const payload = \{([\s\S]*?)\n    \};/) || ['', ''])[1];
-  eq('payload 객체를 찾았다', payloadBlock.length > 0, true);
-  for (const banned of ['주민등록번호', '주민번호', '동·호', '동/호', '지번', '상세주소', 'residentNumber', 'unitNumber']) {
-    eq(`payload 에 「${banned}」 가 없다`, payloadBlock.includes(banned), false);
+  eq('<textarea 가 없다', acqCheckSrc.includes('<textarea'), false);
+  eq('주민등록번호·동·호·지번 등 상세주소 낱말이 소스(주석 제외)에 없다',
+     ['주민등록번호', '주민번호', 'residentNumber', 'unitNumber'].every((w) => !stripComments(acqCheckSrc).includes(w)), true);
+  eq('제출 본문(buildAcqCheckPayload)에 소재지_시군구 키가 없다(R2-F1로 제거)',
+     acqCheckSrc.includes('소재지_시군구'), false);
+  eq('sigungu·postHistoryDetail 식별자가 소스에 없다(부류 자체를 없앴다)',
+     /\bsigungu\b/i.test(acqCheckSrc) || acqCheckSrc.includes('postHistoryDetail'), false);
+
+  // type="text" 입력은 금액 칸(신고서 세목별 금액·합계·실제납부액) 뿐이어야 한다 — 5곳
+  const textInputs = acqCheckSrc.match(/<input[^>]*type="text"[^>]*\/>/g) || [];
+  eq('type="text" 입력이 정확히 5개(금액 칸만)다', textInputs.length, 5);
+  for (const tag of textInputs) {
+    eq(`금액 칸은 setMoney( 로 정규화한다: ${tag.slice(0, 60)}...`, /onChange=\{setMoney\(/.test(tag), true);
   }
-  eq('payload 는 시·군·구까지만 받는다(소재지_시군구 키)', payloadBlock.includes('소재지_시군구'), true);
 }
 
 console.log('\n════ (e) 이 화면은 booking_submit·gtag·jtEvent·jtTrackCta 를 전혀 쏘지 않는다 ════');
@@ -156,8 +193,7 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
   eq('소스에 Math.random 이 없다(R1-F4 — 예측 저항성 없는 폴백 삭제)', acqCheckSrc.includes('Math.random'), false);
 
   // R1-F4: crypto 가 없으면 값을 «돌려주지 않는다» — null 이거나 예외를 던져야 한다.
-  // eslint-disable-next-line no-new-func
-  const fn = new Function('window', genIdChunk + '\n;return acqCheckGenId;')({});
+  const fn = M.acqCheckGenId;
   let noCryptoValue;
   let threw = false;
   try { noCryptoValue = fn(); } catch (_e) { threw = true; }
@@ -168,6 +204,7 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
     Uint8Array: Uint8Array,
     crypto: { getRandomValues: (arr) => { for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256); return arr; } },
   };
+  // eslint-disable-next-line no-new-func
   const fn2 = new Function('window', genIdChunk + '\n;return acqCheckGenId;')(fakeWindow);
   const c = fn2();
   const d = fn2();
@@ -210,55 +247,47 @@ console.log('\n════ (i) 입구(들어오는 길) — 결과 화면 링�
   eq('Chrome.jsx 전역 내비·메뉴에 acq-check 링크가 없다', chrome2.includes('acq-check'), false);
 }
 
-console.log('\n════ (j) R1-F1 — 시·군·구 자유입력란 검증(순수 함수) ════');
+console.log('\n════ (j) R2-F1 — 시·군·구 자유입력란을 없애고 시·도만 받는다 ════');
 {
-  const ast = parse(acqCheckSrc, { sourceType: 'script', plugins: ['jsx'] });
-  let chunk = '';
-  for (const n of ast.program.body) {
-    if (n.type === 'FunctionDeclaration' && n.id && n.id.name === 'validateAcqCheckSigungu') {
-      chunk = acqCheckSrc.slice(n.start, n.end);
-    }
-  }
-  eq('validateAcqCheckSigungu 최상위 선언을 찾았다', chunk.length > 0, true);
-  const constMatch = acqCheckSrc.match(/const ACQ_CHECK_SIGUNGU_ERROR = [^\n]*;/);
-  eq('ACQ_CHECK_SIGUNGU_ERROR 상수를 찾았다', !!constMatch, true);
-  // eslint-disable-next-line no-new-func
-  const validate = new Function(constMatch[0] + '\n' + chunk + '\n;return validateAcqCheckSigungu;')();
+  eq('sigungu 관련 식별자·필드가 소스에 없다', /sigungu/i.test(acqCheckSrc), false);
+  eq('물건 소재지는 시·도 select 하나뿐이다(select 라벨 「물건 소재지」 1회만)',
+     (acqCheckSrc.match(/물건 소재지/g) || []).length, 1);
+  eq('시·도 선택 아래 「시·군·구와 상세 주소는 받지 않습니다」 안내가 있다',
+     acqCheckSrc.includes('시·군·구와 상세 주소는 받지 않습니다. 필요하면 세무사가 연락드릴 때 여쭙니다.'), true);
+  eq('개인정보 수집·이용 동의 문구가 「소재지 시·도」로 고쳐졌다',
+     acqCheckSrc.includes('취득일·소재지 시·도·취득 원인'), true);
+  eq('동의 문구에 「소재지 시·군·구」가 더는 없다', acqCheckSrc.includes('소재지 시·군·구'), false);
+  eq('Legal.jsx 처리방침이 「소재지 시·도」로 고쳐졌다(취득세 점검 접수 항목)',
+     legalSrc.includes('선택: 취득일, 소재지 시·도, 취득 원인'), true);
+  eq('Legal.jsx 가 시·군·구도 받지 않는다고 명시한다',
+     legalSrc.includes('시·군·구·동·호수·주민등록번호는 받지 않으며'), true);
 
-  for (const v of ['성남시 분당구', '수원시', '강남구', '']) {
-    eq(`통과 · 「${v || '(빈 값)'}」`, validate(v).ok, true);
-  }
-  eq('통과 · 앞뒤 공백 제거 후 판정 · 「  강남구  」', validate('  강남구  ').ok, true);
-
-  for (const v of ['분당구 정자동 123', '강남구 테헤란로 1', '101동 202호', '래미안아파트']) {
-    eq(`거부 · 「${v}」`, validate(v).ok, false);
-  }
-  eq('거부 · 16자(길이 초과, 표지·숫자 없음)', validate('x'.repeat(15) + '구').ok, false);
-  eq('거부 · 전각 숫자가 섞이면(강남１구)', validate('강남１구').ok, false);
-  eq('거부 시 안내 메시지를 준다', validate('101동 202호').message,
-     '시·군·구까지만 적어 주세요(예: 성남시 분당구). 동·호수와 도로명은 받지 않습니다.');
+  // buildAcqCheckPayload 로도 확인 — 시·도 목록 밖 값은 「모름」으로 막힌다
+  eq('허용 시·도(서울특별시)는 그대로 실린다', M.buildAcqCheckPayload({ sido: '서울특별시' }, 'ACQCK-TEST0001').소재지_시도, '서울특별시');
+  eq('허용 목록 밖 값(강남구 테헤란로)은 「모름」으로 막힌다',
+     M.buildAcqCheckPayload({ sido: '강남구 테헤란로 123' }, 'ACQCK-TEST0001').소재지_시도, '모름');
 }
 
-console.log('\n════ (k) R1-F2 — 전화번호 형식 검증 + 카카오톡 「먼저 연락」 약속 금지 ════');
+console.log('\n════ (k) R2-F3 — 전화번호: 허용 문자 전체 검증 + payload 는 정규화 숫자열만 ════');
 {
-  const ast = parse(acqCheckSrc, { sourceType: 'script', plugins: ['jsx'] });
-  let chunk = '';
-  for (const n of ast.program.body) {
-    if (n.type === 'FunctionDeclaration' && n.id && n.id.name === 'validateAcqCheckPhone') {
-      chunk = acqCheckSrc.slice(n.start, n.end);
-    }
-  }
-  eq('validateAcqCheckPhone 최상위 선언을 찾았다', chunk.length > 0, true);
-  // eslint-disable-next-line no-new-func
-  const validatePhone = new Function(chunk + '\n;return validateAcqCheckPhone;')();
+  const validatePhone = M.validateAcqCheckPhone;
+  eq('통과 · 010-1234-5678', validatePhone('010-1234-5678').ok, true);
+  eq('통과 · 010-1234-5678 · digits 는 정규화 숫자열', validatePhone('010-1234-5678').digits, '01012345678');
+  eq('통과 · 02 123 4567 (허용 문자만, 9자리, 0 시작)', validatePhone('02 123 4567').ok, true);
+  eq('거부 · 「주소: 역삼동, 010-1234-5678」(허용 문자 밖 글자 포함)', validatePhone('주소: 역삼동, 010-1234-5678').ok, false);
+  eq('거부 · 「abc01012345678xyz」(문자 섞임)', validatePhone('abc01012345678xyz').ok, false);
+  eq('거부 · 01012345 (8자리)', validatePhone('01012345').ok, false);
+  eq('거부 · 10-1234-5678 (0으로 시작하지 않음)', validatePhone('10-1234-5678').ok, false);
+  eq('거부 · 010-1234-56789 (12자리)', validatePhone('010-1234-56789').ok, false);
+  eq('거부 · 빈 값', validatePhone('').ok, false);
+  eq('거부 시 digits 가 빈 문자열이다(원문이 새지 않는다)', validatePhone('abc01012345678xyz').digits, '');
 
-  eq('통과 · 010-1234-5678', validatePhone('010-1234-5678'), true);
-  eq('통과 · 0212345678 (9자리, 0 시작)', validatePhone('0212345678'), true);
-  eq('거부 · 01012345 (8자리)', validatePhone('01012345'), false);
-  eq('거부 · 10-1234-5678 (0으로 시작하지 않음)', validatePhone('10-1234-5678'), false);
-  eq('거부 · 010-1234-56789 (12자리)', validatePhone('010-1234-56789'), false);
-  eq('거부 · 빈 값', validatePhone(''), false);
-  eq('거부 · 숫자가 없는 문자열', validatePhone('전화없음'), false);
+  // payload 에는 원문이 아니라 정규화 숫자열만 실린다
+  const p = M.buildAcqCheckPayload({ contactMethod: '전화', contactPhone: '주소: 역삼동, 010-1234-5678' }, 'ACQCK-TEST0001');
+  eq('허용 문자 밖 전화는 거부 → payload 연락처가 빈 문자열이다(원문이 새지 않는다)', p.연락처, '');
+  eq('거부된 전화번호는 payload 연락처에 원문 부분 문자열이 없다', String(p.연락처).includes('역삼동'), false);
+  const p2 = M.buildAcqCheckPayload({ contactMethod: '전화', contactPhone: '010-1234-5678' }, 'ACQCK-TEST0001');
+  eq('통과한 전화번호는 payload 에 숫자열로만 실린다', p2.연락처, '01012345678');
 
   // 선택 화면 — 카카오톡을 고르면 접수 후 채널에서 접수번호를 보내야 한다고 미리 안내한다
   eq('연락 방법 선택 화면에 카카오톡 사전 안내가 있다',
@@ -285,14 +314,106 @@ console.log('\n════ (k) R1-F2 — 전화번호 형식 검증 + 카카오
      !/jtTrackCta\(|jtEvent\(|gtag\(/.test(kakaoBranch), true);
 }
 
-console.log('\n════ (l) R1-F4 — 크립토 없으면 폼 레벨에서 접수를 막는다 ════');
+console.log('\n════ (l) canSubmit 가드 — 접수번호·전화 검증을 요구한다 ════');
 {
   eq('접수번호가 없을 때(크립토 미가용) 안내 문구가 있다',
      acqCheckSrc.includes('이 브라우저에서는 접수 번호를 안전하게 만들 수 없습니다'), true);
   const canSubmitLine2 = (acqCheckSrc.match(/const canSubmit = [^\n]*(\n[^\n]*)*?;/) || [''])[0];
   eq('canSubmit 이 receiptId 를 요구한다(크립토 없으면 제출 불가)', /receiptId/.test(canSubmitLine2), true);
-  eq('canSubmit 이 시·군·구 검증(sigunguCheck.ok)을 요구한다', /sigunguCheck\.ok/.test(canSubmitLine2), true);
-  eq('canSubmit 이 전화번호 검증(phoneOk)을 요구한다', /phoneOk/.test(canSubmitLine2), true);
+  eq('canSubmit 이 전화번호 검증(phoneCheck.ok)을 요구한다', /phoneCheck\.ok/.test(canSubmitLine2), true);
+  eq('canSubmit 에 시·군·구 관련 참조가 없다(부류가 없어졌다)', /sigungu/i.test(canSubmitLine2), false);
+}
+
+console.log('\n════ (m) R2-F2 — 사후이력 상세는 고정 라벨 체크박스로만 받는다 ════');
+{
+  eq('postHistoryItems 상태로 배열을 관리한다(ACQ_CHECK_INIT)', acqCheckSrc.includes('postHistoryItems: []'), true);
+  eq('ACQ_CHECK_POST_HISTORY_ITEMS 고정 라벨 5종을 정의한다',
+     M.ACQ_CHECK_POST_HISTORY_ITEMS, ['수정신고', '경정', '환급', '추가 고지', '모름']);
+  eq('체크박스가 ACQ_CHECK_POST_HISTORY_ITEMS 를 순회해 렌더한다',
+     /ACQ_CHECK_POST_HISTORY_ITEMS\.map\(\(item\) => \(/.test(acqCheckSrc), true);
+  eq('체크박스 onChange 가 togglePostHistoryItem 을 호출한다',
+     /onChange=\{\(\) => togglePostHistoryItem\(item\)\}/.test(acqCheckSrc), true);
+
+  // payload — 선택한 라벨만 고정 구분자로 실린다
+  const p1 = M.buildAcqCheckPayload({ postHistory: '있음', postHistoryItems: ['수정신고', '경정'] }, 'ACQCK-TEST0001');
+  eq('선택한 라벨이 「·」로 이어져 실린다', p1.사후이력_상세, '수정신고·경정');
+  const p2 = M.buildAcqCheckPayload({ postHistory: '있음', postHistoryItems: [] }, 'ACQCK-TEST0001');
+  eq('아무것도 선택하지 않으면 「—」다', p2.사후이력_상세, '—');
+  const p3 = M.buildAcqCheckPayload({ postHistory: '없음', postHistoryItems: ['수정신고'] }, 'ACQCK-TEST0001');
+  eq('postHistory 가 「없음」이면 items 가 있어도 「—」다(답 자체와 모순되지 않게)', p3.사후이력_상세, '—');
+  // 오염 라벨은 허용 목록으로 걸러진다
+  const p4 = M.buildAcqCheckPayload({ postHistory: '있음', postHistoryItems: ['수정신고', '서울 강남구 테헤란로 123'] }, 'ACQCK-TEST0001');
+  eq('허용 목록 밖 라벨은 걸러지고 허용된 것만 남는다', p4.사후이력_상세, '수정신고');
+}
+
+console.log('\n════ (n) R2 불변식 — buildAcqCheckPayload 오염 문자열 전수 검사 ════');
+{
+  /* 모든 필드를 오염 문자열로 채운 뒤, 결과 값이 «허용 패턴»에만 맞는지 전수 검사한다.
+     허용 패턴: ①선택지 값(화이트리스트 상수들) ②숫자만(^\d+$ 또는 「—」/「모름」)
+     ③YYYY-MM-DD 또는 「모름」 ④정규화 전화 숫자열 또는 고정 문자열 ⑤접수번호(그대로 통과)
+     ⑥고정 문자열(모름/—/구분값). 접수시각은 시스템 생성 타임스탬프라 별도 패턴으로 본다. */
+  const POISON = '서울 강남구 테헤란로 123 101동 202호 900101-1234567 <script>';
+  const poisonedF = {
+    acqDateType: POISON, acqDate: POISON,
+    sido: POISON,
+    acquisitionType: POISON, propertyType: POISON, ownership: POISON,
+    reportedAcqTax: POISON, reportedEduTax: POISON, reportedFarmTax: POISON, reportedTotal: POISON,
+    paidAmount: POISON, paidDate: POISON,
+    postHistory: POISON, postHistoryItems: [POISON],
+    noticeType: POISON, noticeDate: POISON,
+    infoSource: POISON,
+    contactMethod: POISON, contactPhone: POISON,
+  };
+  const receiptId = 'ACQCK-TESTID0001';
+  const payload = M.buildAcqCheckPayload(poisonedF, receiptId);
+
+  const dangerousSubstrings = ['테헤란로', '101동', '202호', '900101', '<script>', '강남구'];
+  for (const key of Object.keys(payload)) {
+    if (key === '_subject') continue; // _subject 는 접수번호만 담는다(별도 확인)
+    for (const bad of dangerousSubstrings) {
+      eq(`payload.${key} 에 오염 부분 문자열 「${bad}」 가 없다`, String(payload[key]).includes(bad), false);
+    }
+  }
+  for (const bad of dangerousSubstrings) {
+    eq(`_subject 에도 오염 부분 문자열 「${bad}」 가 없다`, String(payload._subject).includes(bad), false);
+  }
+
+  // 필드별 허용 패턴 전수 검사
+  const ALLOWED = {
+    구분: (v) => v === 'ACQ_CHECK',
+    접수번호: (v) => v === receiptId,
+    취득일_구분: (v) => ['잔금일', '등기접수일', '모름'].includes(v),
+    취득일: (v) => v === '모름' || /^\d{4}-\d{2}-\d{2}$/.test(v),
+    소재지_시도: (v) => v === '모름' || M.ACQ_CHECK_REGIONS.includes(v),
+    취득원인: (v) => v === '모름' || M.ACQ_CHECK_ACQUISITION_TYPES.includes(v),
+    물건종류: (v) => v === '모름' || M.ACQ_CHECK_PROPERTY_TYPES.includes(v),
+    명의와지분: (v) => v === '모름' || M.ACQ_CHECK_OWNERSHIP_TYPES.includes(v),
+    신고서_취득세: (v) => v === '—' || /^\d+$/.test(v),
+    신고서_지방교육세: (v) => v === '—' || /^\d+$/.test(v),
+    신고서_농어촌특별세: (v) => v === '—' || /^\d+$/.test(v),
+    신고서_합계만아는경우: (v) => v === '—' || /^\d+$/.test(v),
+    실제납부액: (v) => v === '—' || /^\d+$/.test(v),
+    납부일: (v) => v === '모름' || /^\d{4}-\d{2}-\d{2}$/.test(v),
+    사후이력: (v) => ['없음', '있음', '모름'].includes(v),
+    사후이력_상세: (v) => v === '—' || v.split('·').every((x) => M.ACQ_CHECK_POST_HISTORY_ITEMS.includes(x)),
+    통지서_종류: (v) => v === '모름' || v === '해당없음' || M.ACQ_CHECK_NOTICE_TYPES.includes(v),
+    통지서_수령일: (v) => v === '모름' || /^\d{4}-\d{2}-\d{2}$/.test(v),
+    정보출처: (v) => v === '모름' || M.ACQ_CHECK_INFO_SOURCES.includes(v),
+    연락방법: (v) => v === '모름' || M.ACQ_CHECK_CONTACT_METHODS.includes(v),
+    연락처: (v) => v === '카카오톡 채널로 연락' || /^\d+$/.test(v),
+    접수시각: (v) => typeof v === 'string' && v.length > 0, // 시스템 생성 — Date().toLocaleString, 사용자 입력 아님
+    _subject: (v) => v === `[JT 취득세 점검 접수] ${receiptId}`,
+  };
+  for (const [key, checker] of Object.entries(ALLOWED)) {
+    eq(`payload.${key} 가 허용 패턴에 맞는다 (got=${JSON.stringify(payload[key])})`, checker(payload[key]), true);
+  }
+  eq('ALLOWED 표가 payload 의 모든 키를 커버한다(빠짐 없음)',
+     Object.keys(payload).every((k) => ALLOWED.hasOwnProperty(k)), true);
+
+  // 전화번호 허용 문자 안이지만 자릿수가 틀린 오염(주소 느낌 문자열)도 막힌다
+  const p2 = M.buildAcqCheckPayload({ contactMethod: '전화', contactPhone: '02-강남-1234' }, receiptId);
+  eq('허용 문자 밖 전화(한글 섞임)는 거부되어 고정 문자열로만 남는다(연락처가 숫자열이 아니다)',
+     /^\d+$/.test(p2.연락처), false);
 }
 
 console.log('\n════════════════════');
