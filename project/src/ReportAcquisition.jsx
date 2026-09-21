@@ -1139,6 +1139,13 @@ function JTReportAcquisition({ setRoute, onBack }) {
 
           <JTAcqOrdinanceCard region={answers.region} />
 
+          {/* ★ 260921 신설 — 「이 집을 사면 앞으로 내는 세금」 1차(취득→보유). 취득세가
+              «엔진 계산으로 완료»됐을 때만 스스로 연다(컴포넌트 내부 게이트). 설계서
+              02_파생계산기_설계.md §1. */}
+          {typeof JTAcqHoldingForecast === 'function' && (
+            <JTAcqHoldingForecast acqAnswers={answers} acqCalc={calc} setRoute={setRoute} />
+          )}
+
           {commentary.cautions && commentary.cautions.length > 0 && (
             <section className="jt-report-result__section">
               <h3>주의 포인트</h3>

@@ -57,6 +57,7 @@ export const ORDER = [
   'ReportAcqCheck.jsx',
   'ReportProperty.jsx',
   'ReportComprehensive.jsx',
+  'ReportAcqHolding.jsx',
   'ReportCorporate.jsx',
   'ReportInsurance.jsx',
   'ReportVat.jsx',
