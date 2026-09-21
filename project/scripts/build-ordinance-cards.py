@@ -95,6 +95,19 @@ def strip_oc_deep(obj):
     return strip_oc(obj)
 
 
+# 조문 제목 끝에 «본조신설 2019.9.26.» 같은 꺾쇠 연혁 표기가 붙어 오는 경우가 있다
+# (260921 실측: 경상남도 카드). 제목에서만 떼어 낸다 — 조문 원문(조내용) 전문은 그대로 둔다.
+_TITLE_ANNOTATION = re.compile(r"\s*<[^<>]*>")
+
+
+def clean_article_title(title):
+    """조문 제목에서 <본조신설 2019.9.26.> 같은 꺾쇠 연혁 표기를 떼고 앞뒤 공백을 정리한다."""
+    if not isinstance(title, str):
+        return title
+    cleaned = _TITLE_ANNOTATION.sub("", title)
+    return re.sub(r"\s+", " ", cleaned).strip()
+
+
 def find_target_articles(articles):
     """조내용(원문)에 TARGET_TOKENS 가 «모두» 들어 있는 조문만 골라 돌려준다.
 
@@ -192,7 +205,7 @@ def main():
             "promulgationNo": str(ident.get("공포번호") or ""),
             "revisionInfo": str(ident.get("제개정정보") or ""),
             "articleLabel": art.get("조표시") or "",
-            "articleTitle": art.get("조제목") or "",
+            "articleTitle": clean_article_title(art.get("조제목") or ""),
             "articleText": body,
             "upstream": UPSTREAM,
             "fetchedAt": today,
