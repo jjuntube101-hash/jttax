@@ -143,7 +143,7 @@ console.log('\n════ (f) 표시의무 문구가 있다 ════');
      acqCheckSrc.slice(di, di + 3000).includes('제이티 세무법인'), true);
 }
 
-console.log('\n════ (g) 접수 번호가 순번이 아니다 ════');
+console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Crypto 없으면 만들지 않는다(R1-F4) ════');
 {
   const ast = parse(acqCheckSrc, { sourceType: 'script', plugins: ['jsx'] });
   let genIdChunk = '';
@@ -153,17 +153,17 @@ console.log('\n════ (g) 접수 번호가 순번이 아니다 ═══�
     }
   }
   eq('acqCheckGenId 최상위 선언을 찾았다', genIdChunk.length > 0, true);
-  // eslint-disable-next-line no-new-func
-  const fn = new Function('window', genIdChunk + '\n;return acqCheckGenId;')({});  // crypto 없음 → 폴백 경로
-  const a = fn();
-  const b = fn();
-  eq('접수번호가 문자열이다', typeof a, 'string');
-  eq('접수번호 접두사가 ACQCK- 다', a.indexOf('ACQCK-'), 0);
-  eq('두 번 만들면 서로 다르다 (순번이면 예측 가능해진다)', a !== b, true);
-  eq('길이가 12자를 넘는다 (추측하기 어려운 길이)', a.length > 12, true);
-  eq('숫자만으로 된 순번 형태가 아니다', /^\d+$/.test(a.replace('ACQCK-', '')), false);
+  eq('소스에 Math.random 이 없다(R1-F4 — 예측 저항성 없는 폴백 삭제)', acqCheckSrc.includes('Math.random'), false);
 
-  // crypto.getRandomValues 가 있는 정상 경로도 같은 성질(다름·접두사)을 지키는지 확인
+  // R1-F4: crypto 가 없으면 값을 «돌려주지 않는다» — null 이거나 예외를 던져야 한다.
+  // eslint-disable-next-line no-new-func
+  const fn = new Function('window', genIdChunk + '\n;return acqCheckGenId;')({});
+  let noCryptoValue;
+  let threw = false;
+  try { noCryptoValue = fn(); } catch (_e) { threw = true; }
+  eq('crypto 없음 · 값을 돌려주지 않는다(null 또는 예외)', threw || noCryptoValue == null, true);
+
+  // crypto.getRandomValues 가 있는 정상 경로는 여전히 「추측하기 어려운」 성질을 지킨다
   const fakeWindow = {
     Uint8Array: Uint8Array,
     crypto: { getRandomValues: (arr) => { for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256); return arr; } },
@@ -172,7 +172,9 @@ console.log('\n════ (g) 접수 번호가 순번이 아니다 ═══�
   const c = fn2();
   const d = fn2();
   eq('crypto 경로 · 접두사 ACQCK-', c.indexOf('ACQCK-'), 0);
-  eq('crypto 경로 · 두 번 만들면 서로 다르다', c !== d, true);
+  eq('crypto 경로 · 두 번 만들면 서로 다르다 (순번이면 예측 가능해진다)', c !== d, true);
+  eq('crypto 경로 · 길이가 12자를 넘는다 (추측하기 어려운 길이)', c.length > 12, true);
+  eq('crypto 경로 · 숫자만으로 된 순번 형태가 아니다', /^\d+$/.test(c.replace('ACQCK-', '')), false);
 }
 
 console.log('\n════ (h) 라우팅 배선 — JT_KNOWN_SUBS·번들 ORDER·라우터 렌더 ════');
@@ -206,6 +208,91 @@ console.log('\n════ (i) 입구(들어오는 길) — 결과 화면 링�
   eq('Home.jsx 에 acq-check 링크가 없다 (홈 전면 비노출)', homeSrc.includes('acq-check'), false);
   const chrome2 = fs.readFileSync(path.join(SRC, 'Chrome.jsx'), 'utf8');
   eq('Chrome.jsx 전역 내비·메뉴에 acq-check 링크가 없다', chrome2.includes('acq-check'), false);
+}
+
+console.log('\n════ (j) R1-F1 — 시·군·구 자유입력란 검증(순수 함수) ════');
+{
+  const ast = parse(acqCheckSrc, { sourceType: 'script', plugins: ['jsx'] });
+  let chunk = '';
+  for (const n of ast.program.body) {
+    if (n.type === 'FunctionDeclaration' && n.id && n.id.name === 'validateAcqCheckSigungu') {
+      chunk = acqCheckSrc.slice(n.start, n.end);
+    }
+  }
+  eq('validateAcqCheckSigungu 최상위 선언을 찾았다', chunk.length > 0, true);
+  const constMatch = acqCheckSrc.match(/const ACQ_CHECK_SIGUNGU_ERROR = [^\n]*;/);
+  eq('ACQ_CHECK_SIGUNGU_ERROR 상수를 찾았다', !!constMatch, true);
+  // eslint-disable-next-line no-new-func
+  const validate = new Function(constMatch[0] + '\n' + chunk + '\n;return validateAcqCheckSigungu;')();
+
+  for (const v of ['성남시 분당구', '수원시', '강남구', '']) {
+    eq(`통과 · 「${v || '(빈 값)'}」`, validate(v).ok, true);
+  }
+  eq('통과 · 앞뒤 공백 제거 후 판정 · 「  강남구  」', validate('  강남구  ').ok, true);
+
+  for (const v of ['분당구 정자동 123', '강남구 테헤란로 1', '101동 202호', '래미안아파트']) {
+    eq(`거부 · 「${v}」`, validate(v).ok, false);
+  }
+  eq('거부 · 16자(길이 초과, 표지·숫자 없음)', validate('x'.repeat(15) + '구').ok, false);
+  eq('거부 · 전각 숫자가 섞이면(강남１구)', validate('강남１구').ok, false);
+  eq('거부 시 안내 메시지를 준다', validate('101동 202호').message,
+     '시·군·구까지만 적어 주세요(예: 성남시 분당구). 동·호수와 도로명은 받지 않습니다.');
+}
+
+console.log('\n════ (k) R1-F2 — 전화번호 형식 검증 + 카카오톡 「먼저 연락」 약속 금지 ════');
+{
+  const ast = parse(acqCheckSrc, { sourceType: 'script', plugins: ['jsx'] });
+  let chunk = '';
+  for (const n of ast.program.body) {
+    if (n.type === 'FunctionDeclaration' && n.id && n.id.name === 'validateAcqCheckPhone') {
+      chunk = acqCheckSrc.slice(n.start, n.end);
+    }
+  }
+  eq('validateAcqCheckPhone 최상위 선언을 찾았다', chunk.length > 0, true);
+  // eslint-disable-next-line no-new-func
+  const validatePhone = new Function(chunk + '\n;return validateAcqCheckPhone;')();
+
+  eq('통과 · 010-1234-5678', validatePhone('010-1234-5678'), true);
+  eq('통과 · 0212345678 (9자리, 0 시작)', validatePhone('0212345678'), true);
+  eq('거부 · 01012345 (8자리)', validatePhone('01012345'), false);
+  eq('거부 · 10-1234-5678 (0으로 시작하지 않음)', validatePhone('10-1234-5678'), false);
+  eq('거부 · 010-1234-56789 (12자리)', validatePhone('010-1234-56789'), false);
+  eq('거부 · 빈 값', validatePhone(''), false);
+  eq('거부 · 숫자가 없는 문자열', validatePhone('전화없음'), false);
+
+  // 선택 화면 — 카카오톡을 고르면 접수 후 채널에서 접수번호를 보내야 한다고 미리 안내한다
+  eq('연락 방법 선택 화면에 카카오톡 사전 안내가 있다',
+     acqCheckSrc.includes('접수 후 채널에서 접수 번호를 보내 주셔야 합니다.'), true);
+
+  // 완료 화면 — 카카오톡 분기를 도려내 「먼저 연락」 약속이 없는지, 접수번호 전송 안내가 있는지 본다
+  const doneHead = 'if (done) {';
+  const di = acqCheckSrc.indexOf(doneHead);
+  let d = 1, j = di + doneHead.length;
+  while (j < acqCheckSrc.length && d > 0) { const ch = acqCheckSrc[j]; if (ch === '{') d++; else if (ch === '}') d--; j++; }
+  const doneBlock = acqCheckSrc.slice(di, j);
+  const kakaoBranch = (doneBlock.match(/f\.contactMethod === '카카오톡 채널' \? \(([\s\S]*?)\) : \(/) || ['', ''])[1];
+  eq('완료 화면에 카카오톡 분기를 찾았다', kakaoBranch.length > 0, true);
+  eq('카카오톡 분기에 「자료를 보고 세무사가 연락드립니다」(전화 전용 문구)가 없다',
+     kakaoBranch.includes('자료를 보고 세무사가 연락드립니다'), false);
+  eq('카카오톡 분기가 「먼저 연락드릴 방법이 없습니다」를 명시한다(먼저 연락을 약속하지 않는다)',
+     kakaoBranch.includes('먼저 연락드릴 방법이 없습니다'), true);
+  eq('카카오톡 분기에 접수번호 전송 안내(「보내」)가 있다', kakaoBranch.includes('보내'), true);
+  eq('카카오톡 분기가 기존 공용 함수 window.jtKakaoUrl() 로 채널 링크를 연다(새 URL 을 짓지 않는다)',
+     kakaoBranch.includes('window.jtKakaoUrl()'), true);
+  eq('카카오톡 채널 링크가 새 창으로 열린다(target=_blank)', /target="_blank"/.test(kakaoBranch), true);
+  eq('카카오톡 채널 링크에 rel=noopener noreferrer 가 있다', /rel="noopener noreferrer"/.test(kakaoBranch), true);
+  eq('카카오톡 분기에 cta_click·jtTrackCta·jtEvent·gtag 계측이 없다(새 GA4 이벤트 금지)',
+     !/jtTrackCta\(|jtEvent\(|gtag\(/.test(kakaoBranch), true);
+}
+
+console.log('\n════ (l) R1-F4 — 크립토 없으면 폼 레벨에서 접수를 막는다 ════');
+{
+  eq('접수번호가 없을 때(크립토 미가용) 안내 문구가 있다',
+     acqCheckSrc.includes('이 브라우저에서는 접수 번호를 안전하게 만들 수 없습니다'), true);
+  const canSubmitLine2 = (acqCheckSrc.match(/const canSubmit = [^\n]*(\n[^\n]*)*?;/) || [''])[0];
+  eq('canSubmit 이 receiptId 를 요구한다(크립토 없으면 제출 불가)', /receiptId/.test(canSubmitLine2), true);
+  eq('canSubmit 이 시·군·구 검증(sigunguCheck.ok)을 요구한다', /sigunguCheck\.ok/.test(canSubmitLine2), true);
+  eq('canSubmit 이 전화번호 검증(phoneOk)을 요구한다', /phoneOk/.test(canSubmitLine2), true);
 }
 
 console.log('\n════════════════════');

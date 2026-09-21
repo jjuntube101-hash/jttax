@@ -272,6 +272,56 @@ console.log('\n════ 배선 — 번들 ORDER·산출물 ════');
      /acqAnswers=\{answers\}\s*acqCalc=\{calc\}\s*setRoute=\{setRoute\}/.test(acqSrc), true);
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   (j) R1-F3 — 경쟁 상태: 요청 ID·입력 변경 시 결과 무효화·스냅샷 표시
+   ══════════════════════════════════════════════════════════════════════ */
+console.log('\n════ (j) R1-F3 — 요청 ID·입력 변경 시 결과 무효화·종부세 분기는 스냅샷 ════');
+{
+  eq('useRef 를 가져온다(요청 ID 보관용)', /useRef\s*:\s*useAcqHoldRef/.test(holdSrc), true);
+
+  const clearFnBody = sliceBody(holdSrc, 'const clearOnInputChange = () => {');
+  eq('clearOnInputChange 함수를 찾았다', clearFnBody.length > 20, true);
+  eq('(a) 입력 변경 시 요청 ID 를 올린다(reqIdRef.current += 1)', /reqIdRef\.current\s*\+=\s*1/.test(clearFnBody), true);
+  eq('(a) 입력 변경 시 결과를 지운다(setResults(null))', /setResults\(null\)/.test(clearFnBody), true);
+
+  // clearOnInputChange 가 실제로 모든 관련 입력 핸들러에 배선돼 있는지 — 연도 체크박스·
+  // 연도 공시가격·1주택·도시지역·다른 주택 여부·다른 주택 수·다른 주택 합계·나이·보유기간 = 9곳
+  const wiredCount = (holdSrc.match(/clearOnInputChange\(\);/g) || []).length;
+  eq('입력 변경 핸들러 9곳이 모두 clearOnInputChange() 를 부른다', wiredCount, 9);
+
+  const runBody2 = sliceBody(holdSrc, 'const runHolding = async () => {');
+  eq('(b) 실행 시작 시 자신만의 요청 ID 를 만든다(myReqId)', /const myReqId = \+\+reqIdRef\.current;/.test(runBody2), true);
+  eq('(b) 루프 안에서 최신 요청인지 확인하고 아니면 중단한다',
+     /if \(reqIdRef\.current !== myReqId\) \{ setBusy\(false\); return; \}/.test(runBody2), true);
+  eq('(b) 응답 반영(setResults) «직전에» 요청 ID 를 다시 비교한다',
+     /if \(reqIdRef\.current === myReqId\) \{\s*setResults\(/.test(runBody2), true);
+  // 비교가 setResults 호출보다 앞선 위치인지(순서 고정)
+  const cmpIdx = runBody2.search(/if \(reqIdRef\.current === myReqId\)/);
+  const setResultsIdx = runBody2.indexOf('setResults({');
+  eq('요청 ID 비교가 setResults 호출보다 앞선다', cmpIdx >= 0 && setResultsIdx > cmpIdx, true);
+
+  eq('(b) 실행 시작 시 이 계산에 쓴 otherHousing 을 스냅샷으로 저장한다',
+     /const snapshotOtherHousing = otherHousing;/.test(runBody2), true);
+  eq('결과를 저장할 때 스냅샷을 함께 저장한다({ rows: out, otherHousing: snapshotOtherHousing })',
+     /setResults\(\{ rows: out, otherHousing: snapshotOtherHousing \}\);/.test(holdSrc), true);
+
+  // (c) 종부세 표시 분기는 현재 상태(otherHousing)가 아니라 스냅샷(results.otherHousing)을 본다
+  const compSection2 = holdSrc.slice(holdSrc.indexOf('가지고 있을 때 — 종합부동산세'));
+  eq('(c) 종부세 표시 분기가 results.otherHousing 을 본다(현재 상태가 아니다)',
+     /results\.otherHousing === 'unsure' \? \(/.test(compSection2), true);
+  eq('(c) 재산세·종부세 렌더가 results.rows 를 순회한다(구 results.map( 리터럴이 남지 않았다)',
+     /results\.map\(/.test(holdSrc), false);
+
+  // 계산 중(busy)에는 관련 입력이 비활성화된다 — 연도 체크박스·연도 공시가격·1주택/도시지역/
+  // 다른 주택 버튼·다른 주택 수·합계·나이·보유기간, 최소 표본으로 disabled={busy} 부착 수를 본다
+  const disabledBusyCount = (holdSrc.match(/disabled=\{(?:!yearSel\[y\] \|\| )?busy\}/g) || []).length;
+  eq('계산 중(busy)에는 관련 입력이 비활성화된다(disabled={busy} 최소 8곳)', disabledBusyCount >= 8, true);
+
+  // 「입력이 바뀌었습니다」 안내는 stale 상태에서만 뜬다
+  eq('stale 상태 안내 문구가 있다', holdSrc.includes('입력이 바뀌었습니다. 다시 계산해 주세요.'), true);
+  eq('runHolding 이 시작하면 stale 을 끈다(setStale(false))', /setStale\(false\);/.test(runBody2), true);
+}
+
 console.log('\n════════════════════');
 if (fails) {
   console.error(`tests_acq_holding: FAIL ${fails}`);

@@ -15,7 +15,9 @@
 const { useState: useAcqCkState } = React;
 
 /* 접수번호 — 순번이 아니라 «추측하기 어려운» 무작위 문자열이어야 한다(설계서 2-3 ⑪ 인접 요구).
-   crypto.getRandomValues 가 없는 구형 환경만 Math.random 폴백을 쓴다. */
+   R1-F4: Web Crypto 가 없는 환경에서는 접수번호를 만들지 않는다(null) — 예측 저항성이 없는
+   구형 난수 폴백은 삭제했다. 호출부는 null 을 「이 브라우저에서는 접수 번호를 안전하게 만들
+   수 없다」로 취급하고 제출을 막는다. */
 function acqCheckGenId() {
   try {
     if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues && window.Uint8Array) {
@@ -24,9 +26,34 @@ function acqCheckGenId() {
       return 'ACQCK-' + Array.from(arr).map((b) => b.toString(36)).join('').toUpperCase().slice(0, 12);
     }
   } catch (_e) {}
-  return 'ACQCK-' + Math.random().toString(36).slice(2, 10).toUpperCase() + Date.now().toString(36).toUpperCase().slice(-4);
+  return null;
 }
 window.acqCheckGenId = acqCheckGenId;
+
+/* R1-F1: 시·군·구 자유입력란 검증 — 선택 항목이라 빈 값은 통과시키지만, 값이 있으면
+   상세주소(동·호수·번지·도로명)가 섞여 국외 제출 본문에 실리지 않게 막는다.
+   순수 함수로 분리해 시험 가능하게 한다. */
+const ACQ_CHECK_SIGUNGU_ERROR = '시·군·구까지만 적어 주세요(예: 성남시 분당구). 동·호수와 도로명은 받지 않습니다.';
+function validateAcqCheckSigungu(raw) {
+  const v = String(raw == null ? '' : raw).trim();
+  if (!v) return { ok: true, value: v };
+  if (/[0-9０-９]/.test(v)) return { ok: false, value: v, message: ACQ_CHECK_SIGUNGU_ERROR }; // (a) 숫자(전각 포함)
+  if (v.length > 15) return { ok: false, value: v, message: ACQ_CHECK_SIGUNGU_ERROR }; // (b) 길이
+  if (!/[시군구]$/.test(v)) return { ok: false, value: v, message: ACQ_CHECK_SIGUNGU_ERROR }; // (c) 시·군·구로 끝나야 함
+  const detailMarkers = ['동 ', '로 ', '길 ', '번지', '호', '아파트', 'APT', 'apt'];
+  for (let i = 0; i < detailMarkers.length; i++) {
+    if (v.indexOf(detailMarkers[i]) >= 0) return { ok: false, value: v, message: ACQ_CHECK_SIGUNGU_ERROR }; // (d) 상세주소 표지
+  }
+  return { ok: true, value: v };
+}
+window.validateAcqCheckSigungu = validateAcqCheckSigungu;
+
+/* R1-F2: 전화번호 검증 — 숫자만 추려 9~11자리이고 0으로 시작할 때만 통과시킨다. */
+function validateAcqCheckPhone(raw) {
+  const digits = String(raw == null ? '' : raw).replace(/[^0-9]/g, '');
+  return digits.length >= 9 && digits.length <= 11 && digits.charAt(0) === '0';
+}
+window.validateAcqCheckPhone = validateAcqCheckPhone;
 
 /* 준비하시면 좋은 자료 — «안내»일 뿐 첨부를 받지 않는다(설계서 2-2). */
 const ACQ_CHECK_DOCS = [
@@ -66,16 +93,34 @@ function JTReportAcqCheck({ setRoute }) {
   const setMoney = (k) => (e) => window.jtSetNumericAns(setAns, k, e.target.value, true);
 
   // 접수번호 — 화면이 열려 있는 동안 한 번만 만든다(다시 열면 새로 만든다. 순번이 아니므로 재사용할 이유가 없다)
+  // R1-F4: Web Crypto 가 없는 환경에서는 acqCheckGenId() 가 null 을 돌려준다 — 그 브라우저에서는 접수번호를 못 만든다.
   const [receiptId] = useAcqCkState(() => acqCheckGenId());
   const [submitting, setSubmitting] = useAcqCkState(false);
   const [done, setDone] = useAcqCkState(false);
   const [error, setError] = useAcqCkState('');
+  const [copied, setCopied] = useAcqCkState(false);
+
+  // R1-F1: 시·군·구 자유입력란 검증 — 선택 항목이라 비어 있으면 통과, 값이 있으면 상세주소를 거른다
+  const sigunguCheck = validateAcqCheckSigungu(f.sigungu);
+  // R1-F2: 연락 방법이 「전화」일 때만 형식을 검증한다(카카오톡은 별도 흐름)
+  const phoneOk = f.contactMethod !== '전화' || validateAcqCheckPhone(f.contactPhone);
 
   /* 최소 요건 — 두 동의와, «어떻게든 연락은 닿을 방법». 금액·날짜·자료 항목은 전부 비워도 된다
      (설계서 2-3: 「금액을 다 채우지 못해도 접수됩니다」). 연락 방법만은 예외다 — 접수 자체가
-     「자료를 보고 연락드립니다」이므로 연락할 방법이 없으면 접수의 의미가 없다. */
-  const canSubmit = f.consent && f.consentIntl && !!f.contactMethod
+     「자료를 보고 연락드립니다」이므로 연락할 방법이 없으면 접수의 의미가 없다.
+     R1-F1·F2·F4: 접수번호가 만들어졌고(크립토 가용), 시·군·구가 유효하고, 전화번호 형식이
+     맞을 때만 제출을 허용한다. */
+  const canSubmit = !!receiptId && f.consent && f.consentIntl && !!f.contactMethod
+    && sigunguCheck.ok && phoneOk
     && (f.contactMethod !== '전화' || f.contactPhone.trim()) && !submitting;
+
+  const copyReceiptId = () => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard && receiptId) {
+        navigator.clipboard.writeText(receiptId).then(() => setCopied(true)).catch(() => {});
+      }
+    } catch (_e) {}
+  };
 
   const submit = async () => {
     if (!canSubmit) return;
@@ -88,7 +133,7 @@ function JTReportAcqCheck({ setRoute }) {
       취득일_구분: f.acqDateType === 'settlement' ? '잔금일' : f.acqDateType === 'registry' ? '등기접수일' : '모름',
       취득일: f.acqDate || '—',
       소재지_시도: f.sido || '모름',
-      소재지_시군구: f.sigungu || '—',
+      소재지_시군구: sigunguCheck.value || '—',
       취득원인: f.acquisitionType || '모름',
       물건종류: f.propertyType || '모름',
       명의와지분: f.ownership || '모름',
@@ -151,10 +196,29 @@ function JTReportAcqCheck({ setRoute }) {
         <section className="jt-section">
           <div className="jt-confirm">
             <div className="jt-kicker">RECEIPT — #{receiptId}</div>
-            <h2 className="jt-h2">자료를 보고 세무사가 연락드립니다.</h2>
-            <p className="jt-body">
-              남겨 주신 내용을 바탕으로 담당 세무사가 확인한 뒤, 선택하신 연락 방법으로 안내해 드립니다.
-            </p>
+            {/* R1-F2: 카카오톡을 고르면 저희 쪽에서 먼저 연락할 방법이 없다 — 「먼저 연락드립니다」를
+                약속하지 않고, 채널에서 접수번호를 보내야 접수가 이어진다는 사실을 안내한다. */}
+            {f.contactMethod === '카카오톡 채널' ? (
+              <>
+                <h2 className="jt-h2">카카오톡 채널에서 접수 번호를 보내 주세요.</h2>
+                <p className="jt-body">
+                  카카오톡은 저희 쪽에서 먼저 연락드릴 방법이 없습니다. 아래 접수 번호를 복사해 카카오톡 채널 대화창에 보내 주셔야 접수가 이어집니다.
+                </p>
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', margin: '20px 0' }}>
+                  <button type="button" className="jt-btn jt-btn--outline" onClick={copyReceiptId}>
+                    {copied ? '복사됐습니다' : `접수번호 복사 (${receiptId})`}
+                  </button>
+                  <a className="jt-btn jt-btn--primary" href={window.jtKakaoUrl()} target="_blank" rel="noopener noreferrer">카카오톡 채널 열기 →</a>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="jt-h2">자료를 보고 세무사가 연락드립니다.</h2>
+                <p className="jt-body">
+                  남겨 주신 내용을 바탕으로 담당 세무사가 확인한 뒤, 선택하신 연락 방법으로 안내해 드립니다.
+                </p>
+              </>
+            )}
             <div style={{ border: '1px solid var(--border-1)', padding: '20px 24px', margin: '24px 0', fontSize: 14, lineHeight: 1.75, maxWidth: 720 }}>
               <p style={{ margin: '0 0 10px' }}>
                 취득세 감면은 신청이 있어야 받을 수 있습니다(지방세특례제한법 제183조 제1항). 신고 당시 감면을 신청하지 못했더라도, 경정청구를 하면서 그때 감면신청서를 함께 내는 절차가 시행령에 있습니다(같은 법 시행령 제126조 제1항 제1호, 지방세기본법 제50조 제1항).
@@ -195,6 +259,14 @@ function JTReportAcqCheck({ setRoute }) {
           </ul>
         </div>
 
+        {/* R1-F4: Web Crypto 가 없으면 접수번호를 안전하게 못 만든다 — 구형 난수 폴백을 두지
+            않고, 대신 이 화면에서 접수를 막고 다른 연락 방법을 안내한다. */}
+        {!receiptId && (
+          <div style={{ border: '1px solid #c00', padding: '16px 20px', marginBottom: 24, fontSize: 14, lineHeight: 1.7, background: '#fff5f5', maxWidth: 880 }}>
+            <strong>이 브라우저에서는 접수 번호를 안전하게 만들 수 없습니다.</strong> 카카오톡 채널이나 전화로 문의해 주세요.
+          </div>
+        )}
+
         <form className="jt-form" onSubmit={(e) => e.preventDefault()}>
           {/* ① 취득일 */}
           <div className="jt-field">
@@ -225,6 +297,8 @@ function JTReportAcqCheck({ setRoute }) {
           <div className="jt-field">
             <label>물건 소재지 · 시·군·구 <em>OPTIONAL</em></label>
             <input type="text" placeholder="예: 강남구 (동·호수는 적지 않으셔도 됩니다)" value={f.sigungu} onChange={set('sigungu')} />
+            {/* R1-F1: 상세주소가 섞이면 제출 전에 막고 이유를 보여 준다 */}
+            {!sigunguCheck.ok && <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#c00' }}>{sigunguCheck.message}</p>}
           </div>
 
           {/* ③ 취득 원인 */}
@@ -343,11 +417,17 @@ function JTReportAcqCheck({ setRoute }) {
               <option value="카카오톡 채널">카카오톡 채널</option>
               <option value="전화">전화</option>
             </select>
+            {/* R1-F2: 카카오톡을 고르면 저희가 먼저 연락할 방법이 없다 — 접수 전에 미리 알린다 */}
+            {f.contactMethod === '카카오톡 채널' && (
+              <p style={{ margin: '6px 0 0', fontSize: 12.5, color: 'var(--fg-3)' }}>접수 후 채널에서 접수 번호를 보내 주셔야 합니다.</p>
+            )}
           </div>
           {f.contactMethod === '전화' && (
             <div className="jt-field">
               <label>연락받으실 전화번호 <em>REQUIRED</em></label>
               <input type="tel" inputMode="tel" autoComplete="tel" placeholder="010-0000-0000" value={f.contactPhone} onChange={set('contactPhone')} />
+              {/* R1-F2: 전화번호 형식 검증 — 숫자 9~11자리, 0으로 시작 */}
+              {!phoneOk && f.contactPhone.trim() && <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#c00' }}>전화번호 형식을 확인해 주세요(숫자 9~11자리, 0으로 시작).</p>}
             </div>
           )}
         </form>

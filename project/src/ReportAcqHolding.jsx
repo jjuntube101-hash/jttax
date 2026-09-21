@@ -8,7 +8,7 @@
    ⛔ 세목마다 납세자 범위가 달라(재산세·종부세는 "이 집"이 아니라 "납세자가 가진 재산 전체") 하나의
       총액으로 합치지 않는다(§1-1). 소스 어디에도 prop.total + comp.total 같은 합산이 없어야 한다. */
 
-const { useState: useAcqHoldState } = React;
+const { useState: useAcqHoldState, useRef: useAcqHoldRef } = React;
 
 /* ── 여닫는 조건 (설계서 §1-5 「계산할 수 없음」 조건) ──────────────────────
    'hidden'            : 아예 렌더하지 않는다 — 취득세가 폴백·차단·엔진 실패 상태.
@@ -99,6 +99,19 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
   const [holdingYears, setHoldingYears] = useAcqHoldState('');
   const [busy, setBusy] = useAcqHoldState(false);
   const [results, setResults] = useAcqHoldState(null);
+  const [stale, setStale] = useAcqHoldState(false);
+  /* R1-F3: 경쟁 상태 방지 — 실행마다 올라가는 요청 ID. 응답이 도착했을 때 이 값이 최신이
+     아니면(=그 사이 다른 실행이 시작됐으면) 버린다. */
+  const reqIdRef = useAcqHoldRef(0);
+
+  /* R1-F3: 계산에 쓰이는 입력이 하나라도 바뀌면 — 계산 중이든 계산 후든 — 기존 결과를
+     즉시 지우고 진행 중인 응답도 무효화한다(요청 ID를 올린다). 「입력이 바뀌었으니 다시
+     계산해 달라」는 안내만 남긴다. */
+  const clearOnInputChange = () => {
+    reqIdRef.current += 1;
+    if (results !== null) setStale(true);
+    setResults(null);
+  };
 
   const vis = acqHoldingVisibility(acqAnswers, acqCalc);
   if (vis === 'hidden') return null;
@@ -128,9 +141,17 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
 
   const runHolding = async () => {
     if (!canRun) return;
+    // R1-F3: 이 실행만의 요청 ID. 실행 도중 입력이 바뀌면(clearOnInputChange 가 reqIdRef 를
+    // 올린다) 아래 비교에서 걸려 이 실행의 결과는 반영되지 않는다.
+    const myReqId = ++reqIdRef.current;
+    setStale(false);
     setBusy(true);
+    // R1-F3: 표시 분기가 «지금의» otherHousing 이 아니라 «이 계산에 쓴» otherHousing 을
+    // 보도록 스냅샷을 함께 저장한다.
+    const snapshotOtherHousing = otherHousing;
     const out = [];
     for (const row of selectedRows) {
+      if (reqIdRef.current !== myReqId) { setBusy(false); return; }
       const yearOut = { year: row.year };
       if (!(Number(row.value) > 0)) {
         yearOut.prop = { status: 'unknown' };
@@ -159,7 +180,11 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
       }
       out.push(yearOut);
     }
-    setResults(out);
+    // R1-F3: 응답을 반영하기 «직전에» 최신 요청인지 다시 확인한다 — 응답이 도착했을 때
+    // 이미 새 실행이 시작됐다면(요청 ID 불일치) 이 결과는 버린다.
+    if (reqIdRef.current === myReqId) {
+      setResults({ rows: out, otherHousing: snapshotOtherHousing });
+    }
     setBusy(false);
   };
 
@@ -192,13 +217,14 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
         {years.map((y) => (
           <div key={y} style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 90 }}>
-              <input type="checkbox" checked={!!yearSel[y]} onChange={(e) => setYearSel((s) => ({ ...s, [y]: e.target.checked }))} />
+              <input type="checkbox" checked={!!yearSel[y]} disabled={busy}
+                onChange={(e) => { clearOnInputChange(); setYearSel((s) => ({ ...s, [y]: e.target.checked })); }} />
               {y}년
             </label>
             <input className="jt-report-q__input" style={{ flex: '1 1 200px', margin: 0 }} type="text" inputMode="numeric"
-              placeholder="공시가격 (원)" disabled={!yearSel[y]}
+              placeholder="공시가격 (원)" disabled={!yearSel[y] || busy}
               value={yearVal[y] ? Number(yearVal[y]).toLocaleString('ko-KR') : ''}
-              onChange={(e) => window.jtSetNumericAns((_id, v) => setYearVal((s) => ({ ...s, [y]: v })), y, e.target.value, true)} />
+              onChange={(e) => { clearOnInputChange(); window.jtSetNumericAns((_id, v) => setYearVal((s) => ({ ...s, [y]: v })), y, e.target.value, true); }} />
           </div>
         ))}
       </div>
@@ -208,7 +234,7 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
         {oneHouseQ.sub && <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8 }}>{oneHouseQ.sub}</p>}
         <div className="jt-report-q__opts">
           {oneHouseQ.opts.map((o) => (
-            <button key={o[0]} type="button" className={'jt-report-q__opt' + (oneHouse === o[0] ? ' is-selected' : '')} onClick={() => setOneHouse(o[0])}>
+            <button key={o[0]} type="button" disabled={busy} className={'jt-report-q__opt' + (oneHouse === o[0] ? ' is-selected' : '')} onClick={() => { clearOnInputChange(); setOneHouse(o[0]); }}>
               <span className="jt-report-q__opt-mark">{oneHouse === o[0] ? '●' : '○'}</span>
               <span><strong>{o[1]}</strong></span>
             </button>
@@ -222,7 +248,7 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
           {urbanQ.sub && <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8 }}>{urbanQ.sub}</p>}
           <div className="jt-report-q__opts">
             {urbanQ.opts.map((o) => (
-              <button key={o[0]} type="button" className={'jt-report-q__opt' + (urban === o[0] ? ' is-selected' : '')} onClick={() => setUrban(o[0])}>
+              <button key={o[0]} type="button" disabled={busy} className={'jt-report-q__opt' + (urban === o[0] ? ' is-selected' : '')} onClick={() => { clearOnInputChange(); setUrban(o[0]); }}>
                 <span className="jt-report-q__opt-mark">{urban === o[0] ? '●' : '○'}</span>
                 <span><strong>{o[1]}</strong></span>
               </button>
@@ -238,7 +264,7 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
         </p>
         <div className="jt-report-q__opts">
           {[['none', '없음 (이 집 1채)'], ['has', '있음'], ['unsure', '모름']].map((o) => (
-            <button key={o[0]} type="button" className={'jt-report-q__opt' + (otherHousing === o[0] ? ' is-selected' : '')} onClick={() => setOtherHousing(o[0])}>
+            <button key={o[0]} type="button" disabled={busy} className={'jt-report-q__opt' + (otherHousing === o[0] ? ' is-selected' : '')} onClick={() => { clearOnInputChange(); setOtherHousing(o[0]); }}>
               <span className="jt-report-q__opt-mark">{otherHousing === o[0] ? '●' : '○'}</span>
               <span><strong>{o[1]}</strong></span>
             </button>
@@ -247,23 +273,23 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
         {otherHousing === 'has' && (
           <div style={{ marginTop: 10 }}>
             <label style={{ display: 'block', fontSize: 13, marginBottom: 4 }}>이 집을 포함해 총 몇 채인가요?</label>
-            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 2"
-              value={otherCount} onChange={(e) => setOtherCount(e.target.value.replace(/[^0-9]/g, ''))} />
+            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 2" disabled={busy}
+              value={otherCount} onChange={(e) => { clearOnInputChange(); setOtherCount(e.target.value.replace(/[^0-9]/g, '')); }} />
             <label style={{ display: 'block', fontSize: 13, margin: '10px 0 4px' }}>다른 주택들의 공시가격 합계 (원)</label>
-            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 800,000,000"
+            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 800,000,000" disabled={busy}
               value={otherValue ? Number(otherValue).toLocaleString('ko-KR') : ''}
-              onChange={(e) => setOtherValue(e.target.value.replace(/[^0-9]/g, ''))} />
+              onChange={(e) => { clearOnInputChange(); setOtherValue(e.target.value.replace(/[^0-9]/g, '')); }} />
           </div>
         )}
         {otherHousing === 'none' && (
           <div style={{ marginTop: 10 }}>
             <p style={{ fontSize: 13, opacity: 0.8, margin: '0 0 6px' }}>나이·보유기간은 선택 입력입니다 — 비우면 세액공제를 반영하지 않은 값으로 표시합니다.</p>
             <label style={{ display: 'block', fontSize: 13, marginBottom: 4 }}>소유자 나이 (만, 선택)</label>
-            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 62"
-              value={ownerAge} onChange={(e) => setOwnerAge(e.target.value.replace(/[^0-9]/g, ''))} />
+            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 62" disabled={busy}
+              value={ownerAge} onChange={(e) => { clearOnInputChange(); setOwnerAge(e.target.value.replace(/[^0-9]/g, '')); }} />
             <label style={{ display: 'block', fontSize: 13, margin: '10px 0 4px' }}>보유기간 (년, 선택)</label>
-            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 8"
-              value={holdingYears} onChange={(e) => setHoldingYears(e.target.value.replace(/[^0-9]/g, ''))} />
+            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 8" disabled={busy}
+              value={holdingYears} onChange={(e) => { clearOnInputChange(); setHoldingYears(e.target.value.replace(/[^0-9]/g, '')); }} />
           </div>
         )}
       </div>
@@ -271,12 +297,15 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
       <button className="jt-btn jt-btn--primary" disabled={!canRun} onClick={runHolding}>
         {busy ? '계산 중…' : '보유 단계 계산하기 →'}
       </button>
+      {/* R1-F3: 입력이 바뀌어 기존 결과를 지웠을 때만 보이는 안내 — 계산이 끝나거나 새로
+          시작되면 runHolding 이 이 상태를 꺼 준다. */}
+      {stale && <p style={{ fontSize: 13, color: '#b45309', marginTop: 8 }}>입력이 바뀌었습니다. 다시 계산해 주세요.</p>}
 
       {results && (
         <React.Fragment>
           <section className="jt-report-result__section" style={{ marginTop: 16 }}>
             <h3>가지고 있을 때 — 재산세</h3>
-            {results.map((r) => (
+            {results.rows.map((r) => (
               <div key={'p' + r.year} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid rgba(0,0,0,.06)' }}>
                 <div style={{ fontSize: 12.5, opacity: 0.7, marginBottom: 2 }}>{yearNote(r.prop && { ...r.prop, year: r.year })}</div>
                 <div><strong>{r.year}년</strong> {rowLabel(r.prop)}</div>
@@ -286,10 +315,12 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
 
           <section className="jt-report-result__section">
             <h3>가지고 있을 때 — 종합부동산세 <span style={{ fontWeight: 400, fontSize: 13, opacity: 0.75 }}>(납세자가 가진 주택 전체 기준 — 이 집만의 세금이 아닙니다)</span></h3>
-            {otherHousing === 'unsure' ? (
+            {/* R1-F3: 이 표시 분기는 «지금의» otherHousing 이 아니라 이 결과를 만들 때
+                스냅샷으로 저장한 results.otherHousing 을 본다. */}
+            {results.otherHousing === 'unsure' ? (
               <p>계산할 수 없음 — 다른 주택 보유 여부를 확인하지 못했습니다.</p>
             ) : (
-              results.map((r) => (
+              results.rows.map((r) => (
                 <div key={'c' + r.year} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid rgba(0,0,0,.06)' }}>
                   <div style={{ fontSize: 12.5, opacity: 0.7, marginBottom: 2 }}>{yearNote(r.comp && { ...r.comp, year: r.year })}</div>
                   <div><strong>{r.year}년</strong> {r.comp && r.comp.status === 'unsure' ? '계산할 수 없음' : rowLabel(r.comp)}</div>
