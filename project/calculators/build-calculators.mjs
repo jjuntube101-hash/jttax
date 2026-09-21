@@ -12,6 +12,8 @@
 //   2. 루트 sitemap.xml 갱신 (공유 모듈 — 인사이트+계산기 자동 열거)
 
 import { writeFile, mkdir } from 'node:fs/promises';
+import { readdirSync, readFileSync } from 'node:fs';
+import { insightSlug } from '../_shared/insight-slug.mjs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CALCULATORS } from './calculators.data.mjs';
@@ -334,14 +336,36 @@ function assertSlug(slug, where) {
   return slug;
 }
 
+/* 랜딩 HTML 이 가리키는 인사이트 글(/insights/<slug>.html)이 원고로 실제 있는가.
+   템플릿에 직접 적은 링크는 slug 오타·원고 slug 변경이 빌드를 그냥 통과한다(Codex TASK-260921-012 R1-F1).
+   원고(md)의 slug 집합과 대조해 없는 글을 가리키면 빌드를 멈춘다. */
+function insightSlugSet() {
+  const dir = join(__dirname, '..', 'insights');
+  const set = new Set();
+  for (const f of readdirSync(dir)) {
+    if (!f.endsWith('.md') || f.startsWith('README')) continue;
+    const src = readFileSync(join(dir, f), 'utf8').replace(/\r\n?/g, '\n');
+    const m = src.match(/^---\n([\s\S]*?)\n---\n/);
+    const sm = m && m[1].match(/^slug:\s*"?([^"\n]+)"?\s*$/m);
+    set.add(insightSlug(f, sm ? sm[1].trim() : ''));
+  }
+  return set;
+}
+function assertInsightLinks(html, where, have) {
+  const dead = [...html.matchAll(/href="\/insights\/([a-z0-9-]+)\.html"/g)].map((m) => m[1]).filter((s) => !have.has(s));
+  if (dead.length) throw new Error(`[${where}] 원고가 없는 인사이트 글을 가리킵니다: ${[...new Set(dead)].join(', ')}`);
+  return html;
+}
+
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
+  const haveInsights = insightSlugSet();
   let made = 0, kept = 0;
   for (const c of CALCULATORS) {
     assertSlug(c.slug, 'calculators.data.mjs');
     // custom: true → 손으로 쓴 페이지. 덮어쓰면 연도별 비교표가 날아가므로 건드리지 않는다.
     if (c.custom) { kept++; continue; }
-    await writeFile(join(OUT_DIR, `${c.slug}.html`), renderCalcPage(c));
+    await writeFile(join(OUT_DIR, `${c.slug}.html`), assertInsightLinks(renderCalcPage(c), `calculators/${c.slug}.html`, haveInsights));
     made++;
   }
   await writeFile(join(OUT_DIR, 'index.html'), renderIndexPage());
