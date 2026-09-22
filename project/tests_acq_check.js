@@ -199,19 +199,115 @@ console.log('\n════ (g) 접수 번호 — 순번이 아니다 + Web Cryp
   try { noCryptoValue = fn(); } catch (_e) { threw = true; }
   eq('crypto 없음 · 값을 돌려주지 않는다(null 또는 예외)', threw || noCryptoValue == null, true);
 
-  // crypto.getRandomValues 가 있는 정상 경로는 여전히 「추측하기 어려운」 성질을 지킨다
-  const fakeWindow = {
-    Uint8Array: Uint8Array,
-    crypto: { getRandomValues: (arr) => { for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256); return arr; } },
-  };
+  // crypto.getRandomValues 가 있는 정상 경로는 여전히 「추측하기 어려운」 성질을 지킨다.
+  /* 260922: 난수를 «고정 바이트»로 주입한다. 종전에는 Math.random 으로 채우고 결과가 /^\d+$/ 이면
+     FAIL 이었는데, 정상 구현도 바이트가 우연히 전부 0~9 로만 36진 표기되면(실측 약 2,000회에 1회)
+     숫자만 나와 게이트가 간헐 실패했다. 「순번이 아니다」는 형식이 아니라 «출력이 주입한 난수
+     바이트만으로 정해지는가»로 본다 — 순번·시각이 섞였다면 같은 바이트에서 값이 달라진다. */
+  let fillByte = 0xAB;
+  let filler = null; // 함수면 균일 채움 뒤에 호출해 배열을 덮어쓴다(위치별·표본 주입용)
+  const rngCalls = [];
+  /* Codex R3-F1: 호출마다 «새 window · 새 함수 인스턴스»로 돌린다. 하나를 계속 쓰면 window 에 「본 배열 → 순번」을
+     캐시해 두는 상태 기반 순번 구현이 같은 입력엔 같은 값·다른 입력엔 다른 값을 내며 전부 통과한다. */
+  /* Codex R4-F1: 시계도 주입한다 — 같은 날 안에서는 「날짜를 접미사로 붙이는」 구현이 같은 값을 내 통과한다.
+     Date·performance 를 가짜로 가려 두고 호출할 때마다 400일씩 밀어, 시각이 섞였다면 같은 바이트에서 값이 갈리게 한다. */
+  const RealDate = Date;
+  let clockMs = RealDate.UTC(2026, 0, 1);
+  function FakeDate(...args) {
+    if (!new.target) return new RealDate(clockMs).toString(); // new 없는 Date() 는 문자열을 돌려준다
+    return args.length ? new RealDate(...args) : new RealDate(clockMs);
+  }
+  FakeDate.prototype = RealDate.prototype; // instanceof Date · Date.prototype 접근을 그대로 둔다(R5 confirm)
+  FakeDate.now = () => clockMs;
+  FakeDate.UTC = RealDate.UTC;
+  FakeDate.parse = RealDate.parse;
+  const fakePerformance = { now: () => clockMs };
   // eslint-disable-next-line no-new-func
-  const fn2 = new Function('window', genIdChunk + '\n;return acqCheckGenId;')(fakeWindow);
-  const c = fn2();
-  const d = fn2();
-  eq('crypto 경로 · 접두사 ACQCK-', c.indexOf('ACQCK-'), 0);
-  eq('crypto 경로 · 두 번 만들면 서로 다르다 (순번이면 예측 가능해진다)', c !== d, true);
-  eq('crypto 경로 · 길이가 12자를 넘는다 (추측하기 어려운 길이)', c.length > 12, true);
-  eq('crypto 경로 · 숫자만으로 된 순번 형태가 아니다', /^\d+$/.test(c.replace('ACQCK-', '')), false);
+  const mkGenIdRaw = new Function('window', 'Date', 'performance', genIdChunk + '\n;return acqCheckGenId;');
+  const mkGenId = (w) => {
+    const f = mkGenIdRaw(w, FakeDate, fakePerformance);
+    return () => { clockMs += 400 * 86400000; return f(); };
+  };
+  /* R4-F4: 난수 요청은 «생성마다 1회 이상»만 요구한다 — 정확한 누적 횟수를 못 박으면 8바이트를 두 번 받아
+     잇는 정당한 구현이 떨어진다. 생성 1회가 부른 getRandomValues 횟수를 여기에 쌓는다. */
+  const perGenCalls = [];
+  const counted = (f) => { const before = rngCalls.length; const v = f(); perGenCalls.push(rngCalls.length - before); return v; };
+  const mkWindow = () => ({
+    Uint8Array: Uint8Array,
+    crypto: { getRandomValues: (arr) => {
+      rngCalls.push(arr.length); arr.fill(fillByte);
+      if (filler) filler(arr);
+      return arr;
+    } },
+  });
+  const fn2 = () => counted(mkGenId(mkWindow()));
+  /* ⚠️ 새 window 만 쓰면 반대쪽이 샌다 — window 에 순번을 두고 난수에 섞는 구현은 새 window 에서 순번이 늘 1 이라
+     같은 값을 낸다(결함 주입 M5 가 통과하는 것을 실측). 그래서 «하나의 window 를 계속 쓰는» 함수로도 같은 바이트를
+     되풀이해, 앞선 호출이 뒤 호출의 값을 바꾸지 않는지 본다. 두 방식은 서로의 구멍을 막는다. */
+  const sharedRaw = mkGenId(mkWindow());
+  const shared = () => counted(sharedRaw);
+  const s1 = shared();
+  const s2 = shared();
+  fillByte = 0xCD;
+  const s3 = shared();
+  fillByte = 0xAB;
+  const s4 = shared();
+  const a1 = fn2();
+  const a2 = fn2();
+  fillByte = 0xCD;
+  const b1 = fn2();
+  eq('crypto 경로 · 문자열을 돌려준다', [typeof a1, typeof a2, typeof b1, typeof s1], ['string', 'string', 'string', 'string']);
+  eq('crypto 경로 · 같은 window 에서 같은 바이트를 되풀이해도 값이 같다 (호출마다 시계를 400일 밀었다 — 순번·누적 상태·시각 없음)',
+     [s1 === s2, s1 === s4, s1 !== s3], [true, true, true]);
+  eq('crypto 경로 · 같은 window 든 새 window 든 같은 바이트면 같은 값', [s1 === a1, s3 === b1], [true, true]);
+  eq('crypto 경로 · 접두사 ACQCK-', String(a1).indexOf('ACQCK-'), 0);
+  eq('crypto 경로 · 생성마다 getRandomValues 를 1회 이상 부른다 (got=생성별 호출 수)',
+     perGenCalls.length === 7 && perGenCalls.every((n) => n >= 1) ? true : perGenCalls, true);
+  eq('crypto 경로 · 난수를 8바이트 이상 받는다 (추측하기 어려운 양)', rngCalls.length > 0 && rngCalls.every((n) => n >= 8), true);
+  eq('crypto 경로 · 같은 바이트면 같은 값 (순번·시각이 섞이지 않았다)', a1 === a2, true);
+  eq('crypto 경로 · 바이트가 다르면 값이 다르다 (입력 바이트가 출력에 반영된다)', a1 !== b1, true);
+  eq('crypto 경로 · 길이가 12자를 넘는다 (추측하기 어려운 길이)', String(a1).length > 12 && String(b1).length > 12, true);
+  eq('crypto 경로 · 고정 바이트 0xAB 에서 숫자만으로 된 형태가 아니다 (10진 순번식 표기가 아니다)',
+     /^\d+$/.test(String(a1).replace('ACQCK-', '')), false);
+
+  /* Codex R1-F1·R2-F1·R2-F2 — 「출력에 닿는 난수량을 줄이는 개조」 부류를 두 축으로 닫는다.
+     균일한 두 배열만 비교하면 첫 1바이트만 쓰는 구현(256가지)도, 위치마다 1비트만 쓰는 구현(64가지)도 통과했다.
+       ① 위치별: 한 위치에 0~255 를 전부 넣어 나온 유일 출력 수 n 의 log2(n) 을 전 위치에서 더해 40비트 이상.
+          현 구현 실측(기준 0xAB) = 256·256·256·256·256·250·1·1·1·1 → 약 47.97비트 — 36진 표기를 이어 붙여
+          앞 12자를 쓰므로 2글자 바이트에서는 앞 6바이트까지만 출력에 닿는다. 위치마다 7비트를 요구하면 바이트당
+          6비트씩 10곳을 쓰는 정당한 60비트 구현이 떨어진다(R3-F2) — 그래서 위치 수·위치별 문턱이 아니라 합산이다.
+       ② 결합: 결정적 LCG 로 만든 배열 65,536개의 출력이 (거의) 전부 달라야 한다. 바이트들을 XOR·합으로 접어
+          좁은 공간에 넣으면 ①은 통과해도 여기서 충돌이 쏟아진다(24비트 공간이면 기대 충돌 약 128건).
+     ⚠️ 한계: 블랙박스 시험은 엔트로피를 증명하지 못한다. 이 검사가 잡는 것은 대략 2^26 미만으로의 축소까지다.
+        시드가 고정이라 같은 소스에서는 항상 같은 판정이 난다(난수원 비의존).
+     ⚠️ 알려진 위양성(Codex R4-F2·F3, 채택하지 않음): 기준점이 «균일 배열»(0xAB·0xCD)이라, 이웃 바이트를 XOR 로
+        묶거나 3바이트 다수결을 취하는 구현은 난수를 48비트 이상 쓰더라도 「바이트가 다르면 값이 다르다」·위치별 합산에서
+        떨어진다. acqCheckGenId 를 그런 방식으로 바꾸게 되면 이 블록의 기준점을 비균일 배열로 함께 바꿔야 한다. */
+  fillByte = 0xAB;
+  const nBytes = rngCalls[0];
+  const gensBefore = perGenCalls.length;
+  const perPos = [];
+  for (let i = 0; i < nBytes; i++) {
+    const seen = new Set();
+    for (let v = 0; v < 256; v++) { filler = (arr) => { arr[i] = v; }; seen.add(fn2()); }
+    perPos.push(seen.size);
+  }
+  const posGens = perGenCalls.slice(gensBefore);
+  eq('crypto 경로 · 위치별 주입도 생성마다 getRandomValues 를 거친다', [posGens.length, posGens.every((n) => n >= 1)], [nBytes * 256, true]);
+  const posBits = perPos.reduce((sum, n) => sum + Math.log2(Math.max(n, 1)), 0);
+  eq('crypto 경로 · 위치별로 출력에 닿는 정보량의 합이 40비트 이상 (got=위치별 유일 출력 수)',
+     posBits >= 40 ? true : perPos, true);
+
+  const SAMPLES = 65536;
+  let lcg = 0x9E3779B9;
+  filler = (arr) => {
+    for (let i = 0; i < arr.length; i++) { lcg = (Math.imul(lcg, 1664525) + 1013904223) >>> 0; arr[i] = lcg >>> 24; }
+  };
+  const uniq = new Set();
+  for (let n = 0; n < SAMPLES; n++) uniq.add(fn2());
+  filler = null;
+  eq('crypto 경로 · 서로 다른 난수 배열 65,536개가 (거의) 전부 다른 접수번호가 된다 (좁은 공간으로 접지 않는다, got=유일값 수)',
+     uniq.size >= SAMPLES - 8 ? true : uniq.size, true);
 }
 
 console.log('\n════ (h) 라우팅 배선 — JT_KNOWN_SUBS·번들 ORDER·라우터 렌더 ════');
