@@ -340,7 +340,7 @@ function JTNav({ route, setRoute }) {
           {svcOpen && (
             <div className="jt-nav__dd" onMouseEnter={openSvc} onMouseLeave={closeSvc}>
               {services.map((s) => (
-                <a href={s.slug ? `/services/${s.slug}.html` : '/services/'} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={s.num} className="jt-nav__dd-item" onClick={jtNavGo(() => goService(s.kr))}>
+                <a href={s.href || (s.slug ? `/services/${s.slug}.html` : '/services/')} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={s.num} className="jt-nav__dd-item" onClick={s.href ? undefined : jtNavGo(() => goService(s.kr))}>
                   <span className="jt-nav__dd-num">{s.num}</span>
                   <span className="jt-nav__dd-label">
                     <span className="jt-nav__dd-kr">{s.kr}</span>
@@ -513,12 +513,20 @@ function JTFooter({ setRoute }) {
           <a href="/services/bookkeeping.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>기장·세금 신고</a>
           <a href="/services/consulting.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>세금 종합 컨설팅</a>
           <a href="/services/tax-refund.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>경정청구</a>
+          {/* 260922: 취득세·크리에이터 — 정적 허브로 바로(SPA 라우트 없음) */}
+          <a href="/acquisition-tax/">취득세</a>
+          <a href="/creators.html">크리에이터 세금</a>
         </div>
         <div className="jt-footer__col">
           <h4>Contact</h4>
           <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => { window.jtTrackCta('booking', 'footer'); setRoute('booking'); }}>상담 예약</a>
           <a href="/consult.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('contact'))}>오시는 길</a>
           <a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'footer')}>전화 문의</a>
+          {/* 260922: 카카오톡 채널 — 오너 제공 QR(pf.kakao.com/_CcxlJG) */}
+          <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'footer')}>카카오톡 채널</a>
+          <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'footer_qr')} style={{ display: 'inline-block', marginTop: 6 }}>
+            <img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무회계 QR 코드" width="72" height="72" loading="lazy" style={{ width: 72, height: 72, borderRadius: 6, background: '#fff' }} />
+          </a>
         </div>
       </div>
       <div className="jt-footer__bar">

@@ -278,9 +278,9 @@ function JTServicesPage({ setRoute }) {
         <div className="jt-page-hero__mark"><img src="project/assets/logo_symbol.png" alt="" /></div>
         <div className="jt-page-hero__inner">
           <div className="jt-page-hero__crumb"><span>SERVICES</span><span>·</span><span>업무분야</span></div>
-          <h1>다섯 개의 전문 영역.<br />하나의 호흡.</h1>
+          <h1>일곱 개의 전문 영역.<br />하나의 호흡.</h1>
           <p className="jt-page-hero__sub">
-            양도·상속·증여부터 세무조사 대응, 법인 기장, 경정청구까지 — 의사결정 이전부터 사후 관리까지 하나의 팀이 일관된 기준으로 진행합니다.
+            양도·상속·증여부터 세무조사 대응, 법인 기장, 경정청구, 취득세와 크리에이터 세금까지 — 의사결정 이전부터 사후 관리까지 하나의 팀이 일관된 기준으로 진행합니다.
           </p>
         </div>
       </section>
@@ -297,6 +297,11 @@ function JTServicesPage({ setRoute }) {
                 <h3>{s.kr}</h3>
                 <p style={{ fontSize: 17, color: 'var(--fg-1)', fontWeight: 500, marginBottom: 16 }}>{s.short}</p>
                 <p style={{ maxWidth: '100%' }}>{s.desc}</p>
+                {s.href ? (
+                  <a className="jt-btn jt-btn--outline" style={{ marginTop: 24, display: 'inline-block' }} href={s.href}>
+                    안내 페이지 보기 <span className="jt-arrow">→</span>
+                  </a>
+                ) : (
                 <button className="jt-btn jt-btn--outline" style={{ marginTop: 24 }} onClick={() => {
                 try {sessionStorage.setItem('jt_preferred_topic', s.kr);} catch (_) {}
                 window.jtTrackCta('booking', 'services');
@@ -304,6 +309,7 @@ function JTServicesPage({ setRoute }) {
               }}>
                   이 분야 상담 예약 <span className="jt-arrow">→</span>
                 </button>
+                )}
               </div>
               <div className="jt-service-detail__side" style={{ marginTop: 24 }}>
                 <ul>

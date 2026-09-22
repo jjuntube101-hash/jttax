@@ -17,7 +17,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICES, EXPERTS, TEAM_MODEL, ABOUT, CONSULT, CREATORS, ACQ_HUB } from './commercial.data.mjs';
+import { SERVICES, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, CONSULT, CREATORS, ACQ_HUB } from './commercial.data.mjs';
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
@@ -109,6 +109,9 @@ const STYLE = `  <style>
     .jt-cc-links{list-style:none;padding:0;}
     .jt-cc-links a{color:#1a1a1a;text-decoration:none;border-bottom:1px solid rgba(0,0,0,.15);}
     .jt-cc-chips{display:flex;gap:8px;flex-wrap:wrap;}
+    .jt-cc-kqr{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:13px;color:#555;}
+    .jt-cc-kqr img{width:88px;height:88px;border:1px solid rgba(0,0,0,.1);border-radius:8px;background:#fff;}
+    @media(max-width:640px){.jt-cc-kqr img{display:none;}}
     .jt-cc-chip{font-size:13px;border:1px solid rgba(0,0,0,.15);border-radius:999px;padding:7px 13px;text-decoration:none;color:#333;background:#fff;}
     .jt-cc-faq{padding:16px 0;border-bottom:1px solid rgba(0,0,0,.06);}
     .jt-cc-faq h3{margin:0 0 8px;font-size:16px;}
@@ -176,11 +179,20 @@ function crumbLd(items) {
   };
 }
 
+/* 카카오톡 채널 QR (260922 오너 제공 — 판독값 http://pf.kakao.com/_CcxlJG, 채널 «제이티 세무회계»).
+   화면이 좁으면(휴대폰) 링크를 바로 누르면 되므로 그림은 숨긴다. */
+const KAKAO_URL = 'https://pf.kakao.com/_CcxlJG';
+const KAKAO_QR = `    <div class="jt-cc-kqr">
+      <a href="${KAKAO_URL}" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','qr')"><img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무회계 QR 코드" loading="lazy" width="88" height="88"></a>
+      <span>휴대폰 카메라로 QR을 찍으면 카카오톡 채널 <b>제이티 세무회계</b>로 연결됩니다.<br><a href="${KAKAO_URL}" target="_blank" rel="noopener" style="color:#333;">pf.kakao.com/_CcxlJG</a></span>
+    </div>`;
+
 const CTA_BOTTOM = `    <div class="jt-cc-cta" style="margin-top:24px;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','commercial')">상담 예약 →</a>
-      <a href="https://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','commercial')">카톡 상담</a>
+      <a href="${KAKAO_URL}" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','commercial')">카톡 상담</a>
       <a href="tel:02-554-6405" class="jt-btn jt-btn--outline" onclick="jtTrackCta('call','commercial')">02-554-6405</a>
-    </div>`;
+    </div>
+${KAKAO_QR}`;
 
 const DISCLAIMER = `    <div class="jt-cc-disc">
       <div class="l">안내</div>
@@ -236,7 +248,7 @@ function renderServicePage(s) {
 
     <div class="jt-cc-cta">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','svc_top')">이 분야 상담 예약 →</a>
-      <a href="https://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','svc_top')">카톡 상담</a>
+      <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','svc_top')">카톡 상담</a>
     </div>
 
     <section class="jt-cc-sec">
@@ -291,26 +303,31 @@ function renderServicesIndex() {
     url,
     mainEntity: {
       '@type': 'ItemList',
-      itemListElement: SERVICES.map((s, i) => ({
-        '@type': 'ListItem', position: i + 1, name: s.kr, url: `${SITE}/services/${s.slug}.html`,
-      })),
+      itemListElement: [
+        ...SERVICES.map((s) => ({ name: s.kr, url: `${SITE}/services/${s.slug}.html` })),
+        ...SERVICE_EXTRA.map((s) => ({ name: s.kr, url: `${SITE}${s.href}` })),
+      ].map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, url: it.url })),
     },
   };
-  const cards = SERVICES.map(s => `      <a class="jt-cc-card" style="display:block;text-decoration:none;color:#0B0B0F;" href="/services/${s.slug}.html">
-        <h3>${esc(s.kr)}</h3>
-        <p>${esc(s.lede)}</p>
+  const card = (href, kr, lede) => `      <a class="jt-cc-card" style="display:block;text-decoration:none;color:#0B0B0F;" href="${href}">
+        <h3>${esc(kr)}</h3>
+        <p>${esc(lede)}</p>
         <p style="margin-top:10px;font-weight:600;font-size:13px;">업무 안내 보기 →</p>
-      </a>`).join('\n');
+      </a>`;
+  const cards = [
+    ...SERVICES.map(s => card(`/services/${s.slug}.html`, s.kr, s.lede)),
+    ...SERVICE_EXTRA.map(s => card(s.href, s.kr, s.lede)),   // 260922: 취득세·크리에이터 — 기존 허브로
+  ].join('\n');
   return headHtml({
-    title: `업무분야 — 양도상속증여·세무조사·기장·컨설팅·경정청구 | ${FIRM}`,
-    desc: '기장·세금 신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구까지 사업과 재산의 세무 업무를 안내합니다.',
-    keywords: '강남 세무법인, 세무법인 업무, 상속 세무, 세무조사 대응, 기장 대행, 경정청구', url,
+    title: `업무분야 — 양도상속증여·세무조사·기장·컨설팅·경정청구·취득세·크리에이터 | ${FIRM}`,
+    desc: '기장·세금 신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구, 취득세, 크리에이터 세금까지 사업과 재산의 세무 업무를 안내합니다.',
+    keywords: '강남 세무법인, 세무법인 업무, 상속 세무, 세무조사 대응, 기장 대행, 경정청구, 취득세 세무사, 크리에이터 세무', url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['업무분야', url]])],
   }) + `
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › 업무분야</nav>
-    <h1>다섯 개의 전문 영역. 하나의 호흡.</h1>
-    <p class="jt-cc-lede">기장·신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구까지 사업과 재산의 세금 문제를 폭넓게 살핍니다.</p>
+    <h1>일곱 개의 전문 영역. 하나의 호흡.</h1>
+    <p class="jt-cc-lede">기장·신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구, 그리고 취득세와 크리에이터 세금까지 사업과 재산의 세금 문제를 폭넓게 살핍니다.</p>
     <div class="jt-cc-grid">
 ${cards}
     </div>
@@ -524,6 +541,7 @@ function renderConsultPage() {
       <a href="${L.kakaoChatUrl}" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','consult_top')">카톡 상담</a>
       <a href="tel:${L.phone}" class="jt-btn jt-btn--outline" onclick="jtTrackCta('call','consult_top')">${L.phone}</a>
     </div>
+${KAKAO_QR}
 
     <section class="jt-cc-sec">
       <h2>${esc(CONSULT.hook.title)}</h2>
@@ -684,10 +702,10 @@ ${articleLinks}
 ${groupArticlesHtml(g)}      </section>`).join('\n');
   return headHtml({
     title: `${ACQ_HUB.metaTitle} | ${FIRM}`, desc: ACQ_HUB.metaDesc, keywords: ACQ_HUB.keywords, url,
-    ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['취득세', url]])],
+    ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['업무분야', `${SITE}/services/`], ['취득세', url]])],
   }) + `
   <main class="jt-cc-wrap">
-    <nav class="jt-cc-crumb"><a href="/">홈</a> › 취득세</nav>
+    <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/services/">업무분야</a> › 취득세</nav>
     <h1>${esc(ACQ_HUB.h1)}</h1>
     <p class="jt-cc-lede">${esc(ACQ_HUB.lede)}</p>
     <div class="jt-cc-grid">

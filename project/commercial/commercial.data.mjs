@@ -349,7 +349,7 @@ export const CONSULT = {
     parking: '건물 지하 주차장 이용 (방문 시 안내)',
     phone: '02-554-6405',
     email: 'jttax@jttax.co.kr',
-    kakaoChatUrl: 'https://pf.kakao.com/_CcxlJG/chat',
+    kakaoChatUrl: 'https://pf.kakao.com/_CcxlJG',
     kakaoMapUrl: 'https://place.map.kakao.com/1776119720',
     naverMapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C78%EA%B8%B8%2022',
   },
@@ -365,9 +365,19 @@ export const CONSULT = {
    ⛔ 우월 표현(유일·최초·1위·최고)·결과 예단(환급받을 금액 등)·범위를 밝히지 않은
       「무료」 표현 금지 (세무사법 §12조의7·시행령 §33).
    ⛔ FAQPage 구조화 데이터를 쓰지 않는다 (FAQ 리치 결과 2026-05-07 종료). */
+/* 업무분야 목록의 추가 카드 (260922 오너 지시 — «취득세·크리에이터만 한다는 느낌»이 아니라
+   기존 다섯 분야 옆에 나란히 둔다). leaf 페이지를 새로 만들지 않고 이미 있는 허브로 보낸다 —
+   같은 검색어를 두 페이지가 나눠 갖지 않게. 문구는 사실 서술만(세무사법 §12조의7). */
+export const SERVICE_EXTRA = [
+  { num: '06', en: 'ACQUISITION TAX', kr: '취득세', href: '/acquisition-tax/',
+    lede: '집·건물·토지를 취득할 때의 세율·감면 확인과, 이미 낸 취득세의 재검토(경정청구·불복)까지. 계산기와 상황별 안내 글에서 시작합니다.' },
+  { num: '07', en: 'CREATORS', kr: '크리에이터 세금', href: '/creators.html',
+    lede: '유튜버·인플루언서·플랫폼 사업자의 세금을 첫 정산, 직장 겸업, 팀·MCN 운영의 세 경로로 나눠 안내합니다. 사업자등록·기장·신고까지.' },
+];
+
 export const ACQ_HUB = {
   path: 'acquisition-tax',
-  metaTitle: '취득세, 내 상황부터 확인하세요',
+  metaTitle: '취득세 — 세율·감면 확인과 경정청구·불복, 내 상황부터',
   metaDesc: '부동산을 취득한 이유와 종류, 명의에 따라 확인할 것이 달라집니다. 여섯 가지 상황 중 내 경우를 골라 계산기·관련 글·상담으로 이어집니다.',
   keywords: '취득세, 취득세 계산, 부동산 취득세, 증여 취득세, 상속 취득세, 공매 취득세, 농지 취득세, 법인 취득세, 취득세 추징, 취득세 경정청구',
   h1: '취득세, 내 상황부터 확인하세요',
@@ -445,7 +455,7 @@ export const ACQ_HUB = {
     // 260921 신설 — 「내가 낸 취득세 점검」 접수(재계산기 아님, 서류 점검 접수). 계산 그룹
     // 칩에는 넣지 않는다(재계산과 헷갈릴 수 있어서) — 아래 별도 섹션 하나에서만 안내한다.
     acqCheck: { href: '/#/report/acq-check', label: '이미 낸 취득세 점검 접수' },
-    kakao: { href: 'https://pf.kakao.com/_CcxlJG/chat', label: '카카오톡으로 물어보기' },
+    kakao: { href: 'https://pf.kakao.com/_CcxlJG', label: '카카오톡으로 물어보기' },
     articles: [
       { slug: 'acquisition-tax-basics', title: '2026 주택 취득세율 — 6억 이하 1%·6억~9억 계산식·9억 초과 3%' },
       { slug: 'acquisition-tax-rate-guide', title: '아파트 취득세 얼마? 2026 — 5억 550만·7억 1,286만·10억 3,300만' },

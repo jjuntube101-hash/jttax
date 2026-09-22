@@ -13,8 +13,8 @@ window.JT_DATA = {
     // 카카오톡 채널 — 검색 ID는 채널 명칭 확인 후 기재 (세무법인 미등록 상태에서 '세무법인' 표기 금지)
     kakaoSearchId: '',
     kakaoChannelUrl: 'https://pf.kakao.com/_CcxlJG',
-    kakaoChatUrl: 'https://pf.kakao.com/_CcxlJG/chat',
-    kakaoFriendUrl: 'https://pf.kakao.com/_CcxlJG/friend',
+    kakaoChatUrl: 'https://pf.kakao.com/_CcxlJG',
+    kakaoFriendUrl: 'https://pf.kakao.com/_CcxlJG',
     kakaoMapUrl: 'https://place.map.kakao.com/1776119720',
     naverMapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C78%EA%B8%B8%2022',
     googleMapUrl: 'https://www.google.com/maps/search/?api=1&query=%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C78%EA%B8%B8%2022%205%EC%B8%B5',
@@ -197,6 +197,30 @@ window.JT_DATA = {
         { b: '양도·상속·증여 경정', s: '평가 오류·공제 누락 재산정' },
         { b: '부가세 경정', s: '매입세액 누락·면세·영세율 적용 오류' },
         { b: '법인세 경정', s: '손금 불산입·세액공제 누락 재신고' },
+      ],
+    },
+    /* 260922 오너 지시 — 취득세·크리에이터를 기존 다섯 분야 옆에 나란히. 별도 leaf 페이지 대신
+       이미 있는 허브로 보낸다(href). 문구는 사실 서술만(세무사법 §12조의7 — 우월·보장 표현 금지). */
+    {
+      num: '06', en: 'ACQUISITION TAX', kr: '취득세', href: '/acquisition-tax/',
+      short: '취득할 때의 세율·감면, 이미 낸 취득세의 재검토.',
+      desc: '집·건물·토지를 취득할 때 세대·주택 수·취득 시기·감면 요건에 따라 세율이 갈립니다. 취득 전에는 계산기와 상황별 안내 글로 확인하고, 이미 낸 취득세는 서류를 보고 다시 볼 여지가 있는지 점검합니다.',
+      points: [
+        { b: '취득세 계산기', s: '주택 수·조정대상지역·전용면적·감면을 반영한 참고 계산' },
+        { b: '감면 요건 확인', s: '생애최초·출산·양육 등 조문이 정한 요건과 사후관리' },
+        { b: '이미 낸 취득세 점검', s: '신고·납부한 취득세의 1차 서류 점검 접수' },
+        { b: '경정청구·불복', s: '경정청구, 이의신청·심판청구 대리' },
+      ],
+    },
+    {
+      num: '07', en: 'CREATORS', kr: '크리에이터 세금', href: '/creators.html',
+      short: '유튜버·인플루언서의 정산부터 팀 운영까지.',
+      desc: '크리에이터의 세금은 단계마다 쟁점이 다릅니다. 첫 정산을 받은 사람, 직장을 다니며 겸업하는 사람, 팀·MCN으로 커지는 사람의 세 경로로 나눠 사업자등록·기장·신고를 안내합니다.',
+      points: [
+        { b: '첫 정산', s: '사업자등록 시점과 종합소득세·부가가치세 신고' },
+        { b: '직장 겸업', s: '근로소득과 사업소득이 함께 있을 때의 신고' },
+        { b: '팀·MCN 운영', s: '인건비·외주비 처리와 법인 전환 검토' },
+        { b: '월 기장', s: '플랫폼 수익 구조에 맞춘 장부와 신고' },
       ],
     },
   ],

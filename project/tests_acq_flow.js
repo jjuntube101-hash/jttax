@@ -515,9 +515,26 @@ console.log('\n════ ⑤ 취득세 허브·인사이트 허브로 들어�
     eq('인사이트 허브에 없는 글 링크가 없다', ghost.join(',') || '-', '-');
     eq('인사이트 허브에 글이 실제로 있다', linked.size > 0, true);
   }
-  /* 홈·전역 메뉴에는 올리지 않는다(C3). 내비 소스에 취득세 항목이 생기면 여기서 잡힌다. */
+  /* (260919 C3 «홈·전역 메뉴 비노출» → 260922 오너 지시로 뒤집힘) 업무분야에 취득세·크리에이터를
+     기존 다섯 분야 옆에 나란히 둔다. 내비 드롭다운은 Data.jsx services 에서 오므로 여기서는
+     푸터의 실 href 로 확인한다. 항목이 빠지면 여기서 잡힌다. */
   const chrome = fs.readFileSync(path.join(ROOT, 'project', 'src', 'Chrome.jsx'), 'utf8');
-  eq('전역 내비에 취득세 항목을 넣지 않았다', chrome.includes('/acquisition-tax/'), false);
+  eq('전역(푸터) 업무분야에 취득세 허브 실 href 가 있다', chrome.includes('href="/acquisition-tax/"'), true);
+  eq('전역(푸터) 업무분야에 크리에이터 실 href 가 있다', chrome.includes('href="/creators.html"'), true);
+  const dataSrc = fs.readFileSync(path.join(ROOT, 'project', 'src', 'Data.jsx'), 'utf8');
+  eq('내비 드롭다운 데이터(services)에 취득세·크리에이터가 있다',
+     dataSrc.includes("href: '/acquisition-tax/'") && dataSrc.includes("href: '/creators.html'"), true);
+  eq('업무분야 목록(정적)에 카드가 7장이다',
+     (fs.readFileSync(path.join(ROOT, 'services', 'index.html'), 'utf8').match(/class="jt-cc-card"/g) || []).length, 7);
+  /* 카카오 링크는 채널 홈(pf.kakao.com/_CcxlJG) — 260922 오너 지시(채팅창 직행 /chat 금지, QR 과 같은 주소) */
+  const kakaoBad = [];
+  const walk = (d) => { for (const f of fs.readdirSync(d, { withFileTypes: true })) {
+    const fp = path.join(d, f.name);
+    if (f.isDirectory()) { if (!['node_modules', '.git', 'project'].includes(f.name)) walk(fp); }
+    else if (f.name.endsWith('.html') && /pf\.kakao\.com\/_CcxlJG\/(chat|friend)/.test(fs.readFileSync(fp, 'utf8'))) kakaoBad.push(path.relative(ROOT, fp));
+  } };
+  walk(ROOT);
+  eq('카카오 링크가 채널 홈이다 (/chat·/friend 잔존 0)', kakaoBad.join(',') || '-', '-');
   eq('전역 내비의 인사이트 링크에 실 href 가 있다', /href="\/insights\/"[^>]*인사이트|인사이트/.test(chrome) && chrome.includes('href="/insights/"'), true);
   /* FAQPage 는 노출 전략에서 제외했다 (리치 결과 2026-05-07 종료) */
   eq('취득세 허브에 FAQPage 구조화 데이터가 없다',

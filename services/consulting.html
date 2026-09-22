@@ -61,6 +61,9 @@
     .jt-cc-links{list-style:none;padding:0;}
     .jt-cc-links a{color:#1a1a1a;text-decoration:none;border-bottom:1px solid rgba(0,0,0,.15);}
     .jt-cc-chips{display:flex;gap:8px;flex-wrap:wrap;}
+    .jt-cc-kqr{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:13px;color:#555;}
+    .jt-cc-kqr img{width:88px;height:88px;border:1px solid rgba(0,0,0,.1);border-radius:8px;background:#fff;}
+    @media(max-width:640px){.jt-cc-kqr img{display:none;}}
     .jt-cc-chip{font-size:13px;border:1px solid rgba(0,0,0,.15);border-radius:999px;padding:7px 13px;text-decoration:none;color:#333;background:#fff;}
     .jt-cc-faq{padding:16px 0;border-bottom:1px solid rgba(0,0,0,.06);}
     .jt-cc-faq h3{margin:0 0 8px;font-size:16px;}
@@ -99,7 +102,7 @@
 
     <div class="jt-cc-cta">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','svc_top')">이 분야 상담 예약 →</a>
-      <a href="https://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','svc_top')">카톡 상담</a>
+      <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','svc_top')">카톡 상담</a>
     </div>
 
     <section class="jt-cc-sec">
@@ -159,8 +162,12 @@
     </div>
     <div class="jt-cc-cta" style="margin-top:24px;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','commercial')">상담 예약 →</a>
-      <a href="https://pf.kakao.com/_CcxlJG/chat" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','commercial')">카톡 상담</a>
+      <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','commercial')">카톡 상담</a>
       <a href="tel:02-554-6405" class="jt-btn jt-btn--outline" onclick="jtTrackCta('call','commercial')">02-554-6405</a>
+    </div>
+    <div class="jt-cc-kqr">
+      <a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','qr')"><img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무회계 QR 코드" loading="lazy" width="88" height="88"></a>
+      <span>휴대폰 카메라로 QR을 찍으면 카카오톡 채널 <b>제이티 세무회계</b>로 연결됩니다.<br><a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" style="color:#333;">pf.kakao.com/_CcxlJG</a></span>
     </div>
   </main>
 
