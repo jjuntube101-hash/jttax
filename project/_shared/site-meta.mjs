@@ -67,11 +67,31 @@ export function assetVersion(relFromSrc) {
    favicon.ico + 16/32/192/512 png + apple-touch 세트를 쓴다. 두 벌을 따로 들지 않고 index.html 의
    <link rel="icon"…>·<link rel="apple-touch-icon"…> 줄을 그대로 읽어 절대 경로로 바꿔 돌려준다 —
    아이콘을 바꾸거나 ?v= 를 올리면 정적 면이 자동으로 따라온다. 못 찾으면 던진다(빈 파비콘 배포 방지). */
-export function faviconHtml() {
+/* <link> 태그에서 rel 토큰 목록과 href 를 따옴표 종류·속성 순서와 무관하게 읽는다(Codex 033 R1-F1·F3). */
+export function readLinkRelHref(tag) {
+  const rel = /\brel\s*=\s*(["'])(.*?)\1/i.exec(tag);
+  const href = /\bhref\s*=\s*(["'])(.*?)\1/i.exec(tag);
+  return { rels: rel ? rel[2].trim().toLowerCase().split(/\s+/) : [], href: href ? href[2] : null };
+}
+/* 아이콘 계열 rel — icon · shortcut icon · apple-touch-icon(-precomposed) */
+export const isIconRel = (rels) => rels.some((r) => r === 'icon' || r === 'apple-touch-icon' || r === 'apple-touch-icon-precomposed');
+/* 상대 href 만 «/» 로 시작하게 바꾼다 — 이미 절대(/)·프로토콜(https: 등, 대소문자 무관)·프로토콜 상대(//)는 그대로 */
+export const absolutizeHref = (h) => (/^(\/|[a-z][a-z0-9+.-]*:)/i.test(h) ? h : '/' + h);
+
+export function faviconTags() {
   const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const tags = (html.match(/<link[^>]*>/gi) || []).filter((t) => /rel=["'](icon|apple-touch-icon)["']/i.test(t));
-  if (!tags.length) throw new Error('index.html 에서 파비콘 <link rel="icon"> 을 찾지 못했습니다.');
-  return tags.map((t) => t.replace(/href="(?!\/|https?:)/, 'href="/')).map((t) => `  ${t}`).join('\n');
+  const out = [];
+  for (const tag of (html.match(/<link\b[^>]*>/gi) || [])) {
+    const { rels, href } = readLinkRelHref(tag);
+    if (!isIconRel(rels) || !href) continue;
+    out.push({ rels, href: absolutizeHref(href), tag: tag.replace(/(\bhref\s*=\s*)(["'])(.*?)\2/i, (_m, k, q, h) => `${k}${q}${absolutizeHref(h)}${q}`) });
+  }
+  if (!out.some((t) => t.rels.includes('icon'))) throw new Error('index.html 에 <link rel="icon"> 이 없습니다(파비콘 정본 부재).');
+  if (!out.some((t) => t.href === '/favicon.ico')) throw new Error('index.html 의 파비콘 세트에 /favicon.ico 가 없습니다.');
+  return out;
+}
+export function faviconHtml() {
+  return faviconTags().map((t) => `  ${t.tag}`).join('\n');
 }
 
 /* 정적 페이지가 링크할 스타일시트 URL (버전 포함) */
