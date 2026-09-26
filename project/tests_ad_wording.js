@@ -43,8 +43,10 @@ function visibleHtml(html) {
   let t = html.replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
               .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
               .replace(/<!--[\s\S]*?-->/g, ' ');
+  /* 소비자·검색엔진이 읽는 속성값: meta content(작은/큰따옴표 모두), 그리고 모든 태그의 alt·title (Codex R3-F2) */
   const attrs = [];
-  for (const m of t.matchAll(/<meta\b[^>]*?\bcontent\s*=\s*"([^"]*)"/gi)) attrs.push(m[1]);
+  for (const m of t.matchAll(/<meta\b[^>]*?\bcontent\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) attrs.push(m[1] != null ? m[1] : m[2]);
+  for (const m of t.matchAll(/<[a-z][^>]*?\s(?:alt|title)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) attrs.push(m[1] != null ? m[1] : m[2]);
   t = t.replace(/<[^>]+>/g, ' ');
   return (t + ' ' + attrs.join(' ') + ' ' + ld.join(' ')).replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 }
@@ -106,6 +108,9 @@ console.log('\n════ 광고 문구 게이트 자기시험 (검사기가 �
 eq('① 본문 텍스트의 「무료」를 잡는다', scanHtml([tmp('a.html', '<p>첫 상담은 무료입니다</p>')]).length, 1);
 eq('① meta description 의 「무료」를 잡는다', scanHtml([tmp('b.html', '<meta name="description" content="무료 세금 계산기">')]).length, 1);
 eq('① title 의 「무료」를 잡는다 (한 번만 센다)', scanHtml([tmp('c.html', '<title>무료 계산기</title>')]).length, 1);
+eq("① 작은따옴표 meta content 의 「무료」를 잡는다 (R3-F2)", scanHtml([tmp('c2.html', "<meta name='description' content='무료 상담'>")]).length, 1);
+eq('① img alt 의 「무료」를 잡는다 (R3-F2)', scanHtml([tmp('c3.html', '<img src="x.png" alt="무료 상담 배너">')]).length, 1);
+eq('① 태그 title 속성의 「무료」를 잡는다', scanHtml([tmp('c4.html', '<a href="/" title="무료 상담">문의</a>')]).length, 1);
 eq('① JSON-LD 문자열 값의 「무료」를 잡는다 (R1-F2)', scanHtml([tmp('d.html', '<script type="application/ld+json">{"@type":"FAQPage","mainEntity":[{"acceptedAnswer":{"text":"첫 상담은 무료입니다"}}]}</script>')]).length, 1);
 eq('① 깨진 JSON-LD 는 파싱 실패로 표면화한다', scanHtml([tmp('e.html', '<script type="application/ld+json">{무료</script>')]).length, 1);
 eq('① 실행 script 안의 「무료」는 표시가 아니므로 잡지 않는다', scanHtml([tmp('f.html', '<script>var a="무료";</script>')]).length, 0);
