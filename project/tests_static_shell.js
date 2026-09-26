@@ -670,6 +670,20 @@ const ROOT = path.join(__dirname, '..');
       }
     }
 
+    /* 파비콘(260926) — 정적 면이 로고 원본(logo_symbol.png, 가로로 긴 흰 바탕)을 아이콘으로 쓰면 탭에서
+       찌그러진다(오너 지적). 정적 면의 아이콘 링크 «집합»(icon·shortcut icon·apple-touch-icon 전부)이
+       index.html 의 세트와 정확히 같아야 한다 — 옛 링크가 하나 «더» 남아도, 세트가 하나 빠져도 실패다
+       (Codex 033 R1-F3: /favicon.ico 하나만 보면 옆의 shortcut icon 로고를 놓친다). */
+    {
+      const expected = meta.faviconTags().map((x) => x.href).sort();
+      const got = (html.match(/<link\b[^>]*>/gi) || [])
+        .map((tg) => meta.readLinkRelHref(tg))
+        .filter((x) => meta.isIconRel(x.rels) && x.href)
+        .map((x) => meta.absolutizeHref(x.href)).sort();
+      if (got.some((h) => /logo_symbol/.test(h))) bad.push(`${rel} — 파비콘이 로고 원본(logo_symbol.png)입니다. site-meta.faviconHtml() 세트를 쓰세요`);
+      if (JSON.stringify(got) !== JSON.stringify(expected)) bad.push(`${rel} — 파비콘 세트가 index.html 과 다릅니다 (got ${got.length}: ${got.join(', ')} / want ${expected.length})`);
+    }
+
     /* OG 이미지 — 있으면 검사하는 게 아니라 «있어야» 한다. 태그를 지우거나 다른
        URL 로 바꿔도 통과하면 게이트가 비어 있는 것이다(Codex R3). 버전이 어긋나면
        공유 미리보기가 옛 이미지(구 브랜드 골드 배너)로 굳는다. */

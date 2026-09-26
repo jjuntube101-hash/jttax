@@ -22,7 +22,7 @@ import { SERVICES, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, CONSULT } from './
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
-import { footerHtml, stylesHref, ogImageHref } from '../_shared/site-meta.mjs';
+import { footerHtml, stylesHref, ogImageHref, faviconHtml } from '../_shared/site-meta.mjs';
 import { insightSlug } from '../_shared/insight-slug.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));   // project/commercial
@@ -158,7 +158,7 @@ function headHtml({ title, desc, keywords, url, ldBlocks }) {
   <meta name="twitter:title" content="${esc(title)}">
   <meta name="twitter:description" content="${esc(desc)}">
   <meta name="twitter:image" content="${ogImageHref()}">
-  <link rel="icon" href="/project/assets/logo_symbol.png">
+${faviconHtml()}
   <link rel="stylesheet" href="${stylesHref()}">
 ${GA_HEAD_SNIPPET}
 ${ldBlocks.map(b => `  <script type="application/ld+json">${JSON.stringify(b)}</script>`).join('\n')}
