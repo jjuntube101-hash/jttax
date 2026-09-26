@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "aside": {
+      "type": "stdio",
+      "command": "aside",
+      "args": ["mcp"]
+    }
+  }
+}
