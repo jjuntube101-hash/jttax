@@ -1,0 +1,20 @@
+{
+  "enabledMcpjsonServers": ["aside"],
+  "permissions": {
+    "allow": [
+      "mcp__aside__repl",
+      "mcp__aside__memory_search",
+      "Bash(aside repl:*)",
+      "Bash(aside guide:*)",
+      "Bash(aside --version:*)",
+      "Bash(aside account status:*)"
+    ],
+    "deny": [
+      "mcp__aside__exec",
+      "Bash(aside exec:*)",
+      "Bash(aside session:*)",
+      "mcp__playwright__*",
+      "mcp__chrome-devtools__*"
+    ]
+  }
+}

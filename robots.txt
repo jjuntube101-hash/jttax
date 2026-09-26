@@ -15,6 +15,7 @@ Disallow: /project/insights/
 Disallow: /project/calculators/
 Disallow: /project/scripts/
 Disallow: /project/_shared/
+Disallow: /.claude/
 
 # 네이버·다음·구글 검색엔진 허용
 User-agent: Yeti
@@ -25,6 +26,7 @@ Disallow: /project/insights/
 Disallow: /project/calculators/
 Disallow: /project/scripts/
 Disallow: /project/_shared/
+Disallow: /.claude/
 
 User-agent: Daumoa
 Allow: /
@@ -34,6 +36,7 @@ Disallow: /project/insights/
 Disallow: /project/calculators/
 Disallow: /project/scripts/
 Disallow: /project/_shared/
+Disallow: /.claude/
 
 User-agent: Googlebot
 Allow: /
@@ -43,5 +46,6 @@ Disallow: /project/insights/
 Disallow: /project/calculators/
 Disallow: /project/scripts/
 Disallow: /project/_shared/
+Disallow: /.claude/
 
 Sitemap: https://www.jttax.co.kr/sitemap.xml
