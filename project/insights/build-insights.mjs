@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { insightSlug } from '../_shared/insight-slug.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
-import { footerHtml, stylesHref, ogImageHref } from '../_shared/site-meta.mjs';
+import { footerHtml, stylesHref, ogImageHref, faviconHtml } from '../_shared/site-meta.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url)); // project/insights
 const PROJECT = join(__dirname, '..');                     // project
@@ -243,7 +243,7 @@ function renderArticlePage(a) {
   <meta name="twitter:title" content="${esc(a.title)}">
   <meta name="twitter:description" content="${esc(a.excerpt)}">
   <meta name="twitter:image" content="${ogImageHref()}">
-  <link rel="icon" href="/project/assets/logo_symbol.png">
+${faviconHtml()}
   <link rel="stylesheet" href="${stylesHref()}">
   <style>
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
@@ -360,7 +360,7 @@ function renderInsightsIndex(arts) {
   <meta name="twitter:title" content="인사이트 — 세금 실무 해설 | 제이티 세무법인">
   <meta name="twitter:description" content="${esc(DESC)}">
   <meta name="twitter:image" content="${ogImageHref()}">
-  <link rel="icon" href="/project/assets/logo_symbol.png">
+${faviconHtml()}
   <link rel="stylesheet" href="${stylesHref()}">
 ${GA_HEAD_SNIPPET}
   <script type="application/ld+json">${JSON.stringify(listLd)}</script>

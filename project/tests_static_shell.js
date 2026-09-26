@@ -670,6 +670,14 @@ const ROOT = path.join(__dirname, '..');
       }
     }
 
+    /* 파비콘(260926) — 정적 면이 로고 원본(logo_symbol.png, 가로로 긴 흰 바탕)을 아이콘으로 쓰면 탭에서
+       찌그러진다(오너 지적). index.html 과 같은 세트(favicon.ico 포함)여야 한다. */
+    {
+      const iconTags = (html.match(/<link[^>]*rel=["']icon["'][^>]*>/gi) || []);
+      if (iconTags.some((tg) => /logo_symbol/.test(tg))) bad.push(`${rel} — 파비콘이 로고 원본(logo_symbol.png)입니다. site-meta.faviconHtml() 세트를 쓰세요`);
+      if (!iconTags.some((tg) => /href=["']\/favicon\.ico["']/.test(tg))) bad.push(`${rel} — 파비콘 세트(/favicon.ico)가 없습니다`);
+    }
+
     /* OG 이미지 — 있으면 검사하는 게 아니라 «있어야» 한다. 태그를 지우거나 다른
        URL 로 바꿔도 통과하면 게이트가 비어 있는 것이다(Codex R3). 버전이 어긋나면
        공유 미리보기가 옛 이미지(구 브랜드 골드 배너)로 굳는다. */

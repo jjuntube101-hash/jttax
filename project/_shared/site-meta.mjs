@@ -61,6 +61,19 @@ export function assetVersion(relFromSrc) {
   return m[1];
 }
 
+/* ── 파비콘 — index.html 이 SSOT ───────────────────────────────────
+   260926 오너 지적 「탭 로고 이상함」: 정적 86장이 <link rel="icon" href="/project/assets/logo_symbol.png">
+   (1579×1039 흰 바탕 로고 원본)을 파비콘으로 써서 탭에서 찌그러져 보였다. 홈(index.html)은
+   favicon.ico + 16/32/192/512 png + apple-touch 세트를 쓴다. 두 벌을 따로 들지 않고 index.html 의
+   <link rel="icon"…>·<link rel="apple-touch-icon"…> 줄을 그대로 읽어 절대 경로로 바꿔 돌려준다 —
+   아이콘을 바꾸거나 ?v= 를 올리면 정적 면이 자동으로 따라온다. 못 찾으면 던진다(빈 파비콘 배포 방지). */
+export function faviconHtml() {
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const tags = (html.match(/<link[^>]*>/gi) || []).filter((t) => /rel=["'](icon|apple-touch-icon)["']/i.test(t));
+  if (!tags.length) throw new Error('index.html 에서 파비콘 <link rel="icon"> 을 찾지 못했습니다.');
+  return tags.map((t) => t.replace(/href="(?!\/|https?:)/, 'href="/')).map((t) => `  ${t}`).join('\n');
+}
+
 /* 정적 페이지가 링크할 스타일시트 URL (버전 포함) */
 export function stylesHref() {
   return `/project/src/styles.css?v=${assetVersion('styles.css')}`;

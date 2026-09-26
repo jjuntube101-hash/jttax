@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { CALCULATORS } from './calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
-import { footerHtml, stylesHref, ogImageHref } from '../_shared/site-meta.mjs';
+import { footerHtml, stylesHref, ogImageHref, faviconHtml } from '../_shared/site-meta.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));   // project/calculators
 const REPO_ROOT = join(__dirname, '..', '..');               // 사이트 루트
@@ -111,7 +111,7 @@ ${c.related.map(r => `        <li><a href="/insights/${r.slug}.html">${esc(r.tit
   <meta name="twitter:title" content="${esc(fullTitle)}">
   <meta name="twitter:description" content="${esc(c.metaDesc)}">
   <meta name="twitter:image" content="${ogImageHref()}">
-  <link rel="icon" href="/project/assets/logo_symbol.png">
+${faviconHtml()}
   <link rel="stylesheet" href="${stylesHref()}">
 ${GA_HEAD_SNIPPET}
   <script type="application/ld+json">${JSON.stringify(appLd)}</script>
@@ -277,7 +277,7 @@ function renderIndexPage() {
   <meta name="twitter:title" content="세금 계산기 모음 | 제이티 세무법인">
   <meta name="twitter:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 세금 계산기.">
   <meta name="twitter:image" content="${ogImageHref()}">
-  <link rel="icon" href="/project/assets/logo_symbol.png">
+${faviconHtml()}
   <link rel="stylesheet" href="${stylesHref()}">
 ${GA_HEAD_SNIPPET}
   <script type="application/ld+json">${JSON.stringify(itemsLd)}</script>
