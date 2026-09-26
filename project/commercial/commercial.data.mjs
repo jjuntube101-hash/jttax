@@ -488,6 +488,13 @@ export const SERVICE_EXTRA = [
     /* 종전 세 경로 카드 — 같은 틀 안의 추가 절로 유지한다. GA4 path_select·예약 폼의 크리에이터경로
        (jt_creator_path = first|side|mcn)와 한 몸이라 경로 id·계측 함수는 바꾸지 않는다. */
     creatorPaths: CREATORS.paths,
+    /* 종전 「어느 경로든, 기장·신고까지 이어집니다」 절의 링크 3개 복원(Codex TASK-260926-031 R1-F3) */
+    extraSections: [
+      { h2: '어느 경로든, 기장·신고까지 이어집니다', body: CREATORS.handoff,
+        chips: [{ href: CREATORS.bookkeepingHref, label: '기장·세금 신고 서비스 보기' },
+                { href: '/experts/lee-hyunjun.html', label: '이현준 대표세무사 프로필' },
+                { href: '/experts/kim-gahwan.html', label: '김가환 대표세무사 프로필' }] },
+    ],
     consultHook: true,
   },
 ];

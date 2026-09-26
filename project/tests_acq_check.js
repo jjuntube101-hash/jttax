@@ -15,7 +15,7 @@
      (g) 접수 번호가 순번이 아니다 + Web Crypto 없으면 만들지 않는다(R1-F4)
      (h) 라우팅 배선
      (i) 입구(들어오는 길)
-     (j) R2-F1 — 시·군·구 자유입력란을 없애고 시·도만 받는다(부류를 닫았다)
+     (j) R2-F1 → 260926 R1-F1 — 소재지·취득 원인·정확한 날짜를 받지 않는다(B-1 범위 밖), 취득 시기는 연·월만
      (k) R2-F3 — 전화번호: 허용 문자 전체 검증 + payload 는 정규화 숫자열만
      (l) R1-F4/canSubmit 가드 — 접수번호·전화 검증을 요구한다
      (m) R2-F2 → 260926 — 가진 서류는 고정 라벨 체크박스(보유 여부)로만 받는다, 서류 자체·세목별 금액은 받지 않는다
@@ -61,8 +61,8 @@ function loadAcqCheckModule() {
   if (compIdx < 0) throw new Error('JTReportAcqCheck 를 찾지 못했습니다');
   const header = acqCheckSrc.slice(0, compIdx);
   const names = ['buildAcqCheckPayload', 'validateAcqCheckPhone', 'validateAcqCheckDate', 'acqCheckPick',
-    'acqCheckMoneyValue', 'acqCheckGenId', 'acqCheckCanSubmit', 'buildAcqCheckRequest', 'buildAcqCheckMailBody', 'ACQ_CHECK_REGIONS', 'ACQ_CHECK_DOC_ITEMS',
-    'ACQ_CHECK_ACQUISITION_TYPES', 'ACQ_CHECK_PROPERTY_TYPES', 'ACQ_CHECK_SITUATIONS',
+    'acqCheckMoneyValue', 'acqCheckGenId', 'acqCheckCanSubmit', 'buildAcqCheckRequest', 'buildAcqCheckMailBody', 'validateAcqCheckMonth', 'ACQ_CHECK_DOC_ITEMS',
+    'ACQ_CHECK_PROPERTY_TYPES', 'ACQ_CHECK_SITUATIONS',
     'ACQ_CHECK_NOTICE_TYPES', 'ACQ_CHECK_SOURCES', 'ACQ_CHECK_CONTACT_METHODS'];
   // eslint-disable-next-line no-new-func
   const fn = new Function('window', 'React', header + '\n;return {' + names.join(',') + '};');
@@ -161,6 +161,7 @@ console.log('\n════ (d) 소스에 자유 서술 입력란이 남아 있�
   eq('접수 버튼 바로 위에 1차 재검토 범위·기한 안내(AcqCheckScopeNote)가 있다', /<AcqCheckScopeNote \/>\s*\n\s*<div style=\{\{ marginTop: 28/.test(acqCheckSrc), true);
   eq('완료 화면에도 같은 범위 안내가 있다', (acqCheckSrc.match(/<AcqCheckScopeNote \/>/g) || []).length, 2);
   eq('「자료를 보면 결론이 달라질 수 있습니다」를 안내한다', acqCheckSrc.includes('자료를 보면 결론이 달라질 수 있습니다'), true);
+  eq('담당자(김민석 대표세무사)와 회신 예정일 안내(숫자 없이)가 접수 전 안내에 있다(R1-F2)', /담당은 <strong>김민석 대표세무사<\/strong>입니다\. 회신 예정일은 접수 확인 회신에서 알려드립니다/.test(acqCheckSrc), true);
   eq('기한 관리 의무 문장(Q절)이 있다', acqCheckSrc.includes('유료 수임이 확정되기 전에는 제이티가 대리와 기한 관리의 의무를 지지 않으므로'), true);
   for (const tag of textInputs) {
     eq(`금액 칸은 setMoney( 로 정규화한다: ${tag.slice(0, 60)}...`, /onChange=\{setMoney\(/.test(tag), true);
@@ -349,25 +350,27 @@ console.log('\n════ (i) 입구(들어오는 길) — 결과 화면 링�
   eq('Chrome.jsx 전역 내비·메뉴에 acq-check 링크가 없다', chrome2.includes('acq-check'), false);
 }
 
-console.log('\n════ (j) R2-F1 — 시·군·구 자유입력란을 없애고 시·도만 받는다 ════');
+console.log('\n════ (j) B-1 범위 — 소재지·취득 원인·정확한 날짜를 받지 않고, 취득 시기는 연·월만 ════');
 {
-  eq('sigungu 관련 식별자·필드가 소스에 없다', /sigungu/i.test(acqCheckSrc), false);
-  eq('물건 소재지는 시·도 select 하나뿐이다(select 라벨 「물건 소재지」 1회만)',
-     (acqCheckSrc.match(/물건 소재지/g) || []).length, 1);
-  eq('시·도 선택 아래 「시·군·구와 상세 주소는 받지 않습니다」 안내가 있다',
-     acqCheckSrc.includes('시·군·구와 상세 주소는 받지 않습니다. 필요하면 세무사가 연락드릴 때 여쭙니다.'), true);
-  eq('개인정보 수집·이용 동의 문구가 「소재지 시·도」로 고쳐졌다',
-     acqCheckSrc.includes('취득일·소재지 시·도·취득 원인'), true);
-  eq('동의 문구에 「소재지 시·군·구」가 더는 없다', acqCheckSrc.includes('소재지 시·군·구'), false);
-  eq('Legal.jsx 처리방침이 「소재지 시·도」로 고쳐졌다(취득세 점검 접수 항목)',
-     legalSrc.includes('선택: 취득일, 소재지 시·도, 취득 원인'), true);
-  eq('Legal.jsx 가 시·군·구도 받지 않는다고 명시한다',
-     legalSrc.includes('시·군·구·동·호수·주민등록번호는 받지 않으며'), true);
+  const code = stripComments(acqCheckSrc);
+  eq('sigungu·sido·ACQ_CHECK_REGIONS·취득 원인 식별자가 소스(주석 제외)에 없다', /sigungu|\bsido\b|ACQ_CHECK_REGIONS|acquisitionType|ACQ_CHECK_ACQUISITION_TYPES/i.test(code), false);
+  eq('type="date" 입력이 취득 시기에는 없다(연·월만) — 남은 date 칸은 통지·거부 통지 받은 날 2개',
+     (code.match(/type="date"/g) || []).length, 2);
+  eq('취득 시기는 type="month" 칸 하나다', (code.match(/type="month"/g) || []).length, 1);
+  eq('연·월 안내 문장이 있고 「그 달 1일」식 임의 날짜 안내가 없다', [code.includes('연·월만 적어 주시면 됩니다'), /그 달 1일/.test(code)], [true, false]);
+  eq('개인정보 수집·이용 동의 항목이 B-1 범위다(소재지·취득 원인 없음)',
+     [acqCheckSrc.includes('물건 종류·취득 연월·낸 취득세(대략)'), /항목<\/strong>:[^<]*소재지/.test(acqCheckSrc)], [true, false]);
+  eq('Legal.jsx 처리방침이 같은 범위다', legalSrc.includes('선택: 물건 종류, 취득 연월(잔금·등기접수 중 기준)'), true);
+  eq('Legal.jsx 가 소재지·취득 원인·정확한 취득일도 받지 않는다고 명시한다', legalSrc.includes('소재지·취득 원인·정확한 취득일·시·군·구·동·호수·주민등록번호는 받지 않으며'), true);
 
-  // buildAcqCheckPayload 로도 확인 — 시·도 목록 밖 값은 「모름」으로 막힌다
-  eq('허용 시·도(서울특별시)는 그대로 실린다', M.buildAcqCheckPayload({ sido: '서울특별시' }, 'ACQCK-TEST0001').소재지_시도, '서울특별시');
-  eq('허용 목록 밖 값(강남구 테헤란로)은 「모름」으로 막힌다',
-     M.buildAcqCheckPayload({ sido: '강남구 테헤란로 123' }, 'ACQCK-TEST0001').소재지_시도, '모름');
+  // 연·월 검증기 — 형식 밖은 「모름」
+  eq('2024-03 → 통과', M.validateAcqCheckMonth('2024-03'), { ok: true, value: '2024-03' });
+  eq('2024-13 → 거부', M.validateAcqCheckMonth('2024-13').ok, false);
+  eq('2024-03-01(날짜) → 거부(연·월만 받는다)', M.validateAcqCheckMonth('2024-03-01').ok, false);
+  eq('빈 값 → 통과·빈 문자열', M.validateAcqCheckMonth(''), { ok: true, value: '' });
+  eq('payload 취득연월은 YYYY-MM 그대로', M.buildAcqCheckPayload({ acqMonth: '2024-03' }, 'ACQCK-TEST0001').취득연월, '2024-03');
+  eq('payload 취득연월 형식 밖은 「모름」', M.buildAcqCheckPayload({ acqMonth: '2024년 3월 15일 강남구' }, 'ACQCK-TEST0001').취득연월, '모름');
+  eq('payload 에 취득일·소재지·취득원인 키가 없다', ['취득일', '소재지_시도', '취득원인'].some((k) => k in M.buildAcqCheckPayload({}, 'ACQCK-TEST0001')), false);
 }
 
 console.log('\n════ (k) R2-F3 — 전화번호: 허용 문자 전체 검증 + payload 는 정규화 숫자열만 ════');
@@ -465,9 +468,8 @@ console.log('\n════ (n) R2 불변식 — buildAcqCheckPayload 오염 문
      ⑥고정 문자열(모름/—/구분값). 접수시각은 시스템 생성 타임스탬프라 별도 패턴으로 본다. */
   const POISON = '서울 강남구 테헤란로 123 101동 202호 900101-1234567 <script>';
   const poisonedF = {
-    acqDateType: POISON, acqDate: POISON,
-    sido: POISON,
-    acquisitionType: POISON, propertyType: POISON,
+    acqDateType: POISON, acqMonth: POISON,
+    propertyType: POISON,
     paidAmount: POISON,
     situation: POISON,
     noticeType: POISON, noticeDate: POISON, rejectDate: POISON,
@@ -493,10 +495,8 @@ console.log('\n════ (n) R2 불변식 — buildAcqCheckPayload 오염 문
   const ALLOWED = {
     구분: (v) => v === 'ACQ_CHECK',
     접수번호: (v) => v === receiptId,
-    취득일_구분: (v) => ['잔금일', '등기접수일', '모름'].includes(v),
-    취득일: (v) => v === '모름' || /^\d{4}-\d{2}-\d{2}$/.test(v),
-    소재지_시도: (v) => v === '모름' || M.ACQ_CHECK_REGIONS.includes(v),
-    취득원인: (v) => v === '모름' || M.ACQ_CHECK_ACQUISITION_TYPES.includes(v),
+    취득시기_기준: (v) => ['잔금', '등기접수', '모름'].includes(v),
+    취득연월: (v) => v === '모름' || /^\d{4}-\d{2}$/.test(v),
     물건종류: (v) => v === '모름' || M.ACQ_CHECK_PROPERTY_TYPES.includes(v),
     낸취득세_대략: (v) => v === '—' || /^\d+$/.test(v),
     지금상황: (v) => v === '모름' || M.ACQ_CHECK_SITUATIONS.includes(v),
@@ -550,8 +550,9 @@ console.log('\n════ (R3) 제출 본문은 buildAcqCheckPayload 의 반�
 
   // 고지와 실제 전송의 일치(R3-F3)
   eq('동의 문구가 유입 경로 정보를 보낸다고 적지 않는다', /유입 매체|첫 방문 경로|제출 위치/.test(code), false);
-  eq('처리방침이 취득세 점검 접수에는 유입 경로 정보를 보내지 않는다고 적는다',
-     /취득세 점검 접수는 접수번호\(임의 생성\)와 접수 시각만 함께 전송하며 유입 경로 정보는 보내지 않습니다/.test(legalSrc), true);
+  eq('처리방침이 취득세 접수에는 자동 유입 경로 정보를 보내지 않는다고 적고, 직접 고른 「알게 되신 경로」는 전송된다고 구분해 적는다(R1-F4)',
+     /취득세 1차 재검토 접수는 접수번호\(임의 생성\)와 접수 시각만 함께 전송하며, 자동으로 수집되는 유입 경로 정보[^<]*보내지 않습니다\. 접수 화면에서 직접 고르신 「알게 되신 경로」는 전송됩니다/.test(legalSrc), true);
+  eq('화면 동의문도 자동 유입 정보와 직접 고른 경로를 구분한다', acqCheckSrc.includes('위 「알게 되신 경로」는 직접 고르신 값만 전송됩니다'), true);
 }
 
 console.log('\n════ (R4) 제출 가드·전송 객체·메일 본문을 «실행해서» 검사한다 ════');
@@ -561,7 +562,7 @@ console.log('\n════ (R4) 제출 가드·전송 객체·메일 본문을 
      전송 내용을 만들지 않음을 확인한다. */
   const RID = 'ACQCK-TEST00000000';
   const DIRTY = '서울 강남구 테헤란로 123 101동 202호 900101-1234567';
-  const dirty = { acqDateType: DIRTY, acqDate: DIRTY, sido: DIRTY, acquisitionType: DIRTY, propertyType: DIRTY,
+  const dirty = { acqDateType: DIRTY, acqMonth: DIRTY, propertyType: DIRTY,
     paidAmount: DIRTY, situation: DIRTY, noticeType: DIRTY, noticeDate: DIRTY, rejectDate: DIRTY, docItems: [DIRTY], source: DIRTY,
     contactMethod: '전화', contactPhone: '010-1234-5678', consent: true, consentIntl: true, extraField: DIRTY };
   const req = M.buildAcqCheckRequest(dirty, RID, 'KEY');

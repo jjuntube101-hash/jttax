@@ -35,9 +35,9 @@ function acqCheckGenId() {
 }
 window.acqCheckGenId = acqCheckGenId;
 
-/* R2-F1: 시·군·구 자유입력란은 우회 사례(전각 공백·줄바꿈·무공백 상세주소, R2 보고서)가
-   나와 «부류를 닫기» 위해 아예 없앴다 — 소재지는 시·도 선택지(f.sido)만 받는다. 시·군·구·
-   상세주소는 세무사가 연락할 때 직접 여쭙는다. */
+/* R2-F1(260921): 시·군·구 자유입력란은 우회 사례(전각 공백·줄바꿈·무공백 상세주소)가 나와 «부류를 닫기»
+   위해 없앴고, 260926 R1-F1 에서 소재지 시·도 선택지까지 뺐다 — 4차본 B-1 「첫 접수는 이것만」 범위 밖이다.
+   소재지·취득 원인은 세무사가 연락할 때 직접 여쭙는다. */
 
 /* R2-F3: 전화번호 — 허용 문자(숫자·하이픈·공백·괄호·+)만으로 이뤄졌는지 먼저 보고, 그 다음
    숫자만 추려 9~11자리·0 시작을 확인한다. 통과해도 payload 에는 원문이 아니라 이 함수가
@@ -62,13 +62,21 @@ function validateAcqCheckDate(raw) {
 }
 window.validateAcqCheckDate = validateAcqCheckDate;
 
+/* 260926 R1-F1: 취득 «시기»는 B-1 ③ 대로 연·월만 받는다(type="month" → YYYY-MM). 임의의 1일을 취득일로
+   만들어 보내지 않는다 — 정확한 날짜는 수임 뒤 서류로 확인한다. 형식 밖 값은 「모름」. */
+function validateAcqCheckMonth(raw) {
+  const v = String(raw == null ? '' : raw).trim();
+  if (!v) return { ok: true, value: '' };
+  return /^\d{4}-(0[1-9]|1[0-2])$/.test(v) ? { ok: true, value: v } : { ok: false, value: '' };
+}
+window.validateAcqCheckMonth = validateAcqCheckMonth;
+
 /* R2 공통: <select>·체크박스 선택지 폐집합 — JSX 렌더와 payload 화이트리스트가 «같은 배열»을 본다
    (드리프트 방지). payload 조립은 이 배열들로 다시 한 번 소속을 확인해, DOM 이 아닌 다른
    경로(예: 상태 조작)로 값이 들어와도 허용 목록 밖이면 고정 문자열 「모름」으로 막는다.
-   항목은 접수와서류 4차본 B-1(260926 오너 확정)의 일곱 가지다. 시·도와 취득 원인은 B-1 에 없지만
-   1차 재검토에서 조례·세율을 가르는 사실이라 선택지(부담 없음)로만 둔다. */
+   항목은 접수와서류 4차본 B-1(260926 오너 확정)의 일곱 가지뿐이다 — 시·도·취득 원인은 B-1 밖이라 받지 않는다
+   (Codex TASK-260926-031 R1-F1). 소재지·취득 원인·정확한 날짜는 1차 재검토 회신 때 세무사가 여쭙는다. */
 const ACQ_CHECK_PROPERTY_TYPES = ['주택', '오피스텔', '상가·사무실', '토지·농지', '그 밖'];          // B-1 ②
-const ACQ_CHECK_ACQUISITION_TYPES = ['매매', '증여', '상속', '신축', '공매', '재산분할'];
 const ACQ_CHECK_SITUATIONS = [                                                                   // B-1 ⑤
   '세금을 이미 냈는데 더 낸 것 같다',
   '구청에서 더 내라는 통지를 받았다',
@@ -87,17 +95,9 @@ function acqCheckPick(value, allowed, fallback) {
 }
 window.acqCheckPick = acqCheckPick;
 
-/* 시·도 17개 — ReportAcquisition.jsx 의 ACQ_REGIONS 와 같은 목록을 이 파일에서 독립적으로
-   유지한다(그쪽 식별자에 기대지 않는다 — 그 파일의 이름이 바뀌어도 이 접수 화면이 조용히
-   깨지지 않게 하기 위해서다). 세율·상수가 아니라 행정구역 명칭이라 별도 검증 없이 복제한다. */
-const ACQ_CHECK_REGIONS = ['서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시', '대전광역시', '울산광역시',
-  '세종특별자치시', '경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도',
-  '경상북도', '경상남도', '제주특별자치도'];
-
 const ACQ_CHECK_INIT = {
-  acqDateType: '', acqDate: '',
-  sido: '',
-  acquisitionType: '', propertyType: '',
+  acqDateType: '', acqMonth: '',
+  propertyType: '',
   paidAmount: '',
   situation: '',
   noticeType: '', noticeDate: '',
@@ -123,7 +123,7 @@ function acqCheckMoneyValue(raw) {
    실제로 그 값만 만들어내더라도, 이 함수 자신이 허용 목록(acqCheckPick)으로 다시 확인한다 —
    f 가 어떤 경로로 왔는지 이 함수는 모르기 때문이다. */
 function buildAcqCheckPayload(f, receiptId) {
-  const acqDateCheck = validateAcqCheckDate(f.acqDate);
+  const acqMonthCheck = validateAcqCheckMonth(f.acqMonth);
   const noticeDateCheck = validateAcqCheckDate(f.noticeDate);
   const rejectDateCheck = validateAcqCheckDate(f.rejectDate);
   const contactMethod = acqCheckPick(f.contactMethod, ACQ_CHECK_CONTACT_METHODS, '');
@@ -140,10 +140,8 @@ function buildAcqCheckPayload(f, receiptId) {
     _subject: `[JT 취득세 1차 재검토 접수] ${receiptId}`,
     구분: 'ACQ_CHECK',
     접수번호: receiptId,
-    취득일_구분: f.acqDateType === 'settlement' ? '잔금일' : f.acqDateType === 'registry' ? '등기접수일' : '모름',
-    취득일: acqDateCheck.ok && acqDateCheck.value ? acqDateCheck.value : '모름',
-    소재지_시도: acqCheckPick(f.sido, ACQ_CHECK_REGIONS.concat(['모름'])),
-    취득원인: acqCheckPick(f.acquisitionType, ACQ_CHECK_ACQUISITION_TYPES),
+    취득시기_기준: f.acqDateType === 'settlement' ? '잔금' : f.acqDateType === 'registry' ? '등기접수' : '모름',
+    취득연월: acqMonthCheck.ok && acqMonthCheck.value ? acqMonthCheck.value : '모름',
     물건종류: acqCheckPick(f.propertyType, ACQ_CHECK_PROPERTY_TYPES),
     낸취득세_대략: acqCheckMoneyValue(f.paidAmount) || '—',
     지금상황: situation,
@@ -360,44 +358,21 @@ function JTReportAcqCheck({ setRoute }) {
             </select>
           </div>
 
-          {/* 취득 원인 — B-1 밖의 선택지(증여·상속·법인 등 묶음을 가른다) */}
+          {/* ③ 언제 취득했는지 (B-1 ③ — 연·월만, 정확한 날짜는 나중에) */}
           <div className="jt-field">
-            <label>취득 원인 <em>OPTIONAL</em></label>
-            <select value={f.acquisitionType} onChange={set('acquisitionType')}>
-              <option value="">선택해 주세요</option>
-              {ACQ_CHECK_ACQUISITION_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
-              <option value="모름">모름</option>
-            </select>
+            <label>언제 취득하셨습니까 <em>연·월</em></label>
+            <input type="month" value={f.acqMonth} onChange={set('acqMonth')} />
+            <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--fg-3)' }}>연·월만 적어 주시면 됩니다. 정확한 날짜와 물건 소재지는 회신 때 여쭙습니다.</p>
           </div>
-
-          {/* 소재지 — R2-F1: 시·군·구 자유입력란은 없앴다. 시·도 선택지만 받는다(조례가 시·도마다 다르다). */}
           <div className="jt-field">
-            <label>물건 소재지 · 시·도 <em>OPTIONAL</em></label>
-            <select value={f.sido} onChange={set('sido')}>
-              <option value="">선택해 주세요</option>
-              {ACQ_CHECK_REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-              <option value="모름">모름</option>
-            </select>
-            <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--fg-3)' }}>시·군·구와 상세 주소는 받지 않습니다. 필요하면 세무사가 연락드릴 때 여쭙니다.</p>
-          </div>
-
-          {/* ③ 언제 취득했는지 (B-1 ③ — 정확한 날짜는 나중에) */}
-          <div className="jt-field">
-            <label>언제 취득하셨습니까 <em>아는 것만</em></label>
+            <label>그 연·월은 어느 기준입니까 <em>OPTIONAL</em></label>
             <select value={f.acqDateType} onChange={set('acqDateType')}>
               <option value="">선택해 주세요</option>
-              <option value="settlement">잔금일을 압니다</option>
-              <option value="registry">등기접수일을 압니다</option>
-              <option value="unknown">모름 · 대략만 압니다</option>
+              <option value="settlement">잔금을 치른 때</option>
+              <option value="registry">등기를 접수한 때</option>
+              <option value="unknown">모름</option>
             </select>
-            <p style={{ margin: '4px 0 0', fontSize: 12.5, color: 'var(--fg-3)' }}>정확한 날짜는 나중에 확인해도 됩니다. 연·월만 아셔도 그 달 1일로 적어 주세요.</p>
           </div>
-          {f.acqDateType && f.acqDateType !== 'unknown' && (
-            <div className="jt-field">
-              <label>그 날짜</label>
-              <input type="date" value={f.acqDate} onChange={set('acqDate')} />
-            </div>
-          )}
 
           {/* ④ 취득세를 얼마 냈는지 — 대략 (B-1 ④). 세목별 금액은 받지 않는다(서류가 있어야 아는 값) */}
           <div className="jt-field">
@@ -485,7 +460,7 @@ function JTReportAcqCheck({ setRoute }) {
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
             <input type="checkbox" checked={f.consent} onChange={set('consent')} style={{ marginTop: 3, width: 18, height: 18, accentColor: '#000' }} />
             <span style={{ fontSize: 13, color: 'var(--fg-2)', lineHeight: 1.6 }}>
-              <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 취득세 1차 재검토 접수 및 결과 안내<br />· <strong>항목</strong>: 취득일·소재지 시·도·취득 원인·물건 종류·낸 취득세(대략)·지금 상황·통지서 종류와 받은 날·가지고 계신 서류(보유 여부만)·알게 되신 경로, 연락 방법(전화를 고르신 경우 전화번호) — 선택 항목은 비워 두셔도 접수됩니다<br />· <strong>함께 전송되는 정보</strong>: 접수번호(임의 생성), 접수 시각, 두 동의의 기록 — 유입 경로 정보는 이 접수에서 보내지 않습니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년 · 동의를 거부하실 수 있으며, 거부하시면 이 화면으로는 접수되지 않으나 전화·카카오톡으로 동일하게 문의하실 수 있습니다.
+              <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 취득세 1차 재검토 접수 및 결과 안내<br />· <strong>항목</strong>: 물건 종류·취득 연월·낸 취득세(대략)·지금 상황·통지서 종류와 받은 날·가지고 계신 서류(보유 여부만)·알게 되신 경로(직접 고르신 선택지), 연락 방법(전화를 고르신 경우 전화번호) — 선택 항목은 비워 두셔도 접수됩니다<br />· <strong>함께 전송되는 정보</strong>: 접수번호(임의 생성), 접수 시각, 두 동의의 기록 — 자동으로 수집되는 유입 경로 정보(UTM 등 접속 경로)는 이 접수에서 보내지 않습니다. 위 「알게 되신 경로」는 직접 고르신 값만 전송됩니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년 · 동의를 거부하실 수 있으며, 거부하시면 이 화면으로는 접수되지 않으나 전화·카카오톡으로 동일하게 문의하실 수 있습니다.
             </span>
           </label>
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginTop: 16, cursor: 'pointer' }}>
@@ -512,12 +487,16 @@ function JTReportAcqCheck({ setRoute }) {
 }
 /* 1차 재검토의 범위 — 4차본 B-4 첫 회신 문안과 같은 내용을 접수 «전»에 보여 준다.
    (tests_acq_check 로더가 JTReportAcqCheck «앞»을 순수 JS 로 실행하므로 JSX 헬퍼는 컴포넌트 뒤에 둔다 — 함수 선언은 끌어올려진다.)
+   담당자(4차본 B-4: 김민석 대표세무사)와 회신 예정일 안내는 Codex R1-F2 — 회신 기간의 «숫자»는 Q절대로 첫 견본 뒤에 정하므로 적지 않는다.
    Q절: 접수 버튼 바로 위에 같은 크기로 붙이고, 접수 완료 화면에도 다시 단다. */
 function AcqCheckScopeNote() {
   return (
     <div style={{ border: '1px solid var(--border-1)', padding: '20px 24px', margin: '28px 0 0', fontSize: 14, lineHeight: 1.75, maxWidth: 880 }}>
       <div className="jt-kicker">1차 재검토에서 하는 것</div>
       <p style={{ margin: '8px 0 10px' }}>
+        담당은 <strong>김민석 대표세무사</strong>입니다. 회신 예정일은 접수 확인 회신에서 알려드립니다(첫 견본 사건의 실제 검토 시간을 잰 뒤에 정하며, 숫자를 먼저 약속하지 않습니다).
+      </p>
+      <p style={{ margin: '0 0 10px' }}>
         접수 양식에 써 주신 내용으로 ①다시 볼 여지가 있는지 ②수임하게 되면 어떤 자료가 필요할지를 확인해,
         <strong> 「추가 검토 필요 / 사실관계 보완 / 판단 불가 / 가능성 낮음」</strong> 중 하나로 안내드리는 것까지입니다.
         이 단계에서는 서류를 보내지 않으셔도 됩니다. 서류 없이 내린 판단이므로 <strong>자료를 보면 결론이 달라질 수 있습니다.</strong>
