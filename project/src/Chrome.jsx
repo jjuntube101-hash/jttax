@@ -524,7 +524,7 @@ function JTFooter({ setRoute }) {
           <a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'footer')}>전화 문의</a>
           {/* 260922: 카카오톡 채널 — 오너 제공 QR(pf.kakao.com/_CcxlJG) */}
           <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'footer')}>카카오톡 채널</a>
-          <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'footer_qr')} style={{ display: 'inline-block', marginTop: 6 }}>
+          <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" className="jt-footer__kqr" onClick={() => window.jtTrackCta('kakao', 'footer_qr')} style={{ display: 'inline-block', marginTop: 6 }}>
             <img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무회계 QR 코드" width="72" height="72" loading="lazy" style={{ width: 72, height: 72, borderRadius: 6, background: '#fff' }} />
           </a>
         </div>

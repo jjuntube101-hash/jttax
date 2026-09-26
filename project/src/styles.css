@@ -1067,6 +1067,7 @@ button { font-family: inherit; }
   .jt-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 20px; padding-top: 44px; padding-bottom: 32px; }
   .jt-footer__grid > :first-child { grid-column: 1 / -1; }
   .jt-footer__bar { flex-direction: column; gap: 12px; line-height: 1.7; }
+  .jt-footer__kqr { display: none !important; } /* 260926: 휴대폰에서는 QR 대신 링크를 바로 누른다 */
 }
 
 /* ========== Team ========== */
