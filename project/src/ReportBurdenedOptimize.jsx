@@ -287,7 +287,7 @@ function JTReportBurden({ setRoute, onBack }) {
                   <li>🔹 <strong>채무 객관적 입증 방법</strong> — 전세·대출이 인정받는 요건(§47③)</li>
                   <li>🔹 <strong>증여자 다주택 여부 반영</strong> — 채무 인수분 양도세가 달라져 최적이 바뀝니다</li>
                 </ul>
-                <p style={{ margin: 0, fontSize: 13.5, color: '#5a5a5a', lineHeight: 1.65 }}>이 셋은 사례마다 답이 달라 자동 계산만으론 위험합니다.<br/><strong>세무사가 직접 설계</strong>해 드립니다 — 첫 상담 무료(쟁점 확인·방향 안내).</p>
+                <p style={{ margin: 0, fontSize: 13.5, color: '#5a5a5a', lineHeight: 1.65 }}>이 셋은 사례마다 답이 달라 자동 계산만으론 위험합니다.<br/><strong>세무사가 직접 설계</strong>해 드립니다 — 문의를 접수하면 검토 범위와 보수를 견적으로 안내합니다.</p>
               </section>
 
               <section className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '16px 18px' }}>

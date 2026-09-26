@@ -280,7 +280,7 @@ function JTBooking({ setRoute }) {
           <div className="jt-page-hero__crumb"><span>BOOKING</span><span>·</span><span>상담 예약</span></div>
           <h1>쟁점 확인부터 시작합니다.</h1>
           <p className="jt-page-hero__sub">
-            쟁점 확인과 방향 안내를 먼저 하고, 구체적 세무 판단·실행은 견적 안내 뒤 자문 계약 후 진행됩니다. 24시간 이내 담당 세무사가 직접 연락드립니다. 간단한 문의는 전화({window.JT_DATA.firm.phone})로도 가능합니다.
+            문의와 자료를 접수한 뒤 검토 범위와 보수를 견적으로 안내하고, 세무 판단과 방향 안내는 합의한 자문 범위에 따라 진행합니다. 24시간 이내 담당 세무사가 직접 연락드립니다. 간단한 문의는 전화({window.JT_DATA.firm.phone})로도 가능합니다.
           </p>
         </div>
       </section>

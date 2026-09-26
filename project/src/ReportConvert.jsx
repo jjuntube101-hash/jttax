@@ -34,7 +34,7 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
           <p style={{fontSize: 15, opacity: 0.85, lineHeight: 1.65, margin: 0}}>
             {urgent
               ? '신고·결정 기한이 임박했거나 추가 증빙이 필요한 사안일 수 있습니다. 담당 세무사가 24시간 이내에 직접 검토해드립니다.'
-              : '귀하의 사안은 이 계산보다 복잡할 수 있습니다. 담당 세무사가 15분 무료로 검토해드립니다.'}
+              : '귀하의 사안은 이 계산보다 복잡할 수 있습니다. 담당 세무사가 검토 범위와 보수를 견적으로 안내해 드립니다.'}
           </p>
         </div>
         <div style={{display: 'flex', gap: 10, flexWrap: 'wrap'}}>
@@ -45,7 +45,7 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
             window.jtTrackCta('booking', 'report_banner', { urgent });
             setRoute && setRoute('booking');
           }}>
-            무료 15분 검토 예약 →
+            검토 범위·견적 요청 →
           </button>
           <a className="jt-btn jt-btn--ghostOnDark" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
             onClick={() => {
@@ -309,7 +309,7 @@ const PRECEDENT_BANK = {
       title: '연간 경정청구 환급 규모 약 3.5조 원',
       story: '2022년 납세자들이 경정청구를 통해 환급받은 총액이 3조 5천억 원대로 집계. 그만큼 최초 신고 단계에서의 공제·감면 누락이 드물지 않음.',
       source: '국세청 국세통계연보',
-      lesson: '최초 신고로 끝내지 않고, 매년 "작년 신고분 재검토" 루틴을 두면 평균 환급 발생 확률이 유의미하게 높음.'
+      lesson: '최초 신고로 끝내지 않고, 매년 "작년 신고분 재검토" 루틴을 두면 놓친 공제·감면을 찾을 기회가 생김.'
     },
   ],
   APPEAL: [

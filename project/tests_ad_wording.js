@@ -1,14 +1,18 @@
 /* 광고 문구 게이트 — 한국세무사회 「세무사광고에관한규정」(2026-01-06 개정) 대조 (260926 오너 결재 R-1)
    §8① 무료·염가 조세상담 광고 금지 / §4 10호 「무료」 표기 금지 / §4 6호 평균 환급금액·환급율·절세율 금지.
-   범위: 사이트에 실제로 서빙되는 HTML 전체(빌드 산출물 포함)의 «보이는 텍스트 + title/meta/og 속성값».
-   스크립트·주석·코드는 보지 않는다 — 규정이 겨누는 것은 소비자가 보는 표시다.
-   dist/·node_modules/ 는 제외. 위반이 있으면 파일과 문맥을 찍고 exit 1. */
+
+   보는 곳(세 경로 — Codex TASK-260926-026 R1 이 정적 HTML 만 보던 구멍을 지적):
+     ① 서빙되는 HTML 전체: 보이는 텍스트 + meta content + <script type="application/ld+json"> 안의 문자열 값
+     ② React 소스(project/src/*.jsx): 주석을 뺀 본문 — 런타임에 그려지는 글은 정적 HTML 에 없다
+     ③ 빌드 번들(project/dist/app.js): \\uXXXX 이스케이프를 풀어서 — 소스 검사가 새는 경우의 최종 방어
+   보지 않는 것: 실행 스크립트·주석·코드 식별자. 규정이 겨누는 것은 소비자가 보는 표시다.
+   위반이 있으면 파일과 문맥을 찍고 exit 1. */
 'use strict';
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github']);
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github', '.tmp_ad_wording']);
 const BANNED = ['무료', '환급율', '환급률', '평균 환급', '절세율'];
 
 function walk(dir, out) {
@@ -19,65 +23,105 @@ function walk(dir, out) {
   return out;
 }
 
-/* 보이는 텍스트 + 검색엔진·미리보기가 읽는 속성값만 남긴다 */
-function visible(html) {
+/* JSON 값 트리에서 문자열만 모은다 */
+function jsonStrings(v, out) {
+  if (typeof v === 'string') out.push(v);
+  else if (Array.isArray(v)) v.forEach(x => jsonStrings(x, out));
+  else if (v && typeof v === 'object') Object.values(v).forEach(x => jsonStrings(x, out));
+  return out;
+}
+
+/* ① HTML: 보이는 텍스트 + meta content + JSON-LD 문자열 값 */
+function visibleHtml(html) {
+  const ld = [];
+  for (const m of html.matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try { jsonStrings(JSON.parse(m[1]), ld); } catch (e) { ld.push('[JSON-LD 파싱 실패] ' + m[1].slice(0, 200)); }
+  }
   let t = html.replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
               .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
               .replace(/<!--[\s\S]*?-->/g, ' ');
   const attrs = [];
-  /* <title> 안의 글은 태그를 벗기면 본문 텍스트로 남으므로 따로 더하지 않는다(더하면 같은 자리를 두 번 센다) */
   for (const m of t.matchAll(/<meta\b[^>]*?\bcontent\s*=\s*"([^"]*)"/gi)) attrs.push(m[1]);
   t = t.replace(/<[^>]+>/g, ' ');
-  return (t + ' ' + attrs.join(' ')).replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+  return (t + ' ' + attrs.join(' ') + ' ' + ld.join(' ')).replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 }
 
-function scan(files) {
-  const hits = [];
-  for (const f of files) {
-    const v = visible(fs.readFileSync(f, 'utf8'));
-    for (const w of BANNED) {
-      let i = v.indexOf(w);
-      while (i >= 0) {
-        hits.push({ file: path.relative(ROOT, f), word: w, ctx: v.slice(Math.max(0, i - 25), i + 25) });
-        i = v.indexOf(w, i + 1);
-      }
+/* ② JSX: 주석 제거(//…, /*…*​/, {/*…*​/}) 뒤 본문 */
+function visibleJsx(src) {
+  return src.replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ')
+            .replace(/\/\*[\s\S]*?\*\//g, ' ')
+            .replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1 ')
+            .replace(/\s+/g, ' ');
+}
+
+/* ③ 번들: \uXXXX 이스케이프를 풀고, 번들에 남는 소스 주석은 뺀다(주석은 화면에 그려지지 않는다) */
+function visibleBundle(src) {
+  return visibleJsx(src.replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16))));
+}
+
+function scanText(label, text, hits) {
+  for (const w of BANNED) {
+    let i = text.indexOf(w);
+    while (i >= 0) {
+      hits.push({ file: label, word: w, ctx: text.slice(Math.max(0, i - 25), i + 25) });
+      i = text.indexOf(w, i + 1);
     }
   }
   return hits;
 }
+function scanHtml(files) { const h = []; for (const f of files) scanText(path.relative(ROOT, f), visibleHtml(fs.readFileSync(f, 'utf8')), h); return h; }
+function scanJsx(files)  { const h = []; for (const f of files) scanText(path.relative(ROOT, f), visibleJsx(fs.readFileSync(f, 'utf8')), h); return h; }
+function scanBundle(f)   { return scanText(path.relative(ROOT, f), visibleBundle(fs.readFileSync(f, 'utf8')), []); }
 
 let fail = 0;
 const eq = (label, got, want) => {
   const ok = JSON.stringify(got) === JSON.stringify(want);
   if (!ok) fail++;
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}`);
-  if (!ok) console.log(`      got=${JSON.stringify(got).slice(0, 600)}  want=${JSON.stringify(want)}`);
+  if (!ok) console.log(`      got=${JSON.stringify(got).slice(0, 700)}  want=${JSON.stringify(want)}`);
 };
 
-console.log('\n════ 광고 문구 게이트 자기시험 (검사기가 잡는가) ════\n');
-eq('본문 텍스트의 「무료」를 잡는다', scan([writeTmp('<p>첫 상담은 무료입니다</p>')]).length, 1);
-eq('meta description 의 「무료」를 잡는다', scan([writeTmp('<meta name="description" content="무료 세금 계산기">')]).length, 1);
-eq('title 의 「무료」를 잡는다', scan([writeTmp('<title>무료 계산기</title>')]).length, 1);
-eq('script 안의 「무료」는 표시가 아니므로 잡지 않는다', scan([writeTmp('<script>var a="무료";</script>')]).length, 0);
-eq('HTML 주석 안의 「무료」는 잡지 않는다', scan([writeTmp('<!-- 무료 -->')]).length, 0);
-eq('「환급률」을 잡는다', scan([writeTmp('<p>환급률 1위</p>')]).length, 1);
+console.log('\n════ 광고 문구 게이트 자기시험 (검사기가 잡는가 / 안 잡아야 할 것을 안 잡는가) ════\n');
+eq('① 본문 텍스트의 「무료」를 잡는다', scanHtml([tmp('a.html', '<p>첫 상담은 무료입니다</p>')]).length, 1);
+eq('① meta description 의 「무료」를 잡는다', scanHtml([tmp('b.html', '<meta name="description" content="무료 세금 계산기">')]).length, 1);
+eq('① title 의 「무료」를 잡는다 (한 번만 센다)', scanHtml([tmp('c.html', '<title>무료 계산기</title>')]).length, 1);
+eq('① JSON-LD 문자열 값의 「무료」를 잡는다 (R1-F2)', scanHtml([tmp('d.html', '<script type="application/ld+json">{"@type":"FAQPage","mainEntity":[{"acceptedAnswer":{"text":"첫 상담은 무료입니다"}}]}</script>')]).length, 1);
+eq('① 깨진 JSON-LD 는 파싱 실패로 표면화한다', scanHtml([tmp('e.html', '<script type="application/ld+json">{무료</script>')]).length, 1);
+eq('① 실행 script 안의 「무료」는 표시가 아니므로 잡지 않는다', scanHtml([tmp('f.html', '<script>var a="무료";</script>')]).length, 0);
+eq('① HTML 주석 안의 「무료」는 잡지 않는다', scanHtml([tmp('g.html', '<!-- 무료 -->')]).length, 0);
+eq('① 「환급률」을 잡는다', scanHtml([tmp('h.html', '<p>환급률 1위</p>')]).length, 1);
+eq('② JSX 본문의 「무료」를 잡는다 (R1-F1)', scanJsx([tmp('i.jsx', "<p>첫 상담 무료</p>")]).length, 1);
+eq('② JSX 문자열 리터럴의 「무료」를 잡는다', scanJsx([tmp('j.jsx', "const a = cond ? '15분 무료로 검토' : '';")]).length, 1);
+eq('② JSX 주석(//·/* */·{/* */})의 「무료」는 잡지 않는다', scanJsx([tmp('k.jsx', "// 무료 티저\n/* 무료 */\n{/* 무료 섹션 */}\nconst x = 1;")]).length, 0);
+eq('② URL 안의 // 는 주석이 아니다', scanJsx([tmp('l.jsx', "const u = 'https://x.y/무료';")]).length, 1);
+eq('③ 번들의 \\uXXXX 이스케이프를 풀어 「무료」를 잡는다 (R1-F3)', scanBundle(tmp('m.js', 'var t="\\uCCAB \\uC0C1\\uB2F4 \\uBB34\\uB8CC";')).length, 1);
+eq('③ 번들에 남은 소스 주석의 「무료」는 잡지 않는다', scanBundle(tmp('n.js', 'var t=1; // \\uBB34\\uB8CC\n/* 무료 */')).length, 0);
 cleanupTmp();
 
-console.log('\n════ 사이트 전체 HTML ════\n');
+console.log('\n════ ① 사이트 전체 HTML ════\n');
 const files = walk(ROOT, []);
 eq('검사 대상 HTML 이 50개 이상이다 (전수 검사 전제)', files.length >= 50, true);
-const hits = scan(files);
-eq(`금지 표시 0건 (검사 ${files.length}개 파일)`, hits, []);
+eq(`HTML 금지 표시 0건 (검사 ${files.length}개 파일, JSON-LD 포함)`, scanHtml(files), []);
+
+console.log('\n════ ② React 소스 (project/src/*.jsx) ════\n');
+const jsx = fs.readdirSync(path.join(ROOT, 'project', 'src')).filter(f => f.endsWith('.jsx')).map(f => path.join(ROOT, 'project', 'src', f));
+eq('JSX 파일이 10개 이상이다', jsx.length >= 10, true);
+eq(`JSX 금지 표시 0건 (검사 ${jsx.length}개 파일, 주석 제외)`, scanJsx(jsx), []);
+
+console.log('\n════ ③ 빌드 번들 (project/dist/app.js) ════\n');
+const bundle = path.join(ROOT, 'project', 'dist', 'app.js');
+eq('번들이 존재한다', fs.existsSync(bundle), true);
+eq('번들 금지 표시 0건 (이스케이프 해제 후)', fs.existsSync(bundle) ? scanBundle(bundle) : [], []);
 
 if (fail) { console.log(`\n${fail} FAIL`); process.exit(1); }
 console.log('\nALL PASS');
 
 /* ── 자기시험용 임시 파일 ── */
-function writeTmp(html) {
+function tmp(name, body) {
   const dir = path.join(ROOT, 'project', '.tmp_ad_wording');
   fs.mkdirSync(dir, { recursive: true });
-  const f = path.join(dir, `t${Math.random().toString(36).slice(2)}.html`);
-  fs.writeFileSync(f, html, 'utf8');
+  const f = path.join(dir, name);
+  fs.writeFileSync(f, body, 'utf8');
   return f;
 }
 function cleanupTmp() { fs.rmSync(path.join(ROOT, 'project', '.tmp_ad_wording'), { recursive: true, force: true }); }

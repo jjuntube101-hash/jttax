@@ -396,7 +396,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
           <div className="jt-report-grid__head reveal">
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 14px', borderRadius: 999, background: 'rgba(176,123,58,.14)', border: '1px solid rgba(176,123,58,.5)', color: '#8a6224', fontSize: 12.5, fontWeight: 800, letterSpacing: '.04em', marginBottom: 14 }}>★ JT 절세 전략 도구 · 프리미엄</div>
             <h2>단일 계산을 넘어, 「가장 유리한 길」을 찾습니다</h2>
-            <p>증여·양도·상속·취득세를 <strong style={{ color: '#8a6224' }}>한 번에 비교·최적화</strong> — 여러 세목을 함께 설계하는 멀티세목 전략입니다. 숫자는 무료로 보여드리고, 「안전하게 절세하는 실제 전략」은 세무사가 직접 설계합니다.</p>
+            <p>증여·양도·상속·취득세를 <strong style={{ color: '#8a6224' }}>한 번에 비교·최적화</strong> — 여러 세목을 함께 설계하는 멀티세목 전략입니다. 숫자는 계산기가 보여드리고, 「안전하게 절세하는 실제 전략」은 세무사가 직접 설계합니다.</p>
           </div>
           <div className="jt-report-live-grid">
             {premium.map((r, i) => (
