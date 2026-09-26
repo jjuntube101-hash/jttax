@@ -209,7 +209,7 @@ ${c.slug === 'acquisition-tax' ? `    <section class="jt-cc-sec">
     </section>
     <section class="jt-cc-sec">
       <h2>이미 납부하셨다면</h2>
-      <p style="font-size:16px;line-height:1.75;color:#333;">이 계산기는 입력하신 값을 현재 법으로 계산합니다. 과거에 낸 금액이 계산 결과와 다르더라도, 취득일 당시의 법령·세대 판정·취득 시기·감면 신청 여부에 따라 이유가 있을 수 있어 그 차이를 그대로 더 낸 세금으로 볼 수는 없습니다. 다시 확인해 보고 싶으시면 서류를 먼저 접수하실 수 있습니다. 접수 화면은 세액이나 차액을 계산하지 않고, 서류를 보고 다시 볼 여지가 있는지 확인하는 1차 서류 점검입니다.</p>
+      <p style="font-size:16px;line-height:1.75;color:#333;">이 계산기는 입력하신 값을 현재 법으로 계산합니다. 과거에 낸 금액이 계산 결과와 다르더라도, 취득일 당시의 법령·세대 판정·취득 시기·감면 신청 여부에 따라 이유가 있을 수 있어 그 차이를 그대로 더 낸 세금으로 볼 수는 없습니다. 다시 확인해 보고 싶으시면 써 주신 내용만으로 1차 재검토를 접수하실 수 있습니다. 접수 화면은 세액이나 차액을 계산하지 않고, 다시 볼 여지가 있는지 확인하는 절차이며 서류는 자문을 맡기시기로 한 뒤에 필요한 것만 받습니다.</p>
       <div class="jt-cc-chips" style="margin-top:12px;">
         <a class="jt-cc-chip" href="/#/report/acq-check">이미 낸 취득세 1차 재검토 접수 →</a>
         <a class="jt-cc-chip" href="/insights/acquisition-tax-correction-claim-deadline.html">몇 년 전에 낸 취득세도 경정청구를 할 수 있나요</a>
