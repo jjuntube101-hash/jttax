@@ -6,6 +6,7 @@
 //
 // commercial.data.mjs(수렴된 카피 정본)를 읽어:
 //   /services/index.html + 5장  — 업무분야 (Service + BreadcrumbList, 허브는 CollectionPage/ItemList)
+//   /acquisition-tax/index.html · /creators.html — 업무분야 06·07 (260926: 1~5와 같은 틀 renderServicePage)
 //   /experts/index.html  + 3장  — 전문가 (Person + BreadcrumbList)
 //   /about/index.html           — 회사소개 (AccountingService 보강)
 //   /consult.html               — 상담+오시는 길 (FAQPage + BreadcrumbList)
@@ -17,7 +18,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICES, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, CONSULT, CREATORS, ACQ_HUB } from './commercial.data.mjs';
+import { SERVICES, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, CONSULT } from './commercial.data.mjs';
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
@@ -80,10 +81,12 @@ function insightTitleBySlug(slug, where) {
   return t;
 }
 function serviceBySlug(slug, where) {
-  const s = SERVICES.find(x => x.slug === slug);
+  const s = SERVICES.find(x => x.slug === slug) || SERVICE_EXTRA.find(x => x.slug === slug);
   if (!s) throw new Error(`[${where}] 알 수 없는 업무분야 슬러그 "${slug}"`);
   return s;
 }
+/* 업무분야 면의 주소 — 1~5 는 /services/<slug>.html, 06·07 은 데이터의 href(종전 주소 유지) */
+const serviceHref = (s) => s.href || `/services/${s.slug}.html`;
 
 /* ── 공통 셸 ───────────────────────────────────────────────────── */
 const STYLE = `  <style>
@@ -213,8 +216,82 @@ function leadCard(e, note) {
 }
 
 /* ── 업무분야 leaf ─────────────────────────────────────────────── */
+/* 크리에이터 경로 계측 — 성장기획 §1단계 수렴 스펙(귀속 = 최초 선택 고정):
+   jt_creator_path 는 «세션 최초 1회만» 저장하고 GA4 path_select 도 그때만 발화한다.
+   이후 다른 경로를 눌러도 덮어쓰지도 재발화하지도 않는다 — 한 세션 = 정확히 한 경로.
+   저장이 실패(스토리지 차단)하면 이벤트도 내보내지 않는다 — 분모(GA4)와
+   분자(접수 메일의 크리에이터경로)가 어긋나지 않게 같은 성공 경로에 묶는다. */
+const CREATOR_PATH_SCRIPT = `  <script>
+    function jtCreatorPath(p) {
+      try {
+        if (sessionStorage.getItem('jt_creator_path')) return;
+        sessionStorage.setItem('jt_creator_path', p);
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'path_select', { creator_path: p });
+        }
+      } catch (_e) {}
+    }
+  </script>`;
+const VALID_CREATOR_PATH_ID = /^(first|side|mcn)$/;
+
+/* 06·07 만의 추가 절 — 같은 틀 «안»에 둔다(1~5 는 이 필드가 없어 아무것도 그리지 않는다). */
+function extraSectionsHtml(s) {
+  const out = [];
+  if (s.acqCheck) {
+    /* 접수 화면으로 가는 유일한 자리. 문안은 접수와서류 4차본 B(260926 오너 확정) — 서류 없이 써 준 내용만으로 1차 재검토.
+       tests_acq_check (a)가 이 절(h2~</section>, 600자 안)에 금지 문구가 없는지 본다. */
+    out.push(`    <section class="jt-cc-sec">
+      <h2>이미 낸 취득세를 점검받고 싶다면</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">과거에 신고·납부한 취득세를 다시 보고 싶으시면 접수 화면에 써 주신 내용만으로 1차 재검토를 받으실 수 있습니다. 재계산이 아니라 다시 볼 여지가 있는지 확인하는 절차이며, 서류는 자문을 맡기시기로 한 뒤에 필요한 것만 받습니다.</p>
+      <div class="jt-cc-chips" style="margin-top:12px;">
+        <a class="jt-cc-chip" href="${s.acqCheck.href}">${esc(s.acqCheck.label)}</a>
+      </div>
+    </section>`);
+  }
+  if (s.creatorPaths) {
+    const cards = s.creatorPaths.map(p => {
+      if (!VALID_CREATOR_PATH_ID.test(p.id)) throw new Error(`[creators] 경로 id 오류: ${JSON.stringify(p.id)} — first|side|mcn 만 허용합니다(GA4 creator_path 값과 한 몸).`);
+      const links = p.links.map(l =>
+        `        <li><a href="${l.href}" onclick="jtCreatorPath('${p.id}')">${esc(l.label)} →</a></li>`
+      ).join('\n');
+      return `      <div class="jt-cc-card jt-cr-card">
+        <p class="jt-cr-kicker">${esc(p.label)}</p>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.desc)}</p>
+        <ul class="jt-cc-links jt-cr-links">
+${links}
+        </ul>
+        <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtCreatorPath('${p.id}');jtTrackCta('booking','creators_${p.id}')">이 상황으로 상담 예약 →</a>
+      </div>`;
+    }).join('\n');
+    out.push(`${CREATOR_PATH_SCRIPT}
+    <section class="jt-cc-sec">
+      <h2>지금 어느 단계인가요?</h2>
+      <div class="jt-cc-grid">
+${cards}
+      </div>
+    </section>`);
+  }
+  if (s.consultHook) {
+    out.push(`    <section class="jt-cc-sec">
+      <h2>${esc(CONSULT.hook.title)}</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">${esc(CONSULT.hook.body)}</p>
+    </section>`);
+  }
+  for (const x of (s.extraSections || [])) {
+    const chips = (x.chips || []).map(c => `        <a class="jt-cc-chip" href="${c.href}">${esc(c.label)}</a>`).join('\n');
+    out.push(`    <section class="jt-cc-sec">
+      <h2>${esc(x.h2)}</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">${esc(x.body)}</p>
+${chips ? `      <div class="jt-cc-chips" style="margin-top:12px;">\n${chips}\n      </div>` : ''}
+    </section>`);
+  }
+  if (s.closing) out.push(`    <p style="font-size:16px;line-height:1.75;color:#333;">${esc(s.closing)}</p>`);
+  return out.join('\n\n');
+}
+
 function renderServicePage(s) {
-  const url = `${SITE}/services/${s.slug}.html`;
+  const url = `${SITE}${serviceHref(s)}`;
   const lead = expertBySlug(s.lead, `services/${s.slug}`);
   const svcLd = {
     '@context': 'https://schema.org',
@@ -234,9 +311,13 @@ function renderServicePage(s) {
   const deepLink = s.appDeepLink
     ? `        <a class="jt-cc-chip" href="${s.appDeepLink.href}">${esc(s.appDeepLink.label)}</a>`
     : '';
-  const insightsHtml = (s.relatedInsights || []).map(r =>
-    `        <li><a href="/insights/${assertSlug(r.slug, `services/${s.slug}.relatedInsights`)}.html">${esc(r.title)} →</a></li>`
-  ).join('\n');
+  /* 제목이 데이터에 없으면 원고(md) frontmatter 에서 읽는다 — 06·07 은 전부 그 방식이다 */
+  const insightLi = (slug, title, where) =>
+    `        <li><a href="/insights/${assertSlug(slug, where)}.html">${esc(title || insightTitleBySlug(slug, where))} →</a></li>`;
+  const insightsHtml = (s.relatedInsights || []).map(r => insightLi(r.slug, r.title, `services/${s.slug}.relatedInsights`)).join('\n');
+  const groupsHtml = (s.insightGroups || []).map(g => `${g.label ? `      <p style="margin:16px 0 6px;font-size:13px;color:#777;">${esc(g.label)}</p>\n` : ''}      <ul class="jt-cc-links">
+${g.slugs.map(sl => insightLi(sl, null, `services/${s.slug}.insightGroups`)).join('\n')}
+      </ul>`).join('\n');
   return headHtml({
     title: `${s.metaTitle} | ${FIRM}`, desc: s.metaDesc, keywords: s.keywords, url,
     ldBlocks: [svcLd, crumbLd([['홈', `${SITE}/`], ['업무분야', `${SITE}/services/`], [s.kr, url]])],
@@ -245,7 +326,7 @@ function renderServicePage(s) {
     <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/services/">업무분야</a> › ${esc(s.kr)}</nav>
     <h1>${esc(s.h1)}</h1>
     <p class="jt-cc-lede">${esc(s.lede)}</p>
-
+${s.proof ? `    <p class="jt-cr-proof">${esc(s.proof)}</p>\n` : ''}
     <div class="jt-cc-cta">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','svc_top')">이 분야 상담 예약 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','svc_top')">카톡 상담</a>
@@ -276,14 +357,12 @@ ${[calcsHtml, deepLink].filter(Boolean).join('\n')}
       </div>
     </section>` : ''}
 
-${insightsHtml ? `    <section class="jt-cc-sec">
+${(insightsHtml || groupsHtml) ? `    <section class="jt-cc-sec">
       <h2>관련 인사이트</h2>
-      <ul class="jt-cc-links">
-${insightsHtml}
-      </ul>
+${[insightsHtml ? `      <ul class="jt-cc-links">\n${insightsHtml}\n      </ul>` : '', groupsHtml].filter(Boolean).join('\n')}
     </section>` : ''}
 
-${DISCLAIMER}
+${extraSectionsHtml(s) ? extraSectionsHtml(s) + '\n\n' : ''}${DISCLAIMER}
 ${CTA_BOTTOM}
   </main>
 
@@ -304,8 +383,7 @@ function renderServicesIndex() {
     mainEntity: {
       '@type': 'ItemList',
       itemListElement: [
-        ...SERVICES.map((s) => ({ name: s.kr, url: `${SITE}/services/${s.slug}.html` })),
-        ...SERVICE_EXTRA.map((s) => ({ name: s.kr, url: `${SITE}${s.href}` })),
+        ...SERVICES.concat(SERVICE_EXTRA).map((s) => ({ name: s.kr, url: `${SITE}${serviceHref(s)}` })),
       ].map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, url: it.url })),
     },
   };
@@ -314,10 +392,8 @@ function renderServicesIndex() {
         <p>${esc(lede)}</p>
         <p style="margin-top:10px;font-weight:600;font-size:13px;">업무 안내 보기 →</p>
       </a>`;
-  const cards = [
-    ...SERVICES.map(s => card(`/services/${s.slug}.html`, s.kr, s.lede)),
-    ...SERVICE_EXTRA.map(s => card(s.href, s.kr, s.lede)),   // 260922: 취득세·크리에이터 — 기존 허브로
-  ].join('\n');
+  const cards = SERVICES.concat(SERVICE_EXTRA)   // 260926: 06·07 도 같은 카드·같은 leaf 틀
+    .map(s => card(serviceHref(s), s.kr, s.cardLede || s.lede)).join('\n');
   return headHtml({
     title: `업무분야 — 양도상속증여·세무조사·기장·컨설팅·경정청구·취득세·크리에이터 | ${FIRM}`,
     desc: '기장·세금 신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구, 취득세, 크리에이터 세금까지 사업과 재산의 세무 업무를 안내합니다.',
@@ -356,7 +432,7 @@ function renderExpertPage(e) {
   };
   const svcChips = (e.services || []).map(slug => {
     const s = serviceBySlug(slug, `experts/${e.slug}.services`);
-    return `        <a class="jt-cc-chip" href="/services/${s.slug}.html">${esc(s.kr)}</a>`;
+    return `        <a class="jt-cc-chip" href="${serviceHref(s)}">${esc(s.kr)}</a>`;
   }).join('\n');
   const profileSections = [
     ['실무 경력', e.practice],
@@ -576,191 +652,6 @@ ${footerHtml()}
 </html>`;
 }
 
-/* ── 크리에이터 허브 (/creators.html — 성장기획 1단계) ──────────── */
-function renderCreatorsPage() {
-  const url = `${SITE}/creators.html`;
-  const pageLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: `${CREATORS.metaTitle} | ${FIRM}`,
-    image: ogImageHref(),
-    url,
-    description: CREATORS.metaDesc,
-  };
-  const VALID_PATH_ID = /^(first|side|mcn)$/;
-  const cards = CREATORS.paths.map(p => {
-    if (!VALID_PATH_ID.test(p.id)) throw new Error(`[creators] 경로 id 오류: ${JSON.stringify(p.id)} — first|side|mcn 만 허용합니다(GA4 creator_path 값과 한 몸).`);
-    const links = p.links.map(l =>
-      `        <li><a href="${l.href}" onclick="jtCreatorPath('${p.id}')">${esc(l.label)} →</a></li>`
-    ).join('\n');
-    return `      <div class="jt-cc-card jt-cr-card">
-        <p class="jt-cr-kicker">${esc(p.label)}</p>
-        <h3>${esc(p.title)}</h3>
-        <p>${esc(p.desc)}</p>
-        <ul class="jt-cc-links jt-cr-links">
-${links}
-        </ul>
-        <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtCreatorPath('${p.id}');jtTrackCta('booking','creators_${p.id}')">이 상황으로 상담 예약 →</a>
-      </div>`;
-  }).join('\n');
-  return headHtml({
-    title: `${CREATORS.metaTitle} | ${FIRM}`, desc: CREATORS.metaDesc, keywords: CREATORS.keywords, url,
-    ldBlocks: [pageLd, crumbLd([['홈', `${SITE}/`], ['크리에이터 세금 안내', url]])],
-  }) + `
-  <script>
-    /* 경로 계측 — 성장기획 §1단계 수렴 스펙(귀속 = 최초 선택 고정):
-       jt_creator_path 는 «세션 최초 1회만» 저장하고 GA4 path_select 도 그때만 발화한다.
-       이후 다른 경로를 눌러도 덮어쓰지도 재발화하지도 않는다 — 한 세션 = 정확히 한 경로.
-       저장이 실패(스토리지 차단)하면 이벤트도 내보내지 않는다 — 분모(GA4)와
-       분자(접수 메일의 크리에이터경로)가 어긋나지 않게 같은 성공 경로에 묶는다. */
-    function jtCreatorPath(p) {
-      try {
-        if (sessionStorage.getItem('jt_creator_path')) return;
-        sessionStorage.setItem('jt_creator_path', p);
-        if (typeof window.gtag === 'function') {
-          window.gtag('event', 'path_select', { creator_path: p });
-        }
-      } catch (_e) {}
-    }
-  </script>
-  <main class="jt-cc-wrap">
-    <nav class="jt-cc-crumb"><a href="/">홈</a> › 크리에이터 세금 안내</nav>
-    <h1>${esc(CREATORS.h1)}</h1>
-    <p class="jt-cc-lede">${esc(CREATORS.lede)}</p>
-    <p class="jt-cr-proof">${esc(CREATORS.proof)}</p>
-
-    <div class="jt-cc-grid">
-${cards}
-    </div>
-
-    <section class="jt-cc-sec">
-      <h2>어느 경로든, 기장·신고까지 이어집니다</h2>
-      <p style="font-size:16px;line-height:1.75;color:#333;">${esc(CREATORS.handoff)}</p>
-      <div class="jt-cc-chips" style="margin-top:12px;">
-        <a class="jt-cc-chip" href="${CREATORS.bookkeepingHref}">기장·세금 신고 서비스 보기</a>
-        <a class="jt-cc-chip" href="/experts/lee-hyunjun.html">이현준 대표세무사 프로필</a>
-        <a class="jt-cc-chip" href="/experts/kim-gahwan.html">김가환 대표세무사 프로필</a>
-      </div>
-    </section>
-
-    <section class="jt-cc-sec">
-      <h2>${esc(CONSULT.hook.title)}</h2>
-      <p style="font-size:16px;line-height:1.75;color:#333;">${esc(CONSULT.hook.body)}</p>
-    </section>
-
-${DISCLAIMER}
-${CTA_BOTTOM}
-  </main>
-${footerHtml()}
-</body>
-</html>`;
-}
-
-/* ── 취득세 허브 (/acquisition-tax/ — 260921 신설) ──────────────────────────
-   기존 계산기 랜딩과 «의도»가 다르다: 랜딩 = 계산하러 온 사람, 허브 = 내 경우가 어디에
-   해당하는지부터 모르는 사람. 홈 전면·전역 메뉴에는 올리지 않고(C3), /calculators/·
-   취득세 랜딩·취득세 글 2편·인사이트 허브에서 «실 href» 로 들어오게 한다(Astra R1-F7).
-   ⛔ FAQPage 구조화 데이터를 쓰지 않는다. ⛔ 법령 요건·세율을 새로 서술하지 않는다. */
-function renderAcquisitionHub() {
-  const url = `${SITE}/${ACQ_HUB.path}/`;
-  const L = ACQ_HUB.links;
-  const calc = calcBySlug('acquisition-tax', 'ACQ_HUB.links.calculator');   // 슬러그 오타는 빌드를 멈춘다
-  void calc;
-  const listLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: `${ACQ_HUB.metaTitle} — ${FIRM}`,
-    image: ogImageHref(),
-    url,
-    description: ACQ_HUB.metaDesc,
-    mainEntity: {
-      '@type': 'ItemList',
-      itemListElement: ACQ_HUB.groups.map((g, i) => ({
-        '@type': 'ListItem', position: i + 1, name: g.title, url: `${url}#${g.id}`,
-      })),
-    },
-  };
-  const articleLinks = L.articles.map((r) =>
-    `          <a class="jt-cc-chip" href="/insights/${assertSlug(r.slug, 'ACQ_HUB.links.articles')}.html">${esc(r.title)}</a>`).join('\n');
-  /* 묶음에 딸린 글(260921 글 묶음 1차) — 칩이 아니라 목록으로 둔다(글이 많아 칩으로는 읽히지 않는다) */
-  const groupArticlesHtml = (g) => (g.articleGroups || []).map((ag) => `        <p style="margin:16px 0 6px;font-size:13px;color:#777;">${esc(ag.label)}</p>
-        <ul style="margin:0;padding-left:18px;font-size:15px;line-height:1.8;">
-${ag.slugs.map((sl) => `          <li><a href="/insights/${sl}.html" style="color:#1a1a1a;">${esc(insightTitleBySlug(sl, `ACQ_HUB.groups.${g.id}.articleGroups`))}</a></li>`).join('\n')}
-        </ul>
-`).join('');
-  const groups = ACQ_HUB.groups.map((g, i) => `      <section class="jt-cc-card" id="${esc(g.id)}">
-        <p style="margin:0 0 4px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;color:#999;">${String(i + 1).padStart(2, '0')}</p>
-        <h2 style="font-size:19px;margin:0 0 6px;border:0;padding:0;">${esc(g.title)}</h2>
-        <p style="margin:0 0 8px;">${esc(g.lead)}</p>
-        <p style="margin:0 0 12px;color:#444;">${esc(g.check)}</p>
-        <div class="jt-cc-chips">
-          <a class="jt-cc-chip" href="${L.calculator.href}">${esc(L.calculator.label)}</a>
-          <a class="jt-cc-chip" href="${L.appeal.href}">${esc(L.appeal.label)}</a>
-          <a class="jt-cc-chip" href="${L.kakao.href}" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','acqhub_${esc(g.id)}')">${esc(L.kakao.label)}</a>
-${articleLinks}
-        </div>
-${groupArticlesHtml(g)}      </section>`).join('\n');
-  return headHtml({
-    title: `${ACQ_HUB.metaTitle} | ${FIRM}`, desc: ACQ_HUB.metaDesc, keywords: ACQ_HUB.keywords, url,
-    ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['업무분야', `${SITE}/services/`], ['취득세', url]])],
-  }) + `
-  <main class="jt-cc-wrap">
-    <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/services/">업무분야</a> › 취득세</nav>
-    <h1>${esc(ACQ_HUB.h1)}</h1>
-    <p class="jt-cc-lede">${esc(ACQ_HUB.lede)}</p>
-    <div class="jt-cc-grid">
-${groups}
-    </div>
-
-    <section class="jt-cc-sec">
-      <h2>계산할 수 있는 범위와, 자료를 봐야 하는 범위</h2>
-      <p style="font-size:16px;line-height:1.75;color:#333;">계산기는 입력하신 사실관계를 검증된 계산 엔진에 그대로 넘겨 금액을 냅니다. 다만 감면 요건(나이·소득·주택 가액·기존 주택 처분 여부 등)과 시·도 조례에 따른 추가 경감은 계산에 넣지 않습니다. 결과 화면이 「이 계산에 넣지 않은 것」으로 그 목록을 함께 보여 드리며, 그 부분은 자료를 봐야 판단할 수 있습니다.</p>
-      <div class="jt-cc-chips" style="margin-top:12px;">
-        <a class="jt-cc-chip" href="${L.calculator.href}">${esc(L.calculator.label)}</a>
-        <a class="jt-cc-chip" href="/calculators/">다른 세금 계산기</a>
-        <a class="jt-cc-chip" href="/insights/">인사이트 전체</a>
-      </div>
-    </section>
-
-    <section class="jt-cc-sec">
-      <h2>이미 낸 취득세를 점검받고 싶다면</h2>
-      <p style="font-size:16px;line-height:1.75;color:#333;">과거에 신고·납부한 취득세를 다시 확인하고 싶으시면, 서류를 먼저 접수하실 수 있습니다. 이 접수는 재계산이 아닙니다 — 취득일 당시의 법령이 지금과 달라 현행 세율로 계산한 값을 그때 납부액과 나란히 두면 그 차이가 사실과 다르게 읽힐 수 있기 때문입니다. 접수 화면은 금액을 계산하지 않고 자료를 받아 확인하는 절차만 안내합니다.</p>
-      <div class="jt-cc-chips" style="margin-top:12px;">
-        <a class="jt-cc-chip" href="${L.acqCheck.href}">${esc(L.acqCheck.label)}</a>
-      </div>
-    </section>
-
-    <section class="jt-cc-sec">
-      <h2>소재지 시·도 감면 조례 원문 찾기</h2>
-      <p style="font-size:16px;line-height:1.75;color:#333;">시·도마다 「도세(시세) 감면 조례」가 따로 있습니다. 계산기에서 물건이 있는 시·도를 고르면 그 조례의 원문 위치를 안내해 드립니다. 조례 내용은 세액 계산에 넣지 않습니다.</p>
-    </section>
-
-    <section class="jt-cc-sec">
-      <h2>취득세 관련 글</h2>
-      <div class="jt-cc-chips">
-${articleLinks}
-      </div>
-    </section>
-
-    <section class="jt-cc-sec">
-      <h2>중개사·법무사께</h2>
-      <p style="font-size:16px;line-height:1.75;color:#333;">고객에게 계산기 링크를 그대로 건네셔도 됩니다. 등기 전에 확인할 쟁점이 있으면 아래 안내를 참고하세요.</p>
-      <div class="jt-cc-chips" style="margin-top:12px;">
-        <a class="jt-cc-chip" href="/desk/broker.html">중개사 데스크</a>
-        <a class="jt-cc-chip" href="/desk/scrivener.html">법무사 데스크</a>
-      </div>
-    </section>
-
-    <p style="font-size:16px;line-height:1.75;color:#333;">${esc(ACQ_HUB.closing)}</p>
-
-${DISCLAIMER}
-${CTA_BOTTOM}
-  </main>
-${footerHtml()}
-</body>
-</html>`;
-}
-
 /* ── 실행 ──────────────────────────────────────────────────────── */
 async function main() {
   const svcDir = join(REPO_ROOT, 'services');
@@ -783,11 +674,13 @@ async function main() {
   await writeFile(join(expDir, 'index.html'), renderExpertsIndex()); n++;
   await writeFile(join(aboutDir, 'index.html'), renderAboutPage()); n++;
   await writeFile(join(REPO_ROOT, 'consult.html'), renderConsultPage()); n++;
-  await writeFile(join(REPO_ROOT, 'creators.html'), renderCreatorsPage()); n++;
-  const acqDir = join(REPO_ROOT, ACQ_HUB.path);
-  await mkdir(acqDir, { recursive: true });
-  await writeFile(join(acqDir, 'index.html'), renderAcquisitionHub()); n++;
-  console.log(`✓ 상업 랜딩 ${n}장 생성 → /services /experts /about /consult.html /creators.html /${ACQ_HUB.path}/`);
+  for (const s of SERVICE_EXTRA) {   // 260926: 06·07 — 1~5 와 같은 틀, 출력 경로만 데이터(out)에서
+    assertSlug(s.slug, 'commercial.data SERVICE_EXTRA');
+    if (!s.out || !s.href) throw new Error(`[SERVICE_EXTRA ${s.slug}] out·href 가 필요합니다`);
+    await mkdir(dirname(join(REPO_ROOT, s.out)), { recursive: true });
+    await writeFile(join(REPO_ROOT, s.out), renderServicePage(s)); n++;
+  }
+  console.log(`✓ 상업 랜딩 ${n}장 생성 → /services /experts /about /consult.html /creators.html /acquisition-tax/`);
   const total = await writeSitemap(REPO_ROOT, SITE);
   console.log(`✓ sitemap.xml 갱신 (${total} URL)`);
 }

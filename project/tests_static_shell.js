@@ -657,11 +657,14 @@ const ROOT = path.join(__dirname, '..');
     if (footers.length === 0) {
       bad.push(`${rel} — <footer> 가 없습니다`);
     } else {
-      const ok = footers.find((f) => f.includes(FIRM) && f.includes(NAME) && /<!--\s*jt-shell v\d+\s*-->/.test(f));
+      /* 260926: 성명 «두 글자»만 보면 정본(site-meta.TAX_ACCOUNTANT — 「광고책임세무사 이현준 대표세무사」)이 바뀌어도
+         수기 HTML(desk·수기 계산기 4장)의 옛 문구 「대표 세무사 이현준」이 그대로 통과했다(실측 4장). 그래서 성명이 아니라
+         정본 «문자열 전체»를 요구한다 — 수기 면은 정본을 바꿀 때 함께 고쳐야 통과한다. */
+      const ok = footers.find((f) => f.includes(FIRM) && f.includes(meta.TAX_ACCOUNTANT) && /<!--\s*jt-shell v\d+\s*-->/.test(f));
       if (!ok) {
         const missing = [];
         if (!footers.some((f) => f.includes(FIRM))) missing.push(`사무소명 「${FIRM}」`);
-        if (!footers.some((f) => f.includes(NAME))) missing.push(`세무사 성명 「${NAME}」`);
+        if (!footers.some((f) => f.includes(meta.TAX_ACCOUNTANT))) missing.push(`세무사 표시 「${meta.TAX_ACCOUNTANT}」(site-meta 정본 전체)`);
         if (!footers.some((f) => /<!--\s*jt-shell v\d+\s*-->/.test(f))) missing.push('jt-shell 마커');
         bad.push(`${rel} — 공통 셸 푸터 조건 미충족 (시행령 §33①): ${missing.length ? missing.join(' · ') + ' 없음' : '한 푸터 안에 함께 있지 않음'}`);
       }

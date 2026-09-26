@@ -494,6 +494,9 @@ function JTFooter({ setRoute }) {
                 <br />
               </>
             )}
+            {/* 260926 오너 확정 — 광고책임세무사 = 이현준 대표세무사 «지정»(세무사회 광고규정 §2②·§3②,
+                시행령 §33①). 공동대표 3인 표시는 그대로 두고 그 아래 한 줄로 표시한다(v7 R절). */}
+            {D.adAccountant && <>광고책임세무사 {D.adAccountant} 대표세무사<br /></>}
             T. <a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'footer')}>{D.phone}</a><br />
             E. <a href={`mailto:${D.email}`} onClick={() => window.jtTrackCta('email', 'footer')}>{D.email}</a>
           </div>

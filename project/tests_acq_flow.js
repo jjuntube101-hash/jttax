@@ -542,6 +542,20 @@ console.log('\n════ ⑤ 취득세 허브·인사이트 허브로 들어�
   /* sitemap 등재 */
   const sm = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
   eq('sitemap 에 취득세 허브가 있다', sm.includes('<loc>https://www.jttax.co.kr/acquisition-tax/</loc>'), true);
+  /* 260926: 취득세 글 «전편»에 1차 재검토 접수 배너가 있고(실행계획 v7 1~2주차 「기존 취득세 노출 글에 재검토 접수 연결」),
+     취득세가 아닌 글에는 없다 — build-insights 의 slug 접두 규칙(acquisition-tax-)이 양쪽으로 지켜지는지 본다. */
+  {
+    const insDir = path.join(ROOT, 'insights');
+    const files = fs.readdirSync(insDir).filter((f) => f.endsWith('.html') && f !== 'index.html');
+    const acq = files.filter((f) => /^acquisition-tax(-|\.)/.test(f));
+    const nonAcq = files.filter((f) => !/^acquisition-tax(-|\.)/.test(f));
+    const hasIntake = (f) => fs.readFileSync(path.join(insDir, f), 'utf8').includes('href="/#/report/acq-check"');
+    eq('취득세 글이 20편 이상 빌드돼 있다(글 묶음 1차 25편 + 기존 2편)', acq.length >= 20, true);
+    eq('취득세 글 전편에 1차 재검토 접수 링크가 있다 (없는 글=)', acq.filter((f) => !hasIntake(f)).join(',') || '-', '-');
+    eq('취득세가 아닌 글에는 접수 배너가 없다 (있는 글=)', nonAcq.filter(hasIntake).join(',') || '-', '-');
+    eq('배너 문안이 «서류 없이 1차 재검토»다(종전 「1차 서류 점검」 아님)',
+       acq.every((f) => { const h = fs.readFileSync(path.join(insDir, f), 'utf8'); return h.includes('1차 재검토 접수') && !h.includes('1차 서류 점검'); }), true);
+  }
   eq('sitemap 에 인사이트 허브가 있다', sm.includes('<loc>https://www.jttax.co.kr/insights/</loc>'), true);
   /* 우월·결과 예단 표현 금지 (세무사법 §12조의7·시행령 §33) — 허브 신규 문안 한정 */
   const hubHtml = fs.readFileSync(path.join(ROOT, 'acquisition-tax', 'index.html'), 'utf8');

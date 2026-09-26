@@ -1171,10 +1171,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
           </p>
 
           {/* ★ 260921 신설 — «이미 낸» 취득세를 점검받고 싶은 사람을 위한 들어오는 길 하나.
-              재계산기가 아니라 서류 점검 접수(JTReportAcqCheck)로 보낸다 — 이 페이지의 세액과는
+              재계산기가 아니라 1차 재검토 접수(JTReportAcqCheck, 서류 없이)로 보낸다 — 이 페이지의 세액과는
               완전히 별개다. 실 href 라 hashchange 로 Report.jsx 의 라우터가 그대로 받는다. */}
           <p style={{ fontSize: 13, marginTop: 12 }}>
-            <a href="#/report/acq-check">이미 낸 취득세를 점검받고 싶다면 → 서류 점검 접수</a>
+            <a href="#/report/acq-check">이미 낸 취득세를 점검받고 싶다면 → 1차 재검토 접수(서류 없이)</a>
           </p>
 
           {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도

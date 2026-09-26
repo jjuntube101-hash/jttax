@@ -341,7 +341,7 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
         <p style={{ margin: '4px 0' }}><a href="#/report/inheritance">상속세 계산기 →</a></p>
       </section>
 
-      <p style={{ fontSize: 12, opacity: 0.7, marginTop: 8 }}>제이티 세무법인 · 광고 담당 세무사 이현준</p>
+      <p style={{ fontSize: 12, opacity: 0.7, marginTop: 8 }}>제이티 세무법인 · 광고책임세무사 이현준 대표세무사</p>
     </section>
   );
 }
