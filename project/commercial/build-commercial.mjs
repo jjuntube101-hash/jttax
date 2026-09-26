@@ -539,7 +539,7 @@ function renderAboutPage() {
     telephone: '+82-2-554-6405',
     email: 'jttax@jttax.co.kr',
     address: {
-      '@type': 'PostalAddress', streetAddress: '강남대로78길 22, 5층', postalCode: '06242',
+      '@type': 'PostalAddress', streetAddress: '강남대로78길 22, 5층', postalCode: '06243',
       addressLocality: '강남구', addressRegion: '서울특별시', addressCountry: 'KR',
     },
     founder: EXPERTS.map(e => ({ '@type': 'Person', name: `${e.name} 세무사`, url: `${SITE}/experts/${e.slug}.html` })),
