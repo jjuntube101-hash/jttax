@@ -25,8 +25,8 @@ function visible(html) {
               .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
               .replace(/<!--[\s\S]*?-->/g, ' ');
   const attrs = [];
-  for (const m of t.matchAll(/<(?:meta|title)\b[^>]*?(?:content|title)\s*=\s*"([^"]*)"/gi)) attrs.push(m[1]);
-  for (const m of t.matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)) attrs.push(m[1]);
+  /* <title> 안의 글은 태그를 벗기면 본문 텍스트로 남으므로 따로 더하지 않는다(더하면 같은 자리를 두 번 센다) */
+  for (const m of t.matchAll(/<meta\b[^>]*?\bcontent\s*=\s*"([^"]*)"/gi)) attrs.push(m[1]);
   t = t.replace(/<[^>]+>/g, ' ');
   return (t + ' ' + attrs.join(' ')).replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 }
