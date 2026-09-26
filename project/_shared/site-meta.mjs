@@ -27,8 +27,10 @@ const ROOT = path.join(HERE, '..', '..');
 /* ── 법인 정보 (Data.jsx 와 일치해야 함) ───────────────────────────── */
 export const FIRM = '제이티 세무법인';
 export const FIRM_EN = 'JT TAX CORP.';
-/* 시행령 §33① 의 «세무사 성명». 법인은 광고 담당 지정 소속 세무사를 적는다. */
-export const TAX_ACCOUNTANT = '대표 세무사 이현준';
+/* 시행령 §33① 의 «세무사 성명». 법인은 광고 담당 지정 소속 세무사를 적는다.
+   260926 오너 확정: 광고책임세무사 = 이현준 대표세무사 «지정»(세무사회 광고규정 §2②·§3②).
+   정적 면 전부의 푸터가 이 문자열을 쓴다 — Data.jsx firm.adAccountant 와 성명이 같아야 한다(tests_static_shell). */
+export const TAX_ACCOUNTANT = '광고책임세무사 이현준 대표세무사';
 export const SITE_HOST = 'www.jttax.co.kr';
 
 /* ── 공통 푸터 ─────────────────────────────────────────────────────

@@ -231,8 +231,8 @@ console.log('\n════ (g) 금지 문구·새 계측 호출이 없다 ═�
   for (const banned of ['gtag(', 'jtEvent(', 'jtTrackCta(', 'booking_submit', 'calc_complete', 'cta_click', 'jtBookingOrigin']) {
     eq(`새 계측 호출 「${banned}」 이 없다`, holdSrc.includes(banned), false);
   }
-  eq('표시의무 문구(제이티 세무법인 · 광고 담당 세무사 이현준)가 있다',
-     holdSrc.includes('제이티 세무법인 · 광고 담당 세무사 이현준'), true);
+  eq('표시의무 문구(제이티 세무법인 · 광고책임세무사 이현준 대표세무사)가 있다',
+     holdSrc.includes('제이티 세무법인 · 광고책임세무사 이현준 대표세무사'), true);
 }
 
 /* ══════════════════════════════════════════════════════════════════════

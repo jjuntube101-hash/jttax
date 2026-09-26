@@ -191,11 +191,13 @@ async function updateDataJsx(arts) {
 }
 
 // ────────────── 단독 글 HTML 렌더링 (/insights/<slug>.html) ──────────────
-/* 취득세 허브(/acquisition-tax/)로 «들어오는 링크»를 다는 글.
+/* 취득세 업무분야 면(/acquisition-tax/)과 1차 재검토 접수로 «들어오는 링크»를 다는 글.
    허브가 sitemap 에만 있고 들어오는 링크가 없으면 검색 계획이 아니다(Astra R1-F7).
-   ⛔ 이 목록은 취득세 글 2편으로 한정한다 — 모든 글 하단에 같은 배너를 붙이면 문맥 없는
-      장식이 되고, 그건 링크가 아니라 소음이다. */
-const ACQ_HUB_ARTICLES = ['acquisition-tax-basics', 'acquisition-tax-rate-guide'];
+   260921 에는 취득세 글 2편으로 한정했다(모든 글 하단에 같은 배너를 붙이면 문맥 없는 장식이라).
+   260926: 취득세 글 묶음 1차 25편이 발행돼 «취득세 글»이 27편이 됐고 전부 같은 문맥이므로,
+   목록이 아니라 «slug 접두 acquisition-tax-» 규칙으로 바꿨다(실행계획 v7 1~2주차 「기존 취득세
+   노출 글에 재검토 접수 연결」). 취득세가 아닌 글에는 여전히 붙지 않는다. */
+const isAcqHubArticle = (slug) => /^acquisition-tax(-|$)/.test(String(slug || ''));
 const ACQ_HUB_BLOCK = `
     <div style="margin-top:48px;padding:22px 24px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;border-radius:10px;line-height:1.7;">
       <div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#888;">취득세</div>
@@ -204,7 +206,7 @@ const ACQ_HUB_BLOCK = `
     </div>
     <div style="margin-top:16px;padding:22px 24px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;border-radius:10px;line-height:1.7;">
       <div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#888;">이미 취득세를 내셨다면</div>
-      <p style="margin:8px 0 10px;font-size:15px;color:#333;">신고한 뒤에 다시 확인해 볼 만한 자리가 네 곳 있습니다. 해당하는지는 서류로 확인해야 하고, 사안마다 결론이 다릅니다.</p>
+      <p style="margin:8px 0 10px;font-size:15px;color:#333;">신고한 뒤에 다시 확인해 볼 만한 자리가 네 곳 있습니다. 해당하는지는 사안마다 결론이 다르고, 자료를 보면 달라질 수 있습니다.</p>
       <ul style="margin:0 0 12px;padding-left:18px;font-size:15px;color:#333;">
         <li><a href="/insights/acquisition-tax-household-overpaid.html" style="color:#1a1a1a;">세대를 어떻게 보았는지</a></li>
         <li><a href="/insights/acquisition-tax-acquisition-date-overpaid.html" style="color:#1a1a1a;">취득일을 언제로 잡았는지</a></li>
@@ -212,14 +214,14 @@ const ACQ_HUB_BLOCK = `
         <li><a href="/insights/acquisition-tax-reduction-missed-claim.html" style="color:#1a1a1a;">감면 신청을 빠뜨리지 않았는지</a></li>
       </ul>
       <p style="margin:0 0 12px;font-size:14px;color:#555;">기한이 먼저입니다 — <a href="/insights/acquisition-tax-correction-claim-deadline.html" style="color:#1a1a1a;">몇 년 전에 낸 취득세도 경정청구를 할 수 있나요</a></p>
-      <a href="/#/report/acq-check" style="font-size:15px;color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">내가 낸 취득세 점검 — 1차 서류 점검 접수 →</a>
-      <p style="margin:10px 0 0;font-size:13px;color:#777;">세액이나 차액을 계산해 보여 드리는 화면이 아니라, 서류를 보고 다시 볼 여지가 있는지 확인하는 접수입니다.</p>
+      <a href="/#/report/acq-check" style="font-size:15px;color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">이미 낸 취득세 1차 재검토 접수 — 서류 없이 →</a>
+      <p style="margin:10px 0 0;font-size:13px;color:#777;">세액이나 차액을 계산해 보여 드리는 화면이 아니라, 써 주신 내용만으로 다시 볼 여지가 있는지 확인하는 접수입니다. 서류는 자문을 맡기시기로 한 뒤에 필요한 것만 받습니다.</p>
     </div>`;
 
 function renderArticlePage(a) {
   const shareUrl = `${SITE}/insights/${a.slug}.html`;
   const esc = (s) => String(s).replace(/"/g, '&quot;');
-  const hubBlock = ACQ_HUB_ARTICLES.includes(a.slug) ? ACQ_HUB_BLOCK : '';
+  const hubBlock = isAcqHubArticle(a.slug) ? ACQ_HUB_BLOCK : '';
   return `<!doctype html>
 <html lang="ko">
 <head>

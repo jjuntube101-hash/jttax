@@ -368,98 +368,126 @@ export const CONSULT = {
 /* 업무분야 목록의 추가 카드 (260922 오너 지시 — «취득세·크리에이터만 한다는 느낌»이 아니라
    기존 다섯 분야 옆에 나란히 둔다). leaf 페이지를 새로 만들지 않고 이미 있는 허브로 보낸다 —
    같은 검색어를 두 페이지가 나눠 갖지 않게. 문구는 사실 서술만(세무사법 §12조의7). */
+/* ── 업무분야 06·07 — 취득세·크리에이터 (260926 오너 지시: 기존 다섯 분야와 «같은 틀») ──
+   260922 까지는 두 면이 각자 다른 틀(취득세 = 여섯 묶음 허브, 크리에이터 = 세 경로 카드)로
+   렌더됐다. 오너가 「6~7이 1~5와 틀이 완전히 다르다」고 지적해(260926) 같은 renderServicePage 로
+   합쳤다 — 제목·리드·CTA·「이런 상황이면 맡겨주세요」·「이렇게 진행됩니다」·대표 프로필·계산기·
+   관련 인사이트·안내·CTA·푸터 순서가 1~5와 같다. 두 면만의 내용(취득세 글 묶음, 크리에이터
+   경로 카드와 GA4 계측, 조례·데스크 안내)은 같은 틀 «안»의 추가 절로 둔다.
+   출력 경로·주소는 종전 그대로(/acquisition-tax/, /creators.html) — 색인·내비·푸터·sitemap 이
+   그 주소를 이미 가리키고 있다(tests_acq_flow·tests_static_shell). */
 export const SERVICE_EXTRA = [
-  { num: '06', en: 'ACQUISITION TAX', kr: '취득세', href: '/acquisition-tax/',
-    lede: '집·건물·토지를 취득할 때의 세율·감면 확인과, 이미 낸 취득세의 재검토(경정청구·불복)까지. 계산기와 상황별 안내 글에서 시작합니다.' },
-  { num: '07', en: 'CREATORS', kr: '크리에이터 세금', href: '/creators.html',
-    lede: '유튜버·인플루언서·플랫폼 사업자의 세금을 첫 정산, 직장 겸업, 팀·MCN 운영의 세 경로로 나눠 안내합니다. 사업자등록·기장·신고까지.' },
-];
-
-export const ACQ_HUB = {
-  path: 'acquisition-tax',
-  metaTitle: '취득세 — 세율·감면 확인과 경정청구·불복, 내 상황부터',
-  metaDesc: '부동산을 취득한 이유와 종류, 명의에 따라 확인할 것이 달라집니다. 여섯 가지 상황 중 내 경우를 골라 계산기·관련 글·상담으로 이어집니다.',
-  keywords: '취득세, 취득세 계산, 부동산 취득세, 증여 취득세, 상속 취득세, 공매 취득세, 농지 취득세, 법인 취득세, 취득세 추징, 취득세 경정청구',
-  h1: '취득세, 내 상황부터 확인하세요',
-  lede: '취득세는 «어떤 이유로, 무엇을, 누구 명의로» 취득했는지에 따라 확인할 것이 달라집니다. 아래 여섯 묶음에서 내 경우에 가까운 것을 고르세요.',
-  groups: [
-    {
-      id: 'personal-home',
-      title: '집을 산 개인',
-      lead: '매매·분양으로 주택을 취득한 개인.',
-      check: '이런 경우라면 확인이 필요합니다 — 취득 후 보유하게 되는 주택이 몇 채인지, 물건이 조정대상지역에 있는지, 전용면적이 얼마인지, 받을 수 있는 감면이 있는지.',
-      /* 260921 글 묶음 1차(근거표 GT-1·GT-2) — slug 만 적는다. 제목은 빌더가 원고(md)의
-         frontmatter 에서 읽는다(제목을 두 곳에 적으면 한쪽이 낡는다). 없는 slug 는 빌드를 멈춘다.
-         여기에는 «사기 전에 묻는 질문»과 «이미 낸 뒤에 묻는 질문»을 둔다. 구청과 어긋난 뒤의
-         질문은 아래 recapture 묶음에 둔다. */
-      articleGroups: [
-        { label: '사기 전에', slugs: [
-          'acquisition-tax-household-separate-family', 'acquisition-tax-acquisition-date',
-          'acquisition-tax-temporary-two-houses', 'acquisition-tax-house-count',
-          'acquisition-tax-first-home-reduction', 'acquisition-tax-first-home-no-house-test',
-          'acquisition-tax-childbirth-reduction', 'acquisition-tax-newlywed-reduction-ended',
-        ] },
-        { label: '이미 냈다면', slugs: [
-          'acquisition-tax-correction-claim-deadline',
-          'acquisition-tax-household-overpaid', 'acquisition-tax-acquisition-date-overpaid',
-          'acquisition-tax-temporary-two-houses-overpaid', 'acquisition-tax-house-count-inherited-share',
-          'acquisition-tax-reduction-missed-claim', 'acquisition-tax-first-home-inherited-share',
-          'acquisition-tax-childbirth-reduction-missed', 'acquisition-tax-newlywed-reduction-past',
-        ] },
-      ],
-    },
-    {
-      id: 'business-corporate',
-      title: '사업자·법인',
-      lead: '사업용 부동산을 취득했거나, 법인·단체 명의로 등기한 경우.',
-      check: '이런 경우라면 확인이 필요합니다 — 등기 명의가 개인인지 법인인지, 법인의 설립 시기와 소재지, 취득한 물건을 어떤 용도로 쓰는지.',
-    },
-    {
-      id: 'special-acquisition',
-      title: '등기 원인이 특이한 경우',
-      lead: '증여·상속·신축(원시취득)·공매·이혼 재산분할 등 매매가 아닌 원인으로 취득한 경우.',
-      check: '이런 경우라면 확인이 필요합니다 — 등기원인증서에 적힌 취득 원인이 무엇인지, 과세표준으로 삼을 금액이 무엇인지, 채무를 함께 넘겨받았는지.',
-    },
-    {
-      id: 'compensation-farmland',
-      title: '보상·농지',
-      lead: '공익사업 보상으로 다시 취득했거나, 농지(전·답·과수원)를 취득한 경우.',
-      check: '이런 경우라면 확인이 필요합니다 — 토지대장의 지목과 실제 이용 현황, 보상과 재취득 사이의 시기, 소재지 시·도 조례에 별도 규정이 있는지.',
-    },
-    {
-      id: 'nonprofit',
-      title: '비영리 법인',
-      lead: '종교·학교·사회복지 등 비영리 단체가 부동산을 취득한 경우.',
-      check: '이런 경우라면 확인이 필요합니다 — 단체의 설립 근거와 성격, 취득한 부동산을 어떤 목적에 쓰는지, 실제 사용을 시작한 시점. 「비영리」라는 이름만으로 결론이 정해지지 않습니다.',
-    },
-    {
-      id: 'recapture',
-      title: '추징 통지를 받은 사람',
-      lead: '감면받은 취득세를 다시 내라는 통지나, 세액이 더 나왔다는 고지를 받은 경우.',
-      check: '이런 경우라면 확인이 필요합니다 — 받은 문서가 어떤 종류인지(안내문·고지서·과세예고), 언제 받았는지, 어떤 사유가 적혀 있는지. 문서 종류를 모르면 대응 절차와 기한을 판단할 수 없습니다.',
-      articleGroups: [
-        { label: '구청과 판단이 갈렸다면', slugs: [
-          'acquisition-tax-correction-claim-rejected',
-          'acquisition-tax-household-dispute', 'acquisition-tax-acquisition-date-dispute',
-          'acquisition-tax-temporary-two-houses-dispute', 'acquisition-tax-house-count-dispute',
-          'acquisition-tax-first-home-recapture', 'acquisition-tax-first-home-no-house-dispute',
-          'acquisition-tax-childbirth-one-house-dispute',
-        ] },
-      ],
-    },
-  ],
-  /* 묶음마다 같은 네 갈래로 연결한다 — 계산기 / 관련 글 2편 / 경정청구 진단 / 카톡 상담 */
-  links: {
-    calculator: { href: '/calculators/acquisition-tax.html', label: '취득세 계산기' },
-    appeal: { href: '/#/report/appeal', label: '경정청구 가능성 진단' },
-    // 260921 신설 — 「내가 낸 취득세 점검」 접수(재계산기 아님, 서류 점검 접수). 계산 그룹
-    // 칩에는 넣지 않는다(재계산과 헷갈릴 수 있어서) — 아래 별도 섹션 하나에서만 안내한다.
-    acqCheck: { href: '/#/report/acq-check', label: '이미 낸 취득세 점검 접수' },
-    kakao: { href: 'https://pf.kakao.com/_CcxlJG', label: '카카오톡으로 물어보기' },
-    articles: [
+  {
+    slug: 'acquisition-tax', out: 'acquisition-tax/index.html', href: '/acquisition-tax/',
+    num: '06', en: 'ACQUISITION TAX', kr: '취득세',
+    h1: '취득세 — 취득 전 확인과 이미 낸 취득세의 재검토',
+    metaTitle: '취득세 — 세율·감면 확인과 경정청구·불복, 내 상황부터',
+    metaDesc: '부동산을 취득한 이유와 종류, 명의에 따라 확인할 것이 달라집니다. 취득 전에는 계산기와 상황별 글로 확인하고, 이미 낸 취득세는 써 주신 내용만으로 1차 재검토를 거쳐 경정청구·불복으로 이어집니다.',
+    keywords: '취득세, 취득세 계산, 부동산 취득세, 증여 취득세, 상속 취득세, 공매 취득세, 농지 취득세, 법인 취득세, 취득세 추징, 취득세 경정청구',
+    /* 업무분야 목록 카드에는 짧은 소개, 면 상단에는 긴 리드 */
+    cardLede: '집·건물·토지를 취득할 때의 세율·감면 확인과, 이미 낸 취득세의 재검토(경정청구·불복)까지. 계산기와 상황별 안내 글에서 시작합니다.',
+    lede: '취득세는 «어떤 이유로, 무엇을, 누구 명의로» 취득했는지에 따라 확인할 것이 달라집니다. 취득 전에는 계산기와 상황별 글로 확인하고, 이미 낸 취득세는 써 주신 내용만으로 1차 재검토를 거쳐 경정청구·불복으로 이어집니다.',
+    situations: [
+      '매매·분양으로 집을 샀는데 주택 수·조정대상지역·전용면적·감면 요건에 따라 세율이 맞게 적용됐는지 확인하고 싶다',
+      '사업용 부동산을 취득했거나 법인·단체 명의로 등기했다 — 법인의 설립 시기와 소재지, 물건의 용도에 따라 세율이 갈린다',
+      '증여·상속·신축(원시취득)·공매·이혼 재산분할처럼 매매가 아닌 원인으로 취득했다 — 과세표준과 넘겨받은 채무를 확인해야 한다',
+      '공익사업 보상으로 다시 취득했거나 농지(전·답·과수원)를 취득했다 — 지목·실제 이용 현황·시·도 조례를 함께 본다',
+      '종교·학교·사회복지 등 비영리 단체가 부동산을 취득했다 — 「비영리」라는 이름만으로 결론이 정해지지 않는다',
+      '감면받은 취득세를 다시 내라는 통지나 세액이 더 나왔다는 고지를 받았다 — 문서 종류와 받은 날에 따라 남은 기한이 다르다',
+      '이미 낸 취득세가 더 낸 것 같은데 경정청구 기한이 남았는지 모르겠다',
+    ],
+    /* 실행계획 v7 O절·접수와서류 4차본 B-4(260926 오너 확정): 상담·1차 재검토는 써 준 내용만으로,
+       서류는 수임 뒤. 「무료」·「비용 없음」은 쓰지 않는다(세무사회 광고규정 §8①·§4 10호). */
+    steps: [
+      { t: '접수', d: '카카오톡 채널이나 접수 화면에 부동산 종류·취득 시기·낸 세액·지금 상황·가지고 계신 서류를 적어 보내 주십시오. 이 단계에서는 서류를 보내지 않으셔도 됩니다.' },
+      { t: '1차 재검토', d: '써 주신 내용만으로 다시 볼 여지가 있는지, 수임하면 어떤 자료가 필요할지를 확인해 「추가 검토 필요 / 사실관계 보완 / 판단 불가 / 가능성 낮음」 중 하나로 안내합니다. 서류 없이 내린 판단이므로 자료를 보면 결론이 달라질 수 있습니다.' },
+      { t: '견적·계약', d: '서면 의견서 작성, 세액 계산, 구청 대응은 검토 범위와 보수를 견적으로 안내하고 동의를 받은 뒤에 시작합니다. 동의 전에는 어떤 서면도 제출하지 않습니다.' },
+      { t: '서류 확보·검토', d: '계약 뒤에 취득세 신고서·등기사항전부증명서·계약서·구청 통지서 가운데 필요한 것만 받아, 취득일 당시의 법령·조례와 기한을 확인합니다.' },
+      { t: '경정청구·불복', d: '경정청구서와 감면신청서, 증빙을 한 묶음으로 제출하고, 거부되면 이의신청·심판청구로 이어집니다. 결과가 나오면 사후관리 요건까지 안내합니다.' },
+    ],
+    handoff: '구청 통지서를 받으셨다면 대응 기한이 정해져 있습니다. 통지서 이름과 받으신 날짜를 알려 주시면 남은 날을 먼저 확인해 드립니다. 다만 유료 수임이 확정되기 전에는 제이티가 대리와 기한 관리의 의무를 지지 않으므로, 기한은 고객께서도 함께 확인해 주십시오. 결과를 보장하지 않으며, 사안마다 결론이 다르고 받아들여지지 않는 경우도 있습니다.',
+    /* 「이미 낸 취득세를 점검받고 싶다면」 절 — 접수 화면(/#/report/acq-check)으로 가는 유일한 자리.
+       홈·전역 메뉴에는 넣지 않는다(tests_acq_check (i)). */
+    acqCheck: { href: '/#/report/acq-check', label: '1차 재검토 접수' },
+    lead: 'kim-minseok',
+    relatedCalcs: ['acquisition-tax'],
+    appDeepLink: { href: '/#/report/appeal', label: '경정청구 가능성 진단' },
+    relatedInsights: [
       { slug: 'acquisition-tax-basics', title: '2026 주택 취득세율 — 6억 이하 1%·6억~9억 계산식·9억 초과 3%' },
       { slug: 'acquisition-tax-rate-guide', title: '아파트 취득세 얼마? 2026 — 5억 550만·7억 1,286만·10억 3,300만' },
     ],
+    /* 260921 글 묶음 1차(근거표 GT-1·GT-2) — slug 만 적는다. 제목은 빌더가 원고(md)의
+       frontmatter 에서 읽는다(제목을 두 곳에 적으면 한쪽이 낡는다). 없는 slug 는 빌드를 멈춘다. */
+    insightGroups: [
+      { label: '사기 전에', slugs: [
+        'acquisition-tax-household-separate-family', 'acquisition-tax-acquisition-date',
+        'acquisition-tax-temporary-two-houses', 'acquisition-tax-house-count',
+        'acquisition-tax-first-home-reduction', 'acquisition-tax-first-home-no-house-test',
+        'acquisition-tax-childbirth-reduction', 'acquisition-tax-newlywed-reduction-ended',
+      ] },
+      { label: '이미 냈다면', slugs: [
+        'acquisition-tax-correction-claim-deadline',
+        'acquisition-tax-household-overpaid', 'acquisition-tax-acquisition-date-overpaid',
+        'acquisition-tax-temporary-two-houses-overpaid', 'acquisition-tax-house-count-inherited-share',
+        'acquisition-tax-reduction-missed-claim', 'acquisition-tax-first-home-inherited-share',
+        'acquisition-tax-childbirth-reduction-missed', 'acquisition-tax-newlywed-reduction-past',
+      ] },
+      { label: '구청과 판단이 갈렸다면', slugs: [
+        'acquisition-tax-correction-claim-rejected',
+        'acquisition-tax-household-dispute', 'acquisition-tax-acquisition-date-dispute',
+        'acquisition-tax-temporary-two-houses-dispute', 'acquisition-tax-house-count-dispute',
+        'acquisition-tax-first-home-recapture', 'acquisition-tax-first-home-no-house-dispute',
+        'acquisition-tax-childbirth-one-house-dispute',
+      ] },
+    ],
+    /* 이 면에만 있는 안내 절 — 같은 틀 안의 추가 절(관련 인사이트 뒤·안내 앞). ⛔ 법령 요건·세율을 새로 서술하지 않는다. */
+    extraSections: [
+      { h2: '계산할 수 있는 범위와, 자료를 봐야 하는 범위',
+        body: '계산기는 입력하신 사실관계를 검증된 계산 엔진에 그대로 넘겨 금액을 냅니다. 다만 감면 요건(나이·소득·주택 가액·기존 주택 처분 여부 등)과 시·도 조례에 따른 추가 경감은 계산에 넣지 않습니다. 결과 화면이 「이 계산에 넣지 않은 것」으로 그 목록을 함께 보여 드리며, 그 부분은 자료를 봐야 판단할 수 있습니다.',
+        chips: [{ href: '/calculators/acquisition-tax.html', label: '취득세 계산기' }, { href: '/calculators/', label: '다른 세금 계산기' }, { href: '/insights/', label: '인사이트 전체' }] },
+      { h2: '소재지 시·도 감면 조례 원문 찾기',
+        body: '시·도마다 「도세(시세) 감면 조례」가 따로 있습니다. 계산기에서 물건이 있는 시·도를 고르면 그 조례의 원문 위치를 안내해 드립니다. 조례 내용은 세액 계산에 넣지 않습니다.' },
+      { h2: '중개사·법무사께',
+        body: '고객에게 계산기 링크를 그대로 건네셔도 됩니다. 등기 전에 확인할 쟁점이 있으면 아래 안내를 참고하세요.',
+        chips: [{ href: '/desk/broker.html', label: '중개사 데스크' }, { href: '/desk/scrivener.html', label: '법무사 데스크' }] },
+    ],
+    closing: '어느 상황에도 딱 들어맞지 않으면, 지금 상황과 궁금한 점을 그대로 적어 보내 주세요. 무엇부터 확인해야 하는지 알려 드립니다.',
   },
-  closing: '어느 묶음에도 딱 들어맞지 않으면, 등기사항증명서·계약서·통지서를 그대로 보내 주세요. 무엇부터 확인해야 하는지 알려 드립니다.',
-};
+  {
+    slug: 'creators', out: 'creators.html', href: '/creators.html',
+    num: '07', en: 'CREATORS', kr: '크리에이터 세금',
+    h1: '크리에이터·유튜버 세무',
+    metaTitle: CREATORS.metaTitle,
+    metaDesc: CREATORS.metaDesc,
+    keywords: CREATORS.keywords,
+    cardLede: '유튜버·인플루언서·플랫폼 사업자의 세금을 첫 정산, 직장 겸업, 팀·MCN 운영의 세 경로로 나눠 안내합니다. 사업자등록·기장·신고까지.',
+    lede: CREATORS.lede,
+    proof: CREATORS.proof,
+    situations: [
+      '애드센스·플랫폼 첫 정산을 받았는데 사업자등록을 해야 하는지, 과세·면세 중 어느 쪽인지 모르겠다',
+      '직장을 다니면서 겸업 중이라 3.3% 원천징수와 5월 종합소득세 합산 신고, 연말정산과의 관계가 헷갈린다',
+      '편집자·매니저를 두거나 정산 구조가 복잡해져 인건비 처리와 법인 전환 시점을 숫자로 비교하고 싶다',
+      '사업자등록 전에 업종·과세 유형과 청년창업 세액감면 요건을 먼저 정리하고 싶다',
+      '매월 기장과 부가가치세·종합소득세 신고를 한곳에 맡기고 싶다',
+    ],
+    /* 업무 흐름(실행계획 v7 A절·오너 확정 260920): 카카오톡 채널 문의 → 상담 → 수임 시 단톡방.
+       대표별 고정 분업은 적지 않는다(260919 결정). */
+    steps: [
+      { t: '카카오톡 채널 문의', d: '지금 단계(첫 정산·직장 겸업·팀 운영)와 궁금한 점을 채널에 남겨 주십시오.' },
+      { t: '상담', d: '담당 세무사가 업종·과세 유형·신고 의무를 확인하고, 필요한 범위와 보수를 견적으로 안내합니다.' },
+      { t: '단톡방 개설', d: '수임하면 세무사와 직원이 함께 들어 있는 카카오톡 단톡방을 만들어, 질문과 자료를 한곳에서 주고받습니다.' },
+      { t: '매월 기장·신고', d: '매월 기장과 부가가치세·종합소득세 신고, 감면 요건 관리까지 이어서 진행합니다.' },
+    ],
+    handoff: CREATORS.handoff,
+    lead: 'lee-hyunjun',
+    relatedCalcs: ['value-added-tax', 'income-tax', 'incorporation-simulator', 'youthstartup'],
+    /* 제목은 빌더가 원고(md) frontmatter 에서 읽는다 — 아래 slug 들은 종전 경로 카드의 링크 그대로 */
+    insightGroups: [
+      { label: '', slugs: ['youtuber-tax-guide', 'vat-basics', 'side-job-income-tax', 'corporate-conversion'] },
+    ],
+    /* 종전 세 경로 카드 — 같은 틀 안의 추가 절로 유지한다. GA4 path_select·예약 폼의 크리에이터경로
+       (jt_creator_path = first|side|mcn)와 한 몸이라 경로 id·계측 함수는 바꾸지 않는다. */
+    creatorPaths: CREATORS.paths,
+    consultHook: true,
+  },
+];
