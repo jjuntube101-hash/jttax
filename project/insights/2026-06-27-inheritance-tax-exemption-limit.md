@@ -89,7 +89,7 @@ author: "제이티 세무법인"
 </div>
 
 <div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
-<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
+<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">검증 엔진</div>
 <div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">상속세 계산기</div>
 <div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">상속재산·배우자·자녀 수만 넣으면<br/>일괄공제·배우자공제·세율까지 반영해 세금을 즉시 계산</div>
 <a href="/#/report/inheritance" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">내 상속세 5초 만에 계산하기 →</a>
@@ -106,7 +106,7 @@ author: "제이티 세무법인"
 상속세 면제한도는 '배우자 있으면 약 10억, 없으면 5억'으로 기억하면 됩니다. 그 위로는 재산 규모·배우자 상속분·사전증여에 따라 세금이 크게 갈립니다. 내 상속재산의 세금은 [상속세 계산기](/#/report/inheritance)로 바로 확인하고, 배우자 상속분 설계는 제이티 세무법인과 상담하시길 권합니다.
 
 <div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
-<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
+<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">검증 엔진</div>
 <div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">상속세 계산기</div>
 <div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">배우자 상속분을 바꿔가며<br/>세금이 어떻게 달라지는지 직접 비교해 보세요</div>
 <a href="/#/report/inheritance" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">상속세 계산하러 가기 →</a>

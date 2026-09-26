@@ -130,7 +130,7 @@ function JTReportHome({ setRoute }) {
           계산 결과와 적용 조건을 확인하고, 개별 사안의 판단이 필요할 때 상담으로 이어가세요.
         </p>
         <ol className="jt-platform__steps reveal" data-delay="3">
-          <li><span className="jt-platform__step-n">01</span><span className="jt-platform__step-t">직접 계산</span><span className="jt-platform__step-d">검증 엔진으로 무료·5분</span></li>
+          <li><span className="jt-platform__step-n">01</span><span className="jt-platform__step-t">직접 계산</span><span className="jt-platform__step-d">검증 엔진으로 5분</span></li>
           <li><span className="jt-platform__step-n">02</span><span className="jt-platform__step-t">전문가 상담</span><span className="jt-platform__step-d">결과를 들고 바로 연결</span></li>
           <li><span className="jt-platform__step-n">03</span><span className="jt-platform__step-t">종합 관리</span><span className="jt-platform__step-d">신고·절세를 끝까지</span></li>
         </ol>
@@ -422,7 +422,7 @@ function JTFaq({ setRoute }) {
       </div>
       <div className="jt-faq__foot reveal">
         <span>더 궁금한 점이 있으신가요?</span>
-        <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'faq'); setRoute('booking'); }}>무료 상담 신청 <span className="jt-arrow">→</span></button>
+        <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'faq'); setRoute('booking'); }}>상담 신청 <span className="jt-arrow">→</span></button>
       </div>
     </section>);
 }

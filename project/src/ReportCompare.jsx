@@ -297,7 +297,7 @@ function JTReportCompare({ setRoute, onBack }) {
                   <li>🔹 <strong>방법마다의 「세금 외」 함정</strong> — 증여 이월과세, 매매 증여추정, 상속 시점 리스크</li>
                   <li>🔹 <strong>내 상황에 맞는 최적 경로와 실행 순서</strong></li>
                 </ul>
-                <p style={{ margin: 0, fontSize: 13.5, color: '#5a5a5a', lineHeight: 1.65 }}>이 셋은 사례마다 답이 달라 자동 계산만으론 위험합니다.<br/><strong>세무사가 직접 검토</strong>해 드립니다 — 첫 상담 무료(쟁점 확인·방향 안내).</p>
+                <p style={{ margin: 0, fontSize: 13.5, color: '#5a5a5a', lineHeight: 1.65 }}>이 셋은 사례마다 답이 달라 자동 계산만으론 위험합니다.<br/><strong>세무사가 직접 검토</strong>해 드립니다 — 문의를 접수하면 검토 범위와 보수를 견적으로 안내합니다.</p>
               </section>
 
               {/* 판단 = 상담 (프리미엄 전환점) */}

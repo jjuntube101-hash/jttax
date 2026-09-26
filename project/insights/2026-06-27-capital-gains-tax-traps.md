@@ -2,7 +2,7 @@
 title: "양도소득세 계산 방법 2026 — 장기보유특별공제·필요경비 함정 5가지"
 date: 2026-06-27
 tag: "INSIGHT · CAPITAL GAINS TAX"
-excerpt: "양도소득세 계산 방법을 1세대 1주택 비과세(12억)·장기보유특별공제(거주요건 최대 80%)·필요경비·다주택 중과 순서로 정리합니다. 직접 계산하다 자주 빠지는 함정 5가지와 무료 양도세 계산기를 함께 안내합니다."
+excerpt: "양도소득세 계산 방법을 1세대 1주택 비과세(12억)·장기보유특별공제(거주요건 최대 80%)·필요경비·다주택 중과 순서로 정리합니다. 직접 계산하다 자주 빠지는 함정 5가지와 양도세 계산기를 함께 안내합니다."
 slug: capital-gains-tax-traps
 author: "제이티 세무법인"
 ---
@@ -51,7 +51,7 @@ author: "제이티 세무법인"
 </div>
 
 <div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
-<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
+<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">검증 엔진</div>
 <div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">양도소득세 계산기</div>
 <div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">매매가·취득가·보유기간·주택 수만 넣으면<br/>비과세·장기보유공제·중과까지 검증 엔진으로 자동 계산</div>
 <a href="/#/report/cgt" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">내 양도세 5초 만에 계산하기 →</a>
@@ -94,7 +94,7 @@ author: "제이티 세무법인"
 양도세는 '대충 이쯤'으로 어림하면 수백만~수천만 원이 어긋납니다. 위 다섯 가지는 가장 자주 놓치는 지점이고, 이 외에도 세대 판정(누구까지 한 세대인지)·취득가액 산정처럼 출발점부터 갈리는 변수가 많습니다. 계산기는 이를 빠짐없이 반영합니다. 먼저 [양도소득세 계산기](/#/report/cgt)로 내 숫자를 넣어 윤곽을 잡고, 비과세·중과 판정처럼 미묘한 부분은 제이티 세무법인과 상담으로 확정하시길 권합니다.
 
 <div style="margin:32px 0;padding:26px 22px;border:1px solid #3b5b80;background:#f4f8fc;text-align:center;border-radius:8px;">
-<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">무료 · 검증 엔진</div>
+<div style="font-size:12px;font-weight:700;color:#1e3a5f;letter-spacing:0.06em;">검증 엔진</div>
 <div style="font-size:19px;font-weight:700;color:#1e3a5f;margin-top:6px;">양도소득세 계산기</div>
 <div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.65;">비과세·일시적 2주택·장기보유공제·다주택 중과까지<br/>매매가와 보유기간만 넣으면 검증 엔진으로 한 번에</div>
 <a href="/#/report/cgt" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;border-radius:6px;">내 양도세 5초 만에 계산하기 →</a>
