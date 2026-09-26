@@ -262,20 +262,20 @@ function renderIndexPage() {
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>무료 세금 계산기 — 양도·증여·상속·취득·재산세·종부세·종소세 | 제이티 세무법인</title>
+  <title>세금 계산기 — 양도·증여·상속·취득·재산세·종부세·종소세 | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="양도소득세·증여세·상속세·취득세·재산세·종합부동산세·종합소득세·법인전환·4대보험 실수령까지, 검증된 계산 엔진으로 5분 만에 계산하는 무료 세금 계산기 모음.">
-  <meta name="keywords" content="세금 계산기, 무료 세금 계산기, 양도소득세 계산기, 증여세 계산기, 상속세 계산기, 취득세 계산기, 재산세 계산기, 종합부동산세 계산기, 종합소득세 계산기, 실수령액 계산기">
+  <meta name="description" content="양도소득세·증여세·상속세·취득세·재산세·종합부동산세·종합소득세·법인전환·4대보험 실수령까지, 검증된 계산 엔진으로 5분 만에 계산하는 세금 계산기 모음.">
+  <meta name="keywords" content="세금 계산기, 양도소득세 계산기, 증여세 계산기, 상속세 계산기, 취득세 계산기, 재산세 계산기, 종합부동산세 계산기, 종합소득세 계산기, 실수령액 계산기">
   <link rel="canonical" href="${url}">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="무료 세금 계산기 모음 | 제이티 세무법인">
-  <meta property="og:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 무료 세금 계산기.">
+  <meta property="og:title" content="세금 계산기 모음 | 제이티 세무법인">
+  <meta property="og:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 세금 계산기.">
   <meta property="og:url" content="${url}">
   <meta property="og:image" content="${ogImageHref()}">
   <meta property="og:locale" content="ko_KR">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="무료 세금 계산기 모음 | 제이티 세무법인">
-  <meta name="twitter:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 무료 세금 계산기.">
+  <meta name="twitter:title" content="세금 계산기 모음 | 제이티 세무법인">
+  <meta name="twitter:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 세금 계산기.">
   <meta name="twitter:image" content="${ogImageHref()}">
   <link rel="icon" href="/project/assets/logo_symbol.png">
   <link rel="stylesheet" href="${stylesHref()}">
@@ -302,7 +302,7 @@ ${GA_HEAD_SNIPPET}
   </header>
   <main class="jt-ci-wrap">
     <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 세금 계산기</nav>
-    <h1>무료 세금 계산기</h1>
+    <h1>세금 계산기</h1>
     <p class="jt-ci-lede">양도·증여·상속·취득·재산세·종합부동산세 + 종합소득세·법인전환·4대보험 실수령까지. 검증된 계산 엔진으로 로그인 없이 5분 만에 계산하고, 바로 담당 세무사 상담으로 이어집니다.</p>
     <div class="jt-ci-grid">
 ${cards}

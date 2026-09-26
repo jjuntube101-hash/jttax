@@ -429,7 +429,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
       <section className="jt-section jt-report-grid">
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
-            <h2>무료 부동산 세금 계산기</h2>
+            <h2>부동산 세금 계산기</h2>
             <p>검증 엔진 · 로그인 없이 약 5분 · 결과로 바로 담당 세무사 상담</p>
           </div>
           <div className="jt-report-live-grid">
@@ -465,7 +465,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
       <section className="jt-section jt-report-grid">
         <div className="jt-container">
           <div className="jt-report-grid__head reveal">
-            <h2>무료 소득세·급여 계산기</h2>
+            <h2>소득세·급여 계산기</h2>
             <p>직장인·프리랜서·개인사업자라면 — 종합소득세·실수령액부터, 법인 전환이 유리한지까지 직접 계산해 보세요.</p>
           </div>
           <div className="jt-report-live-grid">

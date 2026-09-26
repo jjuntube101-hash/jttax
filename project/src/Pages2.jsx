@@ -278,9 +278,9 @@ function JTBooking({ setRoute }) {
         <div className="jt-page-hero__mark"><img src="project/assets/logo_symbol.png" alt="" /></div>
         <div className="jt-page-hero__inner">
           <div className="jt-page-hero__crumb"><span>BOOKING</span><span>·</span><span>상담 예약</span></div>
-          <h1>첫 상담은 무료입니다.</h1>
+          <h1>쟁점 확인부터 시작합니다.</h1>
           <p className="jt-page-hero__sub">
-            쟁점 확인·방향 안내까지 무료이며, 구체적 세무 판단·실행은 자문 계약 후 진행됩니다. 24시간 이내 담당 세무사가 직접 연락드립니다. 간단한 문의는 전화({window.JT_DATA.firm.phone})로도 가능합니다.
+            쟁점 확인과 방향 안내를 먼저 하고, 구체적 세무 판단·실행은 견적 안내 뒤 자문 계약 후 진행됩니다. 24시간 이내 담당 세무사가 직접 연락드립니다. 간단한 문의는 전화({window.JT_DATA.firm.phone})로도 가능합니다.
           </p>
         </div>
       </section>
