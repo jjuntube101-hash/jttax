@@ -460,7 +460,7 @@ function JTReportAcqCheck({ setRoute }) {
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
             <input type="checkbox" checked={f.consent} onChange={set('consent')} style={{ marginTop: 3, width: 18, height: 18, accentColor: '#000' }} />
             <span style={{ fontSize: 13, color: 'var(--fg-2)', lineHeight: 1.6 }}>
-              <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 취득세 1차 재검토 접수 및 결과 안내<br />· <strong>항목</strong>: 물건 종류·취득 연월·낸 취득세(대략)·지금 상황·통지서 종류와 받은 날·가지고 계신 서류(보유 여부만)·알게 되신 경로(직접 고르신 선택지), 연락 방법(전화를 고르신 경우 전화번호) — 선택 항목은 비워 두셔도 접수됩니다<br />· <strong>함께 전송되는 정보</strong>: 접수번호(임의 생성), 접수 시각, 두 동의의 기록 — 자동으로 수집되는 유입 경로 정보(UTM 등 접속 경로)는 이 접수에서 보내지 않습니다. 위 「알게 되신 경로」는 직접 고르신 값만 전송됩니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년 · 동의를 거부하실 수 있으며, 거부하시면 이 화면으로는 접수되지 않으나 전화·카카오톡으로 동일하게 문의하실 수 있습니다.
+              <strong>개인정보 수집·이용 동의</strong>(개인정보 보호법 §15①1호)<br />· <strong>목적</strong>: 취득세 1차 재검토 접수 및 결과 안내<br />· <strong>항목</strong>: 물건 종류·취득 연월과 그 기준(잔금·등기접수·모름)·낸 취득세(대략)·지금 상황·통지서 종류와 받은 날·가지고 계신 서류(보유 여부만)·알게 되신 경로(직접 고르신 선택지), 연락 방법(전화를 고르신 경우 전화번호) — 선택 항목은 비워 두셔도 접수됩니다<br />· <strong>함께 전송되는 정보</strong>: 접수번호(임의 생성), 접수 시각, 두 동의의 기록 — 자동으로 수집되는 유입 경로 정보(UTM 등 접속 경로)는 이 접수에서 보내지 않습니다. 위 「알게 되신 경로」는 직접 고르신 값만 전송됩니다<br />· <strong>보유·이용기간</strong>: 상담 종료 후 3년 · 동의를 거부하실 수 있으며, 거부하시면 이 화면으로는 접수되지 않으나 전화·카카오톡으로 동일하게 문의하실 수 있습니다.
             </span>
           </label>
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginTop: 16, cursor: 'pointer' }}>

@@ -359,7 +359,7 @@ console.log('\n════ (j) B-1 범위 — 소재지·취득 원인·정확�
   eq('취득 시기는 type="month" 칸 하나다', (code.match(/type="month"/g) || []).length, 1);
   eq('연·월 안내 문장이 있고 「그 달 1일」식 임의 날짜 안내가 없다', [code.includes('연·월만 적어 주시면 됩니다'), /그 달 1일/.test(code)], [true, false]);
   eq('개인정보 수집·이용 동의 항목이 B-1 범위다(소재지·취득 원인 없음)',
-     [acqCheckSrc.includes('물건 종류·취득 연월·낸 취득세(대략)'), /항목<\/strong>:[^<]*소재지/.test(acqCheckSrc)], [true, false]);
+     [acqCheckSrc.includes('물건 종류·취득 연월과 그 기준(잔금·등기접수·모름)·낸 취득세(대략)'), /항목<\/strong>:[^<]*소재지/.test(acqCheckSrc)], [true, false]);
   eq('Legal.jsx 처리방침이 같은 범위다', legalSrc.includes('선택: 물건 종류, 취득 연월(잔금·등기접수 중 기준)'), true);
   eq('Legal.jsx 가 소재지·취득 원인·정확한 취득일도 받지 않는다고 명시한다', legalSrc.includes('소재지·취득 원인·정확한 취득일·시·군·구·동·호수·주민등록번호는 받지 않으며'), true);
 
@@ -370,6 +370,12 @@ console.log('\n════ (j) B-1 범위 — 소재지·취득 원인·정확�
   eq('빈 값 → 통과·빈 문자열', M.validateAcqCheckMonth(''), { ok: true, value: '' });
   eq('payload 취득연월은 YYYY-MM 그대로', M.buildAcqCheckPayload({ acqMonth: '2024-03' }, 'ACQCK-TEST0001').취득연월, '2024-03');
   eq('payload 취득연월 형식 밖은 「모름」', M.buildAcqCheckPayload({ acqMonth: '2024년 3월 15일 강남구' }, 'ACQCK-TEST0001').취득연월, '모름');
+  // R2-F1: payload 의 사용자 입력 키마다 화면 동의문 «항목»에 대응 낱말이 있어야 한다(고지 누락 방지)
+  const consentItems = (acqCheckSrc.match(/항목<\/strong>:([^<]*)/) || ['', ''])[1];
+  const KEY_WORD = { 취득시기_기준: '그 기준', 취득연월: '취득 연월', 물건종류: '물건 종류', 낸취득세_대략: '낸 취득세', 지금상황: '지금 상황', 통지서_종류: '통지서 종류', 통지서_수령일: '받은 날', 거부통지_수령일: '받은 날', 가진서류: '가지고 계신 서류', 알게된경로: '알게 되신 경로', 연락방법: '연락 방법', 연락처: '전화번호' };
+  const userKeys = Object.keys(M.buildAcqCheckPayload({}, 'ACQCK-TEST0001')).filter((k) => !['_subject', '구분', '접수번호', '개인정보동의', '국외이전동의', '접수시각'].includes(k));
+  eq('payload 사용자 입력 키가 전부 KEY_WORD 표에 있다(새 키를 추가하면 여기서 걸린다)', userKeys.filter((k) => !(k in KEY_WORD)).join(',') || '-', '-');
+  eq('동의문 항목이 payload 의 모든 사용자 입력 키를 고지한다 (누락=)', userKeys.filter((k) => KEY_WORD[k] && !consentItems.includes(KEY_WORD[k])).join(',') || '-', '-');
   eq('payload 에 취득일·소재지·취득원인 키가 없다', ['취득일', '소재지_시도', '취득원인'].some((k) => k in M.buildAcqCheckPayload({}, 'ACQCK-TEST0001')), false);
 }
 
