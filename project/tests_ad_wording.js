@@ -14,8 +14,9 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github', '.tmp_ad_wording']);
 /* 「무료」의 대체 표현도 같이 본다(Codex R2-F4). 「무상」은 무상취득·무상 증여 같은 세법 용어라 «상담» 문맥만 잡는다. */
-const BANNED = ['무료', '비용 없음', '비용이 없', '비용은 없', '공짜', '0원 상담', '0원에 상담', '무보수', '무상 상담', '무상으로 상담',
+const BANNED = ['무료', '비용 없음', '비용 없이', '비용이 들지 않', '비용을 받지 않', '공짜', '0원 상담', '0원에 상담', '무보수', '무상 상담', '무상으로 상담',
                 '환급율', '환급률', '평균 환급', '절세율'];
+/* 「부대비용은 없다고 가정」처럼 계산 예시의 비용 가정은 상담 비용이 아니다 — 아래 자기시험이 그 경계를 고정한다 */
 
 function walk(dir, out) {
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -50,7 +51,7 @@ function visibleHtml(html) {
 
 /* ② JSX: 주석만 걷어낸 본문. 정규식이 아니라 한 글자씩 걸으며 «문자열 안인가»를 추적한다 —
    정규식은 `'상담 // 무료'` 처럼 문자열 안의 // 를 주석으로 오인해 그 뒤를 지웠다(Codex R2-F3).
-   추적하는 상태: '…' "…" `…`(템플릿), // 줄 주석, /* */ 블록 주석. 정규식 리터럴은 추적하지 않는다
+   추적하는 상태: 작은따옴표·큰따옴표·백틱(템플릿) 문자열, 슬래시 두 개의 줄 주석, 슬래시-별표 블록 주석. 정규식 리터럴은 추적하지 않는다
    (이 저장소의 JSX 에서 정규식 안에 금지어가 올 일은 없고, 오탐이면 사람이 본다 — 누락보다 낫다). */
 function visibleJsx(src) {
   let out = '', i = 0, n = src.length;
@@ -119,6 +120,8 @@ eq('② 템플릿 문자열 안의 금지어를 잡는다', scanJsx([tmp('l3.jsx
 eq('② 이스케이프된 따옴표 뒤 주석은 주석이다', scanJsx([tmp('l4.jsx', "const a = 'it\\'s'; // 무료")]).length, 0);
 eq('① 「비용 없음」·「공짜」·「0원 상담」을 잡는다 (R2-F4)', scanHtml([tmp('o.html', '<p>비용 없음</p><p>공짜</p><p>0원 상담</p>')]).length, 3);
 eq('① 「무상취득」·「세액 0원」은 잡지 않는다 (다른 뜻)', scanHtml([tmp('p.html', '<p>무상취득 시 취득세, 산출 세액 0원</p>')]).length, 0);
+eq('① 계산 예시의 「부대비용은 없다고 가정」은 잡지 않는다', scanHtml([tmp('q.html', '<p>4,000만 원에 매도(부대비용은 없다고 가정)</p>')]).length, 0);
+eq('① 「비용 없이 상담」·「비용이 들지 않습니다」는 잡는다', scanHtml([tmp('r.html', '<p>비용 없이 상담</p><p>첫 상담은 비용이 들지 않습니다</p>')]).length, 2);
 eq('③ 번들의 \\uXXXX 이스케이프를 풀어 「무료」를 잡는다 (R1-F3)', scanBundle(tmp('m.js', 'var t="\\uCCAB \\uC0C1\\uB2F4 \\uBB34\\uB8CC";')).length, 1);
 eq('③ 번들에 남은 소스 주석의 「무료」는 잡지 않는다', scanBundle(tmp('n.js', 'var t=1; // \\uBB34\\uB8CC\n/* 무료 */')).length, 0);
 cleanupTmp();
