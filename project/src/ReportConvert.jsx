@@ -33,7 +33,7 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
           </h3>
           <p style={{fontSize: 15, opacity: 0.85, lineHeight: 1.65, margin: 0}}>
             {urgent
-              ? '신고·결정 기한이 임박했거나 추가 증빙이 필요한 사안일 수 있습니다. 담당 세무사가 24시간 이내에 직접 검토해드립니다.'
+              ? '신고·결정 기한이 임박했거나 추가 증빙이 필요한 사안일 수 있습니다. 문의를 접수하시면 영업일 기준 24시간 이내에 연락드려 검토 범위·보수·일정을 안내하고, 합의한 범위에서 검토합니다.'
               : '귀하의 사안은 이 계산보다 복잡할 수 있습니다. 담당 세무사가 검토 범위와 보수를 견적으로 안내해 드립니다.'}
           </p>
         </div>

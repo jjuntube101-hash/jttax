@@ -13,7 +13,9 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github', '.tmp_ad_wording']);
-const BANNED = ['무료', '환급율', '환급률', '평균 환급', '절세율'];
+/* 「무료」의 대체 표현도 같이 본다(Codex R2-F4). 「무상」은 무상취득·무상 증여 같은 세법 용어라 «상담» 문맥만 잡는다. */
+const BANNED = ['무료', '비용 없음', '비용이 없', '비용은 없', '공짜', '0원 상담', '0원에 상담', '무보수', '무상 상담', '무상으로 상담',
+                '환급율', '환급률', '평균 환급', '절세율'];
 
 function walk(dir, out) {
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -46,12 +48,30 @@ function visibleHtml(html) {
   return (t + ' ' + attrs.join(' ') + ' ' + ld.join(' ')).replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 }
 
-/* ② JSX: 주석 제거(//…, /*…*​/, {/*…*​/}) 뒤 본문 */
+/* ② JSX: 주석만 걷어낸 본문. 정규식이 아니라 한 글자씩 걸으며 «문자열 안인가»를 추적한다 —
+   정규식은 `'상담 // 무료'` 처럼 문자열 안의 // 를 주석으로 오인해 그 뒤를 지웠다(Codex R2-F3).
+   추적하는 상태: '…' "…" `…`(템플릿), // 줄 주석, /* */ 블록 주석. 정규식 리터럴은 추적하지 않는다
+   (이 저장소의 JSX 에서 정규식 안에 금지어가 올 일은 없고, 오탐이면 사람이 본다 — 누락보다 낫다). */
 function visibleJsx(src) {
-  return src.replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ')
-            .replace(/\/\*[\s\S]*?\*\//g, ' ')
-            .replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1 ')
-            .replace(/\s+/g, ' ');
+  let out = '', i = 0, n = src.length;
+  while (i < n) {
+    const c = src[i], d = src[i + 1];
+    if (c === '/' && d === '/') {                       // 줄 주석
+      while (i < n && src[i] !== '\n') i++;
+      out += ' '; continue;
+    }
+    if (c === '/' && d === '*') {                       // 블록 주석 ({/* */} 포함)
+      const j = src.indexOf('*/', i + 2);
+      i = j < 0 ? n : j + 2; out += ' '; continue;
+    }
+    if (c === "'" || c === '"' || c === '`') {          // 문자열·템플릿: 닫힐 때까지 그대로 (이스케이프 존중)
+      let j = i + 1;
+      while (j < n && src[j] !== c) { if (src[j] === '\\') j++; j++; }
+      out += src.slice(i, j + 1); i = j + 1; continue;
+    }
+    out += c; i++;
+  }
+  return out.replace(/\s+/g, ' ');
 }
 
 /* ③ 번들: \uXXXX 이스케이프를 풀고, 번들에 남는 소스 주석은 뺀다(주석은 화면에 그려지지 않는다) */
@@ -94,6 +114,11 @@ eq('② JSX 본문의 「무료」를 잡는다 (R1-F1)', scanJsx([tmp('i.jsx', 
 eq('② JSX 문자열 리터럴의 「무료」를 잡는다', scanJsx([tmp('j.jsx', "const a = cond ? '15분 무료로 검토' : '';")]).length, 1);
 eq('② JSX 주석(//·/* */·{/* */})의 「무료」는 잡지 않는다', scanJsx([tmp('k.jsx', "// 무료 티저\n/* 무료 */\n{/* 무료 섹션 */}\nconst x = 1;")]).length, 0);
 eq('② URL 안의 // 는 주석이 아니다', scanJsx([tmp('l.jsx', "const u = 'https://x.y/무료';")]).length, 1);
+eq('② 문자열 안의 // 뒤 금지어를 놓치지 않는다 (R2-F3)', scanJsx([tmp('l2.jsx', "const a = '상담 // 무료';")]).length, 1);
+eq('② 템플릿 문자열 안의 금지어를 잡는다', scanJsx([tmp('l3.jsx', "const a = `첫 상담 ${x} 무료`;")]).length, 1);
+eq('② 이스케이프된 따옴표 뒤 주석은 주석이다', scanJsx([tmp('l4.jsx', "const a = 'it\\'s'; // 무료")]).length, 0);
+eq('① 「비용 없음」·「공짜」·「0원 상담」을 잡는다 (R2-F4)', scanHtml([tmp('o.html', '<p>비용 없음</p><p>공짜</p><p>0원 상담</p>')]).length, 3);
+eq('① 「무상취득」·「세액 0원」은 잡지 않는다 (다른 뜻)', scanHtml([tmp('p.html', '<p>무상취득 시 취득세, 산출 세액 0원</p>')]).length, 0);
 eq('③ 번들의 \\uXXXX 이스케이프를 풀어 「무료」를 잡는다 (R1-F3)', scanBundle(tmp('m.js', 'var t="\\uCCAB \\uC0C1\\uB2F4 \\uBB34\\uB8CC";')).length, 1);
 eq('③ 번들에 남은 소스 주석의 「무료」는 잡지 않는다', scanBundle(tmp('n.js', 'var t=1; // \\uBB34\\uB8CC\n/* 무료 */')).length, 0);
 cleanupTmp();
