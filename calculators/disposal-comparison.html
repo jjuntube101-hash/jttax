@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>증여·매매·상속 세금 비교 계산기 — 부동산 처분방법 비교 | 제이티 세무법인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="같은 부동산을 증여·매매·상속할 때의 예상 세부담을 비교합니다. 현재 시세와 취득가액, 가족관계, 다른 상속재산을 입력하고 방법별 계산 전제를 확인하세요.">
+  <meta name="keywords" content="증여 매매 상속 비교, 부동산 증여 상속 계산기, 처분방법 세금 비교">
+  <link rel="canonical" href="https://www.jttax.co.kr/calculators/disposal-comparison.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="증여·매매·상속 세금 비교 계산기 — 부동산 처분방법 비교 | 제이티 세무법인">
+  <meta property="og:description" content="같은 부동산을 증여·매매·상속할 때의 예상 세부담을 비교합니다. 현재 시세와 취득가액, 가족관계, 다른 상속재산을 입력하고 방법별 계산 전제를 확인하세요.">
+  <meta property="og:url" content="https://www.jttax.co.kr/calculators/disposal-comparison.html">
+  <meta property="og:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="증여·매매·상속 세금 비교 계산기 — 부동산 처분방법 비교 | 제이티 세무법인">
+  <meta name="twitter:description" content="같은 부동산을 증여·매매·상속할 때의 예상 세부담을 비교합니다. 현재 시세와 취득가액, 가족관계, 다른 상속재산을 입력하고 방법별 계산 전제를 확인하세요.">
+  <meta name="twitter:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="192x192" href="/project/assets/icon192.png?v=21">
+  <link rel="icon" type="image/png" sizes="512x512" href="/project/assets/icon512.png?v=21">
+  <link rel="icon" type="image/png" sizes="32x32" href="/project/assets/favicon32.png?v=21">
+  <link rel="icon" type="image/png" sizes="16x16" href="/project/assets/favicon16.png?v=21">
+  <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
+  <link rel="stylesheet" href="/project/src/styles.css?v=29">
+  <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ETRXTFKLFE', { anonymize_ip: true });
+    window.gtag = gtag;
+    // 상담 CTA 표준 이벤트 — gtag 미로드 환경에서도 에러 없이 무시
+    window.jtTrackCta = function (channel, location, extra) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', Object.assign({ channel: channel, location: location }, extra || {}));
+        }
+      } catch (_e) {}
+    };
+  </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"증여·매매·상속 세금 비교 계산기","url":"https://www.jttax.co.kr/calculators/disposal-comparison.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"provider":{"@type":"Organization","name":"제이티 세무법인","url":"https://www.jttax.co.kr"},"description":"같은 부동산을 증여·매매·상속할 때의 예상 세부담을 비교합니다. 현재 시세와 취득가액, 가족관계, 다른 상속재산을 입력하고 방법별 계산 전제를 확인하세요.","image":"https://www.jttax.co.kr/project/assets/og-image.png?v=2"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"세금이 가장 적은 방법을 바로 선택하면 되나요?","acceptedAnswer":{"@type":"Answer","text":"계산 결과는 세액 비교용입니다. 가족의 자금 사정, 거래 가능성, 사전증여와 향후 처분 등까지 확인한 뒤 결정해야 합니다."}},{"@type":"Question","name":"부동산 외 재산도 입력해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"다른 상속재산이 있으면 상속 비교 결과에 영향을 줄 수 있으므로 해당 금액을 함께 입력해 주세요."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.jttax.co.kr/"},{"@type":"ListItem","position":2,"name":"세금 계산기","item":"https://www.jttax.co.kr/calculators/"},{"@type":"ListItem","position":3,"name":"증여·매매·상속 세금 비교 계산기","item":"https://www.jttax.co.kr/calculators/disposal-comparison.html"}]}</script>
+  <style>
+    .jt-cc-wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;color:#0B0B0F;}
+    .jt-cc-crumb{font-size:13px;color:#888;margin-bottom:20px;}
+    .jt-cc-crumb a{color:#888;text-decoration:none;}
+    .jt-cc-wrap h1{font-size:30px;letter-spacing:-0.02em;margin:0 0 12px;}
+    .jt-cc-lede{font-size:18px;color:#5a5a5a;line-height:1.65;margin:0 0 28px;}
+    .jt-cc-cta{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 8px;}
+    .jt-cc-note{font-size:13px;color:#888;margin:10px 0 40px;}
+    .jt-cc-sec{margin:40px 0;}
+    .jt-cc-sec h2{font-size:21px;letter-spacing:-0.01em;margin:0 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.08);}
+    .jt-cc-wrap ul{padding-left:20px;line-height:1.85;color:#333;}
+    .jt-cc-grid{display:grid;gap:14px;}
+    .jt-cc-card{border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:16px 18px;background:#FAFAF8;}
+    .jt-cc-card h3{margin:0 0 6px;font-size:16px;}
+    .jt-cc-card p{margin:0;font-size:14px;color:#555;line-height:1.6;}
+    .jt-cc-faq{padding:16px 0;border-bottom:1px solid rgba(0,0,0,.06);}
+    .jt-cc-faq h3{margin:0 0 8px;font-size:16px;}
+    .jt-cc-faq p{margin:0;font-size:15px;color:#444;line-height:1.7;}
+    .jt-cc-links{list-style:none;padding:0;}
+    .jt-cc-links a{color:#1a1a1a;text-decoration:none;border-bottom:1px solid rgba(0,0,0,.15);}
+    .jt-cc-chips{display:flex;gap:8px;flex-wrap:wrap;}
+    .jt-cc-chip{font-size:13px;border:1px solid rgba(0,0,0,.15);border-radius:999px;padding:7px 13px;text-decoration:none;color:#333;background:#fff;}
+    .jt-cc-disc{margin-top:48px;padding:24px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;border-radius:10px;}
+    .jt-cc-disc .l{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;}
+    .jt-cc-disc p{font-size:13px;color:#5a5a5a;margin:8px 0 0;line-height:1.7;}
+  </style>
+</head>
+<body style="background:#fff;">
+  <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
+      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무법인"/> 제이티 세무법인
+    </a>
+    <span style="margin-left:auto;font-size:13px;"><a href="/calculators/" style="color:#666;text-decoration:none;">← 모든 계산기</a></span>
+  </header>
+
+  <main class="jt-cc-wrap">
+    <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/calculators/">세금 계산기</a> › 증여·매매·상속 세금 비교 계산기</nav>
+    <h1>증여·매매·상속 세금 비교 계산기</h1>
+    <p class="jt-cc-lede">부동산을 가족에게 넘기는 세 가지 방법의 예상 세금을 같은 화면에서 비교합니다. 세금 외에 자금 조달과 실행 조건도 함께 확인해야 합니다.</p>
+
+    <div class="jt-cc-cta">
+      <a href="/#/report/compare" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
+      <a href="/#/booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
+    </div>
+    <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
+
+    <section class="jt-cc-sec">
+      <h2>이 계산기로 알 수 있는 것</h2>
+      <ul>
+      <li>증여·매매·상속 시나리오별 예상 총세부담 비교</li>
+      <li>입력한 가족관계와 다른 재산을 반영한 상속 시나리오</li>
+      <li>계산 전제와 상담에서 확인할 사항 정리</li>
+      </ul>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>이런 분께 필요합니다</h2>
+      <ul>
+      <li>부동산을 가족에게 이전할 방법을 검토하는 분</li>
+      <li>각 방법의 세금 차이를 확인하고 상담을 준비하는 분</li>
+      </ul>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>증여·매매·상속 세금 비교, 이렇게 계산됩니다</h2>
+      <ul>
+      <li>① 현재 시세와 취득가액, 부동산 종류를 입력합니다.</li>
+      <li>② 받는 분과의 관계와 상속 비교에 필요한 가족·재산 정보를 입력합니다.</li>
+      <li>③ 방법별 예상 세부담과 계산 한계를 비교합니다.</li>
+      </ul>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>꼭 알아야 할 핵심</h2>
+      <div class="jt-cc-grid">
+      <div class="jt-cc-card"><h3>동일한 입력으로 비교</h3><p>시세와 취득가액 등 공통 정보를 바탕으로 방법별 세액을 계산합니다. 실제 거래 시점과 개별 요건에 따라 결과는 달라질 수 있습니다.</p></div>
+      <div class="jt-cc-card"><h3>상속 비교의 전제</h3><p>상속은 사망을 전제로 하는 시나리오입니다. 지금 선택할 수 있는 매매·증여와 실행 시점이 같다는 뜻은 아닙니다.</p></div>
+      <div class="jt-cc-card"><h3>세금 외의 확인 사항</h3><p>매매대금 조달, 실제 채무, 다른 재산과 사전증여 등은 실행 전에 별도로 검토해야 합니다.</p></div>
+      </div>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>자주 묻는 질문</h2>
+      <div class="jt-cc-faq"><h3>세금이 가장 적은 방법을 바로 선택하면 되나요?</h3><p>계산 결과는 세액 비교용입니다. 가족의 자금 사정, 거래 가능성, 사전증여와 향후 처분 등까지 확인한 뒤 결정해야 합니다.</p></div>
+      <div class="jt-cc-faq"><h3>부동산 외 재산도 입력해야 하나요?</h3><p>다른 상속재산이 있으면 상속 비교 결과에 영향을 줄 수 있으므로 해당 금액을 함께 입력해 주세요.</p></div>
+    </section>
+
+    <div class="jt-cc-cta" style="margin-top:8px;">
+      <a href="/#/report/compare" class="jt-btn jt-btn--primary">증여·매매·상속 세금 비교 계산기로 계산하기 →</a>
+    </div>
+
+
+
+
+
+    <section class="jt-cc-sec">
+      <h2>다른 세금 계산기</h2>
+      <div class="jt-cc-chips">
+        <a class="jt-cc-chip" href="/calculators/gift-tax.html">증여세 계산기</a>
+        <a class="jt-cc-chip" href="/calculators/inheritance-tax.html">상속세 계산기</a>
+        <a class="jt-cc-chip" href="/calculators/capital-gains-tax.html">양도소득세 계산기</a>
+        <a class="jt-cc-chip" href="/calculators/burdened-gift-simulator.html">부담부증여 세금 시뮬레이터</a>
+      </div>
+    </section>
+
+    <div class="jt-cc-disc">
+      <div class="l">안내</div>
+      <p>본 페이지와 계산기는 일반적인 정보 제공을 위한 참고 자료이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 세법은 개별 사실관계에 따라 결과가 달라지므로, 정확한 판단은 담당 세무사와의 상담을 통해 진행하시기 바랍니다. 세율·공제 등은 현행 시행 법령 기준입니다.</p>
+    </div>
+
+    <div class="jt-cc-cta" style="margin-top:24px;">
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','calc_bottom')">상담 예약 →</a>
+      <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','calc_bottom')">카톡 상담</a>
+    </div>
+  </main>
+
+  <footer style="margin-top:80px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;line-height:1.9;">
+    <!-- jt-shell v1 -->
+    <div>제이티 세무법인 · 광고책임세무사 이현준 대표세무사</div>
+    <div>© 2026 JT TAX CORP. — www.jttax.co.kr</div>
+  </footer>
+</body>
+</html>

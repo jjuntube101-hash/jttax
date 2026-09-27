@@ -11,8 +11,8 @@ const INC_QS = [
     id: 'businessIncome',
     tier: 'quick',
     section: '사업·프리랜서 소득',
-    q: '작년 사업·프리랜서 「소득금액」이 얼마인가요? (원)',
-    sub: '1년 매출(수입)에서 필요경비(임차료·재료비·인건비 등)를 뺀 「순이익」을 넣어 주세요. 직장 급여만 있으면 0으로 두세요. 경비를 잘 모르면 수입의 절반 정도로 넣어 보세요.',
+    q: '2026년 사업·프리랜서 「소득금액」이 얼마인가요? (원)',
+    sub: '이 계산기는 2026년 귀속 기준입니다. 같은 해 매출(수입)에서 확인된 필요경비를 뺀 「순이익」을 넣어 주세요. 직장 급여만 있으면 0으로 두세요. 경비를 모르면 장부·증빙을 확인한 뒤 계산해 주세요.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 60,000,000 (없으면 0)',
   },
@@ -75,10 +75,12 @@ const INC_QS = [
          사업 5억 + 배당 2억 → grossup 240,160,000 / 미적용 251,760,000 (1,160만원)
          사업 3억 + 배당 1억 → 122,190,000 / 128,190,000 (600만원)
        종전엔 이 문항 없이 «무조건 국내 배당»으로 보내 외국 배당이 «적게» 나왔다. */
-    sub: '국내 법인에서 받은 배당만 Gross-up 가산·배당세액공제(§17③·§56) 대상입니다. 외국 법인 배당(해외주식·해외 ETF 등)은 대상이 아닐 뿐 아니라, 현지에서 이미 떼인 세금을 빼 주는 외국납부세액공제(§57)까지 따져야 해서 상담으로 안내해 드립니다.',
+    sub: '국내 배당도 모두 Gross-up 대상은 아닙니다. 원천징수영수증의 배당가산 대상 여부를 확인해 주세요. 일반 공모펀드·ETF 분배금은 보통 비대상이고, 일부 집합투자기구는 예외가 있습니다. 외국 배당은 외국납부세액공제까지 확인해야 합니다.',
     showIf: (a) => (Number(a.dividendIncome) || 0) > 0,
     opts: [
-      ['domestic', '국내 법인 배당만 (국내 주식·펀드)', 'Gross-up 적용'],
+      ['domestic', 'Gross-up 대상 국내 배당만', '원천징수영수증으로 대상 여부 확인'],
+      ['domestic_other', 'Gross-up 비대상 국내 배당만', '일반 공모펀드·ETF 등 — 대상 여부 확인'],
+      ['mixed_grossup', '국내 대상·비대상 배당이 섞여 있음', '금액 분리 필요 — 상담'],
       ['foreign', '외국 법인 배당만 (해외주식·해외 ETF)', '외국납부세액공제 — 상담'],
       ['mixed', '국내·외국이 섞여 있음', '금액 분리 필요 — 상담'],
       ['unsure', '모르겠어요', '상담 안내'],
@@ -87,7 +89,7 @@ const INC_QS = [
   {
     id: 'nationalPension',
     section: '공제 항목',
-    q: '작년 국민연금 납입액은 얼마인가요? (소득공제)',
+    q: '2026년 국민연금 납입액은 얼마인가요? (소득공제)',
     sub: '1년간 낸 국민연금 보험료(전액 소득공제, 소득세법 §51의3). 모르면 0으로 두고 상담에서 확인하세요.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 3,000,000 (없으면 0)',
@@ -124,6 +126,8 @@ const INC_QS = [
 function incFallbackGaps(answers, calc) {
   const dividend = Number(answers.dividendIncome) || 0;
   return window.jtFallbackGaps([
+    { when: dividend > 0 && answers.dividendType === 'mixed_grossup',
+      why: '배당가산 대상·비대상 국내 배당의 금액을 나눠야 합니다. 원천징수영수증을 확인해 상담에서 반영해 드립니다.' },
     /* ★ foreign 도 막는다 — 260806 엔진 실측: foreign_tax_paid·foreign_tax_credit 어느 이름으로
        보내도 결과가 128,190,000 으로 «동일»했다. 즉 엔진이 외국납부세액공제(§57)를 받지 않는다.
        외국 배당은 현지 원천세가 이미 떼여 있는데 그게 공제되지 않아 세금이 «많게» 나온다.
@@ -269,6 +273,7 @@ function JTReportIncome({ setRoute, onBack }) {
       }
       try {
         const body = {
+          tax_year: 2026,
           business_revenue: biz, business_expenses: 0,
           salary_income: salary,
           is_salary_earner: salary > 0,    // 근로소득 있으면 근로자(표준공제 13만·§59), 없으면 사업자(7만)
@@ -285,7 +290,7 @@ function JTReportIncome({ setRoute, onBack }) {
         const j = await callIncomeEng(body);
         const c = j && j.calc;
         // 수정 260628(INCOME-R2-01): 엔진 오류바디/부분응답 검증(세액0 거짓표시 방지).
-        if (c && !c['오류'] && c['과세표준'] != null && c['총세부담'] != null) {
+        if (window.jtValidCalc(c, ['과세표준', '산출세액', '결정세액', '지방소득세', '총세부담'])) {
           calc.taxBase = c['과세표준'] || 0;
           calc.calculated = c['산출세액'] || 0;
           calc.determined = c['결정세액'] || 0;
@@ -462,7 +467,7 @@ function JTReportIncome({ setRoute, onBack }) {
 
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="number" inputMode="numeric" placeholder={cur.placeholder || ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {incKoreanAmount(Number(answers[cur.id]))}</div>

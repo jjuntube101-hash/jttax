@@ -28,7 +28,8 @@ window.jtMoneyDigits = function (raw) {
   if (s === '') return '';
   s = s.replace(/^₩\s*/, '').replace(/\s*원$/, '').trim();       // 통화기호는 «양 끝»에서만
   if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d*)?$/.test(s)) return null;
-  return s.replace(/,/g, '').split('.')[0].replace(/^0+(?=\d)/, '');  // 원 단위이므로 소수부는 절사
+  var digits = s.replace(/,/g, '').split('.')[0].replace(/^0+(?=\d)/, '');
+  return Number.isSafeInteger(Number(digits)) ? digits : null;  // 원 미만 절사·정수 정밀도 보장
 };
 /* 기간·비율·면적처럼 «소수»를 허용하는 칸 — 소수점 하나까지 살린다 */
 window.jtDecimalInput = function (raw) {
@@ -42,6 +43,135 @@ window.jtSetNumericAns = function (setAns, id, raw, isMoney) {
   var v = isMoney ? window.jtMoneyDigits(raw) : window.jtDecimalInput(raw);
   if (v !== null) setAns(id, v);
 };
+
+/* 원 단위 표시와 편집을 한 곳에서 처리한다. 저장/API 값은 쉼표 없는 정수 문자열이다.
+   붙여넣기는 전체 형식을 검사하고, 직접 편집은 화면의 쉼표를 제거한 뒤 검증한다.
+   선택 영역은 숫자 자릿수로 복원하여 중간 삽입·삭제 때 커서가 끝으로 뛰지 않는다. */
+window.jtFormatMoneyInput = function (raw) {
+  var digits = window.jtMoneyDigits(raw);
+  return digits === null ? String(raw == null ? '' : raw) : digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+window.jtMoneyCaret = function (formatted, digitCount) {
+  if (digitCount <= 0) return 0;
+  var seen = 0;
+  for (var i = 0; i < formatted.length; i++) {
+    if (/\d/.test(formatted[i]) && ++seen >= digitCount) return i + 1;
+  }
+  return formatted.length;
+};
+function JTNumericInput({ money = true, value, onChange, parseMoney, ...props }) {
+  const [error, setError] = useReportState('');
+  const [fractionDraft, setFractionDraft] = useReportState(null);
+  const shown = money && fractionDraft !== null ? fractionDraft :
+    (money ? window.jtFormatMoneyInput(value) : (value == null ? '' : String(value)));
+  const accept = function (event, raw, digitCount) {
+    var normalized = money ? window.jtMoneyDigits(raw) : window.jtDecimalInput(raw);
+    if (normalized === null && money && parseMoney && /[억만]/.test(raw) && !/[,，]/.test(raw)) {
+      var parsed = parseMoney(raw);
+      if (parsed !== null && Number.isSafeInteger(parsed) && parsed >= 0) normalized = String(parsed);
+    }
+    if (normalized === null) {
+      setError(money ? '원 단위 숫자를 넣어 주세요. 음수·지수표기는 입력할 수 없습니다.' : '숫자와 소수점 하나만 입력해 주세요.');
+      event.target.value = shown;
+      return;
+    }
+    setError('');
+    setFractionDraft(null);
+    const el = event.target;
+    // 기존 계산기 핸들러에는 정규화된 값을 전달한다. 계산 금액의 단위는 바꾸지 않는다.
+    el.value = normalized;
+    if (onChange) onChange(event);
+    if (!money) return;
+    const formatted = window.jtFormatMoneyInput(normalized);
+    el.value = formatted;
+    const caret = window.jtMoneyCaret(formatted, digitCount);
+    if (typeof el.setSelectionRange === 'function') {
+      el.setSelectionRange(caret, caret);
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(function () {
+        if (el.value === formatted && (typeof document === 'undefined' || document.activeElement === el)) el.setSelectionRange(caret, caret);
+      });
+    }
+  };
+  const change = function (event) {
+    const raw = event.target.value;
+    const position = event.target.selectionStart == null ? raw.length : event.target.selectionStart;
+    const digitsBefore = raw.slice(0, position).normalize('NFKC').replace(/[^0-9]/g, '').length;
+    // 직접 편집하면 1,234 → 1,9234 처럼 구분자의 위치가 일시적으로 달라질 수 있다.
+    const native = event.nativeEvent || event;
+    const inputType = native.inputType || '';
+    // 자동완성·일부 브라우저의 붙여넣기는 여러 글자의 insertText로 들어온다.
+    const bulkInsert = /^(?:insertFromPaste|insertFromDrop|insertReplacementText)$/.test(inputType) ||
+      (typeof native.data === 'string' && native.data.length > 1);
+    var edited = money && !bulkInsert ? raw.replace(/,/g, '') : raw;
+    var caretDigits = digitsBefore;
+    // 직접 소수를 입력할 때 점을 즉시 지우면 뒤의 소수 숫자가 정수에 붙는다.
+    // 편집 중인 소수부를 화면에 보존하고, 입력을 떠날 때 원 미만을 절사한다.
+    if (money && !bulkInsert && edited.normalize('NFKC').indexOf('.') >= 0 &&
+        (window.jtMoneyDigits(edited) !== null || /^\.\d*$/.test(edited.normalize('NFKC')))) {
+      setError('');
+      const draft = raw.normalize('NFKC').replace(/^\./, '0.');
+      setFractionDraft(draft);
+      // Enter로 다음 문항에 가거나 제출하면 blur가 없을 수 있으므로 정수부는 즉시 동기화한다.
+      const el = event.target;
+      const selectionStart = el.selectionStart;
+      const selectionEnd = el.selectionEnd;
+      el.value = window.jtMoneyDigits(draft.replace(/,/g, ''));
+      if (onChange) onChange(event);
+      el.value = draft;
+      if (typeof el.setSelectionRange === 'function' && selectionStart !== null) {
+        const offset = draft.length - raw.length;
+        el.setSelectionRange(selectionStart + offset, selectionEnd + offset);
+      }
+      return;
+    }
+    // 구분자만 지운 Backspace/Delete도 인접 숫자를 지우도록 한다.
+    if (money && /^deleteContent(?:Backward|Forward)$/.test(inputType) &&
+        raw.length < shown.length && edited === shown.replace(/,/g, '')) {
+      const index = inputType === 'deleteContentBackward' ? digitsBefore - 1 : digitsBefore;
+      if (index >= 0 && index < edited.length) {
+        edited = edited.slice(0, index) + edited.slice(index + 1);
+        caretDigits = inputType === 'deleteContentBackward' ? Math.max(0, digitsBefore - 1) : digitsBefore;
+      }
+    }
+    accept(event, edited, caretDigits);
+  };
+  const paste = function (event) {
+    if (!money) return;
+    event.preventDefault();
+    const pasted = event.clipboardData.getData('text');
+    var normalized = window.jtMoneyDigits(pasted);
+    if (normalized === null && parseMoney && /[억만]/.test(pasted) && !/[,，]/.test(pasted)) {
+      const parsed = parseMoney(pasted);
+      if (parsed !== null && Number.isSafeInteger(parsed) && parsed >= 0) normalized = String(parsed);
+    }
+    if (normalized === null) { setError('붙여넣은 금액을 확인해 주세요. 예: 1,234,567원'); return; }
+    const el = event.target;
+    const start = el.selectionStart == null ? 0 : el.selectionStart;
+    const end = el.selectionEnd == null ? el.value.length : el.selectionEnd;
+    const left = el.value.slice(0, start).replace(/,/g, '');
+    const right = el.value.slice(end).replace(/,/g, '');
+    accept(event, left + normalized + right, left.length + normalized.length);
+  };
+  const blur = function (event) {
+    if (money && fractionDraft !== null) {
+      const integer = fractionDraft.normalize('NFKC').split('.')[0].replace(/[^0-9]/g, '');
+      accept(event, fractionDraft, integer.length);
+    }
+    if (props.onBlur) props.onBlur(event);
+  };
+  const keyDown = function (event) {
+    if (event.key === 'Enter' && money && fractionDraft !== null) {
+      const integer = fractionDraft.normalize('NFKC').split('.')[0].replace(/[^0-9]/g, '');
+      accept(event, fractionDraft, integer.length);
+    }
+    if (props.onKeyDown) props.onKeyDown(event);
+  };
+  return React.createElement(React.Fragment, null,
+    React.createElement('input', { ...props, type: 'text', inputMode: money ? 'numeric' : 'decimal',
+      value: shown, onChange: change, onPaste: paste, onBlur: blur, onKeyDown: keyDown, 'aria-invalid': error ? true : undefined }),
+    error && React.createElement('span', { role: 'alert', style: { display: 'block', fontSize: 13, marginTop: 4 } }, error));
+}
+window.JTNumericInput = JTNumericInput;
 
 /* ══════════════════════════════════════════════════════════════════════════
    폴백 «차단» 장치 — 엔진이 죽었을 때 «틀린 숫자»를 내놓느니 안 내놓는다.
@@ -248,8 +378,8 @@ window.JTReportCta = JTReportCta;
 // ①객체 존재 ②오류필드 없음 ③필수 숫자키가 유한한 실수(≥0)인지로 판정한다.
 if (typeof window !== 'undefined' && !window.jtValidCalc) {
   window.jtValidCalc = function (c, requiredKeys) {
-    if (!c || typeof c !== 'object') return false;
-    if (c.error || c.errors || c.detail) return false;               // 엔진 오류·부분 응답 거부
+    if (!c || typeof c !== 'object' || Array.isArray(c)) return false;
+    if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return false;
     const keys = (requiredKeys && requiredKeys.length) ? requiredKeys : ['총세부담'];
     return keys.every(function (k) {
       const v = c[k];

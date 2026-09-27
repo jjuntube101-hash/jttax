@@ -156,8 +156,14 @@ const d2 = { ...d1, isResident: 'no', resYears: '0' };
   const r = CRE(d2, y);
   console.log(`  ${y}: 공제 ${won(r.deduct)}  과표 ${won(r.base)}  산출 ${won(r.gross)}  총 ${won(r.total)}`);
 });
-/* 2027 비거주: (18억−9억)×70% = 6.3억 → 3억×0.5%=150만 + 3억×0.7%=210만 + 0.3억×1.3%=39만 = 399만 */
-chk('C9 2027 산출세액(공제 9억으로 축소)', CRE(d2, 2027).gross, 3990000);
+/* 재정경제부 2026.9.1 국무회의 수정 정부안 첨부 3: 비거주 1주택 공제 12억 유지.
+   (18억−12억)×70%=4.2억 → 3억×0.5% + 1.2억×0.7%=234만원. */
+chk('C9 2027 산출세액(9.1 정부안 비거주 공제 12억 유지)', CRE(d2, 2027).gross, 2340000);
+chk('C9 2028 비거주 기본공제 유지', CRE(d2, 2028).deduct, 1200000000);
+eqRate('C9 9.1 정부안 2027 세부담 상한 현행 유지', R.cre.burdenCap[2027], 1.5);
+eqRate('C9 9.1 정부안 2028 세부담 상한 현행 유지', R.cre.burdenCap[2028], 1.5);
+chk('C9 공동명의·가족 별도 소유는 계산 차단', CRE({ ...d2, ownershipScope: 'shared' }, 2027).requiresReview ? 1 : 0, 1, 0);
+chk('C9 본인 단독 명의는 최신 정부안 계산', CRE({ ...d2, ownershipScope: 'sole' }, 2027).gross, 2340000);
 
 console.log('\n════ CASE 10: 3주택 합계 25억 · 거주용 8억 · 조정지역 ════');
 const d3 = { totalValue: '2500000000', houses: 'three', residentValue: '800000000', age: '55', holdYears: '8', resYears: '8', adjusted: 'yes' };
@@ -299,7 +305,8 @@ const t20a = { totalValue: '1300000000', houses: 'one', isResident: 'no', age: '
 chk('C20 비거주 1주택 13억 · 2027 → 0원 (14억 이하라 과세대상 아님)', CRE(t20a, 2027).total, 0);
 eq('C20 notTaxable 플래그', CRE(t20a, 2027).notTaxable, true);
 chk('C20 14억 «정확히» → 0원 (초과여야 과세)', CRE({ ...t20a, totalValue: '1400000000' }, 2027).total, 0);
-chk('C20 14억 초과분은 종전대로 과세', CRE({ ...t20a, totalValue: '1600000000' }, 2027).total, 3396000);
+/* 9.1 정부안: (16억−12억)×70%×0.5%=140만원, 농특세28만원. */
+chk('C20 14억 초과는 9.1 수정 공제액으로 과세', CRE({ ...t20a, totalValue: '1600000000' }, 2027).total, 1680000);
 const t20b = { totalValue: '800000000', houses: 'two', residentValue: '0', adjusted: 'no' };
 chk('C20 2주택 합계 8억 · 2027 → 0원 (9억 이하)', CRE(t20b, 2027).total, 0);
 chk('C20 9억 «정확히» → 0원', CRE({ ...t20b, totalValue: '900000000' }, 2027).total, 0);

@@ -221,9 +221,9 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
                 onChange={(e) => { clearOnInputChange(); setYearSel((s) => ({ ...s, [y]: e.target.checked })); }} />
               {y}년
             </label>
-            <input className="jt-report-q__input" style={{ flex: '1 1 200px', margin: 0 }} type="text" inputMode="numeric"
+            <JTNumericInput className="jt-report-q__input" style={{ flex: '1 1 200px', margin: 0 }} type="text" inputMode="numeric"
               placeholder="공시가격 (원)" disabled={!yearSel[y] || busy}
-              value={yearVal[y] ? Number(yearVal[y]).toLocaleString('ko-KR') : ''}
+              value={yearVal[y]}
               onChange={(e) => { clearOnInputChange(); window.jtSetNumericAns((_id, v) => setYearVal((s) => ({ ...s, [y]: v })), y, e.target.value, true); }} />
           </div>
         ))}
@@ -276,9 +276,9 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
             <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 2" disabled={busy}
               value={otherCount} onChange={(e) => { clearOnInputChange(); setOtherCount(e.target.value.replace(/[^0-9]/g, '')); }} />
             <label style={{ display: 'block', fontSize: 13, margin: '10px 0 4px' }}>다른 주택들의 공시가격 합계 (원)</label>
-            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 800,000,000" disabled={busy}
-              value={otherValue ? Number(otherValue).toLocaleString('ko-KR') : ''}
-              onChange={(e) => { clearOnInputChange(); setOtherValue(e.target.value.replace(/[^0-9]/g, '')); }} />
+            <JTNumericInput className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 800,000,000" disabled={busy}
+              value={otherValue}
+              onChange={(e) => { clearOnInputChange(); setOtherValue(e.target.value); }} />
           </div>
         )}
         {otherHousing === 'none' && (

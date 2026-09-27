@@ -208,7 +208,8 @@ function JTReportCompare({ setRoute, onBack }) {
         // 수정 260628(COMPARE-R2-01): 빈 dict·부분 0원을 '정밀'로 신뢰하지 않음. 처분비교는 취득세(양수)가 늘 포함되어 정상 시 총세부담>0 — 0원/누락은 계산실패 신호(지법 §11①). 3시나리오 모두 유효할 때만 precise.
         // P1-4(코덱스): 공통 무결성 검증기로 오류·NaN·누락 거부. 처분비교는 취득세(양수)가 늘 포함되어
         // 정상 시 총세부담>0이므로, 이 세목 한정 도메인 규칙으로 >0을 함께 확인(0원/빈응답=계산실패 신호).
-        const allValid = scv && ['증여', '매매', '상속'].every(m => window.jtValidCalc(scv[m], ['총세부담']) && Number(scv[m]['총세부담']) > 0);
+        const allValid = c && !c['오류'] && !c.error && c.success !== false && scv
+          && ['증여', '매매', '상속'].every(m => window.jtValidCalc(scv[m], ['총세부담']) && Number(scv[m]['총세부담']) > 0);
         if (allValid) {
           calc.scenarios = scv;   // {증여, 매매, 상속}
           // ★ c['최적방법']·c['절세액'] 은 의도적으로 사용하지 않음(판단 라벨 억제)
@@ -355,7 +356,7 @@ function JTReportCompare({ setRoute, onBack }) {
 
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="number" inputMode="numeric" placeholder={cur.placeholder || ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {cmpKorean(Number(answers[cur.id]))}</div>

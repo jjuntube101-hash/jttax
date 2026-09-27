@@ -377,7 +377,7 @@ function JTReportAcqCheck({ setRoute }) {
           {/* ④ 취득세를 얼마 냈는지 — 대략 (B-1 ④). 세목별 금액은 받지 않는다(서류가 있어야 아는 값) */}
           <div className="jt-field">
             <label>취득세를 얼마 내셨습니까 <em>대략</em></label>
-            <input type="text" inputMode="numeric" placeholder="원 · 대략" value={f.paidAmount ? Number(f.paidAmount).toLocaleString('ko-KR') : ''} onChange={setMoney('paidAmount')} />
+            <JTNumericInput type="text" inputMode="numeric" placeholder="원 · 대략" value={f.paidAmount} onChange={setMoney('paidAmount')} />
           </div>
 
           {/* ⑤ 지금 상황 (B-1 ⑤) */}

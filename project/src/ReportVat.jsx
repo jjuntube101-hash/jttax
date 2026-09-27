@@ -261,7 +261,8 @@ function JTReportVat({ setRoute, onBack }) {
         const j = await callVatEng(body);
         const c = j && j.calc;
         // 수정 260628(VAT-R2-01): 엔진 오류바디/부분응답을 precise로 신뢰하지 않음(납부세액0 거짓표시 방지).
-        if (c && !c['오류'] && (c['납부세액'] != null || c['환급세액'] != null || c['비과세여부'])) {
+        if (window.jtValidCalc(c, ['납부세액', '환급세액'])
+          && typeof c['비과세여부'] === 'boolean' && typeof c['환급여부'] === 'boolean') {
           calc.businessType = c['사업자유형'];
           calc.netTax = c['납부세액'] || 0;
           calc.isRefund = !!c['환급여부'];
@@ -436,7 +437,7 @@ function JTReportVat({ setRoute, onBack }) {
 
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="number" inputMode="numeric" placeholder={cur.placeholder || ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {vatKorean(Number(answers[cur.id]))}</div>

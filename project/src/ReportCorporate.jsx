@@ -218,7 +218,8 @@ function JTReportCorporate({ setRoute, onBack }) {
         const pc = pj && pj.calc, cc = cj && cj.calc, sc = sj && sj.calc;
         // P1-4(코덱스): 정상 0원(소액 사업소득 종소세 0원)을 실패로 오판하지 않도록 '>0'이 아닌 공통 무결성 검증기 사용.
         // 오류·부분 응답·NaN·필드누락은 거부하되 0원은 정상 인정.
-        if (window.jtValidCalc(pc, ['총세부담']) && window.jtValidCalc(cc, ['총납부세액'])) {
+        if (window.jtValidCalc(pc, ['총세부담']) && window.jtValidCalc(cc, ['총납부세액'])
+          && (salary === 0 || window.jtValidCalc(sc, ['총세부담']))) {
           calc.indivTotal = pc['총세부담'] || 0;
           calc.corpTax = cc['총납부세액'] || 0;
           calc.salaryTax = (sc && sc['총세부담']) || 0;
@@ -432,7 +433,7 @@ function JTReportCorporate({ setRoute, onBack }) {
 
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="number" inputMode="numeric" placeholder={cur.placeholder || ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {corpKoreanAmount(Number(answers[cur.id]))}</div>

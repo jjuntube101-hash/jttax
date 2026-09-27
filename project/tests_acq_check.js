@@ -154,7 +154,7 @@ console.log('\n════ (d) 소스에 자유 서술 입력란이 남아 있�
      /\bsigungu\b/i.test(acqCheckSrc) || acqCheckSrc.includes('postHistoryDetail'), false);
 
   // type="text" 입력은 «낸 취득세(대략)» 금액 칸 하나뿐이어야 한다 — 세목별 금액은 서류가 있어야 아는 값이라 받지 않는다(260926 B-1 ④)
-  const textInputs = acqCheckSrc.match(/<input[^>]*type="text"[^>]*\/>/g) || [];
+  const textInputs = acqCheckSrc.match(/<(?:input|JTNumericInput)[^>]*type="text"[^>]*\/>/g) || [];
   eq('type="text" 입력이 정확히 1개(낸 취득세 대략 금액 칸만)다', textInputs.length, 1);
   eq('신고서 세목별 금액 칸이 없다(서류 없이 접수 — 260926 판정)', /reportedAcqTax|reportedEduTax|reportedFarmTax|reportedTotal/.test(acqCheckSrc), false);
   eq('「준비하시면 좋은 자료」 목록이 없고 「서류는 나중에」 안내가 있다', [/준비하시면 좋은 자료/.test(acqCheckSrc), /서류는 나중에/.test(acqCheckSrc)], [false, true]);

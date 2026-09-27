@@ -463,7 +463,7 @@ function JTReportInheritance({ setRoute, onBack }) {
         const ej = await callInhEngine(mapAnswersToInheritance(answers));
         const c = ej && ej.calc;
         // 수정 260628(INHERITANCE-R2-01): 엔진이 오류바디를 HTTP 200으로 흘릴 때 partial-response 오염('세액 0원·상속세 없음' 거짓 표시) 방지 — 필수키 무결성 검증 후에만 정밀 채택.
-        if (c && !c['오류'] && !c['error'] && c['과세표준'] != null && c['산출세액'] != null && c['세액'] != null) {
+        if (window.jtValidCalc(c, ['과세표준', '산출세액', '세액'])) {
           calc.taxBase = c['과세표준']; calc.calcTax = c['산출세액'];
           calc.totalTax = c['세액'];
           calc.deductions = c['주요공제'] || {};
@@ -692,8 +692,8 @@ function JTReportInheritance({ setRoute, onBack }) {
           )}
 
           {cur.numeric && (
-            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
-              value={answers[cur.id] ? Number(answers[cur.id]).toLocaleString('ko-KR') : ''}
+            <JTNumericInput className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
+              value={answers[cur.id]}
               onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)} />
           )}
           {cur.numeric && cur.money && Number(answers[cur.id]) > 0 && (

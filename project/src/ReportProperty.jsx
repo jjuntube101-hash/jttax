@@ -587,7 +587,7 @@ function JTReportProperty({ setRoute, onBack }) {
       try {
         const ej = await callPropEngine(mapAnswersToProperty(answers));
         const c = ej && ej.calc;
-        if (c) {
+        if (window.jtValidCalc(c, ['세액', '재산세본세', '지방교육세', '도시지역분', '소방분', '과세표준'])) {
           calc.totalTax = c['세액']; calc.mainTax = c['재산세본세']; calc.eduTax = c['지방교육세'];
           calc.urbanTax = c['도시지역분'] || 0; calc.fireTax = c['소방분'] || 0; calc.taxBase = c['과세표준'];
           calc.appliedRate = c['적용세율']; calc.fairRatio = c['공정시장가액비율']; calc.burdenApplied = c['세부담상한적용'];
@@ -858,8 +858,8 @@ function JTReportProperty({ setRoute, onBack }) {
 
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
-                value={answers[cur.id] ? (cur.money ? Number(answers[cur.id]).toLocaleString('ko-KR') : answers[cur.id]) : ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
+                value={answers[cur.id]}
                 onChange={e => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {propKoreanAmountOrWon(Number(answers[cur.id]))}</div>

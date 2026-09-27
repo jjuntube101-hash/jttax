@@ -328,7 +328,7 @@ function JTHeroCalc() {
         </div>
         <div>
           <label className="jt-herocalc__label" htmlFor="hc-acq">취득가</label>
-          <input id="hc-acq" type="text" inputMode="numeric" placeholder="예: 500,000,000" className="jt-herocalc__field"
+          <JTNumericInput parseMoney={hcParse} id="hc-acq" type="text" inputMode="numeric" placeholder="예: 500,000,000" className="jt-herocalc__field"
             value={shown(acqPrice, acq)}
             onChange={touched(e => setAcqPrice(e.target.value))} />
           {acqPrice && acq === null && <div className="jt-herocalc__hint">숫자로 적어 주세요 (「5억」·「5억 3000만」도 됩니다)</div>}
@@ -336,7 +336,7 @@ function JTHeroCalc() {
         </div>
         <div>
           <label className="jt-herocalc__label" htmlFor="hc-sale">양도가</label>
-          <input id="hc-sale" type="text" inputMode="numeric" placeholder="예: 900,000,000" className="jt-herocalc__field"
+          <JTNumericInput parseMoney={hcParse} id="hc-sale" type="text" inputMode="numeric" placeholder="예: 900,000,000" className="jt-herocalc__field"
             value={shown(salePrice, sale)}
             onChange={touched(e => setSalePrice(e.target.value))} />
           {salePrice && sale === null && <div className="jt-herocalc__hint">숫자로 적어 주세요 (「9억」도 됩니다)</div>}

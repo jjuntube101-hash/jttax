@@ -1,9 +1,9 @@
 /* @jsx React.createElement */
 /* 4대보험·실수령 계산기 — 월 급여(세전) → 4대보험 공제(요율) + 근로소득세(검증 엔진 /income 연→월) → 실수령액.
    4대보험 요율 = 2026년 기준(보건복지부·국민연금공단 공식 고시, 1차소스 확인 260624):
-   · 국민연금 근로자 4.75%(2026 9.5%의 1/2), 기준소득월액 하한 40만·상한 637만(2025.7~2026.6 고시)
+   · 국민연금 근로자 4.75%(2026 9.5%의 1/2), 기준소득월액 하한 41만·상한 659만(2026.7~2027.6 고시)
    · 건강보험 근로자 3.595%(2026 7.19%의 1/2)
-   · 장기요양 = 근로자 건강보험료 × 13.14%(2026)
+   · 장기요양 = 근로자 건강보험료 × (0.9448% / 7.19%), 각 보험료는 10원 미만 버림
    · 고용보험 근로자 0.9%(실업급여분)
    근로소득세 원천징수는 간이세액표 기준이나, 본 계산은 연 근로소득세(엔진)/12로 추정 → 연말정산으로 정산.
    공통 헬퍼(formatWon·JTReportShell·JTReportConvert·acqKoreanAmount)는 먼저 로드된 파일의 전역 사용. */
@@ -23,7 +23,11 @@ const INS_RATES_2026 = {
   pensionMax: 6590000,       // 기준소득월액 상한 (2026.7~2027.6 고시)
   pensionBoundsUntil: '2027-06-30',   // 이 날짜가 지나면 상·하한 갱신 필요
   health: 0.03595,           // 건강보험 (7.19%의 1/2)
-  longTermOfHealth: 0.1314,  // 장기요양 = 건강보험료 × 13.14%
+  // 보건복지부 고시 제2025-222호(2026 시행): 보수월액보험료 자체 상·하한의 근로자 절반.
+  healthMin: 10080,
+  healthMax: 4591740,
+  longTermOfHealth: 9448 / 71900,  // 장기요양 0.9448% / 건강 7.19%; 반올림된 13.14%를 계산에 쓰지 않는다.
+  longTermOfHealthFromNov: 0.1314, // 법률 제21690호 부칙 제3조: 2026년 11월분부터 비율 소수점 다섯째 자리 반올림.
   employment: 0.009,         // 고용보험 (실업급여분)
 };
 
@@ -90,22 +94,24 @@ function wonExact(n) {
   return Math.round(n).toLocaleString('ko-KR') + '원';
 }
 
-// 원 단위 절사 — 4대보험 보험료의 공식 산정규칙(원단위 미만 절사, 4대사회보험정보연계센터).
-// float 오차(예: 3,500,000×0.9%=31,499.9999…)는 전(0.01원) 단위로 스냅한 뒤 내림 → 31,500 보존.
+// 4대사회보험정보연계센터 모의계산과 동일하게 10원 미만을 버린다.
+// 소수 오차만 보정하고 9.999원 등을 10원으로 올리지 않는다.
 function floorWon(x) {
-  return Math.floor(Math.round(x * 100) / 100);
+  return Math.floor(x / 10 + 1e-8) * 10;
 }
 
 // 4대보험 근로자 부담분 (월) — 요율·산정규칙 1차소스(보건복지부·4대사회보험정보연계센터), 순수 계산
-function calcInsurance(monthly) {
+function calcInsurance(monthly, contributionMonth = new Date()) {
   const r = INS_RATES_2026;
   if (!(monthly > 0)) return { pension: 0, health: 0, longTerm: 0, employment: 0, total: 0, pensionCapped: false };
-  // 국민연금: 기준소득월액 = 보수월액의 천원 미만 절사(국민연금법 시행령 §5) 후 하한·상한(2025.7~2026.6 고시) 적용
+  // 국민연금: 기준소득월액 천원 미만 절사 후 하한·상한(2026.7~2027.6 고시) 적용
   const pensionBaseRaw = Math.floor(monthly / 1000) * 1000;
   const pensionBase = Math.min(Math.max(pensionBaseRaw, r.pensionMin), r.pensionMax);
-  const pension = floorWon(pensionBase * r.pension);                 // 원단위 절사
-  const health = floorWon(monthly * r.health);
-  const longTerm = floorWon(health * r.longTermOfHealth);            // 근로자 건강보험료 기준 × 13.14%
+  const pension = floorWon(pensionBase * r.pension);
+  const health = Math.min(r.healthMax, Math.max(r.healthMin, floorWon(monthly * r.health)));
+  const monthKey = contributionMonth.getFullYear() * 100 + contributionMonth.getMonth() + 1;
+  const longTermRatio = monthKey >= 202611 ? r.longTermOfHealthFromNov : r.longTermOfHealth;
+  const longTerm = floorWon(health * longTermRatio);
   const employment = floorWon(monthly * r.employment);
   const total = pension + health + longTerm + employment;
   /* 상·하한 고시 적용기간이 지났으면 «그 사실»을 결과에 실어 보낸다. 상·하한에 걸린
@@ -203,7 +209,7 @@ function JTReportInsurance({ setRoute, onBack }) {
         });
         const c = j && j.calc;
         // 수정 260628(INSURANCE-R2-02): 엔진 오류바디/부분응답 검증(세금0 거짓표시·경고 은폐 방지).
-        if (c && !c['오류'] && c['결정세액'] != null) {
+        if (window.jtValidCalc(c, ['결정세액', '지방소득세'])) {
           calc.taxYear = c['결정세액'] || 0;
           calc.localYear = c['지방소득세'] || 0;
           calc.taxMonthly = Math.round(calc.taxYear / 12);
@@ -340,7 +346,7 @@ function JTReportInsurance({ setRoute, onBack }) {
 
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="number" inputMode="numeric" placeholder={cur.placeholder || ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {insKoreanAmount(Number(answers[cur.id]))}</div>

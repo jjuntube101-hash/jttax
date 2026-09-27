@@ -228,8 +228,8 @@ function CrMoney({ value, onChange, placeholder, label }) {
   const [err, setErr] = useCrState('');
   return (
     <>
-      <input type="text" inputMode="numeric" placeholder={placeholder || ''} aria-label={label || placeholder || ''}
-        value={value ? (crMoneyDigits(value) === null ? String(value) : Number(crMoneyDigits(value) || 0).toLocaleString('ko-KR')) : ''}
+      <JTNumericInput type="text" inputMode="numeric" placeholder={placeholder || ''} aria-label={label || placeholder || ''}
+        value={value}
         onChange={(e) => {
           const d = crMoneyDigits(e.target.value);
           if (d === null) { setErr('숫자만 넣어 주세요 (원 단위).'); return; }

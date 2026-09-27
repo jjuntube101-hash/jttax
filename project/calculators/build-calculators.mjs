@@ -11,7 +11,7 @@
 //      - "지금 계산하기 →" 버튼 = SPA 계산기 딥링크(/#/report/<sub>)
 //   2. 루트 sitemap.xml 갱신 (공유 모듈 — 인사이트+계산기 자동 열거)
 
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readFile } from 'node:fs/promises';
 import { readdirSync, readFileSync } from 'node:fs';
 import { insightSlug } from '../_shared/insight-slug.mjs';
 import { join, dirname } from 'node:path';
@@ -357,15 +357,78 @@ function assertInsightLinks(html, where, have) {
   return html;
 }
 
+/* 계산기 랜딩은 SPA 해시 경로와 별개로 검색봇이 읽을 수 있는 대표 URL이다.
+   수기 특화 계산기(custom: true)는 이 생성기가 덮어쓰지 않으므로, 일반 생성 페이지와
+   같은 색인 필수 요소를 여기서 함께 검사한다. 새 계산기를 목록에만 추가하거나, 수기
+   페이지에서 canonical/구조화 데이터를 빼는 실수를 빌드 단계에서 막는다. */
+function assertCalculatorDefinitions() {
+  const slugs = new Set();
+  const subs = new Set();
+  for (const c of CALCULATORS) {
+    assertSlug(c.slug, 'calculators.data.mjs');
+    if (slugs.has(c.slug)) throw new Error(`[calculators.data.mjs] 중복 slug: ${c.slug}`);
+    if (!/^[a-z0-9-]+$/.test(String(c.sub || ''))) throw new Error(`[calculators.data.mjs] ${c.slug}: sub 형식 오류`);
+    if (subs.has(c.sub)) throw new Error(`[calculators.data.mjs] 중복 sub: ${c.sub}`);
+    for (const key of ['h1', 'metaTitle', 'metaDesc', 'lede']) {
+      if (!String(c[key] || '').trim()) throw new Error(`[calculators.data.mjs] ${c.slug}: ${key}가 비어 있습니다`);
+    }
+    slugs.add(c.slug);
+    subs.add(c.sub);
+  }
+}
+
+function jsonLdTypes(html, where) {
+  const found = [];
+  for (const m of html.matchAll(/<script\s+type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/gi)) {
+    try {
+      found.push(JSON.parse(m[1]));
+    } catch (e) {
+      throw new Error(`[${where}] JSON-LD 파싱 오류: ${e.message}`);
+    }
+  }
+  return found;
+}
+
+function assertCalculatorLandingSeo(c, html, where) {
+  const url = `${SITE}/calculators/${c.slug}.html`;
+  const required = [
+    [/<title>[^<]+<\/title>/i, 'title'],
+    [/<meta\s+name=["']description["']\s+content=["'][^"']{20,}["']\s*\/?>/i, 'description'],
+    [new RegExp(`<link\\s+rel=["']canonical["']\\s+href=["']${url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']\\s*\/?>`, 'i'), 'self canonical'],
+    [/<meta\s+property=["']og:url["']\s+content=["']https:\/\/www\.jttax\.co\.kr\/calculators\/[^"']+["']\s*\/?>/i, 'Open Graph URL'],
+    [/<h1(?:\s[^>]*)?>[\s\S]*?<\/h1>/i, 'H1'],
+    [new RegExp(`href=["']\/#\/report\/${c.sub}["']`), 'calculator SPA link'],
+    [/href=["']\/calculators\/["']/, 'calculator hub link'],
+  ];
+  for (const [pattern, label] of required) {
+    if (!pattern.test(html)) throw new Error(`[${where}] ${label} 누락`);
+  }
+  if (/<meta\s+name=["']robots["'][^>]*\bnoindex\b/i.test(html)) {
+    throw new Error(`[${where}] 색인 대상 랜딩에 noindex가 있습니다`);
+  }
+  const ld = jsonLdTypes(html, where);
+  const app = ld.find((x) => x['@type'] === 'WebApplication');
+  if (!app || app.url !== url) throw new Error(`[${where}] canonical과 일치하는 WebApplication JSON-LD가 없습니다`);
+  if (!ld.some((x) => x['@type'] === 'BreadcrumbList')) throw new Error(`[${where}] BreadcrumbList JSON-LD 누락`);
+}
+
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
+  assertCalculatorDefinitions();
   const haveInsights = insightSlugSet();
   let made = 0, kept = 0;
   for (const c of CALCULATORS) {
-    assertSlug(c.slug, 'calculators.data.mjs');
     // custom: true → 손으로 쓴 페이지. 덮어쓰면 연도별 비교표가 날아가므로 건드리지 않는다.
-    if (c.custom) { kept++; continue; }
-    await writeFile(join(OUT_DIR, `${c.slug}.html`), assertInsightLinks(renderCalcPage(c), `calculators/${c.slug}.html`, haveInsights));
+    if (c.custom) {
+      const path = join(OUT_DIR, `${c.slug}.html`);
+      const html = await readFile(path, 'utf8');
+      assertCalculatorLandingSeo(c, html, `calculators/${c.slug}.html`);
+      kept++;
+      continue;
+    }
+    const html = assertInsightLinks(renderCalcPage(c), `calculators/${c.slug}.html`, haveInsights);
+    assertCalculatorLandingSeo(c, html, `calculators/${c.slug}.html`);
+    await writeFile(join(OUT_DIR, `${c.slug}.html`), html);
     made++;
   }
   await writeFile(join(OUT_DIR, 'index.html'), renderIndexPage());

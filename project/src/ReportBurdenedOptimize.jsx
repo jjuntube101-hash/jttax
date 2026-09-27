@@ -194,7 +194,10 @@ function JTReportBurden({ setRoute, onBack }) {
       try {
         const j = await callOptimizeEng(body);
         const c = j && j.calc;
-        if (c && Array.isArray(c['시뮬레이션결과']) && c['시뮬레이션결과'].length && (c['채무없는경우세액'] || 0) > 0) {
+        if (window.jtValidCalc(c, ['채무없는경우세액', '최적총세부담', '최적채무비율', '절세액'])
+          && c['채무없는경우세액'] > 0 && c['최적채무비율'] <= 1
+          && Array.isArray(c['시뮬레이션결과']) && c['시뮬레이션결과'].length > 0
+          && c['시뮬레이션결과'].every(s => window.jtValidCalc(s, ['채무비율', '채무액', '증여세', '양도세', '취득세', '총세부담']))) {
           calc.noDebt = c['채무없는경우세액'] || 0;
           calc.optTotal = c['최적총세부담'] || 0;   // 🔒 상담 리드캡처에만
           calc.optRatio = c['최적채무비율'] || 0;    // 🔒 상담 리드캡처에만
@@ -344,7 +347,7 @@ function JTReportBurden({ setRoute, onBack }) {
 
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="number" inputMode="numeric" placeholder={cur.placeholder || ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {bgKorean(Number(answers[cur.id]))}</div>

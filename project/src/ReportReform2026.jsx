@@ -1,6 +1,6 @@
 /* @jsx React.createElement */
 /* ──────────────────────────────────────────────────────────────────────────
-   2026년 세제개편안(2026.8.3 재정경제부 발표) 반영 — 연도별 세액 비교 계산기 2종
+   2026년 세제개편안(8.3 발표 · 9.1 국무회의 수정 정부안) 반영 — 연도별 세액 비교 계산기 2종
      ① JTReportReformCGT  : 양도소득세  (현행 vs '27 vs '28 vs '29~)
      ② JTReportReformCRE  : 종합부동산세 (현행 vs '27 vs '28~)
 
@@ -10,7 +10,7 @@
       **프론트 오버레이(자체 계산)** 로 구현한다. 엔진 호출 없음.
    2) 개편안 수치는 아래 REFORM SSOT 한 곳에만 둔다. 국회 심의로 값이 바뀌면
       여기만 고친다. 모든 값에 «출처 PDF + 페이지» 를 병기한다.
-   3) 1차 소스 = 재정경제부 「2026년 세제개편안 개조식」(2026.8.3) p17~25.
+   3) 1차 소스 = 재정경제부 8.3 개조식 p17~25 + 9.1 국무회의 수정 정부안 첨부 3·4.
       법령이 아니므로 jt-law-mcp 조회 대상이 아니다.
 
    ⚠️ 이 계산기는 국회 통과 전 정부안 기준의 «비교 시뮬레이션» 이다.
@@ -64,7 +64,7 @@ const jtEokFmt = (n, eok) => {
 const rfEok = (n) => jtEokFmt(n, RF_EOK);
 
 /* ══════════════════════════════════════════════════════════════════════════
-   SSOT — 개편안 수치 (출처: 「2026년 세제개편안 개조식」 2026.8.3)
+   SSOT — 개편안 수치 (8.3 개조식 + 9.1 국무회의 수정 정부안)
    ══════════════════════════════════════════════════════════════════════════ */
 window.JT_REFORM_2026 = {
   /* ★ 260805 원문 전수 대조 완료 — 배포자료 4종(보도자료·개조식·상세본·문답자료) 실물 대조.
@@ -72,7 +72,7 @@ window.JT_REFORM_2026 = {
      대조로 «찾아낸 것»: 종부세 과세대상 문턱(§7①)이 코드에 통째로 빠져 있었다 → 아래 taxableThreshold.
      대조로 «확인한 것»: 장특공제 이원화 표·중과 완화율·세액공제율/한도·공정시장가액비율·
        세율표 7구간(6~12억 1.0→1.3% 포함)·기본공제 2,500만원 시행시기('27 양도분) 전부 일치. */
-  source: '재정경제부 「2026년 세제개편안」(2026.8.3 발표) — 개조식 p17~22 · 상세본 p56~72 · 문답 p39~40',
+  source: '재정경제부 「2026년 세제개편안」 8.3 발표 · 9.1 국무회의 수정 정부안(첨부 3·4번) 반영 — 국회 미확정',
   notice: '국회 심의·의결 전 «정부안» 입니다. 입법 과정에서 내용이 달라질 수 있습니다.',
 
   /* ── 소득세 기본세율 (소득세법 §55①, 양도소득 §104① 준용) — 현행, 개편 대상 아님 ── */
@@ -155,7 +155,7 @@ window.JT_REFORM_2026 = {
          · 1세대1주택자 : 공시가격 합계 14억원 초과 (거주 여부와 «무관»)
          · 그 외        : 공시가격 합계  9억원 초과 (현행 유지)
        ⚠️ 종전엔 이 단계가 아예 없어 «없는 세금»을 만들어 냈다 (260805 원문 대조에서 발견):
-         · 비거주 1주택 13억 → 기본공제 9억만 적용해 168만원. 실제는 14억 이하라 0원
+         · 비거주 1주택 13억 → 9.1 정부안의 기본공제 12억과 별개로 14억 이하라 0원
          · 2주택 합계 8억(비거주) → 공제 4억만 적용해 168만원. 실제는 9억 이하라 0원
        2026년(현행)은 이 조항이 없지만 기본공제 12억/9억이 같은 일을 하므로 null 로 둔다. */
     taxableThreshold: {
@@ -164,12 +164,12 @@ window.JT_REFORM_2026 = {
       2028: { one: 1400000000, multi: 900000000 },
     },
     /* 기본공제 (개조식 p18)
-       1주택: 현행 12억 → 거주용 14억 / 비거주 9억
+       1주택: 현행 12억 → 거주용 14억 / 비거주 12억 유지 (9.1 수정 정부안 첨부 3)
        그 외: 현행 9억 → 4억 + 5억 × (거주용주택가액 ÷ 주택가액합계액) */
     basicDeduct: {
       2026: { one: 1200000000, oneNonRes: 1200000000, multi: 900000000, multiFormula: false },
-      2027: { one: 1400000000, oneNonRes: 900000000, multi: 400000000, multiFormula: true, multiBonus: 500000000 },
-      2028: { one: 1400000000, oneNonRes: 900000000, multi: 400000000, multiFormula: true, multiBonus: 500000000 },
+      2027: { one: 1400000000, oneNonRes: 1200000000, multi: 400000000, multiFormula: true, multiBonus: 500000000 },
+      2028: { one: 1400000000, oneNonRes: 1200000000, multi: 400000000, multiFormula: true, multiBonus: 500000000 },
     },
     /* 공정시장가액비율 (개조식 p18)
        1세대1주택자·지방 1·2주택자 : 60% → ('27 이후) 70%
@@ -222,8 +222,8 @@ window.JT_REFORM_2026 = {
     creditRateCap: 0.80,
     /* 세액공제 «금액» 한도 신설 — 현행 없음 → '27 800만원 → '28 이후 600만원 */
     creditAmountCap: { 2026: null, 2027: 8000000, 2028: 6000000 },
-    /* 세부담 상한 150% → 200% (개조식 p19) — 직전연도 보유세를 모르면 적용 불가 */
-    burdenCap: { 2026: 1.50, 2027: 2.00, 2028: 2.00 },
+    /* 9.1 수정 정부안 첨부 4: 세부담 상한 150% 유지 — 계산에는 미반영 */
+    burdenCap: { 2026: 1.50, 2027: 1.50, 2028: 1.50 },
     /* 농어촌특별세 = 종합부동산세액의 20% (농특세법 §5①) — 현행, 개편 대상 아님 */
     ruralSurtaxRate: 0.20,
   },
@@ -432,6 +432,9 @@ function rfCalcCGT(input, year) {
    계산 엔진 — 종합부동산세
    ══════════════════════════════════════════════════════════════════════════ */
 function rfCalcCRE(input, year) {
+  if (input.ownershipScope && input.ownershipScope !== 'sole') {
+    return { year, requiresReview: true, total: null, reason: '공동명의·가족 별도 소유는 인별 계산과 특례 검토가 필요합니다.' };
+  }
   const R = window.JT_REFORM_2026, C = R.cre;
   const totalValue = rfPos(input.totalValue);
   const houses = input.houses || 'one';            // one | two | three
@@ -474,7 +477,7 @@ function rfCalcCRE(input, year) {
   if (isOne) {
     deduct = isRes ? bdCfg.one : bdCfg.oneNonRes;
     dNote = year === 2026 ? '1세대 1주택자 12억원'
-      : (isRes ? '거주용 1주택 — 14억원' : '비거주 1주택 — 9억원 (거주하지 않으면 공제 축소)');
+      : (isRes ? '거주용 1주택 — 14억원' : '비거주 1주택 — 12억원 유지 (9.1 수정 정부안)');
   } else if (bdCfg.multiFormula) {
     const ratio = totalValue > 0 ? Math.min(1, resValue / totalValue) : 0;
     deduct = bdCfg.multi + bdCfg.multiBonus * ratio;
@@ -1039,10 +1042,10 @@ function RfQuestion({ q, value, onChange, onChangeRaw, picks, onAdd, onRemove, b
         </div>
       ) : (
         <>
-          <input
+          <JTNumericInput money={!!q.money}
             className="jt-report-q__input" type="text" inputMode="decimal"
             aria-label={q.q}
-            value={q.money && value ? (rfMoneyDigits(value) === null ? String(value) : Number(rfMoneyDigits(value) || 0).toLocaleString('ko-KR')) : (value || '')}
+            value={value}
             placeholder={q.placeholder || ''}
             onChange={(e) => {
               const raw = String(e.target.value);
@@ -1407,21 +1410,24 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
    ② 2026 종부세 개편안 계산기
    ══════════════════════════════════════════════════════════════════════════ */
 const RF_CRE_QS = [
+  { id: 'ownershipScope', section: '소유관계 확인', q: '계산할 주택은 모두 본인 단독 명의이며, 배우자·세대원에게 다른 주택이 없나요?',
+    sub: '종부세는 납세자별로 계산하고, 1세대 1주택 특례 여부는 세대 전체를 확인합니다. 공동명의 또는 가족이 따로 소유한 주택이 있으면 인별 주택 수·지분과 특례를 나눠 검토해야 하므로 상담으로 안내합니다.',
+    opts: [['sole', '예 — 본인 단독 명의만 보유', '이 계산기로 비교'], ['shared', '공동명의 또는 가족 소유 주택이 있음', '인별 계산·특례 상담']] },
   /* ⚠️ 「1채」 하나로 1세대1주택 공제·세액공제가 통째로 갈리는데, 세대 판정은 사람마다
      오해가 크다. 특히 «배우자는 주소가 달라도 같은 세대»다(종부세법 시행령 §2의3① —
      세대원 중 1명만이 1주택을 소유해야 1세대1주택자). 별거 중이라 각자 1채인 부부가
      「1채」를 고르면 공제 14억·세액공제까지 붙어 세금이 크게 낮게 나온다 (260805 R25 P1).
      판정 자체를 자동화하지 않고 — 자동화하면 오히려 틀린 확신을 준다 — 문항에서
      기준을 명시하고, 아래 「반영하지 않은 것」에 공동명의 특례 미반영을 함께 적는다. */
-  { id: 'houses', section: '주택 보유 현황', q: '세대가 가진 집은 몇 채인가요?',
-    sub: '종합부동산세는 매년 6월 1일 기준으로 «세대»가 가진 주택의 공시가격을 모두 더해 계산합니다. 본인·배우자·같이 사는 가족의 집을 모두 세세요. ★ 배우자는 주소가 달라도(따로 살아도) 같은 세대로 봅니다 — 부부가 각자 1채면 「2채」입니다. 부부 공동명의 1주택은 지분별 과세가 원칙이고 별도 신청을 해야 1주택자 특례를 받으므로, 이 계산기 결과와 다를 수 있습니다.',
+  { id: 'houses', section: '주택 보유 현황', q: '본인 단독 명의로 가진 집은 몇 채인가요?',
+    sub: '매년 6월 1일 기준 본인 소유 주택을 세세요. 이 계산기는 위에서 본인 단독 명의이며 세대원의 다른 주택이 없다고 확인한 경우에 사용합니다. 배우자는 주소가 달라도 같은 세대이므로, 배우자 소유 주택이 있으면 소유관계 문항에서 상담 대상을 선택하세요.',
     opts: [['one', '1채 (1세대 1주택)', "공제 확대 — 거주하면 14억원"], ['two', '2채', ''], ['three', '3채 이상', '높은 세율·공정비율 적용']] },
-  { id: 'totalValue', section: '공시가격 합계', q: '가진 집들의 공시가격을 모두 더하면 얼마인가요? (원)', money: true, placeholder: '예: 1,800,000,000',
+  { id: 'totalValue', section: '공시가격 합계', q: '본인 단독 명의 주택의 공시가격 합계는 얼마인가요? (원)', money: true, placeholder: '예: 1,800,000,000',
     addr: 'priceAdd',
     sub: '실거래가가 아니라 정부가 매년 발표하는 «공시가격»입니다. 여러 채라면 아래 주소 조회를 «한 채씩 이어서» 하시면 합계에 더해집니다. 부동산공시가격알리미(realtyprice.kr)에서 직접 확인할 수도 있습니다.' },
   { id: 'isResident', section: '거주 여부', q: '그 집에 본인(세대)이 실제로 살고 있나요?', showIf: (a) => a.houses === 'one',
-    sub: '★ 이번 개편의 핵심입니다. 살고 있으면 공제가 12억 → 14억으로 늘고, 살지 않으면 12억 → 9억으로 줄어듭니다.',
-    opts: [['yes', '예 — 거주 중', '공제 14억원'], ['no', '아니오 — 비거주', '공제 9억원 (세금이 크게 늘어남)']] },
+    sub: '9월 1일 수정 정부안은 거주 1주택 공제를 14억원으로 늘리고, 비거주 1주택은 현행 12억원을 유지합니다. 아직 국회에서 확정된 법령은 아닙니다.',
+    opts: [['yes', '예 — 거주 중', '공제 14억원'], ['no', '아니오 — 비거주', '공제 12억원 유지']] },
   { id: 'residentValue', section: '거주용 주택 가액', q: '그중 «본인이 사는 집»의 공시가격은 얼마인가요? (원)', money: true, placeholder: '예: 900,000,000', allowZero: true,
     addr: 'price',
     check: (v, a) => (rfNum(v) > rfNum(a.totalValue) ? '거주용 주택 가액이 전체 합계보다 클 수는 없습니다.' : null),
@@ -1469,7 +1475,10 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
 
 
   let invalid = null;
-  if (!rfNum(answers.totalValue)) invalid = '공시가격 합계를 넣어 주세요.';
+  if (answers.ownershipScope !== 'sole') invalid = answers.ownershipScope === 'shared'
+    ? '공동명의·가족 별도 소유는 인별 계산과 특례 확인이 필요합니다. 아래 상담 예약에서 확인해 주세요.'
+    : '본인 단독 명의와 세대원의 주택 보유 여부를 먼저 확인해 주세요.';
+  else if (!rfNum(answers.totalValue)) invalid = '공시가격 합계를 넣어 주세요.';
   else if (answers.houses !== 'one' && (answers.residentValue == null || answers.residentValue === '')) invalid = '거주용 주택의 공시가격을 넣어 주세요. 아무 집에도 살지 않으면 0을 넣으세요.';
   else if (rfNum(answers.residentValue) > rfNum(answers.totalValue)) invalid = '거주용 주택 가액이 전체 합계보다 클 수는 없습니다.';
   else if (answers.houses === 'one' && (answers.holdYears == null || answers.holdYears === '')) invalid = '보유기간을 넣어 주세요.';
@@ -1477,6 +1486,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
   else if (rfNum(answers.resYears) > rfNum(answers.holdYears)) invalid = '거주기간이 보유기간보다 길 수는 없습니다.';
 
   const run = () => {
+    if (invalid) return;
     const rs = [2026, 2027, 2028].map((y) => {
       const r = rfCalcCRE(rfShiftYears(answers, y, 2026), y);
       r.label = y === 2026 ? '2026년 (현행)' : (y === 2028 ? '2028년 이후' : '2027년');
@@ -1487,6 +1497,14 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
     try { window.jtTrackCta && window.jtTrackCta('calc_run', 'reform_cre'); } catch (e) {}
     setTimeout(() => { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }, 30);
   };
+
+  if (answers.ownershipScope === 'shared') {
+    return <JTReportShell title="소유관계별 검토가 필요합니다" subtitle="종부세는 납세자별로 계산합니다" stepIdx={0} stepTotal={1} onBack={onBack} tag="2026 세제개편안">
+      <p style={{ lineHeight: 1.8 }}>공동명의·배우자나 세대원 명의의 주택이 있으면 본인 지분의 공시가격, 인별 주택 수와 1세대 1주택 특례를 구분해야 합니다. 가족 전체의 공시가격을 합산한 예상 세액을 표시하지 않습니다.</p>
+      <button className="jt-btn jt-btn--ghost" onClick={() => onChange('ownershipScope', '')}>소유관계 다시 선택</button>
+      <JTReportCta setRoute={setRoute} calcId="reform-cre" completeEligible={false} />
+    </JTReportShell>;
+  }
 
   if (!result) {
     return (
@@ -1545,7 +1563,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
             {v.anyNotTaxable && v.kind !== 'none' &&
               <> 공시가격 합계가 과세 문턱({answers.houses === 'one' ? '14억원' : '9억원'})을 넘지 않는 해에는 종부세가 아예 없습니다.</>}
             {v.diff > 0 && answers.houses === 'one' && answers.isResident === 'no' &&
-              ' 지금 그 집에 살지 않으시는데, 개편안은 비거주 1주택의 공제를 12억원에서 9억원으로 줄입니다 — 이것이 증가의 가장 큰 원인입니다.'}
+              ' 비거주 1주택의 기본공제는 9월 1일 수정 정부안에서 12억원으로 유지됩니다. 세액 차이에는 공정시장가액비율·세율·세액공제 변경이 반영돼 있습니다.'}
             {v.diff < 0 && answers.houses === 'one' && answers.isResident !== 'no' &&
               ' 실제 거주 중이시라 공제가 12억원에서 14억원으로 늘어나는 혜택을 받습니다.'}
           </p>
@@ -1590,12 +1608,12 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
         <section className="jt-report-result__section" style={{ background: '#f7f5f0', padding: '15px 18px', borderRadius: 8 }}>
           <h3 style={{ fontSize: 15.5, marginBottom: 8 }}>개편안 핵심 — 「주택 수」에서 「가액과 거주」로</h3>
           <ul style={{ margin: 0, paddingLeft: 19, fontSize: 14, lineHeight: 1.85 }}>
-            <li>1세대 1주택 기본공제가 <strong>거주하면 14억원, 살지 않으면 9억원</strong>으로 갈립니다(현행은 일률 12억원).</li>
+            <li>9월 1일 수정 정부안은 1세대 1주택 기본공제를 <strong>거주하면 14억원, 비거주는 현행 12억원 유지</strong>로 정했습니다.</li>
             <li>다주택자 공제는 <strong>4억원 + 5억원 × (거주용 주택가액 ÷ 합계)</strong> 산식으로 바뀝니다 — 사는 집의 비중이 클수록 공제가 커집니다.</li>
             <li>공정시장가액비율이 60%에서 2027년 70%, 2028년에는 3주택 이상·조정대상지역 보유자는 80%까지 오릅니다.</li>
             <li>세율이 <strong>「주택 수 기준」에서 「주택 가액 기준」으로 일원화</strong>됩니다(2028년~). 과세표준 6~12억원 구간은 1.0% → 1.3%로 오릅니다.</li>
             <li>세액공제도 보유 → 거주 기준으로 바뀌고, 공제 «금액» 한도가 새로 생깁니다(2027년 800만원 → 2028년 이후 600만원).</li>
-            <li>세부담 상한은 150% → 200%로 올라갑니다.</li>
+            <li>세부담 상한은 9월 1일 수정 정부안에서 <strong>150%로 현행 유지</strong>합니다(본 비교 계산에는 미반영).</li>
           </ul>
         </section>
 
@@ -1603,7 +1621,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
           <strong style={{ display: 'block', marginBottom: 6 }}>이 계산에 반영하지 않은 것</strong>
           <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.7 }}>
             <strong>재산세 중복분 공제</strong>(종부세 과세표준에 이미 부과된 재산세를 빼 주는 제도)와 <strong>세부담 상한</strong>은 직전연도 보유세를 알아야 계산되므로 반영하지 않았습니다 — 실제 고지세액은 여기 금액보다 낮게 나옵니다.
-            <strong>부부 공동명의</strong> 1주택은 이 계산기가 「1세대 1주택자 특례를 신청한 경우」(거주 14억·비거주 9억 공제)로 계산합니다 — 특례를 신청하지 않고 <strong>부부가 각자 납부</strong>하면 지분별로 나눠 거주 시 각 9억원, 비거주 시 각 4억원을 공제하므로 결과가 달라집니다.
+            <strong>공동명의·세대원 별도 소유 주택</strong>은 이 계산기의 지원 범위 밖입니다. 9월 1일 수정 정부안에서 부부 공동명의 1주택을 특례 신청 없이 각자 과세할 때 비거주 공제는 각 6억원(거주 각 9억원)으로 바뀌었으므로, 소유 지분과 특례 신청 여부를 상담에서 확인해야 합니다.
             합산배제 임대주택·사원용 주택, 지방 저가주택·세컨드홈 특례도 반영하지 않았습니다.
             재산세 공제까지 반영한 현행법 기준 금액은 <a href="#/report/comprehensive" style={{ textDecoration: 'underline', fontWeight: 700 }}>종합부동산세 계산기</a>에서 확인하세요.
           </p>

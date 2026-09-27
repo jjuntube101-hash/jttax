@@ -907,7 +907,8 @@ function JTReportCGT({ setRoute, onBack }) {
       try {
         const ej = await callTransferEngine(answers);
         const c = ej && ej.calc;
-        if (c) {
+        if (window.jtValidCalc(c, ['과세표준', '세액', '지방소득세', '총세부담', '장기보유특별공제', '기본공제'])
+          && Number.isFinite(c['양도차익'])) {
           calc.capGain = c['양도차익'];
           calc.taxBase = c['과세표준'];
           calc.ltDeduction = c['장기보유특별공제'];
@@ -1490,12 +1491,12 @@ cautions 3개, saving_ideas 2~3개.`;
           )}
 
           {cur.numeric && (
-            <input
+            <JTNumericInput
               className="jt-report-q__input"
               type="text"
               inputMode="numeric"
               placeholder={cur.placeholder}
-              value={answers[cur.id] ? Number(answers[cur.id]).toLocaleString('ko-KR') : ''}
+              value={answers[cur.id]}
               onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)}
             />
           )}

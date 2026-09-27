@@ -569,7 +569,7 @@ function JTReportGift({ setRoute, onBack }) {
           const ej = await callGiftEngine(mapAnswersToBurdenedGift(answers), '/v1/calc/burdened-gift');
           const c = ej && ej.calc;
           // 수정 260628(GIFT-R2-02): 엔진 오류바디/부분응답을 precise로 신뢰하지 않음(세액0 거짓표시 방지).
-          if (c && !c['오류'] && c['총세부담'] != null && c['증여세'] != null && c['양도세'] != null && c['취득세'] != null) {
+          if (window.jtValidCalc(c, ['총세부담', '증여세', '양도세', '취득세'])) {
             calc.giftTax = c['증여세']; calc.transferTax = c['양도세']; calc.acqTax = c['취득세'];
             calc.totalTax = c['총세부담']; calc.debtRatio = c['채무비율']; calc.debtRecognized = c['채무인정여부'];
             calc.engineWarnings = c['경고사항'] || [];
@@ -594,7 +594,7 @@ function JTReportGift({ setRoute, onBack }) {
           const ej = await callGiftEngine(mapAnswersToGift(answers), '/v1/calc/gift');
           const c = ej && ej.calc;
           // 수정 260628(GIFT-R2-02): 엔진 오류바디/부분응답 검증 — 미충족 시 간이폴백 유지.
-          if (c && !c['오류'] && c['과세표준'] != null && c['산출세액'] != null && c['세액'] != null) {
+          if (window.jtValidCalc(c, ['과세표준', '산출세액', '세액'])) {
             calc.taxBase = c['과세표준']; calc.calcTax = c['산출세액'];
             calc.genSkipSurcharge = c['세대생략할증'] || 0; calc.filingCredit = c['신고세액공제'] || 0;
             calc.totalTax = c['세액'];
@@ -853,8 +853,8 @@ function JTReportGift({ setRoute, onBack }) {
           )}
 
           {cur.numeric && (
-            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
-              value={answers[cur.id] ? Number(answers[cur.id]).toLocaleString('ko-KR') : ''}
+            <JTNumericInput className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
+              value={answers[cur.id]}
               onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)} />
           )}
           {cur.numeric && cur.money && Number(answers[cur.id]) > 0 && (

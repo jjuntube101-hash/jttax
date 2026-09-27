@@ -894,7 +894,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       try {
         const ej = await callAcqEngine(mapAnswersToAcquisition(answers));
         const c = ej && ej.calc;
-        if (c) {
+        if (window.jtValidCalc(c, ['세액', '취득세', '지방교육세', '농어촌특별세', '과세표준'])) {
           calc.totalTax = c['세액']; calc.acqTax = c['취득세']; calc.eduTax = c['지방교육세'];
           calc.farmTax = c['농어촌특별세'] || 0; calc.taxBase = c['과세표준']; calc.appliedRate = c['적용세율'];
           calc.heavyApplied = c['중과여부']; calc.heavyReason = c['중과사유']; calc.housingNum = c['주택수'];
@@ -1246,8 +1246,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
             </div>
           )}
           {cur.numeric && (
-            <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
-              value={answers[cur.id] ? (cur.money ? Number(answers[cur.id]).toLocaleString('ko-KR') : answers[cur.id]) : ''}
+            <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
+              value={answers[cur.id]}
               onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)} />
           )}
           {cur.numeric && cur.money && Number(answers[cur.id]) > 0 && (

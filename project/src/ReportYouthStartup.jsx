@@ -381,8 +381,14 @@ function JTReportYouthStartup({ setRoute, onBack }) {
       const body = mapAnswersToYouth(answers, industryMatch, regionInfo);
       const ej = await callYouthEngine(body);
       const calc = ej && ej.calc;
-      // 260906 Codex R2-F3 — 빈 객체 {} 도 «결과 없음»으로 본다(undefined 감면율 렌더·calc_complete 오발화 방지)
-      if (!calc || typeof calc !== 'object' || !Object.keys(calc).length) throw new Error('판정 결과를 받지 못했습니다.');
+      if (calc && calc.status === 'input_required') {
+        setErr(calc.message || '창업일 등 필수 입력을 확인해 주세요.');
+        return;
+      }
+      // 오류 객체나 일부 필드만 받은 응답을 감면 진단 성공으로 표시하지 않는다.
+      if (!window.jtValidCalc(calc, ['reduction_rate']) || calc.reduction_rate > 100
+        || !['eligible', 'conditional', 'ineligible'].includes(calc.status)
+        || typeof calc.eligible !== 'boolean' || !Array.isArray(calc.gates)) throw new Error('판정 결과를 받지 못했습니다.');
       const rep = { calc, quick: phase === 'quick' };
       setReport(rep);
       if (phase === 'quick') setQuickReport(rep);
@@ -740,8 +746,8 @@ function JTReportYouthStartup({ setRoute, onBack }) {
 
           {cur.numeric && !cur.custom && (
             <div>
-              <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
-                value={answers[cur.id] ? (cur.money ? Number(answers[cur.id]).toLocaleString('ko-KR') : answers[cur.id]) : ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
+                value={answers[cur.id]}
                 onChange={e => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)} />
             </div>
           )}

@@ -853,7 +853,26 @@ function useSeoMeta(route) {
       setMeta("og:title", title, "property");
       setMeta("og:description", desc, "property");
       const hashPath = window.JTRouter ? window.JTRouter.build(key, sub) : key === "home" ? "#/" : "#/" + key;
-      setMeta("og:url", `${seo.siteUrl}/${hashPath === "#/" ? "" : hashPath}`, "property");
+      const calculatorLandings = {
+        cgt: "capital-gains-tax",
+        gift: "gift-tax",
+        inheritance: "inheritance-tax",
+        acquisition: "acquisition-tax",
+        property: "property-tax",
+        comprehensive: "comprehensive-real-estate-tax",
+        income: "income-tax",
+        vat: "value-added-tax",
+        corporate: "incorporation-simulator",
+        insurance: "net-salary",
+        compare: "disposal-comparison",
+        burden: "burdened-gift-simulator",
+        youthstartup: "youthstartup",
+        crypto: "crypto-tax-2027",
+        "reform-cgt": "2026-tax-reform-capital-gains",
+        "reform-cre": "2026-tax-reform-property-tax"
+      };
+      const canonicalUrl = key === "report" ? `${seo.siteUrl}/calculators/${calculatorLandings[sub] ? calculatorLandings[sub] + ".html" : ""}` : `${seo.siteUrl}/${hashPath === "#/" ? "" : hashPath}`;
+      setMeta("og:url", canonicalUrl, "property");
       try {
         let can = document.querySelector('link[rel="canonical"]');
         if (!can) {
@@ -861,7 +880,7 @@ function useSeoMeta(route) {
           can.setAttribute("rel", "canonical");
           document.head.appendChild(can);
         }
-        can.setAttribute("href", `${seo.siteUrl}/${hashPath === "#/" ? "" : hashPath}`);
+        can.setAttribute("href", canonicalUrl);
       } catch (e) {
       }
       setMeta("twitter:title", title);
@@ -1112,8 +1131,9 @@ function JTHeroCalc() {
       })
     }
   )), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", { className: "jt-herocalc__label", htmlFor: "hc-acq" }, "\uCDE8\uB4DD\uAC00"), /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      parseMoney: hcParse,
       id: "hc-acq",
       type: "text",
       inputMode: "numeric",
@@ -1123,8 +1143,9 @@ function JTHeroCalc() {
       onChange: touched((e) => setAcqPrice(e.target.value))
     }
   ), acqPrice && acq === null && /* @__PURE__ */ React.createElement("div", { className: "jt-herocalc__hint" }, "\uC22B\uC790\uB85C \uC801\uC5B4 \uC8FC\uC138\uC694 (\u300C5\uC5B5\u300D\xB7\u300C5\uC5B5 3000\uB9CC\u300D\uB3C4 \uB429\uB2C8\uB2E4)"), acq > 0 && /* @__PURE__ */ React.createElement("div", { className: "jt-herocalc__read" }, hcReadable(acq))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("label", { className: "jt-herocalc__label", htmlFor: "hc-sale" }, "\uC591\uB3C4\uAC00"), /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      parseMoney: hcParse,
       id: "hc-sale",
       type: "text",
       inputMode: "numeric",
@@ -1721,13 +1742,45 @@ window.JTLegal = JTLegal;
 
 
 /* ────────── Report.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __objRest = (source, exclude) => {
+  var target = {};
+  for (var prop in source)
+    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+      target[prop] = source[prop];
+  if (source != null && __getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(source)) {
+      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+        target[prop] = source[prop];
+    }
+  return target;
+};
 const { useState: useReportState, useEffect: useReportEffect, useMemo: useReportMemo } = React;
 window.jtMoneyDigits = function(raw) {
   var s = String(raw == null ? "" : raw).normalize("NFKC").trim();
   if (s === "") return "";
   s = s.replace(/^₩\s*/, "").replace(/\s*원$/, "").trim();
   if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d*)?$/.test(s)) return null;
-  return s.replace(/,/g, "").split(".")[0].replace(/^0+(?=\d)/, "");
+  var digits = s.replace(/,/g, "").split(".")[0].replace(/^0+(?=\d)/, "");
+  return Number.isSafeInteger(Number(digits)) ? digits : null;
 };
 window.jtDecimalInput = function(raw) {
   var s = String(raw == null ? "" : raw).normalize("NFKC").trim();
@@ -1739,6 +1792,135 @@ window.jtSetNumericAns = function(setAns, id, raw, isMoney) {
   var v = isMoney ? window.jtMoneyDigits(raw) : window.jtDecimalInput(raw);
   if (v !== null) setAns(id, v);
 };
+window.jtFormatMoneyInput = function(raw) {
+  var digits = window.jtMoneyDigits(raw);
+  return digits === null ? String(raw == null ? "" : raw) : digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+window.jtMoneyCaret = function(formatted, digitCount) {
+  if (digitCount <= 0) return 0;
+  var seen = 0;
+  for (var i = 0; i < formatted.length; i++) {
+    if (/\d/.test(formatted[i]) && ++seen >= digitCount) return i + 1;
+  }
+  return formatted.length;
+};
+function JTNumericInput(_a) {
+  var _b = _a, { money = true, value, onChange, parseMoney } = _b, props = __objRest(_b, ["money", "value", "onChange", "parseMoney"]);
+  const [error, setError] = useReportState("");
+  const [fractionDraft, setFractionDraft] = useReportState(null);
+  const shown = money && fractionDraft !== null ? fractionDraft : money ? window.jtFormatMoneyInput(value) : value == null ? "" : String(value);
+  const accept = function(event, raw, digitCount) {
+    var normalized = money ? window.jtMoneyDigits(raw) : window.jtDecimalInput(raw);
+    if (normalized === null && money && parseMoney && /[억만]/.test(raw) && !/[,，]/.test(raw)) {
+      var parsed = parseMoney(raw);
+      if (parsed !== null && Number.isSafeInteger(parsed) && parsed >= 0) normalized = String(parsed);
+    }
+    if (normalized === null) {
+      setError(money ? "\uC6D0 \uB2E8\uC704 \uC22B\uC790\uB97C \uB123\uC5B4 \uC8FC\uC138\uC694. \uC74C\uC218\xB7\uC9C0\uC218\uD45C\uAE30\uB294 \uC785\uB825\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4." : "\uC22B\uC790\uC640 \uC18C\uC218\uC810 \uD558\uB098\uB9CC \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+      event.target.value = shown;
+      return;
+    }
+    setError("");
+    setFractionDraft(null);
+    const el = event.target;
+    el.value = normalized;
+    if (onChange) onChange(event);
+    if (!money) return;
+    const formatted = window.jtFormatMoneyInput(normalized);
+    el.value = formatted;
+    const caret = window.jtMoneyCaret(formatted, digitCount);
+    if (typeof el.setSelectionRange === "function") {
+      el.setSelectionRange(caret, caret);
+      if (typeof requestAnimationFrame === "function") requestAnimationFrame(function() {
+        if (el.value === formatted && (typeof document === "undefined" || document.activeElement === el)) el.setSelectionRange(caret, caret);
+      });
+    }
+  };
+  const change = function(event) {
+    const raw = event.target.value;
+    const position = event.target.selectionStart == null ? raw.length : event.target.selectionStart;
+    const digitsBefore = raw.slice(0, position).normalize("NFKC").replace(/[^0-9]/g, "").length;
+    const native = event.nativeEvent || event;
+    const inputType = native.inputType || "";
+    const bulkInsert = /^(?:insertFromPaste|insertFromDrop|insertReplacementText)$/.test(inputType) || typeof native.data === "string" && native.data.length > 1;
+    var edited = money && !bulkInsert ? raw.replace(/,/g, "") : raw;
+    var caretDigits = digitsBefore;
+    if (money && !bulkInsert && edited.normalize("NFKC").indexOf(".") >= 0 && (window.jtMoneyDigits(edited) !== null || /^\.\d*$/.test(edited.normalize("NFKC")))) {
+      setError("");
+      const draft = raw.normalize("NFKC").replace(/^\./, "0.");
+      setFractionDraft(draft);
+      const el = event.target;
+      const selectionStart = el.selectionStart;
+      const selectionEnd = el.selectionEnd;
+      el.value = window.jtMoneyDigits(draft.replace(/,/g, ""));
+      if (onChange) onChange(event);
+      el.value = draft;
+      if (typeof el.setSelectionRange === "function" && selectionStart !== null) {
+        const offset = draft.length - raw.length;
+        el.setSelectionRange(selectionStart + offset, selectionEnd + offset);
+      }
+      return;
+    }
+    if (money && /^deleteContent(?:Backward|Forward)$/.test(inputType) && raw.length < shown.length && edited === shown.replace(/,/g, "")) {
+      const index = inputType === "deleteContentBackward" ? digitsBefore - 1 : digitsBefore;
+      if (index >= 0 && index < edited.length) {
+        edited = edited.slice(0, index) + edited.slice(index + 1);
+        caretDigits = inputType === "deleteContentBackward" ? Math.max(0, digitsBefore - 1) : digitsBefore;
+      }
+    }
+    accept(event, edited, caretDigits);
+  };
+  const paste = function(event) {
+    if (!money) return;
+    event.preventDefault();
+    const pasted = event.clipboardData.getData("text");
+    var normalized = window.jtMoneyDigits(pasted);
+    if (normalized === null && parseMoney && /[억만]/.test(pasted) && !/[,，]/.test(pasted)) {
+      const parsed = parseMoney(pasted);
+      if (parsed !== null && Number.isSafeInteger(parsed) && parsed >= 0) normalized = String(parsed);
+    }
+    if (normalized === null) {
+      setError("\uBD99\uC5EC\uB123\uC740 \uAE08\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC608: 1,234,567\uC6D0");
+      return;
+    }
+    const el = event.target;
+    const start = el.selectionStart == null ? 0 : el.selectionStart;
+    const end = el.selectionEnd == null ? el.value.length : el.selectionEnd;
+    const left = el.value.slice(0, start).replace(/,/g, "");
+    const right = el.value.slice(end).replace(/,/g, "");
+    accept(event, left + normalized + right, left.length + normalized.length);
+  };
+  const blur = function(event) {
+    if (money && fractionDraft !== null) {
+      const integer = fractionDraft.normalize("NFKC").split(".")[0].replace(/[^0-9]/g, "");
+      accept(event, fractionDraft, integer.length);
+    }
+    if (props.onBlur) props.onBlur(event);
+  };
+  const keyDown = function(event) {
+    if (event.key === "Enter" && money && fractionDraft !== null) {
+      const integer = fractionDraft.normalize("NFKC").split(".")[0].replace(/[^0-9]/g, "");
+      accept(event, fractionDraft, integer.length);
+    }
+    if (props.onKeyDown) props.onKeyDown(event);
+  };
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement("input", __spreadProps(__spreadValues({}, props), {
+      type: "text",
+      inputMode: money ? "numeric" : "decimal",
+      value: shown,
+      onChange: change,
+      onPaste: paste,
+      onBlur: blur,
+      onKeyDown: keyDown,
+      "aria-invalid": error ? true : void 0
+    })),
+    error && React.createElement("span", { role: "alert", style: { display: "block", fontSize: 13, marginTop: 4 } }, error)
+  );
+}
+window.JTNumericInput = JTNumericInput;
 window.jtFallbackGaps = function(checks) {
   return (checks || []).filter(function(c) {
     return c && c.when;
@@ -1848,8 +2030,8 @@ function JTReportCta({ setRoute, calcId, completeEligible, precise, quick }) {
 window.JTReportCta = JTReportCta;
 if (typeof window !== "undefined" && !window.jtValidCalc) {
   window.jtValidCalc = function(c, requiredKeys) {
-    if (!c || typeof c !== "object") return false;
-    if (c.error || c.errors || c.detail) return false;
+    if (!c || typeof c !== "object" || Array.isArray(c)) return false;
+    if (c["\uC624\uB958"] || c.error || c.errors || c.detail || c.success === false) return false;
     const keys = requiredKeys && requiredKeys.length ? requiredKeys : ["\uCD1D\uC138\uBD80\uB2F4"];
     return keys.every(function(k) {
       const v = c[k];
@@ -3496,7 +3678,7 @@ function JTReportCGT({ setRoute, onBack }) {
       try {
         const ej = await callTransferEngine(answers);
         const c = ej && ej.calc;
-        if (c) {
+        if (window.jtValidCalc(c, ["\uACFC\uC138\uD45C\uC900", "\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4", "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C", "\uAE30\uBCF8\uACF5\uC81C"]) && Number.isFinite(c["\uC591\uB3C4\uCC28\uC775"])) {
           calc.capGain = c["\uC591\uB3C4\uCC28\uC775"];
           calc.taxBase = c["\uACFC\uC138\uD45C\uC900"];
           calc.ltDeduction = c["\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C"];
@@ -3827,13 +4009,13 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
         onChange: (e) => setAns(cur.id, e.target.value)
       }
     ), cur.numeric && /* @__PURE__ */ React.createElement(
-      "input",
+      JTNumericInput,
       {
         className: "jt-report-q__input",
         type: "text",
         inputMode: "numeric",
         placeholder: cur.placeholder,
-        value: answers[cur.id] ? Number(answers[cur.id]).toLocaleString("ko-KR") : "",
+        value: answers[cur.id],
         onChange: (e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)
       }
     ), cur.date && /* @__PURE__ */ React.createElement(
@@ -3918,7 +4100,7 @@ window.JT_REFORM_2026 = {
      대조로 «찾아낸 것»: 종부세 과세대상 문턱(§7①)이 코드에 통째로 빠져 있었다 → 아래 taxableThreshold.
      대조로 «확인한 것»: 장특공제 이원화 표·중과 완화율·세액공제율/한도·공정시장가액비율·
        세율표 7구간(6~12억 1.0→1.3% 포함)·기본공제 2,500만원 시행시기('27 양도분) 전부 일치. */
-  source: "\uC7AC\uC815\uACBD\uC81C\uBD80 \u300C2026\uB144 \uC138\uC81C\uAC1C\uD3B8\uC548\u300D(2026.8.3 \uBC1C\uD45C) \u2014 \uAC1C\uC870\uC2DD p17~22 \xB7 \uC0C1\uC138\uBCF8 p56~72 \xB7 \uBB38\uB2F5 p39~40",
+  source: "\uC7AC\uC815\uACBD\uC81C\uBD80 \u300C2026\uB144 \uC138\uC81C\uAC1C\uD3B8\uC548\u300D 8.3 \uBC1C\uD45C \xB7 9.1 \uAD6D\uBB34\uD68C\uC758 \uC218\uC815 \uC815\uBD80\uC548(\uCCA8\uBD80 3\xB74\uBC88) \uBC18\uC601 \u2014 \uAD6D\uD68C \uBBF8\uD655\uC815",
   notice: "\uAD6D\uD68C \uC2EC\uC758\xB7\uC758\uACB0 \uC804 \xAB\uC815\uBD80\uC548\xBB \uC785\uB2C8\uB2E4. \uC785\uBC95 \uACFC\uC815\uC5D0\uC11C \uB0B4\uC6A9\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
   /* ── 소득세 기본세율 (소득세법 §55①, 양도소득 §104① 준용) — 현행, 개편 대상 아님 ── */
   incomeBrackets: [
@@ -4003,7 +4185,7 @@ window.JT_REFORM_2026 = {
          · 1세대1주택자 : 공시가격 합계 14억원 초과 (거주 여부와 «무관»)
          · 그 외        : 공시가격 합계  9억원 초과 (현행 유지)
        ⚠️ 종전엔 이 단계가 아예 없어 «없는 세금»을 만들어 냈다 (260805 원문 대조에서 발견):
-         · 비거주 1주택 13억 → 기본공제 9억만 적용해 168만원. 실제는 14억 이하라 0원
+         · 비거주 1주택 13억 → 9.1 정부안의 기본공제 12억과 별개로 14억 이하라 0원
          · 2주택 합계 8억(비거주) → 공제 4억만 적용해 168만원. 실제는 9억 이하라 0원
        2026년(현행)은 이 조항이 없지만 기본공제 12억/9억이 같은 일을 하므로 null 로 둔다. */
     taxableThreshold: {
@@ -4012,12 +4194,12 @@ window.JT_REFORM_2026 = {
       2028: { one: 14e8, multi: 9e8 }
     },
     /* 기본공제 (개조식 p18)
-       1주택: 현행 12억 → 거주용 14억 / 비거주 9억
+       1주택: 현행 12억 → 거주용 14억 / 비거주 12억 유지 (9.1 수정 정부안 첨부 3)
        그 외: 현행 9억 → 4억 + 5억 × (거주용주택가액 ÷ 주택가액합계액) */
     basicDeduct: {
       2026: { one: 12e8, oneNonRes: 12e8, multi: 9e8, multiFormula: false },
-      2027: { one: 14e8, oneNonRes: 9e8, multi: 4e8, multiFormula: true, multiBonus: 5e8 },
-      2028: { one: 14e8, oneNonRes: 9e8, multi: 4e8, multiFormula: true, multiBonus: 5e8 }
+      2027: { one: 14e8, oneNonRes: 12e8, multi: 4e8, multiFormula: true, multiBonus: 5e8 },
+      2028: { one: 14e8, oneNonRes: 12e8, multi: 4e8, multiFormula: true, multiBonus: 5e8 }
     },
     /* 공정시장가액비율 (개조식 p18)
        1세대1주택자·지방 1·2주택자 : 60% → ('27 이후) 70%
@@ -4109,8 +4291,8 @@ window.JT_REFORM_2026 = {
     creditRateCap: 0.8,
     /* 세액공제 «금액» 한도 신설 — 현행 없음 → '27 800만원 → '28 이후 600만원 */
     creditAmountCap: { 2026: null, 2027: 8e6, 2028: 6e6 },
-    /* 세부담 상한 150% → 200% (개조식 p19) — 직전연도 보유세를 모르면 적용 불가 */
-    burdenCap: { 2026: 1.5, 2027: 2, 2028: 2 },
+    /* 9.1 수정 정부안 첨부 4: 세부담 상한 150% 유지 — 계산에는 미반영 */
+    burdenCap: { 2026: 1.5, 2027: 1.5, 2028: 1.5 },
     /* 농어촌특별세 = 종합부동산세액의 20% (농특세법 §5①) — 현행, 개편 대상 아님 */
     ruralSurtaxRate: 0.2
   }
@@ -4275,6 +4457,9 @@ function rfCalcCGT(input, year) {
   };
 }
 function rfCalcCRE(input, year) {
+  if (input.ownershipScope && input.ownershipScope !== "sole") {
+    return { year, requiresReview: true, total: null, reason: "\uACF5\uB3D9\uBA85\uC758\xB7\uAC00\uC871 \uBCC4\uB3C4 \uC18C\uC720\uB294 \uC778\uBCC4 \uACC4\uC0B0\uACFC \uD2B9\uB840 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4." };
+  }
   const R = window.JT_REFORM_2026, C = R.cre;
   const totalValue = rfPos(input.totalValue);
   const houses = input.houses || "one";
@@ -4318,7 +4503,7 @@ function rfCalcCRE(input, year) {
   let deduct, dNote;
   if (isOne) {
     deduct = isRes ? bdCfg.one : bdCfg.oneNonRes;
-    dNote = year === 2026 ? "1\uC138\uB300 1\uC8FC\uD0DD\uC790 12\uC5B5\uC6D0" : isRes ? "\uAC70\uC8FC\uC6A9 1\uC8FC\uD0DD \u2014 14\uC5B5\uC6D0" : "\uBE44\uAC70\uC8FC 1\uC8FC\uD0DD \u2014 9\uC5B5\uC6D0 (\uAC70\uC8FC\uD558\uC9C0 \uC54A\uC73C\uBA74 \uACF5\uC81C \uCD95\uC18C)";
+    dNote = year === 2026 ? "1\uC138\uB300 1\uC8FC\uD0DD\uC790 12\uC5B5\uC6D0" : isRes ? "\uAC70\uC8FC\uC6A9 1\uC8FC\uD0DD \u2014 14\uC5B5\uC6D0" : "\uBE44\uAC70\uC8FC 1\uC8FC\uD0DD \u2014 12\uC5B5\uC6D0 \uC720\uC9C0 (9.1 \uC218\uC815 \uC815\uBD80\uC548)";
   } else if (bdCfg.multiFormula) {
     const ratio2 = totalValue > 0 ? Math.min(1, resValue / totalValue) : 0;
     deduct = bdCfg.multi + bdCfg.multiBonus * ratio2;
@@ -4746,13 +4931,14 @@ function RfQuestion({ q, value, onChange, onChangeRaw, picks, onAdd, onRemove, b
     /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, fontSize: 15 } }, label),
     hint && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12.5, color: "#7b756b", marginTop: 3 } }, hint)
   ))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!q.money,
       className: "jt-report-q__input",
       type: "text",
       inputMode: "decimal",
       "aria-label": q.q,
-      value: q.money && value ? rfMoneyDigits(value) === null ? String(value) : Number(rfMoneyDigits(value) || 0).toLocaleString("ko-KR") : value || "",
+      value,
       placeholder: q.placeholder || "",
       onChange: (e) => {
         const raw = String(e.target.value);
@@ -5092,6 +5278,13 @@ function JTReportReformCGT({ setRoute, setSubRoute, onBack }) {
   );
 }
 const RF_CRE_QS = [
+  {
+    id: "ownershipScope",
+    section: "\uC18C\uC720\uAD00\uACC4 \uD655\uC778",
+    q: "\uACC4\uC0B0\uD560 \uC8FC\uD0DD\uC740 \uBAA8\uB450 \uBCF8\uC778 \uB2E8\uB3C5 \uBA85\uC758\uC774\uBA70, \uBC30\uC6B0\uC790\xB7\uC138\uB300\uC6D0\uC5D0\uAC8C \uB2E4\uB978 \uC8FC\uD0DD\uC774 \uC5C6\uB098\uC694?",
+    sub: "\uC885\uBD80\uC138\uB294 \uB0A9\uC138\uC790\uBCC4\uB85C \uACC4\uC0B0\uD558\uACE0, 1\uC138\uB300 1\uC8FC\uD0DD \uD2B9\uB840 \uC5EC\uBD80\uB294 \uC138\uB300 \uC804\uCCB4\uB97C \uD655\uC778\uD569\uB2C8\uB2E4. \uACF5\uB3D9\uBA85\uC758 \uB610\uB294 \uAC00\uC871\uC774 \uB530\uB85C \uC18C\uC720\uD55C \uC8FC\uD0DD\uC774 \uC788\uC73C\uBA74 \uC778\uBCC4 \uC8FC\uD0DD \uC218\xB7\uC9C0\uBD84\uACFC \uD2B9\uB840\uB97C \uB098\uB220 \uAC80\uD1A0\uD574\uC57C \uD558\uBBC0\uB85C \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD569\uB2C8\uB2E4.",
+    opts: [["sole", "\uC608 \u2014 \uBCF8\uC778 \uB2E8\uB3C5 \uBA85\uC758\uB9CC \uBCF4\uC720", "\uC774 \uACC4\uC0B0\uAE30\uB85C \uBE44\uAD50"], ["shared", "\uACF5\uB3D9\uBA85\uC758 \uB610\uB294 \uAC00\uC871 \uC18C\uC720 \uC8FC\uD0DD\uC774 \uC788\uC74C", "\uC778\uBCC4 \uACC4\uC0B0\xB7\uD2B9\uB840 \uC0C1\uB2F4"]]
+  },
   /* ⚠️ 「1채」 하나로 1세대1주택 공제·세액공제가 통째로 갈리는데, 세대 판정은 사람마다
      오해가 크다. 특히 «배우자는 주소가 달라도 같은 세대»다(종부세법 시행령 §2의3① —
      세대원 중 1명만이 1주택을 소유해야 1세대1주택자). 별거 중이라 각자 1채인 부부가
@@ -5101,14 +5294,14 @@ const RF_CRE_QS = [
   {
     id: "houses",
     section: "\uC8FC\uD0DD \uBCF4\uC720 \uD604\uD669",
-    q: "\uC138\uB300\uAC00 \uAC00\uC9C4 \uC9D1\uC740 \uBA87 \uCC44\uC778\uAC00\uC694?",
-    sub: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138\uB294 \uB9E4\uB144 6\uC6D4 1\uC77C \uAE30\uC900\uC73C\uB85C \xAB\uC138\uB300\xBB\uAC00 \uAC00\uC9C4 \uC8FC\uD0DD\uC758 \uACF5\uC2DC\uAC00\uACA9\uC744 \uBAA8\uB450 \uB354\uD574 \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uBCF8\uC778\xB7\uBC30\uC6B0\uC790\xB7\uAC19\uC774 \uC0AC\uB294 \uAC00\uC871\uC758 \uC9D1\uC744 \uBAA8\uB450 \uC138\uC138\uC694. \u2605 \uBC30\uC6B0\uC790\uB294 \uC8FC\uC18C\uAC00 \uB2EC\uB77C\uB3C4(\uB530\uB85C \uC0B4\uC544\uB3C4) \uAC19\uC740 \uC138\uB300\uB85C \uBD05\uB2C8\uB2E4 \u2014 \uBD80\uBD80\uAC00 \uAC01\uC790 1\uCC44\uBA74 \u300C2\uCC44\u300D\uC785\uB2C8\uB2E4. \uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758 1\uC8FC\uD0DD\uC740 \uC9C0\uBD84\uBCC4 \uACFC\uC138\uAC00 \uC6D0\uCE59\uC774\uACE0 \uBCC4\uB3C4 \uC2E0\uCCAD\uC744 \uD574\uC57C 1\uC8FC\uD0DD\uC790 \uD2B9\uB840\uB97C \uBC1B\uC73C\uBBC0\uB85C, \uC774 \uACC4\uC0B0\uAE30 \uACB0\uACFC\uC640 \uB2E4\uB97C \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
+    q: "\uBCF8\uC778 \uB2E8\uB3C5 \uBA85\uC758\uB85C \uAC00\uC9C4 \uC9D1\uC740 \uBA87 \uCC44\uC778\uAC00\uC694?",
+    sub: "\uB9E4\uB144 6\uC6D4 1\uC77C \uAE30\uC900 \uBCF8\uC778 \uC18C\uC720 \uC8FC\uD0DD\uC744 \uC138\uC138\uC694. \uC774 \uACC4\uC0B0\uAE30\uB294 \uC704\uC5D0\uC11C \uBCF8\uC778 \uB2E8\uB3C5 \uBA85\uC758\uC774\uBA70 \uC138\uB300\uC6D0\uC758 \uB2E4\uB978 \uC8FC\uD0DD\uC774 \uC5C6\uB2E4\uACE0 \uD655\uC778\uD55C \uACBD\uC6B0\uC5D0 \uC0AC\uC6A9\uD569\uB2C8\uB2E4. \uBC30\uC6B0\uC790\uB294 \uC8FC\uC18C\uAC00 \uB2EC\uB77C\uB3C4 \uAC19\uC740 \uC138\uB300\uC774\uBBC0\uB85C, \uBC30\uC6B0\uC790 \uC18C\uC720 \uC8FC\uD0DD\uC774 \uC788\uC73C\uBA74 \uC18C\uC720\uAD00\uACC4 \uBB38\uD56D\uC5D0\uC11C \uC0C1\uB2F4 \uB300\uC0C1\uC744 \uC120\uD0DD\uD558\uC138\uC694.",
     opts: [["one", "1\uCC44 (1\uC138\uB300 1\uC8FC\uD0DD)", "\uACF5\uC81C \uD655\uB300 \u2014 \uAC70\uC8FC\uD558\uBA74 14\uC5B5\uC6D0"], ["two", "2\uCC44", ""], ["three", "3\uCC44 \uC774\uC0C1", "\uB192\uC740 \uC138\uC728\xB7\uACF5\uC815\uBE44\uC728 \uC801\uC6A9"]]
   },
   {
     id: "totalValue",
     section: "\uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4",
-    q: "\uAC00\uC9C4 \uC9D1\uB4E4\uC758 \uACF5\uC2DC\uAC00\uACA9\uC744 \uBAA8\uB450 \uB354\uD558\uBA74 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC6D0)",
+    q: "\uBCF8\uC778 \uB2E8\uB3C5 \uBA85\uC758 \uC8FC\uD0DD\uC758 \uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uB294 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC6D0)",
     money: true,
     placeholder: "\uC608: 1,800,000,000",
     addr: "priceAdd",
@@ -5119,8 +5312,8 @@ const RF_CRE_QS = [
     section: "\uAC70\uC8FC \uC5EC\uBD80",
     q: "\uADF8 \uC9D1\uC5D0 \uBCF8\uC778(\uC138\uB300)\uC774 \uC2E4\uC81C\uB85C \uC0B4\uACE0 \uC788\uB098\uC694?",
     showIf: (a) => a.houses === "one",
-    sub: "\u2605 \uC774\uBC88 \uAC1C\uD3B8\uC758 \uD575\uC2EC\uC785\uB2C8\uB2E4. \uC0B4\uACE0 \uC788\uC73C\uBA74 \uACF5\uC81C\uAC00 12\uC5B5 \u2192 14\uC5B5\uC73C\uB85C \uB298\uACE0, \uC0B4\uC9C0 \uC54A\uC73C\uBA74 12\uC5B5 \u2192 9\uC5B5\uC73C\uB85C \uC904\uC5B4\uB4ED\uB2C8\uB2E4.",
-    opts: [["yes", "\uC608 \u2014 \uAC70\uC8FC \uC911", "\uACF5\uC81C 14\uC5B5\uC6D0"], ["no", "\uC544\uB2C8\uC624 \u2014 \uBE44\uAC70\uC8FC", "\uACF5\uC81C 9\uC5B5\uC6D0 (\uC138\uAE08\uC774 \uD06C\uAC8C \uB298\uC5B4\uB0A8)"]]
+    sub: "9\uC6D4 1\uC77C \uC218\uC815 \uC815\uBD80\uC548\uC740 \uAC70\uC8FC 1\uC8FC\uD0DD \uACF5\uC81C\uB97C 14\uC5B5\uC6D0\uC73C\uB85C \uB298\uB9AC\uACE0, \uBE44\uAC70\uC8FC 1\uC8FC\uD0DD\uC740 \uD604\uD589 12\uC5B5\uC6D0\uC744 \uC720\uC9C0\uD569\uB2C8\uB2E4. \uC544\uC9C1 \uAD6D\uD68C\uC5D0\uC11C \uD655\uC815\uB41C \uBC95\uB839\uC740 \uC544\uB2D9\uB2C8\uB2E4.",
+    opts: [["yes", "\uC608 \u2014 \uAC70\uC8FC \uC911", "\uACF5\uC81C 14\uC5B5\uC6D0"], ["no", "\uC544\uB2C8\uC624 \u2014 \uBE44\uAC70\uC8FC", "\uACF5\uC81C 12\uC5B5\uC6D0 \uC720\uC9C0"]]
   },
   {
     id: "residentValue",
@@ -5197,13 +5390,15 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
     onChange(id, arr.length ? String(arr.reduce((t, x) => t + x.amount, 0)) : "");
   };
   let invalid = null;
-  if (!rfNum(answers.totalValue)) invalid = "\uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uB97C \uB123\uC5B4 \uC8FC\uC138\uC694.";
+  if (answers.ownershipScope !== "sole") invalid = answers.ownershipScope === "shared" ? "\uACF5\uB3D9\uBA85\uC758\xB7\uAC00\uC871 \uBCC4\uB3C4 \uC18C\uC720\uB294 \uC778\uBCC4 \uACC4\uC0B0\uACFC \uD2B9\uB840 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC544\uB798 \uC0C1\uB2F4 \uC608\uC57D\uC5D0\uC11C \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uBCF8\uC778 \uB2E8\uB3C5 \uBA85\uC758\uC640 \uC138\uB300\uC6D0\uC758 \uC8FC\uD0DD \uBCF4\uC720 \uC5EC\uBD80\uB97C \uBA3C\uC800 \uD655\uC778\uD574 \uC8FC\uC138\uC694.";
+  else if (!rfNum(answers.totalValue)) invalid = "\uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uB97C \uB123\uC5B4 \uC8FC\uC138\uC694.";
   else if (answers.houses !== "one" && (answers.residentValue == null || answers.residentValue === "")) invalid = "\uAC70\uC8FC\uC6A9 \uC8FC\uD0DD\uC758 \uACF5\uC2DC\uAC00\uACA9\uC744 \uB123\uC5B4 \uC8FC\uC138\uC694. \uC544\uBB34 \uC9D1\uC5D0\uB3C4 \uC0B4\uC9C0 \uC54A\uC73C\uBA74 0\uC744 \uB123\uC73C\uC138\uC694.";
   else if (rfNum(answers.residentValue) > rfNum(answers.totalValue)) invalid = "\uAC70\uC8FC\uC6A9 \uC8FC\uD0DD \uAC00\uC561\uC774 \uC804\uCCB4 \uD569\uACC4\uBCF4\uB2E4 \uD074 \uC218\uB294 \uC5C6\uC2B5\uB2C8\uB2E4.";
   else if (answers.houses === "one" && (answers.holdYears == null || answers.holdYears === "")) invalid = "\uBCF4\uC720\uAE30\uAC04\uC744 \uB123\uC5B4 \uC8FC\uC138\uC694.";
   else if (answers.houses === "one" && (answers.resYears == null || answers.resYears === "")) invalid = "\uAC70\uC8FC\uAE30\uAC04\uC744 \uB123\uC5B4 \uC8FC\uC138\uC694. \uC0B4\uC9C0 \uC54A\uC558\uB2E4\uBA74 0\uC744 \uB123\uC73C\uC138\uC694.";
   else if (rfNum(answers.resYears) > rfNum(answers.holdYears)) invalid = "\uAC70\uC8FC\uAE30\uAC04\uC774 \uBCF4\uC720\uAE30\uAC04\uBCF4\uB2E4 \uAE38 \uC218\uB294 \uC5C6\uC2B5\uB2C8\uB2E4.";
   const run = () => {
+    if (invalid) return;
     const rs = [2026, 2027, 2028].map((y) => {
       const r = rfCalcCRE(rfShiftYears(answers, y, 2026), y);
       r.label = y === 2026 ? "2026\uB144 (\uD604\uD589)" : y === 2028 ? "2028\uB144 \uC774\uD6C4" : "2027\uB144";
@@ -5222,6 +5417,9 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
       }
     }, 30);
   };
+  if (answers.ownershipScope === "shared") {
+    return /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC18C\uC720\uAD00\uACC4\uBCC4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4", subtitle: "\uC885\uBD80\uC138\uB294 \uB0A9\uC138\uC790\uBCC4\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4", stepIdx: 0, stepTotal: 1, onBack, tag: "2026 \uC138\uC81C\uAC1C\uD3B8\uC548" }, /* @__PURE__ */ React.createElement("p", { style: { lineHeight: 1.8 } }, "\uACF5\uB3D9\uBA85\uC758\xB7\uBC30\uC6B0\uC790\uB098 \uC138\uB300\uC6D0 \uBA85\uC758\uC758 \uC8FC\uD0DD\uC774 \uC788\uC73C\uBA74 \uBCF8\uC778 \uC9C0\uBD84\uC758 \uACF5\uC2DC\uAC00\uACA9, \uC778\uBCC4 \uC8FC\uD0DD \uC218\uC640 1\uC138\uB300 1\uC8FC\uD0DD \uD2B9\uB840\uB97C \uAD6C\uBD84\uD574\uC57C \uD569\uB2C8\uB2E4. \uAC00\uC871 \uC804\uCCB4\uC758 \uACF5\uC2DC\uAC00\uACA9\uC744 \uD569\uC0B0\uD55C \uC608\uC0C1 \uC138\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => onChange("ownershipScope", "") }, "\uC18C\uC720\uAD00\uACC4 \uB2E4\uC2DC \uC120\uD0DD"), /* @__PURE__ */ React.createElement(JTReportCta, { setRoute, calcId: "reform-cre", completeEligible: false }));
+  }
   if (!result) {
     return /* @__PURE__ */ React.createElement(
       RfWizard,
@@ -5257,7 +5455,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
       title: "\uC5F0\uB3C4\uBCC4 \uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uBE44\uAD50",
       subtitle: "\uAC1C\uD3B8\uC548\uC774 \uADF8\uB300\uB85C \uC2DC\uD589\uB41C\uB2E4\uACE0 \uAC00\uC815\uD588\uC744 \uB54C, \uD574\uB9C8\uB2E4 \uB0B4\uC57C \uD560 \uC885\uBD80\uC138\uC785\uB2C8\uB2E4."
     },
-    /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(RfNotice, null), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { marginBottom: 6 } }, /* @__PURE__ */ React.createElement("h3", { style: { fontSize: 16, marginBottom: 4 } }, "\uD574\uB9C8\uB2E4 \uC5BC\uB9C8\uC778\uAC00 (\uC885\uBD80\uC138 + \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138)"), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, color: "#7b756b", margin: "0 0 12px", lineHeight: 1.65 } }, "\uC885\uBD80\uC138\uB294 \uD574\uB9C8\uB2E4 \uB0B4\uB294 \uC138\uAE08\uC774\uB77C, \uAC01 \uC5F0\uB3C4\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uADF8 \uD574 6\uC6D4 1\uC77C\uAE4C\uC9C0 \uACC4\uC18D \uBCF4\uC720\uD55C \uAC83\uC73C\uB85C \uBCF4\uACE0"), " \uBCF4\uC720\uAE30\uAC04\xB7\uB098\uC774\uB97C \uD568\uAED8 \uBC18\uC601\uD588\uC2B5\uB2C8\uB2E4", answers.houses === "one" && answers.stillLiving === "yes" && rfNum(answers.resYears) > 0 ? " (\uACC4\uC18D \uAC70\uC8FC \uC911\uC774\uB77C \uAC70\uC8FC\uAE30\uAC04\uB3C4 \uB298\uB838\uC2B5\uB2C8\uB2E4)" : "", ". \uACF5\uC2DC\uAC00\uACA9\uC740 \uC785\uB825\uAC12 \uADF8\uB300\uB85C\uC774\uBA70, \uD574\uB9C8\uB2E4 \uC624\uB974\uB0B4\uB9AC\uB294 \uACF5\uC2DC\uAC00\uACA9 \uBCC0\uB3D9\uC740 \uBC18\uC601\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement(RfYearCards, { rows: result, baseYear: 2026 })), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: diff > 0 ? "#fdf2f1" : "#f0f7f3", borderLeft: `4px solid ${diff > 0 ? "#b3261e" : "#2a6d4f"}`, padding: "15px 18px", borderRadius: 8, marginBottom: 20 } }, /* @__PURE__ */ React.createElement("strong", { style: { display: "block", marginBottom: 6 } }, "\uD55C \uC904 \uACB0\uB860"), /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14.5, lineHeight: 1.7 } }, v.kind === "none" ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC785\uB825\uD558\uC2E0 \uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4 ", /* @__PURE__ */ React.createElement("strong", null, rfEok(rfNum(answers.totalValue))), "\uC740 \uC885\uBD80\uC138 \uACFC\uC138 \uBB38\uD131 (", answers.houses === "one" ? "1\uC138\uB300 1\uC8FC\uD0DD\uC790 14\uC5B5\uC6D0" : "1\uC138\uB300 1\uC8FC\uD0DD\uC790 \uC678 9\uC5B5\uC6D0", ")\uC744 \uB118\uC9C0 \uC54A\uC544,", /* @__PURE__ */ React.createElement("strong", null, "\uAC1C\uD3B8\uC548\uC774 \uC2DC\uD589\uB3FC\uB3C4 \uC885\uBD80\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"), ". \uB2E4\uB9CC \uC7AC\uC0B0\uC138\uB294 \uBCC4\uB3C4\uB85C \uBD80\uACFC\uB429\uB2C8\uB2E4.") : v.kind === "same" ? "\uC785\uB825\uD558\uC2E0 \uC870\uAC74\uC5D0\uC11C\uB294 \uAC1C\uD3B8\uC548\uC774 \uC2DC\uD589\uB418\uC5B4\uB3C4 \uC885\uBD80\uC138\uAC00 \uB2EC\uB77C\uC9C0\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4." : /* @__PURE__ */ React.createElement(React.Fragment, null, v.diff === 0 ? /* @__PURE__ */ React.createElement(React.Fragment, null, "2028\uB144 \uC774\uD6C4 \uC885\uBD80\uC138\uB294 \uD604\uD589\uACFC \uAC19\uC740 ", /* @__PURE__ */ React.createElement("strong", null, rfEok(v.base)), "\uC785\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement(React.Fragment, null, "2028\uB144 \uC774\uD6C4 \uC885\uBD80\uC138\uB294 \uD604\uD589 \uB300\uBE44 ", /* @__PURE__ */ React.createElement("strong", null, v.diff > 0 ? rfEok(v.diff) + " \uB298\uC5B4\uB0A9\uB2C8\uB2E4" : rfEok(-v.diff) + " \uC904\uC5B4\uB4ED\uB2C8\uB2E4"), "(", rfEok(v.base), " \u2192 ", rfEok(v.last), ")."), v.midDiffers && /* @__PURE__ */ React.createElement(React.Fragment, null, " \uC911\uAC04\uC758 ", /* @__PURE__ */ React.createElement("strong", null, "2027\uB144"), "\uC740 ", /* @__PURE__ */ React.createElement("strong", null, rfEok(v.mid)), "\uC73C\uB85C, \uD604\uD589\uBCF4\uB2E4 ", v.mid > v.base ? rfEok(v.mid - v.base) + " \uB9CE\uC2B5\uB2C8\uB2E4" : rfEok(v.base - v.mid) + " \uC801\uC2B5\uB2C8\uB2E4", ".")), v.anyNotTaxable && v.kind !== "none" && /* @__PURE__ */ React.createElement(React.Fragment, null, " \uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uAC00 \uACFC\uC138 \uBB38\uD131(", answers.houses === "one" ? "14\uC5B5\uC6D0" : "9\uC5B5\uC6D0", ")\uC744 \uB118\uC9C0 \uC54A\uB294 \uD574\uC5D0\uB294 \uC885\uBD80\uC138\uAC00 \uC544\uC608 \uC5C6\uC2B5\uB2C8\uB2E4."), v.diff > 0 && answers.houses === "one" && answers.isResident === "no" && " \uC9C0\uAE08 \uADF8 \uC9D1\uC5D0 \uC0B4\uC9C0 \uC54A\uC73C\uC2DC\uB294\uB370, \uAC1C\uD3B8\uC548\uC740 \uBE44\uAC70\uC8FC 1\uC8FC\uD0DD\uC758 \uACF5\uC81C\uB97C 12\uC5B5\uC6D0\uC5D0\uC11C 9\uC5B5\uC6D0\uC73C\uB85C \uC904\uC785\uB2C8\uB2E4 \u2014 \uC774\uAC83\uC774 \uC99D\uAC00\uC758 \uAC00\uC7A5 \uD070 \uC6D0\uC778\uC785\uB2C8\uB2E4.", v.diff < 0 && answers.houses === "one" && answers.isResident !== "no" && " \uC2E4\uC81C \uAC70\uC8FC \uC911\uC774\uC2DC\uB77C \uACF5\uC81C\uAC00 12\uC5B5\uC6D0\uC5D0\uC11C 14\uC5B5\uC6D0\uC73C\uB85C \uB298\uC5B4\uB098\uB294 \uD61C\uD0DD\uC744 \uBC1B\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", { style: { fontSize: 16, marginBottom: 10 } }, "\uBB34\uC5C7\uC774 \uC138\uAE08\uC744 \uAC08\uB790\uB098"), /* @__PURE__ */ React.createElement("div", { style: { overflowX: "auto" } }, /* @__PURE__ */ React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 13.5, minWidth: 460 } }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", { style: { background: "#f7f5f0" } }, /* @__PURE__ */ React.createElement("th", { style: { textAlign: "left", padding: "10px 12px", borderBottom: "2px solid #dcd8d0" } }, "\uAD6C\uBD84"), result.map((r) => /* @__PURE__ */ React.createElement("th", { key: r.year, style: { textAlign: "right", padding: "10px 12px", borderBottom: "2px solid #dcd8d0", whiteSpace: "nowrap" } }, r.label)))), /* @__PURE__ */ React.createElement("tbody", null, [
+    /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(RfNotice, null), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { marginBottom: 6 } }, /* @__PURE__ */ React.createElement("h3", { style: { fontSize: 16, marginBottom: 4 } }, "\uD574\uB9C8\uB2E4 \uC5BC\uB9C8\uC778\uAC00 (\uC885\uBD80\uC138 + \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138)"), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, color: "#7b756b", margin: "0 0 12px", lineHeight: 1.65 } }, "\uC885\uBD80\uC138\uB294 \uD574\uB9C8\uB2E4 \uB0B4\uB294 \uC138\uAE08\uC774\uB77C, \uAC01 \uC5F0\uB3C4\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uADF8 \uD574 6\uC6D4 1\uC77C\uAE4C\uC9C0 \uACC4\uC18D \uBCF4\uC720\uD55C \uAC83\uC73C\uB85C \uBCF4\uACE0"), " \uBCF4\uC720\uAE30\uAC04\xB7\uB098\uC774\uB97C \uD568\uAED8 \uBC18\uC601\uD588\uC2B5\uB2C8\uB2E4", answers.houses === "one" && answers.stillLiving === "yes" && rfNum(answers.resYears) > 0 ? " (\uACC4\uC18D \uAC70\uC8FC \uC911\uC774\uB77C \uAC70\uC8FC\uAE30\uAC04\uB3C4 \uB298\uB838\uC2B5\uB2C8\uB2E4)" : "", ". \uACF5\uC2DC\uAC00\uACA9\uC740 \uC785\uB825\uAC12 \uADF8\uB300\uB85C\uC774\uBA70, \uD574\uB9C8\uB2E4 \uC624\uB974\uB0B4\uB9AC\uB294 \uACF5\uC2DC\uAC00\uACA9 \uBCC0\uB3D9\uC740 \uBC18\uC601\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement(RfYearCards, { rows: result, baseYear: 2026 })), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: diff > 0 ? "#fdf2f1" : "#f0f7f3", borderLeft: `4px solid ${diff > 0 ? "#b3261e" : "#2a6d4f"}`, padding: "15px 18px", borderRadius: 8, marginBottom: 20 } }, /* @__PURE__ */ React.createElement("strong", { style: { display: "block", marginBottom: 6 } }, "\uD55C \uC904 \uACB0\uB860"), /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14.5, lineHeight: 1.7 } }, v.kind === "none" ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC785\uB825\uD558\uC2E0 \uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4 ", /* @__PURE__ */ React.createElement("strong", null, rfEok(rfNum(answers.totalValue))), "\uC740 \uC885\uBD80\uC138 \uACFC\uC138 \uBB38\uD131 (", answers.houses === "one" ? "1\uC138\uB300 1\uC8FC\uD0DD\uC790 14\uC5B5\uC6D0" : "1\uC138\uB300 1\uC8FC\uD0DD\uC790 \uC678 9\uC5B5\uC6D0", ")\uC744 \uB118\uC9C0 \uC54A\uC544,", /* @__PURE__ */ React.createElement("strong", null, "\uAC1C\uD3B8\uC548\uC774 \uC2DC\uD589\uB3FC\uB3C4 \uC885\uBD80\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"), ". \uB2E4\uB9CC \uC7AC\uC0B0\uC138\uB294 \uBCC4\uB3C4\uB85C \uBD80\uACFC\uB429\uB2C8\uB2E4.") : v.kind === "same" ? "\uC785\uB825\uD558\uC2E0 \uC870\uAC74\uC5D0\uC11C\uB294 \uAC1C\uD3B8\uC548\uC774 \uC2DC\uD589\uB418\uC5B4\uB3C4 \uC885\uBD80\uC138\uAC00 \uB2EC\uB77C\uC9C0\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4." : /* @__PURE__ */ React.createElement(React.Fragment, null, v.diff === 0 ? /* @__PURE__ */ React.createElement(React.Fragment, null, "2028\uB144 \uC774\uD6C4 \uC885\uBD80\uC138\uB294 \uD604\uD589\uACFC \uAC19\uC740 ", /* @__PURE__ */ React.createElement("strong", null, rfEok(v.base)), "\uC785\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement(React.Fragment, null, "2028\uB144 \uC774\uD6C4 \uC885\uBD80\uC138\uB294 \uD604\uD589 \uB300\uBE44 ", /* @__PURE__ */ React.createElement("strong", null, v.diff > 0 ? rfEok(v.diff) + " \uB298\uC5B4\uB0A9\uB2C8\uB2E4" : rfEok(-v.diff) + " \uC904\uC5B4\uB4ED\uB2C8\uB2E4"), "(", rfEok(v.base), " \u2192 ", rfEok(v.last), ")."), v.midDiffers && /* @__PURE__ */ React.createElement(React.Fragment, null, " \uC911\uAC04\uC758 ", /* @__PURE__ */ React.createElement("strong", null, "2027\uB144"), "\uC740 ", /* @__PURE__ */ React.createElement("strong", null, rfEok(v.mid)), "\uC73C\uB85C, \uD604\uD589\uBCF4\uB2E4 ", v.mid > v.base ? rfEok(v.mid - v.base) + " \uB9CE\uC2B5\uB2C8\uB2E4" : rfEok(v.base - v.mid) + " \uC801\uC2B5\uB2C8\uB2E4", ".")), v.anyNotTaxable && v.kind !== "none" && /* @__PURE__ */ React.createElement(React.Fragment, null, " \uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uAC00 \uACFC\uC138 \uBB38\uD131(", answers.houses === "one" ? "14\uC5B5\uC6D0" : "9\uC5B5\uC6D0", ")\uC744 \uB118\uC9C0 \uC54A\uB294 \uD574\uC5D0\uB294 \uC885\uBD80\uC138\uAC00 \uC544\uC608 \uC5C6\uC2B5\uB2C8\uB2E4."), v.diff > 0 && answers.houses === "one" && answers.isResident === "no" && " \uBE44\uAC70\uC8FC 1\uC8FC\uD0DD\uC758 \uAE30\uBCF8\uACF5\uC81C\uB294 9\uC6D4 1\uC77C \uC218\uC815 \uC815\uBD80\uC548\uC5D0\uC11C 12\uC5B5\uC6D0\uC73C\uB85C \uC720\uC9C0\uB429\uB2C8\uB2E4. \uC138\uC561 \uCC28\uC774\uC5D0\uB294 \uACF5\uC815\uC2DC\uC7A5\uAC00\uC561\uBE44\uC728\xB7\uC138\uC728\xB7\uC138\uC561\uACF5\uC81C \uBCC0\uACBD\uC774 \uBC18\uC601\uB3FC \uC788\uC2B5\uB2C8\uB2E4.", v.diff < 0 && answers.houses === "one" && answers.isResident !== "no" && " \uC2E4\uC81C \uAC70\uC8FC \uC911\uC774\uC2DC\uB77C \uACF5\uC81C\uAC00 12\uC5B5\uC6D0\uC5D0\uC11C 14\uC5B5\uC6D0\uC73C\uB85C \uB298\uC5B4\uB098\uB294 \uD61C\uD0DD\uC744 \uBC1B\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", { style: { fontSize: 16, marginBottom: 10 } }, "\uBB34\uC5C7\uC774 \uC138\uAE08\uC744 \uAC08\uB790\uB098"), /* @__PURE__ */ React.createElement("div", { style: { overflowX: "auto" } }, /* @__PURE__ */ React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 13.5, minWidth: 460 } }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", { style: { background: "#f7f5f0" } }, /* @__PURE__ */ React.createElement("th", { style: { textAlign: "left", padding: "10px 12px", borderBottom: "2px solid #dcd8d0" } }, "\uAD6C\uBD84"), result.map((r) => /* @__PURE__ */ React.createElement("th", { key: r.year, style: { textAlign: "right", padding: "10px 12px", borderBottom: "2px solid #dcd8d0", whiteSpace: "nowrap" } }, r.label)))), /* @__PURE__ */ React.createElement("tbody", null, [
       ["\uAE30\uBCF8\uACF5\uC81C", (r) => r.notTaxable ? `\uACFC\uC138\uB300\uC0C1 \uC544\uB2D8 (${rfEok(r.threshold)} \uC774\uD558)` : rfEok(r.deduct)],
       ["\uACF5\uC815\uC2DC\uC7A5\uAC00\uC561\uBE44\uC728", (r) => r.notTaxable ? "\u2014" : (r.fairRatio * 100).toFixed(0) + "%"],
       ["\uACFC\uC138\uD45C\uC900", (r) => r.notTaxable ? "\u2014" : rfEok(r.base)],
@@ -5265,7 +5463,7 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
       ["1\uC8FC\uD0DD \uC138\uC561\uACF5\uC81C", (r) => r.notTaxable ? "\u2014" : r.credit ? "\u2212" + rfEok(r.credit) : "\u2014"],
       ["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", (r) => r.notTaxable ? "\u2014" : rfEok(r.rural)],
       ["\uCD1D \uC138\uBD80\uB2F4", (r) => rfEok(r.total)]
-    ].map(([label, fn], i) => /* @__PURE__ */ React.createElement("tr", { key: i, style: { background: i % 2 ? "#fbfaf8" : "#fff" } }, /* @__PURE__ */ React.createElement("td", { style: { padding: "10px 12px", borderBottom: "1px solid #efece6", fontWeight: 700 } }, label), result.map((r) => /* @__PURE__ */ React.createElement("td", { key: r.year, style: { padding: "10px 12px", borderBottom: "1px solid #efece6", textAlign: "right", whiteSpace: "nowrap", fontWeight: label === "\uCD1D \uC138\uBD80\uB2F4" ? 800 : 400 } }, fn(r))))))))), /* @__PURE__ */ React.createElement(RfSteps, { steps: base.steps, title: "2026\uB144(\uD604\uD589) \uAE30\uC900 \uB2E8\uACC4\uBCC4 \uACC4\uC0B0" }), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f7f5f0", padding: "15px 18px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { fontSize: 15.5, marginBottom: 8 } }, "\uAC1C\uD3B8\uC548 \uD575\uC2EC \u2014 \u300C\uC8FC\uD0DD \uC218\u300D\uC5D0\uC11C \u300C\uAC00\uC561\uACFC \uAC70\uC8FC\u300D\uB85C"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 19, fontSize: 14, lineHeight: 1.85 } }, /* @__PURE__ */ React.createElement("li", null, "1\uC138\uB300 1\uC8FC\uD0DD \uAE30\uBCF8\uACF5\uC81C\uAC00 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC70\uC8FC\uD558\uBA74 14\uC5B5\uC6D0, \uC0B4\uC9C0 \uC54A\uC73C\uBA74 9\uC5B5\uC6D0"), "\uC73C\uB85C \uAC08\uB9BD\uB2C8\uB2E4(\uD604\uD589\uC740 \uC77C\uB960 12\uC5B5\uC6D0)."), /* @__PURE__ */ React.createElement("li", null, "\uB2E4\uC8FC\uD0DD\uC790 \uACF5\uC81C\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "4\uC5B5\uC6D0 + 5\uC5B5\uC6D0 \xD7 (\uAC70\uC8FC\uC6A9 \uC8FC\uD0DD\uAC00\uC561 \xF7 \uD569\uACC4)"), " \uC0B0\uC2DD\uC73C\uB85C \uBC14\uB01D\uB2C8\uB2E4 \u2014 \uC0AC\uB294 \uC9D1\uC758 \uBE44\uC911\uC774 \uD074\uC218\uB85D \uACF5\uC81C\uAC00 \uCEE4\uC9D1\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uACF5\uC815\uC2DC\uC7A5\uAC00\uC561\uBE44\uC728\uC774 60%\uC5D0\uC11C 2027\uB144 70%, 2028\uB144\uC5D0\uB294 3\uC8FC\uD0DD \uC774\uC0C1\xB7\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uBCF4\uC720\uC790\uB294 80%\uAE4C\uC9C0 \uC624\uB985\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uC138\uC728\uC774 ", /* @__PURE__ */ React.createElement("strong", null, "\u300C\uC8FC\uD0DD \uC218 \uAE30\uC900\u300D\uC5D0\uC11C \u300C\uC8FC\uD0DD \uAC00\uC561 \uAE30\uC900\u300D\uC73C\uB85C \uC77C\uC6D0\uD654"), "\uB429\uB2C8\uB2E4(2028\uB144~). \uACFC\uC138\uD45C\uC900 6~12\uC5B5\uC6D0 \uAD6C\uAC04\uC740 1.0% \u2192 1.3%\uB85C \uC624\uB985\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uC138\uC561\uACF5\uC81C\uB3C4 \uBCF4\uC720 \u2192 \uAC70\uC8FC \uAE30\uC900\uC73C\uB85C \uBC14\uB00C\uACE0, \uACF5\uC81C \xAB\uAE08\uC561\xBB \uD55C\uB3C4\uAC00 \uC0C8\uB85C \uC0DD\uAE41\uB2C8\uB2E4(2027\uB144 800\uB9CC\uC6D0 \u2192 2028\uB144 \uC774\uD6C4 600\uB9CC\uC6D0)."), /* @__PURE__ */ React.createElement("li", null, "\uC138\uBD80\uB2F4 \uC0C1\uD55C\uC740 150% \u2192 200%\uB85C \uC62C\uB77C\uAC11\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "14px 17px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("strong", { style: { display: "block", marginBottom: 6 } }, "\uC774 \uACC4\uC0B0\uC5D0 \uBC18\uC601\uD558\uC9C0 \uC54A\uC740 \uAC83"), /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 13.5, lineHeight: 1.7 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC7AC\uC0B0\uC138 \uC911\uBCF5\uBD84 \uACF5\uC81C"), "(\uC885\uBD80\uC138 \uACFC\uC138\uD45C\uC900\uC5D0 \uC774\uBBF8 \uBD80\uACFC\uB41C \uC7AC\uC0B0\uC138\uB97C \uBE7C \uC8FC\uB294 \uC81C\uB3C4)\uC640 ", /* @__PURE__ */ React.createElement("strong", null, "\uC138\uBD80\uB2F4 \uC0C1\uD55C"), "\uC740 \uC9C1\uC804\uC5F0\uB3C4 \uBCF4\uC720\uC138\uB97C \uC54C\uC544\uC57C \uACC4\uC0B0\uB418\uBBC0\uB85C \uBC18\uC601\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uC2E4\uC81C \uACE0\uC9C0\uC138\uC561\uC740 \uC5EC\uAE30 \uAE08\uC561\uBCF4\uB2E4 \uB0AE\uAC8C \uB098\uC635\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("strong", null, "\uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758"), " 1\uC8FC\uD0DD\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \u300C1\uC138\uB300 1\uC8FC\uD0DD\uC790 \uD2B9\uB840\uB97C \uC2E0\uCCAD\uD55C \uACBD\uC6B0\u300D(\uAC70\uC8FC 14\uC5B5\xB7\uBE44\uAC70\uC8FC 9\uC5B5 \uACF5\uC81C)\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4 \u2014 \uD2B9\uB840\uB97C \uC2E0\uCCAD\uD558\uC9C0 \uC54A\uACE0 ", /* @__PURE__ */ React.createElement("strong", null, "\uBD80\uBD80\uAC00 \uAC01\uC790 \uB0A9\uBD80"), "\uD558\uBA74 \uC9C0\uBD84\uBCC4\uB85C \uB098\uB220 \uAC70\uC8FC \uC2DC \uAC01 9\uC5B5\uC6D0, \uBE44\uAC70\uC8FC \uC2DC \uAC01 4\uC5B5\uC6D0\uC744 \uACF5\uC81C\uD558\uBBC0\uB85C \uACB0\uACFC\uAC00 \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uD569\uC0B0\uBC30\uC81C \uC784\uB300\uC8FC\uD0DD\xB7\uC0AC\uC6D0\uC6A9 \uC8FC\uD0DD, \uC9C0\uBC29 \uC800\uAC00\uC8FC\uD0DD\xB7\uC138\uCEE8\uB4DC\uD648 \uD2B9\uB840\uB3C4 \uBC18\uC601\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC7AC\uC0B0\uC138 \uACF5\uC81C\uAE4C\uC9C0 \uBC18\uC601\uD55C \uD604\uD589\uBC95 \uAE30\uC900 \uAE08\uC561\uC740 ", /* @__PURE__ */ React.createElement("a", { href: "#/report/comprehensive", style: { textDecoration: "underline", fontWeight: 700 } }, "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0\uAE30"), "\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", margin: "18px 0 6px" } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setResult(null) }, "\u2190 \uC870\uAC74 \uBC14\uAFD4\uC11C \uB2E4\uC2DC \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setSubRoute && setSubRoute("reform-cgt") }, "\uC591\uB3C4\uC138\uB294 \uC5BC\uB9C8\uB098 \uB2EC\uB77C\uC9C0\uB098 \u2192")), /* @__PURE__ */ React.createElement(JTReportCta, { setRoute, calcId: "reform-cre", completeEligible: !!result }), /* @__PURE__ */ React.createElement(RfCrossLinks, { setSubRoute, exclude: [] }), /* @__PURE__ */ React.createElement(JTReportDisclaimer, { dataFlow: "lookup", variant: "inline" }))
+    ].map(([label, fn], i) => /* @__PURE__ */ React.createElement("tr", { key: i, style: { background: i % 2 ? "#fbfaf8" : "#fff" } }, /* @__PURE__ */ React.createElement("td", { style: { padding: "10px 12px", borderBottom: "1px solid #efece6", fontWeight: 700 } }, label), result.map((r) => /* @__PURE__ */ React.createElement("td", { key: r.year, style: { padding: "10px 12px", borderBottom: "1px solid #efece6", textAlign: "right", whiteSpace: "nowrap", fontWeight: label === "\uCD1D \uC138\uBD80\uB2F4" ? 800 : 400 } }, fn(r))))))))), /* @__PURE__ */ React.createElement(RfSteps, { steps: base.steps, title: "2026\uB144(\uD604\uD589) \uAE30\uC900 \uB2E8\uACC4\uBCC4 \uACC4\uC0B0" }), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f7f5f0", padding: "15px 18px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { fontSize: 15.5, marginBottom: 8 } }, "\uAC1C\uD3B8\uC548 \uD575\uC2EC \u2014 \u300C\uC8FC\uD0DD \uC218\u300D\uC5D0\uC11C \u300C\uAC00\uC561\uACFC \uAC70\uC8FC\u300D\uB85C"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 19, fontSize: 14, lineHeight: 1.85 } }, /* @__PURE__ */ React.createElement("li", null, "9\uC6D4 1\uC77C \uC218\uC815 \uC815\uBD80\uC548\uC740 1\uC138\uB300 1\uC8FC\uD0DD \uAE30\uBCF8\uACF5\uC81C\uB97C ", /* @__PURE__ */ React.createElement("strong", null, "\uAC70\uC8FC\uD558\uBA74 14\uC5B5\uC6D0, \uBE44\uAC70\uC8FC\uB294 \uD604\uD589 12\uC5B5\uC6D0 \uC720\uC9C0"), "\uB85C \uC815\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uB2E4\uC8FC\uD0DD\uC790 \uACF5\uC81C\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "4\uC5B5\uC6D0 + 5\uC5B5\uC6D0 \xD7 (\uAC70\uC8FC\uC6A9 \uC8FC\uD0DD\uAC00\uC561 \xF7 \uD569\uACC4)"), " \uC0B0\uC2DD\uC73C\uB85C \uBC14\uB01D\uB2C8\uB2E4 \u2014 \uC0AC\uB294 \uC9D1\uC758 \uBE44\uC911\uC774 \uD074\uC218\uB85D \uACF5\uC81C\uAC00 \uCEE4\uC9D1\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uACF5\uC815\uC2DC\uC7A5\uAC00\uC561\uBE44\uC728\uC774 60%\uC5D0\uC11C 2027\uB144 70%, 2028\uB144\uC5D0\uB294 3\uC8FC\uD0DD \uC774\uC0C1\xB7\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uBCF4\uC720\uC790\uB294 80%\uAE4C\uC9C0 \uC624\uB985\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uC138\uC728\uC774 ", /* @__PURE__ */ React.createElement("strong", null, "\u300C\uC8FC\uD0DD \uC218 \uAE30\uC900\u300D\uC5D0\uC11C \u300C\uC8FC\uD0DD \uAC00\uC561 \uAE30\uC900\u300D\uC73C\uB85C \uC77C\uC6D0\uD654"), "\uB429\uB2C8\uB2E4(2028\uB144~). \uACFC\uC138\uD45C\uC900 6~12\uC5B5\uC6D0 \uAD6C\uAC04\uC740 1.0% \u2192 1.3%\uB85C \uC624\uB985\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uC138\uC561\uACF5\uC81C\uB3C4 \uBCF4\uC720 \u2192 \uAC70\uC8FC \uAE30\uC900\uC73C\uB85C \uBC14\uB00C\uACE0, \uACF5\uC81C \xAB\uAE08\uC561\xBB \uD55C\uB3C4\uAC00 \uC0C8\uB85C \uC0DD\uAE41\uB2C8\uB2E4(2027\uB144 800\uB9CC\uC6D0 \u2192 2028\uB144 \uC774\uD6C4 600\uB9CC\uC6D0)."), /* @__PURE__ */ React.createElement("li", null, "\uC138\uBD80\uB2F4 \uC0C1\uD55C\uC740 9\uC6D4 1\uC77C \uC218\uC815 \uC815\uBD80\uC548\uC5D0\uC11C ", /* @__PURE__ */ React.createElement("strong", null, "150%\uB85C \uD604\uD589 \uC720\uC9C0"), "\uD569\uB2C8\uB2E4(\uBCF8 \uBE44\uAD50 \uACC4\uC0B0\uC5D0\uB294 \uBBF8\uBC18\uC601)."))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "14px 17px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("strong", { style: { display: "block", marginBottom: 6 } }, "\uC774 \uACC4\uC0B0\uC5D0 \uBC18\uC601\uD558\uC9C0 \uC54A\uC740 \uAC83"), /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 13.5, lineHeight: 1.7 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC7AC\uC0B0\uC138 \uC911\uBCF5\uBD84 \uACF5\uC81C"), "(\uC885\uBD80\uC138 \uACFC\uC138\uD45C\uC900\uC5D0 \uC774\uBBF8 \uBD80\uACFC\uB41C \uC7AC\uC0B0\uC138\uB97C \uBE7C \uC8FC\uB294 \uC81C\uB3C4)\uC640 ", /* @__PURE__ */ React.createElement("strong", null, "\uC138\uBD80\uB2F4 \uC0C1\uD55C"), "\uC740 \uC9C1\uC804\uC5F0\uB3C4 \uBCF4\uC720\uC138\uB97C \uC54C\uC544\uC57C \uACC4\uC0B0\uB418\uBBC0\uB85C \uBC18\uC601\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uC2E4\uC81C \uACE0\uC9C0\uC138\uC561\uC740 \uC5EC\uAE30 \uAE08\uC561\uBCF4\uB2E4 \uB0AE\uAC8C \uB098\uC635\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("strong", null, "\uACF5\uB3D9\uBA85\uC758\xB7\uC138\uB300\uC6D0 \uBCC4\uB3C4 \uC18C\uC720 \uC8FC\uD0DD"), "\uC740 \uC774 \uACC4\uC0B0\uAE30\uC758 \uC9C0\uC6D0 \uBC94\uC704 \uBC16\uC785\uB2C8\uB2E4. 9\uC6D4 1\uC77C \uC218\uC815 \uC815\uBD80\uC548\uC5D0\uC11C \uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758 1\uC8FC\uD0DD\uC744 \uD2B9\uB840 \uC2E0\uCCAD \uC5C6\uC774 \uAC01\uC790 \uACFC\uC138\uD560 \uB54C \uBE44\uAC70\uC8FC \uACF5\uC81C\uB294 \uAC01 6\uC5B5\uC6D0(\uAC70\uC8FC \uAC01 9\uC5B5\uC6D0)\uC73C\uB85C \uBC14\uB00C\uC5C8\uC73C\uBBC0\uB85C, \uC18C\uC720 \uC9C0\uBD84\uACFC \uD2B9\uB840 \uC2E0\uCCAD \uC5EC\uBD80\uB97C \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uD569\uC0B0\uBC30\uC81C \uC784\uB300\uC8FC\uD0DD\xB7\uC0AC\uC6D0\uC6A9 \uC8FC\uD0DD, \uC9C0\uBC29 \uC800\uAC00\uC8FC\uD0DD\xB7\uC138\uCEE8\uB4DC\uD648 \uD2B9\uB840\uB3C4 \uBC18\uC601\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC7AC\uC0B0\uC138 \uACF5\uC81C\uAE4C\uC9C0 \uBC18\uC601\uD55C \uD604\uD589\uBC95 \uAE30\uC900 \uAE08\uC561\uC740 ", /* @__PURE__ */ React.createElement("a", { href: "#/report/comprehensive", style: { textDecoration: "underline", fontWeight: 700 } }, "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0\uAE30"), "\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", margin: "18px 0 6px" } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setResult(null) }, "\u2190 \uC870\uAC74 \uBC14\uAFD4\uC11C \uB2E4\uC2DC \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setSubRoute && setSubRoute("reform-cgt") }, "\uC591\uB3C4\uC138\uB294 \uC5BC\uB9C8\uB098 \uB2EC\uB77C\uC9C0\uB098 \u2192")), /* @__PURE__ */ React.createElement(JTReportCta, { setRoute, calcId: "reform-cre", completeEligible: !!result }), /* @__PURE__ */ React.createElement(RfCrossLinks, { setSubRoute, exclude: [] }), /* @__PURE__ */ React.createElement(JTReportDisclaimer, { dataFlow: "lookup", variant: "inline" }))
   );
 }
 window.JTReportReformCGT = JTReportReformCGT;
@@ -5460,13 +5658,13 @@ const CR_EMPTY_ROW = { name: "", sale: "", acq: "", mkt2026: "", fee: "", heldBe
 function CrMoney({ value, onChange, placeholder, label }) {
   const [err, setErr] = useCrState("");
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
       type: "text",
       inputMode: "numeric",
       placeholder: placeholder || "",
       "aria-label": label || placeholder || "",
-      value: value ? crMoneyDigits(value) === null ? String(value) : Number(crMoneyDigits(value) || 0).toLocaleString("ko-KR") : "",
+      value,
       onChange: (e) => {
         const d = crMoneyDigits(e.target.value);
         if (d === null) {
@@ -5671,8 +5869,8 @@ const INC_QS = [
     id: "businessIncome",
     tier: "quick",
     section: "\uC0AC\uC5C5\xB7\uD504\uB9AC\uB79C\uC11C \uC18C\uB4DD",
-    q: "\uC791\uB144 \uC0AC\uC5C5\xB7\uD504\uB9AC\uB79C\uC11C \u300C\uC18C\uB4DD\uAE08\uC561\u300D\uC774 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC6D0)",
-    sub: "1\uB144 \uB9E4\uCD9C(\uC218\uC785)\uC5D0\uC11C \uD544\uC694\uACBD\uBE44(\uC784\uCC28\uB8CC\xB7\uC7AC\uB8CC\uBE44\xB7\uC778\uAC74\uBE44 \uB4F1)\uB97C \uBE80 \u300C\uC21C\uC774\uC775\u300D\uC744 \uB123\uC5B4 \uC8FC\uC138\uC694. \uC9C1\uC7A5 \uAE09\uC5EC\uB9CC \uC788\uC73C\uBA74 0\uC73C\uB85C \uB450\uC138\uC694. \uACBD\uBE44\uB97C \uC798 \uBAA8\uB974\uBA74 \uC218\uC785\uC758 \uC808\uBC18 \uC815\uB3C4\uB85C \uB123\uC5B4 \uBCF4\uC138\uC694.",
+    q: "2026\uB144 \uC0AC\uC5C5\xB7\uD504\uB9AC\uB79C\uC11C \u300C\uC18C\uB4DD\uAE08\uC561\u300D\uC774 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC6D0)",
+    sub: "\uC774 \uACC4\uC0B0\uAE30\uB294 2026\uB144 \uADC0\uC18D \uAE30\uC900\uC785\uB2C8\uB2E4. \uAC19\uC740 \uD574 \uB9E4\uCD9C(\uC218\uC785)\uC5D0\uC11C \uD655\uC778\uB41C \uD544\uC694\uACBD\uBE44\uB97C \uBE80 \u300C\uC21C\uC774\uC775\u300D\uC744 \uB123\uC5B4 \uC8FC\uC138\uC694. \uC9C1\uC7A5 \uAE09\uC5EC\uB9CC \uC788\uC73C\uBA74 0\uC73C\uB85C \uB450\uC138\uC694. \uACBD\uBE44\uB97C \uBAA8\uB974\uBA74 \uC7A5\uBD80\xB7\uC99D\uBE59\uC744 \uD655\uC778\uD55C \uB4A4 \uACC4\uC0B0\uD574 \uC8FC\uC138\uC694.",
     numeric: true,
     money: true,
     optional: true,
@@ -5745,10 +5943,12 @@ const INC_QS = [
          사업 5억 + 배당 2억 → grossup 240,160,000 / 미적용 251,760,000 (1,160만원)
          사업 3억 + 배당 1억 → 122,190,000 / 128,190,000 (600만원)
        종전엔 이 문항 없이 «무조건 국내 배당»으로 보내 외국 배당이 «적게» 나왔다. */
-    sub: "\uAD6D\uB0B4 \uBC95\uC778\uC5D0\uC11C \uBC1B\uC740 \uBC30\uB2F9\uB9CC Gross-up \uAC00\uC0B0\xB7\uBC30\uB2F9\uC138\uC561\uACF5\uC81C(\xA717\u2462\xB7\xA756) \uB300\uC0C1\uC785\uB2C8\uB2E4. \uC678\uAD6D \uBC95\uC778 \uBC30\uB2F9(\uD574\uC678\uC8FC\uC2DD\xB7\uD574\uC678 ETF \uB4F1)\uC740 \uB300\uC0C1\uC774 \uC544\uB2D0 \uBFD0 \uC544\uB2C8\uB77C, \uD604\uC9C0\uC5D0\uC11C \uC774\uBBF8 \uB5BC\uC778 \uC138\uAE08\uC744 \uBE7C \uC8FC\uB294 \uC678\uAD6D\uB0A9\uBD80\uC138\uC561\uACF5\uC81C(\xA757)\uAE4C\uC9C0 \uB530\uC838\uC57C \uD574\uC11C \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4.",
+    sub: "\uAD6D\uB0B4 \uBC30\uB2F9\uB3C4 \uBAA8\uB450 Gross-up \uB300\uC0C1\uC740 \uC544\uB2D9\uB2C8\uB2E4. \uC6D0\uCC9C\uC9D5\uC218\uC601\uC218\uC99D\uC758 \uBC30\uB2F9\uAC00\uC0B0 \uB300\uC0C1 \uC5EC\uBD80\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC77C\uBC18 \uACF5\uBAA8\uD380\uB4DC\xB7ETF \uBD84\uBC30\uAE08\uC740 \uBCF4\uD1B5 \uBE44\uB300\uC0C1\uC774\uACE0, \uC77C\uBD80 \uC9D1\uD569\uD22C\uC790\uAE30\uAD6C\uB294 \uC608\uC678\uAC00 \uC788\uC2B5\uB2C8\uB2E4. \uC678\uAD6D \uBC30\uB2F9\uC740 \uC678\uAD6D\uB0A9\uBD80\uC138\uC561\uACF5\uC81C\uAE4C\uC9C0 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4.",
     showIf: (a) => (Number(a.dividendIncome) || 0) > 0,
     opts: [
-      ["domestic", "\uAD6D\uB0B4 \uBC95\uC778 \uBC30\uB2F9\uB9CC (\uAD6D\uB0B4 \uC8FC\uC2DD\xB7\uD380\uB4DC)", "Gross-up \uC801\uC6A9"],
+      ["domestic", "Gross-up \uB300\uC0C1 \uAD6D\uB0B4 \uBC30\uB2F9\uB9CC", "\uC6D0\uCC9C\uC9D5\uC218\uC601\uC218\uC99D\uC73C\uB85C \uB300\uC0C1 \uC5EC\uBD80 \uD655\uC778"],
+      ["domestic_other", "Gross-up \uBE44\uB300\uC0C1 \uAD6D\uB0B4 \uBC30\uB2F9\uB9CC", "\uC77C\uBC18 \uACF5\uBAA8\uD380\uB4DC\xB7ETF \uB4F1 \u2014 \uB300\uC0C1 \uC5EC\uBD80 \uD655\uC778"],
+      ["mixed_grossup", "\uAD6D\uB0B4 \uB300\uC0C1\xB7\uBE44\uB300\uC0C1 \uBC30\uB2F9\uC774 \uC11E\uC5EC \uC788\uC74C", "\uAE08\uC561 \uBD84\uB9AC \uD544\uC694 \u2014 \uC0C1\uB2F4"],
       ["foreign", "\uC678\uAD6D \uBC95\uC778 \uBC30\uB2F9\uB9CC (\uD574\uC678\uC8FC\uC2DD\xB7\uD574\uC678 ETF)", "\uC678\uAD6D\uB0A9\uBD80\uC138\uC561\uACF5\uC81C \u2014 \uC0C1\uB2F4"],
       ["mixed", "\uAD6D\uB0B4\xB7\uC678\uAD6D\uC774 \uC11E\uC5EC \uC788\uC74C", "\uAE08\uC561 \uBD84\uB9AC \uD544\uC694 \u2014 \uC0C1\uB2F4"],
       ["unsure", "\uBAA8\uB974\uACA0\uC5B4\uC694", "\uC0C1\uB2F4 \uC548\uB0B4"]
@@ -5757,7 +5957,7 @@ const INC_QS = [
   {
     id: "nationalPension",
     section: "\uACF5\uC81C \uD56D\uBAA9",
-    q: "\uC791\uB144 \uAD6D\uBBFC\uC5F0\uAE08 \uB0A9\uC785\uC561\uC740 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC18C\uB4DD\uACF5\uC81C)",
+    q: "2026\uB144 \uAD6D\uBBFC\uC5F0\uAE08 \uB0A9\uC785\uC561\uC740 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC18C\uB4DD\uACF5\uC81C)",
     sub: "1\uB144\uAC04 \uB0B8 \uAD6D\uBBFC\uC5F0\uAE08 \uBCF4\uD5D8\uB8CC(\uC804\uC561 \uC18C\uB4DD\uACF5\uC81C, \uC18C\uB4DD\uC138\uBC95 \xA751\uC7583). \uBAA8\uB974\uBA74 0\uC73C\uB85C \uB450\uACE0 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.",
     numeric: true,
     money: true,
@@ -5797,6 +5997,10 @@ const INC_QS = [
 function incFallbackGaps(answers, calc) {
   const dividend = Number(answers.dividendIncome) || 0;
   return window.jtFallbackGaps([
+    {
+      when: dividend > 0 && answers.dividendType === "mixed_grossup",
+      why: "\uBC30\uB2F9\uAC00\uC0B0 \uB300\uC0C1\xB7\uBE44\uB300\uC0C1 \uAD6D\uB0B4 \uBC30\uB2F9\uC758 \uAE08\uC561\uC744 \uB098\uB220\uC57C \uD569\uB2C8\uB2E4. \uC6D0\uCC9C\uC9D5\uC218\uC601\uC218\uC99D\uC744 \uD655\uC778\uD574 \uC0C1\uB2F4\uC5D0\uC11C \uBC18\uC601\uD574 \uB4DC\uB9BD\uB2C8\uB2E4."
+    },
     /* ★ foreign 도 막는다 — 260806 엔진 실측: foreign_tax_paid·foreign_tax_credit 어느 이름으로
        보내도 결과가 128,190,000 으로 «동일»했다. 즉 엔진이 외국납부세액공제(§57)를 받지 않는다.
        외국 배당은 현지 원천세가 이미 떼여 있는데 그게 공제되지 않아 세금이 «많게» 나온다.
@@ -5962,6 +6166,7 @@ function JTReportIncome({ setRoute, onBack }) {
       }
       try {
         const body = {
+          tax_year: 2026,
           business_revenue: biz,
           business_expenses: 0,
           salary_income: salary,
@@ -5983,7 +6188,7 @@ function JTReportIncome({ setRoute, onBack }) {
         };
         const j = await callIncomeEng(body);
         const c = j && j.calc;
-        if (c && !c["\uC624\uB958"] && c["\uACFC\uC138\uD45C\uC900"] != null && c["\uCD1D\uC138\uBD80\uB2F4"] != null) {
+        if (window.jtValidCalc(c, ["\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uACB0\uC815\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4"])) {
           calc.taxBase = c["\uACFC\uC138\uD45C\uC900"] || 0;
           calc.calculated = c["\uC0B0\uCD9C\uC138\uC561"] || 0;
           calc.determined = c["\uACB0\uC815\uC138\uC561"] || 0;
@@ -6077,10 +6282,11 @@ function JTReportIncome({ setRoute, onBack }) {
     return null;
   }
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0\uAE30", subtitle: phase === "quick" ? "\uC0AC\uC5C5\xB7\uADFC\uB85C\xB7\uAE08\uC735 \uC18C\uB4DD\uC744 \uB123\uC73C\uBA74 \uC608\uC0C1 \uC885\uD569\uC18C\uB4DD\uC138\uB97C \uBC14\uB85C \uACC4\uC0B0\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uACF5\uC81C \uD56D\uBAA9\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
-      type: "number",
+      type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
       value: answers[cur.id] || "",
@@ -6657,7 +6863,7 @@ function JTReportGift({ setRoute, onBack }) {
         try {
           const ej = await callGiftEngine(mapAnswersToBurdenedGift(answers), "/v1/calc/burdened-gift");
           const c = ej && ej.calc;
-          if (c && !c["\uC624\uB958"] && c["\uCD1D\uC138\uBD80\uB2F4"] != null && c["\uC99D\uC5EC\uC138"] != null && c["\uC591\uB3C4\uC138"] != null && c["\uCDE8\uB4DD\uC138"] != null) {
+          if (window.jtValidCalc(c, ["\uCD1D\uC138\uBD80\uB2F4", "\uC99D\uC5EC\uC138", "\uC591\uB3C4\uC138", "\uCDE8\uB4DD\uC138"])) {
             calc.giftTax = c["\uC99D\uC5EC\uC138"];
             calc.transferTax = c["\uC591\uB3C4\uC138"];
             calc.acqTax = c["\uCDE8\uB4DD\uC138"];
@@ -6697,7 +6903,7 @@ function JTReportGift({ setRoute, onBack }) {
         try {
           const ej = await callGiftEngine(mapAnswersToGift(answers), "/v1/calc/gift");
           const c = ej && ej.calc;
-          if (c && !c["\uC624\uB958"] && c["\uACFC\uC138\uD45C\uC900"] != null && c["\uC0B0\uCD9C\uC138\uC561"] != null && c["\uC138\uC561"] != null) {
+          if (window.jtValidCalc(c, ["\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uC138\uC561"])) {
             calc.taxBase = c["\uACFC\uC138\uD45C\uC900"];
             calc.calcTax = c["\uC0B0\uCD9C\uC138\uC561"];
             calc.genSkipSurcharge = c["\uC138\uB300\uC0DD\uB7B5\uD560\uC99D"] || 0;
@@ -6818,13 +7024,13 @@ function JTReportGift({ setRoute, onBack }) {
       onChange: (e) => setAns(cur.id, e.target.value)
     }
   ), cur.numeric && /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
       className: "jt-report-q__input",
       type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder,
-      value: answers[cur.id] ? Number(answers[cur.id]).toLocaleString("ko-KR") : "",
+      value: answers[cur.id],
       onChange: (e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)
     }
   ), cur.numeric && cur.money && Number(answers[cur.id]) > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 6, fontSize: 14, fontWeight: 600, color: "var(--accent,#2a6d4f)" } }, "= ", koreanAmount(answers[cur.id])), cur.date && /* @__PURE__ */ React.createElement(
@@ -7343,7 +7549,7 @@ function JTReportInheritance({ setRoute, onBack }) {
       try {
         const ej = await callInhEngine(mapAnswersToInheritance(answers));
         const c = ej && ej.calc;
-        if (c && !c["\uC624\uB958"] && !c["error"] && c["\uACFC\uC138\uD45C\uC900"] != null && c["\uC0B0\uCD9C\uC138\uC561"] != null && c["\uC138\uC561"] != null) {
+        if (window.jtValidCalc(c, ["\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uC138\uC561"])) {
           calc.taxBase = c["\uACFC\uC138\uD45C\uC900"];
           calc.calcTax = c["\uC0B0\uCD9C\uC138\uC561"];
           calc.totalTax = c["\uC138\uC561"];
@@ -7464,13 +7670,13 @@ function JTReportInheritance({ setRoute, onBack }) {
       onChange: (e) => setAns(cur.id, e.target.value)
     }
   ), cur.numeric && /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
       className: "jt-report-q__input",
       type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder,
-      value: answers[cur.id] ? Number(answers[cur.id]).toLocaleString("ko-KR") : "",
+      value: answers[cur.id],
       onChange: (e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)
     }
   ), cur.numeric && cur.money && Number(answers[cur.id]) > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 6, fontSize: 14, fontWeight: 600, color: "var(--accent,#2a6d4f)" } }, "= ", inhKoreanAmount(answers[cur.id])), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map(([v, label, hint]) => {
@@ -8243,7 +8449,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       try {
         const ej = await callAcqEngine(mapAnswersToAcquisition(answers));
         const c = ej && ej.calc;
-        if (c) {
+        if (window.jtValidCalc(c, ["\uC138\uC561", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uACFC\uC138\uD45C\uC900"])) {
           calc.totalTax = c["\uC138\uC561"];
           calc.acqTax = c["\uCDE8\uB4DD\uC138"];
           calc.eduTax = c["\uC9C0\uBC29\uAD50\uC721\uC138"];
@@ -8410,13 +8616,14 @@ function JTReportAcquisition({ setRoute, onBack }) {
     background: linfo.ok ? "#eaf5ee" : "#fff7ea",
     borderLeft: "4px solid " + (linfo.ok ? "#2a6d4f" : "#d08b00")
   } }, linfo.msg), unitAsk && window.JTUnitAsk && /* @__PURE__ */ React.createElement(window.JTUnitAsk, { info: unitAsk, busy: lbusy, onPick: (u) => doAddrLookup(u) })), cur.numeric && /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
       type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder,
-      value: answers[cur.id] ? cur.money ? Number(answers[cur.id]).toLocaleString("ko-KR") : answers[cur.id] : "",
+      value: answers[cur.id],
       onChange: (e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)
     }
   ), cur.numeric && cur.money && Number(answers[cur.id]) > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 6, fontSize: 14, fontWeight: 600, color: "var(--accent,#2a6d4f)" } }, "= ", acqKoreanAmount(answers[cur.id])), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, acqVisibleOpts(cur, answers).map(([v, label, hint]) => {
@@ -8637,7 +8844,7 @@ function JTReportAcqCheck({ setRoute }) {
   if (done) {
     return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "jt-page-hero" }, /* @__PURE__ */ React.createElement("div", { className: "jt-page-hero__inner" }, /* @__PURE__ */ React.createElement("div", { className: "jt-page-hero__crumb" }, /* @__PURE__ */ React.createElement("span", null, "ACQUISITION TAX REVIEW"), /* @__PURE__ */ React.createElement("span", null, "\xB7"), /* @__PURE__ */ React.createElement("span", null, "\uC811\uC218 \uC644\uB8CC")), /* @__PURE__ */ React.createElement("h1", null, "\uC811\uC218\uB410\uC2B5\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("section", { className: "jt-section" }, /* @__PURE__ */ React.createElement("div", { className: "jt-confirm" }, /* @__PURE__ */ React.createElement("div", { className: "jt-kicker" }, "RECEIPT \u2014 #", receiptId), sentMethod === "\uCE74\uCE74\uC624\uD1A1 \uCC44\uB110" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h2", { className: "jt-h2" }, "\uCE74\uCE74\uC624\uD1A1 \uCC44\uB110\uC5D0\uC11C \uC811\uC218 \uBC88\uD638\uB97C \uBCF4\uB0B4 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("p", { className: "jt-body" }, "\uCE74\uCE74\uC624\uD1A1\uC740 \uC800\uD76C \uCABD\uC5D0\uC11C \uBA3C\uC800 \uC5F0\uB77D\uB4DC\uB9B4 \uBC29\uBC95\uC774 \uC5C6\uC2B5\uB2C8\uB2E4. \uC544\uB798 \uC811\uC218 \uBC88\uD638\uB97C \uBCF5\uC0AC\uD574 \uCE74\uCE74\uC624\uD1A1 \uCC44\uB110 \uB300\uD654\uCC3D\uC5D0 \uBCF4\uB0B4 \uC8FC\uC154\uC57C \uC811\uC218\uAC00 \uC774\uC5B4\uC9D1\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", margin: "20px 0" } }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--outline", onClick: copyReceiptId }, copied ? "\uBCF5\uC0AC\uB410\uC2B5\uB2C8\uB2E4" : `\uC811\uC218\uBC88\uD638 \uBCF5\uC0AC (${receiptId})`), /* @__PURE__ */ React.createElement("a", { className: "jt-btn jt-btn--primary", href: window.jtKakaoUrl(), target: "_blank", rel: "noopener noreferrer" }, "\uCE74\uCE74\uC624\uD1A1 \uCC44\uB110 \uC5F4\uAE30 \u2192"))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h2", { className: "jt-h2" }, "\uC368 \uC8FC\uC2E0 \uB0B4\uC6A9\uC744 \uBCF4\uACE0 \uB2F4\uB2F9 \uC138\uBB34\uC0AC\uAC00 \uC5F0\uB77D\uB4DC\uB9BD\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { className: "jt-body" }, "\uB0A8\uACA8 \uC8FC\uC2E0 \uB0B4\uC6A9\uB9CC\uC73C\uB85C 1\uCC28 \uC7AC\uAC80\uD1A0\uB97C \uD55C \uB4A4, \uC120\uD0DD\uD558\uC2E0 \uC5F0\uB77D \uBC29\uBC95\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4. \uC774 \uB2E8\uACC4\uC5D0\uC11C\uB294 \uC11C\uB958\uB97C \uBCF4\uB0B4\uC9C0 \uC54A\uC73C\uC154\uB3C4 \uB429\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement(AcqCheckScopeNote, null), /* @__PURE__ */ React.createElement("div", { style: { border: "1px solid var(--border-1)", padding: "20px 24px", margin: "24px 0", fontSize: 14, lineHeight: 1.75, maxWidth: 720 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px" } }, "\uCDE8\uB4DD\uC138 \uAC10\uBA74\uC740 \uC2E0\uCCAD\uC774 \uC788\uC5B4\uC57C \uBC1B\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95 \uC81C183\uC870 \uC81C1\uD56D). \uC2E0\uACE0 \uB2F9\uC2DC \uAC10\uBA74\uC744 \uC2E0\uCCAD\uD558\uC9C0 \uBABB\uD588\uB354\uB77C\uB3C4, \uACBD\uC815\uCCAD\uAD6C\uB97C \uD558\uBA74\uC11C \uADF8\uB54C \uAC10\uBA74\uC2E0\uCCAD\uC11C\uB97C \uD568\uAED8 \uB0BC \uC218 \uC788\uC2B5\uB2C8\uB2E4(\uAC19\uC740 \uBC95 \uC2DC\uD589\uB839 \uC81C126\uC870 \uC81C1\uD56D \uC81C1\uD638 \uB2E8\uC11C)."), /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontWeight: 600 } }, "\uB2E4\uB9CC \uC774\uAC83\uC740 \uC808\uCC28\uAC00 \uC5F4\uB824 \uC788\uB2E4\uB294 \uB73B\uC774\uC9C0, \uBC1B\uC544\uB4E4\uC5EC\uC9C4\uB2E4\uB294 \uB73B\uC740 \uC544\uB2D9\uB2C8\uB2E4. \uC2E4\uCCB4 \uC694\uAC74\uACFC \uCDE8\uB4DD\uC77C \uB2F9\uC2DC\uC758 \uBC95\uB839\xB7\uAE30\uD55C\uC740 \uB2F4\uB2F9 \uC138\uBB34\uC0AC\uAC00 \uAC1C\uBCC4\uC801\uC73C\uB85C \uD310\uB2E8\uD569\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.75 } }, "\uC774 \uD654\uBA74\uC740 \uC138\uC561\xB7\uCC28\uC561\xB7\uD658\uAE09 \uAC00\uB2A5\uC131\uC744 \uACC4\uC0B0\uD558\uAC70\uB098 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 12, flexWrap: "wrap", marginTop: 24 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--outline", onClick: () => setRoute("home") }, "\uD648\uC73C\uB85C")), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.6, marginTop: 40 } }, "\uC81C\uC774\uD2F0 \uC138\uBB34\uBC95\uC778 \xB7 \uAD11\uACE0\uCC45\uC784\uC138\uBB34\uC0AC \uC774\uD604\uC900 \uB300\uD45C\uC138\uBB34\uC0AC"))));
   }
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "jt-page-hero" }, /* @__PURE__ */ React.createElement("div", { className: "jt-page-hero__mark" }, /* @__PURE__ */ React.createElement("img", { src: "project/assets/logo_symbol.png", alt: "" })), /* @__PURE__ */ React.createElement("div", { className: "jt-page-hero__inner" }, /* @__PURE__ */ React.createElement("div", { className: "jt-page-hero__crumb" }, /* @__PURE__ */ React.createElement("span", null, "ACQUISITION TAX"), /* @__PURE__ */ React.createElement("span", null, "\xB7"), /* @__PURE__ */ React.createElement("span", null, "\uC774\uBBF8 \uB0B8 \uCDE8\uB4DD\uC138 1\uCC28 \uC7AC\uAC80\uD1A0")), /* @__PURE__ */ React.createElement("h1", null, "\uC774\uBBF8 \uB0B8 \uCDE8\uB4DD\uC138,", /* @__PURE__ */ React.createElement("br", null), "\uC368 \uC8FC\uC2E0 \uB0B4\uC6A9\uB9CC\uC73C\uB85C 1\uCC28 \uC7AC\uAC80\uD1A0."), /* @__PURE__ */ React.createElement("p", { className: "jt-page-hero__sub" }, "\uC774 \uD654\uBA74\uC740 \uB2E4\uC2DC \uACC4\uC0B0\uD574 \uB4DC\uB9AC\uB294 \uAC83\uC774 \uC544\uB2C8\uB77C ", /* @__PURE__ */ React.createElement("strong", null, "1\uCC28 \uC7AC\uAC80\uD1A0 \uC811\uC218"), "\uC785\uB2C8\uB2E4. \uC544\uB798 \uD56D\uBAA9\uB9CC \uC801\uC5B4 \uC8FC\uC2DC\uBA74 \uC11C\uB958 \uC5C6\uC774 \uB2E4\uC2DC \uBCFC \uC5EC\uC9C0\uAC00 \uC788\uB294\uC9C0 \uBA3C\uC800 \uD655\uC778\uD574 \uB4DC\uB9BD\uB2C8\uB2E4. \uCDE8\uB4DD\uC77C \uB2F9\uC2DC\uC758 \uBC95\uB839\uC774 \uC9C0\uAE08\uACFC \uB2EC\uB77C \uD604\uD589 \uC138\uC728\uB85C \uACC4\uC0B0\uD55C \uAC12\uC744 \uADF8\uB54C \uB0A9\uBD80\uC561\uACFC \uB098\uB780\uD788 \uB450\uBA74 \uADF8 \uCC28\uC774\uAC00 \uC0AC\uC2E4\uACFC \uB2E4\uB974\uAC8C \uC77D\uD790 \uC218 \uC788\uC5B4, \uAE08\uC561\uC740 \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("section", { className: "jt-section" }, /* @__PURE__ */ React.createElement("div", { style: { border: "1px solid var(--border-1)", padding: "20px 24px", marginBottom: 32, fontSize: 14, lineHeight: 1.75, background: "var(--bg-1,#f7f5f0)", maxWidth: 880 } }, /* @__PURE__ */ React.createElement("div", { className: "jt-kicker" }, "\uC11C\uB958\uB294 \uB098\uC911\uC5D0"), /* @__PURE__ */ React.createElement("p", { style: { margin: "10px 0 0" } }, "\uCDE8\uB4DD\uC138 \uC2E0\uACE0\uC11C\xB7\uB4F1\uAE30\uC0AC\uD56D\uC804\uBD80\uC99D\uBA85\uC11C\xB7\uB9E4\uB9E4\uACC4\uC57D\uC11C\xB7\uAD6C\uCCAD \uD1B5\uC9C0\uC11C \uAC19\uC740 \uC11C\uB958\uB294 \uC790\uBB38\uC744 \uB9E1\uAE30\uC2DC\uAE30\uB85C \uD55C \uB4A4\uC5D0 \uD544\uC694\uD55C \uAC83\uB9CC \uC54C\uB824\uB4DC\uB9AC\uACE0 \uBC1B\uC2B5\uB2C8\uB2E4. \uC9C0\uAE08\uC740 \uC544\uB798\uC5D0\uC11C \uAC00\uC9C0\uACE0 \uACC4\uC2E0\uC9C0\uB9CC \uD45C\uC2DC\uD574 \uC8FC\uC2DC\uBA74 \uB429\uB2C8\uB2E4.")), !receiptId && /* @__PURE__ */ React.createElement("div", { style: { border: "1px solid #c00", padding: "16px 20px", marginBottom: 24, fontSize: 14, lineHeight: 1.7, background: "#fff5f5", maxWidth: 880 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC774 \uBE0C\uB77C\uC6B0\uC800\uC5D0\uC11C\uB294 \uC811\uC218 \uBC88\uD638\uB97C \uC548\uC804\uD558\uAC8C \uB9CC\uB4E4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."), " \uCE74\uCE74\uC624\uD1A1 \uCC44\uB110\uC774\uB098 \uC804\uD654\uB85C \uBB38\uC758\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("form", { className: "jt-form", onSubmit: (e) => e.preventDefault() }, /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5B4\uB5A4 \uBD80\uB3D9\uC0B0\uC785\uB2C8\uAE4C"), /* @__PURE__ */ React.createElement("select", { value: f.propertyType, onChange: set("propertyType") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_PROPERTY_TYPES.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v)), /* @__PURE__ */ React.createElement("option", { value: "\uBAA8\uB984" }, "\uBAA8\uB984"))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5B8\uC81C \uCDE8\uB4DD\uD558\uC168\uC2B5\uB2C8\uAE4C ", /* @__PURE__ */ React.createElement("em", null, "\uC5F0\xB7\uC6D4")), /* @__PURE__ */ React.createElement("input", { type: "month", value: f.acqMonth, onChange: set("acqMonth") }), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12.5, color: "var(--fg-3)" } }, "\uC5F0\xB7\uC6D4\uB9CC \uC801\uC5B4 \uC8FC\uC2DC\uBA74 \uB429\uB2C8\uB2E4. \uC815\uD655\uD55C \uB0A0\uC9DC\uC640 \uBB3C\uAC74 \uC18C\uC7AC\uC9C0\uB294 \uD68C\uC2E0 \uB54C \uC5EC\uCB59\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uADF8 \uC5F0\xB7\uC6D4\uC740 \uC5B4\uB290 \uAE30\uC900\uC785\uB2C8\uAE4C ", /* @__PURE__ */ React.createElement("em", null, "OPTIONAL")), /* @__PURE__ */ React.createElement("select", { value: f.acqDateType, onChange: set("acqDateType") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), /* @__PURE__ */ React.createElement("option", { value: "settlement" }, "\uC794\uAE08\uC744 \uCE58\uB978 \uB54C"), /* @__PURE__ */ React.createElement("option", { value: "registry" }, "\uB4F1\uAE30\uB97C \uC811\uC218\uD55C \uB54C"), /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBAA8\uB984"))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uC138\uB97C \uC5BC\uB9C8 \uB0B4\uC168\uC2B5\uB2C8\uAE4C ", /* @__PURE__ */ React.createElement("em", null, "\uB300\uB7B5")), /* @__PURE__ */ React.createElement("input", { type: "text", inputMode: "numeric", placeholder: "\uC6D0 \xB7 \uB300\uB7B5", value: f.paidAmount ? Number(f.paidAmount).toLocaleString("ko-KR") : "", onChange: setMoney("paidAmount") })), /* @__PURE__ */ React.createElement("div", { className: "jt-field jt-field--full" }, /* @__PURE__ */ React.createElement("label", null, "\uC9C0\uAE08 \uC0C1\uD669\uC774 \uC5B4\uB290 \uCABD\uC785\uB2C8\uAE4C"), /* @__PURE__ */ React.createElement("select", { value: f.situation, onChange: set("situation") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_SITUATIONS.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v)))), f.situation === ACQ_CHECK_SITUATIONS[1] && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uD1B5\uC9C0\uC11C \uC774\uB984 ", /* @__PURE__ */ React.createElement("em", null, "\uAF2D \uC801\uC5B4 \uC8FC\uC2ED\uC2DC\uC624")), /* @__PURE__ */ React.createElement("select", { value: f.noticeType, onChange: set("noticeType") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_NOTICE_TYPES.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v)), /* @__PURE__ */ React.createElement("option", { value: "\uBAA8\uB984" }, "\uBAA8\uB984"))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uBC1B\uC740 \uB0A0\uC9DC ", /* @__PURE__ */ React.createElement("em", null, "\uAF2D \uC801\uC5B4 \uC8FC\uC2ED\uC2DC\uC624")), /* @__PURE__ */ React.createElement("input", { type: "date", value: f.noticeDate, onChange: set("noticeDate") }), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12.5, color: "var(--fg-3)" } }, "\uD1B5\uC9C0\uC11C \uC885\uB958\uC640 \uBC1B\uC740 \uB0A0\uC5D0 \uB530\uB77C \uB0A8\uC740 \uB300\uC751 \uAE30\uD55C\uC774 \uB2E4\uB985\uB2C8\uB2E4."))), f.situation === ACQ_CHECK_SITUATIONS[2] && /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uAC70\uBD80 \uD1B5\uC9C0\uB97C \uBC1B\uC740 \uB0A0\uC9DC"), /* @__PURE__ */ React.createElement("input", { type: "date", value: f.rejectDate, onChange: set("rejectDate") })), /* @__PURE__ */ React.createElement("div", { className: "jt-field jt-field--full" }, /* @__PURE__ */ React.createElement("label", null, "\uC544\uB798 \uC11C\uB958 \uC911 \uAC00\uC9C0\uACE0 \uACC4\uC2E0 \uAC83 ", /* @__PURE__ */ React.createElement("em", null, "\uC9C0\uAE08 \uBCF4\uB0B4\uC2E4 \uD544\uC694\uB294 \uC5C6\uC2B5\uB2C8\uB2E4")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 14, flexWrap: "wrap", marginTop: 6 } }, ACQ_CHECK_DOC_ITEMS.map((item) => /* @__PURE__ */ React.createElement("label", { key: item, style: { display: "flex", alignItems: "center", gap: 6, fontSize: 14, cursor: "pointer" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: f.docItems.includes(item), onChange: () => toggleDocItem(item) }), item)))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5B4\uB514\uC5D0\uC11C \uC800\uD76C\uB97C \uC54C\uAC8C \uB418\uC168\uC2B5\uB2C8\uAE4C ", /* @__PURE__ */ React.createElement("em", null, "OPTIONAL")), /* @__PURE__ */ React.createElement("select", { value: f.source, onChange: set("source") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_SOURCES.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v)))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5F0\uB77D \uBC29\uBC95 ", /* @__PURE__ */ React.createElement("em", null, "REQUIRED")), /* @__PURE__ */ React.createElement("select", { value: f.contactMethod, onChange: set("contactMethod"), required: true }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_CONTACT_METHODS.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v))), f.contactMethod === "\uCE74\uCE74\uC624\uD1A1 \uCC44\uB110" && /* @__PURE__ */ React.createElement("p", { style: { margin: "6px 0 0", fontSize: 12.5, color: "var(--fg-3)" } }, "\uC811\uC218 \uD6C4 \uCC44\uB110\uC5D0\uC11C \uC811\uC218 \uBC88\uD638\uB97C \uBCF4\uB0B4 \uC8FC\uC154\uC57C \uD569\uB2C8\uB2E4.")), f.contactMethod === "\uC804\uD654" && /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5F0\uB77D\uBC1B\uC73C\uC2E4 \uC804\uD654\uBC88\uD638 ", /* @__PURE__ */ React.createElement("em", null, "REQUIRED")), /* @__PURE__ */ React.createElement("input", { type: "tel", inputMode: "tel", autoComplete: "tel", placeholder: "010-0000-0000", value: f.contactPhone, onChange: set("contactPhone") }), !phoneCheck.ok && f.contactPhone.trim() && /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12.5, color: "#c00" } }, "\uC804\uD654\uBC88\uD638 \uD615\uC2DD\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694(\uC22B\uC790\xB7\uD558\uC774\uD508\xB7\uACF5\uBC31\xB7\uAD04\uD638\xB7+ \uB9CC, \uC22B\uC790 9~11\uC790\uB9AC\xB70 \uC2DC\uC791)."))), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 32, maxWidth: 880 } }, /* @__PURE__ */ React.createElement("label", { style: { display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: f.consent, onChange: set("consent"), style: { marginTop: 3, width: 18, height: 18, accentColor: "#000" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "var(--fg-2)", lineHeight: 1.6 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAC1C\uC778\uC815\uBCF4 \uC218\uC9D1\xB7\uC774\uC6A9 \uB3D9\uC758"), "(\uAC1C\uC778\uC815\uBCF4 \uBCF4\uD638\uBC95 \xA715\u24601\uD638)", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uBAA9\uC801"), ": \uCDE8\uB4DD\uC138 1\uCC28 \uC7AC\uAC80\uD1A0 \uC811\uC218 \uBC0F \uACB0\uACFC \uC548\uB0B4", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uD56D\uBAA9"), ": \uBB3C\uAC74 \uC885\uB958\xB7\uCDE8\uB4DD \uC5F0\uC6D4\uACFC \uADF8 \uAE30\uC900(\uC794\uAE08\xB7\uB4F1\uAE30\uC811\uC218\xB7\uBAA8\uB984)\xB7\uB0B8 \uCDE8\uB4DD\uC138(\uB300\uB7B5)\xB7\uC9C0\uAE08 \uC0C1\uD669\xB7\uD1B5\uC9C0\uC11C \uC885\uB958\uC640 \uBC1B\uC740 \uB0A0\xB7\uAC00\uC9C0\uACE0 \uACC4\uC2E0 \uC11C\uB958(\uBCF4\uC720 \uC5EC\uBD80\uB9CC)\xB7\uC54C\uAC8C \uB418\uC2E0 \uACBD\uB85C(\uC9C1\uC811 \uACE0\uB974\uC2E0 \uC120\uD0DD\uC9C0), \uC5F0\uB77D \uBC29\uBC95(\uC804\uD654\uB97C \uACE0\uB974\uC2E0 \uACBD\uC6B0 \uC804\uD654\uBC88\uD638) \u2014 \uC120\uD0DD \uD56D\uBAA9\uC740 \uBE44\uC6CC \uB450\uC154\uB3C4 \uC811\uC218\uB429\uB2C8\uB2E4", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uD568\uAED8 \uC804\uC1A1\uB418\uB294 \uC815\uBCF4"), ": \uC811\uC218\uBC88\uD638(\uC784\uC758 \uC0DD\uC131), \uC811\uC218 \uC2DC\uAC01, \uB450 \uB3D9\uC758\uC758 \uAE30\uB85D \u2014 \uC790\uB3D9\uC73C\uB85C \uC218\uC9D1\uB418\uB294 \uC720\uC785 \uACBD\uB85C \uC815\uBCF4(UTM \uB4F1 \uC811\uC18D \uACBD\uB85C)\uB294 \uC774 \uC811\uC218\uC5D0\uC11C \uBCF4\uB0B4\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC704 \u300C\uC54C\uAC8C \uB418\uC2E0 \uACBD\uB85C\u300D\uB294 \uC9C1\uC811 \uACE0\uB974\uC2E0 \uAC12\uB9CC \uC804\uC1A1\uB429\uB2C8\uB2E4", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uBCF4\uC720\xB7\uC774\uC6A9\uAE30\uAC04"), ": \uC0C1\uB2F4 \uC885\uB8CC \uD6C4 3\uB144 \xB7 \uB3D9\uC758\uB97C \uAC70\uBD80\uD558\uC2E4 \uC218 \uC788\uC73C\uBA70, \uAC70\uBD80\uD558\uC2DC\uBA74 \uC774 \uD654\uBA74\uC73C\uB85C\uB294 \uC811\uC218\uB418\uC9C0 \uC54A\uC73C\uB098 \uC804\uD654\xB7\uCE74\uCE74\uC624\uD1A1\uC73C\uB85C \uB3D9\uC77C\uD558\uAC8C \uBB38\uC758\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("label", { style: { display: "flex", alignItems: "flex-start", gap: 12, marginTop: 16, cursor: "pointer" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: f.consentIntl, onChange: set("consentIntl"), style: { marginTop: 3, width: 18, height: 18, accentColor: "#000" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "var(--fg-2)", lineHeight: 1.6 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAC1C\uC778\uC815\uBCF4 \uAD6D\uC678 \uC774\uC804 \uB3D9\uC758"), "(\uAC1C\uC778\uC815\uBCF4 \uBCF4\uD638\uBC95 \xA728\uC7588\u24601\uD638)", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC804 \uD56D\uBAA9"), ": \uC704 \uC218\uC9D1 \uD56D\uBAA9 \uC804\uBD80", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC804 \uAD6D\uAC00\xB7\uC2DC\uAE30\xB7\uBC29\uBC95"), ": ", /* @__PURE__ */ React.createElement("b", null, "\uBBF8\uAD6D"), "(US-East) \xB7 \uC81C\uCD9C \uC989\uC2DC \xB7 \uC554\uD638\uD654 \uC804\uC1A1(HTTPS)", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC804\uBC1B\uB294 \uC790"), ": Web3Forms (Web3Creative, \uC778\uB3C4) \xB7 support@web3forms.com", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC6A9\uBAA9\uC801\xB7\uBCF4\uC720\uAE30\uAC04"), ": \uC811\uC218 \uB0B4\uC6A9\uC744 \uC0AC\uBB34\uC18C \uBA54\uC77C\uB85C \uC804\uB2EC\uD558\uB294 \uC6A9\uB3C4\uC5D0 \uD55C\uD568. \uC81C\uCD9C \uB0B4\uC6A9\uC740 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC73C\uBA70 \uC11C\uBC84 \uC811\uC18D \uAE30\uB85D\uC740 ", /* @__PURE__ */ React.createElement("b", null, "2\uAC1C\uC6D4"), " \uD6C4 \uC0AD\uC81C", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC70\uBD80\uD560 \uAD8C\uB9AC"), ": \uAC70\uBD80\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uAC70\uBD80\uD558\uC2DC\uBA74 \uC774 \uD654\uBA74\uC73C\uB85C\uB294 \uC811\uC218\uB418\uC9C0 \uC54A\uC73C\uB098, \uC804\uD654\xB7\uCE74\uCE74\uC624\uD1A1\uC73C\uB85C \uB3D9\uC77C\uD558\uAC8C \uBB38\uC758\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement(AcqCheckScopeNote, null), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 28, display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary jt-btn--lg", disabled: !canSubmit, onClick: submit, style: { opacity: canSubmit ? 1 : 0.4, cursor: canSubmit ? "pointer" : "not-allowed" } }, submitting ? "\uC804\uC1A1 \uC911..." : /* @__PURE__ */ React.createElement(React.Fragment, null, "1\uCC28 \uC7AC\uAC80\uD1A0 \uC811\uC218 ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192"))), error && /* @__PURE__ */ React.createElement("span", { style: { color: "#c00", fontSize: 13 } }, error))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.6, marginTop: 48 } }, "\uC81C\uC774\uD2F0 \uC138\uBB34\uBC95\uC778 \xB7 \uAD11\uACE0\uCC45\uC784\uC138\uBB34\uC0AC \uC774\uD604\uC900 \uB300\uD45C\uC138\uBB34\uC0AC")));
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "jt-page-hero" }, /* @__PURE__ */ React.createElement("div", { className: "jt-page-hero__mark" }, /* @__PURE__ */ React.createElement("img", { src: "project/assets/logo_symbol.png", alt: "" })), /* @__PURE__ */ React.createElement("div", { className: "jt-page-hero__inner" }, /* @__PURE__ */ React.createElement("div", { className: "jt-page-hero__crumb" }, /* @__PURE__ */ React.createElement("span", null, "ACQUISITION TAX"), /* @__PURE__ */ React.createElement("span", null, "\xB7"), /* @__PURE__ */ React.createElement("span", null, "\uC774\uBBF8 \uB0B8 \uCDE8\uB4DD\uC138 1\uCC28 \uC7AC\uAC80\uD1A0")), /* @__PURE__ */ React.createElement("h1", null, "\uC774\uBBF8 \uB0B8 \uCDE8\uB4DD\uC138,", /* @__PURE__ */ React.createElement("br", null), "\uC368 \uC8FC\uC2E0 \uB0B4\uC6A9\uB9CC\uC73C\uB85C 1\uCC28 \uC7AC\uAC80\uD1A0."), /* @__PURE__ */ React.createElement("p", { className: "jt-page-hero__sub" }, "\uC774 \uD654\uBA74\uC740 \uB2E4\uC2DC \uACC4\uC0B0\uD574 \uB4DC\uB9AC\uB294 \uAC83\uC774 \uC544\uB2C8\uB77C ", /* @__PURE__ */ React.createElement("strong", null, "1\uCC28 \uC7AC\uAC80\uD1A0 \uC811\uC218"), "\uC785\uB2C8\uB2E4. \uC544\uB798 \uD56D\uBAA9\uB9CC \uC801\uC5B4 \uC8FC\uC2DC\uBA74 \uC11C\uB958 \uC5C6\uC774 \uB2E4\uC2DC \uBCFC \uC5EC\uC9C0\uAC00 \uC788\uB294\uC9C0 \uBA3C\uC800 \uD655\uC778\uD574 \uB4DC\uB9BD\uB2C8\uB2E4. \uCDE8\uB4DD\uC77C \uB2F9\uC2DC\uC758 \uBC95\uB839\uC774 \uC9C0\uAE08\uACFC \uB2EC\uB77C \uD604\uD589 \uC138\uC728\uB85C \uACC4\uC0B0\uD55C \uAC12\uC744 \uADF8\uB54C \uB0A9\uBD80\uC561\uACFC \uB098\uB780\uD788 \uB450\uBA74 \uADF8 \uCC28\uC774\uAC00 \uC0AC\uC2E4\uACFC \uB2E4\uB974\uAC8C \uC77D\uD790 \uC218 \uC788\uC5B4, \uAE08\uC561\uC740 \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("section", { className: "jt-section" }, /* @__PURE__ */ React.createElement("div", { style: { border: "1px solid var(--border-1)", padding: "20px 24px", marginBottom: 32, fontSize: 14, lineHeight: 1.75, background: "var(--bg-1,#f7f5f0)", maxWidth: 880 } }, /* @__PURE__ */ React.createElement("div", { className: "jt-kicker" }, "\uC11C\uB958\uB294 \uB098\uC911\uC5D0"), /* @__PURE__ */ React.createElement("p", { style: { margin: "10px 0 0" } }, "\uCDE8\uB4DD\uC138 \uC2E0\uACE0\uC11C\xB7\uB4F1\uAE30\uC0AC\uD56D\uC804\uBD80\uC99D\uBA85\uC11C\xB7\uB9E4\uB9E4\uACC4\uC57D\uC11C\xB7\uAD6C\uCCAD \uD1B5\uC9C0\uC11C \uAC19\uC740 \uC11C\uB958\uB294 \uC790\uBB38\uC744 \uB9E1\uAE30\uC2DC\uAE30\uB85C \uD55C \uB4A4\uC5D0 \uD544\uC694\uD55C \uAC83\uB9CC \uC54C\uB824\uB4DC\uB9AC\uACE0 \uBC1B\uC2B5\uB2C8\uB2E4. \uC9C0\uAE08\uC740 \uC544\uB798\uC5D0\uC11C \uAC00\uC9C0\uACE0 \uACC4\uC2E0\uC9C0\uB9CC \uD45C\uC2DC\uD574 \uC8FC\uC2DC\uBA74 \uB429\uB2C8\uB2E4.")), !receiptId && /* @__PURE__ */ React.createElement("div", { style: { border: "1px solid #c00", padding: "16px 20px", marginBottom: 24, fontSize: 14, lineHeight: 1.7, background: "#fff5f5", maxWidth: 880 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC774 \uBE0C\uB77C\uC6B0\uC800\uC5D0\uC11C\uB294 \uC811\uC218 \uBC88\uD638\uB97C \uC548\uC804\uD558\uAC8C \uB9CC\uB4E4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."), " \uCE74\uCE74\uC624\uD1A1 \uCC44\uB110\uC774\uB098 \uC804\uD654\uB85C \uBB38\uC758\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("form", { className: "jt-form", onSubmit: (e) => e.preventDefault() }, /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5B4\uB5A4 \uBD80\uB3D9\uC0B0\uC785\uB2C8\uAE4C"), /* @__PURE__ */ React.createElement("select", { value: f.propertyType, onChange: set("propertyType") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_PROPERTY_TYPES.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v)), /* @__PURE__ */ React.createElement("option", { value: "\uBAA8\uB984" }, "\uBAA8\uB984"))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5B8\uC81C \uCDE8\uB4DD\uD558\uC168\uC2B5\uB2C8\uAE4C ", /* @__PURE__ */ React.createElement("em", null, "\uC5F0\xB7\uC6D4")), /* @__PURE__ */ React.createElement("input", { type: "month", value: f.acqMonth, onChange: set("acqMonth") }), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12.5, color: "var(--fg-3)" } }, "\uC5F0\xB7\uC6D4\uB9CC \uC801\uC5B4 \uC8FC\uC2DC\uBA74 \uB429\uB2C8\uB2E4. \uC815\uD655\uD55C \uB0A0\uC9DC\uC640 \uBB3C\uAC74 \uC18C\uC7AC\uC9C0\uB294 \uD68C\uC2E0 \uB54C \uC5EC\uCB59\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uADF8 \uC5F0\xB7\uC6D4\uC740 \uC5B4\uB290 \uAE30\uC900\uC785\uB2C8\uAE4C ", /* @__PURE__ */ React.createElement("em", null, "OPTIONAL")), /* @__PURE__ */ React.createElement("select", { value: f.acqDateType, onChange: set("acqDateType") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), /* @__PURE__ */ React.createElement("option", { value: "settlement" }, "\uC794\uAE08\uC744 \uCE58\uB978 \uB54C"), /* @__PURE__ */ React.createElement("option", { value: "registry" }, "\uB4F1\uAE30\uB97C \uC811\uC218\uD55C \uB54C"), /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBAA8\uB984"))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uC138\uB97C \uC5BC\uB9C8 \uB0B4\uC168\uC2B5\uB2C8\uAE4C ", /* @__PURE__ */ React.createElement("em", null, "\uB300\uB7B5")), /* @__PURE__ */ React.createElement(JTNumericInput, { type: "text", inputMode: "numeric", placeholder: "\uC6D0 \xB7 \uB300\uB7B5", value: f.paidAmount, onChange: setMoney("paidAmount") })), /* @__PURE__ */ React.createElement("div", { className: "jt-field jt-field--full" }, /* @__PURE__ */ React.createElement("label", null, "\uC9C0\uAE08 \uC0C1\uD669\uC774 \uC5B4\uB290 \uCABD\uC785\uB2C8\uAE4C"), /* @__PURE__ */ React.createElement("select", { value: f.situation, onChange: set("situation") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_SITUATIONS.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v)))), f.situation === ACQ_CHECK_SITUATIONS[1] && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uD1B5\uC9C0\uC11C \uC774\uB984 ", /* @__PURE__ */ React.createElement("em", null, "\uAF2D \uC801\uC5B4 \uC8FC\uC2ED\uC2DC\uC624")), /* @__PURE__ */ React.createElement("select", { value: f.noticeType, onChange: set("noticeType") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_NOTICE_TYPES.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v)), /* @__PURE__ */ React.createElement("option", { value: "\uBAA8\uB984" }, "\uBAA8\uB984"))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uBC1B\uC740 \uB0A0\uC9DC ", /* @__PURE__ */ React.createElement("em", null, "\uAF2D \uC801\uC5B4 \uC8FC\uC2ED\uC2DC\uC624")), /* @__PURE__ */ React.createElement("input", { type: "date", value: f.noticeDate, onChange: set("noticeDate") }), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12.5, color: "var(--fg-3)" } }, "\uD1B5\uC9C0\uC11C \uC885\uB958\uC640 \uBC1B\uC740 \uB0A0\uC5D0 \uB530\uB77C \uB0A8\uC740 \uB300\uC751 \uAE30\uD55C\uC774 \uB2E4\uB985\uB2C8\uB2E4."))), f.situation === ACQ_CHECK_SITUATIONS[2] && /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uAC70\uBD80 \uD1B5\uC9C0\uB97C \uBC1B\uC740 \uB0A0\uC9DC"), /* @__PURE__ */ React.createElement("input", { type: "date", value: f.rejectDate, onChange: set("rejectDate") })), /* @__PURE__ */ React.createElement("div", { className: "jt-field jt-field--full" }, /* @__PURE__ */ React.createElement("label", null, "\uC544\uB798 \uC11C\uB958 \uC911 \uAC00\uC9C0\uACE0 \uACC4\uC2E0 \uAC83 ", /* @__PURE__ */ React.createElement("em", null, "\uC9C0\uAE08 \uBCF4\uB0B4\uC2E4 \uD544\uC694\uB294 \uC5C6\uC2B5\uB2C8\uB2E4")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 14, flexWrap: "wrap", marginTop: 6 } }, ACQ_CHECK_DOC_ITEMS.map((item) => /* @__PURE__ */ React.createElement("label", { key: item, style: { display: "flex", alignItems: "center", gap: 6, fontSize: 14, cursor: "pointer" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: f.docItems.includes(item), onChange: () => toggleDocItem(item) }), item)))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5B4\uB514\uC5D0\uC11C \uC800\uD76C\uB97C \uC54C\uAC8C \uB418\uC168\uC2B5\uB2C8\uAE4C ", /* @__PURE__ */ React.createElement("em", null, "OPTIONAL")), /* @__PURE__ */ React.createElement("select", { value: f.source, onChange: set("source") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_SOURCES.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v)))), /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5F0\uB77D \uBC29\uBC95 ", /* @__PURE__ */ React.createElement("em", null, "REQUIRED")), /* @__PURE__ */ React.createElement("select", { value: f.contactMethod, onChange: set("contactMethod"), required: true }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), ACQ_CHECK_CONTACT_METHODS.map((v) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, v))), f.contactMethod === "\uCE74\uCE74\uC624\uD1A1 \uCC44\uB110" && /* @__PURE__ */ React.createElement("p", { style: { margin: "6px 0 0", fontSize: 12.5, color: "var(--fg-3)" } }, "\uC811\uC218 \uD6C4 \uCC44\uB110\uC5D0\uC11C \uC811\uC218 \uBC88\uD638\uB97C \uBCF4\uB0B4 \uC8FC\uC154\uC57C \uD569\uB2C8\uB2E4.")), f.contactMethod === "\uC804\uD654" && /* @__PURE__ */ React.createElement("div", { className: "jt-field" }, /* @__PURE__ */ React.createElement("label", null, "\uC5F0\uB77D\uBC1B\uC73C\uC2E4 \uC804\uD654\uBC88\uD638 ", /* @__PURE__ */ React.createElement("em", null, "REQUIRED")), /* @__PURE__ */ React.createElement("input", { type: "tel", inputMode: "tel", autoComplete: "tel", placeholder: "010-0000-0000", value: f.contactPhone, onChange: set("contactPhone") }), !phoneCheck.ok && f.contactPhone.trim() && /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12.5, color: "#c00" } }, "\uC804\uD654\uBC88\uD638 \uD615\uC2DD\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694(\uC22B\uC790\xB7\uD558\uC774\uD508\xB7\uACF5\uBC31\xB7\uAD04\uD638\xB7+ \uB9CC, \uC22B\uC790 9~11\uC790\uB9AC\xB70 \uC2DC\uC791)."))), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 32, maxWidth: 880 } }, /* @__PURE__ */ React.createElement("label", { style: { display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: f.consent, onChange: set("consent"), style: { marginTop: 3, width: 18, height: 18, accentColor: "#000" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "var(--fg-2)", lineHeight: 1.6 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAC1C\uC778\uC815\uBCF4 \uC218\uC9D1\xB7\uC774\uC6A9 \uB3D9\uC758"), "(\uAC1C\uC778\uC815\uBCF4 \uBCF4\uD638\uBC95 \xA715\u24601\uD638)", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uBAA9\uC801"), ": \uCDE8\uB4DD\uC138 1\uCC28 \uC7AC\uAC80\uD1A0 \uC811\uC218 \uBC0F \uACB0\uACFC \uC548\uB0B4", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uD56D\uBAA9"), ": \uBB3C\uAC74 \uC885\uB958\xB7\uCDE8\uB4DD \uC5F0\uC6D4\uACFC \uADF8 \uAE30\uC900(\uC794\uAE08\xB7\uB4F1\uAE30\uC811\uC218\xB7\uBAA8\uB984)\xB7\uB0B8 \uCDE8\uB4DD\uC138(\uB300\uB7B5)\xB7\uC9C0\uAE08 \uC0C1\uD669\xB7\uD1B5\uC9C0\uC11C \uC885\uB958\uC640 \uBC1B\uC740 \uB0A0\xB7\uAC00\uC9C0\uACE0 \uACC4\uC2E0 \uC11C\uB958(\uBCF4\uC720 \uC5EC\uBD80\uB9CC)\xB7\uC54C\uAC8C \uB418\uC2E0 \uACBD\uB85C(\uC9C1\uC811 \uACE0\uB974\uC2E0 \uC120\uD0DD\uC9C0), \uC5F0\uB77D \uBC29\uBC95(\uC804\uD654\uB97C \uACE0\uB974\uC2E0 \uACBD\uC6B0 \uC804\uD654\uBC88\uD638) \u2014 \uC120\uD0DD \uD56D\uBAA9\uC740 \uBE44\uC6CC \uB450\uC154\uB3C4 \uC811\uC218\uB429\uB2C8\uB2E4", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uD568\uAED8 \uC804\uC1A1\uB418\uB294 \uC815\uBCF4"), ": \uC811\uC218\uBC88\uD638(\uC784\uC758 \uC0DD\uC131), \uC811\uC218 \uC2DC\uAC01, \uB450 \uB3D9\uC758\uC758 \uAE30\uB85D \u2014 \uC790\uB3D9\uC73C\uB85C \uC218\uC9D1\uB418\uB294 \uC720\uC785 \uACBD\uB85C \uC815\uBCF4(UTM \uB4F1 \uC811\uC18D \uACBD\uB85C)\uB294 \uC774 \uC811\uC218\uC5D0\uC11C \uBCF4\uB0B4\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC704 \u300C\uC54C\uAC8C \uB418\uC2E0 \uACBD\uB85C\u300D\uB294 \uC9C1\uC811 \uACE0\uB974\uC2E0 \uAC12\uB9CC \uC804\uC1A1\uB429\uB2C8\uB2E4", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uBCF4\uC720\xB7\uC774\uC6A9\uAE30\uAC04"), ": \uC0C1\uB2F4 \uC885\uB8CC \uD6C4 3\uB144 \xB7 \uB3D9\uC758\uB97C \uAC70\uBD80\uD558\uC2E4 \uC218 \uC788\uC73C\uBA70, \uAC70\uBD80\uD558\uC2DC\uBA74 \uC774 \uD654\uBA74\uC73C\uB85C\uB294 \uC811\uC218\uB418\uC9C0 \uC54A\uC73C\uB098 \uC804\uD654\xB7\uCE74\uCE74\uC624\uD1A1\uC73C\uB85C \uB3D9\uC77C\uD558\uAC8C \uBB38\uC758\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("label", { style: { display: "flex", alignItems: "flex-start", gap: 12, marginTop: 16, cursor: "pointer" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: f.consentIntl, onChange: set("consentIntl"), style: { marginTop: 3, width: 18, height: 18, accentColor: "#000" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "var(--fg-2)", lineHeight: 1.6 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAC1C\uC778\uC815\uBCF4 \uAD6D\uC678 \uC774\uC804 \uB3D9\uC758"), "(\uAC1C\uC778\uC815\uBCF4 \uBCF4\uD638\uBC95 \xA728\uC7588\u24601\uD638)", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC804 \uD56D\uBAA9"), ": \uC704 \uC218\uC9D1 \uD56D\uBAA9 \uC804\uBD80", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC804 \uAD6D\uAC00\xB7\uC2DC\uAE30\xB7\uBC29\uBC95"), ": ", /* @__PURE__ */ React.createElement("b", null, "\uBBF8\uAD6D"), "(US-East) \xB7 \uC81C\uCD9C \uC989\uC2DC \xB7 \uC554\uD638\uD654 \uC804\uC1A1(HTTPS)", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC804\uBC1B\uB294 \uC790"), ": Web3Forms (Web3Creative, \uC778\uB3C4) \xB7 support@web3forms.com", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC6A9\uBAA9\uC801\xB7\uBCF4\uC720\uAE30\uAC04"), ": \uC811\uC218 \uB0B4\uC6A9\uC744 \uC0AC\uBB34\uC18C \uBA54\uC77C\uB85C \uC804\uB2EC\uD558\uB294 \uC6A9\uB3C4\uC5D0 \uD55C\uD568. \uC81C\uCD9C \uB0B4\uC6A9\uC740 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC73C\uBA70 \uC11C\uBC84 \uC811\uC18D \uAE30\uB85D\uC740 ", /* @__PURE__ */ React.createElement("b", null, "2\uAC1C\uC6D4"), " \uD6C4 \uC0AD\uC81C", /* @__PURE__ */ React.createElement("br", null), "\xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC70\uBD80\uD560 \uAD8C\uB9AC"), ": \uAC70\uBD80\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uAC70\uBD80\uD558\uC2DC\uBA74 \uC774 \uD654\uBA74\uC73C\uB85C\uB294 \uC811\uC218\uB418\uC9C0 \uC54A\uC73C\uB098, \uC804\uD654\xB7\uCE74\uCE74\uC624\uD1A1\uC73C\uB85C \uB3D9\uC77C\uD558\uAC8C \uBB38\uC758\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement(AcqCheckScopeNote, null), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 28, display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary jt-btn--lg", disabled: !canSubmit, onClick: submit, style: { opacity: canSubmit ? 1 : 0.4, cursor: canSubmit ? "pointer" : "not-allowed" } }, submitting ? "\uC804\uC1A1 \uC911..." : /* @__PURE__ */ React.createElement(React.Fragment, null, "1\uCC28 \uC7AC\uAC80\uD1A0 \uC811\uC218 ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192"))), error && /* @__PURE__ */ React.createElement("span", { style: { color: "#c00", fontSize: 13 } }, error))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.6, marginTop: 48 } }, "\uC81C\uC774\uD2F0 \uC138\uBB34\uBC95\uC778 \xB7 \uAD11\uACE0\uCC45\uC784\uC138\uBB34\uC0AC \uC774\uD604\uC900 \uB300\uD45C\uC138\uBB34\uC0AC")));
 }
 function AcqCheckScopeNote() {
   return /* @__PURE__ */ React.createElement("div", { style: { border: "1px solid var(--border-1)", padding: "20px 24px", margin: "28px 0 0", fontSize: 14, lineHeight: 1.75, maxWidth: 880 } }, /* @__PURE__ */ React.createElement("div", { className: "jt-kicker" }, "1\uCC28 \uC7AC\uAC80\uD1A0\uC5D0\uC11C \uD558\uB294 \uAC83"), /* @__PURE__ */ React.createElement("p", { style: { margin: "8px 0 10px" } }, "\uB2F4\uB2F9\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uAE40\uBBFC\uC11D \uB300\uD45C\uC138\uBB34\uC0AC"), "\uC785\uB2C8\uB2E4. \uD68C\uC2E0 \uC608\uC815\uC77C\uC740 \uC811\uC218 \uD655\uC778 \uD68C\uC2E0\uC5D0\uC11C \uC54C\uB824\uB4DC\uB9BD\uB2C8\uB2E4(\uCCAB \uACAC\uBCF8 \uC0AC\uAC74\uC758 \uC2E4\uC81C \uAC80\uD1A0 \uC2DC\uAC04\uC744 \uC7B0 \uB4A4\uC5D0 \uC815\uD558\uBA70, \uC22B\uC790\uB97C \uBA3C\uC800 \uC57D\uC18D\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4)."), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px" } }, "\uC811\uC218 \uC591\uC2DD\uC5D0 \uC368 \uC8FC\uC2E0 \uB0B4\uC6A9\uC73C\uB85C \u2460\uB2E4\uC2DC \uBCFC \uC5EC\uC9C0\uAC00 \uC788\uB294\uC9C0 \u2461\uC218\uC784\uD558\uAC8C \uB418\uBA74 \uC5B4\uB5A4 \uC790\uB8CC\uAC00 \uD544\uC694\uD560\uC9C0\uB97C \uD655\uC778\uD574,", /* @__PURE__ */ React.createElement("strong", null, " \u300C\uCD94\uAC00 \uAC80\uD1A0 \uD544\uC694 / \uC0AC\uC2E4\uAD00\uACC4 \uBCF4\uC644 / \uD310\uB2E8 \uBD88\uAC00 / \uAC00\uB2A5\uC131 \uB0AE\uC74C\u300D"), " \uC911 \uD558\uB098\uB85C \uC548\uB0B4\uB4DC\uB9AC\uB294 \uAC83\uAE4C\uC9C0\uC785\uB2C8\uB2E4. \uC774 \uB2E8\uACC4\uC5D0\uC11C\uB294 \uC11C\uB958\uB97C \uBCF4\uB0B4\uC9C0 \uC54A\uC73C\uC154\uB3C4 \uB429\uB2C8\uB2E4. \uC11C\uB958 \uC5C6\uC774 \uB0B4\uB9B0 \uD310\uB2E8\uC774\uBBC0\uB85C ", /* @__PURE__ */ React.createElement("strong", null, "\uC790\uB8CC\uB97C \uBCF4\uBA74 \uACB0\uB860\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px" } }, "\uC11C\uBA74 \uC758\uACAC\uC11C \uC791\uC131, \uC138\uC561 \uACC4\uC0B0, \uAD6C\uCCAD \uB300\uC751(\uACBD\uC815\uCCAD\uAD6C\xB7\uBD88\uBCF5 \uC81C\uCD9C)\uC740 \uAC80\uD1A0 \uBC94\uC704\uC640 \uBCF4\uC218\uB97C \uACAC\uC801\uC73C\uB85C \uC548\uB0B4\uD558\uACE0 \uB3D9\uC758\uB97C \uBC1B\uC740 \uB4A4\uC5D0 \uC2DC\uC791\uD569\uB2C8\uB2E4. \uB3D9\uC758 \uC804\uC5D0\uB294 \uC5B4\uB5A4 \uC11C\uBA74\uB3C4 \uC81C\uCD9C\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontWeight: 600 } }, "\uAD6C\uCCAD \uD1B5\uC9C0\uC11C\uB97C \uBC1B\uC73C\uC168\uB2E4\uBA74 \uB300\uC751 \uAE30\uD55C\uC774 \uC815\uD574\uC838 \uC788\uC2B5\uB2C8\uB2E4. \uD1B5\uC9C0\uC11C \uC774\uB984\uACFC \uBC1B\uC73C\uC2E0 \uB0A0\uC9DC\uB97C \uC54C\uB824 \uC8FC\uC2DC\uBA74 \uB0A8\uC740 \uB0A0\uC744 \uBA3C\uC800 \uD655\uC778\uD574 \uB4DC\uB9BD\uB2C8\uB2E4. \uB2E4\uB9CC \uC720\uB8CC \uC218\uC784\uC774 \uD655\uC815\uB418\uAE30 \uC804\uC5D0\uB294 \uC81C\uC774\uD2F0\uAC00 \uB300\uB9AC\uC640 \uAE30\uD55C \uAD00\uB9AC\uC758 \uC758\uBB34\uB97C \uC9C0\uC9C0 \uC54A\uC73C\uBBC0\uB85C, \uAE30\uD55C\uC740 \uACE0\uAC1D\uAED8\uC11C\uB3C4 \uD568\uAED8 \uD655\uC778\uD574 \uC8FC\uC2ED\uC2DC\uC624. \uACB0\uACFC\uB97C \uBCF4\uC7A5\uD558\uC9C0 \uC54A\uC73C\uBA70, \uC0AC\uC548\uB9C8\uB2E4 \uACB0\uB860\uC774 \uB2E4\uB974\uACE0 \uBC1B\uC544\uB4E4\uC5EC\uC9C0\uC9C0 \uC54A\uB294 \uACBD\uC6B0\uB3C4 \uC788\uC2B5\uB2C8\uB2E4."));
@@ -9186,7 +9393,7 @@ function JTReportProperty({ setRoute, onBack }) {
       try {
         const ej = await callPropEngine(mapAnswersToProperty(answers));
         const c = ej && ej.calc;
-        if (c) {
+        if (window.jtValidCalc(c, ["\uC138\uC561", "\uC7AC\uC0B0\uC138\uBCF8\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84", "\uC18C\uBC29\uBD84", "\uACFC\uC138\uD45C\uC900"])) {
           calc.totalTax = c["\uC138\uC561"];
           calc.mainTax = c["\uC7AC\uC0B0\uC138\uBCF8\uC138"];
           calc.eduTax = c["\uC9C0\uBC29\uAD50\uC721\uC138"];
@@ -9329,13 +9536,14 @@ function JTReportProperty({ setRoute, onBack }) {
     background: linfo.ok ? "#eaf5ee" : "#fff7ea",
     borderLeft: "4px solid " + (linfo.ok ? "#2a6d4f" : "#d08b00")
   } }, linfo.msg), unitAsk && window.JTUnitAsk && /* @__PURE__ */ React.createElement(window.JTUnitAsk, { info: unitAsk, busy: lbusy, onPick: (u) => doAddrLookup(u) })), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
       type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
-      value: answers[cur.id] ? cur.money ? Number(answers[cur.id]).toLocaleString("ko-KR") : answers[cur.id] : "",
+      value: answers[cur.id],
       onChange: (e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)
     }
   ), cur.money && Number(answers[cur.id]) > 0 && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: "var(--accent,#2a6d4f)", marginTop: 6 } }, "= ", propKoreanAmountOrWon(Number(answers[cur.id])))), cur.freeform && /* @__PURE__ */ React.createElement(
@@ -9731,7 +9939,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
       try {
         const ej = await callCompEngine(mapAnswersToComprehensive(answers));
         const c = ej && ej.calc;
-        if (c && !c["\uC624\uB958"]) {
+        if (window.jtValidCalc(c, ["\uC138\uC561", "\uC885\uBD80\uC138\uD569\uACC4", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"]) && window.jtValidCalc(c["\uC8FC\uD0DD\uBD84"], ["\uACFC\uC138\uD45C\uC900", "\uC138\uC561", "\uC21C\uC138\uC561"])) {
           calc.totalTax = c["\uC138\uC561"];
           calc.compTotal = c["\uC885\uBD80\uC138\uD569\uACC4"];
           calc.ruralTax = c["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"] || 0;
@@ -9883,13 +10091,14 @@ function JTReportComprehensive({ setRoute, onBack }) {
     background: linfo.ok ? "#eaf5ee" : "#fff7ea",
     borderLeft: "4px solid " + (linfo.ok ? "#2a6d4f" : "#d08b00")
   } }, linfo.msg, addedCount > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 6 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", style: { padding: "4px 10px", fontSize: 13 }, onClick: resetAddr }, "\uD569\uACC4 \uCD08\uAE30\uD654"))), unitAsk && window.JTUnitAsk && /* @__PURE__ */ React.createElement(window.JTUnitAsk, { info: unitAsk, busy: lbusy, onPick: (u) => doAddrLookup(u) })), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
       type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
-      value: answers[cur.id] ? cur.money ? Number(answers[cur.id]).toLocaleString("ko-KR") : answers[cur.id] : "",
+      value: answers[cur.id],
       onChange: (e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)
     }
   ), cur.money && Number(answers[cur.id]) > 0 && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: "var(--accent,#2a6d4f)", marginTop: 6 } }, "= ", compKoreanAmountOrWon(Number(answers[cur.id])))), cur.freeform && /* @__PURE__ */ React.createElement(
@@ -10092,7 +10301,7 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
       }
     }
   ), y, "\uB144"), /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
       className: "jt-report-q__input",
       style: { flex: "1 1 200px", margin: 0 },
@@ -10100,7 +10309,7 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
       inputMode: "numeric",
       placeholder: "\uACF5\uC2DC\uAC00\uACA9 (\uC6D0)",
       disabled: !yearSel[y] || busy,
-      value: yearVal[y] ? Number(yearVal[y]).toLocaleString("ko-KR") : "",
+      value: yearVal[y],
       onChange: (e) => {
         clearOnInputChange();
         window.jtSetNumericAns((_id, v) => setYearVal((s) => __spreadProps(__spreadValues({}, s), { [y]: v })), y, e.target.value, true);
@@ -10130,17 +10339,17 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
       }
     }
   ), /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontSize: 13, margin: "10px 0 4px" } }, "\uB2E4\uB978 \uC8FC\uD0DD\uB4E4\uC758 \uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4 (\uC6D0)"), /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
       className: "jt-report-q__input",
       type: "text",
       inputMode: "numeric",
       placeholder: "\uC608: 800,000,000",
       disabled: busy,
-      value: otherValue ? Number(otherValue).toLocaleString("ko-KR") : "",
+      value: otherValue,
       onChange: (e) => {
         clearOnInputChange();
-        setOtherValue(e.target.value.replace(/[^0-9]/g, ""));
+        setOtherValue(e.target.value);
       }
     }
   )), otherHousing === "none" && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10 } }, /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.8, margin: "0 0 6px" } }, "\uB098\uC774\xB7\uBCF4\uC720\uAE30\uAC04\uC740 \uC120\uD0DD \uC785\uB825\uC785\uB2C8\uB2E4 \u2014 \uBE44\uC6B0\uBA74 \uC138\uC561\uACF5\uC81C\uB97C \uBC18\uC601\uD558\uC9C0 \uC54A\uC740 \uAC12\uC73C\uB85C \uD45C\uC2DC\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontSize: 13, marginBottom: 4 } }, "\uC18C\uC720\uC790 \uB098\uC774 (\uB9CC, \uC120\uD0DD)"), /* @__PURE__ */ React.createElement(
@@ -10421,7 +10630,7 @@ function JTReportCorporate({ setRoute, onBack }) {
           salary > 0 ? callCorpEng("/v1/calc/income", { salary_income: salary, spouse, dependents: deps, children_count: kids }) : Promise.resolve(null)
         ]);
         const pc = pj && pj.calc, cc = cj && cj.calc, sc = sj && sj.calc;
-        if (window.jtValidCalc(pc, ["\uCD1D\uC138\uBD80\uB2F4"]) && window.jtValidCalc(cc, ["\uCD1D\uB0A9\uBD80\uC138\uC561"])) {
+        if (window.jtValidCalc(pc, ["\uCD1D\uC138\uBD80\uB2F4"]) && window.jtValidCalc(cc, ["\uCD1D\uB0A9\uBD80\uC138\uC561"]) && (salary === 0 || window.jtValidCalc(sc, ["\uCD1D\uC138\uBD80\uB2F4"]))) {
           calc.indivTotal = pc["\uCD1D\uC138\uBD80\uB2F4"] || 0;
           calc.corpTax = cc["\uCD1D\uB0A9\uBD80\uC138\uC561"] || 0;
           calc.salaryTax = sc && sc["\uCD1D\uC138\uBD80\uB2F4"] || 0;
@@ -10545,10 +10754,11 @@ function JTReportCorporate({ setRoute, onBack }) {
     return null;
   }
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBC95\uC778 \uC804\uD658 \uC2DC\uBBAC\uB808\uC774\uD130", subtitle: phase === "quick" ? "\uC0AC\uC5C5 \uC774\uC775\xB7\uB300\uD45C \uC5F0\uBD09\uB9CC \uB123\uC73C\uBA74 \uAC1C\uC778 vs \uBC95\uC778\uC744 \uBC14\uB85C \uBE44\uAD50\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uBC30\uB2F9 \uACC4\uD68D\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uBE44\uAD50\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "CONSULTING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
-      type: "number",
+      type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
       value: answers[cur.id] || "",
@@ -10620,8 +10830,13 @@ const INS_RATES_2026 = {
   // 이 날짜가 지나면 상·하한 갱신 필요
   health: 0.03595,
   // 건강보험 (7.19%의 1/2)
-  longTermOfHealth: 0.1314,
-  // 장기요양 = 건강보험료 × 13.14%
+  // 보건복지부 고시 제2025-222호(2026 시행): 보수월액보험료 자체 상·하한의 근로자 절반.
+  healthMin: 10080,
+  healthMax: 4591740,
+  longTermOfHealth: 9448 / 71900,
+  // 장기요양 0.9448% / 건강 7.19%; 반올림된 13.14%를 계산에 쓰지 않는다.
+  longTermOfHealthFromNov: 0.1314,
+  // 법률 제21690호 부칙 제3조: 2026년 11월분부터 비율 소수점 다섯째 자리 반올림.
   employment: 9e-3
   // 고용보험 (실업급여분)
 };
@@ -10703,16 +10918,18 @@ function wonExact(n) {
   return Math.round(n).toLocaleString("ko-KR") + "\uC6D0";
 }
 function floorWon(x) {
-  return Math.floor(Math.round(x * 100) / 100);
+  return Math.floor(x / 10 + 1e-8) * 10;
 }
-function calcInsurance(monthly) {
+function calcInsurance(monthly, contributionMonth = /* @__PURE__ */ new Date()) {
   const r = INS_RATES_2026;
   if (!(monthly > 0)) return { pension: 0, health: 0, longTerm: 0, employment: 0, total: 0, pensionCapped: false };
   const pensionBaseRaw = Math.floor(monthly / 1e3) * 1e3;
   const pensionBase = Math.min(Math.max(pensionBaseRaw, r.pensionMin), r.pensionMax);
   const pension = floorWon(pensionBase * r.pension);
-  const health = floorWon(monthly * r.health);
-  const longTerm = floorWon(health * r.longTermOfHealth);
+  const health = Math.min(r.healthMax, Math.max(r.healthMin, floorWon(monthly * r.health)));
+  const monthKey = contributionMonth.getFullYear() * 100 + contributionMonth.getMonth() + 1;
+  const longTermRatio = monthKey >= 202611 ? r.longTermOfHealthFromNov : r.longTermOfHealth;
+  const longTerm = floorWon(health * longTermRatio);
   const employment = floorWon(monthly * r.employment);
   const total = pension + health + longTerm + employment;
   const boundsStale = !!(r.pensionBoundsUntil && /* @__PURE__ */ new Date() > /* @__PURE__ */ new Date(r.pensionBoundsUntil + "T23:59:59"));
@@ -10810,7 +11027,7 @@ function JTReportInsurance({ setRoute, onBack }) {
           health_insurance: (ins.health + ins.longTerm + ins.employment) * 12
         });
         const c = j && j.calc;
-        if (c && !c["\uC624\uB958"] && c["\uACB0\uC815\uC138\uC561"] != null) {
+        if (window.jtValidCalc(c, ["\uACB0\uC815\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138"])) {
           calc.taxYear = c["\uACB0\uC815\uC138\uC561"] || 0;
           calc.localYear = c["\uC9C0\uBC29\uC18C\uB4DD\uC138"] || 0;
           calc.taxMonthly = Math.round(calc.taxYear / 12);
@@ -10893,10 +11110,11 @@ function JTReportInsurance({ setRoute, onBack }) {
     return null;
   }
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "4\uB300\uBCF4\uD5D8\xB7\uC2E4\uC218\uB839 \uACC4\uC0B0\uAE30", subtitle: phase === "quick" ? "\uC6D4 \uAE09\uC5EC\uB9CC \uB123\uC73C\uBA74 4\uB300\uBCF4\uD5D8\xB7\uC138\uAE08 \uB5BC\uACE0 \uC2E4\uC218\uB839\uC561\uC744 \uBC14\uB85C \uACC4\uC0B0\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uC790\uB140\uAE4C\uC9C0 \uBC18\uC601\uD574 \uC138\uAE08\uC744 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
-      type: "number",
+      type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
       value: answers[cur.id] || "",
@@ -11235,7 +11453,7 @@ function JTReportVat({ setRoute, onBack }) {
       try {
         const j = await callVatEng(body);
         const c = j && j.calc;
-        if (c && !c["\uC624\uB958"] && (c["\uB0A9\uBD80\uC138\uC561"] != null || c["\uD658\uAE09\uC138\uC561"] != null || c["\uBE44\uACFC\uC138\uC5EC\uBD80"])) {
+        if (window.jtValidCalc(c, ["\uB0A9\uBD80\uC138\uC561", "\uD658\uAE09\uC138\uC561"]) && typeof c["\uBE44\uACFC\uC138\uC5EC\uBD80"] === "boolean" && typeof c["\uD658\uAE09\uC5EC\uBD80"] === "boolean") {
           calc.businessType = c["\uC0AC\uC5C5\uC790\uC720\uD615"];
           calc.netTax = c["\uB0A9\uBD80\uC138\uC561"] || 0;
           calc.isRefund = !!c["\uD658\uAE09\uC5EC\uBD80"];
@@ -11322,10 +11540,11 @@ function JTReportVat({ setRoute, onBack }) {
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0\uAE30", subtitle: "\uC0AC\uC5C5\uC790 \uC720\uD615\uACFC \uB9E4\uCD9C\xB7\uB9E4\uC785\uB9CC \uB123\uC73C\uBA74 \uB0BC \uBD80\uAC00\uC138\uB97C \uBC14\uB85C \uACC4\uC0B0\uD574\uC694.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
     setAns(cur.id, o[0]);
   } }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
-      type: "number",
+      type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
       value: answers[cur.id] || "",
@@ -11606,7 +11825,7 @@ function JTReportCompare({ setRoute, onBack }) {
         const j = await callCompareEng(body);
         const c = j && j.calc;
         const scv = c && c["\uC2DC\uB098\uB9AC\uC624\uBCC4"];
-        const allValid = scv && ["\uC99D\uC5EC", "\uB9E4\uB9E4", "\uC0C1\uC18D"].every((m) => window.jtValidCalc(scv[m], ["\uCD1D\uC138\uBD80\uB2F4"]) && Number(scv[m]["\uCD1D\uC138\uBD80\uB2F4"]) > 0);
+        const allValid = c && !c["\uC624\uB958"] && !c.error && c.success !== false && scv && ["\uC99D\uC5EC", "\uB9E4\uB9E4", "\uC0C1\uC18D"].every((m) => window.jtValidCalc(scv[m], ["\uCD1D\uC138\uBD80\uB2F4"]) && Number(scv[m]["\uCD1D\uC138\uBD80\uB2F4"]) > 0);
         if (allValid) {
           calc.scenarios = scv;
           calc.engineWarnings = c["\uACBD\uACE0\uC0AC\uD56D"] || [];
@@ -11667,10 +11886,11 @@ function JTReportCompare({ setRoute, onBack }) {
     return null;
   }
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCC98\uBD84\uBC29\uBC95 \uBE44\uAD50", subtitle: "\uAC19\uC740 \uBD80\uB3D9\uC0B0, \uC99D\uC5EC\xB7\uB9E4\uB9E4\xB7\uC0C1\uC18D \uC911 \uC138\uAE08\uC774 \uC5B4\uB5BB\uAC8C \uB2E4\uB978\uC9C0 \uD55C\uB208\uC5D0 \uBE44\uAD50\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
-      type: "number",
+      type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
       value: answers[cur.id] || "",
@@ -11929,7 +12149,7 @@ function JTReportBurden({ setRoute, onBack }) {
       try {
         const j = await callOptimizeEng(body);
         const c = j && j.calc;
-        if (c && Array.isArray(c["\uC2DC\uBBAC\uB808\uC774\uC158\uACB0\uACFC"]) && c["\uC2DC\uBBAC\uB808\uC774\uC158\uACB0\uACFC"].length && (c["\uCC44\uBB34\uC5C6\uB294\uACBD\uC6B0\uC138\uC561"] || 0) > 0) {
+        if (window.jtValidCalc(c, ["\uCC44\uBB34\uC5C6\uB294\uACBD\uC6B0\uC138\uC561", "\uCD5C\uC801\uCD1D\uC138\uBD80\uB2F4", "\uCD5C\uC801\uCC44\uBB34\uBE44\uC728", "\uC808\uC138\uC561"]) && c["\uCC44\uBB34\uC5C6\uB294\uACBD\uC6B0\uC138\uC561"] > 0 && c["\uCD5C\uC801\uCC44\uBB34\uBE44\uC728"] <= 1 && Array.isArray(c["\uC2DC\uBBAC\uB808\uC774\uC158\uACB0\uACFC"]) && c["\uC2DC\uBBAC\uB808\uC774\uC158\uACB0\uACFC"].length > 0 && c["\uC2DC\uBBAC\uB808\uC774\uC158\uACB0\uACFC"].every((s) => window.jtValidCalc(s, ["\uCC44\uBB34\uBE44\uC728", "\uCC44\uBB34\uC561", "\uC99D\uC5EC\uC138", "\uC591\uB3C4\uC138", "\uCDE8\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4"]))) {
           calc.noDebt = c["\uCC44\uBB34\uC5C6\uB294\uACBD\uC6B0\uC138\uC561"] || 0;
           calc.optTotal = c["\uCD5C\uC801\uCD1D\uC138\uBD80\uB2F4"] || 0;
           calc.optRatio = c["\uCD5C\uC801\uCC44\uBB34\uBE44\uC728"] || 0;
@@ -11992,10 +12212,11 @@ function JTReportBurden({ setRoute, onBack }) {
     return null;
   }
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCD5C\uC801\uD654", subtitle: "\uC790\uB140\xB7\uBC30\uC6B0\uC790\uC5D0\uAC8C \uBD80\uB3D9\uC0B0\uC744 \uC99D\uC5EC\uD560 \uB54C, \uCC44\uBB34\uB97C \uC5BC\uB9C8\uB098 \uB07C\uC6B0\uBA74 \uC138\uAE08\uC774 \uC904\uC5B4\uB4DC\uB294\uC9C0 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
-      type: "number",
+      type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
       value: answers[cur.id] || "",
@@ -12492,7 +12713,11 @@ function JTReportYouthStartup({ setRoute, onBack }) {
       const body = mapAnswersToYouth(answers, industryMatch, regionInfo);
       const ej = await callYouthEngine(body);
       const calc = ej && ej.calc;
-      if (!calc || typeof calc !== "object" || !Object.keys(calc).length) throw new Error("\uD310\uC815 \uACB0\uACFC\uB97C \uBC1B\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.");
+      if (calc && calc.status === "input_required") {
+        setErr(calc.message || "\uCC3D\uC5C5\uC77C \uB4F1 \uD544\uC218 \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+        return;
+      }
+      if (!window.jtValidCalc(calc, ["reduction_rate"]) || calc.reduction_rate > 100 || !["eligible", "conditional", "ineligible"].includes(calc.status) || typeof calc.eligible !== "boolean" || !Array.isArray(calc.gates)) throw new Error("\uD310\uC815 \uACB0\uACFC\uB97C \uBC1B\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.");
       const rep = { calc, quick: phase === "quick" };
       setReport(rep);
       if (phase === "quick") setQuickReport(rep);
@@ -12660,13 +12885,14 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     const y = Math.floor(mm / 12);
     return /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, fontSize: 13.5, padding: "9px 12px", borderRadius: 8, background: "#eaf5ee", borderLeft: "4px solid #2a6d4f" } }, "\uBCD1\uC5ED \uC774\uD589\uAE30\uAC04 ", /* @__PURE__ */ React.createElement("strong", null, y ? y + "\uB144 " : "", mm % 12, "\uAC1C\uC6D4"), mm > 72 ? " (\uCD5C\uB300 6\uB144\uAE4C\uC9C0 \uC778\uC815)" : "", " \u2014 \uC774 \uAE30\uAC04\uC744 \uCC3D\uC5C5 \uB2F9\uC2DC \uB098\uC774\uC5D0\uC11C \uBE7C\uACE0 \uCCAD\uB144 \uC5EC\uBD80\uB97C \uD310\uC815\uD569\uB2C8\uB2E4.");
   })()), cur.numeric && !cur.custom && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "input",
+    JTNumericInput,
     {
+      money: !!cur.money,
       className: "jt-report-q__input",
       type: "text",
       inputMode: "numeric",
       placeholder: cur.placeholder || "",
-      value: answers[cur.id] ? cur.money ? Number(answers[cur.id]).toLocaleString("ko-KR") : answers[cur.id] : "",
+      value: answers[cur.id],
       onChange: (e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)
     }
   )), cur.freeform && /* @__PURE__ */ React.createElement("textarea", { className: "jt-report-q__input", rows: 3, placeholder: cur.placeholder || "", value: answers[cur.id] || "", onChange: (e) => setAns(cur.id, e.target.value) }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: goPrev }, "\u2190 \uC774\uC804"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: !canNext(), onClick: goNext }, isLast ? phase === "quick" ? "\uBE60\uB978 \uC9C4\uB2E8 \uBCF4\uAE30 \u2192" : "\uC815\uBC00 \uACB0\uACFC \uBCF4\uAE30 \u2192" : "\uB2E4\uC74C \u2192")), cur.optional && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", style: { fontSize: 13 }, onClick: goNext }, "\uAC74\uB108\uB6F0\uAE30")))));

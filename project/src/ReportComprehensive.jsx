@@ -358,7 +358,8 @@ function JTReportComprehensive({ setRoute, onBack }) {
       try {
         const ej = await callCompEngine(mapAnswersToComprehensive(answers));
         const c = ej && ej.calc;
-        if (c && !c['오류']) {
+        if (window.jtValidCalc(c, ['세액', '종부세합계', '농어촌특별세'])
+          && window.jtValidCalc(c['주택분'], ['과세표준', '세액', '순세액'])) {
           calc.totalTax = c['세액']; calc.compTotal = c['종부세합계']; calc.ruralTax = c['농어촌특별세'] || 0;
           const h = c['주택분'] || {};
           calc.taxBase = h['과세표준']; calc.grossTax = h['세액']; calc.propTaxCredit = h['재산세공제'] || 0; calc.taxCredit = h['세액공제'] || 0; calc.netTax = h['순세액'];
@@ -646,8 +647,8 @@ function JTReportComprehensive({ setRoute, onBack }) {
           )}
           {cur.numeric && (
             <div>
-              <input className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
-                value={answers[cur.id] ? (cur.money ? Number(answers[cur.id]).toLocaleString('ko-KR') : answers[cur.id]) : ''}
+              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
+                value={answers[cur.id]}
                 onChange={e => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {compKoreanAmountOrWon(Number(answers[cur.id]))}</div>
