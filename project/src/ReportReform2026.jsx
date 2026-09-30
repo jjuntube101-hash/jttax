@@ -922,6 +922,7 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
           placeholder="예: 정릉로 305, 102동 601호 (동·호까지 쓰면 바로 찾습니다)"
           style={{ flex: '1 1 240px', minWidth: 0, padding: '11px 13px', fontSize: 15, border: '1px solid #dcd8d0', borderRadius: 8 }}
         />
+        {window.JTAddressPick && <window.JTAddressPick disabled={busy} onPick={v => { setInfo(null); setAsk(null); setPending(null); setAddr(v); }} />}
         <button className="jt-btn jt-btn--primary" disabled={busy || !addr.trim()} onClick={run}
           style={{ flex: '0 0 auto', padding: '11px 18px', opacity: (busy || !addr.trim()) ? 0.5 : 1 }}>
           {busy ? '조회 중…' : '조회'}

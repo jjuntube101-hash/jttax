@@ -316,7 +316,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
       }
     } catch (e) {
       // ⚠️ 260720 2차 (Codex P0): 늦게 실패한 옛 요청이 최신 화면을 덮지 않도록
-      if (!stale()) setLinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 직접 입력해 주세요.' });
+      if (!stale()) setLinfo({ ok: false, msg: e.lookupStatus ? e.message : '조회 중 오류가 발생했어요. 직접 입력해 주세요.' });
     } finally { if (!seqStale()) setLbusy(false); }   // 주소가 바뀌어도 busy는 반드시 해제
   };
   const resetAddr = () => { setAns('totalValue', ''); setAddedCount(0); setLinfo(null); setLaddrSync(''); };
@@ -625,6 +625,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
                   placeholder="예: 서울 종로구 자하문로36길 16-14"
                   value={laddr} onChange={e => setLaddrSync(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter' && !lbusy) doAddrLookup(); }} />
+                {window.JTAddressPick && <window.JTAddressPick onPick={setLaddrSync} disabled={lbusy} />}
                 {/* ⚠️ onClick={doAddrLookup} 면 React가 이벤트 객체를 unit 인자로 넘긴다 — 화살표 필수 */}
                 <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={lbusy || !laddr.trim()} onClick={() => doAddrLookup()}>
                   {lbusy ? '조회 중…' : '합계에 추가'}

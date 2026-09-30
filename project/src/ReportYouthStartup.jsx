@@ -706,6 +706,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text" placeholder="예: 경기 화성시 동탄대로 / 강원 홍천군 ○○로"
                   value={raddr} onChange={e => setRaddr(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !rbusy) doRegionLookup(); }} />
+                {window.JTAddressPick && <window.JTAddressPick onPick={setRaddr} disabled={rbusy} />}
                 <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={rbusy || !raddr.trim()} onClick={doRegionLookup}>{rbusy ? '판정 중…' : '지역 판정'}</button>
               </div>
               {rinfo && (

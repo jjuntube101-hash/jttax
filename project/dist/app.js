@@ -4822,7 +4822,12 @@ function RfAddrLookup({ mode, picks, onAdd, onRemove, onRegion, bumpEpoch, getEp
       placeholder: "\uC608: \uC815\uB989\uB85C 305, 102\uB3D9 601\uD638 (\uB3D9\xB7\uD638\uAE4C\uC9C0 \uC4F0\uBA74 \uBC14\uB85C \uCC3E\uC2B5\uB2C8\uB2E4)",
       style: { flex: "1 1 240px", minWidth: 0, padding: "11px 13px", fontSize: 15, border: "1px solid #dcd8d0", borderRadius: 8 }
     }
-  ), /* @__PURE__ */ React.createElement(
+  ), window.JTAddressPick && /* @__PURE__ */ React.createElement(window.JTAddressPick, { disabled: busy, onPick: (v) => {
+    setInfo(null);
+    setAsk(null);
+    setPending(null);
+    setAddr(v);
+  } }), /* @__PURE__ */ React.createElement(
     "button",
     {
       className: "jt-btn jt-btn--primary",
@@ -6401,8 +6406,8 @@ const GIFT_QS = [
     id: "reAddress",
     tier: "quick",
     section: "\uBD80\uB3D9\uC0B0 \uC815\uBCF4",
-    q: "\uBD80\uB3D9\uC0B0 \uC8FC\uC18C\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694. (\uACF5\uB3D9\uC8FC\uD0DD\uC740 \uB3D9\xB7\uD638\uAE4C\uC9C0)",
-    sub: "\uB3C4\uB85C\uBA85\uC8FC\uC18C\uC5D0 \uB3D9\xB7\uD638\uC218\uAE4C\uC9C0 \uC785\uB825\uD574 \uC8FC\uC138\uC694. \uC785\uB825\uD558\uC2E0 \uC8FC\uC18C\uB85C \uACF5\uC2DC\uAC00\uACA9\uC744 \uC870\uD68C\uD574 \uB4DC\uB9BD\uB2C8\uB2E4. \uC2DC\uAC00(\uCD5C\uADFC \uC2E4\uAC70\uB798\uAC00\xB7\uAC10\uC815\uAC00)\uB97C \uC54C\uACE0 \uACC4\uC2DC\uBA74 \uC544\uB798 \u300C\uD3C9\uAC00\uC561\u300D \uCE78\uC5D0 \uC9C1\uC811 \uC785\uB825\uD558\uC154\uB3C4 \uB429\uB2C8\uB2E4.",
+    q: "\uBD80\uB3D9\uC0B0 \uC8FC\uC18C\uB97C \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.",
+    sub: "\uC8FC\uC18C\uB97C \uAC80\uC0C9\uD574 \uC120\uD0DD\uD558\uACE0, \uACF5\uB3D9\uC8FC\uD0DD\uC740 \uC544\uB798\uC5D0\uC11C \uB3D9\xB7\uD638\uB97C \uB530\uB85C \uC785\uB825\uD558\uC138\uC694. \uC2DC\uAC00(\uCD5C\uADFC \uC2E4\uAC70\uB798\uAC00\xB7\uAC10\uC815\uAC00)\uB97C \uC54C\uACE0 \uACC4\uC2DC\uBA74 \u300C\uD3C9\uAC00\uC561\u300D \uCE78\uC5D0 \uC9C1\uC811 \uC785\uB825\uD558\uC154\uB3C4 \uB429\uB2C8\uB2E4.",
     showIf: (a) => a.assetType === "realestate",
     freeform: true,
     optional: true
@@ -6715,15 +6720,29 @@ async function callGiftEngine(body, endpoint) {
   }
   throw lastErr;
 }
-async function lookupValuation(address, taxType, evalDate) {
+async function lookupValuation(address, taxType, evalDate, unit) {
   const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "http://127.0.0.1:8000";
-  const res = await fetch(base + "/v1/lookup/valuation", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ address, tax_type: taxType || "\uC99D\uC5EC", eval_date: evalDate || "" })
-  });
-  if (!res.ok) throw new Error("valuation " + res.status);
-  return res.json();
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 25e3);
+  try {
+    const res = await fetch(base + "/v1/lookup/valuation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        address,
+        tax_type: taxType || "\uC99D\uC5EC",
+        eval_date: evalDate || (/* @__PURE__ */ new Date()).toISOString().slice(0, 10),
+        dong: unit && unit.dong || "",
+        ho: unit && unit.ho || "",
+        official_year: Number(unit && unit.year) || Number((evalDate || "").slice(0, 4)) || (/* @__PURE__ */ new Date()).getFullYear()
+      }),
+      signal: ctrl.signal
+    });
+    if (!res.ok) throw new Error("valuation " + res.status);
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+  }
 }
 function buildGiftDetail(answers, calc, commentary) {
   const L = ["\u25A0 \uACE0\uAC1D \uC785\uB825 \uC815\uBCF4"];
@@ -6797,6 +6816,14 @@ function JTReportGift({ setRoute, onBack }) {
   const [report, setReport] = useGiftState(null);
   const [err, setErr] = useGiftState(null);
   const [lookupState, setLookupState] = useGiftState({ loading: false, result: null, err: null });
+  const lookupSeq = React.useRef(0);
+  const lookupKey = React.useRef("");
+  lookupKey.current = [answers.reAddress, answers.reDong, answers.reHo, answers.reYear, answers.giftDate, answers.reType].join("|");
+  const changeLookup = (id, value) => {
+    lookupSeq.current += 1;
+    setLookupState({ loading: false, result: null, err: null });
+    setAns(id, value);
+  };
   const [phase, setPhase] = useGiftState("quick");
   const [quickReport, setQuickReport] = useGiftState(null);
   React.useEffect(() => {
@@ -6830,17 +6857,22 @@ function JTReportGift({ setRoute, onBack }) {
   };
   const doLookup = async () => {
     if (!answers.reAddress) return;
+    const seq = ++lookupSeq.current, key = lookupKey.current;
+    const stale = () => seq !== lookupSeq.current || key !== lookupKey.current;
+    const unit = { dong: answers.reDong, ho: answers.reHo, year: answers.reYear || (answers.giftDate || "").slice(0, 4) || (/* @__PURE__ */ new Date()).getFullYear() };
     setLookupState({ loading: true, result: null, err: null });
     try {
-      const r = await lookupValuation(answers.reAddress, "\uC99D\uC5EC", answers.giftDate);
+      const r = answers.reType === "\uACF5\uB3D9\uC8FC\uD0DD" ? await lookupValuation(answers.reAddress, "\uC99D\uC5EC", answers.giftDate, unit) : await window.jtLookupPublicPrice(answers.reAddress, answers.reType, unit);
+      if (stale()) return;
       setLookupState({ loading: false, result: r, err: null });
     } catch (e) {
+      if (stale()) return;
       setLookupState({ loading: false, result: null, err: "\uC8FC\uC18C \uC790\uB3D9\uC870\uD68C\uB97C \uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC544\uB798 \u300C\uD3C9\uAC00\uC561\u300D \uCE78\uC5D0 \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694." });
     }
     if (answers.reType === "\uACF5\uB3D9\uC8FC\uD0DD" || answers.reType === "\uAC1C\uBCC4\uC8FC\uD0DD") {
       try {
-        const pr = await window.jtLookupPublicPrice(answers.reAddress, answers.reType);
-        if (pr && pr.region) setAns("regulatedArea", pr.region.is_adjusted_area ? "yes" : "no");
+        const pr = await window.jtLookupPublicPrice(answers.reAddress, answers.reType, unit);
+        if (!stale() && pr && pr.region) setAns("regulatedArea", pr.region.is_adjusted_area ? "yes" : "no");
       } catch (e) {
       }
     }
@@ -7014,7 +7046,7 @@ function JTReportGift({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC99D\uC5EC\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uC0AC\uC804\uC99D\uC5EC\xB7\uBD80\uB2F4\uBD80 \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC99D\uC5EC\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uC0AC\uC804\uC99D\uC5EC\xB7\uBD80\uB2F4\uBD80 \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && cur.id !== "reAddress" && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -7023,7 +7055,31 @@ function JTReportGift({ setRoute, onBack }) {
       value: answers[cur.id] || "",
       onChange: (e) => setAns(cur.id, e.target.value)
     }
-  ), cur.numeric && /* @__PURE__ */ React.createElement(
+  ), cur.id === "reAddress" && /* @__PURE__ */ React.createElement(React.Fragment, null, window.JTAddressPick && /* @__PURE__ */ React.createElement(window.JTAddressPick, { onPick: (v) => {
+    changeLookup("reAddress", v);
+    setAns("reDong", "");
+    setAns("reHo", "");
+  } }), /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      className: "jt-report-q__input",
+      "aria-label": "\uBD80\uB3D9\uC0B0 \uC8FC\uC18C",
+      maxLength: 250,
+      value: answers.reAddress || "",
+      onChange: (e) => changeLookup("reAddress", e.target.value)
+    }
+  ), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, ["reDong", "reHo"].map((id, i) => /* @__PURE__ */ React.createElement("label", { key: id }, i ? "\uD638" : "\uB3D9", /* @__PURE__ */ React.createElement("input", { className: "jt-report-q__input", maxLength: 30, value: answers[id] || "", onChange: (e) => changeLookup(id, e.target.value) }))), /* @__PURE__ */ React.createElement("label", null, "\uACF5\uC2DC\uAC00\uACA9 \uC5F0\uB3C4", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      className: "jt-report-q__input",
+      type: "text",
+      inputMode: "numeric",
+      maxLength: 4,
+      pattern: "[0-9]{4}",
+      value: answers.reYear || (answers.giftDate || "").slice(0, 4) || (/* @__PURE__ */ new Date()).getFullYear(),
+      onChange: (e) => changeLookup("reYear", e.target.value)
+    }
+  )))), cur.numeric && /* @__PURE__ */ React.createElement(
     JTNumericInput,
     {
       className: "jt-report-q__input",
@@ -7064,15 +7120,18 @@ function JTReportGift({ setRoute, onBack }) {
         onClick: doLookup
       },
       lookupState.loading ? "\uC870\uD68C \uC911\u2026 (\uCD5C\uCD08 10~30\uCD08 \uC18C\uC694)" : "\uC8FC\uC18C\uB85C \uC2DC\uAC00\xB7\uACF5\uC2DC\uAC00\uACA9 \uC870\uD68C"
-    ), R && R.success && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10 } }, /* @__PURE__ */ React.createElement("div", { style: { padding: "10px 12px", background: "#fff", borderRadius: 8, border: "1px solid var(--line,#e6e2d8)" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, opacity: 0.7 } }, "\u2460 \uC2E0\uACE0 \uAE30\uC900\uAC12 \u2014 ", base.\uBC29\uBC95), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4 } }, /* @__PURE__ */ React.createElement("strong", { style: { fontSize: 18 } }, formatWon(base.\uAE08\uC561_\uC6D0)), /* @__PURE__ */ React.createElement(
-      "button",
+    ), R && R.success && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10 } }, /* @__PURE__ */ React.createElement("div", { style: { padding: "10px 12px", background: "#fff", borderRadius: 8, border: "1px solid var(--line,#e6e2d8)" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, opacity: 0.7 } }, "\u2460 \uCC38\uACE0 \uD3C9\uAC00\uC561 \u2014 ", base.\uBC29\uBC95, " \xB7 \uACF5\uC2DC\uAC00\uACA9 ", R.official_year, "\uB144"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4 } }, /* @__PURE__ */ React.createElement("strong", { style: { fontSize: 18 } }, formatWon(base.\uAE08\uC561_\uC6D0))), base.\uC120\uD0DD\uAC70\uB798 && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, opacity: 0.7, marginTop: 4 } }, "\uC120\uD0DD \uC2E4\uAC70\uB798: ", base.\uC120\uD0DD\uAC70\uB798.\uAC70\uB798\uC77C, " \xB7 \uC804\uC6A9 ", base.\uC120\uD0DD\uAC70\uB798.\uC804\uC6A9\uBA74\uC801_m2, "\u33A1 \xB7 ", formatWon(base.\uC120\uD0DD\uAC70\uB798.\uAC70\uB798\uAC00_\uC6D0))), range.\uAC74\uC218 > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 13 } }, "\u2461 \uAC19\uC740 \uB2E8\uC9C0\xB7\uD3C9\uD615 \uC2E4\uAC70\uB798 ", /* @__PURE__ */ React.createElement("strong", null, range.\uAC74\uC218, "\uAC74"), ": ", formatWon(range.\uCD5C\uC800_\uC6D0), " ~ ", formatWon(range.\uCD5C\uACE0_\uC6D0), range.\uCD5C\uC2E0 && /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " (\uCD5C\uC2E0 ", range.\uCD5C\uC2E0.\uAC70\uB798\uC77C, ")")), floor.\uAE08\uC561_\uC6D0 != null && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 6, fontSize: 13, opacity: 0.85 } }, "\u2462 \uB300\uC0C1 \uC138\uB300 \uACF5\uC2DC\uAC00\uACA9: ", formatWon(floor.\uAE08\uC561_\uC6D0)), (R.warnings || []).map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i, style: { fontSize: 12, color: "#b97d2a", marginTop: 6 } }, "\u26A0 ", w)), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 8 } }, "\u203B ", R.\uBA74\uCC45 || R.disclaimer)), R && !R.success && !(R.valuations && R.valuations.length) && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, fontSize: 13 } }, /* @__PURE__ */ React.createElement("p", { style: { color: "#b97d2a", margin: 0 } }, R.error || R.note || "\uC870\uD68C \uACB0\uACFC\uB97C \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uD3C9\uAC00\uC561\uC744 \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 6 } }, "\uACF5\uC2DC\uC790\uB8CC \uC870\uD68C \uC2E4\uD328\uB9CC\uC73C\uB85C \uC2DC\uAC00\uAC00 \uC5C6\uB2E4\uACE0 \uD310\uB2E8\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC720\uC0AC\uB9E4\uB9E4\xB7\uAC10\uC815\uAC00 \uB4F1 \uC801\uC6A9 \uAC00\uB2A5\uD55C \uC790\uB8CC\uC640 \uD3C9\uAC00\uAE30\uC900\uC77C\uC744 \uB2F4\uB2F9 \uC138\uBB34\uC0AC\uAC00 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uC720\uC0AC\uB9E4\uB9E4 \uD6C4\uBCF4\uB294 \uD648\uD0DD\uC2A4 \uC870\uD68C \uACB0\uACFC\uC640\uB3C4 \uB300\uC870\uD574 \uC8FC\uC138\uC694.")), R && R.valuations && R.valuations.map((v, i) => /* @__PURE__ */ React.createElement("p", { key: i }, v.valuation_type, " (", v.as_of_year, "\uB144): ", formatWon(v.amount), answers.reType === "\uD1A0\uC9C0" ? " / \u33A1" : "")), R && R.reference_only && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, color: "#b97d2a" } }, R.note, " \uD655\uC778 \uD6C4 \uD3C9\uAC00\uC561\uC744 \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694."), R && R.needs_unit_selection && window.JTUnitAsk && /* @__PURE__ */ React.createElement(
+      window.JTUnitAsk,
       {
-        className: "jt-btn jt-btn--primary",
-        style: { fontSize: 13 },
-        onClick: () => setAns("giftValue", String(base.\uAE08\uC561_\uC6D0))
-      },
-      "\uC774 \uAE08\uC561 \uC0AC\uC6A9"
-    )), base.\uC120\uD0DD\uAC70\uB798 && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, opacity: 0.7, marginTop: 4 } }, "\uC120\uD0DD \uC2E4\uAC70\uB798: ", base.\uC120\uD0DD\uAC70\uB798.\uAC70\uB798\uC77C, " \xB7 \uC804\uC6A9 ", base.\uC120\uD0DD\uAC70\uB798.\uC804\uC6A9\uBA74\uC801_m2, "\u33A1 \xB7 ", formatWon(base.\uC120\uD0DD\uAC70\uB798.\uAC70\uB798\uAC00_\uC6D0))), range.\uAC74\uC218 > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 13 } }, "\u2461 \uAC19\uC740 \uB2E8\uC9C0\xB7\uD3C9\uD615 \uC2E4\uAC70\uB798 ", /* @__PURE__ */ React.createElement("strong", null, range.\uAC74\uC218, "\uAC74"), ": ", formatWon(range.\uCD5C\uC800_\uC6D0), " ~ ", formatWon(range.\uCD5C\uACE0_\uC6D0), range.\uCD5C\uC2E0 && /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " (\uCD5C\uC2E0 ", range.\uCD5C\uC2E0.\uAC70\uB798\uC77C, ")")), floor.\uAE08\uC561_\uC6D0 != null && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 6, fontSize: 13, opacity: 0.85 } }, "\u2462 \uACF5\uC2DC\uAC00\uACA9(\uBC95\uC815 \uD558\uD55C \xA761): ", formatWon(floor.\uAE08\uC561_\uC6D0)), (R.warnings || []).map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i, style: { fontSize: 12, color: "#b97d2a", marginTop: 6 } }, "\u26A0 ", w)), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 8 } }, "\u203B ", R.\uBA74\uCC45 || R.disclaimer)), R && !R.success && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, fontSize: 13 } }, /* @__PURE__ */ React.createElement("p", { style: { color: "#b97d2a", margin: 0 } }, "\u2139 \uC8FC\uC18C \uC790\uB3D9\uD3C9\uAC00\uB294 \uD604\uC7AC \uC900\uBE44 \uC911\uC785\uB2C8\uB2E4. \uC544\uB798 \u300C\uD3C9\uAC00\uC561\u300D \uCE78\uC5D0 \uC2DC\uAC00(\uC720\uC0AC\uB9E4\uB9E4\xB7\uAC10\uC815\uAC00) \uB610\uB294 \uACF5\uC2DC\uAC00\uACA9\uC744 \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 6 } }, "\uCC38\uACE0 \u2014 \uC0C1\uC99D\uBC95 \uD3C9\uAC00\uB294 \u2460 ", /* @__PURE__ */ React.createElement("strong", null, "\uC2DC\uAC00(\uC720\uC0AC\uB9E4\uB9E4\uC0AC\uB840\uAC00\uC561 \xA715\u2462)"), "\uB97C \uC6B0\uC120\uD558\uACE0, \uC5C6\uC73C\uBA74 \u2462 ", /* @__PURE__ */ React.createElement("strong", null, "\uACF5\uC2DC\uAC00\uACA9(\xA761, \uBC95\uC815 \uD558\uD55C)"), "\uC73C\uB85C \uD3C9\uAC00\uD569\uB2C8\uB2E4. \uAC19\uC740 \uB2E8\uC9C0\xB7\uD3C9\uD615\uC758 \u2461 \uCD5C\uADFC \uC2E4\uAC70\uB798\uB294 \uD648\uD0DD\uC2A4 '\uC720\uC0AC\uB9E4\uB9E4\uC0AC\uB840\uAC00\uC561 \uC870\uD68C'\uC5D0\uC11C \uD655\uC778\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4.")), lookupState.err && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, color: "#d14e3a", marginTop: 8 } }, lookupState.err));
+        key: answers.reAddress,
+        info: { unitCount: R.unit_count || 0, complex: R.matched_complex || "", priceMin: R.price_min, priceMax: R.price_max },
+        busy: lookupState.loading,
+        onPick: (u) => {
+          changeLookup("reDong", u.dong);
+          setAns("reHo", u.ho);
+        }
+      }
+    ), lookupState.err && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, color: "#d14e3a", marginTop: 8 } }, lookupState.err));
   })()), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: goPrev }, safeStep === 0 ? "\u2190 \uD5C8\uBE0C" : "\u2190 \uC774\uC804"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goNext, disabled: !canNext() }, isLast ? phase === "quick" ? "\uBE60\uB978 \uACB0\uACFC \uBCF4\uAE30 \u2192" : "\uACB0\uACFC \uBCF4\uAE30 \u2192" : "\uB2E4\uC74C \u2192"))));
 }
 window.JTReportGift = JTReportGift;
@@ -8414,7 +8473,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
         setLinfo({ ok: false, msg: "\uC774 \uC8FC\uC18C\uC758 \uACF5\uC2DC\uAC00\uACA9\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694(\uC0C1\uAC00\xB7\uC624\uD53C\uC2A4\uD154\xB7\uC2E0\uCD95 \uB4F1). \uC9C1\uC811 \uC785\uB825\uD558\uAC70\uB098 \uBE44\uC6CC\uB450\uC138\uC694." });
       }
     } catch (e) {
-      if (!stale()) setLinfo({ ok: false, msg: "\uC870\uD68C \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC5B4\uC694. \uC9C1\uC811 \uC785\uB825\uD558\uAC70\uB098 \uBE44\uC6CC\uB450\uC138\uC694." });
+      if (!stale()) setLinfo({ ok: false, msg: e.lookupStatus ? e.message : "\uC870\uD68C \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC5B4\uC694. \uC9C1\uC811 \uC785\uB825\uD558\uAC70\uB098 \uBE44\uC6CC\uB450\uC138\uC694." });
     } finally {
       if (!seqStale()) setLbusy(false);
     }
@@ -8607,7 +8666,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
         if (e.key === "Enter" && !lbusy) doAddrLookup();
       }
     }
-  ), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", style: { flex: "0 0 auto" }, disabled: lbusy || !laddr.trim(), onClick: () => doAddrLookup() }, lbusy ? "\uC870\uD68C \uC911\u2026" : "\uACF5\uC2DC\uAC00\uACA9 \uC870\uD68C")), linfo && /* @__PURE__ */ React.createElement("div", { style: {
+  ), window.JTAddressPick && /* @__PURE__ */ React.createElement(window.JTAddressPick, { onPick: setLaddrSync, disabled: lbusy }), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", style: { flex: "0 0 auto" }, disabled: lbusy || !laddr.trim(), onClick: () => doAddrLookup() }, lbusy ? "\uC870\uD68C \uC911\u2026" : "\uACF5\uC2DC\uAC00\uACA9 \uC870\uD68C")), linfo && /* @__PURE__ */ React.createElement("div", { style: {
     marginTop: 10,
     fontSize: 13.5,
     lineHeight: 1.55,
@@ -9121,13 +9180,21 @@ if (typeof window !== "undefined" && !window.jtLookupPublicPrice) {
     const body = { address, housing_kind: housingKind };
     if (unit && unit.dong) body.dong = String(unit.dong);
     if (unit && unit.ho) body.ho = String(unit.ho);
-    const res = await fetch(base + "/v1/lookup/price", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error("lookup " + res.status);
-    return res.json();
+    body.stdr_year = String(unit && unit.year || (/* @__PURE__ */ new Date()).getFullYear());
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 25e3);
+    try {
+      const res = await fetch(base + "/v1/lookup/price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: ctrl.signal
+      });
+      if (!res.ok) throw new Error("lookup " + res.status);
+      return await res.json();
+    } finally {
+      clearTimeout(timer);
+    }
   };
   window.jtNormUnit = function(v) {
     return String(v == null ? "" : v).normalize("NFKC").trim().toUpperCase().replace(/[\s\-_.·]/g, "").replace(/(동|호)$/, "");
@@ -9144,6 +9211,11 @@ if (typeof window !== "undefined" && !window.jtLookupPublicPrice) {
     for (const kind of ["\uACF5\uB3D9\uC8FC\uD0DD", "\uAC1C\uBCC4\uC8FC\uD0DD"]) {
       try {
         const r = await window.jtLookupPublicPrice(address, kind, unit);
+        if (r && ["pending", "upstream_error", "not_configured", "busy"].includes(r.status)) {
+          const err = new Error(r.note || "\uC790\uB8CC \uC870\uD68C\uAC00 \uC644\uB8CC\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC870\uD68C\uD558\uC138\uC694.");
+          err.lookupStatus = r.status;
+          throw err;
+        }
         if (r && r.region) lastRegion = r.region;
         if (r && r.needs_unit_selection) {
           return {
@@ -9205,6 +9277,7 @@ if (typeof window !== "undefined" && !window.jtLookupPublicPrice) {
           };
         }
       } catch (e) {
+        throw e;
       }
     }
     return lastRegion ? { status: "region_only", amount: 0, region: lastRegion } : { status: "none", amount: 0 };
@@ -9219,6 +9292,70 @@ if (typeof window !== "undefined" && !window.jtLookupPublicPrice) {
     return parts.join(" ");
   };
 }
+window.JTAddressPick = function JTAddressPick({ onPick, disabled }) {
+  const [open, setOpen] = React.useState(false);
+  const [err, setErr] = React.useState("");
+  const host = React.useRef(null);
+  const trigger = React.useRef(null);
+  const close = () => {
+    setOpen(false);
+    if (trigger.current) trigger.current.focus();
+  };
+  React.useEffect(() => {
+    if (!open) return;
+    let active = true;
+    const escape = (e) => {
+      if (e.key === "Escape") close();
+    };
+    document.addEventListener("keydown", escape);
+    const sdk = window.kakao && window.kakao.Postcode ? Promise.resolve() : new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      const timer = setTimeout(() => {
+        script.remove();
+        reject(new Error("timeout"));
+      }, 12e3);
+      script.src = "https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+      script.onload = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      script.onerror = () => {
+        clearTimeout(timer);
+        script.remove();
+        reject(new Error("load"));
+      };
+      document.head.appendChild(script);
+    });
+    sdk.then(() => {
+      if (!active || !host.current) return;
+      new window.kakao.Postcode({ width: "100%", height: "100%", oncomplete: (data) => {
+        if (!active) return;
+        onPick(data.roadAddress || data.jibunAddress || data.address);
+        close();
+      } }).embed(host.current);
+    }).catch(() => {
+      if (active) setErr("\uC8FC\uC18C \uAC80\uC0C9\uC744 \uBD88\uB7EC\uC624\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC8FC\uC18C\uB97C \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    });
+    return () => {
+      active = false;
+      document.removeEventListener("keydown", escape);
+    };
+  }, [open]);
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      ref: trigger,
+      type: "button",
+      className: "jt-btn jt-btn--ghost",
+      disabled,
+      onClick: () => {
+        setErr("");
+        setOpen(true);
+      }
+    },
+    "\uC8FC\uC18C \uAC80\uC0C9\xB7\uC120\uD0DD"
+  ), open && /* @__PURE__ */ React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 1e4, background: "rgba(0,0,0,.5)", display: "grid", placeItems: "center" } }, /* @__PURE__ */ React.createElement("div", { role: "dialog", "aria-modal": "true", "aria-label": "\uC8FC\uC18C \uAC80\uC0C9", style: { width: "min(520px,95vw)", background: "#fff", padding: 12, borderRadius: 8 } }, /* @__PURE__ */ React.createElement("button", { type: "button", autoFocus: true, className: "jt-btn jt-btn--ghost", onClick: close }, "\uB2EB\uAE30"), err ? /* @__PURE__ */ React.createElement("p", { role: "alert" }, err) : /* @__PURE__ */ React.createElement("div", { ref: host, style: { height: "min(520px,75vh)" } }))));
+};
 if (typeof window !== "undefined" && !window.JTUnitAsk) {
   window.JTUnitAsk = function JTUnitAsk({ info, busy, onPick }) {
     const [d, setD] = React.useState("");
@@ -9374,7 +9511,7 @@ function JTReportProperty({ setRoute, onBack }) {
         setLinfo({ ok: false, msg: "\uC774 \uC8FC\uC18C\uC758 \uACF5\uC2DC\uAC00\uACA9\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694(\uC0C1\uAC00\xB7\uC624\uD53C\uC2A4\uD154\xB7\uC2E0\uCD95 \uB4F1\uC740 \uBBF8\uC218\uB85D\uC77C \uC218 \uC788\uC5B4\uC694). \uACF5\uC2DC\uAC00\uACA9\uC744 \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694." });
       }
     } catch (e) {
-      if (!stale()) setLinfo({ ok: false, msg: "\uC870\uD68C \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC5B4\uC694. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uAC70\uB098 \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694." });
+      if (!stale()) setLinfo({ ok: false, msg: e.lookupStatus ? e.message : "\uC870\uD68C \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC5B4\uC694. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uAC70\uB098 \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694." });
     } finally {
       if (!seqStale()) setLbusy(false);
     }
@@ -9514,7 +9651,7 @@ function JTReportProperty({ setRoute, onBack }) {
     onBack();
     return null;
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.id === "standardValue" && answers.propertyKind === "\uC8FC\uD0DD" && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", border: "1px solid #dfe3dc", borderRadius: 10, padding: "14px 16px", marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: 6 } }, "\u{1F50E} \uC8FC\uC18C\uB85C \uACF5\uC2DC\uAC00\uACA9 \uC790\uB3D9\uC870\uD68C ", /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 400, opacity: 0.7, fontSize: 13 } }, "(\uC120\uD0DD \u2014 \uC544\uD30C\uD2B8\xB7\uBE4C\uB77C\xB7\uB2E8\uB3C5\uC8FC\uD0DD)")), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 13, opacity: 0.8, lineHeight: 1.55 } }, "\uC8FC\uC18C\uB97C \uB123\uC73C\uBA74 \uAD6D\uD1A0\uAD50\uD1B5\uBD80 \uACF5\uC2DC\uAC00\uACA9\uC744 \uCC3E\uC544 \uC544\uB798 \uCE78\uC5D0 \uC790\uB3D9\uC73C\uB85C \uCC44\uC6CC\uB4DC\uB824\uC694. \uC9C1\uC811 \uC785\uB825\uD558\uC154\uB3C4 \uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.id === "standardValue" && answers.propertyKind === "\uC8FC\uD0DD" && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", border: "1px solid #dfe3dc", borderRadius: 10, padding: "14px 16px", marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: 6 } }, "\u{1F50E} \uC8FC\uC18C\uB85C \uACF5\uC2DC\uAC00\uACA9 \uC790\uB3D9\uC870\uD68C ", /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 400, opacity: 0.7, fontSize: 13 } }, "(\uC120\uD0DD \u2014 \uC544\uD30C\uD2B8\xB7\uBE4C\uB77C\xB7\uB2E8\uB3C5\uC8FC\uD0DD)")), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 13, opacity: 0.8, lineHeight: 1.55 } }, "\uC8FC\uC18C\uB97C \uB123\uC73C\uBA74 \uAD6D\uD1A0\uAD50\uD1B5\uBD80 \uACF5\uC2DC\uAC00\uACA9\uC744 \uCC3E\uC544 \uC544\uB798 \uCE78\uC5D0 \uC790\uB3D9\uC73C\uB85C \uCC44\uC6CC\uB4DC\uB824\uC694. \uC9C1\uC811 \uC785\uB825\uD558\uC154\uB3C4 \uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(window.JTAddressPick, { onPick: setLaddrSync, disabled: lbusy }), /* @__PURE__ */ React.createElement(
     "input",
     {
       className: "jt-report-q__input",
@@ -9897,7 +10034,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
         setLinfo({ ok: false, msg: "\uC774 \uC8FC\uC18C\uC758 \uACF5\uC2DC\uAC00\uACA9\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694(\uC0C1\uAC00\xB7\uC624\uD53C\uC2A4\uD154\xB7\uC2E0\uCD95 \uB4F1). \uC9C1\uC811 \uB354\uD574 \uC785\uB825\uD574 \uC8FC\uC138\uC694." });
       }
     } catch (e) {
-      if (!stale()) setLinfo({ ok: false, msg: "\uC870\uD68C \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC5B4\uC694. \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694." });
+      if (!stale()) setLinfo({ ok: false, msg: e.lookupStatus ? e.message : "\uC870\uD68C \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC5B4\uC694. \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694." });
     } finally {
       if (!seqStale()) setLbusy(false);
     }
@@ -10082,7 +10219,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
         if (e.key === "Enter" && !lbusy) doAddrLookup();
       }
     }
-  ), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", style: { flex: "0 0 auto" }, disabled: lbusy || !laddr.trim(), onClick: () => doAddrLookup() }, lbusy ? "\uC870\uD68C \uC911\u2026" : "\uD569\uACC4\uC5D0 \uCD94\uAC00")), linfo && /* @__PURE__ */ React.createElement("div", { style: {
+  ), window.JTAddressPick && /* @__PURE__ */ React.createElement(window.JTAddressPick, { onPick: setLaddrSync, disabled: lbusy }), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", style: { flex: "0 0 auto" }, disabled: lbusy || !laddr.trim(), onClick: () => doAddrLookup() }, lbusy ? "\uC870\uD68C \uC911\u2026" : "\uD569\uACC4\uC5D0 \uCD94\uAC00")), linfo && /* @__PURE__ */ React.createElement("div", { style: {
     marginTop: 10,
     fontSize: 13.5,
     lineHeight: 1.55,
@@ -12864,7 +13001,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
         if (e.key === "Enter" && !rbusy) doRegionLookup();
       }
     }
-  ), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", style: { flex: "0 0 auto" }, disabled: rbusy || !raddr.trim(), onClick: doRegionLookup }, rbusy ? "\uD310\uC815 \uC911\u2026" : "\uC9C0\uC5ED \uD310\uC815")), rinfo && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, fontSize: 13.5, lineHeight: 1.55, padding: "9px 12px", borderRadius: 8, background: rinfo.ok ? "#eaf5ee" : "#fff7ea", borderLeft: "4px solid " + (rinfo.ok ? "#2a6d4f" : "#d08b00") } }, rinfo.msg)), cur.custom === "military" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, [["enlistDate", "\uC785\uB300\uC77C"], ["dischargeDate", "\uC804\uC5ED\uC77C"]].map(([id, lbl]) => /* @__PURE__ */ React.createElement("div", { key: id, style: { flex: "1 1 150px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12.5, opacity: 0.7, marginBottom: 4 } }, lbl), /* @__PURE__ */ React.createElement(
+  ), window.JTAddressPick && /* @__PURE__ */ React.createElement(window.JTAddressPick, { onPick: setRaddr, disabled: rbusy }), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", style: { flex: "0 0 auto" }, disabled: rbusy || !raddr.trim(), onClick: doRegionLookup }, rbusy ? "\uD310\uC815 \uC911\u2026" : "\uC9C0\uC5ED \uD310\uC815")), rinfo && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, fontSize: 13.5, lineHeight: 1.55, padding: "9px 12px", borderRadius: 8, background: rinfo.ok ? "#eaf5ee" : "#fff7ea", borderLeft: "4px solid " + (rinfo.ok ? "#2a6d4f" : "#d08b00") } }, rinfo.msg)), cur.custom === "military" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, [["enlistDate", "\uC785\uB300\uC77C"], ["dischargeDate", "\uC804\uC5ED\uC77C"]].map(([id, lbl]) => /* @__PURE__ */ React.createElement("div", { key: id, style: { flex: "1 1 150px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12.5, opacity: 0.7, marginBottom: 4 } }, lbl), /* @__PURE__ */ React.createElement(
     "input",
     {
       className: "jt-report-q__input",

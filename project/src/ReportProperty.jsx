@@ -259,12 +259,17 @@ if (typeof window !== 'undefined' && !window.jtLookupPublicPrice) {
     //   (종전 엔진은 말없이 단지 최고가 세대를 반환했다 — 트리마제 기준 70억 오차)
     if (unit && unit.dong) body.dong = String(unit.dong);
     if (unit && unit.ho) body.ho = String(unit.ho);
+    body.stdr_year = String((unit && unit.year) || new Date().getFullYear());
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 25000);
+    try {
     const res = await fetch(base + '/v1/lookup/price', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body), signal: ctrl.signal,
     });
     if (!res.ok) throw new Error('lookup ' + res.status);
-    return res.json();
+    return await res.json();
+    } finally { clearTimeout(timer); }
   };
 
   /* 주택 공시가격 조회 — 공동주택 먼저, 없으면 개별주택 폴백.
@@ -304,6 +309,11 @@ if (typeof window !== 'undefined' && !window.jtLookupPublicPrice) {
     for (const kind of ['공동주택', '개별주택']) {
       try {
         const r = await window.jtLookupPublicPrice(address, kind, unit);
+        if (r && ['pending', 'upstream_error', 'not_configured', 'busy'].includes(r.status)) {
+          const err = new Error(r.note || '자료 조회가 완료되지 않았습니다. 잠시 후 다시 조회하세요.');
+          err.lookupStatus = r.status;
+          throw err;
+        }
         if (r && r.region) lastRegion = r.region;
 
         // ⚠️ 260720 (Codex P1): needs_unit_selection을 **금액보다 먼저** 본다.
@@ -367,7 +377,7 @@ if (typeof window !== 'undefined' && !window.jtLookupPublicPrice) {
             note: (r && r.note) || '입력하신 동·호를 이 단지에서 찾지 못했습니다. 다시 확인해 주세요.',
           };
         }
-      } catch (e) { /* 다음 종류 시도 */ }
+      } catch (e) { throw e; }
     }
     return lastRegion ? { status: 'region_only', amount: 0, region: lastRegion } : { status: 'none', amount: 0 };
   };
@@ -384,6 +394,48 @@ if (typeof window !== 'undefined' && !window.jtLookupPublicPrice) {
     return parts.join(' ');
   };
 }
+
+/* 무료 주소 검색 — 선택 주소와 동·호는 별도로 유지한다. */
+window.JTAddressPick = function JTAddressPick({ onPick, disabled }) {
+  const [open, setOpen] = React.useState(false);
+  const [err, setErr] = React.useState('');
+  const host = React.useRef(null);
+  const trigger = React.useRef(null);
+  const close = () => { setOpen(false); if (trigger.current) trigger.current.focus(); };
+  React.useEffect(() => {
+    if (!open) return;
+    let active = true;
+    const escape = (e) => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', escape);
+    const sdk = window.kakao && window.kakao.Postcode ? Promise.resolve() : new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      const timer = setTimeout(() => { script.remove(); reject(new Error('timeout')); }, 12000);
+      script.src = 'https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+      script.onload = () => { clearTimeout(timer); resolve(); };
+      script.onerror = () => { clearTimeout(timer); script.remove(); reject(new Error('load')); };
+      document.head.appendChild(script);
+    });
+    sdk.then(() => {
+      if (!active || !host.current) return;
+      new window.kakao.Postcode({ width: '100%', height: '100%', oncomplete: (data) => {
+        if (!active) return;
+        onPick(data.roadAddress || data.jibunAddress || data.address);
+        close();
+      }}).embed(host.current);
+    }).catch(() => { if (active) setErr('주소 검색을 불러오지 못했습니다. 주소를 직접 입력해 주세요.'); });
+    return () => { active = false; document.removeEventListener('keydown', escape); };
+  }, [open]);
+  return <>
+    <button ref={trigger} type="button" className="jt-btn jt-btn--ghost" disabled={disabled}
+      onClick={() => { setErr(''); setOpen(true); }}>주소 검색·선택</button>
+    {open && <div style={{ position: 'fixed', inset: 0, zIndex: 10000, background: 'rgba(0,0,0,.5)', display: 'grid', placeItems: 'center' }}>
+      <div role="dialog" aria-modal="true" aria-label="주소 검색" style={{ width: 'min(520px,95vw)', background: '#fff', padding: 12, borderRadius: 8 }}>
+        <button type="button" autoFocus className="jt-btn jt-btn--ghost" onClick={close}>닫기</button>
+        {err ? <p role="alert">{err}</p> : <div ref={host} style={{ height: 'min(520px,75vh)' }} />}
+      </div>
+    </div>}
+  </>;
+};
 
 /* ═══ 동·호 되묻기 (공용) ═══════════════════════════════════════════════
    이 주소에 세대가 여럿일 때 뜬다. 재산세·취득세·종부세 계산기가 동일하게 쓴다.
@@ -561,7 +613,7 @@ function JTReportProperty({ setRoute, onBack }) {
     } catch (e) {
       // ⚠️ 260720 2차 (Codex P0): 여기에 가드가 없으면 **먼저 쏜 요청이 늦게 실패**했을 때
       //    이미 성공한 최신 화면을 '오류'로 덮어쓴다.
-      if (!stale()) setLinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 잠시 후 다시 시도하거나 직접 입력해 주세요.' });
+      if (!stale()) setLinfo({ ok: false, msg: e.lookupStatus ? e.message : '조회 중 오류가 발생했어요. 잠시 후 다시 시도하거나 직접 입력해 주세요.' });
     } finally { if (!seqStale()) setLbusy(false); }   // 주소가 바뀌어도 busy는 반드시 해제
   };
 
@@ -831,6 +883,7 @@ function JTReportProperty({ setRoute, onBack }) {
               <div style={{ fontWeight: 600, marginBottom: 6 }}>🔎 주소로 공시가격 자동조회 <span style={{ fontWeight: 400, opacity: 0.7, fontSize: 13 }}>(선택 — 아파트·빌라·단독주택)</span></div>
               <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8, lineHeight: 1.55 }}>주소를 넣으면 국토교통부 공시가격을 찾아 아래 칸에 자동으로 채워드려요. 직접 입력하셔도 됩니다.</p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <window.JTAddressPick onPick={setLaddrSync} disabled={lbusy} />
                 <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
                   placeholder="예: 서울 종로구 자하문로36길 16-14"
                   value={laddr} onChange={e => setLaddrSync(e.target.value)}

@@ -74,8 +74,8 @@ const GIFT_QS = [
     id: 'reAddress',
     tier: 'quick',
     section: '부동산 정보',
-    q: '부동산 주소를 입력해 주세요. (공동주택은 동·호까지)',
-    sub: '도로명주소에 동·호수까지 입력해 주세요. 입력하신 주소로 공시가격을 조회해 드립니다. 시가(최근 실거래가·감정가)를 알고 계시면 아래 「평가액」 칸에 직접 입력하셔도 됩니다.',
+    q: '부동산 주소를 선택해 주세요.',
+    sub: '주소를 검색해 선택하고, 공동주택은 아래에서 동·호를 따로 입력하세요. 시가(최근 실거래가·감정가)를 알고 계시면 「평가액」 칸에 직접 입력하셔도 됩니다.',
     showIf: (a) => a.assetType === 'realestate',
     freeform: true,
     optional: true,
@@ -406,14 +406,21 @@ async function callGiftEngine(body, endpoint) {
 
 /* 주소→상증법 평가 조회 (/v1/lookup/valuation: ①기준값 §15③ 시가 + ②실거래범위 + ③공시하한 §61).
    외부 API(VWORLD) 장애·해외리전 차단 시 success:false(manual_input_required)로 graceful 폴백. */
-async function lookupValuation(address, taxType, evalDate) {
+async function lookupValuation(address, taxType, evalDate, unit) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 25000);
+  try {
   const res = await fetch(base + '/v1/lookup/valuation', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ address, tax_type: taxType || '증여', eval_date: evalDate || '' }),
+    body: JSON.stringify({ address, tax_type: taxType || '증여', eval_date: evalDate || new Date().toISOString().slice(0, 10),
+      dong: unit && unit.dong || '', ho: unit && unit.ho || '',
+      official_year: Number(unit && unit.year) || Number((evalDate || '').slice(0, 4)) || new Date().getFullYear() }),
+    signal: ctrl.signal,
   });
   if (!res.ok) throw new Error('valuation ' + res.status);
-  return res.json();
+  return await res.json();
+  } finally { clearTimeout(timer); }
 }
 
 /* 상담 전송용 상세 (이메일) */
@@ -484,6 +491,10 @@ function JTReportGift({ setRoute, onBack }) {
   const [report, setReport] = useGiftState(null);
   const [err, setErr] = useGiftState(null);
   const [lookupState, setLookupState] = useGiftState({ loading: false, result: null, err: null });
+  const lookupSeq = React.useRef(0);
+  const lookupKey = React.useRef('');
+  lookupKey.current = [answers.reAddress, answers.reDong, answers.reHo, answers.reYear, answers.giftDate, answers.reType].join('|');
+  const changeLookup = (id, value) => { lookupSeq.current += 1; setLookupState({ loading: false, result: null, err: null }); setAns(id, value); };
   // 빠른 계산 먼저: 'quick'(필수 5문항→즉시 예상세액) → '더 정확히' → 'detail'(사전증여·부담부·세대생략 등)
   const [phase, setPhase] = useGiftState('quick');
   const [quickReport, setQuickReport] = useGiftState(null);
@@ -524,18 +535,25 @@ function JTReportGift({ setRoute, onBack }) {
 
   const doLookup = async () => {
     if (!answers.reAddress) return;
+    const seq = ++lookupSeq.current, key = lookupKey.current;
+    const stale = () => seq !== lookupSeq.current || key !== lookupKey.current;
+    const unit = { dong: answers.reDong, ho: answers.reHo, year: answers.reYear || (answers.giftDate || '').slice(0, 4) || new Date().getFullYear() };
     setLookupState({ loading: true, result: null, err: null });
     try {
-      const r = await lookupValuation(answers.reAddress, '증여', answers.giftDate);
+      const r = answers.reType === '공동주택'
+        ? await lookupValuation(answers.reAddress, '증여', answers.giftDate, unit)
+        : await window.jtLookupPublicPrice(answers.reAddress, answers.reType, unit);
+      if (stale()) return;
       setLookupState({ loading: false, result: r, err: null });
     } catch (e) {
+      if (stale()) return;
       setLookupState({ loading: false, result: null, err: '주소 자동조회를 할 수 없습니다. 아래 「평가액」 칸에 직접 입력해 주세요.' });
     }
     // 부담부증여 취득세 중과 판정용 — 조정대상지역 자동선택 (주택만, region 획득)
     if (answers.reType === '공동주택' || answers.reType === '개별주택') {
       try {
-        const pr = await window.jtLookupPublicPrice(answers.reAddress, answers.reType);
-        if (pr && pr.region) setAns('regulatedArea', pr.region.is_adjusted_area ? 'yes' : 'no');
+        const pr = await window.jtLookupPublicPrice(answers.reAddress, answers.reType, unit);
+        if (!stale() && pr && pr.region) setAns('regulatedArea', pr.region.is_adjusted_area ? 'yes' : 'no');
       } catch (e) { /* region 실패 시 질문 유지 */ }
     }
   };
@@ -846,11 +864,23 @@ function JTReportGift({ setRoute, onBack }) {
           <h2>{cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
-          {cur.freeform && (
+          {cur.freeform && cur.id !== 'reAddress' && (
             <textarea className="jt-report-q__textarea" maxLength={cur.id === 'context' ? 200 : 120}
               placeholder={cur.placeholder || ''} value={answers[cur.id] || ''}
               onChange={(e) => setAns(cur.id, e.target.value)} />
           )}
+          {cur.id === 'reAddress' && <>
+            {window.JTAddressPick && <window.JTAddressPick onPick={v => { changeLookup('reAddress', v); setAns('reDong', ''); setAns('reHo', ''); }} />}
+            <input className="jt-report-q__input" aria-label="부동산 주소" maxLength={250}
+              value={answers.reAddress || ''} onChange={e => changeLookup('reAddress', e.target.value)} />
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {['reDong', 'reHo'].map((id, i) => <label key={id}>{i ? '호' : '동'}
+                <input className="jt-report-q__input" maxLength={30} value={answers[id] || ''} onChange={e => changeLookup(id, e.target.value)} /></label>)}
+              <label>공시가격 연도<input className="jt-report-q__input" type="text" inputMode="numeric" maxLength={4} pattern="[0-9]{4}"
+                value={answers.reYear || (answers.giftDate || '').slice(0, 4) || new Date().getFullYear()}
+                onChange={e => changeLookup('reYear', e.target.value)} /></label>
+            </div>
+          </>}
 
           {cur.numeric && (
             <JTNumericInput className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
@@ -904,11 +934,9 @@ function JTReportGift({ setRoute, onBack }) {
               {R && R.success && (
                 <div style={{ marginTop: 10 }}>
                   <div style={{ padding: '10px 12px', background: '#fff', borderRadius: 8, border: '1px solid var(--line,#e6e2d8)' }}>
-                    <div style={{ fontSize: 12, opacity: 0.7 }}>① 신고 기준값 — {base.방법}</div>
+                    <div style={{ fontSize: 12, opacity: 0.7 }}>① 참고 평가액 — {base.방법} · 공시가격 {R.official_year}년</div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                       <strong style={{ fontSize: 18 }}>{formatWon(base.금액_원)}</strong>
-                      <button className="jt-btn jt-btn--primary" style={{ fontSize: 13 }}
-                        onClick={() => setAns('giftValue', String(base.금액_원))}>이 금액 사용</button>
                     </div>
                     {base.선택거래 && (
                       <div style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>
@@ -924,7 +952,7 @@ function JTReportGift({ setRoute, onBack }) {
                   )}
                   {floor.금액_원 != null && (
                     <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85 }}>
-                      ③ 공시가격(법정 하한 §61): {formatWon(floor.금액_원)}
+                      ③ 대상 세대 공시가격: {formatWon(floor.금액_원)}
                     </div>
                   )}
                   {(R.warnings || []).map((w, i) => (
@@ -935,14 +963,19 @@ function JTReportGift({ setRoute, onBack }) {
               )}
 
               {/* 조회 결과 자동평가 불가(manual_input_required) — 친절 폴백 + ①②③ 설명 */}
-              {R && !R.success && (
+              {R && !R.success && !(R.valuations && R.valuations.length) && (
                 <div style={{ marginTop: 10, fontSize: 13 }}>
-                  <p style={{ color: '#b97d2a', margin: 0 }}>ℹ 주소 자동평가는 현재 준비 중입니다. 아래 「평가액」 칸에 시가(유사매매·감정가) 또는 공시가격을 직접 입력해 주세요.</p>
+                  <p style={{ color: '#b97d2a', margin: 0 }}>{R.error || R.note || '조회 결과를 확인하지 못했습니다. 평가액을 직접 입력해 주세요.'}</p>
                   <p style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}>
-                    참고 — 상증법 평가는 ① <strong>시가(유사매매사례가액 §15③)</strong>를 우선하고, 없으면 ③ <strong>공시가격(§61, 법정 하한)</strong>으로 평가합니다. 같은 단지·평형의 ② 최근 실거래는 홈택스 '유사매매사례가액 조회'에서 확인하실 수 있습니다.
+                    공시자료 조회 실패만으로 시가가 없다고 판단할 수 없습니다. 유사매매·감정가 등 적용 가능한 자료와 평가기준일을 담당 세무사가 확인해야 합니다. 유사매매 후보는 홈택스 조회 결과와도 대조해 주세요.
                   </p>
                 </div>
               )}
+              {R && R.valuations && R.valuations.map((v, i) => <p key={i}>{v.valuation_type} ({v.as_of_year}년): {formatWon(v.amount)}{answers.reType === '토지' ? ' / ㎡' : ''}</p>)}
+              {R && R.reference_only && <p style={{ fontSize: 12, color: '#b97d2a' }}>{R.note} 확인 후 평가액을 직접 입력해 주세요.</p>}
+              {R && R.needs_unit_selection && window.JTUnitAsk && <window.JTUnitAsk
+                key={answers.reAddress} info={{ unitCount: R.unit_count || 0, complex: R.matched_complex || '', priceMin: R.price_min, priceMax: R.price_max }}
+                busy={lookupState.loading} onPick={u => { changeLookup('reDong', u.dong); setAns('reHo', u.ho); }} />}
 
               {lookupState.err && <p style={{ fontSize: 13, color: '#d14e3a', marginTop: 8 }}>{lookupState.err}</p>}
             </div>
