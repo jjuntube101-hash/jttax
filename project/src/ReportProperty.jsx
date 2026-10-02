@@ -861,6 +861,7 @@ function JTReportProperty({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <JTReportShell title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+        <JTVWorldAttributes propertyKind={answers.propertyKind} onApplyValue={value => setAnswers(prior => ({ ...prior, standardValue: String(value) }))} />
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>
@@ -948,3 +949,102 @@ function propKoreanAmountOrWon(n) {
 }
 
 window.JTReportProperty = JTReportProperty;
+
+/* 공개 자료를 선택해 조회한다. 원자료 금액은 세액·시가로 자동 반영하지 않는다. */
+window.jtLookupVWorld = async function (payload) {
+  const base = window.JT_ENGINE_BASE || '';
+  if (!base) throw new Error('조회 서비스 연결 설정이 필요합니다.');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 25000);
+  try {
+    const response = await fetch(base + (payload ? '/v1/lookup/vworld-attributes' : '/v1/lookup/vworld-catalog'), {
+      method: payload ? 'POST' : 'GET', headers: { 'Content-Type': 'application/json' },
+      ...(payload ? { body: JSON.stringify(payload) } : {}), signal: controller.signal,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(typeof data.detail === 'string' ? data.detail : '조회 조건 또는 서비스 연결을 확인해 주세요.');
+    return data;
+  } finally { clearTimeout(timer); }
+};
+
+window.jtVWorldPriceInput = function (apiId, parameters, result, propertyKind) {
+  if (propertyKind !== '주택' || ![28, 31].includes(apiId) || result?.status !== 'ok' || result.total_count !== 1 || result.items?.length !== 1) return null;
+  const row = result.items[0];
+  if (!/^[0-9]{19}$/.test(parameters.pnu || '') || parameters.stdrYear !== '2026' || row.pnu !== parameters.pnu || String(row.stdrYear) !== parameters.stdrYear) return null;
+  if (apiId === 31 && (!parameters.dongNm || !parameters.hoNm || !window.jtUnitSame(row.dongNm, parameters.dongNm) || !window.jtUnitSame(row.hoNm, parameters.hoNm))) return null;
+  const value = Number(apiId === 28 ? row.housePc : row.pblntfPc);
+  return Number.isSafeInteger(value) && value > 0 && value < 1e15 ? value : null;
+};
+
+function JTVWorldAttributes({ propertyKind, onApplyValue }) {
+  const [catalog, setCatalog] = React.useState(null);
+  const [apiId, setApiId] = React.useState(3);
+  const [parameters, setParameters] = React.useState({});
+  const [result, setResult] = React.useState(null);
+  const [error, setError] = React.useState('');
+  const [busy, setBusy] = React.useState(false);
+  const generation = React.useRef(0);
+  const locked = React.useRef(false);
+  React.useEffect(() => () => { ++generation.current; }, []);
+  const definitions = catalog?.operations || [];
+  const definition = definitions.find(item => item.id === apiId);
+  const rows = Array.isArray(result?.items) ? result.items : [];
+  const columns = [...new Set(rows.flatMap(row => Object.keys(row)))];
+  const labels = result?.field_labels || {};
+  const priceInput = window.jtVWorldPriceInput(apiId, parameters, result, propertyKind);
+  const statuses = { ok: '조회됨', no_data: '자료 없음', pending: '국내 자료 수집 중입니다. 잠시 후 다시 조회하세요.', busy: '국내 자료 수집 대기', upstream_error: '제공기관 조회 실패', not_configured: '자료 연결 설정 필요' };
+  function invalidate() { ++generation.current; setResult(null); setError(''); }
+  async function loadCatalog() {
+    if (locked.current || catalog) return;
+    locked.current = true; setBusy(true); setError('');
+    const current = ++generation.current;
+    try {
+      const data = await window.jtLookupVWorld();
+      if (current === generation.current) setCatalog(data);
+    } catch (e) { if (current === generation.current) setError(e.message || '자료 목록을 불러오지 못했습니다.'); }
+    finally { locked.current = false; setBusy(false); }
+  }
+  async function lookup(page = 1) {
+    if (locked.current) return;
+    locked.current = true; setBusy(true); setError(''); setResult(null);
+    const current = ++generation.current;
+    try {
+      const data = await window.jtLookupVWorld({ api_id: apiId, parameters, page, rows: 100 });
+      if (current === generation.current) setResult(data);
+    } catch (e) { if (current === generation.current) setError(e.message || '자료 조회에 실패했습니다.'); }
+    finally { locked.current = false; setBusy(false); }
+  }
+  return <details style={{ marginBottom: 20, border: '1px solid #dfe3dc', borderRadius: 10, padding: 16 }} onToggle={event => { if (event.currentTarget.open) loadCatalog(); }}>
+    <summary style={{ cursor: 'pointer', fontWeight: 600 }}>토지·건물·통계 자료 조회 46종</summary>
+    <p>세무 검토·강의·연구에 필요한 공개 원자료를 선택하세요. 자료의 기준시점과 단위를 확인한 뒤 사용하세요.</p>
+    {error && <p role="alert">{error} <button type="button" disabled={busy} onClick={loadCatalog}>목록 다시 불러오기</button></p>}
+    {catalog && <form onSubmit={event => { event.preventDefault(); lookup(); }}>
+      <label style={{ display: 'block', marginBottom: 12 }}>조회 자료
+        <select value={apiId} disabled={busy} onChange={event => { invalidate(); setApiId(Number(event.target.value)); setParameters({}); }} style={{ display: 'block', width: '100%', padding: 10 }}>
+          {definitions.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
+        </select>
+      </label>
+      <p>{definition?.description}</p>
+      {definition?.parameters.map(parameter => <label key={parameter.name} style={{ display: 'block', marginBottom: 12 }}>
+        {parameter.description || parameter.name} · {parameter.required ? '필수' : '선택'}
+        <input required={parameter.required} maxLength={100} value={parameters[parameter.name] || ''} disabled={busy}
+          onChange={event => { invalidate(); setParameters(prior => ({ ...prior, [parameter.name]: event.target.value })); }} style={{ display: 'block', width: '100%', padding: 10 }} />
+      </label>)}
+      <button type="submit" disabled={busy}>{busy ? '조회 중…' : '자료 조회하기'}</button>
+    </form>}
+    {!catalog && busy && <p role="status">자료 목록을 불러오는 중입니다.</p>}
+    {result && <div aria-live="polite">
+      <h3>{statuses[result.status] || '응답 확인 필요'}</h3>
+      <p>{result.note || result.error}</p>
+      {result.source && <p>출처: {result.source}</p>}
+      {result.total_count != null && <p>전체 {Number(result.total_count).toLocaleString('ko-KR')}건 · {result.page}페이지 · 이번 조회 {rows.length}건</p>}
+      {rows.length > 0 && <div style={{ overflowX: 'auto' }}><table><thead><tr>{columns.map(key => <th key={key}>{labels[key] || key}</th>)}</tr></thead><tbody>
+        {rows.map((row, index) => <tr key={index}>{columns.map(key => <td key={key}>{String(row[key] ?? '—')}</td>)}</tr>)}
+      </tbody></table></div>}
+      {Number(result.page) > 1 && <button type="button" disabled={busy} onClick={() => lookup(result.page - 1)}>이전 페이지</button>}
+      {result.has_more && <button type="button" disabled={busy} onClick={() => lookup(result.page + 1)}>다음 페이지</button>}
+      {priceInput != null && <button type="button" disabled={busy} onClick={() => onApplyValue(priceInput)}>확인한 주택 공시가격을 재산세 입력에 반영</button>}
+      <p>현재 조회 자료는 과거 이력을 대신하지 않습니다. 조회 실패를 0원이나 자료 없음으로 바꾸지 않으며 확정 세액·시가로 자동 입력하지 않습니다.</p>
+    </div>}
+  </details>;
+}

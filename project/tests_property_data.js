@@ -1,6 +1,7 @@
 const fs = require('node:fs'), vm = require('node:vm'), assert = require('node:assert/strict');
 const text = fs.readFileSync('project/src/ReportProperty.jsx', 'utf8');
 const fn = text.match(/window\.jtLookupHousePrice = async function[\s\S]*?\n  };/)[0];
+const priceInput = text.match(/window\.jtVWorldPriceInput = function[\s\S]*?\n};/)[0];
 let checks = 0;
 (async () => {
   for (const status of ['pending','upstream_error','not_configured','busy']) {
@@ -20,5 +21,15 @@ let checks = 0;
   const gift = fs.readFileSync('project/src/ReportGift.jsx','utf8');
   assert.ok(gift.includes('official_year:') && gift.includes('dong: unit') && gift.includes('ho: unit')); checks++;
   assert.ok(!gift.includes('이 금액 사용')); checks++;
+  const transfer = {window: {jtUnitSame: (a,b) => String(a) === String(b)}};
+  vm.runInNewContext(priceInput, transfer);
+  const parameters = {pnu:'1129013300110150000',stdrYear:'2026',dongNm:'104',hoNm:'1908'};
+  const result = {status:'ok',total_count:1,items:[{...parameters,pblntfPc:'418000000'}]};
+  assert.equal(transfer.window.jtVWorldPriceInput(31,parameters,result,'주택'),418000000); checks++;
+  for (const [api,params,response,kind] of [
+    [31,{...parameters,stdrYear:'2025'},result,'주택'], [31,{...parameters,hoNm:'1909'},result,'주택'],
+    [25,parameters,result,'토지'], [31,parameters,{...result,total_count:2},'주택'],
+    [31,parameters,{...result,status:'upstream_error'},'주택'],
+  ]) { assert.equal(transfer.window.jtVWorldPriceInput(api,params,response,kind),null); checks++; }
   console.log(`property data ${checks} checks PASS`);
 })().catch(e=>{console.error(e);process.exit(1);});

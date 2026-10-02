@@ -9651,7 +9651,7 @@ function JTReportProperty({ setRoute, onBack }) {
     onBack();
     return null;
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.id === "standardValue" && answers.propertyKind === "\uC8FC\uD0DD" && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", border: "1px solid #dfe3dc", borderRadius: 10, padding: "14px 16px", marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: 6 } }, "\u{1F50E} \uC8FC\uC18C\uB85C \uACF5\uC2DC\uAC00\uACA9 \uC790\uB3D9\uC870\uD68C ", /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 400, opacity: 0.7, fontSize: 13 } }, "(\uC120\uD0DD \u2014 \uC544\uD30C\uD2B8\xB7\uBE4C\uB77C\xB7\uB2E8\uB3C5\uC8FC\uD0DD)")), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 13, opacity: 0.8, lineHeight: 1.55 } }, "\uC8FC\uC18C\uB97C \uB123\uC73C\uBA74 \uAD6D\uD1A0\uAD50\uD1B5\uBD80 \uACF5\uC2DC\uAC00\uACA9\uC744 \uCC3E\uC544 \uC544\uB798 \uCE78\uC5D0 \uC790\uB3D9\uC73C\uB85C \uCC44\uC6CC\uB4DC\uB824\uC694. \uC9C1\uC811 \uC785\uB825\uD558\uC154\uB3C4 \uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(window.JTAddressPick, { onPick: setLaddrSync, disabled: lbusy }), /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTVWorldAttributes, { propertyKind: answers.propertyKind, onApplyValue: (value) => setAnswers((prior) => __spreadProps(__spreadValues({}, prior), { standardValue: String(value) })) }), err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.id === "standardValue" && answers.propertyKind === "\uC8FC\uD0DD" && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", border: "1px solid #dfe3dc", borderRadius: 10, padding: "14px 16px", marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: 6 } }, "\u{1F50E} \uC8FC\uC18C\uB85C \uACF5\uC2DC\uAC00\uACA9 \uC790\uB3D9\uC870\uD68C ", /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 400, opacity: 0.7, fontSize: 13 } }, "(\uC120\uD0DD \u2014 \uC544\uD30C\uD2B8\xB7\uBE4C\uB77C\xB7\uB2E8\uB3C5\uC8FC\uD0DD)")), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 13, opacity: 0.8, lineHeight: 1.55 } }, "\uC8FC\uC18C\uB97C \uB123\uC73C\uBA74 \uAD6D\uD1A0\uAD50\uD1B5\uBD80 \uACF5\uC2DC\uAC00\uACA9\uC744 \uCC3E\uC544 \uC544\uB798 \uCE78\uC5D0 \uC790\uB3D9\uC73C\uB85C \uCC44\uC6CC\uB4DC\uB824\uC694. \uC9C1\uC811 \uC785\uB825\uD558\uC154\uB3C4 \uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(window.JTAddressPick, { onPick: setLaddrSync, disabled: lbusy }), /* @__PURE__ */ React.createElement(
     "input",
     {
       className: "jt-report-q__input",
@@ -9709,6 +9709,118 @@ function propKoreanAmountOrWon(n) {
   return s.trim() + "\uC6D0";
 }
 window.JTReportProperty = JTReportProperty;
+window.jtLookupVWorld = async function(payload) {
+  const base = window.JT_ENGINE_BASE || "";
+  if (!base) throw new Error("\uC870\uD68C \uC11C\uBE44\uC2A4 \uC5F0\uACB0 \uC124\uC815\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 25e3);
+  try {
+    const response = await fetch(base + (payload ? "/v1/lookup/vworld-attributes" : "/v1/lookup/vworld-catalog"), __spreadProps(__spreadValues({
+      method: payload ? "POST" : "GET",
+      headers: { "Content-Type": "application/json" }
+    }, payload ? { body: JSON.stringify(payload) } : {}), {
+      signal: controller.signal
+    }));
+    const data = await response.json();
+    if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : "\uC870\uD68C \uC870\uAC74 \uB610\uB294 \uC11C\uBE44\uC2A4 \uC5F0\uACB0\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    return data;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+window.jtVWorldPriceInput = function(apiId, parameters, result, propertyKind) {
+  var _a;
+  if (propertyKind !== "\uC8FC\uD0DD" || ![28, 31].includes(apiId) || (result == null ? void 0 : result.status) !== "ok" || result.total_count !== 1 || ((_a = result.items) == null ? void 0 : _a.length) !== 1) return null;
+  const row = result.items[0];
+  if (!/^[0-9]{19}$/.test(parameters.pnu || "") || parameters.stdrYear !== "2026" || row.pnu !== parameters.pnu || String(row.stdrYear) !== parameters.stdrYear) return null;
+  if (apiId === 31 && (!parameters.dongNm || !parameters.hoNm || !window.jtUnitSame(row.dongNm, parameters.dongNm) || !window.jtUnitSame(row.hoNm, parameters.hoNm))) return null;
+  const value = Number(apiId === 28 ? row.housePc : row.pblntfPc);
+  return Number.isSafeInteger(value) && value > 0 && value < 1e15 ? value : null;
+};
+function JTVWorldAttributes({ propertyKind, onApplyValue }) {
+  const [catalog, setCatalog] = React.useState(null);
+  const [apiId, setApiId] = React.useState(3);
+  const [parameters, setParameters] = React.useState({});
+  const [result, setResult] = React.useState(null);
+  const [error, setError] = React.useState("");
+  const [busy, setBusy] = React.useState(false);
+  const generation = React.useRef(0);
+  const locked = React.useRef(false);
+  React.useEffect(() => () => {
+    ++generation.current;
+  }, []);
+  const definitions = (catalog == null ? void 0 : catalog.operations) || [];
+  const definition = definitions.find((item) => item.id === apiId);
+  const rows = Array.isArray(result == null ? void 0 : result.items) ? result.items : [];
+  const columns = [...new Set(rows.flatMap((row) => Object.keys(row)))];
+  const labels = (result == null ? void 0 : result.field_labels) || {};
+  const priceInput = window.jtVWorldPriceInput(apiId, parameters, result, propertyKind);
+  const statuses = { ok: "\uC870\uD68C\uB428", no_data: "\uC790\uB8CC \uC5C6\uC74C", pending: "\uAD6D\uB0B4 \uC790\uB8CC \uC218\uC9D1 \uC911\uC785\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC870\uD68C\uD558\uC138\uC694.", busy: "\uAD6D\uB0B4 \uC790\uB8CC \uC218\uC9D1 \uB300\uAE30", upstream_error: "\uC81C\uACF5\uAE30\uAD00 \uC870\uD68C \uC2E4\uD328", not_configured: "\uC790\uB8CC \uC5F0\uACB0 \uC124\uC815 \uD544\uC694" };
+  function invalidate() {
+    ++generation.current;
+    setResult(null);
+    setError("");
+  }
+  async function loadCatalog() {
+    if (locked.current || catalog) return;
+    locked.current = true;
+    setBusy(true);
+    setError("");
+    const current = ++generation.current;
+    try {
+      const data = await window.jtLookupVWorld();
+      if (current === generation.current) setCatalog(data);
+    } catch (e) {
+      if (current === generation.current) setError(e.message || "\uC790\uB8CC \uBAA9\uB85D\uC744 \uBD88\uB7EC\uC624\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.");
+    } finally {
+      locked.current = false;
+      setBusy(false);
+    }
+  }
+  async function lookup(page = 1) {
+    if (locked.current) return;
+    locked.current = true;
+    setBusy(true);
+    setError("");
+    setResult(null);
+    const current = ++generation.current;
+    try {
+      const data = await window.jtLookupVWorld({ api_id: apiId, parameters, page, rows: 100 });
+      if (current === generation.current) setResult(data);
+    } catch (e) {
+      if (current === generation.current) setError(e.message || "\uC790\uB8CC \uC870\uD68C\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.");
+    } finally {
+      locked.current = false;
+      setBusy(false);
+    }
+  }
+  return /* @__PURE__ */ React.createElement("details", { style: { marginBottom: 20, border: "1px solid #dfe3dc", borderRadius: 10, padding: 16 }, onToggle: (event) => {
+    if (event.currentTarget.open) loadCatalog();
+  } }, /* @__PURE__ */ React.createElement("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "\uD1A0\uC9C0\xB7\uAC74\uBB3C\xB7\uD1B5\uACC4 \uC790\uB8CC \uC870\uD68C 46\uC885"), /* @__PURE__ */ React.createElement("p", null, "\uC138\uBB34 \uAC80\uD1A0\xB7\uAC15\uC758\xB7\uC5F0\uAD6C\uC5D0 \uD544\uC694\uD55C \uACF5\uAC1C \uC6D0\uC790\uB8CC\uB97C \uC120\uD0DD\uD558\uC138\uC694. \uC790\uB8CC\uC758 \uAE30\uC900\uC2DC\uC810\uACFC \uB2E8\uC704\uB97C \uD655\uC778\uD55C \uB4A4 \uC0AC\uC6A9\uD558\uC138\uC694."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error, " ", /* @__PURE__ */ React.createElement("button", { type: "button", disabled: busy, onClick: loadCatalog }, "\uBAA9\uB85D \uB2E4\uC2DC \uBD88\uB7EC\uC624\uAE30")), catalog && /* @__PURE__ */ React.createElement("form", { onSubmit: (event) => {
+    event.preventDefault();
+    lookup();
+  } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", marginBottom: 12 } }, "\uC870\uD68C \uC790\uB8CC", /* @__PURE__ */ React.createElement("select", { value: apiId, disabled: busy, onChange: (event) => {
+    invalidate();
+    setApiId(Number(event.target.value));
+    setParameters({});
+  }, style: { display: "block", width: "100%", padding: 10 } }, definitions.map((item) => /* @__PURE__ */ React.createElement("option", { key: item.id, value: item.id }, item.name)))), /* @__PURE__ */ React.createElement("p", null, definition == null ? void 0 : definition.description), definition == null ? void 0 : definition.parameters.map((parameter) => /* @__PURE__ */ React.createElement("label", { key: parameter.name, style: { display: "block", marginBottom: 12 } }, parameter.description || parameter.name, " \xB7 ", parameter.required ? "\uD544\uC218" : "\uC120\uD0DD", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      required: parameter.required,
+      maxLength: 100,
+      value: parameters[parameter.name] || "",
+      disabled: busy,
+      onChange: (event) => {
+        invalidate();
+        setParameters((prior) => __spreadProps(__spreadValues({}, prior), { [parameter.name]: event.target.value }));
+      },
+      style: { display: "block", width: "100%", padding: 10 }
+    }
+  ))), /* @__PURE__ */ React.createElement("button", { type: "submit", disabled: busy }, busy ? "\uC870\uD68C \uC911\u2026" : "\uC790\uB8CC \uC870\uD68C\uD558\uAE30")), !catalog && busy && /* @__PURE__ */ React.createElement("p", { role: "status" }, "\uC790\uB8CC \uBAA9\uB85D\uC744 \uBD88\uB7EC\uC624\uB294 \uC911\uC785\uB2C8\uB2E4."), result && /* @__PURE__ */ React.createElement("div", { "aria-live": "polite" }, /* @__PURE__ */ React.createElement("h3", null, statuses[result.status] || "\uC751\uB2F5 \uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("p", null, result.note || result.error), result.source && /* @__PURE__ */ React.createElement("p", null, "\uCD9C\uCC98: ", result.source), result.total_count != null && /* @__PURE__ */ React.createElement("p", null, "\uC804\uCCB4 ", Number(result.total_count).toLocaleString("ko-KR"), "\uAC74 \xB7 ", result.page, "\uD398\uC774\uC9C0 \xB7 \uC774\uBC88 \uC870\uD68C ", rows.length, "\uAC74"), rows.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { overflowX: "auto" } }, /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, columns.map((key) => /* @__PURE__ */ React.createElement("th", { key }, labels[key] || key)))), /* @__PURE__ */ React.createElement("tbody", null, rows.map((row, index) => /* @__PURE__ */ React.createElement("tr", { key: index }, columns.map((key) => {
+    var _a;
+    return /* @__PURE__ */ React.createElement("td", { key }, String((_a = row[key]) != null ? _a : "\u2014"));
+  })))))), Number(result.page) > 1 && /* @__PURE__ */ React.createElement("button", { type: "button", disabled: busy, onClick: () => lookup(result.page - 1) }, "\uC774\uC804 \uD398\uC774\uC9C0"), result.has_more && /* @__PURE__ */ React.createElement("button", { type: "button", disabled: busy, onClick: () => lookup(result.page + 1) }, "\uB2E4\uC74C \uD398\uC774\uC9C0"), priceInput != null && /* @__PURE__ */ React.createElement("button", { type: "button", disabled: busy, onClick: () => onApplyValue(priceInput) }, "\uD655\uC778\uD55C \uC8FC\uD0DD \uACF5\uC2DC\uAC00\uACA9\uC744 \uC7AC\uC0B0\uC138 \uC785\uB825\uC5D0 \uBC18\uC601"), /* @__PURE__ */ React.createElement("p", null, "\uD604\uC7AC \uC870\uD68C \uC790\uB8CC\uB294 \uACFC\uAC70 \uC774\uB825\uC744 \uB300\uC2E0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC870\uD68C \uC2E4\uD328\uB97C 0\uC6D0\uC774\uB098 \uC790\uB8CC \uC5C6\uC74C\uC73C\uB85C \uBC14\uAFB8\uC9C0 \uC54A\uC73C\uBA70 \uD655\uC815 \uC138\uC561\xB7\uC2DC\uAC00\uB85C \uC790\uB3D9 \uC785\uB825\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")));
+}
 
 
 /* ────────── ReportComprehensive.jsx ────────── */
