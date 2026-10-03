@@ -93,6 +93,13 @@ const CMP_QS = [
     opts: [['yes', '네, 조정대상지역', '중과 가능'], ['no', '아니오', ''], ['unknown', '모름', '비조정으로 계산 — 확인 필요']],
   },
   {
+    // 오너 결재 261004 A-3: 종전에는 면적을 묻지 않고 84㎡(농어촌특별세 비과세)로 가정했다.
+    id: 'areaClass', section: '대상 부동산',
+    q: '그 주택의 전용면적이 85㎡ 이하인가요?',
+    sub: '전용 85㎡(약 25.7평)를 넘는 주택은 받는 분의 취득세에 농어촌특별세가 더해집니다(농어촌특별세법 §4 11호). 등기사항증명서나 분양계약서에 적힌 전용면적으로 판단하세요. 모르면 「모름」을 고르세요 — 농어촌특별세를 넣어 계산하고, 결과 화면에서 그 전제를 알려 드립니다.',
+    opts: [['under', '네, 85㎡ 이하', '농어촌특별세 없음'], ['over', '아니오, 85㎡ 초과', '농어촌특별세 추가'], ['unknown', '모름', '농어촌특별세를 넣어 계산']],
+  },
+  {
     id: 'recipient', section: '받는 사람',
     q: '누구에게 넘기려 하나요?',
     sub: '받는 사람에 따라 증여공제·세율이 달라집니다. 미성년 자녀는 증여공제가 5천만 → 2천만으로 줄어 증여세가 늘어납니다.',
@@ -176,6 +183,8 @@ function cmpBuildBody(answers, todayIso) {
   if (toChild && clamp(rawChildren) < 1) return { error: '받는 분이 자녀이면 자녀 수는 1 이상이어야 합니다.' };
   const needsRecipientHouses = answers.recipient === 'child_adult';
   if (needsRecipientHouses && !['0', '1', '2', '3', 'unknown'].includes(String(answers.recipientHouseCount))) return { error: '받는 분 세대의 주택 수를 선택해 주세요.' };
+  const areaClass = { under: '85이하', over: '85초과', unknown: '모름' }[answers.areaClass];
+  if (!areaClass) return { error: '전용면적이 85㎡ 이하인지 선택해 주세요.' };
   const sv = clamp(answers.standardValue);
   return { body: {
     property_value: value,
@@ -193,6 +202,8 @@ function cmpBuildBody(answers, todayIso) {
     num_children: clamp(rawChildren),
     other_estate_value: clamp(answers.otherEstate),
     property_type: '주택',
+    // 면적 구분(농어촌특별세): 「모름」도 그대로 보낸다 — 엔진이 과세로 계산하고 경고한다(보내지 않으면 84㎡ 가정).
+    area_class: areaClass,
     // 받는 분 세대의 다른 주택 수(매매 시나리오의 매수인 취득세율): 「모름」은 보내지 않는다(엔진이 1주택 기준으로 계산하고 경고).
     ...(needsRecipientHouses && answers.recipientHouseCount !== 'unknown' ? { recipient_other_house_count: Number(answers.recipientHouseCount) } : {}),
   } };
@@ -305,6 +316,7 @@ function JTReportCompare({ setRoute, onBack }) {
       const body = built.body;
 
       let calc = { precise: false, blocked: false, zoneUnknown: answers.adjustedZone === 'unknown', zoneYes: answers.adjustedZone === 'yes',
+        areaUnknown: answers.areaClass === 'unknown',
         acqZoneUnknown: answers.regulatedAtAcq === 'unknown' && body.regulated_at_acquisition === true };
       try {
         const j = await callCompareEng(body);
@@ -382,6 +394,11 @@ function JTReportCompare({ setRoute, onBack }) {
               {calc.acqZoneUnknown && (
                 <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6, fontSize: 13.5 }}>
                   <strong>취득 당시 조정대상지역 여부를 「모름」으로 두셨습니다.</strong> 조정대상지역이었던 것으로 보고 매매의 1세대1주택 비과세에 거주 2년 요건을 적용했습니다. 조정대상지역이 아니었다면 매매 쪽 세금이 줄어들 수 있으므로, 확인한 뒤 다시 계산해 주세요.
+                </div>
+              )}
+              {calc.areaUnknown && (
+                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6, fontSize: 13.5 }}>
+                  <strong>전용면적을 「모름」으로 두셨습니다.</strong> 전용 85㎡를 넘는 것으로 보고 받는 분의 취득세에 농어촌특별세를 넣어 계산했습니다. 85㎡ 이하이면 농어촌특별세가 없어 세금이 줄어들므로, 확인한 뒤 다시 계산해 주세요.
                 </div>
               )}
               {/* 수정 260628(COMPARE-R2-02): 엔진 경고사항(시나리오 가정·계산 알림) 화면 노출 */}

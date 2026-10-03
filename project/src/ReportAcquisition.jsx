@@ -505,7 +505,7 @@ function acqFallbackGaps(answers, calc) {
      아래 수치는 260806 에 실제 엔진(POST /v1/calc/acquisition)을 때려서 얻은 것이다. */
   const unknown = window.jtFallbackGaps([
     { when: answers.propertyType === '주택' && acqArea === 0,
-      why: '전용면적을 넣지 않으셨습니다 — 85㎡ 초과면 농어촌특별세가 붙는데, 비워 두면 계산이 «없는 것»으로 처리합니다(실측: 100㎡면 160만원 차이).' },
+      why: '전용면적을 넣지 않으셨습니다 — 85㎡ 초과면 농어촌특별세가 붙는데, 85㎡ 이하면 붙지 않으므로, 면적을 모르면 금액을 확정할 수 없습니다(실측: 100㎡면 160만원 차이).' },
     { when: answers.propertyType === '주택' && answers.acquisitionType === '매매' && hc >= 2 && regUnknown,
       why: '다주택인데 조정대상지역 여부가 정해지지 않았습니다 — 중과 여부가 갈립니다(8% ↔ 1~3%).' },
     { when: answers.propertyType === '주택' && answers.acquisitionType === '증여' && regUnknown,

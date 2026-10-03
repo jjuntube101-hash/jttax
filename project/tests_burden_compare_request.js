@@ -34,14 +34,26 @@ const TODAY = '2026-10-03';
 const bgAnswers = {
   propertyValue: '1500000000', assetType: 'house', acquisitionPrice: '400000000',
   acquisitionDate: '2016-09-03', actualDebt: '437000000', doneeCanRepay: 'yes',
-  donorHouseCount: '0', recipient: 'child_adult', doneeHouseCount: '0', adjustedZone: 'no',
+  donorHouseCount: '0', recipient: 'child_adult', doneeHouseCount: '0', adjustedZone: 'no', areaClass: 'under',
 };
 eq(JSON.parse(JSON.stringify(bg.bgBuildBody(bgAnswers, TODAY).body)), {
   property_value: 1500000000, acquisition_price: 400000000, acquisition_date: '2016-09-03',
   relationship: '직계존속', donee_age: 30, is_regulated_area: false, property_type: '주택',
   donor_other_house_count: 0, max_debt: 437000000, regulated_at_acquisition: false, donee_can_repay: true,
-  donee_other_house_count: 0,
+  area_class: '85이하', donee_other_house_count: 0,
 }, '부담부증여: 답이 그대로 요청이 된다');
+// 면적 구분(오너 결재 261004 A-3): 주택에만 묻고 보낸다. 「모름」도 보낸다(엔진이 과세로 계산하고 경고).
+eq(bg.bgBuildBody({ ...bgAnswers, areaClass: 'over' }, TODAY).body.area_class, '85초과', '부담부증여: 85㎡ 초과');
+eq(bg.bgBuildBody({ ...bgAnswers, areaClass: 'unknown' }, TODAY).body.area_class, '모름', '부담부증여: 면적 「모름」 → 그대로 보낸다');
+ok(bg.bgBuildBody({ ...bgAnswers, areaClass: undefined }, TODAY).error, '부담부증여: 주택인데 면적 구분을 답하지 않으면 요청 거부');
+ok(bg.bgBuildBody({ ...bgAnswers, areaClass: 'big' }, TODAY).error, '부담부증여: 목록 밖의 면적 답은 거부');
+for (const t of ['land', 'commercial']) {
+  const rba = bg.bgBuildBody({ ...bgAnswers, assetType: t, areaClass: 'under' }, TODAY);
+  ok(rba.body && !('area_class' in rba.body), '부담부증여: ' + t + ' 는 면적 구분을 묻지도 보내지도 않는다(낡은 답 포함)');
+  ok(bg.bgBuildBody({ ...bgAnswers, assetType: t, areaClass: undefined }, TODAY).body, '부담부증여: ' + t + ' 는 면적 답 없이 요청된다');
+}
+ok(!('areaClass' in bg.bgApplyAnswer(bgAnswers, 'assetType', 'land')), '유형 변경 → 면적 구분 답 삭제');
+ok(bg.bgApplyAnswer(bgAnswers, 'adjustedZone', 'yes').areaClass === 'under', '무관한 답 변경은 면적 구분을 건드리지 않는다');
 // 받는 분 세대의 주택 수(엔진 R7-F1): 채무 부분이 유상취득(변제 능력 증명 가능)이고 받는 분이 성년 자녀일 때만 묻고 보낸다
 eq(bg.bgBuildBody({ ...bgAnswers, doneeHouseCount: '2' }, TODAY).body.donee_other_house_count, 2, '받는 분 세대의 다른 주택 2채');
 eq(bg.bgBuildBody({ ...bgAnswers, doneeHouseCount: '3' }, TODAY).body.donee_other_house_count, 3, '받는 분 세대의 다른 주택 3채 이상');
@@ -215,15 +227,20 @@ const cmp = {};
 vm.runInNewContext(fn(cmpSrc, 'cmpValidISODate') + fn(cmpSrc, 'cmpIsoDate') + fn(cmpSrc, 'cmpApplyAnswer') + fn(cmpSrc, 'cmpBuildBody'), cmp);
 const cmpAnswers = {
   propertyValue: '1200000000', acquisitionPrice: '300000000', housingCount: '2', acquisitionDate: '2011-07-12',
-  adjustedZone: 'yes', recipient: 'child_adult', recipientHouseCount: '0', hasSpouse: 'yes', numChildren: '2', otherEstate: '500000000',
+  adjustedZone: 'yes', areaClass: 'over', recipient: 'child_adult', recipientHouseCount: '0', hasSpouse: 'yes', numChildren: '2', otherEstate: '500000000',
 };
 eq(JSON.parse(JSON.stringify(cmp.cmpBuildBody(cmpAnswers, TODAY).body)), {
   property_value: 1200000000, acquisition_price: 300000000, acquisition_date: '2011-07-12',
   owner_housing_count: 2, is_regulated_area: true, regulated_at_acquisition: false, relationship: '직계존속', recipient_age: 30,
   has_spouse: true, num_children: 2, other_estate_value: 500000000, property_type: '주택',
-  recipient_other_house_count: 0,
+  area_class: '85초과', recipient_other_house_count: 0,
 }, '처분 비교: 답이 그대로 요청이 된다');
 const cmpBody = over => cmp.cmpBuildBody({ ...cmpAnswers, ...over }, TODAY);
+// 면적 구분(오너 결재 261004 A-3)
+eq(cmpBody({ areaClass: 'under' }).body.area_class, '85이하', '처분 비교: 85㎡ 이하');
+eq(cmpBody({ areaClass: 'unknown' }).body.area_class, '모름', '처분 비교: 면적 「모름」 → 그대로 보낸다');
+ok(cmpBody({ areaClass: undefined }).error, '처분 비교: 면적 구분을 답하지 않으면 요청 거부');
+ok(cmpBody({ areaClass: 'big' }).error, '처분 비교: 목록 밖의 면적 답은 거부');
 // 받는 분 세대의 주택 수(엔진 R7-F1): 매매 시나리오의 매수인 취득세율 — 성년 자녀에게만 묻고 보낸다
 eq(cmpBody({ recipientHouseCount: '2' }).body.recipient_other_house_count, 2, '처분 비교: 받는 분 세대의 다른 주택 2채');
 ok(!('recipient_other_house_count' in cmpBody({ recipientHouseCount: 'unknown' }).body), '처분 비교: 「모름」 → 보내지 않는다');

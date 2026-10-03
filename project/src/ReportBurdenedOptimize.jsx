@@ -121,6 +121,15 @@ const BURDEN_QS = [
     opts: [['yes', '네, 조정대상지역', '중과 가능'], ['no', '아니오', ''], ['unknown', '모름', '비조정으로 계산 — 확인 필요']],
   },
   {
+    // 오너 결재 261004 A-3: 종전에는 면적을 묻지 않고 84㎡(농어촌특별세 비과세)로 가정했다. 주택에만 묻는다 —
+    //   토지·상가는 면적과 무관하게 농어촌특별세가 과세된다.
+    id: 'areaClass', section: '대상 부동산',
+    q: '그 주택의 전용면적이 85㎡ 이하인가요?',
+    sub: '전용 85㎡(약 25.7평)를 넘는 주택은 받는 분의 취득세에 농어촌특별세가 더해집니다(농어촌특별세법 §4 11호). 등기사항증명서나 분양계약서에 적힌 전용면적으로 판단하세요. 모르면 「모름」을 고르세요 — 농어촌특별세를 넣어 계산하고, 결과 화면에서 그 전제를 알려 드립니다.',
+    showIf: (a) => (a.assetType || 'house') === 'house',
+    opts: [['under', '네, 85㎡ 이하', '농어촌특별세 없음'], ['over', '아니오, 85㎡ 초과', '농어촌특별세 추가'], ['unknown', '모름', '농어촌특별세를 넣어 계산']],
+  },
+  {
     id: 'context', section: '추가 사항',
     q: '추가로 알려주실 내용이 있나요? (선택)',
     sub: '채무의 종류(전세보증금·은행 대출), 받는 분의 소득·재산, 증여하는 분의 거주 기간 등 — 실제 판단에 중요합니다(상담에서 반영).',
@@ -152,6 +161,8 @@ function bgApplyAnswer(a, id, v) {
     delete next.regulatedAtAcq;
     delete next.moveInDate;
   }
+  // 면적 구분은 «주택»에 딸린 답이다 — 유형이 바뀌면 지운다(주택으로 돌아오면 다시 묻는다).
+  if (id === 'assetType' && a[id] !== v) delete next.areaClass;
   // 채무액이 바뀌면 변제 능력 답도 지운다 — 그 답은 «그 금액»에 대한 것이었다(TASK-261003-007 R4-F1).
   if (id === 'actualDebt' && a[id] !== v) delete next.doneeCanRepay;
   // 받는 분이 바뀌어도 지운다 — 변제 능력은 «그 사람»에 대한 답이었다(R5-F1). 받는 분 문항이 뒤에 있어 다시 묻지는
@@ -190,6 +201,9 @@ function bgBuildBody(answers, todayIso) {
   if (!['0', '1', '2', '3'].includes(String(answers.donorHouseCount))) return { error: '증여하는 분 세대의 다른 주택 수를 선택해 주세요.' };
   const needsDoneeHouses = bgNeedsDoneeHouses(answers);
   if (needsDoneeHouses && !['0', '1', '2', '3', 'unknown'].includes(String(answers.doneeHouseCount))) return { error: '받는 분 세대의 주택 수를 선택해 주세요.' };
+  const asksArea = (answers.assetType || 'house') === 'house';
+  const areaClass = { under: '85이하', over: '85초과', unknown: '모름' }[answers.areaClass];
+  if (asksArea && !areaClass) return { error: '전용면적이 85㎡ 이하인지 선택해 주세요.' };
   const assetTypeMap = { house: '주택', officetel: '오피스텔', land: '토지', commercial: '상가' };
   const body = {
     property_value: value,
@@ -207,6 +221,8 @@ function bgBuildBody(answers, todayIso) {
   if (isHouse) body.regulated_at_acquisition = needsZoneAtAcq ? answers.regulatedAtAcq !== 'no' : false;
   // 전입일: 입력했을 때만. 비우면 «거주하지 않음»으로 계산된다(엔진 기본).
   if (isHouse && moveIn !== '') body.move_in_date = moveIn;
+  // 면적 구분(농어촌특별세): 주택에만 보낸다. 「모름」도 그대로 보낸다 — 엔진이 과세로 계산하고 경고한다.
+  if (asksArea) body.area_class = areaClass;
   // 공시가격: 입력했을 때만 보낸다. 비우면 엔진이 «미입력»으로 보고 시세로 가늠한 뒤 경고한다.
   if (clamp(answers.standardValue) > 0) body.standard_value = clamp(answers.standardValue);
   // 변제 능력 증명: 네=true, 아니오=false, 모름=보내지 않음(엔진이 증명되지 않는 것으로 계산하고 경고한다)
@@ -384,6 +400,7 @@ function JTReportBurden({ setRoute, onBack }) {
         if (e && e.status === 422) calc.blocked = true; else calc.engineErr = true;
       }
       calc.zoneUnknown = answers.adjustedZone === 'unknown';
+      calc.areaUnknown = body.area_class === '모름';
       calc.acqZoneUnknown = answers.regulatedAtAcq === 'unknown' && body.regulated_at_acquisition === true;
       setReport({ calc });
     } catch (e) { console.error(e); setErr(e.message || '계산 중 오류가 발생했습니다.'); }
@@ -429,6 +446,11 @@ function JTReportBurden({ setRoute, onBack }) {
             </div>
           ) : (
             <>
+              {calc.areaUnknown && (
+                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6, fontSize: 13.5 }}>
+                  <strong>전용면적을 「모름」으로 두셨습니다.</strong> 전용 85㎡를 넘는 것으로 보고 받는 분의 취득세에 농어촌특별세를 넣어 계산했습니다. 85㎡ 이하이면 농어촌특별세가 없어 세금이 줄어들므로, 확인한 뒤 다시 계산해 주세요.
+                </div>
+              )}
               {calc.zoneUnknown && (
                 <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6, fontSize: 13.5 }}>
                   <strong>조정대상지역 여부를 「모름」으로 두셨습니다.</strong> 조정대상지역이 아닌 것으로 계산했습니다. 조정대상지역이면 증여 취득세와 채무 인수분 양도세가 크게 달라지므로, 확인한 뒤 다시 계산해 주세요.
