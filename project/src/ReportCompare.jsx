@@ -255,11 +255,16 @@ function buildCompareDetail(answers, calc) {
   return L.join('\n');
 }
 
+// 면적 구분을 상담 요약에 적는 문구 — 「모름」은 계산 전제(농어촌특별세 포함)까지 적는다(TASK-261004-013 R1-F1).
+function cmpAreaLabel(v) {
+  return { under: '85㎡ 이하', over: '85㎡ 초과', unknown: '모름(85㎡ 초과로 보고 농어촌특별세를 넣어 계산)' }[v] || '';
+}
 function buildCompareKakao(answers, calc) {
   const L = ['[JT택스랩 처분방법 비교 — 상담 요청]', '', '▶ 입력'];
   L.push('· 부동산 시가: ' + cmpWon(Number(answers.propertyValue) || 0));
   L.push('· 취득가: ' + cmpWon(Number(answers.acquisitionPrice) || 0));
   L.push('· 받는 사람: ' + (answers.recipient === 'spouse' ? '배우자' : '자녀'));
+  if (cmpAreaLabel(answers.areaClass)) L.push('· 전용면적: ' + cmpAreaLabel(answers.areaClass));
   if (calc.scenarios) {
     L.push('', '▶ 방법별 예상 세금(세액만)');
     ['증여', '매매', '상속'].forEach(m => { const sc = calc.scenarios[m]; if (sc) L.push('· ' + m + ': ' + cmpWon(sc['총세부담'])); });

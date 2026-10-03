@@ -12083,11 +12083,15 @@ function buildCompareDetail(answers, calc) {
   }
   return L.join("\n");
 }
+function cmpAreaLabel(v) {
+  return { under: "85\u33A1 \uC774\uD558", over: "85\u33A1 \uCD08\uACFC", unknown: "\uBAA8\uB984(85\u33A1 \uCD08\uACFC\uB85C \uBCF4\uACE0 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uB97C \uB123\uC5B4 \uACC4\uC0B0)" }[v] || "";
+}
 function buildCompareKakao(answers, calc) {
   const L = ["[JT\uD0DD\uC2A4\uB7A9 \uCC98\uBD84\uBC29\uBC95 \uBE44\uAD50 \u2014 \uC0C1\uB2F4 \uC694\uCCAD]", "", "\u25B6 \uC785\uB825"];
   L.push("\xB7 \uBD80\uB3D9\uC0B0 \uC2DC\uAC00: " + cmpWon(Number(answers.propertyValue) || 0));
   L.push("\xB7 \uCDE8\uB4DD\uAC00: " + cmpWon(Number(answers.acquisitionPrice) || 0));
   L.push("\xB7 \uBC1B\uB294 \uC0AC\uB78C: " + (answers.recipient === "spouse" ? "\uBC30\uC6B0\uC790" : "\uC790\uB140"));
+  if (cmpAreaLabel(answers.areaClass)) L.push("\xB7 \uC804\uC6A9\uBA74\uC801: " + cmpAreaLabel(answers.areaClass));
   if (calc.scenarios) {
     L.push("", "\u25B6 \uBC29\uBC95\uBCC4 \uC608\uC0C1 \uC138\uAE08(\uC138\uC561\uB9CC)");
     ["\uC99D\uC5EC", "\uB9E4\uB9E4", "\uC0C1\uC18D"].forEach((m) => {
@@ -12583,12 +12587,17 @@ function buildBurdenDetail(answers, calc) {
   }
   return L.join("\n");
 }
+function bgAreaLabel(answers) {
+  if ((answers.assetType || "house") !== "house") return "";
+  return { under: "85\u33A1 \uC774\uD558", over: "85\u33A1 \uCD08\uACFC", unknown: "\uBAA8\uB984(85\u33A1 \uCD08\uACFC\uB85C \uBCF4\uACE0 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uB97C \uB123\uC5B4 \uACC4\uC0B0)" }[answers.areaClass] || "";
+}
 function buildBurdenKakao(answers, calc) {
   const L = ["[JT\uD0DD\uC2A4\uB7A9 \uBD80\uB2F4\uBD80\uC99D\uC5EC \u2014 \uC0C1\uB2F4 \uC694\uCCAD]", "", "\u25B6 \uC785\uB825"];
   L.push("\xB7 \uBD80\uB3D9\uC0B0 \uC2DC\uAC00: " + bgWon(Number(answers.propertyValue) || 0));
   L.push("\xB7 \uC99D\uC5EC\uC790 \uCDE8\uB4DD\uAC00: " + bgWon(Number(answers.acquisitionPrice) || 0));
   L.push("\xB7 \uB538\uB9B0 \uCC44\uBB34: " + bgWon(Number(answers.actualDebt) || 0));
   L.push("\xB7 \uBC1B\uB294 \uC0AC\uB78C: " + (answers.recipient === "spouse" ? "\uBC30\uC6B0\uC790" : "\uC790\uB140"));
+  if (bgAreaLabel(answers)) L.push("\xB7 \uC804\uC6A9\uBA74\uC801: " + bgAreaLabel(answers));
   if (calc.precise) {
     L.push("", "\u25B6 \uACB0\uACFC(\uC694\uC57D)");
     L.push("\xB7 \uB2E8\uC21C\uC99D\uC5EC \uCD1D\uC138\uAE08: " + bgWon(calc.noDebt));

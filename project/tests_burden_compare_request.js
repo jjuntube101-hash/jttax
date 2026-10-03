@@ -315,4 +315,17 @@ ok(!acceptCmp({ ...cmpGood, 시나리오별: { ...cmpGood['시나리오별'], �
 ok(!acceptCmp({ ...cmpGood, 시나리오별: { ...cmpGood['시나리오별'], 매매: { ...sc(0, 70, 0, 30), 총세부담: 999 } } }), '세목 합계와 총세부담이 다르면 불채택');
 ok(!acceptCmp({ ...cmpGood, 시나리오별: { ...cmpGood['시나리오별'], 상속: { 총세부담: 70 } } }), '세목별 금액이 없으면 불채택');
 
+// 카카오 상담 요약 — 면적 구분과 「모름」 전제가 실린다(TASK-261004-013 R1-F1)
+const kk = { window: {} };
+vm.runInNewContext('const cmpWon = n => String(n); const bgWon = n => String(n);'
+  + fn(cmpSrc, 'cmpAreaLabel') + fn(cmpSrc, 'buildCompareKakao') + fn(bgSrc, 'bgAreaLabel') + fn(bgSrc, 'buildBurdenKakao')
+  + '; this.cmpK = buildCompareKakao; this.bgK = buildBurdenKakao;', kk);
+const kCalc = { scenarios: { 증여: { 총세부담: 1 }, 매매: { 총세부담: 2 }, 상속: { 총세부담: 3 } }, precise: true, noDebt: 1, savings: 1 };
+ok(kk.cmpK({ ...cmpAnswers, areaClass: 'under' }, kCalc).includes('전용면적: 85㎡ 이하'), '처분 비교 카카오 요약: 85㎡ 이하');
+ok(kk.cmpK({ ...cmpAnswers, areaClass: 'unknown' }, kCalc).includes('농어촌특별세를 넣어 계산'), '처분 비교 카카오 요약: 「모름」 전제');
+ok(kk.cmpK({ ...cmpAnswers, areaClass: 'under' }, kCalc) !== kk.cmpK({ ...cmpAnswers, areaClass: 'unknown' }, kCalc), '처분 비교 카카오 요약: 면적 답에 따라 달라진다');
+ok(kk.bgK({ ...bgAnswers, areaClass: 'over' }, kCalc).includes('전용면적: 85㎡ 초과'), '부담부증여 카카오 요약: 85㎡ 초과');
+ok(kk.bgK({ ...bgAnswers, areaClass: 'unknown' }, kCalc).includes('농어촌특별세를 넣어 계산'), '부담부증여 카카오 요약: 「모름」 전제');
+ok(!kk.bgK({ ...bgAnswers, assetType: 'land', areaClass: 'under' }, kCalc).includes('전용면적'), '부담부증여 카카오 요약: 토지는 낡은 면적 답을 싣지 않는다');
+
 console.log(`OK burden/compare request: ${checks} checks`);

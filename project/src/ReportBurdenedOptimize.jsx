@@ -324,12 +324,18 @@ function buildBurdenDetail(answers, calc) {
   }
   return L.join('\n');
 }
+// 면적 구분을 상담 요약에 적는 문구 — 주택에만 묻는 답이므로 주택일 때만 적는다(TASK-261004-013 R1-F1).
+function bgAreaLabel(answers) {
+  if ((answers.assetType || 'house') !== 'house') return '';
+  return { under: '85㎡ 이하', over: '85㎡ 초과', unknown: '모름(85㎡ 초과로 보고 농어촌특별세를 넣어 계산)' }[answers.areaClass] || '';
+}
 function buildBurdenKakao(answers, calc) {
   const L = ['[JT택스랩 부담부증여 — 상담 요청]', '', '▶ 입력'];
   L.push('· 부동산 시가: ' + bgWon(Number(answers.propertyValue) || 0));
   L.push('· 증여자 취득가: ' + bgWon(Number(answers.acquisitionPrice) || 0));
   L.push('· 딸린 채무: ' + bgWon(Number(answers.actualDebt) || 0));
   L.push('· 받는 사람: ' + (answers.recipient === 'spouse' ? '배우자' : '자녀'));
+  if (bgAreaLabel(answers)) L.push('· 전용면적: ' + bgAreaLabel(answers));
   if (calc.precise) {
     L.push('', '▶ 결과(요약)');
     L.push('· 단순증여 총세금: ' + bgWon(calc.noDebt));
