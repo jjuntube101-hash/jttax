@@ -655,6 +655,9 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
   const HIDDEN_PIN = {
     access_key: 'c3a5ab0f-c275-4434-a4ba-bda8500378fa',
     from_name: { 'broker.html': 'jttax.co.kr 중개사 데스크', 'scrivener.html': 'jttax.co.kr 법무사 데스크' },
+    /* 261003: 제출 뒤 한글 완료 안내 면으로 보낸다. 값을 고정하지 않으면 «다른 곳»으로 보내도 통과한다.
+       Web3Forms 기본 요금제는 같은 도메인으로만 보낼 수 있다. */
+    redirect: 'https://www.jttax.co.kr/desk/thanks.html',
   };
   /* on* 는 전면 금지가 아니라 «내용 허용 목록» — 이 페이지의 핸들러는 전부 정당한 추적 호출이다 */
   const HANDLER_OK = /^jtTrackCta\('[\w-]+'\s*,\s*'[\w-]+'\)$/;

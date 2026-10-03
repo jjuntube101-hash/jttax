@@ -49,6 +49,11 @@ async function readInsightDates(repoRoot) {
   return map;
 }
 
+/* 색인 제외 면 (261003) — 양식 제출 뒤의 완료 안내 면은 검색 결과에 나올 이유가 없다.
+   면에는 <meta name="robots" content="noindex"> 를 두고 sitemap 에서도 뺀다.
+   ⚠️ tests_static_shell.js 의 SITEMAP_EXCLUDE 와 같은 목록이어야 한다(시험이 양방향으로 대조한다). */
+const SITEMAP_EXCLUDE = new Set(['desk/thanks.html']);
+
 export async function writeSitemap(repoRoot, site) {
   const insightDates = await readInsightDates(repoRoot);
   // 홈의 lastmod = 가장 최근 인사이트 발행일(없으면 생략)
@@ -73,7 +78,8 @@ export async function writeSitemap(repoRoot, site) {
   for (const d of dirs) {
     let files = [];
     try {
-      files = (await readdir(join(repoRoot, d.dir))).filter(f => f.endsWith('.html'));
+      files = (await readdir(join(repoRoot, d.dir)))
+        .filter(f => f.endsWith('.html') && !SITEMAP_EXCLUDE.has(`${d.dir}/${f}`));
     } catch (e) {
       // 디렉토리 자체가 없을 때만(ENOENT) 조용히 건너뛴다. 그 외 오류(권한·IO)는
       // 해당 섹션 URL 이 통째 누락되는 침묵 실패이므로 전파해 빌드를 실패시킨다.
