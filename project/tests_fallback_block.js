@@ -68,9 +68,12 @@ const compFallbackGaps = loadGapFn('ReportComprehensive.jsx', 'compFallbackGaps'
 
 const DOWN = { precise: false };            // 엔진 장애
 const OK = { precise: true };               // 엔진 정상
+const REFUSED = { precise: false, engineState: 'refused' };   // 엔진이 계산을 거부 (취득세 — 261004)
 const INH = (x) => inhFallbackGaps(x, DOWN);
 const GIFT = (x) => giftFallbackGaps(x, DOWN);
-const ACQ = (x) => acqFallbackGaps(x, DOWN);
+/* ★ 취득세는 261004 에 자체 계산식(폴백)을 삭제했다 — «엔진 값이 없으면(DOWN·REFUSED) 입력과 무관하게 항상 막고»,
+   입력별 판정은 «엔진 값이 있을 때(OK)에도 남는 ①층(입력 불확정)»뿐이다. 그래서 입력별 시험은 OK 로 부른다. */
+const ACQ = (x) => acqFallbackGaps(x, OK);
 const PROP = (x) => propFallbackGaps(x, DOWN);
 const CGT = (x) => cgtFallbackGaps(x, DOWN);
 /* ⚠️ 거주자 여부는 «yes 로 확인된» 경우만 통과한다(260806 하드닝) — 미입력도 막는다.
@@ -98,11 +101,8 @@ eq('평범한 입력 → 통과', GIFT({ ...RES, relationship: '직계존속' })
 
 console.log('\n════ 취득세 ════');
 const ACQ_BASE = { propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', reduction: 'none', housingCount: '1' };
-eq('생애최초 감면 → 차단', ACQ({ ...ACQ_BASE, reduction: 'first' }).length > 0, true);
-eq('85㎡ 초과 → 차단', ACQ({ ...ACQ_BASE, exclusiveArea: '86' }).length > 0, true);
+/* ① 입력 불확정 층 — 엔진 값이 있어도(OK) 막는다 */
 eq('면적 미입력(주택 매매) → 차단', ACQ({ ...ACQ_BASE, exclusiveArea: '' }).length > 0, true);
-eq('토지 → 차단', ACQ({ propertyType: '토지' }).length > 0, true);
-eq('주택 상속 → 차단', ACQ({ acquisitionType: '상속', propertyType: '주택', exclusiveArea: '84' }).length > 0, true);
 eq('85㎡ 이하·면적 입력·감면없음 → 통과', ACQ(ACQ_BASE).length, 0);
 /* 260806 Codex 지적으로 넓힌 조건들 — 다시 좁아지면 여기서 잡힌다 */
 eq('증여 주택 + 면적 미입력 → 차단 (종전엔 매매만 봐서 샜다)',
@@ -111,13 +111,39 @@ eq('조정지역 «모르겠어요» + 다주택 → 차단 (종전엔 no 와 �
    ACQ({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'unsure', temporaryTwoHouse: 'no' }).length > 0, true);
 eq('증여 주택 + 조정 «모름» → 차단 (시가표준 3억↑면 12% 중과라 3배 갈린다)',
    ACQ({ propertyType: '주택', acquisitionType: '증여', exclusiveArea: '84', isRegulatedArea: 'unsure' }).length > 0, true);
-eq('다주택인데 일시적2주택 미응답 → 차단',
-   ACQ({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'yes' }).length > 0, true);
-eq('일시적2주택 «예» + 2주택 → 통과 (폴백이 1주택으로 정확히 계산한다)',
+eq('일시적2주택 «예» + 2주택 → 통과 (엔진이 1주택으로 계산한다)',
    ACQ({ ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' }).length, 0);
 /* 시행령 §28의5① 은 «종전 주택등 1개 보유» 세대만 — 3주택 이상엔 특례가 없다 (Codex P1) */
 eq('3주택인데 일시적2주택 «예» → 차단 (특례 대상이 아닌데 주택수를 1로 줄이면 안 된다)',
    ACQ({ ...ACQ_BASE, housingCount: '3', isRegulatedArea: 'yes', temporaryTwoHouse: 'yes' }).length > 0, true);
+/* ② 종전 «간이 폴백 한계» 층은 삭제됐다 — 엔진 값이 있으면(OK) 아래 입력은 더 이상 이 함수가 막지 않는다.
+   (엔진이 직접 계산한다. 다시 이 목록이 생기면 «폴백이 되살아난» 것이므로 여기서 울린다.) */
+console.log('\n════ 취득세 — 종전 ②층(간이 폴백 한계) 삭제 확인: 엔진 값이 있으면 막지 않는다 ════');
+[['생애최초 감면', { ...ACQ_BASE, reduction: 'first' }],
+ ['85㎡ 초과', { ...ACQ_BASE, exclusiveArea: '86' }],
+ ['토지', { propertyType: '토지' }],
+ ['주택 상속', { acquisitionType: '상속', propertyType: '주택', exclusiveArea: '84' }],
+ ['다주택 + 일시적2주택 미응답 (조정 «예»)', { ...ACQ_BASE, housingCount: '2', isRegulatedArea: 'yes' }],
+ ['공매', { acquisitionType: '공매', propertyType: '상가' }],
+ ['재산분할', { acquisitionType: '재산분할', propertyType: '상가' }],
+ ['농지', { acquisitionType: '매매', propertyType: '농지' }],
+ ['오피스텔', { acquisitionType: '매매', propertyType: '오피스텔_주거용' }],
+ ['법인 명의', { ...ACQ_BASE, acquirerType: 'corporate' }],
+ ['출산양육 감면', { ...ACQ_BASE, reduction: 'childbirth' }],
+].forEach(([name, ans]) => eq(`${name} · 엔진 값이 있으면 이 함수는 막지 않는다`, ACQ(ans).length, 0));
+
+console.log('\n════ 취득세 — 엔진 값이 없으면 «모든 입력»이 막힌다 (자체 계산식 없음, 261004) ════');
+[['평범한 1주택 매매', ACQ_BASE],
+ ['증여 주택(비조정)', { propertyType: '주택', acquisitionType: '증여', exclusiveArea: '84', isRegulatedArea: 'no' }],
+ ['상속 주택', { acquisitionType: '상속', propertyType: '주택', exclusiveArea: '84', inheritOneHouse: 'yes' }],
+ ['신축 상가', { acquisitionType: '신축', propertyType: '상가' }],
+ ['빈 입력', {}],
+].forEach(([name, ans]) => {
+  eq(`${name} · 엔진 연결 실패(precise:false) → 차단`, acqFallbackGaps(ans, DOWN).length > 0, true);
+  eq(`${name} · engineState:down → 차단`, acqFallbackGaps(ans, { precise: false, engineState: 'down' }).length > 0, true);
+  eq(`${name} · engineState:refused → 차단, 사유에 「세무사 확인」`, acqFallbackGaps(ans, REFUSED).some((g) => g.includes('세무사 확인')), true);
+  eq(`${name} · 연결 실패 사유에 「연결하지 못했습니다」`, acqFallbackGaps(ans, DOWN).some((g) => g.includes('연결하지 못했습니다')), true);
+});
 
 console.log('\n════ 재산세 ════');
 eq('종합합산 토지 → 차단', PROP({ propertyKind: '토지', landType: '종합합산' }).length > 0, true);
@@ -228,8 +254,11 @@ console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 �
   /* ⚠️ 「통과」로 못 박는 것이 «차단을 약화»시키지 않는지 같이 본다 —
      엔진이 죽어도 폴백이 감당하는 조합이어야 안심하고 통과시킬 수 있다.
      ②층에 걸리는 입력을 여기 넣으면 그건 「엔진 없으면 막아야 할 것」을 통과 목록에
-     올린 셈이라, 나중에 조건이 흔들릴 때 이 줄이 먼저 울린다. */
-  eq(`${name} · 엔진이 죽어도 폴백이 감당한다`, fn(ans, DOWN).length, 0);
+     올린 셈이라, 나중에 조건이 흔들릴 때 이 줄이 먼저 울린다.
+     ★ 취득세는 261004 에 폴백을 삭제해 «엔진이 죽으면 항상 막는다» — 그래서 취득세 줄은
+        아래에서 «엔진 죽음 → 막힘»으로 따로 확인한다(여기서는 DOWN 통과를 요구하지 않는다). */
+  if (fn === acqFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
+  else eq(`${name} · 엔진이 죽어도 폴백이 감당한다`, fn(ans, DOWN).length, 0);
 });
 
 /* ── 엔진 전 게이트가 «①불확정 층만» 거르는가 ────────────────────────────────
@@ -243,7 +272,7 @@ console.log('\n════ 엔진 전 게이트: precise=true 면 ①불확정 
  ['증여 · 비거주자', giftFallbackGaps, { isResident: 'no' }, 1],
  ['증여 · 세대생략(폴백 한계)', giftFallbackGaps, { isResident: 'yes', genSkip: 'yes' }, 0],
  ['취득 · 조정 모름', acqFallbackGaps, { propertyType: '주택', acquisitionType: '증여', exclusiveArea: '84', isRegulatedArea: 'unsure' }, 1],
- ['취득 · 토지(폴백 한계)', acqFallbackGaps, { propertyType: '토지', exclusiveArea: '84' }, 0],
+ ['취득 · 토지(①층 아님 — 엔진 값 없음 층은 precise=true 에서 빠진다)', acqFallbackGaps, { propertyType: '토지', exclusiveArea: '84' }, 0],
  ['양도 · 취득당시 모름', cgtFallbackGaps, { assetType: 'house_1', acqAdjustedZone: 'unsure' }, 1],
  ['양도 · 입주권(폴백 한계)', cgtFallbackGaps, { assetType: 'occupancy_succ' }, 0],
  ['재산 · 건축물(폴백 한계)', propFallbackGaps, { propertyKind: '건축물' }, 0],
@@ -371,6 +400,70 @@ FILES.forEach(([f, , v]) => {
   const hits = LEAK_TARGETS.filter(({ pat }) => body.includes(pat)).map((t) => t.what);
   eq(`${f} · 차단 화면에 금액 표현이 없다`, hits.length ? `누설: ${hits.join(' / ')}` : '없음', '없음');
 });
+
+/* ── JTFallbackBlocked 의 reason 별 «실제 렌더 결과» (261004) ──────────────────
+   JSX 를 esbuild 로 변환해 가짜 React.createElement 로 실행하고, 나온 트리의 «글자»와 «버튼»을 본다.
+   문자열만 grep 하면 분기가 어긋나도(예: refused 에 버튼이 붙음) 못 잡는다.
+   ⚠️ 'input'·'engine' 은 다른 계산기가 쓰므로 종전 문구·동작이 «그대로»인지를 같이 고정한다. */
+console.log('\n════ JTFallbackBlocked — reason 별 렌더 결과 ════');
+{
+  const esbuild = require('esbuild');
+  const parser = require('@babel/parser');
+  const ast = parser.parse(rs, { sourceType: 'script', plugins: ['jsx'] });
+  const decl = ast.program.body.find((n) => n.type === 'FunctionDeclaration' && n.id && n.id.name === 'JTFallbackBlocked');
+  if (!decl) throw new Error('Report.jsx 에서 JTFallbackBlocked 를 찾지 못했습니다.');
+  const js = esbuild.transformSync(rs.slice(decl.start, decl.end), { loader: 'jsx', jsxFactory: 'React.createElement', jsxFragment: 'React.Fragment' }).code;
+  const React = {
+    Fragment: 'Fragment',
+    createElement: (type, props, ...children) => ({ type, props: props || {}, children }),
+  };
+  // eslint-disable-next-line no-new-func
+  const Blocked = new Function('React', js + '\nreturn JTFallbackBlocked;')(React);
+  const textOf = (n) => (n == null || n === false || n === true ? '' : Array.isArray(n) ? n.map(textOf).join('')
+    : typeof n === 'object' ? textOf(n.children) : String(n));
+  const find = (n, pred, out = []) => {
+    if (n == null || typeof n !== 'object') return out;
+    if (Array.isArray(n)) { n.forEach((x) => find(x, pred, out)); return out; }
+    if (pred(n)) out.push(n);
+    find(n.children, pred, out);
+    return out;
+  };
+  const view = (reason, withRetry = true) => {
+    const tree = Blocked({ gaps: ['사유A', '사유B'], onRetry: withRetry ? () => {} : undefined, reason });
+    return {
+      text: textOf(tree),
+      title: textOf(find(tree, (n) => n.type === 'strong' && n.props.style && n.props.style.display === 'block')[0]),
+      buttons: find(tree, (n) => n.type === 'button').map(textOf),
+      items: find(tree, (n) => n.type === 'li').map(textOf),
+    };
+  };
+  const down = view('down'), refused = view('refused'), input = view('input'), engine = view('engine'), dflt = view(undefined);
+
+  eq("reason='down' · 제목", down.title, '지금은 금액을 계산할 수 없습니다');
+  eq("reason='down' · 본문", down.text.includes('계산 엔진에 연결하지 못했습니다. 이 계산기는 엔진이 계산한 값만 보여 드리므로 금액을 표시하지 않습니다.'), true);
+  eq("reason='down' · 하단 안내", down.text.includes('잠시 후 다시 시도를 눌러 주세요. 계속 안 되면 상담으로 정확히 확인해 드립니다.'), true);
+  eq("reason='down' · 재시도 버튼 「다시 시도 →」", down.buttons.join('|'), '다시 시도 →');
+  eq("reason='down' · 사유 목록을 그대로 보인다", down.items.join('|'), '사유A|사유B');
+  eq("reason='down' · onRetry 가 없으면 버튼도 없다", view('down', false).buttons.length, 0);
+
+  eq("reason='refused' · 제목", refused.title, '세무사 확인이 필요한 조건입니다');
+  eq("reason='refused' · 본문", refused.text.includes('입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다. 틀린 금액을 보여 드리지 않기 위해 금액을 표시하지 않습니다.'), true);
+  eq("reason='refused' · 하단 안내", refused.text.includes('입력을 다시 확인하시거나 상담으로 문의해 주세요.'), true);
+  eq("reason='refused' · 재시도 버튼이 없다 (onRetry 를 줘도)", refused.buttons.length, 0);
+  eq("reason='refused' · 사유 목록을 그대로 보인다", refused.items.join('|'), '사유A|사유B');
+
+  /* 종전 두 reason 은 문구·동작 불변 (다른 계산기가 쓴다) */
+  eq("reason='input' · 제목 불변", input.title, '아래를 확인해 주시면 금액을 계산해 드릴게요');
+  eq("reason='input' · 본문 불변", input.text.includes('세액이 크게 갈리는 항목이 아직 정해지지 않았습니다. 짐작으로 채워 계산하면 틀린 금액을 「정밀 계산」처럼 보여 드리게 되어, 금액을 표시하지 않습니다.'), true);
+  eq("reason='input' · 하단 안내 불변", input.text.includes('← 이전으로 돌아가 위 항목을 채워 주세요. 확인이 어려우면 상담으로 정확히 안내해 드립니다.'), true);
+  eq("reason='input' · 재시도 버튼 없음 (불변)", input.buttons.length, 0);
+  eq("reason='engine' · 제목 불변", engine.title, '이 조건은 간이 계산으로 금액을 낼 수 없습니다');
+  eq("reason='engine' · 본문 불변", engine.text.includes('정밀 계산 엔진 연결이 지연됐는데, 입력하신 조건은 간이 계산이 다루지 못하는 항목을 포함합니다. 틀린 금액을 보여 드리느니 알려 드리는 편이 낫다고 판단해 금액을 표시하지 않습니다.'), true);
+  eq("reason='engine' · 하단 안내 불변", engine.text.includes('잠시 후 정밀 계산 다시 시도를 눌러 주세요. 계속 안 되면 상담으로 정확히 확인해 드립니다.'), true);
+  eq("reason='engine' · 버튼 「정밀 계산 다시 시도 →」 불변", engine.buttons.join('|'), '정밀 계산 다시 시도 →');
+  eq('reason 미지정 · 기본값은 engine 과 같다', JSON.stringify(dflt), JSON.stringify(engine));
+  eq('down·refused 문구는 input·engine 문구와 겹치지 않는다', [down.title, refused.title].every((t) => t !== input.title && t !== engine.title), true);
+}
 
 console.log(`\n════════════════════\n실패 ${fails}건`);
 process.exit(fails ? 1 : 0);

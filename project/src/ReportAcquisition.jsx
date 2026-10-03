@@ -1,6 +1,7 @@
 /* @jsx React.createElement */
 /* 취득세 계산 — 취득원인(매매·증여·상속·신축) + 주택/비주택 + 주택수·조정지역·면적·감면
-   엔진: /v1/calc/acquisition (지방세법 §11~§15, 농특세·지방교육세 포함). 미응답 시 간이 폴백.
+   엔진: /v1/calc/acquisition (지방세법 §11~§15, 농특세·지방교육세 포함). 이 화면에는 자체 계산식(폴백)이 없다 —
+   엔진이 응답하지 않으면 금액 없이 다시 시도를 안내하고, 엔진이 계산을 거부하면 세무사 확인을 안내한다.
    공통 헬퍼(formatWon·formatStepValue·JTReportShell·JTReportConvert)는 먼저 로드된 파일의 전역 사용. */
 
 const { useState: useAcqState } = React;
@@ -48,8 +49,9 @@ function acqIsPaid(a) {
    (260921 실측 5억 → 12%). 검증된 조합 밖으로 나가지 않도록 개인 전용 문항을 감춘다. */
 function acqIsCorporate(a) { return a.acquirerType === 'corporate'; }
 
-/* 260921 신설 유형 — 간이 폴백이 다루지 못해 acqFallbackGaps 가 전부 차단하고,
-   자동 해설(절세 아이디어)도 붙이지 않는다. */
+/* 260921 신설 유형 — 자동 해설(절세 아이디어)을 붙이지 않는다. 자동 해설 프롬프트는 취득원인·물건·가액·총세액만
+   받아, 이 유형들의 요건·일몰·추징을 모른 채 「절세 아이디어」를 지어내기 때문이다(Astra R1-F6, runAnalysis 참조).
+   금액은 다른 유형과 같이 엔진 응답이 있을 때만 나온다. */
 function acqNewTypeSelected(a) {
   return a.acquisitionType === '공매' || a.acquisitionType === '재산분할'
     || a.propertyType === '농지' || a.propertyType === '오피스텔_주거용' || a.propertyType === '오피스텔_업무용'
@@ -77,7 +79,7 @@ const ACQ_QS = [
     opts: [
       ['매매', '사서 취득 (매매·분양)', '유상취득 — 주택 1~3%(중과 8·12%)·비주택 4%'],
       ['증여', '증여로 받음', '증여 취득 — 주택 3.5%(조정 3억↑ 12%)'],
-      ['상속', '상속으로 받음', '상속 취득 — 주택 2.8% (1주택 특례 0.8%은 상담)'],
+      ['상속', '상속으로 받음', '상속 취득 — 주택 2.8% (1주택 특례 0.8%)'],
       ['신축', '새로 지음 (원시취득)', '원시취득 2.8%'],
       ['공매', '공매로 낙찰받음', '한국자산관리공사(온비드)·세무서 공매'],
       ['재산분할', '이혼 재산분할로 이전받음', '협의·재판상 재산분할 등기'],
@@ -117,7 +119,13 @@ const ACQ_QS = [
     tier: 'quick',
     section: '취득가액',
     q: '취득가액(또는 신고가액)은 얼마인가요? (원)',
-    sub: '매매는 실제 산 가격, 증여·상속은 시가(없으면 시가표준액), 신축은 공사비(원시취득 과표)입니다. 취득세는 이 금액에 세율을 곱해 계산합니다.',
+    /* 상속 취득세의 과세표준은 시가가 아니라 «시가표준액(공시가격)»이다(지방세법 §10의2②1호).
+       문항 제목만 취득 원인에 따라 달라진다 — 제목을 그리는 곳(문항 화면·차단 화면·요약)은
+       `qFor` 가 있으면 q 대신 qFor(answers) 를 쓴다. 상속이 아니면 qFor 는 q 와 같은 문구다. */
+    qFor: (a) => a.acquisitionType === '상속'
+      ? '상속받은 부동산의 시가표준액(공시가격)은 얼마인가요? (원)'
+      : '취득가액(또는 신고가액)은 얼마인가요? (원)',
+    sub: '매매는 실제 산 가격, 증여는 시가(매매사례가액·감정가액 등), 상속은 시가표준액(공시가격), 신축은 공사비입니다. 취득세는 이 금액에 세율을 곱해 계산합니다.',
     numeric: true, money: true,
     placeholder: '예: 800,000,000',
   },
@@ -138,16 +146,36 @@ const ACQ_QS = [
 
   {
     id: 'exclusiveArea',
-    /* quick 로 올린 이유: 면적을 모르면 농특세(85㎡ 초과분)를 판정할 수 없어 폴백이 차단된다.
-       상세 단계에 두면 엔진 장애 시 «빠른 계산 전체»가 막힌다 — 가드를 푸는 대신 물어본다. */
+    /* quick 로 올린 이유: 면적을 모르면 농특세(85㎡ 초과분)를 판정할 수 없어 ①층 차단이 걸린다.
+       상세 단계에 두면 «빠른 계산 전체»가 막힌다 — 가드를 푸는 대신 물어본다. */
     tier: 'quick',
     section: '면적',
     q: '전용면적은 몇 ㎡인가요? (농어촌특별세 판정용)',
-    /* 「84로 가정」은 실제 동작과 어긋난다 — 공란이면 가정하지 않고 폴백을 차단한다 (Codex P2) */
-    sub: '전용면적 85㎡(약 25.7평) 초과 주택에는 농어촌특별세(취득세 표준세율분의 10%)가 추가됩니다. 85㎡ 이하면 농특세가 없습니다. 등기부·분양계약서에 적힌 숫자예요. 비워두시면 엔진이 연결됐을 때만 계산되고, 연결이 안 되면 금액 대신 안내를 보여 드립니다.',
+    /* 「84로 가정」은 실제 동작과 어긋난다 — 공란이면 가정하지 않고 ①층이 차단한다 (Codex P2) */
+    sub: '전용면적 85㎡(약 25.7평) 초과 주택에는 농어촌특별세(취득세 표준세율분의 10%)가 추가됩니다. 85㎡ 이하면 농특세가 없습니다. 등기부·분양계약서에 적힌 숫자예요.',
     showIf: (a) => a.propertyType === '주택',
     numeric: true, optional: true,
     placeholder: '예: 84.96',
+  },
+  /* ★ 261004 신설 — 상속 주택의 1가구 1주택 특례(0.8%) 판정용 답.
+     값은 엔진 `inheritance_one_house`(true/false)로만 간다. «모르겠어요»는 키를 보내지 않는다 —
+     엔진이 2.8% 로 계산하고 경고를 붙인다(그래서 이 문항은 «차단 사유»가 아니다).
+     ⚠️ «모르겠어요» 값은 'unsure' 가 아니라 'unknown' 이다. acqFirstOpenQuestion 이 'unsure' 로 답한
+        문항을 «돌아갈 문항»으로 고르기 때문에, 'unsure' 를 쓰면 차단 사유가 아닌 이 문항으로 보내진다.
+     blocksNothing: 미응답이어도 «돌아갈 문항»으로 고르지 않는다(acqFirstOpenQuestion). */
+  {
+    id: 'inheritOneHouse',
+    tier: 'quick',
+    section: '상속 1주택 특례',
+    q: '상속받는 분의 가구가 이 집을 포함해 국내에 주택을 1채만 갖게 되나요?',
+    sub: '상속인과 같은 주민등록표에 있는 가족(배우자, 미혼인 30세 미만 자녀 포함)이 이 집 말고는 주택이 없으면 세율이 2.8%에서 0.8%로 낮아집니다(지방세법 §15①2호 가목, 시행령 §29). 고급주택은 제외됩니다. 여러 명이 함께 상속받으면 지분이 가장 큰 상속인을 기준으로 봅니다.',
+    showIf: (a) => a.acquisitionType === '상속' && a.propertyType === '주택',
+    blocksNothing: true,
+    opts: [
+      ['yes', '네, 이 집 1채만 갖게 됩니다', '0.8% 특례'],
+      ['no', '아니오, 다른 주택이 있습니다', '2.8%'],
+      ['unknown', '모르겠어요', '2.8%로 계산하고 안내'],
+    ],
   },
   // ── 더 정확히 (상세) ──
   {
@@ -164,7 +192,7 @@ const ACQ_QS = [
       (acqIsPaid(a) && (Number(a.housingCount) || 1) >= 2) || a.acquisitionType === '증여'
     ),
     /* ★ 「아니오 / 모름」을 한 칸에 묶으면 «모름»이 «비조정»으로 계산돼 중과가 통째로
-       빠진다(260806 Codex P1). 모름은 따로 받아 폴백을 차단한다. */
+       빠진다(260806 Codex P1). 모름은 따로 받아 ①층이 차단한다. */
     opts: [['yes', '네, 조정대상지역', '중과 가능'], ['no', '아니오 (비조정)', '기본 세율'], ['unsure', '모르겠어요', '상담 안내']],
   },
   {
@@ -376,7 +404,10 @@ function mapAnswersToAcquisition(rawA) {
   //   취득유형을 바꿔도 잔존 답변(주택수·조정·감면)이 신축·증여·상속에 새지 않도록 유상거래로 게이트.
   if (isHousing && isPurchase && !isCorp) {
     body.housing_count = Number(a.housingCount) || 1;
+    // 261004: 엔진은 «보내지 않음 = 모름»으로 해석한다 — 「아니오」는 false 를 «명시»해서 보낸다.
+    //   답이 없으면(문항이 안 보이거나 미응답) 키를 보내지 않고, 'unsure' 는 ①층이 엔진 호출 전에 막으므로 키를 보내지 않는다.
     if (a.isRegulatedArea === 'yes') body.is_regulated_area = true;
+    else if (a.isRegulatedArea === 'no') body.is_regulated_area = false;
     // 생애최초 감면(§36의3): reduction_type을 보내야 적용.
     //   300만(1호)은 '아파트 제외'+가액요건이라 면적만으론 자동판정 불가 → 보수적 200만(2호) 기본, 300만은 상담.
     //   ★ 260921 R2-F1: «본인·배우자 무주택»(§36의3①)과 양립하지 않는 조합은 여기서도 거부한다.
@@ -390,7 +421,7 @@ function mapAnswersToAcquisition(rawA) {
     // 일시적 2주택(§13의2①2호 괄호·령 §28의5): 중과 대상 주택 수에서 종전 주택을 제외한다.
     //   ⚠ 기한(3년, 둘 다 조정대상지역이면 2년 — 261001 개정) 내 미처분 시 추징 대상이므로 화면 문구에서 기한을 반드시 알린다.
     // «2주택일 때만» 적용한다. 3주택 이상에서 주택 수를 1로 덮어쓰면 엔진이 중과를 빼고
-    //   그 값이 «정밀 계산»으로 표시된다 — 폴백보다 위험하다.
+    //   그 값이 «정밀 계산»으로 표시된다 — 그래서 조건을 한 번 더 건다.
     if (a.temporaryTwoHouse === 'yes' && (Number(a.housingCount) || 1) === 2) {
       body.is_temporary_two_house = true; body.housing_count = 1;
     }
@@ -405,63 +436,72 @@ function mapAnswersToAcquisition(rawA) {
        실제 시가표준액이 3억 미만인 사람에게도 12% 중과가 «확정»돼 표시됐다.
        ⛔ 이제 «명시적으로 입력·조회된» 시가표준액만 본다. 없으면 이 파생값을 만들지 않고,
           acqFallbackGaps 가 그 조합을 아예 차단한다(엔진이 살아 있어도). */
-    if (isHousing && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes'
-        && Number(a.standardValue) >= 300_000_000) {
-      body.gift_regulated_over_3b = true;
+    // 261004: 엔진은 «보내지 않음 = 모름»으로 해석한다 — 증여 + 주택이면 «항상» 보낸다(12% 대상이면 true, 아니면 false).
+    //   조건식은 그대로다(조정대상지역 «예» + 1세대 1주택 예외 아님 + 시가표준액 3억원 이상). 주택이 아니면 보내지 않는다.
+    if (isHousing) {
+      body.gift_regulated_over_3b = a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes'
+        && Number(a.standardValue) >= 300_000_000;
     }
+  }
+  // 상속 취득세: 과세표준은 시가표준액(공시가격)이다(지§10의2②1호). 이 화면은 상속에서 취득가액 칸을
+  //   시가표준액으로 묻는다 — 같은 금액을 standard_value 에도 싣는다(property_value 도 그대로 보낸다).
+  if (a.acquisitionType === '상속') {
+    body.standard_value = body.property_value;
+    // 1가구 1주택 특례(0.8%, 지§15①2호 가목): «상속 + 주택»에서만 보낸다. 모름·미응답은 키를 보내지 않는다 —
+    //   엔진이 2.8% 로 계산하고 경고를 붙인다.
+    if (isHousing && a.inheritOneHouse === 'yes') body.inheritance_one_house = true;
+    else if (isHousing && a.inheritOneHouse === 'no') body.inheritance_one_house = false;
   }
   return body;
 }
 
-/* 간이 폴백(엔진 미응답 시) — 대략 합산세율. 정밀은 엔진. 폴백은 보수적(과대=안전) 원칙. */
-function fallbackAcqTax(a) {
-  const v = Number(a.propertyValue) || 0;
-  // 분양권·입주권 권리 취득은 취득 단계 취득세 비대상(지법 §7①) — 준공·잔금 시 그 주택분 별도 부과
-  if (a.propertyType === '분양권' || a.propertyType === '입주권') return 0;
-  const isHousing = a.propertyType === '주택';
-  let rate;
-  if (a.acquisitionType === '증여') {
-    // 조정대상지역 + 시가표준 3억 이상 주택 무상취득 = 12% 중과(지법 §13의2②, 1세대1주택 단서 제외)
-    const std = Number(a.standardValue) || v;
-    rate = (isHousing && a.isRegulatedArea === 'yes' && a.giftOneHouseException !== 'yes' && std >= 300_000_000)
-      ? 0.124 : 0.038;  // 증여 중과 12%+교육세(2%×20%=0.4%)=12.4% / 일반 증여 3.5%+교육세((3.5%−2%)×20%=0.3%)=3.8% (수정 260628 ACQ-A-03, 지§151①1호)
-  }
-  else if (a.acquisitionType === '상속') rate = 0.0296; // 상속 2.8%+교육세((2.8%−2%)×20%=0.16%)=2.96% (수정 260628 ACQ-A-02, 지§151①1호)
-  else if (a.acquisitionType === '신축') rate = 0.0296; // 원시취득 2.8%+교육세 0.16%=2.96%
-  else if (!isHousing) rate = 0.046;                    // 비주택 4%+교육세
-  else { // 주택 매매(기본). 수정 260628(ACQ-A-01): 다주택 중과(§13의2) 반영 — 종전 미반영으로 8%중과 케이스 -69% 과소.
-    // 일시적 2주택이면 중과 대상 주택 수에서 종전 주택을 제외한다 (지§13의2①2호 괄호)
-    const rawHc = Number(a.housingCount) || 1;
-    const hc = (a.temporaryTwoHouse === 'yes' && rawHc === 2) ? 1 : rawHc;
-    const reg = a.isRegulatedArea === 'yes';
-    if ((reg && hc >= 3) || (!reg && hc >= 4)) rate = 0.124;        // 12% 중과 + 교육세 0.4% (조정3주택+/비조정4주택+)
-    else if ((reg && hc === 2) || (!reg && hc === 3)) rate = 0.084; // 8% 중과 + 교육세 0.4% (조정2주택/비조정3주택) — 엔진 800M=67,200,000 일치
-    else if (v <= 600_000_000) rate = 0.011;
-    else if (v <= 900_000_000) {
-      // 6~9억 슬라이딩 본세율: §11①8호나목 단서 — «계산식에 따라 산출한 세율»(×1/100 까지 마친 비율)을
-      //    소수점 다섯째자리에서 반올림→넷째자리 (수정 260628 ACQ-A-04). 7억 → 0.016667 → 0.0167 = 1.67%(공식 세율표와 같다).
-      // ⚠️ 260906(TASK-260906-022) 이력: 한때 «백분율 넷째 자리(1.6667%)»로 잘못 고쳤다가 Codex review_high 반증으로 복귀.
-      //    남긴 개선 = 정수 절반올림(부동소수점이 정확한 동률 699,750,000 → 0.01665 를 못 올리는 것 방지) — 엔진과 같은 식.
-      const base6_9 = Math.floor((v - 450_000_000 + 750_000) / 1_500_000) / 10_000;   // 7억 → 167 → 0.0167
-      // 본세와 지방교육세(본세율×50%×20%, §151①1호)를 «각각» 원 단위로 반올림한 뒤 합산 — 엔진과 1원까지 같게
-      return Math.round(v * base6_9) + Math.round(v * base6_9 * 0.5 * 0.2);
-    }
-    else rate = 0.033;
-  }
-  return Math.round(v * rate);
+/* ══════════════════════════════════════════════════════════════════════════
+   엔진 결과 → calc (261004 오너 방침: 프론트의 자체 계산식(폴백)을 삭제한다)
+
+   이 화면에는 세액을 «스스로» 계산하는 코드가 없다. 금액은 엔진(`POST /v1/calc/acquisition`)이
+   준 값뿐이고, 엔진 값이 없으면 금액 필드(totalTax 등)를 아예 두지 않는다. 엔진 호출 결과는 셋이다.
+     · 유효 응답  — HTTP 200 + calc.상태 'ok' + 필수 숫자 키가 유한한 실수(window.jtValidCalc)
+                    → precise:true 와 각 금액 필드
+     · 거부       — HTTP 200 인데 calc.오류 가 있거나 calc.상태 가 'ok' 가 아님(needs_input·unsupported·
+                    error), 또는 HTTP 4xx → precise:false, engineState:'refused'
+                    («금액이 아니다»라는 엔진의 답이다 — 오류 사유 문구를 사용자에게 그대로 내지 않는다)
+     · 연결 실패  — 네트워크 오류·타임아웃·HTTP 5xx·calc 없음·깨진 응답 → precise:false, engineState:'down'
+   ══════════════════════════════════════════════════════════════════════════ */
+const ACQ_ENGINE_REQUIRED = ['세액', '취득세', '지방교육세', '농어촌특별세', '과세표준'];
+function acqCalcFromEngine(ej) {
+  const c = ej && ej.calc;
+  if (!c || typeof c !== 'object' || Array.isArray(c)) return { precise: false, engineState: 'down' };
+  if (c['오류'] || c['상태'] !== 'ok') return { precise: false, engineState: 'refused' };
+  if (!window.jtValidCalc(c, ACQ_ENGINE_REQUIRED)) return { precise: false, engineState: 'down' };
+  return {
+    precise: true, engineVer: ej.version && ej.version.engine,
+    totalTax: c['세액'], acqTax: c['취득세'], eduTax: c['지방교육세'],
+    farmTax: c['농어촌특별세'] || 0, taxBase: c['과세표준'], appliedRate: c['적용세율'],
+    heavyApplied: c['중과여부'], heavyReason: c['중과사유'], housingNum: c['주택수'],
+    reductionType: c['감면유형'], reductionAmt: c['감면금액'] || 0, deadline: c['신고기한'],
+    steps: c['단계별계산'] || [], engineWarnings: c['경고사항'] || [],
+  };
+}
+/* 호출 자체가 던진 예외 — HTTP 4xx(callAcqEngine 이 status 를 달아 던진다)는 엔진의 «거부», 그 밖은 «연결 실패» */
+function acqCalcFromEngineError(e) {
+  /* 408(시간 초과)·429(호출 제한)는 입력 문제가 아니라 일시적 상태다 — 다시 시도를 안내한다 */
+  return (e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429)
+    ? { precise: false, engineState: 'refused' }
+    : { precise: false, engineState: 'down' };
 }
 
-/* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
-   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+/* 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 세액을 외부로 보내고 있었다
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
-   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다.
+   두 층이다: ① 입력 불확정(calc.precise 와 무관) ② 엔진 값 없음(calc.precise 가 거짓이면 항상 한 건). */
 function acqFallbackGaps(answers, calc) {
   const acqArea = Number(answers.exclusiveArea) || 0;
   const hc = Number(answers.housingCount) || 1;
   const regUnknown = answers.isRegulatedArea !== 'yes' && answers.isRegulatedArea !== 'no';
   /* ── ① 엔진이 있어도 «못 메우는» 입력 — precise 여도 막는다 ──────────────
      사용자가 「모른다」고 한 사실을 그대로 보내면, 엔진은 필드가 없다는 이유로
-     조용히 «유리한 쪽»을 가정한다. 그 값에 「정밀 계산」 딱지가 붙어 폴백보다 더 위험하다.
+     조용히 «유리한 쪽»을 가정한다. 그 값에 「정밀 계산」 딱지가 붙어 더 위험하다.
      아래 수치는 260806 에 실제 엔진(POST /v1/calc/acquisition)을 때려서 얻은 것이다. */
   const unknown = window.jtFallbackGaps([
     { when: answers.propertyType === '주택' && acqArea === 0,
@@ -499,40 +539,13 @@ function acqFallbackGaps(answers, calc) {
             && answers.acquirerType !== 'corporate' && !(Number(answers.housingCount) > 0),
       why: '취득 후 보유하게 되는 주택 수가 정해지지 않았습니다 — 다주택 중과 여부가 갈립니다.' },
   ]);
-  /* ── ② 여기부터는 «간이 폴백만»의 한계 — 엔진이 살아 있으면 엔진이 제대로 푼다 ── */
+  /* ── ② 엔진 값이 없으면 어떤 입력이든 막는다 ──────────────────────────────
+     이 화면에는 자체 계산식이 없으므로 «엔진이 준 금액»이 없으면 보여 줄 금액이 없다.
+     사유는 «엔진이 거부했다(refused)»와 «연결하지 못했다(down·미지정)» 둘이다. */
   if (calc.precise) return unknown;
-  return unknown.concat(window.jtFallbackGaps([
-    { when: answers.reduction === 'first',
-      why: '생애최초 주택 구입 감면(최대 200만원) — 간이 계산에 없어 세금이 «많게» 나옵니다(실측 220만원 차이).' },
-    { when: answers.propertyType === '주택' && acqArea > 85,
-      why: '전용면적 85㎡ 초과 — 농어촌특별세가 간이 계산에 빠져 세금이 «적게» 나옵니다(실측 120만원 차이).' },
-    /* 일시적 2주택은 «자유 서술»에만 있어 계산에 반영되지 않는다 — 중과가 통째로 빠진다 (Codex P1) */
-    /* 「예」·「아니오」 둘 다 폴백이 정확히 계산한다 — 막을 것은 «답이 없는 경우»뿐이다.
-       답까지 막으면 과잉 차단이라 배선해 둔 계산 경로가 죽는다. */
-    { when: answers.propertyType === '주택' && answers.acquisitionType === '매매'
-            && (Number(answers.housingCount) || 1) === 2 && !answers.temporaryTwoHouse,
-      why: '2주택인데 «일시적 2주택»(기한 내 종전 주택 처분) 여부가 확인되지 않았습니다 — 해당하면 중과 없이 1~3%, 아니면 8%입니다.' },
-    { when: answers.propertyType === '토지',
-      why: '토지 취득 — 농지(전·답·과수원)는 세율이 달라 간이 계산이 일반 토지율만 적용합니다.' },
-    { when: answers.acquisitionType === '상속' && answers.propertyType === '주택',
-      why: '주택 상속 — 무주택 1가구 1주택 상속의 0.8% 특례를 간이 계산이 판정하지 못합니다.' },
-    /* ★ 260921 «추가»(기존 항목은 손대지 않는다) — 이번에 새로 노출한 유형은 간이 폴백
-       (fallbackAcqTax)에 계산 경로가 «아예 없다». 폴백은 이 유형들을 매매·비주택 분기로
-       흘려보내 조용히 다른 세율을 낸다. 그래서 엔진이 죽으면 전부 막는다.
-       ⛔ 여기 조건을 좁히거나 지우면 그 순간 틀린 금액이 나간다. */
-    { when: answers.acquisitionType === '공매',
-      why: '공매 취득 — 간이 계산에 공매 취득 경로가 없습니다(매매 세율로 흘러가 감면·중과 판정이 어긋납니다).' },
-    { when: answers.acquisitionType === '재산분할',
-      why: '재산분할 취득 — 간이 계산에 재산분할 세율(지방세법 §15①)이 없습니다.' },
-    { when: answers.propertyType === '농지',
-      why: '농지 — 간이 계산이 농지 세율(유상 3%·상속 2.3%)과 농어촌특별세를 다루지 못하고 일반 토지율을 적용합니다.' },
-    { when: answers.propertyType === '오피스텔_주거용' || answers.propertyType === '오피스텔_업무용',
-      why: '오피스텔 — 간이 계산에 오피스텔 경로가 없어 농어촌특별세가 빠집니다.' },
-    { when: answers.acquirerType === 'corporate',
-      why: '법인·단체 명의 취득 — 간이 계산에 법인 중과(지방세법 §13의2①1호)가 없어 세금이 «훨씬 적게» 나옵니다.' },
-    { when: answers.reduction === 'childbirth',
-      why: '자녀 출산·양육 감면(지특법 §36의5) — 간이 계산에 이 감면이 없어 세금이 «많게» 나옵니다.' },
-  ]));
+  return unknown.concat([calc.engineState === 'refused'
+    ? '입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다 — 세무사 확인이 필요합니다.'
+    : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }
 
 /* 이 문항을 «빠른 계산» 단계에서 물어야 하는가.
@@ -547,6 +560,7 @@ function acqIsQuick(q, answers) {
    이 함수는 그 화면에서 커서를 어느 문항에 놓을지만 정한다.
    기준 ① 「모르겠어요」로 답한 문항 — 차단 사유의 대부분이 이것이다.
    기준 ② 빠른 계산 단계인데 아직 답이 없는 문항 (면적 미입력 등).
+      단 blocksNothing 문항(상속 1주택 특례)은 미응답이어도 차단 사유가 아니므로 고르지 않는다.
    ⚠️ «아직 묻지도 않은» 상세 단계 문항은 고르지 않는다 — 막은 이유와 무관한 곳으로
       보내면 「빠진 질문으로 돌아가기」가 거짓말이 된다.
    둘 다 없으면 null (앞선 답이 서로 모순인 경우 — 화면이 첫 문항으로 보내 훑게 한다). */
@@ -555,7 +569,7 @@ function acqFirstOpenQuestion(answers) {
   const unsure = visible.find((q) => answers[q.id] === 'unsure');
   if (unsure) return unsure;
   return visible.find((q) => {
-    if (q.freeform || !acqIsQuick(q, answers)) return false;
+    if (q.freeform || q.blocksNothing || !acqIsQuick(q, answers)) return false;
     const v = answers[q.id];
     if (v === undefined || v === null || v === '') return true;
     return !!q.numeric && !(Number(v) > 0);
@@ -586,17 +600,16 @@ function buildAcqDetail(answers, calc, commentary) {
     if (q.opts) { const o = q.opts.find(x => x[0] === val); if (o) v = o[1]; }
     else if (q.numeric && q.money) v = formatWon(Number(val));
     else if (q.numeric) v = val + '㎡';
-    const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
+    const ql = (q.qFor ? q.qFor(answers) : (q.q || q.id)).replace(/\s*\([^)]*\)\s*$/, '').trim();
     L.push('  · ' + ql + ': ' + v);
   });
-  L.push('', '■ 계산 결과' + (calc.precise ? ' (검증 엔진)' : ' (간이 추정)'));
-  if (calc.precise) {
-    L.push('  · 취득세 본세: ' + formatWon(calc.acqTax));
-    L.push('  · 지방교육세: ' + formatWon(calc.eduTax));
-    if (calc.farmTax > 0) L.push('  · 농어촌특별세: ' + formatWon(calc.farmTax));
-    if (calc.heavyApplied) L.push('  · 중과 적용: ' + (calc.heavyReason || '예'));
-    if (calc.reductionAmt > 0) L.push('  · 감면: ' + formatWon(calc.reductionAmt) + ' (' + (calc.reductionType || '') + ')');
-  }
+  /* 이 함수는 엔진 값이 있을 때만 불린다(차단이면 결과 화면을 만들지 않는다) */
+  L.push('', '■ 계산 결과 (검증 엔진)');
+  L.push('  · 취득세 본세: ' + formatWon(calc.acqTax));
+  L.push('  · 지방교육세: ' + formatWon(calc.eduTax));
+  if (calc.farmTax > 0) L.push('  · 농어촌특별세: ' + formatWon(calc.farmTax));
+  if (calc.heavyApplied) L.push('  · 중과 적용: ' + (calc.heavyReason || '예'));
+  if (calc.reductionAmt > 0) L.push('  · 감면: ' + formatWon(calc.reductionAmt) + ' (' + (calc.reductionType || '') + ')');
   L.push('  · 총 납부세액: ' + formatWon(calc.totalTax));
   if (calc.deadline) L.push('  · 신고기한: ' + calc.deadline);
   const ew = calc.engineWarnings || [];
@@ -617,7 +630,7 @@ function buildAcqKakao(answers, calc) {
     let v = val;
     if (q.opts) { const o = q.opts.find(x => x[0] === val); if (o) v = o[1]; }
     else if (q.numeric && q.money) v = formatWon(Number(val));
-    const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
+    const ql = (q.qFor ? q.qFor(answers) : (q.q || q.id)).replace(/\s*\([^)]*\)\s*$/, '').trim();
     L.push('· ' + ql + ': ' + v);
   });
   if (answers.context) L.push('· 추가: ' + answers.context);
@@ -696,7 +709,9 @@ function acqExcludedItems(a) {
   if (a.reduction && a.reduction !== 'none') out.push('감면 요건 심사 — ' + ACQ_REDUCTION_NOTE);
   if (a.context) out.push('「추가 사항」에 적어 주신 내용 — 상담 때 참고하며 세액 계산에는 들어가지 않았습니다.');
   out.push('가산세·가산금, 등기 비용, 국민주택채권 등 세금이 아닌 비용.');
-  if (a.acquisitionType === '상속') out.push('무주택 1가구 1주택 상속 특례 해당 여부 — 이 계산기가 판정하지 않습니다.');
+  if (a.acquisitionType === '상속') out.push(a.inheritOneHouse === 'yes'
+    ? '상속 1가구 1주택 특례 요건(가구 구성·다른 주택 보유·고급주택 여부)의 실제 충족 여부 — 답하신 대로 계산했고, 이 계산기가 확인하지는 않습니다.'
+    : '무주택 1가구 1주택 상속 특례 해당 여부 — 이 계산기가 판정하지 않습니다.');
   if (a.propertyType === '오피스텔_주거용') out.push('주거용 오피스텔이 다른 주택의 「주택 수」에 들어가는지 여부 — 이 계산기가 판정하지 않습니다.');
   if (a.acquirerType === 'corporate') out.push('법인의 설립 시기·소재지(대도시 등)에 따른 별도 규정 해당 여부.');
   return out;
@@ -881,10 +896,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
          판정 함수는 2층인데 ①불확정 층은 calc.precise 와 무관하다 — 그래서 여기서
          precise:true 로 불러 ①층만 본다. 못 낼 값이면 요청 자체가 낭비이고,
          「모르겠다」고 답한 사실이 기본값으로 둔갑해 엔진까지 가지도 않는다.
-         엔진 응답 직후의 기존 게이트는 그대로 ②폴백 한계를 잡는다. */
+         엔진 응답 직후의 기존 게이트는 그대로 ②엔진 값 없음을 잡는다. */
       if (acqFallbackGaps(answers, { precise: true }).length > 0) {
         /* precise:true 로 저장하는 이유 — 렌더가 같은 판정 함수를 다시 부르는데,
-           precise:false 로 두면 ②폴백 한계 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
+           precise:false 로 두면 ②엔진 값 없음 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
            다른 항목이 화면에 뜬다 (260806 Codex R21 P2). preEngineBlock 은 그 상태를
            «정밀 계산 성공»과 구분하기 위한 표식이다. */
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === 'quick' };
@@ -892,22 +907,19 @@ function JTReportAcquisition({ setRoute, onBack }) {
         if (phase === 'quick') setQuickReport(unknownRep);
         return;
       }
-      let calc = { totalTax: fallbackAcqTax(answers), precise: false };
+      /* ★ 엔진 값이 없으면 금액 필드가 «없는» calc 가 된다(acqCalcFromEngine 주석) —
+         자체 계산식으로 메우지 않는다. 유효 응답이면 precise:true, 거부면 engineState:'refused',
+         연결 실패면 engineState:'down'. */
+      let calc;
       try {
-        const ej = await callAcqEngine(mapAnswersToAcquisition(answers));
-        const c = ej && ej.calc;
-        if (window.jtValidCalc(c, ['세액', '취득세', '지방교육세', '농어촌특별세', '과세표준'])) {
-          calc.totalTax = c['세액']; calc.acqTax = c['취득세']; calc.eduTax = c['지방교육세'];
-          calc.farmTax = c['농어촌특별세'] || 0; calc.taxBase = c['과세표준']; calc.appliedRate = c['적용세율'];
-          calc.heavyApplied = c['중과여부']; calc.heavyReason = c['중과사유']; calc.housingNum = c['주택수'];
-          calc.reductionType = c['감면유형']; calc.reductionAmt = c['감면금액'] || 0; calc.deadline = c['신고기한'];
-          calc.steps = c['단계별계산'] || []; calc.engineWarnings = c['경고사항'] || [];
-          calc.precise = true; calc.engineVer = ej.version && ej.version.engine;
-        }
-      } catch (e) { console.warn('취득세 엔진 연결 실패 — 간이 추정 유지', e); }
+        calc = acqCalcFromEngine(await callAcqEngine(mapAnswersToAcquisition(answers)));
+      } catch (e) {
+        console.warn('취득세 엔진 호출 실패', e);
+        calc = acqCalcFromEngineError(e);
+      }
 
       /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
-         폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
+         세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
          렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
       if (acqFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
@@ -991,7 +1003,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
 
   if (report) {
     const { calc, commentary } = report;
-    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반) */
+    /* 엔진 값이 없거나(down·refused) 입력이 불확정이면 숫자를 내지 않는다 */
     const acqArea = Number(answers.exclusiveArea) || 0;
     const acqGaps = acqFallbackGaps(answers, calc);
     const acqBlocked = acqGaps.length > 0;
@@ -1001,17 +1013,22 @@ function JTReportAcquisition({ setRoute, onBack }) {
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
        AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
     if (acqBlocked) {
+      /* 사유 구분: ①입력 불확정 → 'input' / 엔진이 거부 → 'refused' / 그 밖(연결 실패·미지정) → 'down' */
+      const acqBlockReason = acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
       return (
         <div className="jt-container">
-          <JTReportShell title="취득세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTReportShell title="취득세 계산 결과" subtitle={acqBlockReason === 'input' ? '정밀 계산 필요' : (acqBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
             <JTAcqDroppedNotice dropped={acqDropped} />
-            <JTFallbackBlocked gaps={acqGaps} onRetry={runAnalysis} reason={acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
+            {/* 261004: 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다 */}
+            <JTFallbackBlocked gaps={acqBlockReason === 'input' ? acqGaps : []} onRetry={runAnalysis} reason={acqBlockReason} />
             {/* ★ 260921 (Astra R1-F5): 되돌아갈 길을 준다. 종전엔 「처음부터 다시」뿐이라
                 답을 전부 버려야만 빠진 항목을 채울 수 있었다. 다른 답은 그대로 둔다. */}
             <p style={{ margin: '0 0 10px', fontSize: 14, lineHeight: 1.6 }}>
               {acqOpenQ
-                ? <React.Fragment>확인이 필요한 문항: <strong>{acqOpenQ.q}</strong><br />지금까지 답하신 다른 내용은 그대로 남습니다.</React.Fragment>
-                : <React.Fragment>입력으로 돌아가 앞선 답(특히 주택 수)을 다시 확인해 주세요. 지금까지 답하신 내용은 그대로 남습니다.</React.Fragment>}
+                ? <React.Fragment>확인이 필요한 문항: <strong>{acqOpenQ.qFor ? acqOpenQ.qFor(answers) : acqOpenQ.q}</strong><br />지금까지 답하신 다른 내용은 그대로 남습니다.</React.Fragment>
+                : (acqBlockReason === 'down'
+                    ? <React.Fragment>지금까지 답하신 내용은 그대로 남습니다.</React.Fragment>
+                    : <React.Fragment>입력으로 돌아가 앞선 답{acqBlockReason === 'input' ? '(특히 주택 수)' : ''}을 다시 확인해 주세요. 지금까지 답하신 내용은 그대로 남습니다.</React.Fragment>)}
             </p>
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--primary" onClick={() => goToQuestion(acqOpenQ)}>
@@ -1025,15 +1042,12 @@ function JTReportAcquisition({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell title="취득세 계산 결과" subtitle={calc.precise ? '취득세 정밀 계산' : '취득세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell title="취득세 계산 결과" subtitle="취득세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <JTAcqDroppedNotice dropped={acqDropped} />
-          {acqBlocked && <JTFallbackBlocked gaps={acqGaps} onRetry={runAnalysis} />}
-          {!acqBlocked && (
           <div className="jt-report-result__grade jt-grade-mid">
-            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 취득세(총액)' : (calc.precise ? '총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '추정 납부세액 · 간이')}</div>
+            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 취득세(총액)' : '총 납부세액 · 정밀 계산 (JT택스랩 엔진)'}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
-          )}
 
           {report.quick && calc.totalTax > 0 && calc.appliedRate && calc.appliedRate !== '-' && (
             <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: 14, color: 'var(--jt-ink-700,#444)' }}>
@@ -1047,7 +1061,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
             </div>
           )}
 
-          {!report.quick && answers.acquisitionType === '상속' && (
+          {!report.quick && answers.acquisitionType === '상속' && answers.propertyType === '주택' && answers.inheritOneHouse !== 'yes' && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               무주택 1가구가 1주택을 상속받으면 <strong>0.8% 특례세율</strong>(지방세법 §15①)이 적용될 수 있습니다. 현재 계산은 일반 상속 <strong>본세 2.8%</strong>(지방교육세를 더해 실효 2.96%) 기준이니, 해당되면 상담에서 확인하세요.
             </div>
@@ -1056,13 +1070,6 @@ function JTReportAcquisition({ setRoute, onBack }) {
           {answers.propertyType === '토지' && (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               현재 계산은 <strong>일반 토지 본세 4%</strong>(지방교육세를 더해 실효 4.6%) 기준입니다. <strong>농지(전·답·과수원)</strong>는 세율이 달라 별도 항목으로 계산합니다 — 농지라면 「무엇을 취득」 문항에서 <strong>농지</strong>를 고르세요(지방세법 §11①1호·7호).
-            </div>
-          )}
-
-          {!calc.precise && !acqBlocked && (
-            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: <strong>일반</strong> 취득유형별 세율 · 6~9억 구간 산식 · <strong>다주택 중과</strong>(조정 2주택·비조정 3주택 8.4% / 그 이상 12.4%) · 지방교육세.<br /><strong>반영하지 않은 것</strong>: <strong>생애최초 감면</strong> · <strong>85㎡ 초과 농어촌특별세</strong> · 일시적 2주택 등 중과배제 특례 · 법인 취득 · 농지 특례 · <strong>무주택 1가구 1주택 상속 0.8% 특례</strong>. 정밀 계산에서 반영됩니다 —
-              <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
             </div>
           )}
 
@@ -1080,7 +1087,11 @@ function JTReportAcquisition({ setRoute, onBack }) {
                      종전 문구는 이제 사실과 다르다 — 실제 동작에 맞춘다. */
                   ? '증여 중과(조정대상지역·시가표준액 3억원 이상이면 12%)는 앞에서 고르신 조정지역 답과 입력하신 시가표준액으로 판정했어요. 앞의 취득가액(시가)으로 대신 판단하지 않습니다. 「더 정확히 계산하기」에서 남은 항목을 채우면 더 자세히 볼 수 있어요.'
                   : answers.acquisitionType === '상속'
-                  ? '무주택 가구가 1주택을 상속받으면 0.8% 특례세율이 적용될 수 있어요(현재는 일반 2.8% 기준).'
+                  /* 261004: 상속 주택은 1주택 특례 답(inheritOneHouse)을 빠른 계산에서 받는다 — 「yes」로 계산했으면
+                     «현재는 일반 2.8% 기준»이라는 종전 문구가 사실과 다르다. 그 경우는 증여 분기의 마무리 문장만 쓴다. */
+                  ? (answers.propertyType === '주택' && answers.inheritOneHouse === 'yes'
+                    ? '「더 정확히 계산하기」에서 남은 항목을 채우면 더 자세히 볼 수 있어요.'
+                    : '무주택 가구가 1주택을 상속받으면 0.8% 특례세율이 적용될 수 있어요(현재는 일반 2.8% 기준).')
                   : answers.acquisitionType === '신축'
                   ? '신축(원시취득)은 보통 표준세율 2.8%예요. 큰 평형(85㎡ 초과)이면 농어촌특별세가 조금 더 붙습니다.'
                   : '큰 평형(85㎡ 초과)이면 세금이 조금 늘고, 생애최초면 최대 200만원 줄어요. 조정지역·주택 수에 따라 중과될 수도 있으니 확인해보세요.'}
@@ -1089,31 +1100,29 @@ function JTReportAcquisition({ setRoute, onBack }) {
             </div>
           )}
 
-          {calc.precise && (
-            <section className="jt-report-result__section">
-              <h3>세금 구성</h3>
-              <table className="jt-report-calc">
-                <tbody>
-                  <tr><th>과세표준</th><td>{formatWon(calc.taxBase)}</td></tr>
-                  <tr><th>적용세율{calc.heavyApplied ? ' (중과)' : ''}</th><td>{calc.appliedRate}</td></tr>
-                  <tr><th>취득세 본세</th><td>{formatWon(calc.acqTax)}</td></tr>
-                  <tr><th>지방교육세</th><td>{formatWon(calc.eduTax)}</td></tr>
-                  {/* 「85㎡ 초과」는 주택에만 해당하는 이유다 — 농지·상가에 붙이면 틀린 설명이 된다(260921) */}
-                  {calc.farmTax > 0 && <tr><th>농어촌특별세{answers.propertyType === '주택' ? ' (85㎡ 초과)' : ''}</th><td>{formatWon(calc.farmTax)}</td></tr>}
-                  {calc.reductionAmt > 0 && <tr><th>감면 ({calc.reductionType})</th><td>− {formatWon(calc.reductionAmt)}</td></tr>}
-                  <tr><th><strong>총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
-                </tbody>
-              </table>
-              {calc.heavyApplied && calc.heavyReason && (
-                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginTop: 12, borderRadius: 8 }}>
-                  ⚠️ 중과 적용: {calc.heavyReason}. {ACQ_HEAVY_NOTICE[acqNoticeKey(answers)]}
-                </div>
-              )}
-              {calc.deadline && <p style={{ fontSize: 13, opacity: 0.8, marginTop: 8 }}>신고·납부 기한: {calc.deadline}</p>}
-            </section>
-          )}
+          <section className="jt-report-result__section">
+            <h3>세금 구성</h3>
+            <table className="jt-report-calc">
+              <tbody>
+                <tr><th>과세표준</th><td>{formatWon(calc.taxBase)}</td></tr>
+                <tr><th>적용세율{calc.heavyApplied ? ' (중과)' : ''}</th><td>{calc.appliedRate}</td></tr>
+                <tr><th>취득세 본세</th><td>{formatWon(calc.acqTax)}</td></tr>
+                <tr><th>지방교육세</th><td>{formatWon(calc.eduTax)}</td></tr>
+                {/* 「85㎡ 초과」는 주택에만 해당하는 이유다 — 농지·상가에 붙이면 틀린 설명이 된다(260921) */}
+                {calc.farmTax > 0 && <tr><th>농어촌특별세{answers.propertyType === '주택' ? ' (85㎡ 초과)' : ''}</th><td>{formatWon(calc.farmTax)}</td></tr>}
+                {calc.reductionAmt > 0 && <tr><th>감면 ({calc.reductionType})</th><td>− {formatWon(calc.reductionAmt)}</td></tr>}
+                <tr><th><strong>총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
+              </tbody>
+            </table>
+            {calc.heavyApplied && calc.heavyReason && (
+              <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginTop: 12, borderRadius: 8 }}>
+                ⚠️ 중과 적용: {calc.heavyReason}. {ACQ_HEAVY_NOTICE[acqNoticeKey(answers)]}
+              </div>
+            )}
+            {calc.deadline && <p style={{ fontSize: 13, opacity: 0.8, marginTop: 8 }}>신고·납부 기한: {calc.deadline}</p>}
+          </section>
 
-          {calc.precise && calc.steps && calc.steps.length > 0 && (
+          {calc.steps && calc.steps.length > 0 && (
             <section className="jt-report-result__section">
               <h3>단계별 계산 (법조문 근거)</h3>
               <table className="jt-report-calc">
@@ -1180,23 +1189,21 @@ function JTReportAcquisition({ setRoute, onBack }) {
           </p>
 
           {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
-              kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
-              Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
-          {!acqBlocked && (
+              kakaoSummary·reportSummary·reportDetail 에 세액이 담겨 클립보드와
+              Web3Forms 로 나간다 (260806 Codex P0). 위의 차단 조기 반환이 이 컴포넌트까지 오지 못하게 한다. */}
           <JTReportConvert
             setRoute={setRoute}
             calcId="acquisition"
             completeEligible={true}
             precise={calc.precise}
             quick={report.quick}
-            reportType={calc.precise ? '취득세 정밀 계산' : '취득세 간이 계산'}
+            reportType="취득세 정밀 계산"
             reportTag="LEGACY"
             reportSummary={`총 납부세액 ${formatWon(calc.totalTax)} / ${answers.acquisitionType}·${answers.propertyType} / ${commentary.headline || ''}`}
             reportDetail={buildAcqDetail(answers, calc, commentary)}
             kakaoSummary={buildAcqKakao(answers, calc)}
             urgent={false}
           />
-          )}
         </JTReportShell>
       </div>
     );
@@ -1207,7 +1214,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       <JTReportShell title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
-          <h2>{cur.q}</h2>
+          <h2>{cur.qFor ? cur.qFor(answers) : cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
           {cur.freeform && (

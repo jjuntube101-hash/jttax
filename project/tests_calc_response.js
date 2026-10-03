@@ -19,7 +19,27 @@ function walk(node, visit) {
     else if (value && typeof value === 'object') walk(value, visit);
   }
 }
+/* 취득세(261004): 응답 검증이 runAnalysis 의 `if (jtValidCalc…) { calc.precise = true }` 가 아니라
+   «엔진 결과 → calc 분류 함수» acqCalcFromEngine 안으로 옮겨졌다. 같은 계약(정상 0원 허용·오류/불완전 거부)을
+   그 함수의 결과(precise)로 본다. 이 함수는 상태 'ok' 도 요구하므로, 공용 fixture 에는 상태 'ok' 를 덧붙여 부른다
+   (상태 자체의 요구는 아래 «취득세 상태 키» 에서 따로 확인한다). */
+function acquisitionAccepts() {
+  const source = read('ReportAcquisition.jsx');
+  const ast = parser.parse(source, { sourceType: 'script', plugins: ['jsx'] });
+  const chunks = [];
+  for (const n of ast.program.body) {
+    if (n.type === 'FunctionDeclaration' && n.id.name === 'acqCalcFromEngine') chunks.push(source.slice(n.start, n.end));
+    if (n.type === 'VariableDeclaration' && n.declarations.some(d => d.id.name === 'ACQ_ENGINE_REQUIRED')) chunks.push(source.slice(n.start, n.end));
+  }
+  assert.equal(chunks.length, 2, 'acqCalcFromEngine 과 ACQ_ENGINE_REQUIRED 를 찾지 못했습니다');
+  const run = vm.runInNewContext(chunks.join('\n') + '\nacqCalcFromEngine', { window: { jtValidCalc: valid } });
+  const isObj = c => c && typeof c === 'object' && !Array.isArray(c);
+  const accepts = env => run({ calc: isObj(env.c) ? { 상태: 'ok', ...env.c } : env.c }).precise === true;
+  accepts.raw = c => run(c);
+  return accepts;
+}
 function guards(file) {
+  if (file === 'ReportAcquisition.jsx') return [acquisitionAccepts()];
   const source = read(file), found = [];
   walk(parser.parse(source, { sourceType: 'script', plugins: ['jsx'] }), node => {
     if (node.type !== 'IfStatement') return;
@@ -61,6 +81,21 @@ for (const [file, fixture] of cases) {
       }
     }
   }
+}
+/* 취득세 상태 키(261004): 엔진 응답 calc.상태 가 'ok' 가 아니면 금액이 있어도 «금액이 아니다» — 거부로 분류한다.
+   (needs_input·unsupported·error 는 오류 사유가 따라오는 «금액 아님» 응답이다.) */
+{
+  const acq = guards('ReportAcquisition.jsx')[0], fx = cases[1][1];
+  const rawCalc = c => acq.raw({ calc: c });
+  check(rawCalc({ ...fx, 상태: 'ok' }).precise, true, 'acquisition: 상태 ok 는 유효');
+  for (const status of ['needs_input', 'unsupported', 'error', '', null, undefined, 'OK', true]) {
+    const r = rawCalc({ ...fx, 상태: status });
+    check(r.precise, false, 'acquisition: 상태 ' + String(status) + ' 는 금액이 아니다');
+    assert.equal(r.engineState, 'refused', 'acquisition: 상태 ' + String(status) + ' → refused'); checks++;
+    assert.equal('totalTax' in r, false, 'acquisition: 거부 응답에는 금액 필드가 없다'); checks++;
+  }
+  const bad = rawCalc({ 상태: 'ok', 세액: NaN, 취득세: 0, 지방교육세: 0, 농어촌특별세: 0, 과세표준: 0 });
+  assert.deepEqual([bad.precise, bad.engineState], [false, 'down']); checks++;
 }
 const corporate = guards('ReportCorporate.jsx')[0];
 check(guards('ReportCGT.jsx')[0]({ c: { ...cases[0][1], 양도차익: -100000000 } }), true, 'legitimate capital loss');

@@ -8,9 +8,9 @@
         다시」밖에 없어 답을 전부 버려야만 빠져나올 수 있었다(Astra R1-F5 실측).
         → 그 분기에서는 quick 으로 올라왔는가 + 차단 화면에 «돌아가기»가 있는가.
 
-     ② 새로 노출한 유형이 엔진 미응답 시 «전부» 막히는가
-        간이 폴백(fallbackAcqTax)에는 공매·재산분할·농지·오피스텔·법인·출산양육 감면의
-        계산 경로가 없다. 막지 않으면 매매·비주택 분기로 흘러가 «다른 세율»이 나온다.
+     ② 엔진 값이 없으면 «모든» 입력이 막히는가 (261004: 프론트 자체 계산식(폴백) 삭제)
+        엔진이 응답하지 않거나(down·미지정) 계산을 거부하면(refused) 금액을 만들 방법이 없다.
+        공매·재산분할·농지·오피스텔·법인·출산양육 감면 같은 새 유형도, 평범한 1주택 매매도 똑같이 막힌다.
 
      ③ 신혼부부·귀농 감면이 선택지에 «없는가»
         엔진은 두 enum 을 받지만 260921 검증에서 산식이 조문과 어긋나거나(신혼부부 §36의2)
@@ -26,6 +26,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 const parser = require('@babel/parser');
 
 const SRC = path.join(__dirname, 'src', 'ReportAcquisition.jsx');
@@ -56,7 +57,10 @@ function loadDecls(names) {
   }
   const missing = names.filter((n) => !found.has(n));
   if (missing.length) throw new Error(`ReportAcquisition.jsx 에서 최상위 선언을 찾지 못했습니다: ${missing.join(', ')}`);
-  const sandbox = { window: { jtFallbackGaps: (cs) => (cs || []).filter((c) => c && c.when).map((c) => c.why) } };
+  /* acqCalcFromEngine 이 쓰는 공용 응답 검증기(window.jtValidCalc)는 Report.jsx 의 «실제 코드»를 꺼내 쓴다 */
+  const vctx = { window: {} };
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, 'src', 'Report.jsx'), 'utf8').match(/window\.jtValidCalc = function[\s\S]*?\n  };/)[0], vctx);
+  const sandbox = { window: { jtValidCalc: vctx.window.jtValidCalc, jtFallbackGaps: (cs) => (cs || []).filter((c) => c && c.when).map((c) => c.why) } };
   // eslint-disable-next-line no-new-func
   const fn = new Function('window', chunks.join('\n\n') + '\n;return {' + names.join(',') + '};');
   return fn(sandbox.window);
@@ -68,11 +72,14 @@ const M = loadDecls([
   'ACQ_PROPERTY_TYPE', 'ACQ_ACQUISITION_TYPE',
   'acqOptionAvailable', 'acqVisibleOpts', 'acqAnswerLabel', 'acqNormalize', 'acqNormalizeAnswers',
   'acqNoticeKey', 'ACQ_HEAVY_NOTICE',
-  'mapAnswersToAcquisition', 'fallbackAcqTax', 'acqFallbackGaps', 'acqIsQuick', 'acqFirstOpenQuestion',
+  'mapAnswersToAcquisition', 'acqFallbackGaps', 'acqIsQuick', 'acqFirstOpenQuestion',
+  'ACQ_ENGINE_REQUIRED', 'acqCalcFromEngine', 'acqCalcFromEngineError',
 ]);
 
 const ENGINE_OK = { precise: true };
-const ENGINE_DOWN = { precise: false };
+const ENGINE_DOWN = { precise: false };                                  // engineState 미지정 = 연결 실패로 취급
+const ENGINE_DOWN_EXPLICIT = { precise: false, engineState: 'down' };
+const ENGINE_REFUSED = { precise: false, engineState: 'refused' };       // 엔진이 계산을 거부
 
 /* ★ 260921 R3-F2: 앱은 «정규화된 답»만 차단 검사·이동 함수에 넘긴다
    (ReportAcquisition.jsx 의 `const answers = acqNormalizeAnswers(rawAnswers)`).
@@ -208,7 +215,7 @@ for (const [label, sc] of [['2주택 매매', SC_2HOUSE], ['주택 증여', SC_G
 /* ══════════════════════════════════════════════════════════════════════
    ② 새 유형은 엔진이 응답하지 않으면 전부 막힌다
    ══════════════════════════════════════════════════════════════════════ */
-console.log('\n════ ② 새로 노출한 유형은 엔진 미응답 시 «전부» 막히는가 ════');
+console.log('\n════ ② 엔진 값이 없으면(down·refused) 새 유형도 평범한 입력도 «전부» 막히는가 ════');
 
 const NEW_TYPE_CASES = [
   ['공매 주택', { acquisitionType: '공매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', isRegulatedArea: 'no', reduction: 'none' }],
@@ -224,12 +231,19 @@ const NEW_TYPE_CASES = [
 ];
 for (const [label, ans] of NEW_TYPE_CASES) {
   eq(`${label} · 엔진이 죽으면 금액을 내지 않는다`, GAPS(ans, ENGINE_DOWN).length > 0, true);
+  eq(`${label} · 엔진이 거부해도 금액을 내지 않는다 (사유에 「세무사 확인」)`,
+     GAPS(ans, ENGINE_REFUSED).some((g) => g.includes('세무사 확인')), true);
   eq(`${label} · 새 유형이라고 표시된다 (자동 해설을 붙이지 않는 기준)`, M.acqNewTypeSelected(ans), true);
 }
-/* 반대로 «종전부터 되던» 평범한 입력은 엔진이 죽어도 여전히 통과해야 한다 —
-   차단을 넓히면서 정상 이용자를 쫓아내지 않았는지 같이 본다. */
-eq('1주택 매매 84㎡ · 엔진이 죽어도 통과 (과잉 차단 없음)',
-   GAPS({ acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', reduction: 'none' }, ENGINE_DOWN).length, 0);
+/* 261004: 자체 계산식이 없으므로 «평범한 입력»도 엔진 값이 없으면 막힌다.
+   반대로 엔진이 값을 줬으면(precise) 입력이 평범한 한 막지 않는다 — 과잉 차단 방지. */
+{
+  const plain = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', reduction: 'none' };
+  eq('1주택 매매 84㎡ · 엔진이 죽으면 막힌다 (자체 계산식이 없다)', GAPS(plain, ENGINE_DOWN).length, 1);
+  eq('1주택 매매 84㎡ · engineState:down 도 같다', GAPS(plain, ENGINE_DOWN_EXPLICIT).length, 1);
+  eq('1주택 매매 84㎡ · 엔진이 거부해도 막힌다', GAPS(plain, ENGINE_REFUSED).length, 1);
+  eq('1주택 매매 84㎡ · 엔진이 값을 주면 통과 (과잉 차단 없음)', GAPS(plain, ENGINE_OK).length, 0);
+}
 eq('1주택 매매 84㎡ · 새 유형이 아니다 (자동 해설 경로 유지)',
    M.acqNewTypeSelected({ acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', reduction: 'none' }), false);
 
@@ -388,7 +402,7 @@ console.log('\n════ ④ 조례 카드의 경감률이 매퍼 출력에 �
   eq('조례 카드 컴포넌트를 찾았다', cardSrc.length > 500, true);
   eq('조례 카드 본문을 «실제로» 잘라냈다 (매개변수 괄호에서 끊기지 않았다)',
      cardSrc.includes('JT_ORDINANCE_CARDS'), true);
-  for (const banned of ['fallbackAcqTax', 'mapAnswersToAcquisition', 'totalTax', 'acqTax']) {
+  for (const banned of ['acqCalcFromEngine', 'mapAnswersToAcquisition', 'totalTax', 'acqTax']) {
     eq(`조례 카드가 «${banned}» 를 건드리지 않는다`, cardSrc.includes(banned), false);
   }
   eq('조례 카드가 「이 계산에는 넣지 않았습니다」를 표시한다', cardSrc.includes('이 계산에는 넣지 않았습니다'), true);
@@ -589,9 +603,30 @@ const FIELD_SOURCE = {
   reduction_type: ['reduction'],
   is_first_home_buyer: ['reduction'],
   is_childbirth: ['reduction'],
-  standard_value: ['standardValue'],
+  /* 증여 주택은 시가표준액 문항에서, 상속은 «취득가액 칸(= 시가표준액을 묻는다)»에서 온다 (261004) */
+  standard_value: (norm) => (norm.acquisitionType === '상속' ? ['propertyValue'] : ['standardValue']),
   gift_regulated_over_3b: ['isRegulatedArea'],
+  inheritance_one_house: ['inheritOneHouse'],
 };
+/* 매퍼가 내보낼 수 있는 요청 키의 «전체 허용 목록» — 여기 없는 키는 엔진 요청 모델(「모르는 키는 422」)에서 거부된다 */
+const ALLOWED_KEYS = new Set(['property_value', 'acquisition_type', 'property_type', 'is_housing', 'is_farmland',
+  'exclusive_area', 'is_corporate', 'housing_count', 'is_regulated_area', 'reduction_type', 'is_first_home_buyer',
+  'is_childbirth', 'is_temporary_two_house', 'standard_value', 'gift_regulated_over_3b', 'inheritance_one_house']);
+/* payload 의 모든 키가 ① 허용 목록 안이고 ② 그 값을 만드는 질문이 «지금 보이는가» */
+function payloadProblems(norm, p) {
+  const out = [];
+  for (const k of Object.keys(p)) {
+    if (!ALLOWED_KEYS.has(k)) out.push('허용 목록 밖 키 ' + k);
+    let srcs = FIELD_SOURCE[k];
+    if (typeof srcs === 'function') srcs = srcs(norm);
+    if (!srcs) { out.push('미등록 필드 ' + k); continue; }
+    for (const s of srcs) {
+      const q = M.ACQ_QS.find((x) => x.id === s);
+      if (q && q.showIf && !q.showIf(norm)) out.push(k + ' ← 숨은 문항 ' + s + ' / ' + JSON.stringify(norm));
+    }
+  }
+  return out;
+}
 
 console.log('\n  ── 구체 사례 (Codex R2 재현 경로) ──');
 {
@@ -623,15 +658,18 @@ console.log('\n  ── 구체 사례 (Codex R2 재현 경로) ──');
   /* R2-F2 [P1] — 법인 주택 매매에서 증여로 전환 */
   const raw = { acquisitionType: '증여', propertyType: '주택', acquirerType: 'corporate',
     propertyValue: '400000000', exclusiveArea: '84', isRegulatedArea: 'no', region: 'unknown' };
-  const gaps = GAPS(raw, ENGINE_DOWN);
+  const gaps = GAPS(raw, ENGINE_OK);
   eq('R2-F2 · 증여로 바꾸면 법인 사유로 차단되지 않는다', gaps.some((g) => g.includes('법인')), false);
+  eq('R2-F2 · 엔진 값이 있으면 («고칠 수 없는 차단»이 없다) 통과한다', gaps.length, 0);
   eq('R2-F2 · payload 에 is_corporate 가 없다', 'is_corporate' in M.mapAnswersToAcquisition(raw), false);
   eq('R2-F2 · 신규 유형 판정에서도 법인이 빠진다', M.acqNewTypeSelected(M.acqNormalizeAnswers(raw)), false);
-  /* 반대로 «지금 법인인» 경우에는 여전히 막혀야 한다 — 차단을 약화시키지 않았다 */
+  /* 반대로 «지금 법인인» 경우는 엔진이 §13의2①1호로 판정한다(260921 실측: 법인 주택 유상 5억 → 12%).
+     261004: 자체 계산식이 없어 «법인이라서 막는» 사유(종전 ②층)는 없다 — 엔진 값이 있으면 통과하고,
+     엔진 값이 없으면 입력과 무관하게(법인 아니어도) 막힌다. */
   const corp = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'corporate',
     propertyValue: '500000000', exclusiveArea: '84', region: 'unknown' };
-  eq('R2-F2 · 실제 법인 주택 매매는 그대로 차단된다',
-     GAPS(corp, ENGINE_DOWN).some((g) => g.includes('법인')), true);
+  eq('R2-F2 · 실제 법인 주택 매매는 엔진 값이 있으면 통과한다', GAPS(corp, ENGINE_OK).length, 0);
+  eq('R2-F2 · 실제 법인 주택 매매는 엔진 값이 없으면 막힌다', GAPS(corp, ENGINE_DOWN).length > 0, true);
 }
 {
   /* R2-F3 [P2] — 증여 주택에서 농지로 전환 */
@@ -654,8 +692,8 @@ console.log('\n  ── 구체 사례 (Codex R2 재현 경로) ──');
   const noStd = { acquisitionType: '증여', propertyType: '주택', propertyValue: '800000000',
     exclusiveArea: '84', isRegulatedArea: 'yes', giftOneHouseException: 'no',
     standardValue: '', region: 'unknown' };
-  eq('R3-F1 · 시가(취득가액)로 증여 중과를 «확정»하지 않는다',
-     'gift_regulated_over_3b' in M.mapAnswersToAcquisition(noStd), false);
+  eq('R3-F1 · 시가(취득가액)로 증여 중과를 «확정»하지 않는다 (시가표준액이 없으면 true 가 아니다)',
+     M.mapAnswersToAcquisition(noStd).gift_regulated_over_3b, false);
   eq('R3-F1 · 그 대신 엔진이 살아 있어도 차단한다', GAPS(noStd, ENGINE_OK).length > 0, true);
   eq('R3-F1 · 차단 사유가 시가표준액 건이다',
      GAPS(noStd, ENGINE_OK).some((g) => g.includes('시가표준액')), true);
@@ -670,8 +708,8 @@ console.log('\n  ── 구체 사례 (Codex R2 재현 경로) ──');
      M.mapAnswersToAcquisition(with4).gift_regulated_over_3b, true);
   eq('R3-F1 · 그때는 차단하지 않는다', GAPS(with4, ENGINE_OK).length, 0);
   const with2 = { ...noStd, standardValue: '250000000' };
-  eq('R3-F1 · 시가표준액 2.5억이면 시가가 8억이어도 중과가 아니다',
-     'gift_regulated_over_3b' in M.mapAnswersToAcquisition(with2), false);
+  eq('R3-F1 · 시가표준액 2.5억이면 시가가 8억이어도 중과가 아니다 (false 를 명시해서 보낸다)',
+     M.mapAnswersToAcquisition(with2).gift_regulated_over_3b, false);
   eq('R3-F1 · 그때도 차단하지 않는다 (값을 확인했으므로)', GAPS(with2, ENGINE_OK).length, 0);
   /* 1세대1주택 가족 증여 예외면 시가표준액을 묻지도, 막지도 않는다 */
   const exc = { ...noStd, giftOneHouseException: 'yes' };
@@ -721,36 +759,30 @@ console.log('\n  ── 부류 고정: 도달 가능한 조합 전수 ──');
     giftOneHouseException: [undefined, 'yes', 'no'],
   };
   const KEYS = Object.keys(DOM);
-  /* 간이 폴백(fallbackAcqTax)에 «계산 경로가 없는» payload — 엔진이 죽으면 반드시 막혀야 한다 */
-  const beyondFallback = (p) => !!p.reduction_type || p.is_corporate === true || p.is_farmland === true
-    || ['공매', '재산분할'].includes(p.acquisition_type)
-    || ['오피스텔_주거용', '오피스텔_업무용', '농지'].includes(p.property_type);
-
-  let total = 0, leak = 0, holeDown = 0, holeOk = 0, notIdem = 0;
+  let total = 0, leak = 0, holeDown = 0, holeOk = 0, notIdem = 0, badReason = 0;
   const leakSample = [], holeSample = [];
   (function sweep(i, a) {
     if (i === KEYS.length) {
       total++;
       const norm = M.acqNormalizeAnswers(a);
       const p = M.mapAnswersToAcquisition(a);
-      /* ⓐ payload 의 모든 필드가 «지금 보이는 질문»에서 나왔는가 */
-      for (const k of Object.keys(p)) {
-        const srcs = FIELD_SOURCE[k];
-        if (!srcs) { leak++; if (leakSample.length < 3) leakSample.push('미등록 필드 ' + k); continue; }
-        for (const s of srcs) {
-          const q = M.ACQ_QS.find((x) => x.id === s);
-          if (q && q.showIf && !q.showIf(norm)) {
-            leak++; if (leakSample.length < 3) leakSample.push(k + ' ← 숨은 문항 ' + s + ' / ' + JSON.stringify(norm));
-          }
+      /* ⓐ payload 의 모든 필드가 «허용 목록 안»이고 «지금 보이는 질문»에서 나왔는가 */
+      const probs = payloadProblems(norm, p);
+      if (probs.length) { leak++; if (leakSample.length < 3) leakSample.push(probs[0]); }
+      /* ⓑ 엔진 값이 없으면 «어떤 입력 조합이든» 막힌다 — down·미지정·refused 모두.
+         (종전엔 «폴백이 못 다루는 조합»만 막았다. 자체 계산식이 없는 지금은 전부다.) */
+      for (const c of [ENGINE_DOWN, ENGINE_DOWN_EXPLICIT, ENGINE_REFUSED]) {
+        if (M.acqFallbackGaps(norm, c).length === 0) {
+          holeDown++; if (holeSample.length < 3) holeSample.push('엔진 값 없음인데 통과 ' + JSON.stringify(c) + ' ' + JSON.stringify(norm));
         }
       }
-      /* ⓑ 정규화가 차단에 구멍을 내지 않는가 */
-      if (beyondFallback(p) && M.acqFallbackGaps(norm, ENGINE_DOWN).length === 0) {
-        holeDown++; if (holeSample.length < 3) holeSample.push('엔진장애 ' + JSON.stringify(norm));
+      if (!M.acqFallbackGaps(norm, ENGINE_REFUSED).some((g) => g.includes('세무사 확인'))
+          || !M.acqFallbackGaps(norm, ENGINE_DOWN).some((g) => g.includes('연결하지 못했습니다'))) {
+        badReason++; if (holeSample.length < 3) holeSample.push('사유 문구 ' + JSON.stringify(norm));
       }
       /* 엔진이 «없는 필드»를 유리하게 가정하는 자리(면적 미입력·다주택 조정 미응답)는
-         엔진이 살아 있어도 막혀야 한다. is_regulated_area 는 «아니오»일 때 일부러 안 보내며
-         엔진 기본값이 비조정임을 260921 실측으로 확인했으므로 «답이 없는 경우»만 본다. */
+         엔진이 살아 있어도 막혀야 한다. is_regulated_area 는 «아니오»일 때 false 를 명시해서 보내므로(261004 D1)
+         «답이 없는 경우»(미응답·모름)만 본다 — 그때는 키를 보내지 않는다(엔진: 보내지 않음 = 모름). */
       const needArea = p.is_housing === true && p.exclusive_area === undefined;
       const needReg = (p.housing_count || 0) >= 2 && !['yes', 'no'].includes(norm.isRegulatedArea);
       if ((needArea || needReg) && M.acqFallbackGaps(norm, ENGINE_OK).length === 0) {
@@ -766,8 +798,9 @@ console.log('\n  ── 부류 고정: 도달 가능한 조합 전수 ──');
   })(0, { propertyValue: '500000000', region: 'unknown' });
 
   console.log(`      (조합 ${total.toLocaleString('en-US')}건 전수)`);
-  eq('payload 의 모든 필드가 «지금 보이는 질문»에서 나온다', leak ? leakSample.join(' | ') : 0, 0);
-  eq('폴백이 못 다루는 payload 는 엔진 장애 시 «반드시» 막힌다', holeDown ? holeSample.join(' | ') : 0, 0);
+  eq('payload 의 모든 필드가 허용 목록 안이고 «지금 보이는 질문»에서 나온다', leak ? leakSample.join(' | ') : 0, 0);
+  eq('엔진 값이 없으면(down·미지정·refused) «모든» 입력 조합이 차단된다', holeDown ? holeSample.join(' | ') : 0, 0);
+  eq('차단 사유 문구 — refused 는 「세무사 확인」, down 은 「연결하지 못했습니다」를 포함한다', badReason ? holeSample.join(' | ') : 0, 0);
   eq('엔진이 유리하게 가정하는 미응답은 엔진이 살아 있어도 막힌다', holeOk ? holeSample.join(' | ') : 0, 0);
   eq('정규화는 멱등이다', notIdem, 0);
 }
@@ -798,8 +831,8 @@ console.log('\n════ ⑥-b 정규화: 경로 무관성 + 풀린 차단의
      JSON.stringify(M.mapAnswersToAcquisition(changed)), JSON.stringify(M.mapAnswersToAcquisition(fresh)));
   eq('R4-F1 · 두 경로의 차단 결과가 같다 (엔진 장애)',
      JSON.stringify(GAPS(changed, ENGINE_DOWN)), JSON.stringify(GAPS(fresh, ENGINE_DOWN)));
-  eq('R4-F1 · 두 경로의 간이 계산 금액이 같다',
-     M.fallbackAcqTax(M.acqNormalizeAnswers(changed)), M.fallbackAcqTax(M.acqNormalizeAnswers(fresh)));
+  eq('R4-F1 · 두 경로의 차단 결과가 같다 (엔진 거부)',
+     JSON.stringify(GAPS(changed, ENGINE_REFUSED)), JSON.stringify(GAPS(fresh, ENGINE_REFUSED)));
   /* 조용히 지우지 않는다 — 무엇을 왜 뺐는지 목록으로 돌려준다 */
   const dr = M.acqNormalize(changed).dropped;
   eq('R4-F1 · 지워진 답을 목록으로 돌려준다', dr.length, 1);
@@ -830,7 +863,7 @@ console.log('\n════ ⑥-b 정규화: 경로 무관성 + 풀린 차단의
     giftOneHouseException: [undefined, 'yes', 'no'],
   };
   const KEYS = Object.keys(DOM);
-  const CALCS = [['엔진정상', ENGINE_OK], ['엔진장애', ENGINE_DOWN]];
+  const CALCS = [['엔진정상', ENGINE_OK], ['엔진장애', ENGINE_DOWN], ['엔진장애(down)', ENGINE_DOWN_EXPLICIT], ['엔진거부', ENGINE_REFUSED]];
   /* 「같은 답을 처음부터 순서대로 넣은 경로」 — 문항 순서대로, 그때그때 보이는 질문·
      고를 수 있는 선택지만 채워 나간다(컴포넌트의 입력 흐름과 같다). */
   const replayFresh = (src) => {
@@ -845,7 +878,7 @@ console.log('\n════ ⑥-b 정규화: 경로 무관성 + 풀린 차단의
     return out;
   };
 
-  let total = 0, pathDiff = 0, badRelease = 0, badReason = 0, zeroAmount = 0;
+  let total = 0, pathDiff = 0, badRelease = 0, badReason = 0;
   const pathSample = [], relSample = [];
   (function sweep(i, a) {
     if (i === KEYS.length) {
@@ -873,14 +906,6 @@ console.log('\n════ ⑥-b 정규화: 경로 무관성 + 풀린 차단의
           badReason++; if (relSample.length < 3) relSample.push('사유불명 ' + JSON.stringify(dropped));
         }
       }
-      /* ── 차단된 조합에서 «숫자»가 화면에 나가지 않는가 ───────────────
-         간이 계산은 금액을 «만들어» 둔다(분양권·입주권만 0원). 그 금액이 화면에 닿지 않는
-         이유는 오직 차단뿐이므로, 차단이 걸린 조합에서 금액이 «존재»한다는 사실을 고정한다.
-         (차단 화면 서브트리에 금액 표현이 없다는 것은 tests_fallback_block.js ③ 이 본다) */
-      if (M.acqFallbackGaps(norm, ENGINE_DOWN).length > 0) {
-        const rights = norm.propertyType === '분양권' || norm.propertyType === '입주권';
-        if (!rights && !(M.fallbackAcqTax(norm) > 0)) zeroAmount++;
-      }
       return;
     }
     const k = KEYS[i];
@@ -894,8 +919,6 @@ console.log('\n════ ⑥-b 정규화: 경로 무관성 + 풀린 차단의
   eq('I-B 차단이 풀린 조합에는 «지워진 답»이 반드시 있다', badRelease ? relSample.join(' | ') : 0, 0);
   eq('I-B 지워진 사유는 hidden(안 보이는 질문)·option(못 고르는 선택지)뿐이다',
      badReason ? relSample.join(' | ') : 0, 0);
-  eq('차단된 조합에서 간이 계산은 «금액을 만들어» 둔다 (화면에 못 나가게 막는 것이 차단이다)',
-     zeroAmount, 0);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -939,6 +962,262 @@ console.log('\n════ ⑦-b 조례 스크립트가 OC 를 «항상» 검�
   eq('OC 검사 조건에 oc 값이 섞여 있지 않다 (get_oc 실패와 무관하게 돈다)',
      line ? /^ {4}if re\.search\(/.test(line.trimEnd()) : false, true);
   eq('oc 값을 알 때의 추가 검사는 그대로 남아 있다', /if oc and oc in text:/.test(py), true);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ⑧ 261004 — 자체 계산식(폴백) 삭제 · 엔진 결과 3분류 · 상속 시가표준액·1주택 특례
+   ══════════════════════════════════════════════════════════════════════ */
+console.log('\n════ ⑧-a 폴백 삭제 — 소스에 자체 계산식이 남아 있지 않다 ════');
+{
+  eq('소스에 fallbackAcqTax 라는 이름이 없다 (주석 포함)', code.includes('fallbackAcqTax'), false);
+  for (const rate of ['0.0296', '0.084', '0.124', '0.038', '0.046', '0.011', '0.033']) {
+    eq(`소스에 폴백 세율 상수 ${rate} 가 없다 (주석 포함)`, code.includes(rate), false);
+  }
+  eq('소스에 6~9억 구간 산식(450_000_000)이 없다', code.includes('450_000_000'), false);
+  /* 금액 필드는 «엔진 유효 응답»에서만 만든다 — 객체 리터럴의 `totalTax:` 는 acqCalcFromEngine 하나뿐이어야 한다 */
+  eq('totalTax 를 값으로 채우는 곳이 한 곳뿐이다 (acqCalcFromEngine)', (code.match(/\btotalTax:/g) || []).length, 1);
+  const fnSrc = M.acqCalcFromEngine.toString();
+  eq('그 한 곳이 acqCalcFromEngine 안이다', fnSrc.includes('totalTax: c['), true);
+  /* 화면에 «간이» 표시가 남지 않았다 */
+  for (const gone of ['추정 납부세액', '취득세 간이 계산', '정밀 엔진 연결이 지연', '간이 추정', '비워두시면 엔진이 연결됐을 때만', '(간이 추정)']) {
+    eq(`소스에 「${gone}」 가 없다`, code.includes(gone), false);
+  }
+  const ra = code.slice(code.indexOf('const runAnalysis'), code.indexOf('const goDetail'));
+  eq('runAnalysis 가 엔진 응답을 acqCalcFromEngine 으로 분류한다', /acqCalcFromEngine\(await callAcqEngine\(/.test(ra), true);
+  eq('엔진 호출 예외는 acqCalcFromEngineError 로 분류한다', /acqCalcFromEngineError\(e\)/.test(ra), true);
+  eq('runAnalysis 가 totalTax 를 직접 대입하지 않는다', /\.totalTax\s*=|totalTax:/.test(ra), false);
+}
+
+console.log('\n════ ⑧-b 엔진 호출 결과 3분류 (유효 / 거부 refused / 연결 실패 down) ════');
+{
+  const OKC = { 상태: 'ok', 세액: 12859000, 취득세: 11690000, 지방교육세: 1169000, 농어촌특별세: 0, 과세표준: 700000000,
+    적용세율: '1.67%', 중과여부: false, 중과사유: '', 주택수: 1, 감면유형: '', 감면금액: 0, 신고기한: '취득일부터 60일',
+    단계별계산: [{ 항목: '1. 과세표준', 금액: 700000000 }], 경고사항: ['확인 필요'] };
+  const v = M.acqCalcFromEngine({ calc: OKC, version: { engine: '7.1.0' } });
+  eq('유효 응답 · precise:true', v.precise, true);
+  eq('유효 응답 · totalTax 는 엔진 세액', v.totalTax, 12859000);
+  eq('유효 응답 · 각 필드가 담긴다', [v.acqTax, v.eduTax, v.farmTax, v.taxBase, v.appliedRate, v.engineVer, v.steps.length, v.engineWarnings.length].join('|'),
+     '11690000|1169000|0|700000000|1.67%|7.1.0|1|1');
+  eq('유효 응답 · engineState 는 없다', 'engineState' in v, false);
+  const z = M.acqCalcFromEngine({ calc: { ...OKC, 세액: 0, 취득세: 0, 지방교육세: 0, 과세표준: 0 } });
+  eq('유효 응답 · 정상 0원도 유효하다 (분양권·입주권 등)', z.precise === true && z.totalTax === 0, true);
+
+  /* 금액 필드가 «아예 없다» — 거부·연결 실패 모두 */
+  const NOT_PRECISE = [
+    ['refused · 상태 needs_input + 오류', { calc: { 상태: 'needs_input', 오류: '주택 수가 필요합니다' } }, 'refused'],
+    ['refused · 상태 unsupported + 오류', { calc: { 상태: 'unsupported', 오류: '지원하지 않는 조합' } }, 'refused'],
+    ['refused · 상태 error + 오류', { calc: { 상태: 'error', 오류: '계산 오류' } }, 'refused'],
+    ['refused · 금액이 같이 와도 상태가 ok 가 아니면 거부', { calc: { ...OKC, 상태: 'needs_input', 오류: '입력 부족' } }, 'refused'],
+    ['refused · 상태가 needs_input 이면 금액이 있어도 거부', { calc: { ...OKC, 상태: 'needs_input' } }, 'refused'],
+    ['refused · 상태 ok 인데 오류가 있다', { calc: { ...OKC, 오류: '모순된 응답' } }, 'refused'],
+    ['refused · 상태 키가 없다 (ok 가 아님)', { calc: { ...OKC, 상태: undefined } }, 'refused'],
+    ['down · 응답이 null', null, 'down'],
+    ['down · 응답이 undefined', undefined, 'down'],
+    ['down · calc 키 없음', {}, 'down'],
+    ['down · calc 가 null', { calc: null }, 'down'],
+    ['down · calc 가 배열', { calc: [] }, 'down'],
+    ['down · calc 가 문자열', { calc: 'ok' }, 'down'],
+    ['down · 상태 ok 인데 필수 금액 키가 없다', { calc: { 상태: 'ok' } }, 'down'],
+    ['down · 세액이 NaN', { calc: { ...OKC, 세액: NaN } }, 'down'],
+    ['down · 세액이 음수', { calc: { ...OKC, 세액: -1 } }, 'down'],
+    ['down · 세액이 문자열', { calc: { ...OKC, 세액: '12859000' } }, 'down'],
+    ['down · success:false', { calc: { ...OKC, success: false } }, 'down'],
+  ];
+  const plain = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', exclusiveArea: '84', housingCount: '1', reduction: 'none' };
+  for (const [label, resp, state] of NOT_PRECISE) {
+    const r = M.acqCalcFromEngine(resp);
+    eq(`${label} → precise:false, engineState:${state}`, r.precise === false && r.engineState === state, true);
+    eq(`${label} → 금액 필드가 없다 (키 = engineState,precise 뿐)`, Object.keys(r).sort().join(','), 'engineState,precise');
+    const g = GAPS(plain, r);
+    eq(`${label} → 평범한 입력도 차단된다 (사유 1건)`, g.length, 1);
+    eq(`${label} → 사유 문구`, state === 'refused' ? g[0].includes('세무사 확인') : g[0].includes('연결하지 못했습니다'), true);
+  }
+  eq('유효 응답이면 같은 입력이 통과한다', GAPS(plain, v).length, 0);
+
+  /* 호출 자체가 던진 예외 — callAcqEngine 은 HTTP 오류에 status 를 달아 던진다 */
+  const httpErr = (s) => Object.assign(new Error('engine ' + s), { status: s });
+  for (const s of [400, 404, 422]) eq(`HTTP ${s} → refused`, M.acqCalcFromEngineError(httpErr(s)).engineState, 'refused');
+  for (const s of [500, 502, 503, 504]) eq(`HTTP ${s} → down`, M.acqCalcFromEngineError(httpErr(s)).engineState, 'down');
+  eq('네트워크 오류(TypeError, status 없음) → down', M.acqCalcFromEngineError(new TypeError('Failed to fetch')).engineState, 'down');
+  eq('타임아웃(AbortError) → down', M.acqCalcFromEngineError(Object.assign(new Error('aborted'), { name: 'AbortError' })).engineState, 'down');
+  eq('예외 값이 없어도 → down', M.acqCalcFromEngineError(undefined).engineState, 'down');
+  eq('예외 결과도 금액 필드가 없다', Object.keys(M.acqCalcFromEngineError(httpErr(503))).sort().join(','), 'engineState,precise');
+  eq('예외 결과도 precise:false', M.acqCalcFromEngineError(httpErr(422)).precise, false);
+  eq('거부·연결 실패 사유 문구는 서로 다르다',
+     GAPS(plain, { precise: false, engineState: 'refused' })[0] !== GAPS(plain, { precise: false, engineState: 'down' })[0], true);
+  /* ①층(입력 불확정)은 엔진 상태와 무관하다 — 그대로 남아 있다 */
+  eq('①층 — 면적 미입력은 엔진이 정상이어도 막힌다', GAPS({ ...plain, exclusiveArea: '' }, ENGINE_OK).length > 0, true);
+  eq('①층 — 엔진이 죽었고 면적도 없으면 사유가 2건(입력 + 엔진)이다', GAPS({ ...plain, exclusiveArea: '' }, ENGINE_DOWN).length, 2);
+}
+
+console.log('\n════ ⑧-c 상속 — 과세표준(시가표준액)·1가구 1주택 특례 매퍼 ════');
+{
+  const base = { acquisitionType: '상속', propertyType: '주택', propertyValue: '500000000', exclusiveArea: '84', region: 'unknown' };
+  const m = (x) => M.mapAnswersToAcquisition(x);
+  eq('상속 · standard_value 가 property_value 와 같다', m(base).standard_value, m(base).property_value);
+  eq('상속 · property_value 도 그대로 간다', m(base).property_value, 500000000);
+  eq('상속 + 주택 + yes → inheritance_one_house === true', m({ ...base, inheritOneHouse: 'yes' }).inheritance_one_house, true);
+  eq('상속 + 주택 + no → inheritance_one_house === false', m({ ...base, inheritOneHouse: 'no' }).inheritance_one_house, false);
+  eq('상속 + 주택 + 모르겠어요(unknown) → 키 없음', 'inheritance_one_house' in m({ ...base, inheritOneHouse: 'unknown' }), false);
+  eq('상속 + 주택 + 미응답 → 키 없음', 'inheritance_one_house' in m(base), false);
+  eq('상속 + 주택 + 알 수 없는 값 → 키 없음', 'inheritance_one_house' in m({ ...base, inheritOneHouse: 'maybe' }), false);
+  for (const [lab, x] of [['농지', { propertyType: '농지' }], ['상가', { propertyType: '상가' }], ['토지', { propertyType: '토지' }]]) {
+    eq(`상속 + ${lab} → standard_value 는 같은 금액이다`, m({ ...base, ...x }).standard_value, 500000000);
+    eq(`상속 + ${lab} + 옛 yes 답 → 키 없음 (주택이 아니다)`, 'inheritance_one_house' in m({ ...base, ...x, inheritOneHouse: 'yes' }), false);
+  }
+  for (const t of ['매매', '증여', '신축', '공매', '재산분할']) {
+    eq(`${t} + 주택 + 옛 yes 답 → inheritance_one_house 키 없음`,
+       'inheritance_one_house' in m({ ...base, acquisitionType: t, acquirerType: 'individual', housingCount: '1', inheritOneHouse: 'yes' }), false);
+  }
+  for (const t of ['매매', '신축', '공매', '재산분할']) {
+    eq(`${t} + 주택 → standard_value 가 없다 (상속·증여 전용)`,
+       'standard_value' in m({ ...base, acquisitionType: t, acquirerType: 'individual', housingCount: '1' }), false);
+  }
+  /* 증여의 standard_value 처리는 그대로 — 증여 + 주택 + 값이 있을 때만, 그리고 «시가표준액 문항»의 값이다 */
+  const gift = { acquisitionType: '증여', propertyType: '주택', propertyValue: '800000000', exclusiveArea: '84', isRegulatedArea: 'no', region: 'unknown' };
+  eq('증여 + 주택 + 시가표준액 입력 → 그 값이 간다 (취득가액이 아니다)', m({ ...gift, standardValue: '400000000' }).standard_value, 400000000);
+  eq('증여 + 주택 + 시가표준액 미입력 → standard_value 가 없다', 'standard_value' in m(gift), false);
+  /* 상속에서 숨은 «시가표준액» 문항의 옛 답은 정규화가 지운다 — 상속의 standard_value 는 취득가액 칸에서만 온다 */
+  eq('상속 · 증여 때 넣은 시가표준액 옛 답이 남아도 취득가액 칸 값이 간다',
+     m({ ...base, standardValue: '999000000' }).standard_value, 500000000);
+  /* 정규화 — 취득 원인을 바꾸면 숨은 1주택 특례 답이 지워진다 */
+  eq('상속 → 매매로 바꾸면 inheritOneHouse 옛 답이 지워진다',
+     M.acqNormalizeAnswers({ ...base, acquisitionType: '매매', acquirerType: 'individual', housingCount: '1', inheritOneHouse: 'yes' }).inheritOneHouse, undefined);
+  eq('주택 → 상가로 바꾸면 inheritOneHouse 옛 답이 지워진다',
+     M.acqNormalizeAnswers({ ...base, propertyType: '상가', inheritOneHouse: 'yes' }).inheritOneHouse, undefined);
+
+  /* 매퍼가 내보내는 키 집합 — 허용 목록 안 + 근거 문항이 지금 보이는 문항 (상속 부분공간 전수) */
+  let n = 0; const bad = [];
+  for (const at of ['상속', '매매', '증여', '신축']) for (const pt of ['주택', '농지', '상가', '토지'])
+    for (const ih of [undefined, 'yes', 'no', 'unknown', 'unsure']) for (const area of ['', '84'])
+      for (const sv of ['', '400000000']) {
+        const a = { acquisitionType: at, propertyType: pt, propertyValue: '500000000', exclusiveArea: area, standardValue: sv,
+          acquirerType: 'individual', housingCount: '1', isRegulatedArea: 'yes', giftOneHouseException: 'no', region: 'unknown' };
+        if (ih !== undefined) a.inheritOneHouse = ih;
+        n++;
+        const probs = payloadProblems(M.acqNormalizeAnswers(a), M.mapAnswersToAcquisition(a));
+        if (probs.length && bad.length < 3) bad.push(probs[0]);
+        else if (probs.length) bad.push('…');
+      }
+  console.log(`      (상속 부분공간 ${n}건 전수)`);
+  eq('요청 키가 허용 목록 안이고 근거 문항이 지금 보이는 문항이다 (inheritance_one_house 포함)', bad.join(' | ') || 0, 0);
+}
+
+console.log('\n════ ⑧-d 문항 정의 — inheritOneHouse · propertyValue(qFor) · 상속 선택지 ════');
+{
+  const ih = M.ACQ_QS.find((q) => q.id === 'inheritOneHouse');
+  eq('inheritOneHouse 문항이 있다', !!ih, true);
+  const ids = M.ACQ_QS.map((q) => q.id);
+  eq('exclusiveArea 문항 바로 뒤에 있다', ids[ids.indexOf('exclusiveArea') + 1], 'inheritOneHouse');
+  eq('tier 는 quick', ih.tier, 'quick');
+  eq('section', ih.section, '상속 1주택 특례');
+  eq('q', ih.q, '상속받는 분의 가구가 이 집을 포함해 국내에 주택을 1채만 갖게 되나요?');
+  eq('sub', ih.sub, '상속인과 같은 주민등록표에 있는 가족(배우자, 미혼인 30세 미만 자녀 포함)이 이 집 말고는 주택이 없으면 세율이 2.8%에서 0.8%로 낮아집니다(지방세법 §15①2호 가목, 시행령 §29). 고급주택은 제외됩니다. 여러 명이 함께 상속받으면 지분이 가장 큰 상속인을 기준으로 봅니다.');
+  eq('선택지(값·라벨·힌트) — «모르겠어요» 값은 unsure 가 아니라 unknown', JSON.stringify(ih.opts),
+     JSON.stringify([['yes', '네, 이 집 1채만 갖게 됩니다', '0.8% 특례'], ['no', '아니오, 다른 주택이 있습니다', '2.8%'], ['unknown', '모르겠어요', '2.8%로 계산하고 안내']]));
+  eq('선택지 값에 unsure 가 없다 (acqFirstOpenQuestion 이 «돌아갈 문항»으로 고르지 않게)', ih.opts.some((o) => o[0] === 'unsure'), false);
+  const shown = [];
+  for (const at of ['매매', '증여', '상속', '신축', '공매', '재산분할']) for (const pt of ['주택', '상가', '농지', '토지', '오피스텔_주거용', '분양권']) {
+    if (ih.showIf({ acquisitionType: at, propertyType: pt })) shown.push(at + '/' + pt);
+  }
+  eq('노출 조건 — 상속 + 주택일 때만', shown.join(','), '상속/주택');
+  eq('상속 + 주택에서 빠른 계산 단계에 묻는다', M.acqIsQuick(ih, { acquisitionType: '상속', propertyType: '주택' }), true);
+
+  const pv = M.ACQ_QS.find((q) => q.id === 'propertyValue');
+  eq('propertyValue sub', pv.sub, '매매는 실제 산 가격, 증여는 시가(매매사례가액·감정가액 등), 상속은 시가표준액(공시가격), 신축은 공사비입니다. 취득세는 이 금액에 세율을 곱해 계산합니다.');
+  eq('상속이면 문항 제목이 시가표준액이다', pv.qFor({ acquisitionType: '상속' }), '상속받은 부동산의 시가표준액(공시가격)은 얼마인가요? (원)');
+  for (const t of [undefined, '매매', '증여', '신축', '공매', '재산분할']) {
+    eq(`상속이 아니면(${t}) 종전 제목 그대로다`, pv.qFor({ acquisitionType: t }), pv.q);
+  }
+  const others = M.ACQ_QS.filter((q) => q.id !== 'propertyValue' && typeof q.qFor === 'function').map((q) => q.id);
+  eq('qFor 는 propertyValue 에만 있다 (다른 문항의 동작은 바꾸지 않는다)', others.join(',') || '-', '-');
+  const at = M.ACQ_QS.find((q) => q.id === 'acquisitionType');
+  eq('상속 선택지 설명', at.opts.find((o) => o[0] === '상속')[2], '상속 취득 — 주택 2.8% (1주택 특례 0.8%)');
+  eq('상속 선택지 설명에 「상담」 안내가 남아 있지 않다', at.opts.find((o) => o[0] === '상속')[2].includes('상담'), false);
+  eq('exclusiveArea sub 에 폴백 전제 문구가 없다', M.ACQ_QS.find((q) => q.id === 'exclusiveArea').sub.includes('엔진이 연결'), false);
+
+  /* 화면 배선 — 제목을 그리는 곳과 차단 화면이 qFor 를 쓴다 */
+  eq('문항 화면 제목이 qFor 를 쓴다', code.includes('<h2>{cur.qFor ? cur.qFor(answers) : cur.q}</h2>'), true);
+  const blockedBody = (() => {
+    const head = 'if (acqBlocked) {'; const i = code.indexOf(head);
+    let d = 1, j = i + head.length;
+    while (j < code.length && d > 0) { const ch = code[j]; if (ch === '{') d++; else if (ch === '}') d--; j++; }
+    return code.slice(i, j);
+  })();
+  eq('차단 화면의 「확인이 필요한 문항」이 qFor 를 쓴다', /acqOpenQ\.qFor \? acqOpenQ\.qFor\(answers\) : acqOpenQ\.q/.test(blockedBody), true);
+  eq('입력 요약(상담 접수·카톡)도 qFor 를 쓴다', (code.match(/q\.qFor \? q\.qFor\(answers\)/g) || []).length, 2);
+  /* 차단 화면이 사유를 셋으로 가른다 — input(①층) / refused / down */
+  eq('차단 화면이 reason 을 input·refused·down 으로 넘긴다',
+     /acqFallbackGaps\(answers, \{ precise: true \}\)\.length > 0 \? 'input' : \(calc\.engineState === 'refused' \? 'refused' : 'down'\)/.test(blockedBody), true);
+  /* 상속 안내 상자(0.8% 특례) — 상속 + 주택이고 yes 가 아닐 때만 */
+  eq('상속 안내 상자는 «상속 + 주택 + inheritOneHouse !== yes» 일 때만 보인다',
+     /!report\.quick && answers\.acquisitionType === '상속' && answers\.propertyType === '주택' && answers\.inheritOneHouse !== 'yes' && \(\s*<div/.test(code), true);
+  eq('상속 안내 상자 문안은 그대로다 (본세 2.8% 기준)', code.includes('현재 계산은 일반 상속 <strong>본세 2.8%</strong>'), true);
+
+  /* 차단·이동 — 이 문항은 차단 사유가 아니고, 돌아갈 문항으로 고르지도 않는다 */
+  const inh = { acquisitionType: '상속', propertyType: '주택', propertyValue: '500000000', exclusiveArea: '84', region: 'unknown' };
+  for (const [lab, val] of [['미응답', undefined], ['yes', 'yes'], ['no', 'no'], ['unknown', 'unknown']]) {
+    const a = val === undefined ? inh : { ...inh, inheritOneHouse: val };
+    eq(`상속 주택 · ${lab} · 엔진이 값을 주면 차단되지 않는다`, GAPS(a, ENGINE_OK).length, 0);
+    eq(`상속 주택 · ${lab} · 「돌아갈 문항」이 없다 (다른 문항으로 보내지 않는다)`, OPENQ(a), null);
+  }
+  eq('상속 주택 · 면적이 비어 있으면 돌아갈 문항은 면적이다 (이 문항이 아니다)', (OPENQ({ ...inh, exclusiveArea: '' }) || {}).id, 'exclusiveArea');
+  const walked = walkQuick({ ...inh, inheritOneHouse: 'unknown' }, '상속 주택');
+  eq('상속 주택 · 빠른 계산 단계에서 1주택 특례를 묻는다', walked.asked.includes('inheritOneHouse'), true);
+  eq('상속 주택 · 빠른 계산을 마치면 입력 차단이 0건이다', GAPS(walked.answers, ENGINE_OK).length, 0);
+  eq('상속 주택 · 매퍼는 inheritance_one_house 키를 보내지 않는다 (모르겠어요)', 'inheritance_one_house' in M.mapAnswersToAcquisition(walked.answers), false);
+}
+
+console.log('\n════ ⑧-e 261004 D1·D2 — 「보내지 않음 = 모름」: 조정대상지역 «아니오»·증여 중과 판정은 명시해서 보낸다 ════');
+{
+  const m = (x) => M.mapAnswersToAcquisition(x);
+  const paid = { acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual', propertyValue: '800000000', exclusiveArea: '84', housingCount: '2', temporaryTwoHouse: 'no', region: 'unknown' };
+  /* D1 — 유상취득 주택(개인) */
+  eq('D1 · 유상 주택 2주택 + 조정 yes → is_regulated_area === true', m({ ...paid, isRegulatedArea: 'yes' }).is_regulated_area, true);
+  eq('D1 · 유상 주택 2주택 + 조정 no → is_regulated_area === false (명시)', m({ ...paid, isRegulatedArea: 'no' }).is_regulated_area, false);
+  eq('D1 · 유상 주택 2주택 + 조정 no → 키가 실제로 있다', 'is_regulated_area' in m({ ...paid, isRegulatedArea: 'no' }), true);
+  eq('D1 · 유상 주택 2주택 + 조정 unsure → 키 없음 (①층이 엔진 호출 전에 막는다)', 'is_regulated_area' in m({ ...paid, isRegulatedArea: 'unsure' }), false);
+  eq('D1 · 유상 주택 2주택 + 조정 미응답 → 키 없음', 'is_regulated_area' in m(paid), false);
+  eq('D1 · 1주택 매매 + 조정 미응답(빠른 계산에서는 묻지 않는다) → 키 없음', 'is_regulated_area' in m({ ...paid, housingCount: '1' }), false);
+  eq('D1 · 1주택 매매 + 상세 단계에서 no 로 답했으면 → false (명시)', m({ ...paid, housingCount: '1', isRegulatedArea: 'no' }).is_regulated_area, false);
+  eq('D1 · 공매 주택 + 조정 no → false', m({ ...paid, acquisitionType: '공매', isRegulatedArea: 'no' }).is_regulated_area, false);
+  eq('D1 · 법인 주택 유상 + 조정 no → 키 없음 (법인은 개인 전용 필드를 보내지 않는다)', 'is_regulated_area' in m({ ...paid, acquirerType: 'corporate', isRegulatedArea: 'no' }), false);
+  eq('D1 · 비주택 유상 + 옛 no 답 → 키 없음', 'is_regulated_area' in m({ ...paid, propertyType: '상가', isRegulatedArea: 'no' }), false);
+  eq('D1 · 상속 + 주택 + 옛 no 답 → 키 없음', 'is_regulated_area' in m({ ...paid, acquisitionType: '상속', isRegulatedArea: 'no' }), false);
+  eq('D1 · 증여 + 주택 + 조정 no → is_regulated_area 키는 보내지 않는다 (유상취득 전용)', 'is_regulated_area' in m({ ...paid, acquisitionType: '증여', isRegulatedArea: 'no' }), false);
+  /* D2 — 증여 + 주택 */
+  const gift = { acquisitionType: '증여', propertyType: '주택', propertyValue: '800000000', exclusiveArea: '84', region: 'unknown' };
+  eq('D2 · 증여 주택 비조정(no) → gift_regulated_over_3b === false', m({ ...gift, isRegulatedArea: 'no' }).gift_regulated_over_3b, false);
+  eq('D2 · 증여 주택 + 조정 yes + 시가표준액 3억 + 예외 아님 → true', m({ ...gift, isRegulatedArea: 'yes', giftOneHouseException: 'no', standardValue: '300000000' }).gift_regulated_over_3b, true);
+  eq('D2 · 증여 주택 + 조정 yes + 시가표준액 3억 미만 → false', m({ ...gift, isRegulatedArea: 'yes', giftOneHouseException: 'no', standardValue: '299999999' }).gift_regulated_over_3b, false);
+  eq('D2 · 증여 주택 + 조정 yes + 1세대 1주택 예외 yes → false', m({ ...gift, isRegulatedArea: 'yes', giftOneHouseException: 'yes', standardValue: '400000000' }).gift_regulated_over_3b, false);
+  eq('D2 · 증여 주택 + 조정 yes + 시가표준액 없음 → false (시가로 대신 판정하지 않는다)', m({ ...gift, isRegulatedArea: 'yes', giftOneHouseException: 'no' }).gift_regulated_over_3b, false);
+  eq('D2 · 증여 주택 + 조정 미응답 → false (키는 있다)', ('gift_regulated_over_3b' in m(gift)) && m(gift).gift_regulated_over_3b === false, true);
+  for (const pt of ['상가', '농지', '토지', '오피스텔_주거용']) {
+    eq(`D2 · 증여 + ${pt}(비주택) → 키 없음`, 'gift_regulated_over_3b' in m({ ...gift, propertyType: pt, isRegulatedArea: 'yes', standardValue: '400000000' }), false);
+  }
+  for (const t of ['매매', '상속', '신축', '공매', '재산분할']) {
+    eq(`D2 · ${t} + 주택 → 키 없음 (증여 전용)`, 'gift_regulated_over_3b' in m({ ...paid, acquisitionType: t, isRegulatedArea: 'yes', standardValue: '400000000' }), false);
+  }
+  /* 부분공간 전수 — 증여 주택이면 항상 boolean, 아니면 없음 / 유상 주택(개인)의 조정 답과 키가 1:1 */
+  let n = 0; const bad = [];
+  for (const at of ['매매', '공매', '증여', '상속', '신축']) for (const pt of ['주택', '상가', '농지'])
+    for (const reg of [undefined, 'yes', 'no', 'unsure']) for (const hc of ['1', '2', '3'])
+      for (const ex of [undefined, 'yes', 'no']) for (const sv of ['', '299999999', '300000000'])
+        for (const ac of [undefined, 'individual', 'corporate']) {
+          const a = { acquisitionType: at, propertyType: pt, propertyValue: '500000000', exclusiveArea: '84', housingCount: hc, temporaryTwoHouse: 'no',
+            standardValue: sv, region: 'unknown' };
+          if (reg !== undefined) a.isRegulatedArea = reg; if (ex !== undefined) a.giftOneHouseException = ex; if (ac !== undefined) a.acquirerType = ac;
+          const norm = M.acqNormalizeAnswers(a), p = m(a); n++;
+          const gift = at === '증여' && pt === '주택';
+          if (gift !== ('gift_regulated_over_3b' in p) || (gift && typeof p.gift_regulated_over_3b !== 'boolean')) bad.push('D2 ' + JSON.stringify(norm));
+          const wantReg = (at === '매매' || at === '공매') && pt === '주택' && norm.acquirerType !== 'corporate' && (norm.isRegulatedArea === 'yes' || norm.isRegulatedArea === 'no')
+            ? norm.isRegulatedArea === 'yes' : undefined;
+          if (p.is_regulated_area !== wantReg) bad.push('D1 ' + JSON.stringify(norm));
+          const probs = payloadProblems(norm, p); if (probs.length) bad.push(probs[0]);
+        }
+  console.log(`      (D1·D2 부분공간 ${n}건 전수)`);
+  eq('조정 답·증여 중과 판정 키가 규칙대로만 나간다 (D1·D2 부분공간 전수 + 근거 문항 가시성)', bad.slice(0, 3).join(' | ') || 0, 0);
 }
 
 console.log(`\n════════════════════\n취득세 입력 흐름 실패 ${fails}건`);
