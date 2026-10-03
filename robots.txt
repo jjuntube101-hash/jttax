@@ -45,3 +45,7 @@ Disallow: /project/scripts/
 Disallow: /project/_shared/
 
 Sitemap: https://www.jttax.co.kr/sitemap.xml
+
+# Daum 웹마스터도구 사이트 인증 (261003 발급). 도구가 「robots.txt 파일 하단」에 두라고 안내한 줄이므로
+# 이 아래에 다른 줄을 추가하지 말 것. PIN코드는 오너가 보관한다.
+#DaumWebMasterTool:ba7253d188ff1f6b54861f6d3e442f34556cf53913d51872a810179857b856ff:Wz/rfTo9osfCpgVJS36Djg==
