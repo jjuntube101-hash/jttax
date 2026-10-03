@@ -315,8 +315,21 @@ const ROOT = path.join(__dirname, '..');
       const file = rel.slice(rel.indexOf('/') + 1);
       return file === 'index.html' ? `${SITE_URL}/${dir}/` : `${SITE_URL}/${rel}`;
     };
+    /* 색인 제외 면 (261003) — 양식 제출 뒤의 완료 안내 면. sitemap 에 없어야 하고 noindex 여야 한다.
+       build-sitemap.mjs 의 SITEMAP_EXCLUDE 와 같은 목록이다. 반대로, 이 목록에 없는 면이 noindex 를
+       달면 그 면은 sitemap 에 실린 채 색인만 막히므로(신호 충돌) 그것도 잡는다. */
+    const SITEMAP_EXCLUDE = ['desk/thanks.html'];
+    const reNoindex = /<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i;
+    const allStatic = [...listHtml('insights'), ...listHtml('calculators'), ...commercialPages, ...listHtml('desk')];
+    for (const rel of SITEMAP_EXCLUDE) {
+      if (!allStatic.includes(rel)) { bad.push(`${rel} — 색인 제외 목록에 있는데 파일이 없습니다`); continue; }
+      if (!reNoindex.test(fs.readFileSync(path.join(ROOT, rel), 'utf8'))) bad.push(`${rel} — 색인 제외 면인데 <meta name="robots" content="noindex"> 가 없습니다`);
+    }
+    for (const rel of allStatic.filter((r) => !SITEMAP_EXCLUDE.includes(r))) {
+      if (reNoindex.test(fs.readFileSync(path.join(ROOT, rel), 'utf8'))) bad.push(`${rel} — noindex 인데 sitemap 대상입니다(색인 제외 목록에 넣거나 noindex 를 지우세요)`);
+    }
     const expectedSet = new Set([`${SITE_URL}/`,
-      ...[...listHtml('insights'), ...listHtml('calculators'), ...commercialPages, ...listHtml('desk')].map(toUrl)]);
+      ...allStatic.filter((r) => !SITEMAP_EXCLUDE.includes(r)).map(toUrl)]);
     const sm = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
     const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     const locSet = new Set(locs);
