@@ -642,7 +642,8 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
      빠져나간다 — 실제로는 name.x·name.y 좌표가 전송된다 (R7 P0). 빼서 검사 대상으로 둔다. */
   const CTRL = new Set(['submit', 'button', 'reset']);
   const ACTION = 'https://api.web3forms.com/submit';
-  const LABEL = { office: '사무소명', name: '성함', contact: '연락처', memo: '문의 내용' };
+  /* 261003: 「파일럿 신청」→「문의 남기기」. 성함(name)을 빼고 문의 내용(memo)을 필수로 했다. */
+  const LABEL = { office: '사무소 이름', contact: '연락처', memo: '문의 내용' };
   /* 외부 스크립트는 «허용 목록»으로만 — `<script src="helper.js">` 한 줄이면 그 안에서
      무엇이든 할 수 있고 게이트는 아무것도 못 본다 (R4 P0).
      ⚠️ 호스트·스킴은 대소문자를 가리지 않는다 — URL 로 정규화해 비교한다 (R5 P2). */
@@ -909,8 +910,12 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
     const notNoticed = [...new Set(collected)].filter(k => (k in LABEL) && seg.indexOf(LABEL[k]) < 0);
     eq(`desk/${f}: 수집 항목이 모두 고지됨 (빠진 것: ${notNoticed.map(k => LABEL[k]).join('·') || '없음'})`,
       notNoticed.length, 0);
+    /* 동의 «기록» 두 키(개인정보동의·국외이전동의)도 POST 에 실려 국외로 나간다. 국외 이전 고지는
+       「위 수집 항목 전부」라고만 하므로, 수집·이용 고지 쪽에 동의 여부가 적혀 있어야 실제 전송과 맞는다
+       (261003 Codex TASK-261003-004 R1-F1). */
+    eq(`desk/${f}: 수집·이용 고지에 「동의 여부」 전송을 적음`, /동의 여부/.test(seg), true);
     /* 고지가 「필수」라 한 항목은 실제로 required 여야 한다 — 문구와 마크업의 어긋남 방지 */
-    for (const k of ['office', 'name', 'contact']) {
+    for (const k of ['office', 'contact', 'memo']) {
       const el = inForm.find(i => i.nm === k);
       eq(`desk/${f}: ${LABEL[k]}(필수 고지)에 required 있음`, !!el && HAS(el, 'required'), true);
     }
@@ -971,12 +976,12 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
     const norms = [...new Set(deskRetention.map(d => normPeriod(d.period)))];
     eq(`desk: 두 파일의 보유기간이 서로 같음 (${deskRetention.map(d => d.period).join(' / ')})`, norms.length, 1);
     if (norms.length === 1 && norms[0]) {
-      /* 처리방침의 «파트너 파일럿» 줄에서 같은 값이 나와야 한다 */
-      const pilot = legal.match(/파트너 파일럿[^<]*<\/strong>[^<]*<strong>([^<]+)<\/strong>/)
-        || legal.match(/파트너 파일럿[\s\S]{0,160}?(\d+\s*(?:년|개월))/);
-      eq('처리방침: 파트너 파일럿 보유기간 존재', !!pilot, true);
+      /* 처리방침의 «법무사·중개사 문의» 줄에서 같은 값이 나와야 한다 */
+      const pilot = legal.match(/법무사·중개사 문의[^<]*<\/strong>[^<]*<strong>([^<]+)<\/strong>/)
+        || legal.match(/법무사·중개사 문의[\s\S]{0,160}?(\d+\s*(?:년|개월))/);
+      eq('처리방침: 법무사·중개사 문의 보유기간 존재', !!pilot, true);
       if (pilot) {
-        eq(`처리방침 파일럿 보유기간이 desk 와 일치 (desk=${norms[0]})`,
+        eq(`처리방침 법무사·중개사 문의 보유기간이 desk 와 일치 (desk=${norms[0]})`,
           normPeriod('접수 ' + pilot[1]), norms[0]);
       }
     }
@@ -1071,7 +1076,7 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
         const attrLine = (sec1.split('\n').find(x => x.includes('함께 전송')) || '');
         eq('처리방침 §1 「함께 전송」 줄 존재', !!attrLine, true);
         eq('처리방침 §1: 「함께 전송」을 모든 경로 공통이라 하지 않음', /공통으로 함께 전송/.test(sec1), false);
-        eq('처리방침 §1: 파트너 파일럿 제외를 명시', /파트너 파일럿 신청에는 해당하지 않습니다/.test(attrLine), true);
+        eq('처리방침 §1: 법무사·중개사 문의 제외를 명시', /법무사·중개사 문의에는 해당하지 않습니다/.test(attrLine), true);
       }
       /* ⚠️ 동의 «값» 자체도 전송된다 — desk 폼은 `개인정보동의=동의함`·`국외이전동의=동의함`
          두 키를 POST 에 싣는다. 방침이 그걸 안 적으면 실제보다 «적게» 고지한 것이 된다
@@ -1087,15 +1092,16 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
         eq(`desk 가 전송하는 동의 키가 2개 (${consentKeys.join('·') || '없음'})`, consentKeys.length, 2);
       }
       /* desk 는 마크업의 required 가 정본이다 */
-      const dline = (sec1.split('\n').find(x => x.includes('파트너 파일럿')) || '');
-      eq('처리방침 §1 에 「파트너 파일럿」 줄 존재', !!dline, true);
+      const dline = (sec1.split('\n').find(x => x.includes('법무사·중개사 문의')) || '');
+      eq('처리방침 §1 에 「법무사·중개사 문의」 줄 존재', !!dline, true);
       const mD = dline.match(/필수:\s*([^/]*)/);
-      eq('처리방침 §1 파트너 파일럿: 「필수:」 표기 존재', !!mD, true);
+      eq('처리방침 §1 법무사·중개사 문의: 「필수:」 표기 존재', !!mD, true);
       const dreq = mD ? mD[1] : '';
-      eq('처리방침 §1 파트너 파일럿: 「필수:」 가 한 번만', (dline.match(/필수:/g) || []).length, 1);
-      const dMiss = ['사무소명', '성함', '연락처'].filter(k => !dreq.includes(k));
-      eq(`처리방침 §1 파트너 파일럿 필수 항목 (누락: ${dMiss.join('·') || '없음'})`, dMiss.length, 0);
-      eq('처리방침 §1 파트너 파일럿: 문의 내용을 필수로 적지 않음', dreq.includes('문의 내용'), false);
+      eq('처리방침 §1 법무사·중개사 문의: 「필수:」 가 한 번만', (dline.match(/필수:/g) || []).length, 1);
+      const dMiss = ['사무소 이름', '연락처', '문의 내용'].filter(k => !dreq.includes(k));
+      eq(`처리방침 §1 법무사·중개사 문의 필수 항목 (누락: ${dMiss.join('·') || '없음'})`, dMiss.length, 0);
+      /* 양식에서 뺀 「성함」을 방침이 여전히 수집한다고 적으면 실제보다 많이 고지한 것이 된다 */
+      eq('처리방침 §1 법무사·중개사 문의: 받지 않는 성함을 적지 않음', /성함|성명/.test(dline), false);
     }
     /* 상담·리포트 3년도 폼과 대조한다 (R5 P1: Legal 만 바꿔도 안 잡혔다) */
     const legalConsult = detag(legal).match(/세무 상담·리포트 회신[\s\S]{0,60}?(상담[^\n]{0,26}?\d+\s*년)/);

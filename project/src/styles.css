@@ -2814,7 +2814,9 @@ button { font-family: inherit; }
   /* 실측으로 정한 값이다 — 761px(이 구간의 «가장 좁은 쪽»)에서 여유가 남아야 한다.
      16px/20px 로는 여유가 -1px 이라 글꼴이 조금만 달라져도 다시 넘친다. */
   .jt-nav { padding-left: 12px; padding-right: 12px; }
-  .jt-nav__links { gap: 14px; }
+  /* 261003: 메뉴에 「법무사·중개사」가 들어가 항목이 6개가 됐다. 14px 로는 화면 폭 761px 에서
+     2px 넘치고 768px 에서 상담 버튼과 맞닿았다(실측). 8px 로 줄이면 761px 에서 28px 남는다. */
+  .jt-nav__links { gap: 8px; }
   .jt-nav__cta { gap: 8px; }
   .jt-nav__phone { display: none; }   /* 전화번호는 히어로·푸터·상담 버튼에 이미 있다 */
 }

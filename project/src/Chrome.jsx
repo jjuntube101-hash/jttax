@@ -360,6 +360,8 @@ function JTNav({ route, setRoute }) {
         {/* 260921: 인사이트 정적 허브(/insights/)가 생겨 실 href 를 붙였다 —
             종전엔 href 가 없어 크롤러가 따라갈 수 없었고 보조키·중클릭도 안 먹었다 */}
         <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'insights' ? 'active' : ''} onClick={jtNavGo(() => setRoute('insights'))}>인사이트</a>
+        {/* 261003: 법무사·중개사 면은 정적 면(/desk/)이라 SPA 라우트가 없다 — 핸들러 없는 실링크 */}
+        <a href="/desk/">법무사·중개사</a>
         <a href="/consult.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'contact' ? 'active' : ''} onClick={jtNavGo(() => setRoute('contact'))}>오시는 길</a>
       </nav>
       <div className="jt-nav__cta">
@@ -373,8 +375,10 @@ function JTNav({ route, setRoute }) {
       </div>
       {menuOpen && (
         <div className="jt-navmenu">
-          {[['about', '회사소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '인사이트', '/insights/'], ['contact', '오시는 길', '/consult.html']].map(([r, l, h]) => (
-            h
+          {[['about', '회사소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '인사이트', '/insights/'], [null, '법무사·중개사', '/desk/'], ['contact', '오시는 길', '/consult.html']].map(([r, l, h]) => (
+            !r
+              ? <a href={h} key={h}>{l}</a>
+              : h
               ? <a href={h} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={jtNavGo(() => { setRoute(r); setMenuOpen(false); })}>{l}</a>
               : <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={() => { setRoute(r); setMenuOpen(false); }}>{l}</a>
           ))}
@@ -518,6 +522,7 @@ function JTFooter({ setRoute }) {
           <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
           {/* 260921: 내비와 같은 이유로 푸터의 인사이트에도 실 href 를 붙였다 (정적 허브 신설) */}
           <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('insights'))}>인사이트</a>
+          <a href="/desk/">법무사·중개사</a>
         </div>
         <div className="jt-footer__col">
           <h4>Services</h4>

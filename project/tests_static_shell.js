@@ -316,7 +316,7 @@ const ROOT = path.join(__dirname, '..');
       return file === 'index.html' ? `${SITE_URL}/${dir}/` : `${SITE_URL}/${rel}`;
     };
     const expectedSet = new Set([`${SITE_URL}/`,
-      ...[...listHtml('insights'), ...listHtml('calculators'), ...commercialPages].map(toUrl)]);
+      ...[...listHtml('insights'), ...listHtml('calculators'), ...commercialPages, ...listHtml('desk')].map(toUrl)]);
     const sm = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
     const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     const locSet = new Set(locs);

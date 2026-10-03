@@ -67,6 +67,8 @@ export async function writeSitemap(repoRoot, site) {
     // 취득세 허브 (260921 신설 — build-commercial.mjs 산출). 계산기 랜딩과 «의도»가 달라
     // 별도 URL 로 둔다. 홈·전역 메뉴에는 올리지 않지만 sitemap·내부 링크와는 양립한다.
     { dir: 'acquisition-tax', freq: 'monthly', priority: '0.9' },
+    // 법무사·중개사 면 (261003 — 수기 3장: 허브·법무사·중개사. 상단 메뉴·푸터에서 들어온다)
+    { dir: 'desk', freq: 'monthly', priority: '0.8' },
   ];
   for (const d of dirs) {
     let files = [];
