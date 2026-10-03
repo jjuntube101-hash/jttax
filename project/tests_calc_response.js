@@ -111,11 +111,11 @@ for (const status of ['eligible', 'conditional', 'ineligible']) {
 }
 const compareSrc = read('ReportCompare.jsx');
 const compareExpr = compareSrc.match(/const allValid = ([\s\S]*?);\r?\n/)[1];
-const compareFixture = { 시나리오별: Object.fromEntries(['증여','매매','상속'].map(k => [k, { 총세부담: 100 }])) };
+const compareFixture = { 시나리오별: Object.fromEntries(['증여','매매','상속'].map(k => [k, { 총세부담: 100, 증여세: 40, 양도세: 0, 상속세: 0, 취득세: 60 }])) };
 const acceptCompare = c => vm.runInNewContext(compareExpr, { c, scv: c && c['시나리오별'], window: { jtValidCalc: valid } });
 check(acceptCompare(compareFixture), true, 'valid three-way comparison');
 check(acceptCompare({ ...compareFixture, 오류: '일부 실패' }), false, 'outer comparison failure');
 for (const key of ['증여','매매','상속']) {
-  check(acceptCompare({ 시나리오별: { ...compareFixture['시나리오별'], [key]: { 총세부담: Infinity } } }), false, 'comparison nonfinite ' + key);
+  check(acceptCompare({ 시나리오별: { ...compareFixture['시나리오별'], [key]: { ...compareFixture['시나리오별'][key], 총세부담: Infinity } } }), false, 'comparison nonfinite ' + key);
 }
 console.log(`OK calc response: ${checks} checks across 13 calculators (gift includes burdened-gift)`);
