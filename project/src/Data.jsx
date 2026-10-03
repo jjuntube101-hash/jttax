@@ -42,7 +42,7 @@ window.JT_DATA = {
     siteUrl: 'https://www.jttax.co.kr',
     titleDefault: '제이티 세무법인 — JT TAX CORP.',
     titleTemplate: '%s | 제이티 세무법인',
-    description: '사업과 재산의 세금 문제를 함께 살핍니다. 기장·신고, 양도·상속·증여, 기업 자문과 세무조사 대응까지 제이티 세무법인의 업무와 상담 방법을 안내합니다.',
+    description: '기장·신고, 양도·상속·증여부터 기업 자문과 세무조사 대응까지. 제이티 세무법인의 업무와 상담 방법을 안내합니다.',
     /* index.html 의 og:image 와 «같은 버전»을 유지할 것 — 어긋나면 이 값을 쓰는 순간
        옛 공유 이미지가 다시 노출된다 (260808 og-image 를 CI 모노크롬으로 재생성) */
     ogImage: 'https://www.jttax.co.kr/project/assets/og-image.png?v=2',
@@ -51,7 +51,7 @@ window.JT_DATA = {
       /* home.desc 는 index.html 의 원시 meta description 과 «동일 문자열» 유지 (260830 SEO 파일럿 확정 #2) */
       /* home.title 에 회사명을 넣지 않는다 — titleTemplate 이 « | 제이티 세무법인»을 붙여
          회사명이 두 번 찍히던 문제 (260830 Codex R1-F3) */
-      home:     { title: '근거 위에서, 끝까지', desc: '사업과 재산의 세금 문제를 함께 살핍니다. 기장·신고, 양도·상속·증여, 기업 자문과 세무조사 대응까지 제이티 세무법인의 업무와 상담 방법을 안내합니다.' },
+      home:     { title: '근거 위에서, 끝까지', desc: '기장·신고, 양도·상속·증여부터 기업 자문과 세무조사 대응까지. 제이티 세무법인의 업무와 상담 방법을 안내합니다.' },
       services: { title: '업무분야 — 사업과 재산의 세무', desc: '기장·신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구를 안내합니다.' },
       team:     { title: '전문가 — 세 명의 대표세무사', desc: '김민석·이현준·김가환 대표세무사의 실무 경력과 업무 범위를 소개합니다.' },
       about:    { title: '회사소개 — 제이티 세무법인', desc: '사업과 재산의 세금 문제를 근거와 문서로 살피는 제이티 세무법인을 소개합니다.' },
