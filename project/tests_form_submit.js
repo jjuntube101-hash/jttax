@@ -701,8 +701,8 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
        ⛔ 이 해시가 FAIL 하면 «게이트를 고치지 말고» 바뀐 코드를 사람이 읽어라.
           의도한 변경이면 그때 해시를 갱신한다(그 리뷰가 이 검사의 목적이다). */
     const JS_BASELINE = {
-      'broker.html': '364c51cbf2318b431c825d4405c60d174c370ff2e24fb2be1e7af86bbcb2c5b0',
-      'scrivener.html': '3cb09cffe5c0e350fa1bc04f9216cb1ceebb4d83f6225a461073d21e7eb51d62',
+      'broker.html': '0396c0ee5be13217e42b38ce24eebde4149bf4e1f49570dbbc4285d1388e28bf',
+      'scrivener.html': '4b2363253cd08ddcde03505cf21ab0b3ab12e2794275f6fce7bca439f920f6db',
     };
     const jsNorm = js.replace(/\r\n/g, '\n').replace(/[ \t]+$/gm, '').trim();
     const jsHash = require('crypto').createHash('sha256').update(jsNorm, 'utf8').digest('hex');
@@ -722,6 +722,8 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
       'dataLayer', 'gtag', 'jtTrackCta', 'location', 'search', 'push', 'get', 'assign',
       /* GA 이벤트에 실어 보내는 «파라미터 이름»(객체 리터럴 키) */
       'anonymize_ip', 'channel', 'page', 'partner_code',
+      // 검토된 운영 도메인 게이트: 위치 조회와 수집 거부 플래그만 허용한다.
+      'hostname', 'ga-disable-G-ETRXTFKLFE',
     ]);
     const props = propertyNames(js);
     const oddProps = props.names.filter(n => !JS_PROPS_OK.has(n));

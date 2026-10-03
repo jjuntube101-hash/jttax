@@ -222,6 +222,14 @@ function renderArticlePage(a) {
   const shareUrl = `${SITE}/insights/${a.slug}.html`;
   const esc = (s) => String(s).replace(/"/g, '&quot;');
   const hubBlock = isAcqHubArticle(a.slug) ? ACQ_HUB_BLOCK : '';
+  const youthBlock = a.slug === 'youth-startup-tax-reduction-2026' ? `<aside aria-label="청년창업 진단과 상담" style="margin:0 0 32px;padding:24px;border:1px solid rgba(0,0,0,.12);background:#FAFAF8;">
+      <p style="margin:0 0 8px;font-weight:700;">청년창업 감면을 검토하고 계신가요?</p>
+      <p style="margin:0 0 16px;color:#5a5a5a;line-height:1.7;">계산기로 기본 조건을 살펴보고, 개별 사안은 상담으로 이어가세요.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        <a href="/#/report/youthstartup" class="jt-btn jt-btn--outline">감면 조건 진단하기 →</a>
+        <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight_youth')">창업 감면 상담 예약 →</a>
+      </div>
+    </aside>` : '';
   return `<!doctype html>
 <html lang="ko">
 <head>
@@ -287,7 +295,7 @@ ${GA_HEAD_SNIPPET}
          (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
     <h1 style="margin-bottom:24px;font-size:1.5em;">${a.title}</h1>
     <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">${a.excerpt}</p>
-    ${a.html}
+${youthBlock ? '    ' + youthBlock + '\n' : ''}    ${a.html}
 ${hubBlock}
 
     <div style="margin-top:64px;padding:32px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;">
