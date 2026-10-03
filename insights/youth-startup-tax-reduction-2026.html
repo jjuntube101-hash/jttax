@@ -37,6 +37,12 @@
     @media (max-width:600px){ .jt-ins-tbl{font-size:13.5px;} }
   </style>
   <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
+  <script>
+    // 운영 도메인 외 로컬·미리보기는 수집하지 않는다. 기존 방문자 수집 거부도 유지한다.
+    if (window.location.hostname !== 'www.jttax.co.kr' && window.location.hostname !== 'jttax.co.kr') {
+      window['ga-disable-G-ETRXTFKLFE'] = true;
+    }
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -84,6 +90,14 @@
          (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
     <h1 style="margin-bottom:24px;font-size:1.5em;">청년창업 세액감면 2026 — 대상·감면율·업종·지역 총정리(창업중소기업)</h1>
     <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">청년창업중소기업 세액감면은 5년간 소득·법인세 최대 100%. 만 34세 이하(병역 시 40세)·정해진 18개 업종·창업 지역(수도권 밖 100%·수도권 75%·과밀 50%)이 좌우합니다. 대상·감면율·감면대상 업종·창업 배제까지 2026년 기준으로 총정리하고, 업종코드·주소로 바로 진단해 드립니다.</p>
+    <aside aria-label="청년창업 진단과 상담" style="margin:0 0 32px;padding:24px;border:1px solid rgba(0,0,0,.12);background:#FAFAF8;">
+      <p style="margin:0 0 8px;font-weight:700;">청년창업 감면을 검토하고 계신가요?</p>
+      <p style="margin:0 0 16px;color:#5a5a5a;line-height:1.7;">계산기로 기본 조건을 살펴보고, 개별 사안은 상담으로 이어가세요.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        <a href="/#/report/youthstartup" class="jt-btn jt-btn--outline">감면 조건 진단하기 →</a>
+        <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight_youth')">창업 감면 상담 예약 →</a>
+      </div>
+    </aside>
     <p>청년이 창업하면 5년간 소득세·법인세를 <strong>최대 100%</strong> 내지 않을 수 있습니다. 조세특례제한법 제6조 「창업중소기업 등에 대한 세액감면」, 그중에서도 <strong>청년창업중소기업 세액감면</strong>입니다. 다만 나이·업종·지역·창업 방식에 따라 감면율이 100%가 되기도 하고 0이 되기도 합니다. 무엇이 대상이고 얼마를 감면받는지, 2026년 기준으로 정리합니다.</p>
 
 <h2>청년창업 세액감면율 2026 — 지역이 절반을 가른다</h2>

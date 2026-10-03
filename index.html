@@ -114,6 +114,12 @@
   <!-- <meta name="google-site-verification" content="REPLACE_WITH_GOOGLE_TOKEN" /> -->
 
   <!-- Google Analytics 4 (GA4) -->
+  <script>
+    // 운영 도메인 외 로컬·미리보기는 수집하지 않는다. 기존 방문자 수집 거부도 유지한다.
+    if (window.location.hostname !== 'www.jttax.co.kr' && window.location.hostname !== 'jttax.co.kr') {
+      window['ga-disable-G-ETRXTFKLFE'] = true;
+    }
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
