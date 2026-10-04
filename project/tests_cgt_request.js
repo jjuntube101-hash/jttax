@@ -254,6 +254,28 @@ console.log('════ CGT_QS — temp2Zone 문항 정의 ════');
 
 // ───────────────────────── 엔진 호출 → 판정 ─────────────────────────
 console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ════');
+// 상담 본문용 문장(R2-F3)과 영문 error 응답의 분류(R2-F4) — TASK-261004-022
+{
+  const t = vm.createContext({ window: {}, Number, Math, String, Array, Object });
+  vm.runInContext(validCalcSrc, t);
+  vm.runInContext(loadDecls(code, ['formatWon', 'cgtTemp2Phrase', 'cgtDeadlineWarnText', 'cgtTimingTipText', 'cgtOrderTipText',
+    'CGT_ENGINE_REQUIRED', 'cgtEngineVerdict'])
+    + '\nglobalThis.__t = { cgtDeadlineWarnText, cgtTimingTipText, cgtOrderTipText, cgtEngineVerdict };', t);
+  const T = t.__t;
+  const dw = T.cgtDeadlineWarnText({ date: '2028-08-04', years: 2, missedTax: 107460000 });
+  ok(dw.includes('2028-08-04') && dw.includes('2년') && dw.includes('1억 746만원') && !dw.includes('[object'), '기한 경고가 읽히는 문장으로 나간다');
+  ok(T.cgtDeadlineWarnText({ date: '2028-08-04', years: null, missedTax: 1 }).includes('2년, 아니면 3년'), '「모름」이면 두 기한을 함께 적는다');
+  eq(T.cgtDeadlineWarnText(null), '', '기한 경고 없음');
+  const tt = T.cgtTimingTipText({ saving: 20000000, months: 12, date: '2027-10-05', label: '보유 3년 — 장특', exempt: false });
+  ok(tt.includes('2027-10-05') && tt.includes('2,000만원') && tt.includes('12개월') && !tt.includes('[object'), '양도시점 안내 문장');
+  const ot = T.cgtOrderTipText({ tax: 0, saving: 50000000, exempt: true }, 50000000);
+  ok(ot.includes('비과세') && ot.includes('5,000만원') && !ot.includes('[object'), '처분순서 안내 문장');
+  ok(!code.includes("L.push('  · 양도시점: ' + calc.timingTip)") && !code.includes('replCaveat, calc.deadlineWarn]'), '객체를 문자열에 그대로 잇는 식이 소스에 없다');
+  eq(T.cgtEngineVerdict({ error: 'unsupported' }), 'refused', '영문 error 응답 → 거부');
+  eq(T.cgtEngineVerdict({ detail: 'x' }), 'refused', 'detail 응답 → 거부');
+  eq(T.cgtEngineVerdict({ 오류: 'x', 상태: 'ok' }), 'refused', '상태가 ok 여도 오류가 있으면 거부');
+}
+
 (async () => {
   const engineSrc = loadDecls(code, ['ENGINE_BASE', 'isValidISODate', 'isoDate', 'cgtTemp2Visible', 'mapAnswersToTransfer', 'callEngineBody', 'callTransferEngine',
     'CGT_ENGINE_REQUIRED', 'cgtEngineVerdict', 'cgtCalcFromEngine', 'cgtCalcFromEngineError']);
@@ -299,29 +321,7 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
     const r = await judge(makeEnv(resp(s, {})), A);
     eq([r.precise, r.engineState, 'totalTax' in r], [false, 'down', false], 'HTTP ' + s + ' → down');
   }
-  const net = await judge(makeEnv// 상담 본문용 문장(R2-F3)과 영문 error 응답의 분류(R2-F4) — TASK-261004-022
-{
-  const t = vm.createContext({ window: {}, Number, Math, String, Array, Object });
-  vm.runInContext(validCalcSrc, t);
-  vm.runInContext(loadDecls(code, ['formatWon', 'cgtTemp2Phrase', 'cgtDeadlineWarnText', 'cgtTimingTipText', 'cgtOrderTipText',
-    'CGT_ENGINE_REQUIRED', 'cgtEngineVerdict'])
-    + '\nglobalThis.__t = { cgtDeadlineWarnText, cgtTimingTipText, cgtOrderTipText, cgtEngineVerdict };', t);
-  const T = t.__t;
-  const dw = T.cgtDeadlineWarnText({ date: '2028-08-04', years: 2, missedTax: 107460000 });
-  ok(dw.includes('2028-08-04') && dw.includes('2년') && dw.includes('1억 746만원') && !dw.includes('[object'), '기한 경고가 읽히는 문장으로 나간다');
-  ok(T.cgtDeadlineWarnText({ date: '2028-08-04', years: null, missedTax: 1 }).includes('2년, 아니면 3년'), '「모름」이면 두 기한을 함께 적는다');
-  eq(T.cgtDeadlineWarnText(null), '', '기한 경고 없음');
-  const tt = T.cgtTimingTipText({ saving: 20000000, months: 12, date: '2027-10-05', label: '보유 3년 — 장특', exempt: false });
-  ok(tt.includes('2027-10-05') && tt.includes('2,000만원') && tt.includes('12개월') && !tt.includes('[object'), '양도시점 안내 문장');
-  const ot = T.cgtOrderTipText({ tax: 0, saving: 50000000, exempt: true }, 50000000);
-  ok(ot.includes('비과세') && ot.includes('5,000만원') && !ot.includes('[object'), '처분순서 안내 문장');
-  ok(!code.includes("L.push('  · 양도시점: ' + calc.timingTip)") && !code.includes('replCaveat, calc.deadlineWarn]'), '객체를 문자열에 그대로 잇는 식이 소스에 없다');
-  eq(T.cgtEngineVerdict({ error: 'unsupported' }), 'refused', '영문 error 응답 → 거부');
-  eq(T.cgtEngineVerdict({ detail: 'x' }), 'refused', 'detail 응답 → 거부');
-  eq(T.cgtEngineVerdict({ 오류: 'x', 상태: 'ok' }), 'refused', '상태가 ok 여도 오류가 있으면 거부');
-}
-
-(async () => { throw new TypeError('Failed to fetch'); }), A);
+  const net = await judge(makeEnv(async () => { throw new TypeError('Failed to fetch'); }), A);
   eq([net.precise, net.engineState], [false, 'down'], '네트워크 실패 → down');
   const broken = await judge(makeEnv(async () => ({ ok: true, status: 200, json: async () => { throw new SyntaxError('Unexpected token <'); } })), A);
   eq([broken.precise, broken.engineState], [false, 'down'], '깨진 본문 → down');
