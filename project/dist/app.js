@@ -3225,6 +3225,18 @@ function cgtFallbackGaps(answers, calc) {
   if (calc.precise) return unknown;
   return unknown.concat([calc.engineState === "refused" ? "\uC785\uB825\uD558\uC2E0 \uC870\uAC74\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uAE08\uC561\uC744 \uD655\uC815\uD560 \uC218 \uC5C6\uB294 \uACBD\uC6B0\uC785\uB2C8\uB2E4 \u2014 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4." : "\uACC4\uC0B0 \uC5D4\uC9C4\uC5D0 \uC5F0\uACB0\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4 \u2014 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC740 \uC0C1\uD0DC\uC5D0\uC11C\uB294 \uAE08\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."]);
 }
+function cgtDeadlineWarnText(w) {
+  if (!w) return "";
+  return "\uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uCC98\uBD84 \uAE30\uD55C " + w.date + "(\uC0C8 \uC9D1 \uCDE8\uB4DD\uC77C\uBD80\uD130 " + cgtTemp2Phrase(w.years) + ") \u2014 \uC774 \uB0A0\uC744 \uB118\uACA8 \uC591\uB3C4\uD558\uBA74 \uC608\uC0C1 \uC138\uBD80\uB2F4 " + formatWon(w.missedTax);
+}
+function cgtTimingTipText(t) {
+  if (!t) return "";
+  return String(t.label || "").split(" \u2014 ")[0] + " \uC2DC\uC810(" + t.date + ")\uC5D0 \uC591\uB3C4\uD558\uBA74 \uC57D " + formatWon(t.saving) + " \uC904\uC5B4\uB4E6(\uC57D " + t.months + "\uAC1C\uC6D4 \uB4A4" + (t.exempt ? ", \uBE44\uACFC\uC138 \uC694\uAC74 \uCDA9\uC871" : "") + ")";
+}
+function cgtOrderTipText(o, totalTax) {
+  if (!o) return "";
+  return "\uB2E4\uB978 \uC9D1\uC744 \uBA3C\uC800 \uC815\uB9AC\uD558\uACE0 \uC774 \uC9D1\uC744 \uB9C8\uC9C0\uB9C9(1\uC8FC\uD0DD)\uC5D0 \uC591\uB3C4\uD558\uBA74 " + formatWon(o.tax) + (o.exempt ? "(\uBE44\uACFC\uC138)" : "") + " \u2014 \uC9C0\uAE08(" + formatWon(totalTax) + ")\uBCF4\uB2E4 \uC57D " + formatWon(o.saving) + " \uC904\uC5B4\uB4E6";
+}
 function buildReportDetail(answers, calc, commentary) {
   const L = [];
   L.push("\u25A0 \uACE0\uAC1D \uC785\uB825 \uC815\uBCF4");
@@ -3249,7 +3261,7 @@ function buildReportDetail(answers, calc, commentary) {
   L.push("  \xB7 \uC0B0\uCD9C\uC138\uC561: " + formatWon(calc.baseTax));
   L.push("  \xB7 \uC9C0\uBC29\uC18C\uB4DD\uC138: " + formatWon(calc.localTax));
   L.push("  \xB7 \uCD1D \uC138\uBD80\uB2F4: " + formatWon(calc.totalTax) + " (\uC2E4\uD6A8\uC138\uC728 " + (calc.effectiveRate || 0).toFixed(1) + "%)");
-  const notes = [calc.multiHouseNote, calc.temp2Assumption, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, calc.deadlineWarn].filter(Boolean);
+  const notes = [calc.multiHouseNote, calc.temp2Assumption, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, cgtDeadlineWarnText(calc.deadlineWarn)].filter(Boolean);
   const ew = calc.engineWarnings || [];
   if (notes.length || ew.length) {
     L.push("");
@@ -3260,8 +3272,8 @@ function buildReportDetail(answers, calc, commentary) {
   if (calc.timingTip || calc.orderTip) {
     L.push("");
     L.push("\u25A0 \uC808\uC138 \uAC00\uB2A5\uC131");
-    if (calc.timingTip) L.push("  \xB7 \uC591\uB3C4\uC2DC\uC810: " + calc.timingTip);
-    if (calc.orderTip) L.push("  \xB7 \uCC98\uBD84\uC21C\uC11C: " + calc.orderTip);
+    if (calc.timingTip) L.push("  \xB7 \uC591\uB3C4\uC2DC\uC810: " + cgtTimingTipText(calc.timingTip));
+    if (calc.orderTip) L.push("  \xB7 \uCC98\uBD84\uC21C\uC11C: " + cgtOrderTipText(calc.orderTip, calc.totalTax));
   }
   L.push("");
   L.push("\u25A0 \uC790\uB3D9 \uBD84\uC11D");
@@ -3437,7 +3449,7 @@ async function callEngineBody(body) {
 const CGT_ENGINE_REQUIRED = ["\uACFC\uC138\uD45C\uC900", "\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4", "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C", "\uAE30\uBCF8\uACF5\uC81C"];
 function cgtEngineVerdict(c) {
   if (!c || typeof c !== "object" || Array.isArray(c)) return "down";
-  if (c["\uC624\uB958"]) return "refused";
+  if (c["\uC624\uB958"] || c.error || c.detail) return "refused";
   if (Object.prototype.hasOwnProperty.call(c, "\uC0C1\uD0DC") && c["\uC0C1\uD0DC"] !== "ok") return "refused";
   if (!window.jtValidCalc(c, CGT_ENGINE_REQUIRED) || !Number.isFinite(c["\uC591\uB3C4\uCC28\uC775"])) return "down";
   return "ok";
@@ -3705,18 +3717,21 @@ function JTReportCGT({ setRoute, onBack }) {
               const months = Math.max(1, Math.round((new Date(best.date) - new Date(now.date)) / (30.44 * 24 * 3600 * 1e3)));
               calc.timingTip = { saving, months, date: best.date, label: best.label, exempt: best.exempt };
             }
-            if (now.tax === 0 && scns.some((s) => !s.now && s.tax > 0) && is2House && answers.otherHouseSource === "bought" && answers.newHouseDate) {
-              const deadlineYears = cgtTemp2DeadlineYears(answers);
-              const deadline = addYears(/* @__PURE__ */ new Date(answers.newHouseDate + "T00:00:00"), deadlineYears || 2);
-              const todayD = /* @__PURE__ */ new Date((answers.transferDate || isoDate(/* @__PURE__ */ new Date())) + "T00:00:00");
-              if (deadline > todayD) {
-                const after = new Date(deadline);
-                after.setDate(after.getDate() + 1);
-                const ejD = await callEngineBody(__spreadProps(__spreadValues({}, mapAnswersToTransfer(answers)), { transfer_date: isoDate(after) }));
-                const cD = cgtAcceptedCalc(ejD);
-                if (cD && cD["\uCD1D\uC138\uBD80\uB2F4"] > 0) calc.deadlineWarn = { date: isoDate(deadline), missedTax: cD["\uCD1D\uC138\uBD80\uB2F4"], years: deadlineYears };
-              }
-            }
+          }
+        } catch (e) {
+        }
+      }
+      if (calc.precise && calc.totalTax === 0 && is2House && answers.otherHouseSource === "bought" && isValidISODate(answers.newHouseDate || "")) {
+        try {
+          const deadlineYears = cgtTemp2DeadlineYears(answers);
+          const deadline = addYears(/* @__PURE__ */ new Date(answers.newHouseDate + "T00:00:00"), deadlineYears || 2);
+          const todayD = /* @__PURE__ */ new Date((answers.transferDate || isoDate(/* @__PURE__ */ new Date())) + "T00:00:00");
+          if (deadline > todayD) {
+            const after = new Date(deadline);
+            after.setDate(after.getDate() + 1);
+            const ejD = await callEngineBody(__spreadProps(__spreadValues({}, mapAnswersToTransfer(answers)), { transfer_date: isoDate(after) }));
+            const cD = cgtAcceptedCalc(ejD);
+            if (cD && cD["\uCD1D\uC138\uBD80\uB2F4"] > 0) calc.deadlineWarn = { date: isoDate(deadline), missedTax: cD["\uCD1D\uC138\uBD80\uB2F4"], years: deadlineYears };
           }
         } catch (e) {
         }
@@ -3786,7 +3801,7 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
           // 비과세(또는 차익 없음) — 낼 세금 없음. "절세"가 아니라 "비과세 유지"가 핵심
           headline: "\uACC4\uC0B0\uC0C1 \uB0BC \uC591\uB3C4\uC18C\uB4DD\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4(\uBE44\uACFC\uC138 \uB610\uB294 \uCC28\uC775 \uC5C6\uC74C). \uBE44\uACFC\uC138 \uC694\uAC74\uC744 \uB05D\uAE4C\uC9C0 \uC720\uC9C0\uD558\uB294 \uAC83\uC774 \uD575\uC2EC\uC785\uB2C8\uB2E4.",
           cautions: [
-            { title: "\uBE44\uACFC\uC138 \uC694\uAC74 \uC720\uC9C0", detail: "\uC591\uB3C4\uC77C\uAE4C\uC9C0 \uBCF4\uC720\xB7\uAC70\uC8FC \uC694\uAC74\uACFC 1\uC138\uB300 \uAD6C\uC131, \uC591\uB3C4 \uAE30\uD55C(\uC77C\uC2DC\uC801 2\uC8FC\uD0DD 3\uB144 \uB4F1)\uC744 \uADF8\uB300\uB85C \uCDA9\uC871\uD574\uC57C \uBE44\uACFC\uC138\uAC00 \uC720\uC9C0\uB429\uB2C8\uB2E4." },
+            { title: "\uBE44\uACFC\uC138 \uC694\uAC74 \uC720\uC9C0", detail: "\uC591\uB3C4\uC77C\uAE4C\uC9C0 \uBCF4\uC720\xB7\uAC70\uC8FC \uC694\uAC74\uACFC 1\uC138\uB300 \uAD6C\uC131, \uC591\uB3C4 \uAE30\uD55C(\uC77C\uC2DC\uC801 2\uC8FC\uD0DD\uC758 \uCC98\uBD84 \uAE30\uD55C \uB4F1)\uC744 \uADF8\uB300\uB85C \uCDA9\uC871\uD574\uC57C \uBE44\uACFC\uC138\uAC00 \uC720\uC9C0\uB429\uB2C8\uB2E4." },
             { title: "\uC785\uC99D \uC790\uB8CC \uC900\uBE44", detail: "\uC8FC\uBBFC\uB4F1\uB85D\uCD08\uBCF8\xB7\uC2E4\uAC70\uB798 \uB0B4\uC5ED \uB4F1 \uBCF4\uC720\xB7\uAC70\uC8FC\xB7\uC138\uB300\uB97C \uC785\uC99D\uD560 \uC790\uB8CC\uB97C \uBBF8\uB9AC \uAC16\uCDB0 \uB450\uC138\uC694." },
             { title: "\uB2E4\uB978 \uC8FC\uD0DD\xB712\uC5B5 \uCD08\uACFC", detail: "\uC138\uB300 \uB0B4 \uB2E4\uB978 \uC8FC\uD0DD\uC774 \uC788\uAC70\uB098 \uC591\uB3C4\uAC00\uAC00 12\uC5B5\uC744 \uB118\uC73C\uBA74 \uACB0\uACFC\uAC00 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4 \uC0AC\uC2E4\uAD00\uACC4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4." }
           ],

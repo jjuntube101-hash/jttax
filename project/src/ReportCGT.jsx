@@ -382,6 +382,24 @@ function cgtFallbackGaps(answers, calc) {
     : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }
 
+/* 상담 본문용 문장 — 결과 화면이 객체로 들고 있는 안내를 «읽히는 글»로 바꾼다. 종전에는 객체를 문자열에 그대로 이어
+   붙여 본문에 「[object Object]」가 찍혔다(Codex TASK-261004-022 R2-F3). 금액은 전부 엔진이 준 값이다. */
+function cgtDeadlineWarnText(w) {
+  if (!w) return '';
+  return '일시적 2주택 처분 기한 ' + w.date + '(새 집 취득일부터 ' + cgtTemp2Phrase(w.years) + ') — 이 날을 넘겨 양도하면 예상 세부담 '
+    + formatWon(w.missedTax);
+}
+function cgtTimingTipText(t) {
+  if (!t) return '';
+  return String(t.label || '').split(' — ')[0] + ' 시점(' + t.date + ')에 양도하면 약 ' + formatWon(t.saving) + ' 줄어듦(약 '
+    + t.months + '개월 뒤' + (t.exempt ? ', 비과세 요건 충족' : '') + ')';
+}
+function cgtOrderTipText(o, totalTax) {
+  if (!o) return '';
+  return '다른 집을 먼저 정리하고 이 집을 마지막(1주택)에 양도하면 ' + formatWon(o.tax) + (o.exempt ? '(비과세)' : '')
+    + ' — 지금(' + formatWon(totalTax) + ')보다 약 ' + formatWon(o.saving) + ' 줄어듦';
+}
+
 function buildReportDetail(answers, calc, commentary) {
   const L = [];
   L.push('■ 고객 입력 정보');
@@ -404,7 +422,7 @@ function buildReportDetail(answers, calc, commentary) {
   L.push('  · 산출세액: ' + formatWon(calc.baseTax));
   L.push('  · 지방소득세: ' + formatWon(calc.localTax));
   L.push('  · 총 세부담: ' + formatWon(calc.totalTax) + ' (실효세율 ' + (calc.effectiveRate || 0).toFixed(1) + '%)');
-  const notes = [calc.multiHouseNote, calc.temp2Assumption, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, calc.deadlineWarn].filter(Boolean);
+  const notes = [calc.multiHouseNote, calc.temp2Assumption, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, cgtDeadlineWarnText(calc.deadlineWarn)].filter(Boolean);
   const ew = calc.engineWarnings || [];
   if (notes.length || ew.length) {
     L.push('');
@@ -415,8 +433,8 @@ function buildReportDetail(answers, calc, commentary) {
   if (calc.timingTip || calc.orderTip) {
     L.push('');
     L.push('■ 절세 가능성');
-    if (calc.timingTip) L.push('  · 양도시점: ' + calc.timingTip);
-    if (calc.orderTip) L.push('  · 처분순서: ' + calc.orderTip);
+    if (calc.timingTip) L.push('  · 양도시점: ' + cgtTimingTipText(calc.timingTip));
+    if (calc.orderTip) L.push('  · 처분순서: ' + cgtOrderTipText(calc.orderTip, calc.totalTax));
   }
   L.push('');
   L.push('■ 자동 분석');
@@ -639,7 +657,9 @@ async function callEngineBody(body) {
 const CGT_ENGINE_REQUIRED = ['과세표준', '세액', '지방소득세', '총세부담', '장기보유특별공제', '기본공제'];
 function cgtEngineVerdict(c) {
   if (!c || typeof c !== 'object' || Array.isArray(c)) return 'down';
-  if (c['오류']) return 'refused';
+  /* 공통 검증기(jtValidCalc)가 무효로 보는 명시적 오류 필드(error·detail)도 «거부»다 — 무결성 검사로 넘기면
+     「연결 실패」로 잘못 안내된다(Codex TASK-261004-022 R2-F4). */
+  if (c['오류'] || c.error || c.detail) return 'refused';
   /* 상태 키는 새 엔진부터 있다. 구 엔진(키 없음)은 «오류 없음 + 유효성 통과»로만 받는다. */
   if (Object.prototype.hasOwnProperty.call(c, '상태') && c['상태'] !== 'ok') return 'refused';
   /* 양도차손(음수)은 정상이라 jtValidCalc(≥0) 대상에서 빼고 유한한 수인지만 본다 */
@@ -957,22 +977,27 @@ function JTReportCGT({ setRoute, onBack }) {
               const months = Math.max(1, Math.round((new Date(best.date) - new Date(now.date)) / (30.44 * 24 * 3600 * 1000)));
               calc.timingTip = { saving, months, date: best.date, label: best.label, exempt: best.exempt };
             }
-            // 지금 비과세인데 미래에 과세로 바뀌면(일시적2주택 기한 등) "비과세 기한 경고"
-            if (now.tax === 0 && scns.some(s => !s.now && s.tax > 0)
-                && is2House && answers.otherHouseSource === 'bought' && answers.newHouseDate) {
-              // 기한 연수는 cgtTemp2Years(소득세법 시행령 §155①). 「모름」(null)이면 엔진과 같은 2년 기준으로 날짜를 잡고 두 기한을 함께 안내한다.
-              const deadlineYears = cgtTemp2DeadlineYears(answers);
-              const deadline = addYears(new Date(answers.newHouseDate + 'T00:00:00'), deadlineYears || 2);
-              const todayD = new Date((answers.transferDate || isoDate(new Date())) + 'T00:00:00');
-              if (deadline > todayD) {
-                const after = new Date(deadline); after.setDate(after.getDate() + 1);
-                const ejD = await callEngineBody({ ...mapAnswersToTransfer(answers), transfer_date: isoDate(after) });
-                const cD = cgtAcceptedCalc(ejD);
-                if (cD && cD['총세부담'] > 0) calc.deadlineWarn = { date: isoDate(deadline), missedTax: cD['총세부담'], years: deadlineYears };
-              }
-            }
           }
         } catch (e) { /* 시나리오 실패해도 본 결과는 유지 */ }
+      }
+
+      // ── 비과세 기한 경고 — 지금 비과세인 일시적 2주택(사서 갈아탐)이면 «처분 기한 다음 날»을 엔진에 직접 물어본다.
+      //    보유기간 시나리오(보유 기념일)에 기대면 기한이 그 날짜들보다 뒤일 때 경고가 빠진다(Codex TASK-261004-022 R2-F1).
+      //    기한 연수는 cgtTemp2DeadlineYears(소득세법 시행령 §155①). 「모름」(null)이면 엔진과 같은 2년 기준으로 날짜를 잡고
+      //    두 기한을 함께 안내한다. 보조 호출이므로 실패하면 이 안내만 생략한다.
+      if (calc.precise && calc.totalTax === 0 && is2House && answers.otherHouseSource === 'bought'
+          && isValidISODate(answers.newHouseDate || '')) {
+        try {
+          const deadlineYears = cgtTemp2DeadlineYears(answers);
+          const deadline = addYears(new Date(answers.newHouseDate + 'T00:00:00'), deadlineYears || 2);
+          const todayD = new Date((answers.transferDate || isoDate(new Date())) + 'T00:00:00');
+          if (deadline > todayD) {
+            const after = new Date(deadline); after.setDate(after.getDate() + 1);
+            const ejD = await callEngineBody({ ...mapAnswersToTransfer(answers), transfer_date: isoDate(after) });
+            const cD = cgtAcceptedCalc(ejD);
+            if (cD && cD['총세부담'] > 0) calc.deadlineWarn = { date: isoDate(deadline), missedTax: cD['총세부담'], years: deadlineYears };
+          }
+        } catch (e) { /* 기한 안내만 생략 */ }
       }
 
       // ── 처분 순서 전략 — 다주택(2·3주택)이 과세될 때: 다른 집 먼저 정리 후 이 집을 1주택 비과세로 ──
@@ -1043,7 +1068,7 @@ cautions 3개, saving_ideas 2~3개.`;
           // 비과세(또는 차익 없음) — 낼 세금 없음. "절세"가 아니라 "비과세 유지"가 핵심
           headline: '계산상 낼 양도소득세가 없습니다(비과세 또는 차익 없음). 비과세 요건을 끝까지 유지하는 것이 핵심입니다.',
           cautions: [
-            { title: '비과세 요건 유지', detail: '양도일까지 보유·거주 요건과 1세대 구성, 양도 기한(일시적 2주택 3년 등)을 그대로 충족해야 비과세가 유지됩니다.' },
+            { title: '비과세 요건 유지', detail: '양도일까지 보유·거주 요건과 1세대 구성, 양도 기한(일시적 2주택의 처분 기한 등)을 그대로 충족해야 비과세가 유지됩니다.' },
             { title: '입증 자료 준비', detail: '주민등록초본·실거래 내역 등 보유·거주·세대를 입증할 자료를 미리 갖춰 두세요.' },
             { title: '다른 주택·12억 초과', detail: '세대 내 다른 주택이 있거나 양도가가 12억을 넘으면 결과가 달라질 수 있어 사실관계 확인이 필요합니다.' },
           ],
