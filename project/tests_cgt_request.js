@@ -264,7 +264,12 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
   const T = t.__t;
   const dw = T.cgtDeadlineWarnText({ date: '2028-08-04', years: 2, missedTax: 107460000 });
   ok(dw.includes('2028-08-04') && dw.includes('2년') && dw.includes('1억 746만원') && !dw.includes('[object'), '기한 경고가 읽히는 문장으로 나간다');
-  ok(T.cgtDeadlineWarnText({ date: '2028-08-04', years: null, missedTax: 1 }).includes('2년, 아니면 3년'), '「모름」이면 두 기한을 함께 적는다');
+  const dwUnknown = T.cgtDeadlineWarnText({ date: '2028-08-04', years: null, missedTax: 107460000 });
+  eq(dwUnknown, '일시적 2주택 처분 기한: 두 집이 모두 조정대상지역이었다면 새 집 취득일부터 2년이 되는 2028-08-04, 아니면 3년 — 2년 기한에 해당하는 경우 이 날을 넘겨 양도하면 예상 세부담 1억 746만원',
+    '「모름」이면 세액에 «2년 기한에 해당하는 경우»라는 조건을 붙인다(R3-F1)');
+  ok(/if \(deadline >= todayD\)/.test(code) && !/if \(deadline > todayD\)/.test(code), '기한 당일도 조회 대상이다(R3-F2)');
+  eq(T.cgtEngineVerdict({ errors: ['unsupported'], 과세표준: 1, 세액: 1, 지방소득세: 1, 총세부담: 1, 장기보유특별공제: 0, 기본공제: 0, 양도차익: 1 }), 'refused', 'errors 응답 → 거부(R3-F3)');
+  eq(T.cgtEngineVerdict({ success: false, 과세표준: 1, 세액: 1, 지방소득세: 1, 총세부담: 1, 장기보유특별공제: 0, 기본공제: 0, 양도차익: 1 }), 'refused', 'success:false 응답 → 거부(R3-F3)');
   eq(T.cgtDeadlineWarnText(null), '', '기한 경고 없음');
   const tt = T.cgtTimingTipText({ saving: 20000000, months: 12, date: '2027-10-05', label: '보유 3년 — 장특', exempt: false });
   ok(tt.includes('2027-10-05') && tt.includes('2,000만원') && tt.includes('12개월') && !tt.includes('[object'), '양도시점 안내 문장');

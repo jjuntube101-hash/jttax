@@ -386,6 +386,12 @@ function cgtFallbackGaps(answers, calc) {
    붙여 본문에 「[object Object]」가 찍혔다(Codex TASK-261004-022 R2-F3). 금액은 전부 엔진이 준 값이다. */
 function cgtDeadlineWarnText(w) {
   if (!w) return '';
+  /* 「모름」(years 없음): 날짜와 세액은 «두 집이 모두 조정대상지역이어서 기한이 2년인 경우»의 것이다 — 조건을 붙여 적는다
+     (Codex TASK-261004-022 R3-F1: 조건 없이 적으면 3년 대상자에게도 그 세액이 부과되는 것처럼 읽힌다). */
+  if (w.years !== 2 && w.years !== 3) {
+    return '일시적 2주택 처분 기한: 두 집이 모두 조정대상지역이었다면 새 집 취득일부터 2년이 되는 ' + w.date
+      + ', 아니면 3년 — 2년 기한에 해당하는 경우 이 날을 넘겨 양도하면 예상 세부담 ' + formatWon(w.missedTax);
+  }
   return '일시적 2주택 처분 기한 ' + w.date + '(새 집 취득일부터 ' + cgtTemp2Phrase(w.years) + ') — 이 날을 넘겨 양도하면 예상 세부담 '
     + formatWon(w.missedTax);
 }
@@ -659,7 +665,7 @@ function cgtEngineVerdict(c) {
   if (!c || typeof c !== 'object' || Array.isArray(c)) return 'down';
   /* 공통 검증기(jtValidCalc)가 무효로 보는 명시적 오류 필드(error·detail)도 «거부»다 — 무결성 검사로 넘기면
      「연결 실패」로 잘못 안내된다(Codex TASK-261004-022 R2-F4). */
-  if (c['오류'] || c.error || c.detail) return 'refused';
+  if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return 'refused';   // jtValidCalc 의 오류 필드와 같은 목록(R3-F3)
   /* 상태 키는 새 엔진부터 있다. 구 엔진(키 없음)은 «오류 없음 + 유효성 통과»로만 받는다. */
   if (Object.prototype.hasOwnProperty.call(c, '상태') && c['상태'] !== 'ok') return 'refused';
   /* 양도차손(음수)은 정상이라 jtValidCalc(≥0) 대상에서 빼고 유한한 수인지만 본다 */
@@ -991,7 +997,8 @@ function JTReportCGT({ setRoute, onBack }) {
           const deadlineYears = cgtTemp2DeadlineYears(answers);
           const deadline = addYears(new Date(answers.newHouseDate + 'T00:00:00'), deadlineYears || 2);
           const todayD = new Date((answers.transferDate || isoDate(new Date())) + 'T00:00:00');
-          if (deadline > todayD) {
+          /* 기한 «당일»도 포함한다 — 그날이 마지막 비과세 가능일이다(Codex TASK-261004-022 R3-F2) */
+          if (deadline >= todayD) {
             const after = new Date(deadline); after.setDate(after.getDate() + 1);
             const ejD = await callEngineBody({ ...mapAnswersToTransfer(answers), transfer_date: isoDate(after) });
             const cD = cgtAcceptedCalc(ejD);

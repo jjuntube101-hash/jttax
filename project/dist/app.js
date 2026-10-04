@@ -3227,6 +3227,9 @@ function cgtFallbackGaps(answers, calc) {
 }
 function cgtDeadlineWarnText(w) {
   if (!w) return "";
+  if (w.years !== 2 && w.years !== 3) {
+    return "\uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uCC98\uBD84 \uAE30\uD55C: \uB450 \uC9D1\uC774 \uBAA8\uB450 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB2E4\uBA74 \uC0C8 \uC9D1 \uCDE8\uB4DD\uC77C\uBD80\uD130 2\uB144\uC774 \uB418\uB294 " + w.date + ", \uC544\uB2C8\uBA74 3\uB144 \u2014 2\uB144 \uAE30\uD55C\uC5D0 \uD574\uB2F9\uD558\uB294 \uACBD\uC6B0 \uC774 \uB0A0\uC744 \uB118\uACA8 \uC591\uB3C4\uD558\uBA74 \uC608\uC0C1 \uC138\uBD80\uB2F4 " + formatWon(w.missedTax);
+  }
   return "\uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uCC98\uBD84 \uAE30\uD55C " + w.date + "(\uC0C8 \uC9D1 \uCDE8\uB4DD\uC77C\uBD80\uD130 " + cgtTemp2Phrase(w.years) + ") \u2014 \uC774 \uB0A0\uC744 \uB118\uACA8 \uC591\uB3C4\uD558\uBA74 \uC608\uC0C1 \uC138\uBD80\uB2F4 " + formatWon(w.missedTax);
 }
 function cgtTimingTipText(t) {
@@ -3449,7 +3452,7 @@ async function callEngineBody(body) {
 const CGT_ENGINE_REQUIRED = ["\uACFC\uC138\uD45C\uC900", "\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4", "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C", "\uAE30\uBCF8\uACF5\uC81C"];
 function cgtEngineVerdict(c) {
   if (!c || typeof c !== "object" || Array.isArray(c)) return "down";
-  if (c["\uC624\uB958"] || c.error || c.detail) return "refused";
+  if (c["\uC624\uB958"] || c.error || c.errors || c.detail || c.success === false) return "refused";
   if (Object.prototype.hasOwnProperty.call(c, "\uC0C1\uD0DC") && c["\uC0C1\uD0DC"] !== "ok") return "refused";
   if (!window.jtValidCalc(c, CGT_ENGINE_REQUIRED) || !Number.isFinite(c["\uC591\uB3C4\uCC28\uC775"])) return "down";
   return "ok";
@@ -3726,7 +3729,7 @@ function JTReportCGT({ setRoute, onBack }) {
           const deadlineYears = cgtTemp2DeadlineYears(answers);
           const deadline = addYears(/* @__PURE__ */ new Date(answers.newHouseDate + "T00:00:00"), deadlineYears || 2);
           const todayD = /* @__PURE__ */ new Date((answers.transferDate || isoDate(/* @__PURE__ */ new Date())) + "T00:00:00");
-          if (deadline > todayD) {
+          if (deadline >= todayD) {
             const after = new Date(deadline);
             after.setDate(after.getDate() + 1);
             const ejD = await callEngineBody(__spreadProps(__spreadValues({}, mapAnswersToTransfer(answers)), { transfer_date: isoDate(after) }));
