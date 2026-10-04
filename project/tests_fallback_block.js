@@ -75,7 +75,8 @@ const GIFT = (x) => giftFallbackGaps(x, DOWN);
    입력별 판정은 «엔진 값이 있을 때(OK)에도 남는 ①층(입력 불확정)»뿐이다. 그래서 입력별 시험은 OK 로 부른다. */
 const ACQ = (x) => acqFallbackGaps(x, OK);
 const PROP = (x) => propFallbackGaps(x, DOWN);
-const CGT = (x) => cgtFallbackGaps(x, DOWN);
+/* ★ 양도세도 261004 에 자체 계산식(폴백)을 삭제했다 — 취득세와 같다. 입력별 시험은 «엔진 값이 있을 때(OK)에도 남는 ①층»뿐이라 OK 로 부른다. */
+const CGT = (x) => cgtFallbackGaps(x, OK);
 /* ⚠️ 거주자 여부는 «yes 로 확인된» 경우만 통과한다(260806 하드닝) — 미입력도 막는다.
    빠른 계산에서 이 문항이 안 나와 undefined 로 새던 P0 를 닫은 결과다.
    그래서 상속·증여의 «통과» 케이스에는 isResident:'yes' 를 반드시 넣는다. */
@@ -152,24 +153,38 @@ eq('전년도 세액 입력 → 차단', PROP({ propertyKind: '주택', priorYea
 eq('건축물 → 차단', PROP({ propertyKind: '건축물' }).length > 0, true);
 eq('일반 주택 → 통과', PROP({ propertyKind: '주택', isOneHouse: 'yes' }).length, 0);
 
-console.log('\n════ 양도세 ════');
-eq('승계취득 입주권 → 차단', CGT({ assetType: 'occupancy_succ' }).length > 0, true);
-eq('원조합원 입주권 → 차단', CGT({ assetType: 'occupancy_orig' }).length > 0, true);
-eq('조정 1주택+입주권 동시보유 → 차단',
-   CGT({ assetType: 'house_1', houseConcurrentRight: 'occupancy', adjustedZone: 'yes' }).length > 0, true);
-/* 비조정도 막아야 한다 — 일시적 특례를 판정 못 해 «과대» 방향으로 틀린다.
-   조정 조건이 다시 붙으면 이 케이스에서 잡힌다 (Codex P2) */
-eq('«비»조정 1주택+입주권 동시보유도 차단',
-   CGT({ assetType: 'house_1', houseConcurrentRight: 'occupancy', adjustedZone: 'no', acqAdjustedZone: 'no' }).length > 0, true);
-eq('취득당시 조정지역 «모름» → 차단', CGT({ assetType: 'house_1', acqAdjustedZone: 'unsure' }).length > 0, true);
+console.log('\n════ 양도세 — ①입력 불확정 층 (엔진 값이 있어도 막는다) ════');
+eq('취득당시 조정지역 «모름» → 차단 (1주택)', CGT({ assetType: 'house_1', acqAdjustedZone: 'unsure' }).length > 0, true);
 /* 취득 당시 조정지역은 1주택 거주요건에만 쓰인다 — 2·3주택까지 막으면 과잉 차단 (Codex P2) */
 eq('2주택 + 취득당시 «모름» → 통과 (세액에 영향이 없다)',
    CGT({ assetType: 'house_2', acqAdjustedZone: 'unsure' }).length, 0);
-eq('전입일이 취득일보다 앞섬 → 차단',
-   CGT({ assetType: 'house_1', acquiredDate: '2020-01-01', moveInDate: '2010-01-01' }).length > 0, true);
 eq('평범한 1주택 → 통과',
    CGT({ assetType: 'house_1', acqAdjustedZone: 'no', acquiredDate: '2015-01-01', moveInDate: '2015-06-01' }).length, 0);
-eq('상가(비주택) → 통과 (단기세율·기본세율은 폴백도 맞다)', CGT({ assetType: 'commercial' }).length, 0);
+eq('상가(비주택) → 통과', CGT({ assetType: 'commercial' }).length, 0);
+
+console.log('\n════ 양도세 — 종전 ②층(간이 폴백 한계) 삭제 확인: 엔진 값이 있으면 막지 않는다 ════');
+/* 아래는 종전에 «간이 계산이 못 다뤄서» 막던 입력이다. 이제 엔진이 직접 계산하므로 이 함수는 막지 않는다.
+   다시 이 목록이 막히기 시작하면 «폴백이 되살아난» 것이므로 여기서 울린다. */
+[['승계취득 입주권', { assetType: 'occupancy_succ' }],
+ ['원조합원 입주권', { assetType: 'occupancy_orig' }],
+ ['조정 1주택 + 입주권 동시보유', { assetType: 'house_1', houseConcurrentRight: 'occupancy', adjustedZone: 'yes', acqAdjustedZone: 'no' }],
+ ['비조정 1주택 + 분양권 동시보유', { assetType: 'house_1', houseConcurrentRight: 'presale', adjustedZone: 'no', acqAdjustedZone: 'no' }],
+ ['전입일이 취득일보다 앞섬', { assetType: 'house_1', acqAdjustedZone: 'no', acquiredDate: '2020-01-01', moveInDate: '2010-01-01' }],
+ ['분양권', { assetType: 'presale' }],
+ ['토지(비사업용)', { assetType: 'commercial', nonHouseType: 'land', landUse: 'non_business' }],
+ ['대체주택', { assetType: 'replacement' }],
+].forEach(([name, ans]) => eq(`${name} · 엔진 값이 있으면 이 함수는 막지 않는다`, CGT(ans).length, 0));
+
+console.log('\n════ 양도세 — 엔진 값이 없으면 «모든 입력»이 막힌다 (자체 계산식 없음, 261004) ════');
+[['평범한 1주택', { assetType: 'house_1', acqAdjustedZone: 'no', acquiredDate: '2015-01-01', moveInDate: '2015-06-01' }],
+ ['상가', { assetType: 'commercial' }],
+ ['2주택', { assetType: 'house_2' }],
+ ['빈 입력', {}],
+].forEach(([name, ans]) => {
+  eq(`${name} · 엔진 연결 실패(precise:false) → 차단`, cgtFallbackGaps(ans, DOWN).length > 0, true);
+  eq(`${name} · engineState:down → 차단, 사유에 「연결하지 못했습니다」`, cgtFallbackGaps(ans, { precise: false, engineState: 'down' }).some((g) => g.includes('연결하지 못했습니다')), true);
+  eq(`${name} · engineState:refused → 차단, 사유에 「세무사 확인」`, cgtFallbackGaps(ans, REFUSED).some((g) => g.includes('세무사 확인')), true);
+});
 
 /* ── «불확정 입력»은 엔진이 살아 있어도 막는다 ──────────────────────────────
    사용자가 「모른다」고 한 사실을 그대로 보내면 엔진은 필드가 없다는 이유로 조용히
@@ -255,9 +270,9 @@ console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 �
      엔진이 죽어도 폴백이 감당하는 조합이어야 안심하고 통과시킬 수 있다.
      ②층에 걸리는 입력을 여기 넣으면 그건 「엔진 없으면 막아야 할 것」을 통과 목록에
      올린 셈이라, 나중에 조건이 흔들릴 때 이 줄이 먼저 울린다.
-     ★ 취득세는 261004 에 폴백을 삭제해 «엔진이 죽으면 항상 막는다» — 그래서 취득세 줄은
+     ★ 취득세·양도세는 261004 에 폴백을 삭제해 «엔진이 죽으면 항상 막는다» — 그래서 취득세 줄은
         아래에서 «엔진 죽음 → 막힘»으로 따로 확인한다(여기서는 DOWN 통과를 요구하지 않는다). */
-  if (fn === acqFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
+  if (fn === acqFallbackGaps || fn === cgtFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
   else eq(`${name} · 엔진이 죽어도 폴백이 감당한다`, fn(ans, DOWN).length, 0);
 });
 

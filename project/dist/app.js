@@ -2895,32 +2895,31 @@ var __spreadValues = (a, b) => {
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 const { useState: useCgtState } = React;
-const CGT_BRACKETS = [
-  [14e6, 0.06, 0],
-  [5e7, 0.15, 126e4],
-  [88e6, 0.24, 576e4],
-  [15e7, 0.35, 1544e4],
-  [3e8, 0.38, 1994e4],
-  [5e8, 0.4, 2594e4],
-  [1e9, 0.42, 3594e4],
-  [Infinity, 0.45, 6594e4]
-];
-function calcBaseTax(taxBase) {
-  if (taxBase <= 0) return 0;
-  for (const [limit, rate, deduct] of CGT_BRACKETS) {
-    if (taxBase <= limit) return Math.round(taxBase * rate - deduct);
-  }
-  return 0;
+function cgtTemp2Visible(a) {
+  return a.assetType === "house_2" && a.otherHouseSource === "bought" && isValidISODate(a.newHouseDate || "") && a.newHouseDate >= "2026-08-04";
 }
-function calcLtDeductionRate(years, residenceYears, isOwnOccupied, is1House) {
-  if (years < 3) return 0;
-  if (is1House && isOwnOccupied) {
-    const holdRate = Math.min(Math.floor(years), 10) * 0.04;
-    const liveRate = Math.min(Math.floor(residenceYears || 0), 10) * 0.04;
-    return Math.min(holdRate + liveRate, 0.8);
+function cgtApplyAnswer(a, id, v) {
+  const next = Object.assign({}, a);
+  next[id] = v;
+  if ((id === "assetType" || id === "otherHouseSource" || id === "newHouseDate") && a[id] !== v) {
+    delete next.temp2Zone;
   }
-  const rate = (Math.min(Math.floor(years), 15) - 3) * 0.02 + 0.06;
-  return Math.min(rate, 0.3);
+  return next;
+}
+function cgtTemp2Years(answers, todayIso) {
+  if (answers.assetType !== "house_2" || answers.otherHouseSource !== "bought") return null;
+  const nd = answers.newHouseDate || "";
+  if (!isValidISODate(nd)) return null;
+  const td = answers.transferDate || todayIso || isoDate(/* @__PURE__ */ new Date());
+  if (nd <= "2026-08-03" || td <= "2026-09-30") return 3;
+  if (answers.temp2Zone === "yes") return 2;
+  if (answers.temp2Zone === "no" || answers.temp2Zone === "contract") return 3;
+  return null;
+}
+function cgtTemp2Phrase(years) {
+  if (years === 2) return "2\uB144";
+  if (years === 3) return "3\uB144";
+  return "\uB450 \uC9D1\uC774 \uBAA8\uB450 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB2E4\uBA74 2\uB144, \uC544\uB2C8\uBA74 3\uB144";
 }
 const CGT_QS = [
   {
@@ -3067,6 +3066,21 @@ const CGT_QS = [
     optional: true,
     showIf: (a) => a.assetType === "house_2" && a.otherHouseSource === "bought"
   },
+  /* 261004: 일시적 2주택 «두 집 모두 조정대상지역» 문항. 2026-08-04 이후 취득한 새 집에서만 묻는다.
+     표시 조건은 cgtTemp2Visible 한 곳이고, 요청 변환(mapAnswersToTransfer)·기한 연수(cgtTemp2Years)도 같은 함수를 쓴다. */
+  {
+    id: "temp2Zone",
+    section: "\uC8FC\uD0DD \uC0C1\uD669",
+    q: "\uC0C8 \uC9D1\uC744 \uC0B4 \uB54C, \uC9C0\uAE08 \uD30C\uB294 \uC9D1\uACFC \uC0C8 \uC9D1\uC774 \u300C\uB458 \uB2E4\u300D \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC5D0 \uC788\uC5C8\uB098\uC694?",
+    sub: "2026\uB144 10\uC6D4 1\uC77C\uBD80\uD130, \uC885\uC804 \uC8FC\uD0DD\uC774 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC5D0 \uC788\uB294 \uC0C1\uD0DC\uC5D0\uC11C \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC758 \uC0C8 \uC8FC\uD0DD\uC744 \uCDE8\uB4DD\uD55C \uACBD\uC6B0\uC5D0\uB294 \uC885\uC804 \uC8FC\uD0DD\uC744 \uC0C8 \uC9D1 \uCDE8\uB4DD\uC77C\uBD80\uD130 2\uB144 \uC548\uC5D0 \uD314\uC544\uC57C \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uBE44\uACFC\uC138\uB97C \uBC1B\uC2B5\uB2C8\uB2E4(\uADF8 \uBC16\uC5D0\uB294 3\uB144, \uC18C\uB4DD\uC138\uBC95 \uC2DC\uD589\uB839 \xA7155\u2460). 2026\uB144 8\uC6D4 3\uC77C \uC774\uC804\uC5D0 \uC0C8 \uC9D1\uC744 \uACC4\uC57D\uD558\uACE0 \uACC4\uC57D\uAE08\uC744 \uB0B8 \uACBD\uC6B0\uC5D0\uB294 \uC885\uC804\uB300\uB85C 3\uB144\uC785\uB2C8\uB2E4(\uAC19\uC740 \uC601 \uBD80\uCE59 \uC81C36737\uD638 \xA72\u2461). \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC5EC\uBD80\uB294 \uC0C8 \uC9D1 \uCDE8\uB4DD\uC77C \uAE30\uC900\uC785\uB2C8\uB2E4. \uBAA8\uB974\uBA74 \u300C\uBAA8\uB984\u300D\uC744 \uACE0\uB974\uC138\uC694 \u2014 2\uB144\uC774 \uC9C0\uB09C \uC591\uB3C4\uB294 \uACFC\uC138\uB85C \uACC4\uC0B0\uD558\uACE0, \uACB0\uACFC \uD654\uBA74\uC5D0\uC11C \uADF8 \uC804\uC81C\uB97C \uC54C\uB824 \uB4DC\uB9BD\uB2C8\uB2E4.",
+    showIf: (a) => cgtTemp2Visible(a),
+    opts: [
+      ["yes", "\uB124, \uB458 \uB2E4 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED", "2\uB144 \uC548\uC5D0 \uC591\uB3C4"],
+      ["no", "\uC544\uB2C8\uC624", "3\uB144 \uC548\uC5D0 \uC591\uB3C4"],
+      ["contract", "2026\uB144 8\uC6D4 3\uC77C \uC774\uC804\uC5D0 \uACC4\uC57D\uD558\uACE0 \uACC4\uC57D\uAE08\uC744 \uB0C8\uC2B5\uB2C8\uB2E4", "\uC885\uC804\uB300\uB85C 3\uB144"],
+      ["unknown", "\uBAA8\uB984", "2\uB144 \uAE30\uC900\uC73C\uB85C \uACC4\uC0B0"]
+    ]
+  },
   {
     id: "inheritanceDate",
     section: "\uC8FC\uD0DD \uC0C1\uD669",
@@ -3203,28 +3217,7 @@ function cgtFallbackGaps(answers, calc) {
     }
   ]);
   if (calc.precise) return unknown;
-  return unknown.concat(window.jtFallbackGaps([
-    {
-      when: answers.assetType === "occupancy_succ",
-      why: "\uC2B9\uACC4\uCDE8\uB4DD \uC870\uD569\uC6D0\uC785\uC8FC\uAD8C \u2014 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C \uB300\uC0C1\uC774 \uC544\uB2CC\uB370 \uAC04\uC774 \uACC4\uC0B0\uC774 \uACF5\uC81C\uB97C \uC801\uC6A9\uD574 \uC138\uAE08\uC774 \xAB\uC801\uAC8C\xBB \uB098\uC635\uB2C8\uB2E4."
-    },
-    {
-      when: answers.assetType === "occupancy_orig",
-      why: "\uC6D0\uC870\uD569\uC6D0 \uC785\uC8FC\uAD8C \u2014 \uAD00\uB9AC\uCC98\uBD84\uC778\uAC00 \xAB\uC804\xBB \uCC28\uC775\uC5D0\uB9CC \uC7A5\uD2B9\uACF5\uC81C\uAC00 \uBD99\uB294\uB370 \uAC04\uC774 \uACC4\uC0B0\uC740 \uC804\uCCB4 \uCC28\uC775\uC5D0 \uC801\uC6A9\uD574 \uC138\uAE08\uC774 \xAB\uD06C\uAC8C \uC801\uAC8C\xBB \uB098\uC635\uB2C8\uB2E4."
-    },
-    /* 조정지역 조건을 빼는 이유 — 틀리는 «방향»이 지역에 따라 뒤집힐 뿐, 둘 다 틀린다 (260806 Codex P1).
-       · 조정: 중과(+20%p)·장특 배제(§104⑦2호) 미반영 → 세금이 «적게»(실측 5억원대)
-       · 비조정: 일시적 특례(시령 §156의2③·§156의3②) 판정 불가라 무조건 과세 → 비과세여야 할 건이 «많게»
-       «많게»도 사고다. 팔지 말아야 할 이유가 되어 의사결정을 바꾼다. */
-    {
-      when: answers.assetType === "house_1" && (answers.houseConcurrentRight === "occupancy" || answers.houseConcurrentRight === "presale"),
-      why: "\xAB1\uC8FC\uD0DD + \uC785\uC8FC\uAD8C\xB7\uBD84\uC591\uAD8C\xBB \uB3D9\uC2DC \uBCF4\uC720 \u2014 \uBE44\uACFC\uC138 \uBC30\uC81C(\xA789\u2461)\uC640 \uC77C\uC2DC\uC801 \uD2B9\uB840\uB97C \uAC04\uC774 \uACC4\uC0B0\uC774 \uD310\uC815\uD558\uC9C0 \uBABB\uD569\uB2C8\uB2E4."
-    },
-    {
-      when: !!answers.moveInDate && !!answers.acquiredDate && answers.moveInDate < answers.acquiredDate,
-      why: "\uC804\uC785\uC77C\uC774 \uCDE8\uB4DD\uC77C\uBCF4\uB2E4 \uC55E\uC12D\uB2C8\uB2E4 \u2014 \uAC70\uC8FC\uAE30\uAC04\uC774 \uC2E4\uC81C\uBCF4\uB2E4 \uAE38\uAC8C \uC7A1\uD600 \uACF5\uC81C\uAC00 \uACFC\uB2E4\uD574\uC9D1\uB2C8\uB2E4."
-    }
-  ]));
+  return unknown.concat([calc.engineState === "refused" ? "\uC785\uB825\uD558\uC2E0 \uC870\uAC74\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uAE08\uC561\uC744 \uD655\uC815\uD560 \uC218 \uC5C6\uB294 \uACBD\uC6B0\uC785\uB2C8\uB2E4 \u2014 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4." : "\uACC4\uC0B0 \uC5D4\uC9C4\uC5D0 \uC5F0\uACB0\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4 \u2014 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC740 \uC0C1\uD0DC\uC5D0\uC11C\uB294 \uAE08\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."]);
 }
 function buildReportDetail(answers, calc, commentary) {
   const L = [];
@@ -3241,16 +3234,16 @@ function buildReportDetail(answers, calc, commentary) {
     L.push("  \xB7 " + qlabel + ": " + val);
   });
   L.push("");
-  L.push("\u25A0 \uACC4\uC0B0 \uACB0\uACFC" + (calc.precise ? " (\uAC80\uC99D \uC5D4\uC9C4 \uC815\uBC00\uACC4\uC0B0)" : " (\uAC04\uC774 \uCD94\uC815)"));
+  L.push("\u25A0 \uACC4\uC0B0 \uACB0\uACFC (\uAC80\uC99D \uC5D4\uC9C4 \uC815\uBC00\uACC4\uC0B0)");
   L.push("  \xB7 \uC591\uB3C4\uCC28\uC775: " + formatWon(calc.capGain));
   if (calc.nonTaxableMsg) L.push("  \xB7 \uBE44\uACFC\uC138 \uD310\uC815: " + calc.nonTaxableMsg);
   L.push("  \xB7 \uACFC\uC138\uB300\uC0C1(\uBE44\uACFC\uC138 \uBC18\uC601 \uD6C4): " + formatWon(calc.taxableAfter1House));
-  L.push("  \xB7 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C: " + formatWon(calc.ltDeduction) + " (" + Math.round((calc.ltRate || 0) * 100) + "%)");
+  L.push("  \xB7 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C: " + formatWon(calc.ltDeduction) + (calc.ltRate == null ? "" : " (" + Math.round(calc.ltRate * 100) + "%)"));
   L.push("  \xB7 \uACFC\uC138\uD45C\uC900: " + formatWon(calc.taxBase));
   L.push("  \xB7 \uC0B0\uCD9C\uC138\uC561: " + formatWon(calc.baseTax));
   L.push("  \xB7 \uC9C0\uBC29\uC18C\uB4DD\uC138: " + formatWon(calc.localTax));
   L.push("  \xB7 \uCD1D \uC138\uBD80\uB2F4: " + formatWon(calc.totalTax) + " (\uC2E4\uD6A8\uC138\uC728 " + (calc.effectiveRate || 0).toFixed(1) + "%)");
-  const notes = [calc.shortTermNote, calc.multiHouseNote, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, calc.acqZoneCaveat, calc.deadlineWarn].filter(Boolean);
+  const notes = [calc.multiHouseNote, calc.temp2Assumption, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, calc.deadlineWarn].filter(Boolean);
   const ew = calc.engineWarnings || [];
   if (notes.length || ew.length) {
     L.push("");
@@ -3400,6 +3393,10 @@ function mapAnswersToTransfer(answers) {
     } else if (answers.otherHouseSource === "bought" && answers.newHouseDate) {
       body.exemption_special_type = "temporary_2house";
       body.new_house_acquisition_date = answers.newHouseDate;
+      if (cgtTemp2Visible(answers)) {
+        if (answers.temp2Zone === "yes") body.temp2_both_regulated = true;
+        else if (answers.temp2Zone === "no" || answers.temp2Zone === "contract") body.temp2_both_regulated = false;
+      }
     }
   }
   if (assetType === "house_1" && answers.houseConcurrentRight && answers.houseConcurrentRight !== "none") {
@@ -3412,17 +3409,79 @@ async function callTransferEngine(answers) {
   return callEngineBody(mapAnswersToTransfer(answers));
 }
 async function callEngineBody(body) {
-  const res = await fetch(ENGINE_BASE + "/v1/calc/transfer", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) {
-    const _err = new Error("engine " + res.status);
-    _err.status = res.status;
-    throw _err;
+  const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+  const to = ctrl ? setTimeout(() => ctrl.abort(), 25e3) : null;
+  try {
+    const res = await fetch(ENGINE_BASE + "/v1/calc/transfer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: ctrl ? ctrl.signal : void 0
+    });
+    if (!res.ok) {
+      const _err = new Error("engine " + res.status);
+      _err.status = res.status;
+      throw _err;
+    }
+    return await res.json();
+  } finally {
+    if (to) clearTimeout(to);
   }
-  return res.json();
+}
+const CGT_ENGINE_REQUIRED = ["\uACFC\uC138\uD45C\uC900", "\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4", "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C", "\uAE30\uBCF8\uACF5\uC81C"];
+function cgtEngineVerdict(c) {
+  if (!c || typeof c !== "object" || Array.isArray(c)) return "down";
+  if (c["\uC624\uB958"]) return "refused";
+  if (Object.prototype.hasOwnProperty.call(c, "\uC0C1\uD0DC") && c["\uC0C1\uD0DC"] !== "ok") return "refused";
+  if (!window.jtValidCalc(c, CGT_ENGINE_REQUIRED) || !Number.isFinite(c["\uC591\uB3C4\uCC28\uC775"])) return "down";
+  return "ok";
+}
+function cgtAcceptedCalc(ej) {
+  const c = ej && ej.calc;
+  return cgtEngineVerdict(c) === "ok" ? c : null;
+}
+function cgtCalcFromEngine(ej) {
+  const c = ej && ej.calc;
+  const verdict = cgtEngineVerdict(c);
+  if (verdict !== "ok") return { precise: false, engineState: verdict };
+  const ltsd = c["\uC7A5\uD2B9\uACF5\uC81C\uC728"];
+  let ltRate = null;
+  if (ltsd) {
+    const pct = parseFloat(String(ltsd["\uD569\uACC4"]).replace("%", ""));
+    ltRate = isNaN(pct) ? 0 : pct / 100;
+  }
+  const afterLt = (c["\uACFC\uC138\uD45C\uC900"] || 0) + (c["\uAE30\uBCF8\uACF5\uC81C"] || 0);
+  const exempt = !!c["\uBE44\uACFC\uC138\uC5EC\uBD80"];
+  let nonTaxableMsg = null;
+  if (exempt && (c["\uCD1D\uC138\uBD80\uB2F4"] || 0) > 0) {
+    nonTaxableMsg = (c["\uBE44\uACFC\uC138\uC0AC\uC720"] || "1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138") + " \u2014 \uC591\uB3C4\uAC00 12\uC5B5 \uCD08\uACFC\uBD84\uC5D0 \uB300\uD574\uC11C\uB9CC \uACFC\uC138\uB429\uB2C8\uB2E4(\uC548\uBD84 \uACC4\uC0B0). \uC544\uB798 \u300C\uCD1D \uC138\uC561\u300D\uC740 \uADF8 \uACFC\uC138\uBD84\uC785\uB2C8\uB2E4. (\uC815\uBC00 \uC5D4\uC9C4 \uD310\uC815)";
+  } else if (exempt) {
+    nonTaxableMsg = (c["\uBE44\uACFC\uC138\uC0AC\uC720"] || "1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138") + " \u2014 \uC804\uC561 \uBE44\uACFC\uC138 (\uC815\uBC00 \uC5D4\uC9C4 \uD310\uC815)";
+  }
+  return {
+    precise: true,
+    engineVer: ej.version && ej.version.engine,
+    capGain: c["\uC591\uB3C4\uCC28\uC775"],
+    taxBase: c["\uACFC\uC138\uD45C\uC900"],
+    ltDeduction: c["\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C"],
+    ltRate,
+    basicDeduction: c["\uAE30\uBCF8\uACF5\uC81C"],
+    baseTax: c["\uC138\uC561"],
+    localTax: c["\uC9C0\uBC29\uC18C\uB4DD\uC138"],
+    totalTax: c["\uCD1D\uC138\uBD80\uB2F4"],
+    afterLt,
+    taxableAfter1House: afterLt + (c["\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C"] || 0),
+    // 과세대상 = 공제후 + 장특
+    effectiveRate: c["\uC591\uB3C4\uCC28\uC775"] > 0 ? c["\uCD1D\uC138\uBD80\uB2F4"] / c["\uC591\uB3C4\uCC28\uC775"] * 100 : 0,
+    exempt,
+    nonTaxableMsg,
+    steps: c["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || [],
+    engineWarnings: c["\uACBD\uACE0\uC0AC\uD56D"] || []
+    // 엔진 실질 경고(입주권 장특 인가전 한정·청산금 근사·승계취득 비과세 배제 등)
+  };
+}
+function cgtCalcFromEngineError(e) {
+  return e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429 ? { precise: false, engineState: "refused" } : { precise: false, engineState: "down" };
 }
 function addYears(d, y) {
   const n = new Date(d);
@@ -3465,9 +3524,8 @@ async function computeScenarios(answers) {
   const plan = [{ date: todayStr, label: "\uC9C0\uAE08 \uC591\uB3C4", now: true }, ...buildScenarioDates(answers)];
   const results = await Promise.all(plan.map(async (p) => {
     try {
-      const ej = await callEngineBody(__spreadProps(__spreadValues({}, base), { transfer_date: p.date }));
-      const c = ej && ej.calc;
-      if (!c || c["\uCD1D\uC138\uBD80\uB2F4"] == null) return null;
+      const c = cgtAcceptedCalc(await callEngineBody(__spreadProps(__spreadValues({}, base), { transfer_date: p.date })));
+      if (!c) return null;
       return { date: p.date, label: p.label, now: !!p.now, tax: c["\uCD1D\uC138\uBD80\uB2F4"], exempt: c["\uBE44\uACFC\uC138\uC5EC\uBD80"] };
     } catch (e) {
       return null;
@@ -3486,7 +3544,7 @@ function JTReportCGT({ setRoute, onBack }) {
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
   const isLast = safeStep === total - 1;
-  const setAns = (id, v) => setAnswers((a) => __spreadProps(__spreadValues({}, a), { [id]: v }));
+  const setAns = (id, v) => setAnswers((a) => cgtApplyAnswer(a, id, v));
   const canNext = () => {
     if (cur.freeform) return true;
     if (cur.numeric) {
@@ -3519,24 +3577,27 @@ function JTReportCGT({ setRoute, onBack }) {
         setLoading(false);
         return;
       }
+      let calc;
+      try {
+        calc = cgtCalcFromEngine(await callTransferEngine(answers));
+      } catch (engErr) {
+        console.warn("\uC591\uB3C4\uC138 \uC5D4\uC9C4 \uD638\uCD9C \uC2E4\uD328", engErr);
+        calc = cgtCalcFromEngineError(engErr);
+      }
+      if (cgtFallbackGaps(answers, calc).length > 0) {
+        const blockedRep = { calc, commentary: null, quick: false };
+        setReport(blockedRep);
+        return;
+      }
       const acquired = Number(answers.acquired) || 0;
       const sold = Number(answers.sold) || 0;
-      const expenses = Number(answers.expenses) || 0;
-      const capGain = Math.max(sold - acquired - expenses, 0);
       const years = yearsBetween(answers.acquiredDate, answers.transferDate);
       const residenceYears = answers.moveInDate ? yearsBetween(answers.moveInDate, answers.transferDate) : 0;
       const assetType = answers.assetType;
-      const isOwnOccupied = residenceYears >= 2;
-      const is1House = assetType === "house_1";
       const is2House = assetType === "house_2";
       const is3House = assetType === "house_3";
-      const isHouse = is1House || is2House || is3House;
-      const isPresale = assetType === "presale";
-      const isCommercial = assetType === "commercial";
-      const isDwellingClass = is1House || is2House || is3House || assetType === "replacement" || assetType === "occupancy_orig" || assetType === "occupancy_succ";
-      const shortRate = years < 1 ? isDwellingClass ? 0.7 : 0.5 : years < 2 ? isDwellingClass ? 0.6 : 0.4 : 0;
-      const isAdjusted = answers.adjustedZone === "yes";
-      const isLand = isCommercial && answers.nonHouseType === "land";
+      const isHouse = assetType === "house_1" || is2House || is3House;
+      const isLand = assetType === "commercial" && answers.nonHouseType === "land";
       let landCaveat = null;
       if (isLand) {
         if (answers.landUse === "non_business") {
@@ -3590,150 +3651,42 @@ function JTReportCGT({ setRoute, onBack }) {
       }
       let replCaveat = null;
       if (assetType === "replacement") {
-        if (!answers.moveInDate) {
+        if (calc.exempt === false) {
+          replCaveat = "\uB300\uCCB4\uC8FC\uD0DD \uBE44\uACFC\uC138 \uC694\uAC74(\uC2DC\uD589\uB839 \xA7156\uC7582\u2464: \uC0AC\uC5C5\uC2DC\uD589\uC778\uAC00\uC77C \uC774\uD6C4 \uCDE8\uB4DD\xB71\uB144 \uC774\uC0C1 \uAC70\uC8FC\xB7\uC2E0\uCD95 \uC644\uACF5 \uC804 \uB610\uB294 \uC644\uACF5 \uD6C4 3\uB144 \uB0B4 \uC591\uB3C4)\uC744 \uCDA9\uC871\uD558\uC9C0 \uBABB\uD574 \uACFC\uC138\uB85C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uC815\uD655\uD55C \uC801\uC6A9\uC740 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694.";
+        } else if (!answers.moveInDate) {
           replCaveat = "\u26A0\uFE0F \uB300\uCCB4\uC8FC\uD0DD\uC5D0 \u300C\uC804\uC785(\uAC70\uC8FC \uC2DC\uC791)\uC77C\u300D\uC744 \uC785\uB825\uD558\uC9C0 \uC54A\uC73C\uBA74 \u300C1\uB144 \uC774\uC0C1 \uAC70\uC8FC\u300D \uC694\uAC74(\uC2DC\uD589\uB839 \xA7156\uC7582\u24641\uD638)\uC744 \uBABB \uCC44\uC6B4 \uAC83\uC73C\uB85C \uBCF4\uC544 \uBE44\uACFC\uC138\uAC00 \uC801\uC6A9\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C 1\uB144 \uC774\uC0C1 \uAC70\uC8FC\uD558\uC168\uB2E4\uBA74 \uC804\uC785\uC77C\uC744 \uAF2D \uC785\uB825\uD558\uC138\uC694.";
         } else {
           replCaveat = "\uB300\uCCB4\uC8FC\uD0DD \uBE44\uACFC\uC138(\uC2DC\uD589\uB839 \xA7156\uC7582\u2464)\uB294 \u2460\uC0AC\uC5C5\uC2DC\uD589\uC778\uAC00\uC77C \uC774\uD6C4 \uCDE8\uB4DD+1\uB144 \uC774\uC0C1 \uAC70\uC8FC \u2461\uC2E0\uCD95 \uC644\uACF5 \uD6C4 3\uB144 \uB0B4 \uC138\uB300\uC804\uC6D0 \uC774\uC0AC+1\uB144 \uAC70\uC8FC \u2462\uC2E0\uCD95 \uC644\uACF5 \uC804 \uB610\uB294 \uC644\uACF5 \uD6C4 3\uB144 \uB0B4 \uC591\uB3C4\uB97C \uBAA8\uB450 \uAC16\uCDB0\uC57C \uD569\uB2C8\uB2E4. \u2461\uB294 \uC591\uB3C4 \uC774\uD6C4\uC758 \uC0AC\uD6C4 \uC694\uAC74\uC73C\uB85C, \uCDA9\uC871\uD558\uC9C0 \uBABB\uD558\uBA74 \uBE44\uACFC\uC138\uAC00 \uCDE8\uC18C\uB418\uC5B4 \uC138\uAE08\uC774 \uCD94\uC9D5\uB429\uB2C8\uB2E4(\xA7156\uC7582\u246C). \uC815\uD655\uD55C \uC801\uC6A9\uC740 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694.";
         }
       }
-      let nonTaxableMsg = null;
-      let taxable = capGain;
-      const needResidence = answers.acqAdjustedZone !== "no";
-      const residenceOk = !needResidence || residenceYears >= 2;
-      if (is1House && sold <= 12e8 && years >= 2 && residenceOk && !hasConcurrentRight) {
-        nonTaxableMsg = "1\uC138\uB300 1\uC8FC\uD0DD \xB7 \uC591\uB3C4\uAC00 12\uC5B5 \uC774\uD558 \xB7 2\uB144 \uC774\uC0C1 \uBCF4\uC720 \uC694\uAC74\uC744 \uBAA8\uB450 \uCDA9\uC871\uD558\uC2DC\uBA74 \uC6D0\uCE59\uC801\uC73C\uB85C \uBE44\uACFC\uC138 \uB300\uC0C1\uC785\uB2C8\uB2E4.";
-        taxable = 0;
-      } else if (is1House && sold > 12e8 && years >= 2 && residenceOk && !hasConcurrentRight) {
-        const taxableRatio = (sold - 12e8) / sold;
-        taxable = Math.round(capGain * taxableRatio);
-        nonTaxableMsg = "1\uC138\uB300 1\uC8FC\uD0DD\uC774\uC9C0\uB9CC \uC591\uB3C4\uAC00 12\uC5B5 \uCD08\uACFC\uBD84\uC5D0 \uB300\uD574\uC11C\uB9CC \uACFC\uC138\uB429\uB2C8\uB2E4 (\uC548\uBD84 \uACC4\uC0B0).";
-      } else if (is1House && years >= 2 && !residenceOk && !hasConcurrentRight) {
-        nonTaxableMsg = "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uCDE8\uB4DD 1\uC8FC\uD0DD\uC758 2\uB144 \uAC70\uC8FC \uC694\uAC74 \uBBF8\uCDA9\uC871\uC73C\uB85C \uACFC\uC138\uB85C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uCDE8\uB4DD \uB2F9\uC2DC \uBE44\uC870\uC815\uC9C0\uC5ED\uC774\uC5C8\uB2E4\uBA74 \uBE44\uACFC\uC138\uAC00 \uB420 \uC218 \uC788\uC5B4 \uC0C1\uB2F4 \uD655\uC778\uC744 \uAD8C\uD569\uB2C8\uB2E4.";
-      }
-      const basicDeduction = 25e5;
-      const heavyRestored = (answers.transferDate || isoDate(/* @__PURE__ */ new Date())) >= "2026-05-10";
-      const isHeavyCgt = isHouse && isAdjusted && (is2House || is3House) && heavyRestored;
-      let ltRate = calcLtDeductionRate(years, residenceYears, isOwnOccupied, is1House);
-      if (isHeavyCgt) ltRate = 0;
-      const ltDeduction = Math.round(taxable * ltRate);
-      const afterLt = Math.max(taxable - ltDeduction, 0);
-      const taxBase = Math.max(Math.floor((afterLt - basicDeduction) / 1e3) * 1e3, 0);
-      let baseTax;
-      let shortTermNote = null;
-      if (isPresale) {
-        const rate = years < 1 ? 0.7 : 0.6;
-        baseTax = Math.round(taxBase * rate);
-        shortTermNote = `\uBD84\uC591\uAD8C\xB7\uC785\uC8FC\uAD8C \uC591\uB3C4 \xB7 ${(rate * 100).toFixed(0)}% \uB2E8\uC77C\uC138\uC728\uC774 \uC801\uC6A9\uB429\uB2C8\uB2E4.`;
-      } else if (shortRate > 0) {
-        const shortTax = Math.round(taxBase * shortRate);
-        const pct = (shortRate * 100).toFixed(0);
-        const bandLabel = years < 1 ? "1\uB144 \uBBF8\uB9CC" : "1~2\uB144";
-        if (isHeavyCgt) {
-          const surcharge = is3House ? 0.3 : 0.2;
-          baseTax = Math.max(shortTax, calcBaseTax(taxBase) + Math.round(taxBase * surcharge));
-          shortTermNote = `\uBCF4\uC720 ${bandLabel} + \uC870\uC815 \uB2E4\uC8FC\uD0DD \u2014 \uB2E8\uAE30 ${pct}%\uC640 \uC911\uACFC(+${(surcharge * 100).toFixed(0)}%p) \uC911 \uD070 \uC138\uC561(\uC18C\xA7104\u2466 \uD6C4\uB2E8\xB7\uC7A5\uD2B9 \uBC30\uC81C, \uAC04\uC774 \uCD94\uC815).`;
-        } else if (isLand && (answers.landUse === "non_business" || answers.landUse === "unsure")) {
-          const heavyLand = calcBaseTax(taxBase) + Math.round(taxBase * 0.1);
-          baseTax = Math.max(shortTax, heavyLand);
-          shortTermNote = `\uBE44\uC0AC\uC5C5\uC6A9 \uD1A0\uC9C0 \uBCF4\uC720 ${bandLabel} \u2014 \uB2E8\uAE30 ${pct}%\uC640 \uAE30\uBCF8\uC138\uC728+10%p \uC911 \uD070 \uC138\uC561(\uC18C\xA7104\u2463 \uD6C4\uB2E8, \uAC04\uC774 \uCD94\uC815).`;
-        } else {
-          baseTax = shortTax;
-          shortTermNote = `${isDwellingClass ? "\uC8FC\uD0DD\xB7\uC785\uC8FC\uAD8C" : "\uC8FC\uD0DD \uC678 \uBD80\uB3D9\uC0B0"} \uBCF4\uC720 ${bandLabel} \uB2E8\uAE30\uC591\uB3C4 \xB7 ${pct}% \uC138\uC728\uC774 \uC801\uC6A9\uB429\uB2C8\uB2E4(\uC18C\xA7104\u2460${years < 1 ? "3" : "2"}\uD638).`;
-        }
-      } else if (isHeavyCgt) {
-        const surcharge = is3House ? 0.3 : 0.2;
-        baseTax = calcBaseTax(taxBase) + Math.round(taxBase * surcharge);
-        shortTermNote = `\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED ${is3House ? "3\uC8FC\uD0DD \uC774\uC0C1" : "2\uC8FC\uD0DD"} \uB2E4\uC8FC\uD0DD \uC911\uACFC(+${(surcharge * 100).toFixed(0)}%p)\xB7\uC7A5\uAE30\uBCF4\uC720\uACF5\uC81C \uBC30\uC81C\uAC00 2026.5.10 \uC591\uB3C4\uBD80\uD130 \uBCF5\uC6D0 \uC801\uC6A9\uB429\uB2C8\uB2E4. (\uAC04\uC774 \uCD94\uC815 \u2014 \uC815\uBC00 \uACB0\uACFC\uB294 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2DC)`;
-      } else if (isHouse && isAdjusted && (is2House || is3House) && !heavyRestored) {
-        baseTax = calcBaseTax(taxBase);
-        shortTermNote = "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uB2E4\uC8FC\uD0DD\uC774\uB098 2026.5.9 \uC774\uC804 \uC591\uB3C4\uB294 \uC911\uACFC \uC720\uC608\uB85C \uAE30\uBCF8\uC138\uC728\uC774 \uC801\uC6A9\uB429\uB2C8\uB2E4(2026.5.10\uBD80\uD130 +20/30%p \uBCF5\uC6D0).";
-      } else if (isLand && (answers.landUse === "non_business" || answers.landUse === "unsure")) {
-        baseTax = calcBaseTax(taxBase) + Math.round(taxBase * 0.1);
-      } else {
-        baseTax = calcBaseTax(taxBase);
-      }
-      const localTax = Math.round(baseTax * 0.1);
-      const totalTax = baseTax + localTax;
-      const multiHouseNote = is2House || is3House ? `${is3House ? "3\uC8FC\uD0DD \uC774\uC0C1" : "2\uC8FC\uD0DD"} \uB2E4\uC8FC\uD0DD\uC790\uB294 1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138 \uB300\uC0C1\uC774 \uC544\uB2C8\uBA70, \uC591\uB3C4\uCC28\uC775 \uC804\uC561\uC774 \uACFC\uC138\uB429\uB2C8\uB2E4.` : null;
-      const calc = {
-        capGain,
-        expenses,
-        nonTaxableMsg,
-        multiHouseNote,
-        taxableAfter1House: taxable,
-        ltRate,
-        ltDeduction,
-        afterLt,
-        basicDeduction,
-        taxBase,
-        baseTax,
-        localTax,
-        totalTax,
-        shortTermNote,
-        landCaveat,
-        ipjuCaveat,
-        replCaveat,
-        concurrentRightCaveat,
-        acquiredDate: answers.acquiredDate || "",
-        transferDate: answers.transferDate || isoDate(/* @__PURE__ */ new Date()),
-        holdYears: years,
-        residenceYears,
-        effectiveRate: capGain > 0 ? totalTax / capGain * 100 : 0
-      };
-      try {
-        const ej = await callTransferEngine(answers);
-        const c = ej && ej.calc;
-        if (window.jtValidCalc(c, ["\uACFC\uC138\uD45C\uC900", "\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4", "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C", "\uAE30\uBCF8\uACF5\uC81C"]) && Number.isFinite(c["\uC591\uB3C4\uCC28\uC775"])) {
-          calc.capGain = c["\uC591\uB3C4\uCC28\uC775"];
-          calc.taxBase = c["\uACFC\uC138\uD45C\uC900"];
-          calc.ltDeduction = c["\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C"];
-          const ltsd = c["\uC7A5\uD2B9\uACF5\uC81C\uC728"];
-          if (ltsd) {
-            const pct = parseFloat(String(ltsd["\uD569\uACC4"]).replace("%", ""));
-            calc.ltRate = isNaN(pct) ? 0 : pct / 100;
-          }
-          calc.basicDeduction = c["\uAE30\uBCF8\uACF5\uC81C"];
-          calc.baseTax = c["\uC138\uC561"];
-          calc.localTax = c["\uC9C0\uBC29\uC18C\uB4DD\uC138"];
-          calc.totalTax = c["\uCD1D\uC138\uBD80\uB2F4"];
-          calc.afterLt = (c["\uACFC\uC138\uD45C\uC900"] || 0) + (c["\uAE30\uBCF8\uACF5\uC81C"] || 0);
-          calc.taxableAfter1House = calc.afterLt + (c["\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C"] || 0);
-          calc.effectiveRate = calc.capGain > 0 ? calc.totalTax / calc.capGain * 100 : 0;
-          if (c["\uBE44\uACFC\uC138\uC5EC\uBD80"] && (c["\uCD1D\uC138\uBD80\uB2F4"] || 0) > 0) {
-            calc.nonTaxableMsg = (c["\uBE44\uACFC\uC138\uC0AC\uC720"] || "1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138") + " \u2014 \uC591\uB3C4\uAC00 12\uC5B5 \uCD08\uACFC\uBD84\uC5D0 \uB300\uD574\uC11C\uB9CC \uACFC\uC138\uB429\uB2C8\uB2E4(\uC548\uBD84 \uACC4\uC0B0). \uC544\uB798 \u300C\uCD1D \uC138\uC561\u300D\uC740 \uADF8 \uACFC\uC138\uBD84\uC785\uB2C8\uB2E4. (\uC815\uBC00 \uC5D4\uC9C4 \uD310\uC815)";
-          } else if (c["\uBE44\uACFC\uC138\uC5EC\uBD80"]) {
-            calc.nonTaxableMsg = (c["\uBE44\uACFC\uC138\uC0AC\uC720"] || "1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138") + " \u2014 \uC804\uC561 \uBE44\uACFC\uC138 (\uC815\uBC00 \uC5D4\uC9C4 \uD310\uC815)";
+      let multiHouseNote = is2House || is3House ? `${is3House ? "3\uC8FC\uD0DD \uC774\uC0C1" : "2\uC8FC\uD0DD"} \uB2E4\uC8FC\uD0DD\uC790\uB294 1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138 \uB300\uC0C1\uC774 \uC544\uB2C8\uBA70, \uC591\uB3C4\uCC28\uC775 \uC804\uC561\uC774 \uACFC\uC138\uB429\uB2C8\uB2E4.` : null;
+      if (calc.exempt) multiHouseNote = null;
+      else if (is2House) {
+        if (answers.otherHouseSource === "bought" && answers.newHouseDate) {
+          multiHouseNote = `\uC785\uB825\uD558\uC2E0 \uCDE8\uB4DD\uC77C \uAE30\uC900, \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uBE44\uACFC\uC138 \uC694\uAC74(\u2460 \uC885\uC804 \uC9D1 \uCDE8\uB4DD 1\uB144 \uD6C4 \uC0C8 \uC9D1 \uCDE8\uB4DD \u2461 \uC0C8 \uC9D1 \uCDE8\uB4DD \uD6C4 ${cgtTemp2Phrase(cgtTemp2Years(answers))} \uB0B4 \uC885\uC804 \uC9D1 \uC591\uB3C4 \u2462 \uC885\uC804 \uC9D1 2\uB144 \uC774\uC0C1 \uBCF4\uC720 \u2014 \uC18C\uB4DD\uC138\uBC95 \uC2DC\uD589\uB839 \xA7155\u2460)\uC744 \uCDA9\uC871\uD558\uC9C0 \uBABB\uD574 \uACFC\uC138\uB429\uB2C8\uB2E4.`;
+        } else if (answers.otherHouseSource === "inherited") {
+          if (!answers.inheritanceDate) {
+            multiHouseNote = "\uC0C1\uC18D\uBC1B\uC740 \uB0A0(\uC0C1\uC18D\uAC1C\uC2DC\uC77C)\uC744 \uC785\uB825\uD558\uBA74 \uC0C1\uC18D\uC8FC\uD0DD \uBE44\uACFC\uC138 \uC5EC\uBD80\uB97C \uC790\uB3D9 \uD310\uC815\uD569\uB2C8\uB2E4. \uBBF8\uC785\uB825 \uC2DC \uC77C\uBC18 2\uC8FC\uD0DD\uC73C\uB85C \uACFC\uC138\uB429\uB2C8\uB2E4.";
+          } else if ((answers.acquiredDate || "") > answers.inheritanceDate) {
+            multiHouseNote = `\uC9C0\uAE08 \uD30C\uB294 \uC9D1\uC744 \uC0C1\uC18D\uAC1C\uC2DC\uC77C(${answers.inheritanceDate}) \uC774\uD6C4\uC5D0 \uCDE8\uB4DD\uD558\uC5EC, \uC0C1\uC18D\uC8FC\uD0DD \uBE44\uACFC\uC138(\uC18C\uB839 \xA7155\u2461 \u2014 \uC77C\uBC18\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uAC1C\uC2DC \uB2F9\uC2DC \uBCF4\uC720) \uB300\uC0C1\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uC77C\uBC18 2\uC8FC\uD0DD\uC73C\uB85C \uACFC\uC138\uB429\uB2C8\uB2E4.`;
           } else {
-            calc.nonTaxableMsg = null;
+            multiHouseNote = "\uC0C1\uC18D\uC8FC\uD0DD \uBE44\uACFC\uC138 \uC694\uAC74(\uC77C\uBC18\uC8FC\uD0DD 2\uB144 \uC774\uC0C1 \uBCF4\uC720 \uB4F1)\uC744 \uCDA9\uC871\uD558\uC9C0 \uBABB\uD574 \uACFC\uC138\uB429\uB2C8\uB2E4. \uC815\uD655\uD55C \uD310\uC815\uC740 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD574 \uB4DC\uB9BD\uB2C8\uB2E4.";
           }
-          if (assetType === "replacement" && !c["\uBE44\uACFC\uC138\uC5EC\uBD80"]) {
-            calc.replCaveat = "\uB300\uCCB4\uC8FC\uD0DD \uBE44\uACFC\uC138 \uC694\uAC74(\uC2DC\uD589\uB839 \xA7156\uC7582\u2464: \uC0AC\uC5C5\uC2DC\uD589\uC778\uAC00\uC77C \uC774\uD6C4 \uCDE8\uB4DD\xB71\uB144 \uC774\uC0C1 \uAC70\uC8FC\xB7\uC2E0\uCD95 \uC644\uACF5 \uC804 \uB610\uB294 \uC644\uACF5 \uD6C4 3\uB144 \uB0B4 \uC591\uB3C4)\uC744 \uCDA9\uC871\uD558\uC9C0 \uBABB\uD574 \uACFC\uC138\uB85C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uC815\uD655\uD55C \uC801\uC6A9\uC740 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694.";
-          }
-          if (is1House && answers.adjustedZone === "yes" && !c["\uBE44\uACFC\uC138\uC5EC\uBD80"] && years >= 2) {
-            calc.acqZoneCaveat = sold <= 12e8 ? "\uC785\uB825\uD558\uC2E0 \u300C\uD604\uC7AC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\u300D\uC744 \u300C\uCDE8\uB4DD \uB2F9\uC2DC\uC5D0\uB3C4 \uC870\uC815\u300D\uC73C\uB85C \uBCF4\uC544 \uAC70\uC8FC 2\uB144 \uC694\uAC74\uC744 \uC801\uC6A9\uD574 \uACFC\uC138\uB85C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uB9CC\uC57D \uCDE8\uB4DD \uB2F9\uC2DC\uC5D0\uB294 \uBE44\uC870\uC815\uC9C0\uC5ED\uC774\uC5C8\uB2E4\uBA74(\uC774\uD6C4 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC73C\uB85C \uC9C0\uC815) \uAC70\uC8FC\uC694\uAC74\uC774 \uBA74\uC81C\uB418\uC5B4 1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138\uAC00 \uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4(\uC2DC\uD589\uB839 \xA7154\u2460). \uCDE8\uB4DD \uB2F9\uC2DC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC9C0\uC815 \uC5EC\uBD80\uB97C \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694." : "\uC785\uB825\uD558\uC2E0 \u300C\uD604\uC7AC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\u300D\uC744 \u300C\uCDE8\uB4DD \uB2F9\uC2DC\uC5D0\uB3C4 \uC870\uC815\u300D\uC73C\uB85C \uBCF4\uC544 \uAC70\uC8FC 2\uB144 \uC694\uAC74\uC744 \uC801\uC6A9\uD574 \uC804\uC561 \uACFC\uC138\uB85C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uCDE8\uB4DD \uB2F9\uC2DC \uBE44\uC870\uC815\uC9C0\uC5ED\uC774\uC5C8\uB2E4\uBA74(\uC774\uD6C4 \uC870\uC815 \uC9C0\uC815) \uAC70\uC8FC\uC694\uAC74\uC774 \uBA74\uC81C\uB418\uC5B4 12\uC5B5 \uCD08\uACFC\uBD84\uB9CC \uACFC\uC138\uB418\uB294 1\uC138\uB3001\uC8FC\uD0DD \uC548\uBD84 \uBE44\uACFC\uC138\uAC00 \uC801\uC6A9\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4(\uC2DC\uD589\uB839 \xA7154\u2460\xB7\xA7160). \uCDE8\uB4DD \uB2F9\uC2DC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC9C0\uC815 \uC5EC\uBD80\uB97C \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694.";
-          }
-          if (c["\uBE44\uACFC\uC138\uC5EC\uBD80"]) calc.multiHouseNote = null;
-          else if (is2House) {
-            if (answers.otherHouseSource === "bought" && answers.newHouseDate) {
-              calc.multiHouseNote = "\uC785\uB825\uD558\uC2E0 \uCDE8\uB4DD\uC77C \uAE30\uC900, \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uBE44\uACFC\uC138 \uC694\uAC74(\u2460 \uC885\uC804 \uC9D1 \uCDE8\uB4DD 1\uB144 \uD6C4 \uC0C8 \uC9D1 \uCDE8\uB4DD \u2461 \uC0C8 \uC9D1 \uCDE8\uB4DD 3\uB144 \uB0B4 \uC885\uC804 \uC9D1 \uC591\uB3C4 \u2462 \uC885\uC804 \uC9D1 2\uB144 \uC774\uC0C1 \uBCF4\uC720)\uC744 \uCDA9\uC871\uD558\uC9C0 \uBABB\uD574 \uACFC\uC138\uB429\uB2C8\uB2E4.";
-            } else if (answers.otherHouseSource === "inherited") {
-              if (!answers.inheritanceDate) {
-                calc.multiHouseNote = "\uC0C1\uC18D\uBC1B\uC740 \uB0A0(\uC0C1\uC18D\uAC1C\uC2DC\uC77C)\uC744 \uC785\uB825\uD558\uBA74 \uC0C1\uC18D\uC8FC\uD0DD \uBE44\uACFC\uC138 \uC5EC\uBD80\uB97C \uC790\uB3D9 \uD310\uC815\uD569\uB2C8\uB2E4. \uBBF8\uC785\uB825 \uC2DC \uC77C\uBC18 2\uC8FC\uD0DD\uC73C\uB85C \uACFC\uC138\uB429\uB2C8\uB2E4.";
-              } else if ((answers.acquiredDate || "") > answers.inheritanceDate) {
-                calc.multiHouseNote = `\uC9C0\uAE08 \uD30C\uB294 \uC9D1\uC744 \uC0C1\uC18D\uAC1C\uC2DC\uC77C(${answers.inheritanceDate}) \uC774\uD6C4\uC5D0 \uCDE8\uB4DD\uD558\uC5EC, \uC0C1\uC18D\uC8FC\uD0DD \uBE44\uACFC\uC138(\uC18C\uB839 \xA7155\u2461 \u2014 \uC77C\uBC18\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uAC1C\uC2DC \uB2F9\uC2DC \uBCF4\uC720) \uB300\uC0C1\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uC77C\uBC18 2\uC8FC\uD0DD\uC73C\uB85C \uACFC\uC138\uB429\uB2C8\uB2E4.`;
-              } else {
-                calc.multiHouseNote = "\uC0C1\uC18D\uC8FC\uD0DD \uBE44\uACFC\uC138 \uC694\uAC74(\uC77C\uBC18\uC8FC\uD0DD 2\uB144 \uC774\uC0C1 \uBCF4\uC720 \uB4F1)\uC744 \uCDA9\uC871\uD558\uC9C0 \uBABB\uD574 \uACFC\uC138\uB429\uB2C8\uB2E4. \uC815\uD655\uD55C \uD310\uC815\uC740 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD574 \uB4DC\uB9BD\uB2C8\uB2E4.";
-              }
-            }
-          }
-          calc.precise = true;
-          calc.steps = c["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || [];
-          calc.engineWarnings = c["\uACBD\uACE0\uC0AC\uD56D"] || [];
-          calc.engineVer = ej.version && ej.version.engine;
         }
-      } catch (engErr) {
-        console.warn("\uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328 \u2014 \uAC04\uC774 \uCD94\uC815\uCE58 \uC720\uC9C0:", engErr);
       }
+      calc.expenses = Number(answers.expenses) || 0;
+      calc.multiHouseNote = multiHouseNote;
+      calc.landCaveat = landCaveat;
+      calc.ipjuCaveat = ipjuCaveat;
+      calc.replCaveat = replCaveat;
+      calc.concurrentRightCaveat = concurrentRightCaveat;
+      if (is2House && answers.otherHouseSource === "bought" && cgtTemp2Visible(answers) && cgtTemp2Years(answers) === null) {
+        calc.temp2Assumption = "\uC0C8 \uC9D1\uC744 \uC0B4 \uB54C \uB450 \uC9D1\uC774 \uBAA8\uB450 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB294\uC9C0 \u300C\uBAA8\uB984\u300D\uC73C\uB85C \uB2F5\uD558\uC168\uC2B5\uB2C8\uB2E4. \uC774 \uACC4\uC0B0\uC740 \uB450 \uC9D1\uC774 \uBAA8\uB450 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB2E4\uACE0 \uBCF4\uC544, \uC885\uC804 \uC9D1\uC744 \uC0C8 \uC9D1 \uCDE8\uB4DD\uC77C\uBD80\uD130 2\uB144 \uC548\uC5D0 \uD314\uC544\uC57C \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uBE44\uACFC\uC138\uB85C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4(\uC18C\uB4DD\uC138\uBC95 \uC2DC\uD589\uB839 \xA7155\u2460). \uADF8 \uBC16\uC774\uB77C\uBA74 \uAE30\uD55C\uC740 3\uB144\uC785\uB2C8\uB2E4.";
+      }
+      calc.acquiredDate = answers.acquiredDate || "";
+      calc.transferDate = answers.transferDate || isoDate(/* @__PURE__ */ new Date());
+      calc.holdYears = years;
+      calc.residenceYears = residenceYears;
       if (calc.precise && assetType !== "presale" && !isOccupancy) {
         try {
           const scns = await computeScenarios(answers);
@@ -3747,14 +3700,15 @@ function JTReportCGT({ setRoute, onBack }) {
               calc.timingTip = { saving, months, date: best.date, label: best.label, exempt: best.exempt };
             }
             if (now.tax === 0 && scns.some((s) => !s.now && s.tax > 0) && is2House && answers.otherHouseSource === "bought" && answers.newHouseDate) {
-              const deadline = addYears(/* @__PURE__ */ new Date(answers.newHouseDate + "T00:00:00"), 3);
+              const deadlineYears = cgtTemp2Years(answers);
+              const deadline = addYears(/* @__PURE__ */ new Date(answers.newHouseDate + "T00:00:00"), deadlineYears || 2);
               const todayD = /* @__PURE__ */ new Date((answers.transferDate || isoDate(/* @__PURE__ */ new Date())) + "T00:00:00");
               if (deadline > todayD) {
                 const after = new Date(deadline);
                 after.setDate(after.getDate() + 1);
                 const ejD = await callEngineBody(__spreadProps(__spreadValues({}, mapAnswersToTransfer(answers)), { transfer_date: isoDate(after) }));
-                const cD = ejD && ejD.calc;
-                if (cD && cD["\uCD1D\uC138\uBD80\uB2F4"] > 0) calc.deadlineWarn = { date: isoDate(deadline), missedTax: cD["\uCD1D\uC138\uBD80\uB2F4"] };
+                const cD = cgtAcceptedCalc(ejD);
+                if (cD && cD["\uCD1D\uC138\uBD80\uB2F4"] > 0) calc.deadlineWarn = { date: isoDate(deadline), missedTax: cD["\uCD1D\uC138\uBD80\uB2F4"], years: deadlineYears };
               }
             }
           }
@@ -3766,11 +3720,12 @@ function JTReportCGT({ setRoute, onBack }) {
           const oneBody = __spreadProps(__spreadValues({}, mapAnswersToTransfer(answers)), { housing_count: 1 });
           delete oneBody.exemption_special_type;
           delete oneBody.new_house_acquisition_date;
+          delete oneBody.temp2_both_regulated;
           delete oneBody.inherited_house_count;
           delete oneBody.inheritance_start_date;
           const ejO = await callEngineBody(oneBody);
-          const cO = ejO && ejO.calc;
-          if (cO && cO["\uCD1D\uC138\uBD80\uB2F4"] != null && cO["\uCD1D\uC138\uBD80\uB2F4"] < calc.totalTax) {
+          const cO = cgtAcceptedCalc(ejO);
+          if (cO && cO["\uCD1D\uC138\uBD80\uB2F4"] < calc.totalTax) {
             calc.orderTip = { tax: cO["\uCD1D\uC138\uBD80\uB2F4"], saving: calc.totalTax - cO["\uCD1D\uC138\uBD80\uB2F4"], exempt: cO["\uBE44\uACFC\uC138\uC5EC\uBD80"] };
           }
         } catch (e) {
@@ -3781,22 +3736,21 @@ function JTReportCGT({ setRoute, onBack }) {
 - \uC790\uC0B0 \uC720\uD615: ${(_a = CGT_QS[0].opts.find((o) => o[0] === assetType)) == null ? void 0 : _a[1]}
 - \uCDE8\uB4DD\uAC00: ${formatWon(acquired)}
 - \uC591\uB3C4\uAC00: ${formatWon(sold)}
-- \uC591\uB3C4\uCC28\uC775: ${formatWon(capGain)}
+- \uC591\uB3C4\uCC28\uC775(\uC5D4\uC9C4): ${formatWon(calc.capGain)}
 - \uCDE8\uB4DD\uC77C: ${answers.acquiredDate || "\uBBF8\uC785\uB825"} / \uC591\uB3C4\uC77C: ${answers.transferDate || "\uC624\uB298"}
 - \uBCF4\uC720\uAE30\uAC04: \uC57D ${years.toFixed(1)}\uB144${(isHouse || assetType === "replacement") && answers.moveInDate ? ` / \uAC70\uC8FC \uC57D ${residenceYears.toFixed(1)}\uB144(\uC804\uC785 ${answers.moveInDate})` : " / \uAC70\uC8FC\uC815\uBCF4 \uC5C6\uC74C"}
 - \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED: ${isHouse ? answers.adjustedZone || "\uBBF8\uC751\uB2F5" : "\uD574\uB2F9\uC5C6\uC74C(\uBE44\uC8FC\uD0DD)"}
 - \uCD94\uAC00 \uB9E5\uB77D: ${answers.context || "(\uC5C6\uC74C)"}
 
-\uACC4\uC0B0 \uACB0\uACFC:
+\uACC4\uC0B0 \uACB0\uACFC(\uC5D4\uC9C4):
 - \uACFC\uC138\uD45C\uC900: ${formatWon(calc.taxBase)}
 - \uC0B0\uCD9C\uC138\uC561: ${formatWon(calc.baseTax)}
 - \uC9C0\uBC29\uC18C\uB4DD\uC138: ${formatWon(calc.localTax)}
 - \uCD1D \uC138\uC561: ${formatWon(calc.totalTax)}
 - \uC2E4\uD6A8\uC138\uC728: ${calc.effectiveRate.toFixed(1)}%
-${nonTaxableMsg ? "- \uD2B9\uC774\uC0AC\uD56D: " + nonTaxableMsg : ""}
-${shortTermNote ? "- \uD2B9\uC774\uC0AC\uD56D: " + shortTermNote : ""}
+${calc.nonTaxableMsg ? "- \uD2B9\uC774\uC0AC\uD56D: " + calc.nonTaxableMsg : ""}
 `;
-      const prompt = `\uB2F9\uC2E0\uC740 \uD55C\uAD6D \uC138\uBC95\uC5D0 \uB2A5\uD1B5\uD55C \uC138\uBB34\uC0AC\uC785\uB2C8\uB2E4. \uC544\uB798 \uC591\uB3C4\uC18C\uB4DD\uC138 \uAC04\uC774 \uACC4\uC0B0 \uACB0\uACFC\uC5D0 \uB300\uD574 \uB0A9\uC138\uC790\uAC00 \uBC18\uB4DC\uC2DC \uC54C\uC544\uC57C \uD560 \uC8FC\uC758 \uD3EC\uC778\uD2B8\uC640 \uC808\uC138 \uC5EC\uC9C0\uB97C JSON\uC73C\uB85C\uB9CC \uC751\uB2F5\uD558\uC138\uC694. \uB2E8\uC815\uC801 \uACB0\uB860\uC740 \uD53C\uD558\uACE0 "\uAC80\uD1A0 \uD544\uC694", "\uAC00\uB2A5\uC131" \uAC19\uC740 \uD45C\uD604\uC744 \uC0AC\uC6A9\uD558\uC138\uC694.
+      const prompt = `\uB2F9\uC2E0\uC740 \uD55C\uAD6D \uC138\uBC95\uC5D0 \uB2A5\uD1B5\uD55C \uC138\uBB34\uC0AC\uC785\uB2C8\uB2E4. \uC544\uB798 \uC591\uB3C4\uC18C\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC\uC5D0 \uB300\uD574 \uB0A9\uC138\uC790\uAC00 \uBC18\uB4DC\uC2DC \uC54C\uC544\uC57C \uD560 \uC8FC\uC758 \uD3EC\uC778\uD2B8\uC640 \uC808\uC138 \uC5EC\uC9C0\uB97C JSON\uC73C\uB85C\uB9CC \uC751\uB2F5\uD558\uC138\uC694. \uB2E8\uC815\uC801 \uACB0\uB860\uC740 \uD53C\uD558\uACE0 "\uAC80\uD1A0 \uD544\uC694", "\uAC00\uB2A5\uC131" \uAC19\uC740 \uD45C\uD604\uC744 \uC0AC\uC6A9\uD558\uC138\uC694.
 
 ${context}
 
@@ -3813,11 +3767,6 @@ ${context}
 }
 
 cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
-      if (cgtFallbackGaps(answers, calc).length > 0) {
-        const blockedRep = { calc, commentary: null, quick: false };
-        setReport(blockedRep);
-        return;
-      }
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error("claude \uBBF8\uAC00\uC6A9");
@@ -3838,7 +3787,7 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
           saving_ideas: [],
           followup: ["\uBCF4\uC720\xB7\uAC70\uC8FC\xB7\uC138\uB300 \uC785\uC99D \uC790\uB8CC(\uC8FC\uBBFC\uB4F1\uB85D\uCD08\uBCF8 \uB4F1)", "\uBE44\uACFC\uC138 \uC591\uB3C4 \uAE30\uD55C(\uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uB4F1)", "\uC138\uB300 \uB0B4 \uB2E4\uB978 \uBCF4\uC720\uC8FC\uD0DD \uC5EC\uBD80"]
         } : {
-          headline: calc.precise ? "\uAC80\uC99D\uB41C \uC138\uBB34 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD55C \uC815\uBC00 \uACB0\uACFC\uC785\uB2C8\uB2E4. \uC704 \u300C\uC808\uC138 \uC804\uB7B5\u300D(\uC591\uB3C4 \uC2DC\uC810\xB7\uCC98\uBD84 \uC21C\uC11C)\uC744 \uD568\uAED8 \uAC80\uD1A0\uD558\uC138\uC694." : "\uAC04\uC774 \uACC4\uC0B0 \uACB0\uACFC\uC785\uB2C8\uB2E4. \uC815\uBC00 \uBD84\uC11D\uC740 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uC0C1\uB2F4\uC73C\uB85C \uC774\uC5B4\uBC1B\uACA0\uC2B5\uB2C8\uB2E4.",
+          headline: "\uAC80\uC99D\uB41C \uC138\uBB34 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD55C \uC815\uBC00 \uACB0\uACFC\uC785\uB2C8\uB2E4. \uC704 \u300C\uC808\uC138 \uC804\uB7B5\u300D(\uC591\uB3C4 \uC2DC\uC810\xB7\uCC98\uBD84 \uC21C\uC11C)\uC744 \uD568\uAED8 \uAC80\uD1A0\uD558\uC138\uC694.",
           cautions: [
             { title: "\uC815\uD655\uD55C \uCDE8\uB4DD\uC77C\xB7\uC591\uB3C4\uC77C", detail: "\uBCF4\uC720\uAE30\uAC04\uC744 \uC2E4\uC81C \uCDE8\uB4DD\uC77C\xB7\uC591\uB3C4\uC77C\uB85C \uC785\uB825\uD558\uBA74 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\xB7\uC911\uACFC \uD310\uC815\uC774 \uB354 \uC815\uD655\uD574\uC9D1\uB2C8\uB2E4." },
             { title: "\uB2E4\uC8FC\uD0DD \uC911\uACFC\xB7\uC2DC\uC810", detail: "\uB2E4\uC8FC\uD0DD \uC911\uACFC\uB294 \uC591\uB3C4 \uC2DC\uC810(2026.5.10 \uBCF5\uC6D0)\uC5D0 \uB530\uB77C \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC704 \uC808\uC138 \uC804\uB7B5\uC744 \uD655\uC778\uD558\uC138\uC694." },
@@ -3854,87 +3803,7 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
       setReport({ calc, commentary });
     } catch (e) {
       console.error(e);
-      try {
-        const acquired2 = Number(answers.acquired) || 0;
-        const sold2 = Number(answers.sold) || 0;
-        const expenses2 = Number(answers.expenses) || 0;
-        const capGain2 = Math.max(sold2 - acquired2 - expenses2, 0);
-        const years2 = yearsBetween(answers.acquiredDate, answers.transferDate);
-        const assetType2 = answers.assetType;
-        const isOwnOccupied2 = (answers.moveInDate ? yearsBetween(answers.moveInDate, answers.transferDate) : 0) >= 2;
-        const is1House2 = assetType2 === "house_1";
-        const isAdjusted2 = answers.adjustedZone === "yes";
-        const hasConcurrentRight2 = is1House2 && (answers.houseConcurrentRight === "occupancy" || answers.houseConcurrentRight === "presale");
-        const residenceYears2 = answers.moveInDate ? yearsBetween(answers.moveInDate, answers.transferDate) : 0;
-        const residenceOk2 = answers.acqAdjustedZone === "no" || residenceYears2 >= 2;
-        let taxable2 = capGain2;
-        let nonTaxableMsg2 = null;
-        if (is1House2 && sold2 <= 12e8 && years2 >= 2 && residenceOk2 && !hasConcurrentRight2) {
-          nonTaxableMsg2 = "1\uC138\uB300 1\uC8FC\uD0DD \xB7 \uC591\uB3C4\uAC00 12\uC5B5 \uC774\uD558 \xB7 2\uB144 \uC774\uC0C1 \uBCF4\uC720 \uC694\uAC74 \uCDA9\uC871 \uC2DC \uC6D0\uCE59\uC801 \uBE44\uACFC\uC138.";
-          taxable2 = 0;
-        } else if (is1House2 && sold2 > 12e8 && years2 >= 2 && residenceOk2 && !hasConcurrentRight2) {
-          taxable2 = Math.round(capGain2 * ((sold2 - 12e8) / sold2));
-          nonTaxableMsg2 = "12\uC5B5 \uCD08\uACFC\uBD84 \uC548\uBD84 \uACFC\uC138.";
-        } else if (is1House2 && years2 >= 2 && !residenceOk2 && !hasConcurrentRight2) {
-          nonTaxableMsg2 = "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uCDE8\uB4DD 1\uC8FC\uD0DD\uC758 2\uB144 \uAC70\uC8FC \uC694\uAC74 \uBBF8\uCDA9\uC871\uC73C\uB85C \uACFC\uC138\uB85C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uCDE8\uB4DD \uB2F9\uC2DC \uBE44\uC870\uC815\uC9C0\uC5ED\uC774\uC5C8\uB2E4\uBA74 \uBE44\uACFC\uC138\uAC00 \uB420 \uC218 \uC788\uC5B4 \uC0C1\uB2F4 \uD655\uC778\uC744 \uAD8C\uD569\uB2C8\uB2E4.";
-        } else if (hasConcurrentRight2) {
-          nonTaxableMsg2 = "\uC8FC\uD0DD\uACFC \uC785\uC8FC\uAD8C\xB7\uBD84\uC591\uAD8C\uC744 \uD568\uAED8 \uBCF4\uC720\uD55C \uC0C1\uD0DC\uC5D0\uC11C \uADF8 \uC8FC\uD0DD\uC744 \uC591\uB3C4\uD558\uBA74 1\uC138\uB3001\uC8FC\uD0DD \uBE44\uACFC\uC138\uAC00 \uBC30\uC81C\uB429\uB2C8\uB2E4(\uC18C\uBC95 \xA789\u2461). \uC77C\uC2DC\uC801 \uBCF4\uC720 \uB4F1 \uC815\uBC00 \uD310\uC815\uC740 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694.";
-        }
-        const isPresale2 = assetType2 === "presale";
-        const isHouse2x = is1House2 || assetType2 === "house_2" || assetType2 === "house_3";
-        const is2or3House2 = assetType2 === "house_2" || assetType2 === "house_3";
-        const heavy2 = isHouse2x && isAdjusted2 && is2or3House2 && (answers.transferDate || isoDate(/* @__PURE__ */ new Date())) >= "2026-05-10";
-        let ltRate2 = calcLtDeductionRate(years2, residenceYears2, isOwnOccupied2, is1House2);
-        if (heavy2) ltRate2 = 0;
-        const afterLt2 = Math.max(taxable2 - Math.round(taxable2 * ltRate2), 0);
-        const taxBase2 = Math.max(Math.floor((afterLt2 - 25e5) / 1e3) * 1e3, 0);
-        let baseTax2;
-        const surcharge2 = assetType2 === "house_3" ? 0.3 : 0.2;
-        const heavyTax2 = () => calcBaseTax(taxBase2) + Math.round(taxBase2 * surcharge2);
-        if (isPresale2) baseTax2 = Math.round(taxBase2 * (years2 < 1 ? 0.7 : 0.6));
-        else if (years2 < 1) baseTax2 = heavy2 ? Math.max(Math.round(taxBase2 * 0.7), heavyTax2()) : Math.round(taxBase2 * 0.7);
-        else if (years2 < 2 && isHouse2x) baseTax2 = heavy2 ? Math.max(Math.round(taxBase2 * 0.6), heavyTax2()) : Math.round(taxBase2 * 0.6);
-        else if (heavy2) baseTax2 = heavyTax2();
-        else if (assetType2 === "commercial" && answers.nonHouseType === "land" && (answers.landUse === "non_business" || answers.landUse === "unsure")) baseTax2 = calcBaseTax(taxBase2) + Math.round(taxBase2 * 0.1);
-        else baseTax2 = calcBaseTax(taxBase2);
-        const totalTax2 = Math.round(baseTax2 * 1.1);
-        const multiHouseNote2 = assetType2 === "house_2" || assetType2 === "house_3" ? `${assetType2 === "house_3" ? "3\uC8FC\uD0DD \uC774\uC0C1" : "2\uC8FC\uD0DD"} \uB2E4\uC8FC\uD0DD\uC790\uB294 1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138 \uB300\uC0C1\uC774 \uC544\uB2C8\uBA70, \uC591\uB3C4\uCC28\uC775 \uC804\uC561\uC774 \uACFC\uC138\uB429\uB2C8\uB2E4.` : null;
-        const fallback = {
-          calc: {
-            capGain: capGain2,
-            expenses: expenses2,
-            nonTaxableMsg: nonTaxableMsg2,
-            multiHouseNote: multiHouseNote2,
-            taxableAfter1House: taxable2,
-            ltRate: ltRate2,
-            ltDeduction: Math.round(taxable2 * ltRate2),
-            afterLt: afterLt2,
-            basicDeduction: 25e5,
-            taxBase: taxBase2,
-            baseTax: baseTax2,
-            localTax: Math.round(baseTax2 * 0.1),
-            totalTax: totalTax2,
-            shortTermNote: null,
-            effectiveRate: capGain2 > 0 ? totalTax2 / capGain2 * 100 : 0
-          },
-          commentary: {
-            headline: "\uAC04\uC774 \uACC4\uC0B0 \uACB0\uACFC\uC785\uB2C8\uB2E4. \uC815\uBC00 \uBD84\uC11D\uC740 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uC0C1\uB2F4\uC73C\uB85C \uC774\uC5B4\uBC1B\uACA0\uC2B5\uB2C8\uB2E4.",
-            cautions: [
-              { title: "\uAC04\uC774 \uCD94\uC815\uCE58\uC785\uB2C8\uB2E4", detail: "\uBCF8 \uACC4\uC0B0\uC740 \uC8FC\uC694 \uBCC0\uC218\uB9CC \uBC18\uC601\uD55C \uCC38\uACE0\uCE58\uB85C, \uC2E4\uC81C \uC138\uC561\uC740 \uCDE8\uB4DD\uC2DC\uAE30\xB7\uAC10\uBA74\xB7\uD2B9\uB840\xB7\uC870\uC815\uC9C0\uC5ED \uC9C0\uC815\uC77C \uB4F1\uC5D0 \uB530\uB77C \uD06C\uAC8C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4." },
-              { title: "\uBCF4\uC720\xB7\uAC70\uC8FC \uC694\uAC74 \uC7AC\uD655\uC778", detail: '1\uC138\uB300 1\uC8FC\uD0DD \uBE44\uACFC\uC138\uC640 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\uB294 "\uC138\uB300" \uD310\uC815\uACFC "\uAC70\uC8FC" \uC99D\uBE59\uC774 \uD575\uC2EC\uC785\uB2C8\uB2E4. \uC8FC\uBBFC\uB4F1\uB85D\xB7\uC2E4\uAC70\uB798\xB7\uC784\uB300\uCC28 \uAE30\uB85D\uC744 \uAC16\uCDB0 \uAC80\uD1A0\uD574\uC57C \uD569\uB2C8\uB2E4.' },
-              { title: "\uC870\uC815\uC9C0\uC5ED\xB7\uC911\uACFC \uC720\uC608 \uD655\uC778", detail: "\uB2E4\uC8FC\uD0DD\uC790 \uC911\uACFC\uC138\uB294 \uC9C0\uC815\uC77C\xB7\uD574\uC81C\uC77C\xB7\uD55C\uC2DC \uC720\uC608 \uC815\uCC45\uC5D0 \uB530\uB77C \uC801\uC6A9 \uC5EC\uBD80\uAC00 \uAC08\uB9BD\uB2C8\uB2E4. \uC591\uB3C4 \uC2DC\uC810 \uAE30\uC900 \uBC95\uB839 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4." }
-            ],
-            saving_ideas: [
-              { title: "\uC591\uB3C4 \uC2DC\uC810 \uC870\uC815", detail: "\uBCF4\uC720\xB7\uAC70\uC8FC \uC694\uAC74 \uCDA9\uC871 \uC2DC\uC810\uC774\uB098 \uACFC\uC138 \uAD6C\uAC04 \uACBD\uACC4\uC5D0 \uADFC\uC811\uD55C \uACBD\uC6B0, \uC591\uB3C4 \uC2DC\uC810\uC744 \uC870\uC815\uD574 \uC138\uC561\uC774 \uC218\uCC9C\uB9CC\uC6D0 \uB2E8\uC704\uB85C \uBC14\uB014 \uC218 \uC788\uC2B5\uB2C8\uB2E4." },
-              { title: "\uD544\uC694\uACBD\uBE44 \uB204\uB77D \uC810\uAC80", detail: "\uCDE8\uB4DD\uC138\xB7\uC911\uAC1C\uC218\uC218\uB8CC\xB7\uC790\uBCF8\uC801 \uC9C0\uCD9C(\uB9AC\uBAA8\uB378\uB9C1\xB7\uC99D\uCD95)\uC740 \uD544\uC694\uACBD\uBE44\uB85C \uCC28\uAC10 \uAC00\uB2A5\uD569\uB2C8\uB2E4. \uC601\uC218\uC99D\uACFC \uACC4\uC57D\uC11C \uD655\uBCF4\uAC00 \uAD00\uAC74\uC785\uB2C8\uB2E4." }
-            ],
-            followup: ["\uCDE8\uB4DD \uB2F9\uC2DC \uB9E4\uB9E4\uACC4\uC57D\uC11C \uBC0F \uCDE8\uB4DD\uC138 \uC601\uC218\uC99D", "\uAC70\uC8FC\uAE30\uAC04\uC744 \uC785\uC99D\uD560 \uC8FC\uBBFC\uB4F1\uB85D\uCD08\uBCF8\xB7\uAD00\uB9AC\uBE44 \uB0B4\uC5ED", "\uD544\uC694\uACBD\uBE44 \uC99D\uBE59(\uB9AC\uBAA8\uB378\uB9C1\xB7\uC911\uAC1C\uC218\uC218\uB8CC \uB4F1)"]
-          }
-        };
-        setReport(fallback);
-      } catch (ee) {
-        setErr(e.message || "\uBD84\uC11D \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
-      }
+      setErr(e.message || "\uBD84\uC11D \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
       setLoading(false);
     }
@@ -3945,6 +3814,9 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
   const goPrev = () => {
     step === 0 ? onBack() : setStep((s) => s - 1);
   };
+  if (loading) {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), /* @__PURE__ */ React.createElement("h2", null, "\uC138\uC561\uC744 \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uBCF8\uC138\uC728 \xB7 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C \xB7 \uC9C0\uBC29\uC18C\uB4DD\uC138\uB97C \uBC18\uC601\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { className: "jt-report-loading__privacy", style: { fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 } }, (window.JT_PRIVACY_NOTE || {})["engine"] || (window.JT_PRIVACY_NOTE || {}).engine));
+  }
   if (report && report.notSupported) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-loading" }, /* @__PURE__ */ React.createElement("h2", null, report.title), /* @__PURE__ */ React.createElement("p", { style: { maxWidth: 580, margin: "12px auto", lineHeight: 1.7, opacity: 0.85 } }, report.message), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 24, display: "flex", gap: 12, justifyContent: "center" } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => {
       window.jtTrackCta && window.jtTrackCta("booking", "report_cgt_result");
@@ -3960,12 +3832,27 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
     const cgtGaps = cgtFallbackGaps(answers, calc);
     const cgtBlocked = cgtGaps.length > 0;
     if (cgtBlocked) {
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-result" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__head" }, /* @__PURE__ */ React.createElement("button", { className: "jt-report-shell__back", onClick: onBack }, "\u2190 \uC138\uAE08 \uACC4\uC0B0\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__meta" }, /* @__PURE__ */ React.createElement("span", { className: "jt-tag" }, "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694"))), /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: cgtGaps, onRetry: runAnalysis, reason: cgtFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }));
+      const cgtBlockReason = cgtFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "refused" ? "refused" : "down";
+      const cgtBackToInput = () => {
+        setReport(null);
+        if (cgtBlockReason === "input") {
+          const i = visibleQs.findIndex((q) => q.id === "acqAdjustedZone");
+          if (i >= 0) setStep(i);
+        }
+      };
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-result" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__head" }, /* @__PURE__ */ React.createElement("button", { className: "jt-report-shell__back", onClick: onBack }, "\u2190 \uC138\uAE08 \uACC4\uC0B0\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__meta" }, /* @__PURE__ */ React.createElement("span", { className: "jt-tag" }, cgtBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : cgtBlockReason === "refused" ? "\uC138\uBB34\uC0AC \uD655\uC778 \uD544\uC694" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328"))), /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: cgtBlockReason === "input" ? cgtGaps : [], onRetry: () => {
+        setReport(null);
+        runAnalysis();
+      }, reason: cgtBlockReason }), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 14, lineHeight: 1.6 } }, "\uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: cgtBackToInput }, "\uC785\uB825 \uC218\uC815\uD558\uB7EC \uB3CC\uC544\uAC00\uAE30 \u2192"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+        setReport(null);
+        setStep(0);
+        setAnswers({ transferDate: isoDate(/* @__PURE__ */ new Date()) });
+      } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC")));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-result" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__head" }, /* @__PURE__ */ React.createElement("button", { className: "jt-report-shell__back", onClick: onBack }, "\u2190 \uC138\uAE08 \uACC4\uC0B0\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__meta" }, /* @__PURE__ */ React.createElement("span", { className: "jt-tag" }, calc.precise ? "\uC815\uBC00\uACC4\uC0B0" : "\uAC04\uC774\uCD94\uC815"), /* @__PURE__ */ React.createElement("span", null, "\uC591\uB3C4\uC18C\uB4DD\uC138 \uAC04\uC774 \uACC4\uC0B0 \xB7 ", (/* @__PURE__ */ new Date()).toLocaleDateString("ko-KR")))), cgtBlocked && /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: cgtGaps, onRetry: runAnalysis }), !cgtBlocked && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, calc.precise ? "\uCD1D \uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)" : "\uCD94\uC815 \uCD1D \uC138\uC561 \xB7 \uAC04\uC774 \uCD94\uC815\uCE58"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax)), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.75, marginTop: 8, marginBottom: 12, letterSpacing: "0.02em" } }, calc.precise ? `\u203B \uAC80\uC99D\uB41C \uC138\uBB34 \uC5D4\uC9C4(${calc.engineVer || "jt-tax-engine"})\uC73C\uB85C \uACC4\uC0B0 \u2014 \uC785\uB825\uD55C \uCDE8\uB4DD\uC77C\xB7\uC591\uB3C4\uC77C\xB7\uC804\uC785\uC77C\uB85C \uBCF4\uC720\uAE30\uAC04\xB7\uAC70\uC8FC\uAE30\uAC04\xB72\uB144 \uBE44\uACFC\uC138 \uC694\uAC74\xB7\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\xB7\uC911\uACFC\xB7\uBE44\uACFC\uC138\uB97C \uC815\uBC00 \uBC18\uC601\uD558\uACE0 \uB2E8\uACC4\uBCC4 \uBC95\uC870\uBB38 \uADFC\uAC70\uB97C \uC81C\uACF5\uD569\uB2C8\uB2E4.` : "\u26A0\uFE0F \uC815\uBC00 \uACC4\uC0B0 \uC5D4\uC9C4\uC5D0 \uC77C\uC2DC\uC801\uC73C\uB85C \uC5F0\uACB0\uD558\uC9C0 \uBABB\uD574 \uAC04\uC774 \uCD94\uC815\uCE58\uB97C \uD45C\uC2DC\uD569\uB2C8\uB2E4 \u2014 \uC2E4\uC81C \uC138\uC561\uACFC \uB2E4\uB97C \uC218 \uC788\uC73C\uB2C8 \uCC38\uACE0\uC6A9\uC73C\uB85C\uB9CC \uBCF4\uC2DC\uACE0, \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uAC70\uB098 \uC0C1\uB2F4\uC73C\uB85C \uC815\uD655\uD788 \uD655\uC778\uD558\uC138\uC694. (\uB2E8\uAE30\xB7\uC911\uACFC\xB7\uAC10\uBA74\xB7\uD2B9\uB840\xB7\uC870\uC815\uC9C0\uC5ED \uC9C0\uC815\uC77C \uB4F1\uC740 \uBBF8\uC138 \uBC18\uC601)"), calc.acquiredDate && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.85, marginTop: 4, marginBottom: 10 } }, "\u{1F4C5} \uCDE8\uB4DD ", calc.acquiredDate, " ~ \uC591\uB3C4 ", calc.transferDate, " \xB7 \uBCF4\uC720 ", calc.holdYears.toFixed(1), "\uB144", calc.residenceYears > 0 ? ` \xB7 \uAC70\uC8FC ${calc.residenceYears.toFixed(1)}\uB144` : ""), /* @__PURE__ */ React.createElement("p", null, commentary.headline), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.nonTaxableMsg), (answers.assetType === "house_1" || answers.assetType === "house_2") && !answers.moveInDate && calc.totalTax > 0 && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500, color: "#b8860b" } }, "\u26A0\uFE0F \u300C\uC804\uC785(\uAC70\uC8FC \uC2DC\uC791)\uC77C\u300D\uC744 \uC785\uB825\uD558\uC9C0 \uC54A\uC544 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC70\uC8FC\uAE30\uAC04\uC774 0\uB144"), "\uC73C\uB85C \uACC4\uC0B0\uB410\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C\uB85C \uADF8 \uC9D1\uC5D0 \uC0AC\uC168\uB2E4\uBA74 \uC804\uC785\uC77C\uC744 \uC785\uB825\uD574 \uBCF4\uC138\uC694 \u2014 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED 1\uC138\uB3001\uC8FC\uD0DD(\uB610\uB294 \uC77C\uC2DC\uC801 2\uC8FC\uD0DD)\uC758 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC70\uC8FC 2\uB144 \uBE44\uACFC\uC138 \uC694\uAC74"), "\uC774\uB098 ", /* @__PURE__ */ React.createElement("strong", null, "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\uC758 \uAC70\uC8FC\uACF5\uC81C(\uBCF4\uC720+\uAC70\uC8FC \uCD5C\uB300 80%)"), "\uAC00 \uC801\uC6A9\uB3FC \uC138\uAE08\uC774 \uD06C\uAC8C \uC904 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), calc.multiHouseNote && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.multiHouseNote), calc.shortTermNote && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.shortTermNote), calc.landCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.landCaveat), calc.ipjuCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.ipjuCaveat), calc.concurrentRightCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.concurrentRightCaveat), calc.replCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.replCaveat), calc.acqZoneCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F ", calc.acqZoneCaveat), Array.isArray(calc.engineWarnings) && calc.engineWarnings.filter((w) => w && ![calc.ipjuCaveat, calc.concurrentRightCaveat, calc.replCaveat, calc.landCaveat, calc.multiHouseNote, calc.shortTermNote].some((c) => c && (c.includes(w) || w.includes(c)))).map((w, i) => /* @__PURE__ */ React.createElement("p", { key: `ew${i}`, style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F ", w)), calc.deadlineWarn && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uBE44\uACFC\uC138\uB294 \uAE30\uD55C\uC774 \uC788\uC2B5\uB2C8\uB2E4 \u2014 \uC0C8 \uC9D1 \uCDE8\uB4DD \uD6C4 3\uB144\uC774 \uB418\uB294 ", /* @__PURE__ */ React.createElement("strong", null, calc.deadlineWarn.date, "\uAE4C\uC9C0"), " \uC591\uB3C4\uD574\uC57C \uBE44\uACFC\uC138\uAC00 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uC774 \uB0A0\uC744 \uB118\uAE30\uBA74 \uC57D ", formatWon(calc.deadlineWarn.missedTax), "\uC774 \uBD80\uACFC\uB429\uB2C8\uB2E4.")), !cgtBlocked && (calc.scenarios && calc.scenarios.length > 1 || calc.orderTip) && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC774 \uC9D1, \uC5B4\uB5BB\uAC8C \uD314\uBA74 \uC138\uAE08\uC774 \uC904\uAE4C\uC694? \xB7 \uC808\uC138 \uC804\uB7B5"), calc.orderTip && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--color-background-success, #E1F5EE)", border: "1px solid #1D9E75", borderRadius: 8, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("strong", null, "\u{1F4A1} \uCC98\uBD84 \uC21C\uC11C \u2014 \uB2E4\uB978 \uC9D1\uC744 \uBA3C\uC800 \uC815\uB9AC\uD574 \uC774 \uC9D1\uC744 \uB9C8\uC9C0\uB9C9(1\uC8FC\uD0DD)\uC5D0 \uD314\uBA74: ", formatWon(calc.orderTip.tax), calc.orderTip.exempt ? " (\uBE44\uACFC\uC138)" : ""), /* @__PURE__ */ React.createElement("span", null, " \u2014 \uC9C0\uAE08(", formatWon(calc.totalTax), ")\uBCF4\uB2E4 \uC774 \uC9D1 \uC138\uAE08\uC774 \uC57D ", formatWon(calc.orderTip.saving), " \uC904\uC5B4\uB4ED\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("span", { style: { display: "block", fontSize: 12, opacity: 0.75, marginTop: 6 } }, "\u203B \uBA3C\uC800 \uD30C\uB294 \uB2E4\uB978 \uC9D1\uC740 \uADF8 \uC9D1\uB300\uB85C \uACFC\uC138\uB418\uB2C8 \uB450 \uC9D1\uC744 \uD569\uC0B0\uD574 \uBE44\uAD50\uD558\uC138\uC694. \uBCF4\uC720\uAE30\uAC04 \uC7AC\uAE30\uC0B0\uC740 2022.5.10 \uD3D0\uC9C0(\uB2F9\uCD08 \uCDE8\uB4DD\uC77C \uAE30\uC0B0)\uB77C 1\uC8FC\uD0DD\uC774 \uB418\uBA74 \uC989\uC2DC \uBE44\uACFC\uC138 \uD310\uC815\uB429\uB2C8\uB2E4.")), calc.timingTip ? /* @__PURE__ */ React.createElement("div", { style: { background: "var(--color-background-success, #E1F5EE)", border: "1px solid #1D9E75", borderRadius: 8, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("strong", null, "\u{1F4A1} \uC591\uB3C4 \uC2DC\uC810 \u2014 ", calc.timingTip.label.split(" \u2014 ")[0], " \uC2DC\uC810(", calc.timingTip.date, ")\uC5D0 \uD314\uBA74 \uC57D ", formatWon(calc.timingTip.saving), " \uC808\uC138"), /* @__PURE__ */ React.createElement("span", null, " \u2014 \uC9C0\uAE08\uBCF4\uB2E4 \uC57D ", calc.timingTip.months, "\uAC1C\uC6D4 \uB4A4", calc.timingTip.exempt ? " (\uBE44\uACFC\uC138 \uC694\uAC74 \uCDA9\uC871)" : "", ".")) : !calc.orderTip && calc.scenarios && calc.scenarios.length > 1 && /* @__PURE__ */ React.createElement("p", { style: { marginBottom: 12, fontWeight: 500 } }, "\uC9C0\uAE08 \uC591\uB3C4\uAC00 \uC138\uAE08\uC0C1 \uAC00\uC7A5 \uC720\uB9AC\uD558\uAC70\uB098 \uBE44\uC2B7\uD569\uB2C8\uB2E4. (\uC544\uB798 \uBE44\uAD50)"), calc.scenarios && calc.scenarios.length > 1 && /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.scenarios.map((s, i) => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-result" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__head" }, /* @__PURE__ */ React.createElement("button", { className: "jt-report-shell__back", onClick: onBack }, "\u2190 \uC138\uAE08 \uACC4\uC0B0\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__meta" }, /* @__PURE__ */ React.createElement("span", { className: "jt-tag" }, "\uC815\uBC00\uACC4\uC0B0"), /* @__PURE__ */ React.createElement("span", null, "\uC591\uB3C4\uC18C\uB4DD\uC138 \uAC04\uC774 \uACC4\uC0B0 \xB7 ", (/* @__PURE__ */ new Date()).toLocaleDateString("ko-KR")))), !cgtBlocked && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, "\uCD1D \uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax)), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.75, marginTop: 8, marginBottom: 12, letterSpacing: "0.02em" } }, `\u203B \uAC80\uC99D\uB41C \uC138\uBB34 \uC5D4\uC9C4(${calc.engineVer || "jt-tax-engine"})\uC73C\uB85C \uACC4\uC0B0 \u2014 \uC785\uB825\uD55C \uCDE8\uB4DD\uC77C\xB7\uC591\uB3C4\uC77C\xB7\uC804\uC785\uC77C\uB85C \uBCF4\uC720\uAE30\uAC04\xB7\uAC70\uC8FC\uAE30\uAC04\xB72\uB144 \uBE44\uACFC\uC138 \uC694\uAC74\xB7\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\xB7\uC911\uACFC\xB7\uBE44\uACFC\uC138\uB97C \uC815\uBC00 \uBC18\uC601\uD558\uACE0 \uB2E8\uACC4\uBCC4 \uBC95\uC870\uBB38 \uADFC\uAC70\uB97C \uC81C\uACF5\uD569\uB2C8\uB2E4.`), calc.acquiredDate && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.85, marginTop: 4, marginBottom: 10 } }, "\u{1F4C5} \uCDE8\uB4DD ", calc.acquiredDate, " ~ \uC591\uB3C4 ", calc.transferDate, " \xB7 \uBCF4\uC720 ", calc.holdYears.toFixed(1), "\uB144", calc.residenceYears > 0 ? ` \xB7 \uAC70\uC8FC ${calc.residenceYears.toFixed(1)}\uB144` : ""), /* @__PURE__ */ React.createElement("p", null, commentary.headline), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.nonTaxableMsg), (answers.assetType === "house_1" || answers.assetType === "house_2") && !answers.moveInDate && calc.totalTax > 0 && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500, color: "#b8860b" } }, "\u26A0\uFE0F \u300C\uC804\uC785(\uAC70\uC8FC \uC2DC\uC791)\uC77C\u300D\uC744 \uC785\uB825\uD558\uC9C0 \uC54A\uC544 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC70\uC8FC\uAE30\uAC04\uC774 0\uB144"), "\uC73C\uB85C \uACC4\uC0B0\uB410\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C\uB85C \uADF8 \uC9D1\uC5D0 \uC0AC\uC168\uB2E4\uBA74 \uC804\uC785\uC77C\uC744 \uC785\uB825\uD574 \uBCF4\uC138\uC694 \u2014 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED 1\uC138\uB3001\uC8FC\uD0DD(\uB610\uB294 \uC77C\uC2DC\uC801 2\uC8FC\uD0DD)\uC758 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC70\uC8FC 2\uB144 \uBE44\uACFC\uC138 \uC694\uAC74"), "\uC774\uB098 ", /* @__PURE__ */ React.createElement("strong", null, "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\uC758 \uAC70\uC8FC\uACF5\uC81C(\uBCF4\uC720+\uAC70\uC8FC \uCD5C\uB300 80%)"), "\uAC00 \uC801\uC6A9\uB3FC \uC138\uAE08\uC774 \uD06C\uAC8C \uC904 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), calc.multiHouseNote && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.multiHouseNote), calc.temp2Assumption && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F ", calc.temp2Assumption), calc.landCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.landCaveat), calc.ipjuCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.ipjuCaveat), calc.concurrentRightCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.concurrentRightCaveat), calc.replCaveat && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500 } }, calc.replCaveat), Array.isArray(calc.engineWarnings) && calc.engineWarnings.filter((w) => w && ![calc.ipjuCaveat, calc.concurrentRightCaveat, calc.replCaveat, calc.landCaveat, calc.multiHouseNote, calc.temp2Assumption].some((c) => c && (c.includes(w) || w.includes(c)))).map((w, i) => /* @__PURE__ */ React.createElement("p", { key: `ew${i}`, style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F ", w)), calc.deadlineWarn && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uBE44\uACFC\uC138\uB294 \uAE30\uD55C\uC774 \uC788\uC2B5\uB2C8\uB2E4 \u2014 ", calc.deadlineWarn.years ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC0C8 \uC9D1 \uCDE8\uB4DD \uD6C4 ", calc.deadlineWarn.years, "\uB144\uC774 \uB418\uB294 ", /* @__PURE__ */ React.createElement("strong", null, calc.deadlineWarn.date, "\uAE4C\uC9C0"), " \uC591\uB3C4\uD574\uC57C \uBE44\uACFC\uC138\uAC00 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uC774 \uB0A0\uC744 \uB118\uAE30\uBA74 \uC57D ", formatWon(calc.deadlineWarn.missedTax), "\uC774 \uBD80\uACFC\uB429\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC0C8 \uC9D1 \uCDE8\uB4DD \uD6C4 \uAE30\uD55C\uC740 ", cgtTemp2Phrase(null), "\uC785\uB2C8\uB2E4. 2\uB144\uC774 \uB418\uB294 ", /* @__PURE__ */ React.createElement("strong", null, calc.deadlineWarn.date, "\uAE4C\uC9C0"), " \uC591\uB3C4\uD558\uBA74 \uC5B4\uB290 \uACBD\uC6B0\uC5D0\uB3C4 \uBE44\uACFC\uC138\uAC00 \uC720\uC9C0\uB418\uACE0, \uC774 \uB0A0\uC744 \uB118\uAE30\uBA74 \uB450 \uC9D1\uC774 \uBAA8\uB450 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB2E4\uBA74 \uC57D ", formatWon(calc.deadlineWarn.missedTax), "\uC774 \uBD80\uACFC\uB429\uB2C8\uB2E4."), " (\uC18C\uB4DD\uC138\uBC95 \uC2DC\uD589\uB839 \xA7155\u2460)")), !cgtBlocked && (calc.scenarios && calc.scenarios.length > 1 || calc.orderTip) && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC774 \uC9D1, \uC5B4\uB5BB\uAC8C \uD314\uBA74 \uC138\uAE08\uC774 \uC904\uAE4C\uC694? \xB7 \uC808\uC138 \uC804\uB7B5"), calc.orderTip && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--color-background-success, #E1F5EE)", border: "1px solid #1D9E75", borderRadius: 8, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("strong", null, "\u{1F4A1} \uCC98\uBD84 \uC21C\uC11C \u2014 \uB2E4\uB978 \uC9D1\uC744 \uBA3C\uC800 \uC815\uB9AC\uD574 \uC774 \uC9D1\uC744 \uB9C8\uC9C0\uB9C9(1\uC8FC\uD0DD)\uC5D0 \uD314\uBA74: ", formatWon(calc.orderTip.tax), calc.orderTip.exempt ? " (\uBE44\uACFC\uC138)" : ""), /* @__PURE__ */ React.createElement("span", null, " \u2014 \uC9C0\uAE08(", formatWon(calc.totalTax), ")\uBCF4\uB2E4 \uC774 \uC9D1 \uC138\uAE08\uC774 \uC57D ", formatWon(calc.orderTip.saving), " \uC904\uC5B4\uB4ED\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("span", { style: { display: "block", fontSize: 12, opacity: 0.75, marginTop: 6 } }, "\u203B \uBA3C\uC800 \uD30C\uB294 \uB2E4\uB978 \uC9D1\uC740 \uADF8 \uC9D1\uB300\uB85C \uACFC\uC138\uB418\uB2C8 \uB450 \uC9D1\uC744 \uD569\uC0B0\uD574 \uBE44\uAD50\uD558\uC138\uC694. \uBCF4\uC720\uAE30\uAC04 \uC7AC\uAE30\uC0B0\uC740 2022.5.10 \uD3D0\uC9C0(\uB2F9\uCD08 \uCDE8\uB4DD\uC77C \uAE30\uC0B0)\uB77C 1\uC8FC\uD0DD\uC774 \uB418\uBA74 \uC989\uC2DC \uBE44\uACFC\uC138 \uD310\uC815\uB429\uB2C8\uB2E4.")), calc.timingTip ? /* @__PURE__ */ React.createElement("div", { style: { background: "var(--color-background-success, #E1F5EE)", border: "1px solid #1D9E75", borderRadius: 8, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("strong", null, "\u{1F4A1} \uC591\uB3C4 \uC2DC\uC810 \u2014 ", calc.timingTip.label.split(" \u2014 ")[0], " \uC2DC\uC810(", calc.timingTip.date, ")\uC5D0 \uD314\uBA74 \uC57D ", formatWon(calc.timingTip.saving), " \uC808\uC138"), /* @__PURE__ */ React.createElement("span", null, " \u2014 \uC9C0\uAE08\uBCF4\uB2E4 \uC57D ", calc.timingTip.months, "\uAC1C\uC6D4 \uB4A4", calc.timingTip.exempt ? " (\uBE44\uACFC\uC138 \uC694\uAC74 \uCDA9\uC871)" : "", ".")) : !calc.orderTip && calc.scenarios && calc.scenarios.length > 1 && /* @__PURE__ */ React.createElement("p", { style: { marginBottom: 12, fontWeight: 500 } }, "\uC9C0\uAE08 \uC591\uB3C4\uAC00 \uC138\uAE08\uC0C1 \uAC00\uC7A5 \uC720\uB9AC\uD558\uAC70\uB098 \uBE44\uC2B7\uD569\uB2C8\uB2E4. (\uC544\uB798 \uBE44\uAD50)"), calc.scenarios && calc.scenarios.length > 1 && /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.scenarios.map((s, i) => {
       var _a, _b, _c, _d;
       return /* @__PURE__ */ React.createElement("tr", { key: i, style: s.tax === Math.min(...calc.scenarios.map((x) => x.tax)) ? { fontWeight: 500 } : null }, /* @__PURE__ */ React.createElement("th", null, s.now ? "\uC9C0\uAE08 \uC591\uB3C4" : s.label, /* @__PURE__ */ React.createElement("span", { style: { display: "block", fontSize: 12, opacity: 0.6, fontWeight: 400 } }, s.date, s.exempt ? " \xB7 \uBE44\uACFC\uC138" : "")), /* @__PURE__ */ React.createElement("td", null, formatWon(s.tax), !s.now && s.tax < ((_b = (_a = calc.scenarios.find((x) => x.now)) == null ? void 0 : _a.tax) != null ? _b : s.tax) ? /* @__PURE__ */ React.createElement("span", { style: { display: "block", fontSize: 12, color: "#0F6E56" } }, "\u2212 ", formatWon(((_d = (_c = calc.scenarios.find((x) => x.now)) == null ? void 0 : _c.tax) != null ? _d : s.tax) - s.tax)) : null));
-    }))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 8 } }, "\u203B \uC138\uAE08\uB9CC \uBE44\uAD50\uD55C \uACB0\uACFC\uC785\uB2C8\uB2E4. \uC2DC\uC138 \uBCC0\uB3D9\xB7\uC790\uAE08 \uC0AC\uC815\xB7\uBCF4\uC720 \uBE44\uC6A9\uC740 \uBCC4\uB3C4\uB85C \uACE0\uB824\uD558\uC138\uC694. \uC815\uD655\uD55C \uC804\uB7B5\uC740 \uC0C1\uB2F4\uC5D0\uC11C.")), !cgtBlocked && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.expenses > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uD544\uC694\uACBD\uBE44 (\uCDE8\uB4DD\uC138\xB7\uC911\uAC1C\uBE44\xB7\uC790\uBCF8\uC801\uC9C0\uCD9C \uB4F1)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.expenses))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, calc.expenses > 0 ? "\uC591\uB3C4\uCC28\uC775 (\uC591\uB3C4\uAC00 \u2212 \uCDE8\uB4DD\uAC00 \u2212 \uD544\uC694\uACBD\uBE44)" : "\uC591\uB3C4\uCC28\uC775 (\uC591\uB3C4\uAC00 \u2212 \uCDE8\uB4DD\uAC00)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.capGain))), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uBE44\uACFC\uC138 \uBC18\uC601 \uD6C4 \uACFC\uC138\uB300\uC0C1"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxableAfter1House))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C (", (calc.ltRate * 100).toFixed(0), "%)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.ltDeduction))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACF5\uC81C \uD6C4 \uAE08\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.afterLt))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAE30\uBCF8\uACF5\uC81C"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.basicDeduction))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.taxBase)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.baseTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uC18C\uB4DD\uC138 (10%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.localTax))), /* @__PURE__ */ React.createElement("tr", { className: "jt-report-calc__total" }, /* @__PURE__ */ React.createElement("th", null, "\uCD1D \uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.totalTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC2E4\uD6A8\uC138\uC728 (\uC591\uB3C4\uCC28\uC775 \uB300\uBE44)"), /* @__PURE__ */ React.createElement("td", null, calc.effectiveRate.toFixed(1), "%"))))), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 \xB7 \uBC95\uC870\uBB38 \uADFC\uAC70"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${s["\uC870\uBB38"]}` : ""), /* @__PURE__ */ React.createElement("td", null, formatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), /* @__PURE__ */ React.createElement("div", { className: calc.totalTax > 0 ? "jt-report-result__grid" : "" }, /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, (commentary.cautions || []).map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-reasons__head" }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title)), /* @__PURE__ */ React.createElement("p", null, r.detail))))), calc.totalTax > 0 && (commentary.saving_ideas || []).length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-reasons__head" }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title)), /* @__PURE__ */ React.createElement("p", null, r.detail)))))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uCD94\uAC00 \uD655\uC778\uC774 \uD544\uC694\uD55C \uC790\uB8CC"), /* @__PURE__ */ React.createElement("ul", { className: "jt-report-check" }, (commentary.followup || []).map((c, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-check__box" }, "\u2610"), c)))), /* @__PURE__ */ React.createElement(JTReportDisclaimer, { variant: "inline" }), !cgtBlocked && /* @__PURE__ */ React.createElement(
+    }))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 8 } }, "\u203B \uC138\uAE08\uB9CC \uBE44\uAD50\uD55C \uACB0\uACFC\uC785\uB2C8\uB2E4. \uC2DC\uC138 \uBCC0\uB3D9\xB7\uC790\uAE08 \uC0AC\uC815\xB7\uBCF4\uC720 \uBE44\uC6A9\uC740 \uBCC4\uB3C4\uB85C \uACE0\uB824\uD558\uC138\uC694. \uC815\uD655\uD55C \uC804\uB7B5\uC740 \uC0C1\uB2F4\uC5D0\uC11C.")), !cgtBlocked && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.expenses > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uD544\uC694\uACBD\uBE44 (\uCDE8\uB4DD\uC138\xB7\uC911\uAC1C\uBE44\xB7\uC790\uBCF8\uC801\uC9C0\uCD9C \uB4F1)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.expenses))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, calc.expenses > 0 ? "\uC591\uB3C4\uCC28\uC775 (\uC591\uB3C4\uAC00 \u2212 \uCDE8\uB4DD\uAC00 \u2212 \uD544\uC694\uACBD\uBE44)" : "\uC591\uB3C4\uCC28\uC775 (\uC591\uB3C4\uAC00 \u2212 \uCDE8\uB4DD\uAC00)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.capGain))), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uBE44\uACFC\uC138 \uBC18\uC601 \uD6C4 \uACFC\uC138\uB300\uC0C1"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxableAfter1House))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C", calc.ltRate == null ? "" : ` (${(calc.ltRate * 100).toFixed(0)}%)`), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.ltDeduction))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACF5\uC81C \uD6C4 \uAE08\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.afterLt))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAE30\uBCF8\uACF5\uC81C"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.basicDeduction))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.taxBase)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.baseTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uC18C\uB4DD\uC138 (10%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.localTax))), /* @__PURE__ */ React.createElement("tr", { className: "jt-report-calc__total" }, /* @__PURE__ */ React.createElement("th", null, "\uCD1D \uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.totalTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC2E4\uD6A8\uC138\uC728 (\uC591\uB3C4\uCC28\uC775 \uB300\uBE44)"), /* @__PURE__ */ React.createElement("td", null, calc.effectiveRate.toFixed(1), "%"))))), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 \xB7 \uBC95\uC870\uBB38 \uADFC\uAC70"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${s["\uC870\uBB38"]}` : ""), /* @__PURE__ */ React.createElement("td", null, formatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), /* @__PURE__ */ React.createElement("div", { className: calc.totalTax > 0 ? "jt-report-result__grid" : "" }, /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, (commentary.cautions || []).map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-reasons__head" }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title)), /* @__PURE__ */ React.createElement("p", null, r.detail))))), calc.totalTax > 0 && (commentary.saving_ideas || []).length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-reasons__head" }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title)), /* @__PURE__ */ React.createElement("p", null, r.detail)))))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uCD94\uAC00 \uD655\uC778\uC774 \uD544\uC694\uD55C \uC790\uB8CC"), /* @__PURE__ */ React.createElement("ul", { className: "jt-report-check" }, (commentary.followup || []).map((c, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-check__box" }, "\u2610"), c)))), /* @__PURE__ */ React.createElement(JTReportDisclaimer, { variant: "inline" }), !cgtBlocked && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         setRoute,
@@ -3977,16 +3864,13 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
         reportSummary: `\uCD1D \uC138\uC561 ${formatWon(calc.totalTax)} / \uACFC\uC138\uD45C\uC900 ${formatWon(calc.taxBase)} / ${commentary.headline || ""}`,
         reportDetail: buildReportDetail(answers, calc, commentary),
         kakaoSummary: buildKakaoSummary(answers, calc),
-        urgent: calc.shortTermNote !== null
+        urgent: false
       }
     ), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__foot" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
       setReport(null);
       setStep(0);
       setAnswers({ transferDate: isoDate(/* @__PURE__ */ new Date()) });
     } }, "\uB2E4\uC2DC \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => window.print() }, "PDF / \uC778\uC1C4")));
-  }
-  if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), /* @__PURE__ */ React.createElement("h2", null, "\uC138\uC561\uC744 \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uBCF8\uC138\uC728 \xB7 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C \xB7 \uC9C0\uBC29\uC18C\uB4DD\uC138\uB97C \uBC18\uC601\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { className: "jt-report-loading__privacy", style: { fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 } }, (window.JT_PRIVACY_NOTE || {})["engine"] || (window.JT_PRIVACY_NOTE || {}).engine));
   }
   if (err) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-loading" }, /* @__PURE__ */ React.createElement("h2", null, "\uC77C\uC2DC\uC801\uC778 \uC624\uB958\uC785\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("p", null, err), /* @__PURE__ */ React.createElement("p", { className: "jt-report-loading__privacy", style: { fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 } }, (window.JT_PRIVACY_NOTE || {})["engine"] || (window.JT_PRIVACY_NOTE || {}).engine), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 24, display: "flex", gap: 12, justifyContent: "center" } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => {
