@@ -11,6 +11,7 @@
   <meta property="og:description" content="조문은 유상거래의 취득일을 사실상의 잔금지급일로 정하고, 신고인이 제출한 자료로 그 날을 확인할 수 없을 때에 계약상의 잔금지급일로 갑니다. 다툼의 중심은 그 날이 자료로 특정되는가입니다.">
   <meta property="og:url" content="https://www.jttax.co.kr/insights/acquisition-tax-acquisition-date-dispute.html">
   <meta property="og:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
+  <meta property="og:image:alt" content="구청이 계약서의 잔금일을 취득일로 보아 중과했습니다">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="2026-09-21">
   <meta property="article:modified_time" content="2026-09-21">
@@ -27,6 +28,31 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
   <link rel="stylesheet" href="/project/src/styles.css?v=30">
   <style>
+.jt-editorial{max-width:800px;margin:0 auto;padding:48px 24px 64px;word-break:keep-all;overflow-wrap:anywhere;font-size:17px;line-height:1.9;color:#263247}
+.jt-editorial h1{font-size:clamp(30px,4.5vw,44px);line-height:1.3;letter-spacing:-.045em;color:#11213e;margin:20px 0}
+.jt-editorial h2{font-size:clamp(23px,3vw,28px);line-height:1.45;letter-spacing:-.025em;color:#142b52;margin:54px 0 18px;padding:0;border:0;scroll-margin-top:24px}
+.jt-editorial h3{font-size:20px;line-height:1.5;margin:28px 0 12px;color:#142b52}
+.jt-editorial p{line-height:1.9;margin:18px 0}.jt-editorial li{margin:8px 0;line-height:1.8}
+.jt-editorial a{color:#164bb0;text-underline-offset:4px}.jt-editorial a:focus-visible{outline:3px solid #e8843c;outline-offset:4px}
+.jt-ed-kicker{color:#164bb0;font-size:12px;letter-spacing:.12em;font-weight:750}.jt-ed-deck{font-size:19px;color:#546177}
+.jt-ed-byline{display:flex;flex-wrap:wrap;gap:6px 18px;padding:18px 0;border-top:1px solid #dfe5ee;font-size:13px;color:#56647a}
+.jt-ed-hero{margin:24px 0 30px}.jt-ed-hero img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:18px}
+.jt-ed-hero figcaption{font-size:12px;color:#637083;margin-top:8px}
+.jt-ed-toc{padding:22px 26px;background:#eff4ff;border:1px solid #d7e4ff;border-radius:14px;margin:28px 0 38px;font-size:15px}
+.jt-ed-toc strong{color:#163c82}.jt-ed-toc ol{padding-left:22px;margin:12px 0 0}.jt-ed-toc li{margin:5px 0}
+.jt-ed-summary{background:#163c82;color:#fff;border-radius:18px;padding:24px 28px;margin:30px 0}
+.jt-ed-summary strong{color:inherit}.jt-ed-summary p{margin:8px 0}.jt-ed-summary ul{padding-left:20px;margin:8px 0}
+.jt-ed-note{border-left:4px solid #dc7430;background:#fff4e9;border-radius:0 12px 12px 0;padding:18px 22px;margin:24px 0;color:#6e3b18;font-size:15px}
+.jt-ed-diagram{border:1px solid #dbe3f0;background:#f5f8ff;border-radius:18px;padding:24px;margin:28px 0}
+.jt-ed-diagram>strong{display:block;color:#183d7d;font-size:19px;margin-bottom:18px}
+.jt-ed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.jt-ed-cell{background:white;border:1px solid #dbe3f0;border-top:4px solid #3765cf;border-radius:10px;padding:18px;font-size:14px;line-height:1.75}
+.jt-ed-cell strong{display:block;font-size:17px;color:#193b76;margin-bottom:9px}.jt-ed-cell:last-child{border-top-color:#dc7430}
+.jt-ed-caption{font-size:13px;color:#58677e;margin:14px 0 0!important}
+.jt-editorial .jt-ins-tbl td+td,.jt-editorial .jt-ins-tbl th+th{text-align:left}
+.jt-ed-related{background:#eff4ff;padding:22px 26px;border-radius:14px;margin:38px 0}.jt-ed-related strong{display:block;color:#193b76}
+.jt-editorial .jt-btn--primary{background:#174cb5;color:white}.jt-editorial .jt-btn--outline{color:#174cb5}
+@media(max-width:600px){.jt-editorial{padding:30px 20px 48px;font-size:16px}.jt-ed-grid{grid-template-columns:1fr}.jt-ed-cell{padding:16px}.jt-ed-diagram{padding:18px}.jt-ed-summary{padding:20px}.jt-ed-toc{padding:20px}.jt-ed-hero img{border-radius:12px}}
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
     .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
     .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
@@ -67,7 +93,7 @@
     "image": "https://www.jttax.co.kr/project/assets/og-image.png?v=2",
     "datePublished": "2026-09-21",
     "dateModified": "2026-09-21",
-    "author": { "@type": "Organization", "name": "제이티 세무법인" },
+    "author": { "@type": "Organization", "name": "제이티 세무법인", "url": "https://www.jttax.co.kr/about/" },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "https://www.jttax.co.kr/project/assets/logo_symbol.png" } },
     "description": "조문은 유상거래의 취득일을 사실상의 잔금지급일로 정하고, 신고인이 제출한 자료로 그 날을 확인할 수 없을 때에 계약상의 잔금지급일로 갑니다. 다툼의 중심은 그 날이 자료로 특정되는가입니다.",
     "mainEntityOfPage": "https://www.jttax.co.kr/insights/acquisition-tax-acquisition-date-dispute.html"
@@ -84,17 +110,19 @@
     </span>
   </header>
 
-  <article class="jt-legal" style="max-width:720px;margin:0 auto;padding:56px 24px;">
-    <div class="jt-legal__meta">INSIGHT · ACQUISITION TAX · 2026.09.21</div>
-    <!-- 글 제목은 h1 — 페이지에 h1 이 없으면 검색·AI 크롤러가 대표 제목을 못 잡는다
-         (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
-    <h1 style="margin-bottom:24px;font-size:1.5em;">구청이 계약서의 잔금일을 취득일로 보아 중과했습니다</h1>
-    <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">조문은 유상거래의 취득일을 사실상의 잔금지급일로 정하고, 신고인이 제출한 자료로 그 날을 확인할 수 없을 때에 계약상의 잔금지급일로 갑니다. 다툼의 중심은 그 날이 자료로 특정되는가입니다.</p>
-    <h2>먼저 답부터</h2>
+  <!-- jt-publication:afd30d1414df1590e287a315d699dc119e89a000dc0e154628d671f1b1e7b956 -->
+  <article class="jt-editorial">
+    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">인사이트</a> / INSIGHT · ACQUISITION TAX</nav>
+    <h1>구청이 계약서의 잔금일을 취득일로 보아 중과했습니다</h1>
+    <p class="jt-ed-deck">조문은 유상거래의 취득일을 사실상의 잔금지급일로 정하고, 신고인이 제출한 자료로 그 날을 확인할 수 없을 때에 계약상의 잔금지급일로 갑니다. 다툼의 중심은 그 날이 자료로 특정되는가입니다.</p>
+    <div class="jt-ed-byline"><a href="/about/">제이티 세무법인</a><span>발행 <time datetime="2026-09-21">2026.09.21</time></span></div>
+
+<nav class="jt-ed-toc" aria-label="이 글의 목차"><strong>이 글에서 확인할 것</strong><ol><li><a href="#section-1">먼저 답부터</a></li><li><a href="#section-2">받은 문서의 이름과 받은 날짜부터</a></li><li><a href="#section-3">조문이 정한 순서 — 계약서는 두 번째입니다</a></li><li><a href="#section-4">등기를 먼저 했다면 등기일이 취득일입니다</a></li><li><a href="#section-5">취득일이 달라지면 무엇이 달라지는가</a></li><li><a href="#section-6">확인해 둘 것</a></li><li><a href="#section-7">마치며</a></li></ol></nav>
+    <h2 id="section-1">먼저 답부터</h2>
 
 <p>지방세법 시행령 제20조 제2항은 유상거래로 부동산을 살 때의 취득일을 세 단계로 정합니다. ①사실상의 잔금지급일, ②신고인이 제출한 자료로 그 날을 확인할 수 없으면 계약상의 잔금지급일, ③계약상 잔금지급일이 적혀 있지 않으면 계약일부터 60일이 지난 날입니다. 계약서의 잔금일은 첫 번째가 아니라 두 번째 자리에 있습니다. 그래서 다툼의 중심은 「사실상 잔금을 낸 날을 제출한 자료로 확인할 수 있는가」입니다. 한편 매매계약서가 연부계약 형식을 갖추고 일시에 완납할 수 없는 대금을 2년 이상에 걸쳐 일정액씩 나누어 내는 연부취득은 사실상의 연부금 지급일을 취득일로 보므로(지방세법 제6조 제20호, 같은 법 시행령 제20조 제5항. 취득가액의 총액이 같은 법 제17조의 적용을 받는 것은 제외) 이 글의 설명과 다릅니다. 그리고 그보다 먼저 볼 것은 받은 문서와 받은 날짜입니다.</p>
 
-<h2>받은 문서의 이름과 받은 날짜부터</h2>
+<h2 id="section-2">받은 문서의 이름과 받은 날짜부터</h2>
 
 <p>기한은 실체보다 먼저 닫힙니다.</p>
 
@@ -106,7 +134,7 @@
   <li>경정청구를 내고 2개월 안에 통지를 받지 못하셨다면 그 2개월이 되는 날의 다음 날부터 이의신청이나 심판청구를 할 수 있습니다(제50조 제4항).</li>
 </ul>
 
-<h2>조문이 정한 순서 — 계약서는 두 번째입니다</h2>
+<h2 id="section-3">조문이 정한 순서 — 계약서는 두 번째입니다</h2>
 
 <blockquote>② 유상승계취득의 경우에는 사실상의 잔금지급일(신고인이 제출한 자료로 사실상의 잔금지급일을 확인할 수 없는 경우에는 계약상의 잔금지급일을 말하고, 계약상 잔금 지급일이 명시되지 않은 경우에는 계약일부터 60일이 경과한 날을 말한다)에 취득한 것으로 본다. 다만, 해당 취득물건을 등기·등록하지 않고 다음 각 호의 어느 하나에 해당하는 서류로 계약이 해제된 사실이 입증되는 경우에는 취득한 것으로 보지 않는다. (…)</blockquote>
 
@@ -114,13 +142,13 @@
 
 <p>단서의 각 호는 계약이 해제된 경우의 서류를 정하며 각각 취득일부터 60일 이내라는 요건이 붙습니다. 취득일 규칙 전체는 <a href="/insights/acquisition-tax-acquisition-date.html" rel="noopener">취득세에서 취득일은 잔금일인가요 등기일인가요</a>에 있습니다.</p>
 
-<h2>등기를 먼저 했다면 등기일이 취득일입니다</h2>
+<h2 id="section-4">등기를 먼저 했다면 등기일이 취득일입니다</h2>
 
 <blockquote>⑭ 제1항, 제2항 및 제5항에 따른 취득일 전에 등기 또는 등록을 한 경우에는 그 등기일 또는 등록일에 취득한 것으로 본다.</blockquote>
 
 <p>잔금을 나중에 치렀더라도 등기가 먼저 접수됐다면 등기일이 취득일입니다. 「잔금일이 더 뒤」라는 주장이 이 항 때문에 닿지 않는 경우도 있습니다.</p>
 
-<h2>취득일이 달라지면 무엇이 달라지는가</h2>
+<h2 id="section-5">취득일이 달라지면 무엇이 달라지는가</h2>
 
 <p>세대는 주택 취득일 현재를 기준으로 보고(지방세법 시행령 제28조의3 제1항), 주택 수도 주택 취득일 현재를 기준으로 보며(같은 시행령 제28조의4 제1항), 조정대상지역에 있는 주택인지에 따라 중과세율이 갈리는 것도 취득일 기준입니다(지방세법 제13조의2 제1항 제2호). 다만 조합원입주권·주택분양권으로 취득하는 주택은 그 입주권·분양권의 취득일을 기준으로 보고, 분양사업자에게서 분양권을 취득했다면 분양계약일을, 매매·교환·증여로 같은 세대 안에서 같은 분양권의 취득일이 둘 이상이면 가장 빠른 날을 봅니다(지방세법 시행령 제28조의4 제1항 후단. 자세한 내용은 <a href="/insights/acquisition-tax-house-count.html" rel="noopener">분양권·입주권·오피스텔도 취득세 주택 수에 들어가나요</a>). 아래는 조정대상지역의 10억원·전용 84㎡ 주택을 단독 취득·유상거래(매매)·취득세·지방교육세 표준세율·2026년 9월 21일 현행법으로 본 예시입니다.</p>
 
@@ -130,7 +158,7 @@
   <li>차이 51,000,000원입니다. 세율이 갈릴 때의 차이일 뿐, 실제 사건의 결론은 사안마다 다릅니다.</li>
 </ul>
 
-<h2>확인해 둘 것</h2>
+<h2 id="section-6">확인해 둘 것</h2>
 
 <ul>
   <li>받은 문서의 이름(경정청구 거부 통지·납세고지 등)과 <strong>송달일</strong></li>
@@ -138,7 +166,7 @@
   <li>계약금·중도금·잔금의 이체 내역 전부, 등기사항증명서의 <strong>접수일</strong>, 신고서에 적힌 취득일</li>
 </ul>
 
-<h2>마치며</h2>
+<h2 id="section-7">마치며</h2>
 
 <p>취득일 다툼은 해석 싸움처럼 보이지만 실제로는 자료 싸움입니다. 거부 사유를 읽고 어느 요건에서 갈렸는지 특정하는 것이 먼저이고, 그 앞에 기한이 있습니다. 다음 단계는 <a href="/insights/acquisition-tax-correction-claim-rejected.html" rel="noopener">취득세 경정청구가 거부됐습니다 다음은 무엇인가요</a>에 적었습니다.</p>
 
@@ -178,7 +206,7 @@
       <p style="font-size:13px;color:#5a5a5a;margin-top:8px;line-height:1.7;">본 글은 일반적인 정보 제공을 목적으로 하는 참고 자료이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 정확한 검토는 담당 세무사와의 상담을 통해 진행되어야 합니다.</p>
     </div>
 
-    <div style="margin-top:48px;display:flex;gap:12px;">
+    <div style="margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>

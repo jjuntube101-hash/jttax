@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="1150" viewBox="0 0 640 1150" role="img" aria-labelledby="title desc">
+  <title id="title">사업용 카드 매입세액 확인 순서</title>
+  <desc id="desc">사업 관련성을 확인하고 법정 불공제 항목을 걸러 낸 뒤 공급자와 전표, 명세서, 보관 요건을 확인합니다. 요건을 갖춘 거래만 공제에 반영하며 불명확한 거래는 자료를 보완합니다.</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="none" stroke="#2457cf" stroke-width="2"/></marker></defs>
+  <rect width="640" height="1150" rx="28" fill="#f4f7fb"/>
+  <g font-family="Pretendard, sans-serif" fill="#17283e">
+    <text x="40" y="59" font-size="22" font-weight="700" fill="#2457cf">CARD PURCHASE · VAT</text>
+    <text x="40" y="112" font-size="40" font-weight="800">카드 결제 후, 확인할 순서</text>
+    <text x="40" y="154" font-size="25">일반과세자 · 국내 거래 기준</text>
+    <rect x="32" y="194" width="576" height="144" rx="20" fill="#e8efff"/>
+    <text x="56" y="237" font-size="28" font-weight="800" fill="#1845a7">01  사업에 쓰는 지출인가요?</text>
+    <text x="56" y="282" font-size="26">가족 생활비 등 사업무관 지출은 제외</text>
+    <text x="56" y="318" font-size="23">구매 품목과 실제 사용 목적 확인</text>
+    <path d="M320 350V382" stroke="#2457cf" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="32" y="399" width="576" height="162" rx="20" fill="#fff0e4"/>
+    <text x="56" y="443" font-size="28" font-weight="800" fill="#8f3c10">02  법정 불공제 항목인가요?</text>
+    <text x="56" y="487" font-size="26">기업업무추진비 · 제외 대상 자동차 등</text>
+    <text x="56" y="525" font-size="23">사업에 썼어도 불공제 사유·예외 확인</text>
+    <path d="M320 573V605" stroke="#2457cf" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="32" y="622" width="576" height="181" rx="20" fill="#e2f4f1"/>
+    <text x="56" y="666" font-size="28" font-weight="800" fill="#11685f">03  공급자·증빙 요건을 갖췄나요?</text>
+    <text x="56" y="711" font-size="26">공급자 요건과 전표의 부가세 구분</text>
+    <text x="56" y="750" font-size="26">수령명세서 제출 · 전표 등 보관</text>
+    <text x="56" y="784" font-size="22">간이과세자 거래는 영수증 발급기간 확인</text>
+    <path d="M320 815V847" stroke="#2457cf" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="32" y="864" width="576" height="118" rx="20" fill="#2457cf"/>
+    <text x="56" y="911" font-size="29" font-weight="800" fill="#fff">요건을 갖춘 거래만 공제 반영</text>
+    <text x="56" y="951" font-size="24" fill="#fff">불명확한 거래는 자료를 보완해 판단</text>
+    <text x="40" y="1032" font-size="25" font-weight="700">카드 등록만으로 공제가 결정되지는 않습니다.</text>
+    <text x="40" y="1078" font-size="20">근거: 부가가치세법 제38조·제39조·제46조·제71조</text>
+    <text x="40" y="1109" font-size="20">같은 법 시행령 제88조 · 기준일 2026-10-04</text>
+  </g>
+</svg>

@@ -11,6 +11,7 @@
   <meta property="og:description" content="취득세의 주택 수는 가산하는 조문과 빼는 조문이 따로 있습니다. 받은 문서의 이름과 날짜를 먼저 확인하고, 어느 자리에서 갈렸는지 특정하는 것이 순서입니다.">
   <meta property="og:url" content="https://www.jttax.co.kr/insights/acquisition-tax-house-count-dispute.html">
   <meta property="og:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
+  <meta property="og:image:alt" content="구청이 센 주택 수와 내가 센 주택 수가 다릅니다">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="2026-09-21">
   <meta property="article:modified_time" content="2026-09-21">
@@ -27,6 +28,31 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
   <link rel="stylesheet" href="/project/src/styles.css?v=30">
   <style>
+.jt-editorial{max-width:800px;margin:0 auto;padding:48px 24px 64px;word-break:keep-all;overflow-wrap:anywhere;font-size:17px;line-height:1.9;color:#263247}
+.jt-editorial h1{font-size:clamp(30px,4.5vw,44px);line-height:1.3;letter-spacing:-.045em;color:#11213e;margin:20px 0}
+.jt-editorial h2{font-size:clamp(23px,3vw,28px);line-height:1.45;letter-spacing:-.025em;color:#142b52;margin:54px 0 18px;padding:0;border:0;scroll-margin-top:24px}
+.jt-editorial h3{font-size:20px;line-height:1.5;margin:28px 0 12px;color:#142b52}
+.jt-editorial p{line-height:1.9;margin:18px 0}.jt-editorial li{margin:8px 0;line-height:1.8}
+.jt-editorial a{color:#164bb0;text-underline-offset:4px}.jt-editorial a:focus-visible{outline:3px solid #e8843c;outline-offset:4px}
+.jt-ed-kicker{color:#164bb0;font-size:12px;letter-spacing:.12em;font-weight:750}.jt-ed-deck{font-size:19px;color:#546177}
+.jt-ed-byline{display:flex;flex-wrap:wrap;gap:6px 18px;padding:18px 0;border-top:1px solid #dfe5ee;font-size:13px;color:#56647a}
+.jt-ed-hero{margin:24px 0 30px}.jt-ed-hero img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:18px}
+.jt-ed-hero figcaption{font-size:12px;color:#637083;margin-top:8px}
+.jt-ed-toc{padding:22px 26px;background:#eff4ff;border:1px solid #d7e4ff;border-radius:14px;margin:28px 0 38px;font-size:15px}
+.jt-ed-toc strong{color:#163c82}.jt-ed-toc ol{padding-left:22px;margin:12px 0 0}.jt-ed-toc li{margin:5px 0}
+.jt-ed-summary{background:#163c82;color:#fff;border-radius:18px;padding:24px 28px;margin:30px 0}
+.jt-ed-summary strong{color:inherit}.jt-ed-summary p{margin:8px 0}.jt-ed-summary ul{padding-left:20px;margin:8px 0}
+.jt-ed-note{border-left:4px solid #dc7430;background:#fff4e9;border-radius:0 12px 12px 0;padding:18px 22px;margin:24px 0;color:#6e3b18;font-size:15px}
+.jt-ed-diagram{border:1px solid #dbe3f0;background:#f5f8ff;border-radius:18px;padding:24px;margin:28px 0}
+.jt-ed-diagram>strong{display:block;color:#183d7d;font-size:19px;margin-bottom:18px}
+.jt-ed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.jt-ed-cell{background:white;border:1px solid #dbe3f0;border-top:4px solid #3765cf;border-radius:10px;padding:18px;font-size:14px;line-height:1.75}
+.jt-ed-cell strong{display:block;font-size:17px;color:#193b76;margin-bottom:9px}.jt-ed-cell:last-child{border-top-color:#dc7430}
+.jt-ed-caption{font-size:13px;color:#58677e;margin:14px 0 0!important}
+.jt-editorial .jt-ins-tbl td+td,.jt-editorial .jt-ins-tbl th+th{text-align:left}
+.jt-ed-related{background:#eff4ff;padding:22px 26px;border-radius:14px;margin:38px 0}.jt-ed-related strong{display:block;color:#193b76}
+.jt-editorial .jt-btn--primary{background:#174cb5;color:white}.jt-editorial .jt-btn--outline{color:#174cb5}
+@media(max-width:600px){.jt-editorial{padding:30px 20px 48px;font-size:16px}.jt-ed-grid{grid-template-columns:1fr}.jt-ed-cell{padding:16px}.jt-ed-diagram{padding:18px}.jt-ed-summary{padding:20px}.jt-ed-toc{padding:20px}.jt-ed-hero img{border-radius:12px}}
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
     .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
     .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
@@ -67,7 +93,7 @@
     "image": "https://www.jttax.co.kr/project/assets/og-image.png?v=2",
     "datePublished": "2026-09-21",
     "dateModified": "2026-09-21",
-    "author": { "@type": "Organization", "name": "제이티 세무법인" },
+    "author": { "@type": "Organization", "name": "제이티 세무법인", "url": "https://www.jttax.co.kr/about/" },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "https://www.jttax.co.kr/project/assets/logo_symbol.png" } },
     "description": "취득세의 주택 수는 가산하는 조문과 빼는 조문이 따로 있습니다. 받은 문서의 이름과 날짜를 먼저 확인하고, 어느 자리에서 갈렸는지 특정하는 것이 순서입니다.",
     "mainEntityOfPage": "https://www.jttax.co.kr/insights/acquisition-tax-house-count-dispute.html"
@@ -84,23 +110,25 @@
     </span>
   </header>
 
-  <article class="jt-legal" style="max-width:720px;margin:0 auto;padding:56px 24px;">
-    <div class="jt-legal__meta">INSIGHT · ACQUISITION TAX · 2026.09.21</div>
-    <!-- 글 제목은 h1 — 페이지에 h1 이 없으면 검색·AI 크롤러가 대표 제목을 못 잡는다
-         (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
-    <h1 style="margin-bottom:24px;font-size:1.5em;">구청이 센 주택 수와 내가 센 주택 수가 다릅니다</h1>
-    <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">취득세의 주택 수는 가산하는 조문과 빼는 조문이 따로 있습니다. 받은 문서의 이름과 날짜를 먼저 확인하고, 어느 자리에서 갈렸는지 특정하는 것이 순서입니다.</p>
-    <h2>먼저 답부터</h2>
+  <!-- jt-publication:4a47935aba049f8e9e9a9d0954825e2085416753b077ee7b16a712203901fd8d -->
+  <article class="jt-editorial">
+    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">인사이트</a> / INSIGHT · ACQUISITION TAX</nav>
+    <h1>구청이 센 주택 수와 내가 센 주택 수가 다릅니다</h1>
+    <p class="jt-ed-deck">취득세의 주택 수는 가산하는 조문과 빼는 조문이 따로 있습니다. 받은 문서의 이름과 날짜를 먼저 확인하고, 어느 자리에서 갈렸는지 특정하는 것이 순서입니다.</p>
+    <div class="jt-ed-byline"><a href="/about/">제이티 세무법인</a><span>발행 <time datetime="2026-09-21">2026.09.21</time></span></div>
+
+<nav class="jt-ed-toc" aria-label="이 글의 목차"><strong>이 글에서 확인할 것</strong><ol><li><a href="#section-1">먼저 답부터</a></li><li><a href="#section-2">받은 문서의 이름과 받은 날짜가 먼저입니다</a></li><li><a href="#section-3">주택 수가 어긋나는 자리</a></li><li><a href="#section-4">더하는 조문과 빼는 조문이 따로 있습니다</a></li><li><a href="#section-5">한 채가 세율을 어디까지 움직이는가</a></li><li><a href="#section-6">확인해 둘 것</a></li><li><a href="#section-7">마치며</a></li></ol></nav>
+    <h2 id="section-1">먼저 답부터</h2>
 
 <p>취득세의 주택 수는 취득일 현재 1세대가 가진 것을 세는데, 조문이 주택 수에 <strong>가산하는 것</strong>과 <strong>빼는 것</strong>을 각각 다른 자리에 적어 두었습니다. 그래서 수가 어긋날 때는 어느 조문에서 갈렸는지를 먼저 특정합니다. 다만 그보다 먼저 구청에서 받은 문서의 이름과 받은 날짜를 확인하십시오. 기한은 내용이 맞는지와 관계없이 따로 흘러갑니다.</p>
 
-<h2>받은 문서의 이름과 받은 날짜가 먼저입니다</h2>
+<h2 id="section-2">받은 문서의 이름과 받은 날짜가 먼저입니다</h2>
 
 <p>납세고지서나 경정청구 거부 통지처럼 <strong>처분</strong>을 받으셨다면, 이의신청은 그 처분이 있은 것을 안 날(처분의 통지를 받았을 때에는 그 통지를 받은 날)부터 90일 이내입니다(지방세기본법 제90조). 이의신청을 거치지 않고 바로 조세심판원에 심판청구를 할 수도 있고, 그때도 같은 90일입니다(같은 법 제91조 제3항). 이의신청을 거쳤다면 그 결정 통지를 받은 날부터 90일입니다(같은 조 제1항). 어디에 내는지는 세목에 따라 다르게 정해져 있으니 통지서의 불복 안내를 확인하십시오.</p>
 
 <p>본인이 신고한 세액을 고치려는 단계라면 경정청구입니다. 법정신고기한이 지난 후 5년 이내이고, 구청의 결정이나 경정이 있었다면 그것이 있음을 안 날(통지를 받았으면 통지받은 날)부터 90일 이내이며 이 90일도 5년 안이어야 합니다(같은 법 제50조 제1항). 유상거래의 법정신고기한은 취득일부터 60일이지만(지방세법 제20조 제1항), 그 기한 안에 등기·등록을 하려는 경우에는 신청서를 접수하는 날까지 신고·납부해야 해서(같은 조 제4항) 5년의 시작점이 앞당겨질 수 있습니다. 청구 후 2개월 안에 통지를 받지 못하면 그 2개월이 되는 날의 다음 날부터 불복할 수 있습니다(같은 법 제50조 제3항·제4항). 과세예고처럼 처분 전 단계라면 절차와 기한이 다릅니다. 이 부분은 사안마다 달라 확인이 필요합니다.</p>
 
-<h2>주택 수가 어긋나는 자리</h2>
+<h2 id="section-3">주택 수가 어긋나는 자리</h2>
 
 <ul>
   <li>① 주택 수에 <strong>가산</strong>하는 것(지방세법 제13조의3)</li>
@@ -113,7 +141,7 @@
 
 <p>거부·고지 사유가 이 가운데 어느 자리인지 특정하면 보일 서류가 정해집니다.</p>
 
-<h2>더하는 조문과 빼는 조문이 따로 있습니다</h2>
+<h2 id="section-4">더하는 조문과 빼는 조문이 따로 있습니다</h2>
 
 <blockquote>제13조의2를 적용할 때 다음 각 호의 어느 하나에 해당하는 경우에는 다음 각 호에서 정하는 바에 따라 세대별 소유 주택 수에 가산한다.</blockquote>
 
@@ -123,7 +151,7 @@
 
 <p>세는 방법도 같은 조문입니다. 세대원이 한 채를 공동으로 소유하면 1개를 소유한 것으로 보고(제4항), 상속으로 여러 사람이 한 채를 공동 소유하면 <strong>지분이 가장 큰 상속인</strong>의 소유로 보며, 그런 사람이 둘 이상이면 그 주택 또는 오피스텔에 거주하는 사람, 나이가 가장 많은 사람의 순서로 정합니다(제5항). 미등기 상속 주택·오피스텔의 지분이 종전과 달라져 등기되면 등기상 지분을 상속개시일에 취득한 것으로 봅니다(같은 항 후단).</p>
 
-<h2>한 채가 세율을 어디까지 움직이는가</h2>
+<h2 id="section-5">한 채가 세율을 어디까지 움직이는가</h2>
 
 <p>조정대상지역의 주택을 유상거래로 취득할 때 1세대 2주택이면 표준세율 4%에 중과기준세율 2%의 200%를 더해 8%, 1세대 3주택 이상이면 400%를 더해 12%가 됩니다(지방세법 제13조의2 제1항 제2호·제3호, 제11조 제1항 제7호 나목, 제6조 제19호). 아래는 <strong>단독 취득 · 유상거래 · 취득세·지방교육세 표준세율 · 2026년 9월 21일 현행법</strong>을 전제로 한 예시입니다.</p>
 
@@ -134,7 +162,7 @@
 
 <p>세율이 갈릴 때의 차이는 51,000,000원입니다.</p>
 
-<h2>확인해 둘 것</h2>
+<h2 id="section-6">확인해 둘 것</h2>
 
 <ul>
   <li>구청에서 받은 문서의 이름과 받은 날짜(송달일), 등기 수령 기록</li>
@@ -145,7 +173,7 @@
   <li>취득일이 다툼이면 계약금·중도금·잔금 이체 내역과 등기사항증명서의 접수일</li>
 </ul>
 
-<h2>마치며</h2>
+<h2 id="section-7">마치며</h2>
 
 <p>주택 수는 조문의 목록으로 세는 값입니다. 기한부터 세어 두십시오.</p>
 
@@ -185,7 +213,7 @@
       <p style="font-size:13px;color:#5a5a5a;margin-top:8px;line-height:1.7;">본 글은 일반적인 정보 제공을 목적으로 하는 참고 자료이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 정확한 검토는 담당 세무사와의 상담을 통해 진행되어야 합니다.</p>
     </div>
 
-    <div style="margin-top:48px;display:flex;gap:12px;">
+    <div style="margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>

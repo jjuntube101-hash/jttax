@@ -270,6 +270,19 @@ const ROOT = path.join(__dirname, '..');
   const postSlugs = fs.readdirSync(postsDir)
     .filter((f) => /^\d{4}-\d{2}-\d{2}-.+\.md$/.test(f))
     .map((f) => f.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, ''));
+  const articleImages = new Map();
+  for (const file of fs.readdirSync(postsDir).filter(f => /^\d{4}-\d{2}-\d{2}-.+\.md$/.test(f))) {
+    const front = (fs.readFileSync(path.join(postsDir, file), 'utf8').replace(/\r\n/g, '\n').match(/^---\n([\s\S]*?)\n---/) || [])[1] || '';
+    const field = key => ((front.match(new RegExp(`^${key}:\\s*(.*)$`, 'm')) || [])[1] || '').trim().replace(/^"|"$/g, '');
+    const hero = field('hero');
+    if (!hero) continue;
+    const slug = field('slug') || file.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
+    if (!/^\/project\/assets\/insights\/[a-z0-9-]+\.(png|jpg|webp)$/.test(hero) || !fs.existsSync(path.join(ROOT, hero.slice(1))) || !field('heroAlt') || !field('heroCaption')) {
+      bad.push(`${file} — 대표 이미지 파일·alt·캡션이 유효하지 않습니다`);
+      continue;
+    }
+    articleImages.set(`insights/${slug}.html`, `https://${meta.SITE_HOST}${hero}`);
+  }
   /* index 는 원고가 아니라 «허브»다 (260921 신설) — 계산기 허브와 같은 예외 */
   listHtml('insights').map((f) => path.basename(f, '.html'))
     .filter((s) => s !== 'index' && !postSlugs.includes(s))
@@ -702,16 +715,17 @@ const ROOT = path.join(__dirname, '..');
        공유 미리보기가 옛 이미지(구 브랜드 골드 배너)로 굳는다. */
     if (ogV !== null) {
       const ogUrl = readOgTag(html);
+      const expectedImage = articleImages.get(rel) || indexOg;
       if (!ogUrl) {
         bad.push(`${rel} — og:image 가 없습니다 (SNS 공유 시 미리보기 이미지 없음)`);
-      } else if (ogUrl !== indexOg) {
+      } else if (ogUrl !== expectedImage) {
         /* 파일명·버전만 보면 `https://cdn.example/og-image.png?v=2` 같은 외부 URL 도
            통과한다(Codex R4). URL «전체»를 index.html 과 대조한다. */
-        bad.push(`${rel} — og:image 가 index.html 과 다릅니다: ${ogUrl.slice(0, 90)}`);
+        bad.push(`${rel} — og:image 가 원고 또는 공통 이미지 정본과 다릅니다: ${ogUrl.slice(0, 90)}`);
       }
       /* index.html 에만 요구하고 정적 47장은 봐주면 그게 구멍이다(Codex R6).
          «같은 함수»로 검사한다 — 기준이 갈리면 그 분기가 곧 구멍이다(R8). */
-      checkShareImages(rel, html, indexOg);
+      checkShareImages(rel, html, expectedImage);
     }
 
     /* CSS 캐시 버전 — index.html 과 같은 번호여야 한다 */

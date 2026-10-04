@@ -11,6 +11,7 @@
   <meta property="og:description" content="신고한 세액이 법에 따라 신고해야 할 세액보다 많았다면 경정청구의 근거 조문이 있습니다. 기한을 먼저 세고, 그다음에 취득일 현재의 세대를 서류로 다시 확인하는 순서입니다.">
   <meta property="og:url" content="https://www.jttax.co.kr/insights/acquisition-tax-household-overpaid.html">
   <meta property="og:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
+  <meta property="og:image:alt" content="세대를 잘못 봐서 취득세를 중과로 낸 것 같습니다">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="2026-09-21">
   <meta property="article:modified_time" content="2026-09-21">
@@ -27,6 +28,31 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
   <link rel="stylesheet" href="/project/src/styles.css?v=30">
   <style>
+.jt-editorial{max-width:800px;margin:0 auto;padding:48px 24px 64px;word-break:keep-all;overflow-wrap:anywhere;font-size:17px;line-height:1.9;color:#263247}
+.jt-editorial h1{font-size:clamp(30px,4.5vw,44px);line-height:1.3;letter-spacing:-.045em;color:#11213e;margin:20px 0}
+.jt-editorial h2{font-size:clamp(23px,3vw,28px);line-height:1.45;letter-spacing:-.025em;color:#142b52;margin:54px 0 18px;padding:0;border:0;scroll-margin-top:24px}
+.jt-editorial h3{font-size:20px;line-height:1.5;margin:28px 0 12px;color:#142b52}
+.jt-editorial p{line-height:1.9;margin:18px 0}.jt-editorial li{margin:8px 0;line-height:1.8}
+.jt-editorial a{color:#164bb0;text-underline-offset:4px}.jt-editorial a:focus-visible{outline:3px solid #e8843c;outline-offset:4px}
+.jt-ed-kicker{color:#164bb0;font-size:12px;letter-spacing:.12em;font-weight:750}.jt-ed-deck{font-size:19px;color:#546177}
+.jt-ed-byline{display:flex;flex-wrap:wrap;gap:6px 18px;padding:18px 0;border-top:1px solid #dfe5ee;font-size:13px;color:#56647a}
+.jt-ed-hero{margin:24px 0 30px}.jt-ed-hero img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:18px}
+.jt-ed-hero figcaption{font-size:12px;color:#637083;margin-top:8px}
+.jt-ed-toc{padding:22px 26px;background:#eff4ff;border:1px solid #d7e4ff;border-radius:14px;margin:28px 0 38px;font-size:15px}
+.jt-ed-toc strong{color:#163c82}.jt-ed-toc ol{padding-left:22px;margin:12px 0 0}.jt-ed-toc li{margin:5px 0}
+.jt-ed-summary{background:#163c82;color:#fff;border-radius:18px;padding:24px 28px;margin:30px 0}
+.jt-ed-summary strong{color:inherit}.jt-ed-summary p{margin:8px 0}.jt-ed-summary ul{padding-left:20px;margin:8px 0}
+.jt-ed-note{border-left:4px solid #dc7430;background:#fff4e9;border-radius:0 12px 12px 0;padding:18px 22px;margin:24px 0;color:#6e3b18;font-size:15px}
+.jt-ed-diagram{border:1px solid #dbe3f0;background:#f5f8ff;border-radius:18px;padding:24px;margin:28px 0}
+.jt-ed-diagram>strong{display:block;color:#183d7d;font-size:19px;margin-bottom:18px}
+.jt-ed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.jt-ed-cell{background:white;border:1px solid #dbe3f0;border-top:4px solid #3765cf;border-radius:10px;padding:18px;font-size:14px;line-height:1.75}
+.jt-ed-cell strong{display:block;font-size:17px;color:#193b76;margin-bottom:9px}.jt-ed-cell:last-child{border-top-color:#dc7430}
+.jt-ed-caption{font-size:13px;color:#58677e;margin:14px 0 0!important}
+.jt-editorial .jt-ins-tbl td+td,.jt-editorial .jt-ins-tbl th+th{text-align:left}
+.jt-ed-related{background:#eff4ff;padding:22px 26px;border-radius:14px;margin:38px 0}.jt-ed-related strong{display:block;color:#193b76}
+.jt-editorial .jt-btn--primary{background:#174cb5;color:white}.jt-editorial .jt-btn--outline{color:#174cb5}
+@media(max-width:600px){.jt-editorial{padding:30px 20px 48px;font-size:16px}.jt-ed-grid{grid-template-columns:1fr}.jt-ed-cell{padding:16px}.jt-ed-diagram{padding:18px}.jt-ed-summary{padding:20px}.jt-ed-toc{padding:20px}.jt-ed-hero img{border-radius:12px}}
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
     .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
     .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
@@ -67,7 +93,7 @@
     "image": "https://www.jttax.co.kr/project/assets/og-image.png?v=2",
     "datePublished": "2026-09-21",
     "dateModified": "2026-09-21",
-    "author": { "@type": "Organization", "name": "제이티 세무법인" },
+    "author": { "@type": "Organization", "name": "제이티 세무법인", "url": "https://www.jttax.co.kr/about/" },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "https://www.jttax.co.kr/project/assets/logo_symbol.png" } },
     "description": "신고한 세액이 법에 따라 신고해야 할 세액보다 많았다면 경정청구의 근거 조문이 있습니다. 기한을 먼저 세고, 그다음에 취득일 현재의 세대를 서류로 다시 확인하는 순서입니다.",
     "mainEntityOfPage": "https://www.jttax.co.kr/insights/acquisition-tax-household-overpaid.html"
@@ -84,13 +110,15 @@
     </span>
   </header>
 
-  <article class="jt-legal" style="max-width:720px;margin:0 auto;padding:56px 24px;">
-    <div class="jt-legal__meta">INSIGHT · ACQUISITION TAX · 2026.09.21</div>
-    <!-- 글 제목은 h1 — 페이지에 h1 이 없으면 검색·AI 크롤러가 대표 제목을 못 잡는다
-         (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
-    <h1 style="margin-bottom:24px;font-size:1.5em;">세대를 잘못 봐서 취득세를 중과로 낸 것 같습니다</h1>
-    <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">신고한 세액이 법에 따라 신고해야 할 세액보다 많았다면 경정청구의 근거 조문이 있습니다. 기한을 먼저 세고, 그다음에 취득일 현재의 세대를 서류로 다시 확인하는 순서입니다.</p>
-    <h2>먼저 답부터</h2>
+  <!-- jt-publication:40f063865736169535c914308c9e67b3c5ad3742394d1e9b109c2baa8c1bb677 -->
+  <article class="jt-editorial">
+    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">인사이트</a> / INSIGHT · ACQUISITION TAX</nav>
+    <h1>세대를 잘못 봐서 취득세를 중과로 낸 것 같습니다</h1>
+    <p class="jt-ed-deck">신고한 세액이 법에 따라 신고해야 할 세액보다 많았다면 경정청구의 근거 조문이 있습니다. 기한을 먼저 세고, 그다음에 취득일 현재의 세대를 서류로 다시 확인하는 순서입니다.</p>
+    <div class="jt-ed-byline"><a href="/about/">제이티 세무법인</a><span>발행 <time datetime="2026-09-21">2026.09.21</time></span></div>
+
+<nav class="jt-ed-toc" aria-label="이 글의 목차"><strong>이 글에서 확인할 것</strong><ol><li><a href="#section-1">먼저 답부터</a></li><li><a href="#section-2">기한을 먼저 셉니다</a></li><li><a href="#section-3">누가 청구할 수 있는지도 조문에 있습니다</a></li><li><a href="#section-4">세대를 다시 보는 자리</a></li><li><a href="#section-5">확인해 둘 것</a></li><li><a href="#section-6">마치며</a></li></ol></nav>
+    <h2 id="section-1">먼저 답부터</h2>
 
 <p>신고한 취득세가 법에 따라 신고해야 할 세액보다 많았다면, 지방세기본법 제50조 제1항 제1호가 경정청구의 근거를 정하고 있습니다. 다만 순서가 있습니다. 세대를 아무리 잘 따져도 기한이 지나면 청구하는 길이 닫히므로, 날짜를 세는 일이 먼저이고 취득일 현재의 세대를 서류로 다시 확인하는 일이 그다음입니다.</p>
 
@@ -98,7 +126,7 @@
 
 <p>조정대상지역의 10억원짜리 전용 84㎡ 주택을 단독으로 매수했다면, 1세대 1주택으로 세율 3%가 적용될 때는 취득세 30,000,000원, 1세대 2주택으로 8% 중과가 붙으면 80,000,000원입니다. 지방교육세까지 더하면 세율이 갈릴 때의 차이가 51,000,000원입니다. (전제: 단독 취득·유상거래·전용 84㎡이고 부속토지도 배율 이내인 서민주택이라 농어촌특별세 비과세·취득세·지방교육세 표준세율·2026년 9월 21일 현행법)</p>
 
-<h2>기한을 먼저 셉니다</h2>
+<h2 id="section-2">기한을 먼저 셉니다</h2>
 
 <p>매매로 산 집의 법정신고기한은 취득일부터 60일이고(지방세법 제20조 제1항), 그 기한 안에 등기를 신청하면 같은 조 제4항이 기한을 앞당깁니다.</p>
 
@@ -108,13 +136,13 @@
 
 <p>경정청구는 법정신고기한이 지난 후 5년 이내입니다. 구청의 결정 또는 경정이 있었다면 그것이 있음을 안 날(통지를 받았을 때에는 통지받은 날)부터 90일 이내이고, 그것도 법정신고기한이 지난 후 5년 이내여야 합니다(지방세기본법 제50조 제1항). 두 기한 중 먼저 닫히는 쪽이 실제 마감입니다.</p>
 
-<h2>누가 청구할 수 있는지도 조문에 있습니다</h2>
+<h2 id="section-3">누가 청구할 수 있는지도 조문에 있습니다</h2>
 
 <p>제50조 제1항의 청구 주체는 과세표준 신고서를 법정신고기한까지 제출한 사람과, 같은 법 제51조 제1항에 따른 납기 후의 과세표준 신고서를 제출한 사람입니다. 신고를 하지 않았다면 이 항의 주체는 아니지만, 그렇다고 길이 모두 닫힌 것은 아닙니다. 과세표준 및 세액의 결정을 받은 사람은 같은 조 제2항이 정한 사유가 생겼을 때 그 사유가 발생한 것을 안 날부터 90일 이내에 청구할 수 있고, 처분을 받은 상태라면 이의신청(제90조)이나 심판청구(제91조)라는 길이 따로 있습니다.</p>
 
 <p>청구한 뒤도 조문에 있습니다. 구청은 청구받은 날부터 2개월 이내에 통지해야 하고, 그 기간에 통지를 받지 못하면 2개월이 되는 날의 다음 날부터 이의신청이나 심판청구를 할 수 있습니다(제50조 제3항·제4항).</p>
 
-<h2>세대를 다시 보는 자리</h2>
+<h2 id="section-4">세대를 다시 보는 자리</h2>
 
 <p>원칙은 취득일 현재 세대별 주민등록표에 함께 기재되어 있는 가족(동거인은 제외합니다)이 1세대라는 것입니다. 외국인은 등록외국인기록표 및 외국인등록표를 봅니다. 또 배우자(사실혼은 제외하고, 법률상 이혼했어도 생계를 같이 하는 등 사실상 이혼으로 보기 어려운 관계에 있는 사람은 포함합니다), 취득일 현재 미혼인 30세 미만의 자녀, 주택을 취득하는 사람이 미혼이고 30세 미만인 경우의 부모는 주민등록표가 달라도 같은 1세대에 속한 것으로 봅니다(지방세법 시행령 제28조의3 제1항). 세대 기준 전체는 <a href="/insights/acquisition-tax-household-separate-family.html" rel="noopener">따로 사는 자녀·부모도 취득세에서 같은 세대로 보나요</a>에서 다룹니다.</p>
 
@@ -128,7 +156,7 @@
 
 <p>세대 판정의 기준일은 취득일 하루이므로, 취득일이 흔들리면 세대 판정도 흔들립니다. 매매의 취득일은 <a href="/insights/acquisition-tax-acquisition-date.html" rel="noopener">취득세에서 취득일은 잔금일인가요 등기일인가요</a>에서 다룹니다.</p>
 
-<h2>확인해 둘 것</h2>
+<h2 id="section-5">확인해 둘 것</h2>
 
 <ul>
   <li>취득세 신고서와 납부 영수증: 누가, 언제, 어떤 세율로 신고했는지</li>
@@ -140,7 +168,7 @@
   <li>동거봉양 합가라면 직계존속의 생년월일과 합가 시점 자료</li>
 </ul>
 
-<h2>마치며</h2>
+<h2 id="section-6">마치며</h2>
 
 <p>취득세 중과는 세대를 어떻게 보느냐에서 갈립니다. 서류로 취득일의 세대를 다시 세워 보면 다시 볼 여지가 있는지 확인이 필요한 사건이 있습니다. 기한이 먼저이니 날짜부터 확인하시기 바랍니다.</p>
 
@@ -180,7 +208,7 @@
       <p style="font-size:13px;color:#5a5a5a;margin-top:8px;line-height:1.7;">본 글은 일반적인 정보 제공을 목적으로 하는 참고 자료이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 정확한 검토는 담당 세무사와의 상담을 통해 진행되어야 합니다.</p>
     </div>
 
-    <div style="margin-top:48px;display:flex;gap:12px;">
+    <div style="margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>

@@ -11,6 +11,7 @@
   <meta property="og:description" content="2026년 주택 유상취득 세율은 6억 원 이하 1%, 6억~9억 원 (취득가액×2/3억−3)%(7억이면 1.67%), 9억 초과 3%입니다. 조정대상지역 2주택 8%·3주택 이상과 법인 12% 중과, 신고기한까지 지방세법 §11·§13조의2로 정리했습니다. 지방교육세·농특세 별도.">
   <meta property="og:url" content="https://www.jttax.co.kr/insights/acquisition-tax-basics.html">
   <meta property="og:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
+  <meta property="og:image:alt" content="2026 주택 취득세율 — 6억 이하 1%·6억~9억 계산식·9억 초과 3%">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="2026-06-15">
   <meta property="article:modified_time" content="2026-06-15">
@@ -27,6 +28,31 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
   <link rel="stylesheet" href="/project/src/styles.css?v=30">
   <style>
+.jt-editorial{max-width:800px;margin:0 auto;padding:48px 24px 64px;word-break:keep-all;overflow-wrap:anywhere;font-size:17px;line-height:1.9;color:#263247}
+.jt-editorial h1{font-size:clamp(30px,4.5vw,44px);line-height:1.3;letter-spacing:-.045em;color:#11213e;margin:20px 0}
+.jt-editorial h2{font-size:clamp(23px,3vw,28px);line-height:1.45;letter-spacing:-.025em;color:#142b52;margin:54px 0 18px;padding:0;border:0;scroll-margin-top:24px}
+.jt-editorial h3{font-size:20px;line-height:1.5;margin:28px 0 12px;color:#142b52}
+.jt-editorial p{line-height:1.9;margin:18px 0}.jt-editorial li{margin:8px 0;line-height:1.8}
+.jt-editorial a{color:#164bb0;text-underline-offset:4px}.jt-editorial a:focus-visible{outline:3px solid #e8843c;outline-offset:4px}
+.jt-ed-kicker{color:#164bb0;font-size:12px;letter-spacing:.12em;font-weight:750}.jt-ed-deck{font-size:19px;color:#546177}
+.jt-ed-byline{display:flex;flex-wrap:wrap;gap:6px 18px;padding:18px 0;border-top:1px solid #dfe5ee;font-size:13px;color:#56647a}
+.jt-ed-hero{margin:24px 0 30px}.jt-ed-hero img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:18px}
+.jt-ed-hero figcaption{font-size:12px;color:#637083;margin-top:8px}
+.jt-ed-toc{padding:22px 26px;background:#eff4ff;border:1px solid #d7e4ff;border-radius:14px;margin:28px 0 38px;font-size:15px}
+.jt-ed-toc strong{color:#163c82}.jt-ed-toc ol{padding-left:22px;margin:12px 0 0}.jt-ed-toc li{margin:5px 0}
+.jt-ed-summary{background:#163c82;color:#fff;border-radius:18px;padding:24px 28px;margin:30px 0}
+.jt-ed-summary strong{color:inherit}.jt-ed-summary p{margin:8px 0}.jt-ed-summary ul{padding-left:20px;margin:8px 0}
+.jt-ed-note{border-left:4px solid #dc7430;background:#fff4e9;border-radius:0 12px 12px 0;padding:18px 22px;margin:24px 0;color:#6e3b18;font-size:15px}
+.jt-ed-diagram{border:1px solid #dbe3f0;background:#f5f8ff;border-radius:18px;padding:24px;margin:28px 0}
+.jt-ed-diagram>strong{display:block;color:#183d7d;font-size:19px;margin-bottom:18px}
+.jt-ed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.jt-ed-cell{background:white;border:1px solid #dbe3f0;border-top:4px solid #3765cf;border-radius:10px;padding:18px;font-size:14px;line-height:1.75}
+.jt-ed-cell strong{display:block;font-size:17px;color:#193b76;margin-bottom:9px}.jt-ed-cell:last-child{border-top-color:#dc7430}
+.jt-ed-caption{font-size:13px;color:#58677e;margin:14px 0 0!important}
+.jt-editorial .jt-ins-tbl td+td,.jt-editorial .jt-ins-tbl th+th{text-align:left}
+.jt-ed-related{background:#eff4ff;padding:22px 26px;border-radius:14px;margin:38px 0}.jt-ed-related strong{display:block;color:#193b76}
+.jt-editorial .jt-btn--primary{background:#174cb5;color:white}.jt-editorial .jt-btn--outline{color:#174cb5}
+@media(max-width:600px){.jt-editorial{padding:30px 20px 48px;font-size:16px}.jt-ed-grid{grid-template-columns:1fr}.jt-ed-cell{padding:16px}.jt-ed-diagram{padding:18px}.jt-ed-summary{padding:20px}.jt-ed-toc{padding:20px}.jt-ed-hero img{border-radius:12px}}
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
     .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
     .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
@@ -67,7 +93,7 @@
     "image": "https://www.jttax.co.kr/project/assets/og-image.png?v=2",
     "datePublished": "2026-06-15",
     "dateModified": "2026-06-15",
-    "author": { "@type": "Organization", "name": "제이티 세무법인" },
+    "author": { "@type": "Organization", "name": "제이티 세무법인", "url": "https://www.jttax.co.kr/about/" },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "https://www.jttax.co.kr/project/assets/logo_symbol.png" } },
     "description": "2026년 주택 유상취득 세율은 6억 원 이하 1%, 6억~9억 원 (취득가액×2/3억−3)%(7억이면 1.67%), 9억 초과 3%입니다. 조정대상지역 2주택 8%·3주택 이상과 법인 12% 중과, 신고기한까지 지방세법 §11·§13조의2로 정리했습니다. 지방교육세·농특세 별도.",
     "mainEntityOfPage": "https://www.jttax.co.kr/insights/acquisition-tax-basics.html"
@@ -84,17 +110,19 @@
     </span>
   </header>
 
-  <article class="jt-legal" style="max-width:720px;margin:0 auto;padding:56px 24px;">
-    <div class="jt-legal__meta">INSIGHT · LEGACY · 2026.06.15</div>
-    <!-- 글 제목은 h1 — 페이지에 h1 이 없으면 검색·AI 크롤러가 대표 제목을 못 잡는다
-         (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
-    <h1 style="margin-bottom:24px;font-size:1.5em;">2026 주택 취득세율 — 6억 이하 1%·6억~9억 계산식·9억 초과 3%</h1>
-    <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">2026년 주택 유상취득 세율은 6억 원 이하 1%, 6억~9억 원 (취득가액×2/3억−3)%(7억이면 1.67%), 9억 초과 3%입니다. 조정대상지역 2주택 8%·3주택 이상과 법인 12% 중과, 신고기한까지 지방세법 §11·§13조의2로 정리했습니다. 지방교육세·농특세 별도.</p>
-    <h2>들어가며</h2>
+  <!-- jt-publication:00cc56565446e8c27933e0eb1b5bfd5b8218d9d4332e94d5cf49e8e622f8012c -->
+  <article class="jt-editorial">
+    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">인사이트</a> / INSIGHT · LEGACY</nav>
+    <h1>2026 주택 취득세율 — 6억 이하 1%·6억~9억 계산식·9억 초과 3%</h1>
+    <p class="jt-ed-deck">2026년 주택 유상취득 세율은 6억 원 이하 1%, 6억~9억 원 (취득가액×2/3억−3)%(7억이면 1.67%), 9억 초과 3%입니다. 조정대상지역 2주택 8%·3주택 이상과 법인 12% 중과, 신고기한까지 지방세법 §11·§13조의2로 정리했습니다. 지방교육세·농특세 별도.</p>
+    <div class="jt-ed-byline"><a href="/about/">제이티 세무법인</a><span>발행 <time datetime="2026-06-15">2026.06.15</time></span></div>
+
+<nav class="jt-ed-toc" aria-label="이 글의 목차"><strong>이 글에서 확인할 것</strong><ol><li><a href="#section-1">들어가며</a></li><li><a href="#section-2">매매 취득세율 — 주택 가격별 1%에서 3%</a></li><li><a href="#section-3">사는 게 아니라면 — 상속·증여·신축</a></li><li><a href="#section-4">주택수 중과 — 다주택·법인 취득세율 8%·12%</a></li><li><a href="#section-5">신고와 납부 — 원인별로 다른 기한</a></li><li><a href="#section-6">숫자로 보는 차이 (설명을 위한 단순 가정)</a></li><li><a href="#section-7">실무 체크리스트</a></li><li><a href="#section-8">마치며</a></li></ol></nav>
+    <h2 id="section-1">들어가며</h2>
 
 <p>부동산에는 세 번의 세금이 따라붙습니다. 살 때 내는 <strong>취득세</strong>, 가지고 있는 동안 내는 <strong>보유세</strong>, 팔 때 내는 <strong>양도소득세</strong>입니다. 그중 가장 먼저 만나는 취득세는 의외로 세율의 폭이 넓어, 같은 가격의 집이라도 1%에서 12%까지 12배 차이가 날 수 있습니다. 무엇이 이 차이를 만드는지, 조문으로 정리합니다.</p>
 
-<h2>매매 취득세율 — 주택 가격별 1%에서 3%</h2>
+<h2 id="section-2">매매 취득세율 — 주택 가격별 1%에서 3%</h2>
 
 <p>집을 매매로 취득하는 경우의 세율은 가격에 따라 세 구간으로 나뉩니다.</p>
 
@@ -102,7 +130,7 @@
 
 <p>6억 원 이하면 1%로 단순하지만, 6억 원 초과 9억 원 이하 구간은 가격에 비례해 1%에서 3%까지 완만하게 올라가는 계산식이 적용됩니다. 그 계산식은 <strong>(취득당시가액 × 2/3억 원 − 3) × 1/100</strong>이며, 그렇게 산출한 세율을 소수점 다섯째 자리에서 반올림해 넷째 자리까지 계산합니다(같은 호 나목). 예를 들어 7억 원이면 (7 × 2/3 − 3) × 1/100 = 0.016667 → 0.0167, 곧 세율 1.67%입니다(6.5억 1.33%·7.5억 2%·8억 2.33%·8.5억 2.67%). 9억 원을 넘으면 일률적으로 3%입니다.</p>
 
-<h2>사는 게 아니라면 — 상속·증여·신축</h2>
+<h2 id="section-3">사는 게 아니라면 — 상속·증여·신축</h2>
 
 <p>취득의 '원인'이 매매가 아니면 세율이 달라집니다(지방세법 제11조 제1항).</p>
 
@@ -115,7 +143,7 @@
 
 <p>즉 같은 집을 물려받느냐(상속 2.8%), 증여받느냐(3.5%), 사느냐(1~3%)에 따라 첫 세금부터 갈립니다.</p>
 
-<h2>주택수 중과 — 다주택·법인 취득세율 8%·12%</h2>
+<h2 id="section-4">주택수 중과 — 다주택·법인 취득세율 8%·12%</h2>
 
 <p>취득세의 가장 큰 변수는 '몇 채째인가'입니다.</p>
 
@@ -130,13 +158,13 @@
 
 <p>1주택일 때 1~3%이던 세율이, 주택 수에 따라 8%·12%로 뛰는 구조입니다. 또한 조정대상지역의 일정가액 이상 주택을 증여받는 경우에도 12%의 중과세율이 적용될 수 있습니다(같은 조 제2항). 다만 1세대 1주택자가 배우자·직계존비속에게 증여하는 등의 경우는 제외됩니다.</p>
 
-<h2>신고와 납부 — 원인별로 다른 기한</h2>
+<h2 id="section-5">신고와 납부 — 원인별로 다른 기한</h2>
 
 <blockquote>취득세는 취득한 날부터 60일 이내에 신고·납부하여야 한다. 다만 증여 등 무상취득(상속 제외)은 취득일이 속하는 달의 말일부터 3개월, 상속은 상속개시일이 속하는 달의 말일부터 6개월(외국에 주소를 둔 상속인이 있으면 9개월) 이내로 한다 — 지방세법 제20조 제1항(요지)</blockquote>
 
 <p>매매로 샀다면 60일, 증여받았다면 3개월, 상속이라면 6개월이 기준입니다. 또한 이 기한 안이라도 소유권 등기를 하려면 등기 신청 접수일까지는 취득세를 내야 합니다(같은 조 제4항).</p>
 
-<h2>숫자로 보는 차이 (설명을 위한 단순 가정)</h2>
+<h2 id="section-6">숫자로 보는 차이 (설명을 위한 단순 가정)</h2>
 
 <p>아래 수치는 취득세 본세만 계산한 <strong>단순 가정</strong>이며, 실제로는 지방교육세·농어촌특별세가 별도로 더해집니다.</p>
 
@@ -148,7 +176,7 @@
 
 <p>같은 6억 원짜리 집인데, 몇 채째인지에 따라 취득세가 8배 차이가 납니다. 취득 단계의 세금 설계가 중요한 이유입니다.</p>
 
-<h2>실무 체크리스트</h2>
+<h2 id="section-7">실무 체크리스트</h2>
 
 <ul>
   <li><strong>주택 수부터 센다.</strong> 분양권·입주권·공유지분도 주택 수에 포함될 수 있어, 취득 전 세대 기준으로 확인합니다.</li>
@@ -159,7 +187,7 @@
   <li><strong>감면 제도를 확인한다.</strong> 생애최초 주택 구입 등 일정 요건에서 취득세 감면이 있으므로 해당 여부를 점검합니다. 가격 구간별 세율과 생애최초 감면 요건은 <a href="/insights/acquisition-tax-rate-guide.html" rel="noopener">취득세 세율·생애최초 감면 가이드</a>에서 자세히 다룹니다.</li>
 </ul>
 
-<h2>마치며</h2>
+<h2 id="section-8">마치며</h2>
 
 <p>취득세는 부동산 세금의 '입구'입니다. 1%로 끝날 수도, 12%로 불어날 수도 있는 이 세금은 주택 수·지역·취득 원인이라는 세 가지 변수로 결정됩니다. 집을 사기로 마음먹었다면, 계약 전에 '내가 몇 채째를, 어느 지역에서, 어떤 방식으로 취득하는지'를 먼저 따져보는 것이 첫 단추입니다. 취득(살 때)·보유(가질 때)·양도(팔 때)를 하나의 흐름으로 설계할 때 세금은 비로소 예측 가능해집니다. 다주택자라면 팔 때 마주칠 <a href="/insights/multi-house-cgt-surcharge-2026.html" rel="noopener">다주택 양도세 중과</a>까지 함께 따져보는 것이 좋습니다.</p>
 
@@ -187,7 +215,7 @@
       <p style="font-size:13px;color:#5a5a5a;margin-top:8px;line-height:1.7;">본 글은 일반적인 정보 제공을 목적으로 하는 참고 자료이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 정확한 검토는 담당 세무사와의 상담을 통해 진행되어야 합니다.</p>
     </div>
 
-    <div style="margin-top:48px;display:flex;gap:12px;">
+    <div style="margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>

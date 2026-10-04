@@ -11,6 +11,7 @@
   <meta property="og:description" content="재산세 = 공시가격 × 공정시장가액비율 × 세율. 2026년 1주택 특례비율 43~45%로 공시가격 3억 아파트 약 30만, 5억 약 62만, 6억 약 79만. 7·9월 납부기한과 계산법을 세무사가 정리했습니다.">
   <meta property="og:url" content="https://www.jttax.co.kr/insights/property-tax-2026-calculation.html">
   <meta property="og:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
+  <meta property="og:image:alt" content="2026 재산세 계산법 — 공시가격 3억·5억·6억 재산세는 얼마? (1주택 특례 43~45%)">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="2026-06-27">
   <meta property="article:modified_time" content="2026-06-27">
@@ -27,6 +28,31 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
   <link rel="stylesheet" href="/project/src/styles.css?v=30">
   <style>
+.jt-editorial{max-width:800px;margin:0 auto;padding:48px 24px 64px;word-break:keep-all;overflow-wrap:anywhere;font-size:17px;line-height:1.9;color:#263247}
+.jt-editorial h1{font-size:clamp(30px,4.5vw,44px);line-height:1.3;letter-spacing:-.045em;color:#11213e;margin:20px 0}
+.jt-editorial h2{font-size:clamp(23px,3vw,28px);line-height:1.45;letter-spacing:-.025em;color:#142b52;margin:54px 0 18px;padding:0;border:0;scroll-margin-top:24px}
+.jt-editorial h3{font-size:20px;line-height:1.5;margin:28px 0 12px;color:#142b52}
+.jt-editorial p{line-height:1.9;margin:18px 0}.jt-editorial li{margin:8px 0;line-height:1.8}
+.jt-editorial a{color:#164bb0;text-underline-offset:4px}.jt-editorial a:focus-visible{outline:3px solid #e8843c;outline-offset:4px}
+.jt-ed-kicker{color:#164bb0;font-size:12px;letter-spacing:.12em;font-weight:750}.jt-ed-deck{font-size:19px;color:#546177}
+.jt-ed-byline{display:flex;flex-wrap:wrap;gap:6px 18px;padding:18px 0;border-top:1px solid #dfe5ee;font-size:13px;color:#56647a}
+.jt-ed-hero{margin:24px 0 30px}.jt-ed-hero img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:18px}
+.jt-ed-hero figcaption{font-size:12px;color:#637083;margin-top:8px}
+.jt-ed-toc{padding:22px 26px;background:#eff4ff;border:1px solid #d7e4ff;border-radius:14px;margin:28px 0 38px;font-size:15px}
+.jt-ed-toc strong{color:#163c82}.jt-ed-toc ol{padding-left:22px;margin:12px 0 0}.jt-ed-toc li{margin:5px 0}
+.jt-ed-summary{background:#163c82;color:#fff;border-radius:18px;padding:24px 28px;margin:30px 0}
+.jt-ed-summary strong{color:inherit}.jt-ed-summary p{margin:8px 0}.jt-ed-summary ul{padding-left:20px;margin:8px 0}
+.jt-ed-note{border-left:4px solid #dc7430;background:#fff4e9;border-radius:0 12px 12px 0;padding:18px 22px;margin:24px 0;color:#6e3b18;font-size:15px}
+.jt-ed-diagram{border:1px solid #dbe3f0;background:#f5f8ff;border-radius:18px;padding:24px;margin:28px 0}
+.jt-ed-diagram>strong{display:block;color:#183d7d;font-size:19px;margin-bottom:18px}
+.jt-ed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.jt-ed-cell{background:white;border:1px solid #dbe3f0;border-top:4px solid #3765cf;border-radius:10px;padding:18px;font-size:14px;line-height:1.75}
+.jt-ed-cell strong{display:block;font-size:17px;color:#193b76;margin-bottom:9px}.jt-ed-cell:last-child{border-top-color:#dc7430}
+.jt-ed-caption{font-size:13px;color:#58677e;margin:14px 0 0!important}
+.jt-editorial .jt-ins-tbl td+td,.jt-editorial .jt-ins-tbl th+th{text-align:left}
+.jt-ed-related{background:#eff4ff;padding:22px 26px;border-radius:14px;margin:38px 0}.jt-ed-related strong{display:block;color:#193b76}
+.jt-editorial .jt-btn--primary{background:#174cb5;color:white}.jt-editorial .jt-btn--outline{color:#174cb5}
+@media(max-width:600px){.jt-editorial{padding:30px 20px 48px;font-size:16px}.jt-ed-grid{grid-template-columns:1fr}.jt-ed-cell{padding:16px}.jt-ed-diagram{padding:18px}.jt-ed-summary{padding:20px}.jt-ed-toc{padding:20px}.jt-ed-hero img{border-radius:12px}}
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
     .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
     .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
@@ -67,7 +93,7 @@
     "image": "https://www.jttax.co.kr/project/assets/og-image.png?v=2",
     "datePublished": "2026-06-27",
     "dateModified": "2026-06-27",
-    "author": { "@type": "Organization", "name": "제이티 세무법인" },
+    "author": { "@type": "Organization", "name": "제이티 세무법인", "url": "https://www.jttax.co.kr/about/" },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "https://www.jttax.co.kr/project/assets/logo_symbol.png" } },
     "description": "재산세 = 공시가격 × 공정시장가액비율 × 세율. 2026년 1주택 특례비율 43~45%로 공시가격 3억 아파트 약 30만, 5억 약 62만, 6억 약 79만. 7·9월 납부기한과 계산법을 세무사가 정리했습니다.",
     "mainEntityOfPage": "https://www.jttax.co.kr/insights/property-tax-2026-calculation.html"
@@ -84,19 +110,21 @@
     </span>
   </header>
 
-  <article class="jt-legal" style="max-width:720px;margin:0 auto;padding:56px 24px;">
-    <div class="jt-legal__meta">INSIGHT · PROPERTY TAX · 2026.06.27</div>
-    <!-- 글 제목은 h1 — 페이지에 h1 이 없으면 검색·AI 크롤러가 대표 제목을 못 잡는다
-         (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
-    <h1 style="margin-bottom:24px;font-size:1.5em;">2026 재산세 계산법 — 공시가격 3억·5억·6억 재산세는 얼마? (1주택 특례 43~45%)</h1>
-    <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">재산세 = 공시가격 × 공정시장가액비율 × 세율. 2026년 1주택 특례비율 43~45%로 공시가격 3억 아파트 약 30만, 5억 약 62만, 6억 약 79만. 7·9월 납부기한과 계산법을 세무사가 정리했습니다.</p>
+  <!-- jt-publication:17f15287fb7f3d522bb35c90131894e1d02c330d5a26e591e166ebcb71142e7b -->
+  <article class="jt-editorial">
+    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">인사이트</a> / INSIGHT · PROPERTY TAX</nav>
+    <h1>2026 재산세 계산법 — 공시가격 3억·5억·6억 재산세는 얼마? (1주택 특례 43~45%)</h1>
+    <p class="jt-ed-deck">재산세 = 공시가격 × 공정시장가액비율 × 세율. 2026년 1주택 특례비율 43~45%로 공시가격 3억 아파트 약 30만, 5억 약 62만, 6억 약 79만. 7·9월 납부기한과 계산법을 세무사가 정리했습니다.</p>
+    <div class="jt-ed-byline"><a href="/about/">제이티 세무법인</a><span>발행 <time datetime="2026-06-27">2026.06.27</time></span></div>
+
+<nav class="jt-ed-toc" aria-label="이 글의 목차"><strong>이 글에서 확인할 것</strong><ol><li><a href="#section-1">재산세 납부기한, 누가 내나 — 6월 1일이 모든 걸 정한다</a></li><li><a href="#section-2">재산세 계산 3단계</a></li><li><a href="#section-3">2026년 공정시장가액비율 — 1주택은 43~45% 유지</a></li><li><a href="#section-4">주택 재산세율표 — 1주택은 세율도 0.05%p 낮다</a></li><li><a href="#section-5">공시가격별 아파트 재산세, 실제로 얼마일까</a></li><li><a href="#section-6">본세 말고 더 붙는 것들</a></li><li><a href="#section-7">1주택 vs 다주택 — 같은 3억도 2배 차이</a></li><li><a href="#section-8">자주 묻는 질문</a></li></ol></nav>
     <p>7월이면 어김없이 재산세 고지서가 날아옵니다. 그런데 막상 받아 보면 "이 금액이 어떻게 나온 거지?" 싶습니다. 재산세는 <strong>신고하는 세금이 아니라 지자체가 계산해서 고지하는 세금</strong>이라, 원리를 모르면 그저 내라는 대로 낼 수밖에 없습니다.</p>
 
 <p>하지만 재산세 계산은 의외로 단순한 곱셈 구조입니다. 공식 하나만 알면 내 집 재산세가 왜 이 금액인지, 내년엔 얼마가 될지 직접 가늠할 수 있습니다. 2026년 기준으로 계산 구조와 공시가격별 실제 금액을 정리했습니다.</p>
 
 <div class="jt-figure" style="margin:24px 0;"><svg viewBox="0 0 720 230" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;font-family:system-ui,sans-serif;"><rect x="0" y="0" width="720" height="230" fill="#f8fafc" rx="8"/><text x="360" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2d3d">재산세 계산 구조 (주택)</text><rect x="24" y="58" width="150" height="64" rx="6" fill="#ffffff" stroke="#3b5b80" stroke-width="1.5"/><text x="99" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2d3d">공시가격</text><text x="99" y="104" text-anchor="middle" font-size="11" fill="#62748e">시가표준액</text><text x="190" y="96" text-anchor="middle" font-size="22" fill="#3b5b80">×</text><rect x="208" y="58" width="150" height="64" rx="6" fill="#ffffff" stroke="#3b5b80" stroke-width="1.5"/><text x="283" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2d3d">공정시장가액비율</text><text x="283" y="100" text-anchor="middle" font-size="11" fill="#62748e">1주택 43~45%</text><text x="374" y="96" text-anchor="middle" font-size="22" fill="#3b5b80">×</text><rect x="392" y="58" width="150" height="64" rx="6" fill="#ffffff" stroke="#3b5b80" stroke-width="1.5"/><text x="467" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2d3d">세율</text><text x="467" y="100" text-anchor="middle" font-size="11" fill="#62748e">0.1~0.4% 누진</text><text x="558" y="96" text-anchor="middle" font-size="22" fill="#3b5b80">=</text><rect x="576" y="58" width="120" height="64" rx="6" fill="#3b5b80"/><text x="636" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">재산세 본세</text><text x="636" y="104" text-anchor="middle" font-size="11" fill="#cdd9e8">산출세액</text><rect x="208" y="150" width="334" height="56" rx="6" fill="#eef3f9" stroke="#94a8c0" stroke-width="1" stroke-dasharray="4 3"/><text x="375" y="173" text-anchor="middle" font-size="12" font-weight="700" fill="#1f2d3d">+ 지방교육세(본세의 20%) + 도시지역분 + 지역자원시설세</text><text x="375" y="193" text-anchor="middle" font-size="11" fill="#62748e">고지서 총액 = 본세 + 부가 세목 합계</text></svg></div>
 
-<h2>재산세 납부기한, 누가 내나 — 6월 1일이 모든 걸 정한다</h2>
+<h2 id="section-1">재산세 납부기한, 누가 내나 — 6월 1일이 모든 걸 정한다</h2>
 
 <p>재산세에서 가장 중요한 날짜는 <strong>6월 1일(과세기준일)</strong>입니다. 이날 부동산을 소유한 사람이 그해 재산세를 전부 냅니다(지방세법 §114). 5월 31일에 팔았으면 한 푼도 안 내고, 6월 2일에 팔았어도 그해 재산세는 판 사람이 다 냅니다. 잔금일·등기일을 6월 1일 앞뒤로 어떻게 잡느냐로 한 해 보유세가 갈립니다.</p>
 
@@ -110,15 +138,19 @@
 
 <p>신고할 필요 없이 지자체가 계산해 고지서를 보냅니다. 우리가 할 일은 <strong>금액이 맞는지 검증</strong>하는 것뿐입니다.</p>
 
-<h2>재산세 계산 3단계</h2>
+<h2 id="section-2">재산세 계산 3단계</h2>
 
 <p>위 그림처럼 재산세 본세는 세 번의 곱셈으로 끝납니다.</p>
 
-<p>1. <strong>공시가격(시가표준액)</strong> — 매년 4월 말 공시되는 주택 공시가격. 실거래가가 아니라 정부가 정한 가격으로, 보통 시세의 60~70% 수준입니다.<br/>2. <strong>× 공정시장가액비율</strong> — 공시가격을 그대로 쓰지 않고 일정 비율만 과세표준에 반영합니다. 이 비율이 재산세 부담을 좌우하는 핵심 변수입니다(지방세법 시행령 §109).<br/>3. <strong>× 세율</strong> — 과세표준 구간에 따라 0.1~0.4% 누진세율을 적용합니다(지방세법 §111).</p>
+<ol>
+  <li><strong>공시가격(시가표준액)</strong> — 매년 4월 말 공시되는 주택 공시가격. 실거래가가 아니라 정부가 정한 가격으로, 보통 시세의 60~70% 수준입니다.</li>
+  <li><strong>× 공정시장가액비율</strong> — 공시가격을 그대로 쓰지 않고 일정 비율만 과세표준에 반영합니다. 이 비율이 재산세 부담을 좌우하는 핵심 변수입니다(지방세법 시행령 §109).</li>
+  <li><strong>× 세율</strong> — 과세표준 구간에 따라 0.1~0.4% 누진세율을 적용합니다(지방세법 §111).</li>
+</ol>
 
 <p>이렇게 나온 금액이 <strong>재산세 본세</strong>이고, 여기에 지방교육세·도시지역분 등이 더해져 고지서 총액이 됩니다.</p>
 
-<h2>2026년 공정시장가액비율 — 1주택은 43~45% 유지</h2>
+<h2 id="section-3">2026년 공정시장가액비율 — 1주택은 43~45% 유지</h2>
 
 <p>공정시장가액비율은 법정 기본이 <strong>주택 60%, 토지·건축물 70%</strong>입니다. 그런데 1세대 1주택자에게는 부담을 덜어 주기 위해 한시적으로 더 낮은 특례 비율을 적용해 왔고, <strong>2026년에도 이 특례가 그대로 유지</strong>됩니다(행정안전부 보도자료).</p>
 
@@ -131,7 +163,7 @@
 
 <p>같은 공시가격 3억원 주택이라도 1주택이면 비율 43%(과세표준 1.29억), 다주택이면 60%(과세표준 1.8억)가 적용돼 출발선부터 차이가 납니다.</p>
 
-<h2>주택 재산세율표 — 1주택은 세율도 0.05%p 낮다</h2>
+<h2 id="section-4">주택 재산세율표 — 1주택은 세율도 0.05%p 낮다</h2>
 
 <p>과세표준이 정해지면 아래 누진세율을 적용합니다. 1세대 1주택(공시가격 9억원 이하)은 별도의 <strong>특례세율</strong>이 적용돼 일반세율보다 구간마다 0.05%p씩 낮습니다(지방세법 §111의2).</p>
 
@@ -155,7 +187,7 @@
 
 <blockquote>주의: 공정시장가액비율 특례(43~45%)는 공시가격 9억원을 넘는 1주택에도 적용되지만, <strong>세율 특례(§111의2)는 공시가격 9억원 이하 1주택만</strong> 받습니다. 공시 9억 초과 1주택은 비율 45%를 쓰되 세율은 일반세율(최고 0.4%)이 적용됩니다.</blockquote>
 
-<h2>공시가격별 아파트 재산세, 실제로 얼마일까</h2>
+<h2 id="section-5">공시가격별 아파트 재산세, 실제로 얼마일까</h2>
 
 <p>1세대 1주택·도시지역 기준으로 공시가격별 아파트(주택) 재산세 총액(본세 + 지방교육세 + 도시지역분)을 계산하면 다음과 같습니다.</p>
 
@@ -171,7 +203,7 @@
 
 <p>(도시지역분이 부과되지 않는 지역이라면 총액은 이보다 낮아집니다. 단순 가정에 따른 예시이며, 실제 고지액은 지자체별 도시지역분 부과 여부·지역자원시설세 등에 따라 달라집니다.)</p>
 
-<h2>본세 말고 더 붙는 것들</h2>
+<h2 id="section-6">본세 말고 더 붙는 것들</h2>
 
 <p>고지서 금액이 위 본세보다 큰 이유는 함께 부과되는 부가 세목 때문입니다.</p>
 
@@ -183,7 +215,7 @@
 
 <p>즉 "재산세 = 본세"가 아니라, <strong>고지서 총액 = 본세 + 지방교육세 + 도시지역분 (+ 지역자원시설세)</strong>입니다.</p>
 
-<h2>1주택 vs 다주택 — 같은 3억도 2배 차이</h2>
+<h2 id="section-7">1주택 vs 다주택 — 같은 3억도 2배 차이</h2>
 
 <p>같은 공시가격 3억원 주택이라도 1주택인지 아닌지에 따라 재산세가 크게 갈립니다.</p>
 
@@ -194,7 +226,7 @@
 
 <p>공정시장가액비율(43% vs 60%)과 세율(특례 vs 일반)이 이중으로 벌어지면서 본세가 약 2.7배 차이 납니다. 주택을 추가로 보유할 때는 양도세·종합부동산세뿐 아니라 매년 재산세 부담도 함께 커진다는 점을 고려해야 합니다.</p>
 
-<h2>자주 묻는 질문</h2>
+<h2 id="section-8">자주 묻는 질문</h2>
 
 <p><strong>Q. 재산세 고지서가 안 왔는데 안 내도 되나요?</strong><br/>고지서 1장당 재산세 본세가 2,000원 미만이면 부과되지 않습니다(소액 징수면제, 지방세법 §119). 그 외에는 고지서 미수령과 무관하게 납세의무가 있으니, <strong>위택스(wetax.go.kr)</strong> 또는 관할 지자체에서 '재산세 조회·납부'로 직접 확인하는 것이 안전합니다.</p>
 
@@ -216,7 +248,7 @@
       <p style="font-size:13px;color:#5a5a5a;margin-top:8px;line-height:1.7;">본 글은 일반적인 정보 제공을 목적으로 하는 참고 자료이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 정확한 검토는 담당 세무사와의 상담을 통해 진행되어야 합니다.</p>
     </div>
 
-    <div style="margin-top:48px;display:flex;gap:12px;">
+    <div style="margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>

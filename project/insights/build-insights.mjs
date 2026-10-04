@@ -12,6 +12,7 @@
 //   3. 각 글을 /insights/<slug>.html 단독 페이지로 렌더링 (사이트 루트 기준)
 //   4. 루트 sitemap.xml 갱신 (정적 페이지 + 글 URL)
 
+import { createHash } from 'node:crypto';
 import { readFile, writeFile, readdir, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +20,7 @@ import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { insightSlug } from '../_shared/insight-slug.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 import { footerHtml, stylesHref, ogImageHref, faviconHtml } from '../_shared/site-meta.mjs';
+import { escapeHtml, readingTools, hero, editorialCss } from './editorial.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url)); // project/insights
 const PROJECT = join(__dirname, '..');                     // project
@@ -66,11 +68,12 @@ function mdToHtml(md) {
     .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" rel="noopener">$1</a>');
+    .replace(/\[([^\]\n]+)\]\(([^)\n]+)\)/g, '<a href="$2" rel="noopener">$1</a>');
   html = html.replace(/(^|\n)((?:- .+\n?)+)/g, (_, pre, block) => {
     const items = block.trim().split('\n').map(l => `  <li>${l.replace(/^- /, '')}</li>`).join('\n');
     return `${pre}<ul>\n${items}\n</ul>\n`;
   });
+  html = html.replace(/(^|\n)((?:\d+\. .+\n?)+)/g, (_, pre, block) => `${pre}<ol>\n${block.trim().split('\n').map(l => `  <li>${l.replace(/^\d+\. /, '')}</li>`).join('\n')}\n</ol>\n`);
   /* ⚠️ 표 치환 «전에» fenced code block 을 빼 둔다.
      안 그러면 코드블록 안의 표 모양 텍스트까지 <table> 로 바뀐다 (260805 Codex P2).
      센티널은 사용자 私用영역(U+E000)이라 본문과 충돌하지 않는다. */
@@ -103,7 +106,7 @@ function mdToHtml(md) {
   html = html.split(/\n\n+/).map(p => {
     const t = p.trim();
     if (!t) return '';
-    if (/^<(h[1-6]|ul|ol|blockquote|pre|div|table)/.test(t)) return t;
+    if (/^<(h[1-6]|ul|ol|blockquote|pre|div|table|figure|nav|section)/.test(t)) return t;
     return `<p>${t.replace(/\n/g, '<br/>')}</p>`;
   }).join('\n\n');
   return html;
@@ -136,6 +139,11 @@ async function loadArticles() {
       throw new Error(`slug 충돌: '${slug}' 가 '${seenSlugs.get(slug)}' 와 '${f}' 에서 중복됩니다. 한 글의 /insights/${slug}.html 이 덮어써지니 파일명 또는 slug 프론트매터를 구분하세요.`);
     }
     seenSlugs.set(slug, f);
+    if (meta.hero) {
+      if (!/^\/project\/assets\/insights\/[a-z0-9-]+\.(png|jpg|webp)$/.test(meta.hero) || !meta.heroAlt || !meta.heroCaption) throw new Error(`[hero] ${f}: 로컬 이미지 경로·alt·캡션 필요`);
+      await readFile(join(REPO_ROOT, meta.hero.slice(1)));
+    }
+    if (meta.lawChecked && (!/^\d{4}-\d{2}-\d{2}$/.test(meta.lawChecked) || !body.includes('https://www.law.go.kr/'))) throw new Error(`[lawChecked] ${f}: 확인일과 원문 링크 필요`);
     arts.push({
       slug,
       title: meta.title,
@@ -154,9 +162,12 @@ async function loadArticles() {
       tag: meta.tag || 'INSIGHT',
       excerpt: meta.excerpt || '',
       author: meta.author || '제이티 세무법인',
+      hero: meta.hero || '', heroAlt: meta.heroAlt || '', heroCaption: meta.heroCaption || '',
+      lawChecked: meta.lawChecked || '',
       body,
       html: mdToHtml(body),
       filename: f,
+      sourceHash: createHash('sha256').update((await readFile(join(INSIGHTS_SRC, f), 'utf8')).replace(/\r\n/g, '\n')).digest('hex'),
     });
   }
   // ① 부분 skip 침묵 실패 방지: insights/ 의 .md 는 모두 발행 가능해야 한다.
@@ -220,7 +231,9 @@ const ACQ_HUB_BLOCK = `
 
 function renderArticlePage(a) {
   const shareUrl = `${SITE}/insights/${a.slug}.html`;
-  const esc = (s) => String(s).replace(/"/g, '&quot;');
+  const esc = escapeHtml;
+  const imageUrl = a.hero ? `${SITE}${a.hero}` : ogImageHref();
+  const reading = readingTools(a);
   const hubBlock = isAcqHubArticle(a.slug) ? ACQ_HUB_BLOCK : '';
   const youthBlock = a.slug === 'youth-startup-tax-reduction-2026' ? `<aside aria-label="청년창업 진단과 상담" style="margin:0 0 32px;padding:24px;border:1px solid rgba(0,0,0,.12);background:#FAFAF8;">
       <p style="margin:0 0 8px;font-weight:700;">청년창업 감면을 검토하고 계신가요?</p>
@@ -234,7 +247,7 @@ function renderArticlePage(a) {
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>${a.title} | 제이티 세무법인</title>
+  <title>${esc(a.title)} | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="${esc(a.excerpt)}">
   <link rel="canonical" href="${shareUrl}">
@@ -242,7 +255,8 @@ function renderArticlePage(a) {
   <meta property="og:title" content="${esc(a.title)}">
   <meta property="og:description" content="${esc(a.excerpt)}">
   <meta property="og:url" content="${shareUrl}">
-  <meta property="og:image" content="${ogImageHref()}">
+  <meta property="og:image" content="${imageUrl}">
+  <meta property="og:image:alt" content="${esc(a.heroAlt || a.title)}">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="${a.dateISO}">
   <meta property="article:modified_time" content="${a.updatedISO}">
@@ -250,10 +264,11 @@ function renderArticlePage(a) {
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(a.title)}">
   <meta name="twitter:description" content="${esc(a.excerpt)}">
-  <meta name="twitter:image" content="${ogImageHref()}">
+  <meta name="twitter:image" content="${imageUrl}">
 ${faviconHtml()}
   <link rel="stylesheet" href="${stylesHref()}">
   <style>
+${editorialCss.trim()}
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
     .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
     .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
@@ -269,10 +284,10 @@ ${GA_HEAD_SNIPPET}
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": ${JSON.stringify(a.title)},
-    "image": ${JSON.stringify(ogImageHref())},
+    "image": ${JSON.stringify(imageUrl)},
     "datePublished": ${JSON.stringify(a.dateISO)},
     "dateModified": ${JSON.stringify(a.updatedISO)},
-    "author": { "@type": "Organization", "name": ${JSON.stringify(a.author)} },
+    "author": { "@type": "Organization", "name": ${JSON.stringify(a.author)}, "url": "${SITE}/about/" },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
     "description": ${JSON.stringify(a.excerpt)},
     "mainEntityOfPage": ${JSON.stringify(shareUrl)}
@@ -289,13 +304,15 @@ ${GA_HEAD_SNIPPET}
     </span>
   </header>
 
-  <article class="jt-legal" style="max-width:720px;margin:0 auto;padding:56px 24px;">
-    <div class="jt-legal__meta">${a.tag} · ${a.date}</div>
-    <!-- 글 제목은 h1 — 페이지에 h1 이 없으면 검색·AI 크롤러가 대표 제목을 못 잡는다
-         (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
-    <h1 style="margin-bottom:24px;font-size:1.5em;">${a.title}</h1>
-    <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">${a.excerpt}</p>
-${youthBlock ? '    ' + youthBlock + '\n' : ''}    ${a.html}
+  <!-- jt-publication:${a.sourceHash} -->
+  <article class="jt-editorial">
+    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">인사이트</a> / ${esc(a.tag)}</nav>
+    <h1>${esc(a.title)}</h1>
+    <p class="jt-ed-deck">${esc(a.excerpt)}</p>
+    <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a><span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
+${hero(a)}
+${reading.toc}
+${youthBlock ? '    ' + youthBlock + '\n' : ''}    ${reading.html}
 ${hubBlock}
 
     <div style="margin-top:64px;padding:32px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;">
@@ -303,7 +320,7 @@ ${hubBlock}
       <p style="font-size:13px;color:#5a5a5a;margin-top:8px;line-height:1.7;">본 글은 일반적인 정보 제공을 목적으로 하는 참고 자료이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 정확한 검토는 담당 세무사와의 상담을 통해 진행되어야 합니다.</p>
     </div>
 
-    <div style="margin-top:48px;display:flex;gap:12px;">
+    <div style="margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>
@@ -346,6 +363,7 @@ function renderInsightsIndex(arts) {
     ],
   };
   const cards = arts.map((a) => `      <a class="jt-ih-card" href="/insights/${a.slug}.html">
+${a.hero ? `<img src="${esc(a.hero)}" alt="${esc(a.heroAlt)}" width="1536" height="1024" loading="lazy" decoding="async">` : ''}
         <span class="jt-ih-meta">${esc(a.tag)} · ${esc(a.date)}</span>
         <h2>${esc(a.title)}</h2>
         <p>${esc(a.excerpt)}</p>
@@ -380,6 +398,8 @@ ${GA_HEAD_SNIPPET}
     .jt-ih-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
     .jt-ih-card{display:block;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:20px;text-decoration:none;color:#0B0B0F;background:#fff;}
     .jt-ih-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08);}
+    .jt-ih-card{border-top:4px solid #3765cf}.jt-ih-card:nth-child(3n+2){border-top-color:#ca6727}.jt-ih-card:nth-child(3n){border-top-color:#29817b}
+    .jt-ih-card img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:8px;margin-bottom:16px}
     .jt-ih-meta{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;color:#999;}
     .jt-ih-card h2{font-size:17px;margin:8px 0;border:0;padding:0;line-height:1.45;}
     .jt-ih-card p{font-size:13.5px;color:#666;line-height:1.55;margin:0;}

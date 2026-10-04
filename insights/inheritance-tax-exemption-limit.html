@@ -11,6 +11,7 @@
   <meta property="og:description" content="상속세는 배우자가 있으면 약 10억(일괄공제 5억+배우자공제 5억), 없으면 5억까지 0입니다. 10·15·20·30억 상속의 실제 세금을 현행법 기준 표로 정리하고 상속세 계산기로 내 경우를 확인하세요.">
   <meta property="og:url" content="https://www.jttax.co.kr/insights/inheritance-tax-exemption-limit.html">
   <meta property="og:image" content="https://www.jttax.co.kr/project/assets/og-image.png?v=2">
+  <meta property="og:image:alt" content="상속세 면제한도 2026 — 배우자 10억·무배우자 5억 (금액별 세금표)">
   <meta property="og:locale" content="ko_KR">
   <meta property="article:published_time" content="2026-06-27">
   <meta property="article:modified_time" content="2026-06-27">
@@ -27,6 +28,31 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
   <link rel="stylesheet" href="/project/src/styles.css?v=30">
   <style>
+.jt-editorial{max-width:800px;margin:0 auto;padding:48px 24px 64px;word-break:keep-all;overflow-wrap:anywhere;font-size:17px;line-height:1.9;color:#263247}
+.jt-editorial h1{font-size:clamp(30px,4.5vw,44px);line-height:1.3;letter-spacing:-.045em;color:#11213e;margin:20px 0}
+.jt-editorial h2{font-size:clamp(23px,3vw,28px);line-height:1.45;letter-spacing:-.025em;color:#142b52;margin:54px 0 18px;padding:0;border:0;scroll-margin-top:24px}
+.jt-editorial h3{font-size:20px;line-height:1.5;margin:28px 0 12px;color:#142b52}
+.jt-editorial p{line-height:1.9;margin:18px 0}.jt-editorial li{margin:8px 0;line-height:1.8}
+.jt-editorial a{color:#164bb0;text-underline-offset:4px}.jt-editorial a:focus-visible{outline:3px solid #e8843c;outline-offset:4px}
+.jt-ed-kicker{color:#164bb0;font-size:12px;letter-spacing:.12em;font-weight:750}.jt-ed-deck{font-size:19px;color:#546177}
+.jt-ed-byline{display:flex;flex-wrap:wrap;gap:6px 18px;padding:18px 0;border-top:1px solid #dfe5ee;font-size:13px;color:#56647a}
+.jt-ed-hero{margin:24px 0 30px}.jt-ed-hero img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:18px}
+.jt-ed-hero figcaption{font-size:12px;color:#637083;margin-top:8px}
+.jt-ed-toc{padding:22px 26px;background:#eff4ff;border:1px solid #d7e4ff;border-radius:14px;margin:28px 0 38px;font-size:15px}
+.jt-ed-toc strong{color:#163c82}.jt-ed-toc ol{padding-left:22px;margin:12px 0 0}.jt-ed-toc li{margin:5px 0}
+.jt-ed-summary{background:#163c82;color:#fff;border-radius:18px;padding:24px 28px;margin:30px 0}
+.jt-ed-summary strong{color:inherit}.jt-ed-summary p{margin:8px 0}.jt-ed-summary ul{padding-left:20px;margin:8px 0}
+.jt-ed-note{border-left:4px solid #dc7430;background:#fff4e9;border-radius:0 12px 12px 0;padding:18px 22px;margin:24px 0;color:#6e3b18;font-size:15px}
+.jt-ed-diagram{border:1px solid #dbe3f0;background:#f5f8ff;border-radius:18px;padding:24px;margin:28px 0}
+.jt-ed-diagram>strong{display:block;color:#183d7d;font-size:19px;margin-bottom:18px}
+.jt-ed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.jt-ed-cell{background:white;border:1px solid #dbe3f0;border-top:4px solid #3765cf;border-radius:10px;padding:18px;font-size:14px;line-height:1.75}
+.jt-ed-cell strong{display:block;font-size:17px;color:#193b76;margin-bottom:9px}.jt-ed-cell:last-child{border-top-color:#dc7430}
+.jt-ed-caption{font-size:13px;color:#58677e;margin:14px 0 0!important}
+.jt-editorial .jt-ins-tbl td+td,.jt-editorial .jt-ins-tbl th+th{text-align:left}
+.jt-ed-related{background:#eff4ff;padding:22px 26px;border-radius:14px;margin:38px 0}.jt-ed-related strong{display:block;color:#193b76}
+.jt-editorial .jt-btn--primary{background:#174cb5;color:white}.jt-editorial .jt-btn--outline{color:#174cb5}
+@media(max-width:600px){.jt-editorial{padding:30px 20px 48px;font-size:16px}.jt-ed-grid{grid-template-columns:1fr}.jt-ed-cell{padding:16px}.jt-ed-diagram{padding:18px}.jt-ed-summary{padding:20px}.jt-ed-toc{padding:20px}.jt-ed-hero img{border-radius:12px}}
     /* 본문 표 (260805 — mdToHtml GFM 표 지원과 한 쌍. 한쪽만 있으면 깨진다) */
     .jt-ins-tblwrap{overflow-x:auto;margin:22px 0;-webkit-overflow-scrolling:touch;}
     .jt-ins-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px;}
@@ -67,7 +93,7 @@
     "image": "https://www.jttax.co.kr/project/assets/og-image.png?v=2",
     "datePublished": "2026-06-27",
     "dateModified": "2026-06-27",
-    "author": { "@type": "Organization", "name": "제이티 세무법인" },
+    "author": { "@type": "Organization", "name": "제이티 세무법인", "url": "https://www.jttax.co.kr/about/" },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "https://www.jttax.co.kr/project/assets/logo_symbol.png" } },
     "description": "상속세는 배우자가 있으면 약 10억(일괄공제 5억+배우자공제 5억), 없으면 5억까지 0입니다. 10·15·20·30억 상속의 실제 세금을 현행법 기준 표로 정리하고 상속세 계산기로 내 경우를 확인하세요.",
     "mainEntityOfPage": "https://www.jttax.co.kr/insights/inheritance-tax-exemption-limit.html"
@@ -84,19 +110,21 @@
     </span>
   </header>
 
-  <article class="jt-legal" style="max-width:720px;margin:0 auto;padding:56px 24px;">
-    <div class="jt-legal__meta">INSIGHT · INHERITANCE TAX · 2026.06.27</div>
-    <!-- 글 제목은 h1 — 페이지에 h1 이 없으면 검색·AI 크롤러가 대표 제목을 못 잡는다
-         (260830 SEO 파일럿 확정 #3). font-size 1.5em 은 종전 h2 기본 크기 유지용 -->
-    <h1 style="margin-bottom:24px;font-size:1.5em;">상속세 면제한도 2026 — 배우자 10억·무배우자 5억 (금액별 세금표)</h1>
-    <p style="font-size:18px;color:#5a5a5a;margin-bottom:40px;">상속세는 배우자가 있으면 약 10억(일괄공제 5억+배우자공제 5억), 없으면 5억까지 0입니다. 10·15·20·30억 상속의 실제 세금을 현행법 기준 표로 정리하고 상속세 계산기로 내 경우를 확인하세요.</p>
-    <h2>들어가며</h2>
+  <!-- jt-publication:8f40b5ba98c0ea5be428c2372cc44beb6b8f3227a9820bf0db1d85d6101e4cfa -->
+  <article class="jt-editorial">
+    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">인사이트</a> / INSIGHT · INHERITANCE TAX</nav>
+    <h1>상속세 면제한도 2026 — 배우자 10억·무배우자 5억 (금액별 세금표)</h1>
+    <p class="jt-ed-deck">상속세는 배우자가 있으면 약 10억(일괄공제 5억+배우자공제 5억), 없으면 5억까지 0입니다. 10·15·20·30억 상속의 실제 세금을 현행법 기준 표로 정리하고 상속세 계산기로 내 경우를 확인하세요.</p>
+    <div class="jt-ed-byline"><a href="/about/">제이티 세무법인</a><span>발행 <time datetime="2026-06-27">2026.06.27</time></span></div>
+
+<nav class="jt-ed-toc" aria-label="이 글의 목차"><strong>이 글에서 확인할 것</strong><ol><li><a href="#section-1">들어가며</a></li><li><a href="#section-2">핵심 — 배우자 있으면 10억, 없으면 5억까지 0</a></li><li><a href="#section-3">공제는 더 있다 — 금융재산·동거주택</a></li><li><a href="#section-4">금액별 상속세 — 10억 0원·20억 1.3억·30억 3.1억</a></li><li><a href="#section-5">신고는 6개월 안에</a></li><li><a href="#section-6">마치며</a></li></ol></nav>
+    <h2 id="section-1">들어가며</h2>
 
 <p>"상속세, 얼마까지 안 내나요?" 답은 공제에 있습니다. 상속재산에서 여러 공제를 빼고 남은 금액(과세표준)에만 세금이 붙는데, 배우자가 있으면 보통 10억 원 안팎, 없으면 5억 원까지는 세금이 0입니다. 다만 배우자가 실제로 얼마를 상속받느냐, 최근 10년간 사전증여가 있었느냐에 따라 결과가 달라지니 끝까지 확인하세요.</p>
 
 <blockquote>※ 정부가 자녀공제 상향 등 상속세 개편을 논의 중이지만, 아래는 2026년 현재 시행 중인 현행법(일괄공제 5억·자녀공제 5천만 원) 기준입니다.</blockquote>
 
-<h2>핵심 — 배우자 있으면 10억, 없으면 5억까지 0</h2>
+<h2 id="section-2">핵심 — 배우자 있으면 10억, 없으면 5억까지 0</h2>
 
 <p>상속세의 두 기둥 공제는 일괄공제와 배우자공제입니다.</p>
 
@@ -124,7 +152,7 @@
 </svg>
 </div>
 
-<h2>공제는 더 있다 — 금융재산·동거주택</h2>
+<h2 id="section-3">공제는 더 있다 — 금융재산·동거주택</h2>
 
 <p>기본 공제 외에 상황에 따라 더 받을 수 있습니다.</p>
 
@@ -136,7 +164,7 @@
 
 <p>이런 공제까지 더하면 세금 없는 구간은 더 늘어납니다.</p>
 
-<h2>금액별 상속세 — 10억 0원·20억 1.3억·30억 3.1억</h2>
+<h2 id="section-4">금액별 상속세 — 10억 0원·20억 1.3억·30억 3.1억</h2>
 
 <p>배우자와 자녀 2명이 상속받는 가장 흔한 경우의 실제 상속세입니다.</p>
 
@@ -186,11 +214,11 @@
 
 <p>여기서 배우자공제는 '배우자가 실제로 상속받은 금액'에 따라 정해집니다. 재산이 클수록 법정상속분만큼(최대 30억) 공제가 커지므로, 누가 얼마를 상속받을지 분할 방법이 세금을 크게 가릅니다. 또 사망 전 10년 안에 상속인에게 증여한 재산은 상속재산에 합산되니, '10억이면 무조건 0'은 아닙니다.</p>
 
-<h2>신고는 6개월 안에</h2>
+<h2 id="section-5">신고는 6개월 안에</h2>
 
 <p>상속세는 상속개시일(사망일)이 속하는 달 말일부터 6개월 안에 신고·납부해야 합니다(상증법 §67). 기한 내 신고하면 산출세액의 3%를 공제받고(§69①), 안 하면 무신고 가산세(20%)가 붙습니다. 신고 절차와 공제 요건은 <a href="/insights/inheritance-tax-basics.html" rel="noopener">상속세 기초</a> 글에서 더 자세히 다룹니다.</p>
 
-<h2>마치며</h2>
+<h2 id="section-6">마치며</h2>
 
 <p>상속세 면제한도는 '배우자 있으면 약 10억, 없으면 5억'으로 기억하면 됩니다. 그 위로는 재산 규모·배우자 상속분·사전증여에 따라 세금이 크게 갈립니다. 내 상속재산의 세금은 <a href="/#/report/inheritance" rel="noopener">상속세 계산기</a>로 바로 확인하고, 배우자 상속분 설계는 제이티 세무법인과 상담하시길 권합니다.</p>
 
@@ -207,7 +235,7 @@
       <p style="font-size:13px;color:#5a5a5a;margin-top:8px;line-height:1.7;">본 글은 일반적인 정보 제공을 목적으로 하는 참고 자료이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 정확한 검토는 담당 세무사와의 상담을 통해 진행되어야 합니다.</p>
     </div>
 
-    <div style="margin-top:48px;display:flex;gap:12px;">
+    <div style="margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight')">상담 예약 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','insight')">카톡 상담</a>
     </div>
