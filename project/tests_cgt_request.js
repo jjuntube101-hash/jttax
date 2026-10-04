@@ -47,8 +47,8 @@ const validCalcSrc = commonSrc.match(/window\.jtValidCalc = function[\s\S]*?\n  
 
 const ctx = vm.createContext({ window: {}, Date, Number, Object, Math, JSON, Promise });
 vm.runInContext(validCalcSrc, ctx);
-vm.runInContext(loadDecls(code, ['isValidISODate', 'isoDate', 'cgtTemp2Visible', 'cgtApplyAnswer', 'cgtTemp2Years', 'cgtTemp2Phrase', 'mapAnswersToTransfer']), ctx);
-vm.runInContext('globalThis.__fns = { mapAnswersToTransfer, cgtApplyAnswer, cgtTemp2Years, cgtTemp2Visible, cgtTemp2Phrase };', ctx);
+vm.runInContext(loadDecls(code, ['isValidISODate', 'isoDate', 'cgtTemp2Visible', 'cgtApplyAnswer', 'cgtTemp2Years', 'cgtTemp2DeadlineYears', 'cgtScenarioNow', 'cgtTemp2Phrase', 'mapAnswersToTransfer']), ctx);
+vm.runInContext('globalThis.__fns = { mapAnswersToTransfer, cgtApplyAnswer, cgtTemp2Years, cgtTemp2Visible, cgtTemp2Phrase, cgtTemp2DeadlineYears, cgtScenarioNow };', ctx);
 const { mapAnswersToTransfer: map, cgtApplyAnswer, cgtTemp2Years, cgtTemp2Visible, cgtTemp2Phrase } = ctx.__fns;
 const body = (a) => plain(map(a));
 
@@ -174,6 +174,22 @@ console.log('════ cgtApplyAnswer — 답 삭제 규칙 ════');
 // ───────────────────────── 기한 연수 ─────────────────────────
 console.log('════ cgtTemp2Years — 경계 ════');
 const Y = (over) => cgtTemp2Years({ ...T2, ...over });
+// 처분 기한의 연수는 «기한이 지난 양도»의 규칙으로 센다 — 기준 양도일이 2026-09-30 이전이어도 2년(TASK-261004-022 R1-F1)
+{
+  const { cgtTemp2DeadlineYears, cgtScenarioNow } = ctx.__fns;
+  eq(cgtTemp2Years({ ...T2, transferDate: '2026-09-30', temp2Zone: 'yes' }), 3, '기준 양도일 2026-09-30 의 판정은 3년');
+  eq(cgtTemp2DeadlineYears({ ...T2, transferDate: '2026-09-30', temp2Zone: 'yes' }), 2, '그 사람의 처분 기한은 2년');
+  eq(cgtTemp2DeadlineYears({ ...T2, transferDate: '2026-09-30', temp2Zone: 'no' }), 3, '조정대상지역 간 이동이 아니면 기한 3년');
+  eq(cgtTemp2DeadlineYears({ ...T2, transferDate: '2026-09-30', temp2Zone: 'contract' }), 3, '계약 예외면 기한 3년');
+  eq(cgtTemp2DeadlineYears({ ...T2, transferDate: '2026-09-30', temp2Zone: 'unknown' }), null, '「모름」이면 기한 미정(두 기한 안내)');
+  eq(cgtTemp2DeadlineYears({ ...T2, newHouseDate: '2026-08-03', transferDate: '2026-09-30', temp2Zone: 'yes' }), 3, '새 집 취득 2026-08-03 이전이면 기한 3년');
+  // 보유기간 시나리오: 「지금 양도」 보조 응답이 없으면 비교하지 않는다(TASK-261004-022 R1-F2)
+  eq(cgtScenarioNow([{ tax: 90, date: '2027-01-01' }, { tax: 20, date: '2028-01-01' }]), null, '「지금」 항목이 없으면 기준 없음');
+  eq(plain(cgtScenarioNow([{ now: true, tax: 100 }, { tax: 20 }])), { now: true, tax: 100 }, '「지금」 항목이 기준');
+  eq(cgtScenarioNow(null), null, '시나리오 없음');
+  ok(!/scns\.find\(s => s\.now\) \|\| scns\[0\]/.test(code), '첫 미래 시점을 「지금」으로 대신 쓰는 식이 소스에 없다');
+  ok(/const deadlineYears = cgtTemp2DeadlineYears\(answers\)/.test(code), '기한 경고는 cgtTemp2DeadlineYears 로 연수를 센다');
+}
 // 새 집 취득일 경계 (양도일은 2026-10-05 로 2년 규칙 구간)
 eq(Y({ newHouseDate: '2026-08-03', temp2Zone: 'yes' }), 3, '새 집 2026-08-03 → 3년(yes 여도)');
 eq(Y({ newHouseDate: '2026-08-04', temp2Zone: 'yes' }), 2, '새 집 2026-08-04 + yes → 2년');

@@ -2916,6 +2916,12 @@ function cgtTemp2Years(answers, todayIso) {
   if (answers.temp2Zone === "no" || answers.temp2Zone === "contract") return 3;
   return null;
 }
+function cgtTemp2DeadlineYears(answers) {
+  return cgtTemp2Years(Object.assign({}, answers, { transferDate: "9999-12-31" }));
+}
+function cgtScenarioNow(scns) {
+  return Array.isArray(scns) && scns.find((s) => s && s.now) || null;
+}
 function cgtTemp2Phrase(years) {
   if (years === 2) return "2\uB144";
   if (years === 3) return "3\uB144";
@@ -3690,8 +3696,8 @@ function JTReportCGT({ setRoute, onBack }) {
       if (calc.precise && assetType !== "presale" && !isOccupancy) {
         try {
           const scns = await computeScenarios(answers);
-          if (scns.length > 1) {
-            const now = scns.find((s) => s.now) || scns[0];
+          const now = cgtScenarioNow(scns);
+          if (now && scns.length > 1) {
             const best = scns.reduce((a, b) => b.tax < a.tax ? b : a, now);
             calc.scenarios = scns.filter((s) => s.now || s.tax < now.tax);
             if (!best.now && best.tax < now.tax) {
@@ -3700,7 +3706,7 @@ function JTReportCGT({ setRoute, onBack }) {
               calc.timingTip = { saving, months, date: best.date, label: best.label, exempt: best.exempt };
             }
             if (now.tax === 0 && scns.some((s) => !s.now && s.tax > 0) && is2House && answers.otherHouseSource === "bought" && answers.newHouseDate) {
-              const deadlineYears = cgtTemp2Years(answers);
+              const deadlineYears = cgtTemp2DeadlineYears(answers);
               const deadline = addYears(/* @__PURE__ */ new Date(answers.newHouseDate + "T00:00:00"), deadlineYears || 2);
               const todayD = /* @__PURE__ */ new Date((answers.transferDate || isoDate(/* @__PURE__ */ new Date())) + "T00:00:00");
               if (deadline > todayD) {

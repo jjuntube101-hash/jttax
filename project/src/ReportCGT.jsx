@@ -43,6 +43,19 @@ function cgtTemp2Years(answers, todayIso) {
   return null;
 }
 
+/* 처분 «기한»의 연수. 기한은 새 집 취득일 + 2년(빨라도 2028-08-04)이 지난 양도를 가르는 날이다 — 그 양도는
+   언제나 2026-10-01 이후이므로, 지금 입력한 양도일이 2026-09-30 이전이어도 개정 규정으로 센다
+   (Codex TASK-261004-022 R1-F1: 기준 양도일로 세면 3년으로 안내해 실제보다 1년 늦은 기한이 나갔다). */
+function cgtTemp2DeadlineYears(answers) {
+  return cgtTemp2Years(Object.assign({}, answers, { transferDate: '9999-12-31' }));
+}
+
+/* 보유기간 시나리오의 «지금» 기준 — 보조 호출의 「지금 양도」가 실패했으면 비교하지 않는다(null).
+   첫 미래 시점을 «지금»으로 대신 쓰면 근거 없는 절세액이 만들어진다(Codex TASK-261004-022 R1-F2). */
+function cgtScenarioNow(scns) {
+  return (Array.isArray(scns) && scns.find(s => s && s.now)) || null;
+}
+
 /* 기한 연수 → 안내 문구 조각. 정해지지 않았으면(null) 두 기한을 함께 적는다. */
 function cgtTemp2Phrase(years) {
   if (years === 2) return '2년';
@@ -934,8 +947,8 @@ function JTReportCGT({ setRoute, onBack }) {
       if (calc.precise && assetType !== 'presale' && !isOccupancy) {
         try {
           const scns = await computeScenarios(answers);
-          if (scns.length > 1) {
-            const now = scns.find(s => s.now) || scns[0];
+          const now = cgtScenarioNow(scns);
+          if (now && scns.length > 1) {
             const best = scns.reduce((a, b) => (b.tax < a.tax ? b : a), now);
             // 표에는 "지금 + 절세되는 미래"만 노출 (세금이 늘어나는 미래는 비교가 아니라 혼란 → 제외)
             calc.scenarios = scns.filter(s => s.now || s.tax < now.tax);
@@ -948,7 +961,7 @@ function JTReportCGT({ setRoute, onBack }) {
             if (now.tax === 0 && scns.some(s => !s.now && s.tax > 0)
                 && is2House && answers.otherHouseSource === 'bought' && answers.newHouseDate) {
               // 기한 연수는 cgtTemp2Years(소득세법 시행령 §155①). 「모름」(null)이면 엔진과 같은 2년 기준으로 날짜를 잡고 두 기한을 함께 안내한다.
-              const deadlineYears = cgtTemp2Years(answers);
+              const deadlineYears = cgtTemp2DeadlineYears(answers);
               const deadline = addYears(new Date(answers.newHouseDate + 'T00:00:00'), deadlineYears || 2);
               const todayD = new Date((answers.transferDate || isoDate(new Date())) + 'T00:00:00');
               if (deadline > todayD) {
