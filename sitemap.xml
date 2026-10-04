@@ -146,6 +146,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/acquisition-tax-costs.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/acquisition-tax-first-home-inherited-share.html</loc>
     <lastmod>2026-09-21</lastmod>
     <changefreq>monthly</changefreq>
@@ -224,6 +230,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/acquisition-tax-notice.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/acquisition-tax-rate-guide.html</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -250,6 +262,12 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/acquisition-tax-temporary-two-houses.html</loc>
     <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/adsense-reconciliation.html</loc>
+    <lastmod>2026-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -286,6 +304,12 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/corporate-conversion.html</loc>
     <lastmod>2026-08-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/creator-equipment.html</loc>
+    <lastmod>2026-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -417,6 +441,12 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/vat-final-filing-2026.html</loc>
     <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/vat-interim-decline.html</loc>
+    <lastmod>2026-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
