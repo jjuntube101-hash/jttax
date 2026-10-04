@@ -6250,36 +6250,6 @@ var __spreadValues = (a, b) => {
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 const { useState: useGiftState } = React;
-const GIFT_BRACKETS = [
-  [1e8, 0.1, 0],
-  [5e8, 0.2, 1e7],
-  [1e9, 0.3, 6e7],
-  [3e9, 0.4, 16e7],
-  [Infinity, 0.5, 46e7]
-];
-function calcGiftBaseTax(taxBase) {
-  if (taxBase <= 0) return 0;
-  for (const [limit, rate, deduct] of GIFT_BRACKETS) {
-    if (taxBase <= limit) return Math.round(taxBase * rate - deduct);
-  }
-  return 0;
-}
-function giftDeduction(relationship, isMinor) {
-  switch (relationship) {
-    case "\uBC30\uC6B0\uC790":
-      return 6e8;
-    case "\uC9C1\uACC4\uC874\uC18D":
-      return isMinor ? 2e7 : 5e7;
-    // §53①2호: 직계존속으로부터 수증, 미성년 2천만
-    case "\uC9C1\uACC4\uBE44\uC18D":
-      return 5e7;
-    // §53①3호: 직계비속으로부터 수증, 미성년 감액 없음
-    case "\uAE30\uD0C0\uCE5C\uC871":
-      return 1e7;
-    default:
-      return 0;
-  }
-}
 function koreanAmount(raw) {
   const n = Number(raw) || 0;
   if (n <= 0) return "";
@@ -6534,12 +6504,8 @@ const GIFT_QS = [
 function giftAmount(a) {
   return Number(a.giftValue || a.giftValueCash) || 0;
 }
-function priorGiftDeductionUsed(a, priorValue) {
-  const provided = a.priorGiftDed != null && String(a.priorGiftDed).trim() !== "";
-  if (provided) return { used: Number(a.priorGiftDed) || 0, estimated: false };
-  const rel = a.relationship || "\uC9C1\uACC4\uC874\uC18D";
-  const isMinor = (Number(a.doneeAge) || 30) < 19;
-  return { used: Math.min(giftDeduction(rel, isMinor), priorValue), estimated: true };
+function giftPriorDedGiven(a) {
+  return a.priorGiftDed != null && String(a.priorGiftDed).trim() !== "";
 }
 function giftFallbackGaps(answers, calc) {
   if (calc.engineErr) {
@@ -6553,40 +6519,28 @@ function giftFallbackGaps(answers, calc) {
     }
   ]);
   if (calc.precise) return unknown;
-  return unknown.concat(window.jtFallbackGaps([
-    {
-      when: answers.genSkip === "yes",
-      why: "\uC138\uB300\uC0DD\uB7B5 \uC99D\uC5EC(\uC190\uC8FC\uC5D0\uAC8C) \u2014 30%(\uBBF8\uC131\uB144\xB720\uC5B5 \uCD08\uACFC\uB294 40%) \uD560\uC99D\uC774 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uC5C6\uC2B5\uB2C8\uB2E4(\uC2E4\uCE21 582\uB9CC\uC6D0 \uCC28\uC774)."
-    },
-    {
-      when: answers.marriageDed === "yes" || answers.childbirthDed === "yes",
-      why: "\uD63C\uC778\xB7\uCD9C\uC0B0 \uC99D\uC5EC\uACF5\uC81C(\uCD5C\uB300 1\uC5B5) \u2014 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uC5C6\uC5B4 \uC138\uAE08\uC774 \xAB\uD06C\uAC8C \uB9CE\uAC8C\xBB \uB098\uC635\uB2C8\uB2E4(\uC2E4\uCE21 1,455\uB9CC\uC6D0 \uCC28\uC774)."
-    },
-    {
-      when: answers.priorGiftHas === "yes",
-      why: "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC \u2014 \uD569\uC0B0\uC740 \uD558\uC9C0\uB9CC \uAE30\uB0A9\uBD80\uC138\uC561\uACF5\uC81C(\xA758)\uAC00 \uBE60\uC838 \uC138\uAE08\uC774 \xAB\uB9CE\uAC8C\xBB \uB098\uC635\uB2C8\uB2E4(\uC2E4\uCE21 485\uB9CC\uC6D0 \uCC28\uC774)."
-    }
-  ]));
+  return unknown.concat([calc.engineState === "refused" ? "\uC785\uB825\uD558\uC2E0 \uC870\uAC74\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uAE08\uC561\uC744 \uD655\uC815\uD560 \uC218 \uC5C6\uB294 \uACBD\uC6B0\uC785\uB2C8\uB2E4 \u2014 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4." : "\uACC4\uC0B0 \uC5D4\uC9C4\uC5D0 \uC5F0\uACB0\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4 \u2014 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC740 \uC0C1\uD0DC\uC5D0\uC11C\uB294 \uAE08\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."]);
 }
 function mapAnswersToGift(a) {
-  const body = {
-    value: giftAmount(a),
-    relationship: a.relationship || "\uC9C1\uACC4\uC874\uC18D",
-    donee_age: Number(a.doneeAge) || 30,
-    is_minor: (Number(a.doneeAge) || 30) < 19,
-    is_generation_skip: a.genSkip === "yes",
-    donor_child_deceased: a.childDeceased === "yes",
-    marriage_deduction: a.marriageDed === "yes",
-    childbirth_deduction: a.childbirthDed === "yes"
-  };
+  const body = { value: giftAmount(a) };
+  if (a.relationship) body.relationship = a.relationship;
+  const lineal = a.relationship === "\uC9C1\uACC4\uC874\uC18D";
+  const ageAnswered = lineal && a.doneeAge != null && String(a.doneeAge).trim() !== "" && Number.isFinite(Number(a.doneeAge));
+  if (ageAnswered) body.donee_age = Number(a.doneeAge);
+  const skipAnswer = lineal && (a.genSkip === "yes" || a.genSkip === "no") ? a.genSkip : void 0;
+  if (skipAnswer) {
+    body.is_generation_skip = skipAnswer === "yes";
+    if (skipAnswer === "yes") body.donor_child_deceased = a.childDeceased === "yes";
+  }
+  body.marriage_deduction = lineal && a.marriageDed === "yes";
+  body.childbirth_deduction = lineal && a.childbirthDed === "yes";
   if (a.priorGiftHas === "yes" && Number(a.priorGiftValue) > 0) {
-    const priorValue = Number(a.priorGiftValue) || 0;
-    body.gift_history = [{
-      value: priorValue,
-      deduction_used: priorGiftDeductionUsed(a, priorValue).used,
-      is_generation_skip: false,
-      is_minor: false
-    }];
+    const item = { value: Number(a.priorGiftValue) || 0 };
+    if (giftPriorDedGiven(a)) item.total_deduction_used = Number(a.priorGiftDed) || 0;
+    item.is_generation_skip = skipAnswer === "yes";
+    if (ageAnswered && Number(a.doneeAge) < 19) item.is_minor = true;
+    item.donor_child_deceased = skipAnswer === "yes" && a.childDeceased === "yes";
+    body.gift_history = [item];
   }
   return body;
 }
@@ -6638,6 +6592,38 @@ async function callGiftEngine(body, endpoint) {
   }
   throw lastErr;
 }
+const GIFT_ENGINE_REQUIRED = ["\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uC138\uC561", "\uC2E0\uACE0\uC138\uC561\uACF5\uC81C", "\uC138\uB300\uC0DD\uB7B5\uD560\uC99D"];
+function giftEngineVerdict(c) {
+  if (!c || typeof c !== "object" || Array.isArray(c)) return "down";
+  if (Object.prototype.hasOwnProperty.call(c, "\uC0C1\uD0DC") && c["\uC0C1\uD0DC"] !== "ok") return c["\uC0C1\uD0DC"] === "error" ? "down" : "refused";
+  if (c["\uC624\uB958"] || c.error || c.errors || c.detail || c.success === false) return "refused";
+  if (!window.jtValidCalc(c, GIFT_ENGINE_REQUIRED)) return "down";
+  return "ok";
+}
+function giftCalcFromEngine(ej, inputValue) {
+  const c = ej && ej.calc;
+  const verdict = giftEngineVerdict(c);
+  if (verdict !== "ok") return { precise: false, engineState: verdict };
+  const mj = c["\uC8FC\uC694\uACF5\uC81C"] || {};
+  return {
+    precise: true,
+    engineVer: ej.version && ej.version.engine,
+    taxBase: c["\uACFC\uC138\uD45C\uC900"],
+    calcTax: c["\uC0B0\uCD9C\uC138\uC561"],
+    genSkipSurcharge: c["\uC138\uB300\uC0DD\uB7B5\uD560\uC99D"],
+    filingCredit: c["\uC2E0\uACE0\uC138\uC561\uACF5\uC81C"],
+    totalTax: c["\uC138\uC561"],
+    giftValue: mj["\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561"] != null ? mj["\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561"] : inputValue,
+    giftCredit: mj["\uB0A9\uBD80\uC138\uC561\uACF5\uC81C"] || 0,
+    nonTaxableMsg: c["\uBE44\uACFC\uC138\uC5EC\uBD80"] ? "\uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uBC94\uC704 \uB0B4\uB85C \uB0A9\uBD80\uD560 \uC99D\uC5EC\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4(\uACFC\uC138\uCD5C\uC800\uD55C)." : null,
+    steps: c["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || [],
+    engineWarnings: c["\uACBD\uACE0\uC0AC\uD56D"] || []
+    // 엔진이 알리는 가정·경고([확인 필요] 등) — 결과 화면에 그대로 보인다
+  };
+}
+function giftCalcFromEngineError(e) {
+  return e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429 ? { precise: false, engineState: "refused" } : { precise: false, engineState: "down" };
+}
 async function lookupValuation(address, taxType, evalDate, unit) {
   const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "http://127.0.0.1:8000";
   const ctrl = new AbortController();
@@ -6675,7 +6661,7 @@ function buildGiftDetail(answers, calc, commentary) {
     const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, "").trim();
     L.push("  \xB7 " + ql + ": " + val);
   });
-  L.push("", "\u25A0 \uACC4\uC0B0 \uACB0\uACFC" + (calc.precise ? " (\uAC80\uC99D \uC5D4\uC9C4)" : " (\uAC04\uC774 \uCD94\uC815)"));
+  L.push("", "\u25A0 \uACC4\uC0B0 \uACB0\uACFC (\uAC80\uC99D \uC5D4\uC9C4)");
   if (calc.mode === "burdened") {
     L.push("  \xB7 \uC99D\uC5EC\uC138: " + formatWon(calc.giftTax));
     L.push("  \xB7 \uC591\uB3C4\uC138(\uC99D\uC5EC\uC790): " + formatWon(calc.transferTax));
@@ -6832,44 +6818,11 @@ function JTReportGift({ setRoute, onBack }) {
           calc.engineErr = true;
         }
       } else {
-        const isMinor = (Number(answers.doneeAge) || 30) < 19;
-        const ded = giftDeduction(answers.relationship, isMinor);
-        const prior = answers.priorGiftHas === "yes" ? Number(answers.priorGiftValue) || 0 : 0;
-        const taxableBase = Math.max(value + prior - ded, 0);
-        const baseTax = calcGiftBaseTax(taxableBase);
-        const filingCredit = Math.round(baseTax * 0.03);
-        calc = {
-          mode: "gift",
-          giftValue: value,
-          taxBase: taxableBase,
-          calcTax: baseTax,
-          genSkipSurcharge: 0,
-          giftCredit: 0,
-          filingCredit,
-          totalTax: Math.max(baseTax - filingCredit, 0),
-          precise: false,
-          nonTaxableMsg: taxableBase === 0 ? "\uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uBC94\uC704 \uB0B4\uB85C \uB0A9\uBD80\uD560 \uC99D\uC5EC\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4." : null
-        };
         try {
-          const ej = await callGiftEngine(mapAnswersToGift(answers), "/v1/calc/gift");
-          const c = ej && ej.calc;
-          if (window.jtValidCalc(c, ["\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uC138\uC561"])) {
-            calc.taxBase = c["\uACFC\uC138\uD45C\uC900"];
-            calc.calcTax = c["\uC0B0\uCD9C\uC138\uC561"];
-            calc.genSkipSurcharge = c["\uC138\uB300\uC0DD\uB7B5\uD560\uC99D"] || 0;
-            calc.filingCredit = c["\uC2E0\uACE0\uC138\uC561\uACF5\uC81C"] || 0;
-            calc.totalTax = c["\uC138\uC561"];
-            const mj = c["\uC8FC\uC694\uACF5\uC81C"] || {};
-            calc.giftValue = mj["\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561"] != null ? mj["\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561"] : value;
-            calc.giftCredit = mj["\uB0A9\uBD80\uC138\uC561\uACF5\uC81C"] || 0;
-            calc.nonTaxableMsg = c["\uBE44\uACFC\uC138\uC5EC\uBD80"] ? "\uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uBC94\uC704 \uB0B4\uB85C \uB0A9\uBD80\uD560 \uC99D\uC5EC\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4(\uACFC\uC138\uCD5C\uC800\uD55C)." : null;
-            calc.steps = c["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || [];
-            calc.engineWarnings = c["\uACBD\uACE0\uC0AC\uD56D"] || [];
-            calc.precise = true;
-            calc.engineVer = ej.version && ej.version.engine;
-          }
+          calc = giftCalcFromEngine(await callGiftEngine(mapAnswersToGift(answers), "/v1/calc/gift"), value);
         } catch (e) {
-          console.warn("\uC99D\uC5EC \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328 \u2014 \uAC04\uC774 \uCD94\uC815 \uC720\uC9C0", e);
+          console.warn("\uC99D\uC5EC \uC5D4\uC9C4 \uD638\uCD9C \uC2E4\uD328", e);
+          calc = giftCalcFromEngineError(e);
         }
       }
       if (giftFallbackGaps(answers, calc).length > 0) {
@@ -6936,18 +6889,20 @@ function JTReportGift({ setRoute, onBack }) {
   if (report) {
     const { calc, commentary, isBurdened } = report;
     const nonResident = answers.isResident === "no";
-    const priorDedEstimated = !isBurdened && calc.precise && answers.priorGiftHas === "yes" && Number(answers.priorGiftValue) > 0 && priorGiftDeductionUsed(answers, Number(answers.priorGiftValue) || 0).estimated;
+    const priorDedEstimated = !isBurdened && calc.precise && answers.priorGiftHas === "yes" && Number(answers.priorGiftValue) > 0 && !giftPriorDedGiven(answers);
     const giftGaps = giftFallbackGaps(answers, calc);
     const giftBlocked = giftGaps.length > 0;
     if (giftBlocked) {
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: giftGaps, onRetry: runAnalysis, reason: giftFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      const giftBlockReason = giftFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "refused" ? "refused" : "down";
+      const giftBlockTag = giftBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : giftBlockReason === "refused" ? "\uC138\uBB34\uC0AC \uD655\uC778 \uD544\uC694" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328";
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: giftBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: giftBlockReason === "input" || calc.engineErr ? giftGaps : [], onRetry: runAnalysis, reason: giftBlockReason }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setPhase("quick");
         setStep(0);
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: isBurdened ? "\uBD80\uB2F4\uBD80\uC99D\uC5EC (\uC99D\uC5EC\uC138+\uC591\uB3C4\uC138+\uCDE8\uB4DD\uC138)" : calc.precise ? "\uC99D\uC5EC\uC138 \uC815\uBC00 \uACC4\uC0B0" : "\uC99D\uC5EC\uC138 \uAC04\uC774 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, nonResident && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "#fff4e5", borderLeft: "4px solid #d08b00", padding: "14px 18px", marginBottom: 16 } }, "\u26A0\uFE0F \uBE44\uAC70\uC8FC\uC790 \uC99D\uC5EC\uB294 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uBC30\uC81C \uB4F1 \uACC4\uC0B0\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC544\uB798\uB294 \uAC70\uC8FC\uC790 \uAE30\uC900 \uCC38\uACE0\uCE58\uC774\uBA70, \uC815\uD655\uD55C \uACC4\uC0B0\uC740 \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4."), giftBlocked && /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: giftGaps, onRetry: runAnalysis }), !giftBlocked && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC138\uBD80\uB2F4" : calc.precise ? "\uCD1D \uC138\uBD80\uB2F4 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)" : "\uCD94\uC815 \uCD1D \uC138\uBD80\uB2F4 \xB7 \uAC04\uC774"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), !calc.precise && !giftBlocked && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, "\uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB418\uC5B4 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC04\uC774 \uCD94\uC815"), "\uC73C\uB85C \uBCF4\uC5EC\uB4DC\uB9BD\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("strong", null, "\uBC18\uC601\uD55C \uAC83"), ": \uC138\uC728\uD45C \xB7 \uAD00\uACC4\uBCC4 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \xB7 \uC785\uB825\uD558\uC2E0 ", /* @__PURE__ */ React.createElement("strong", null, "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC \uAE08\uC561\uC758 \uD569\uC0B0"), " \xB7 \uC2E0\uACE0\uC138\uC561\uACF5\uC81C.", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("strong", null, "\uBC18\uC601\uD558\uC9C0 \uC54A\uC740 \uAC83"), ": ", /* @__PURE__ */ React.createElement("strong", null, "\uC138\uB300\uC0DD\uB7B5 \uD560\uC99D"), "(\uC190\uC8FC \uC99D\uC5EC) \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uD63C\uC778\xB7\uCD9C\uC0B0 \uACF5\uC81C"), " \xB7 \uC0AC\uC804\uC99D\uC5EC\uBD84 ", /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uB0A9\uBD80\uC138\uC561\uACF5\uC81C"), " \xB7 \uBE44\uAC70\uC8FC\uC790 \uACF5\uC81C \uBC30\uC81C. \uADF8\uB798\uC11C \uC2E4\uC81C\uC640 \uB2E4\uB97C \uC218 \uC788\uC73C\uB2C8 \uC815\uBC00 \uACC4\uC0B0\uC744 \uAD8C\uD569\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: runAnalysis }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC(\uD569\uC0B0) \xB7 \uBD80\uB2F4\uBD80(\uBE5A\uB3C4 \uD568\uAED8 \uB118\uAE40) \xB7 \uC138\uB300\uC0DD\uB7B5(\uC190\uC8FC \uC99D\uC5EC) \xB7 \uD63C\uC778\xB7\uCD9C\uC0B0 \uACF5\uC81C."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), isBurdened ? /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131 (\uBD80\uB2F4\uBD80\uC99D\uC5EC)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC138 (\uBC1B\uB294 \uBD84 \xB7 \xA747)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.giftTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4\uC138 (\uC99D\uC5EC\uC790 \xB7 \uCC44\uBB34\uC778\uC218\uBD84)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.transferTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC138 (\uBC1B\uB294 \uBD84)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.acqTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uBD80\uB2F4")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCC44\uBB34 \uC778\uC218 \uBE44\uC728"), /* @__PURE__ */ React.createElement("td", null, Math.round((calc.debtRatio || 0) * 100), "%")))), calc.debtRecognized === false && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdecea", borderLeft: "4px solid #d14e3a", padding: "12px 16px", marginTop: 12 } }, "\u26A0\uFE0F \uAC00\uC871 \uAC04 \uCC44\uBB34\uB85C \uAC1D\uAD00\uC801 \uC785\uC99D\uC774 \uC5B4\uB824\uC6CC ", /* @__PURE__ */ React.createElement("strong", null, "\uCC44\uBB34\uAC00 \uC778\uC815\uB418\uC9C0 \uC54A\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4"), "(\xA747\u2462). \uC774 \uACBD\uC6B0 \uC804\uC561 \uC99D\uC5EC\uB85C \uACFC\uC138\uB418\uB2C8, \uCC44\uBB34\uBD80\uB2F4\uACC4\uC57D\uC11C\xB7\uC774\uC790\uC9C0\uAE09\uB0B4\uC5ED\xB7\uAE08\uC735\uAE30\uAD00 \uB300\uCD9C \uC99D\uBE59\uC744 \uC900\uBE44\uD558\uC138\uC694.")) : giftBlocked ? null : /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.giftValue))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.taxBase)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.calcTax))), calc.genSkipSurcharge > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC138\uB300\uC0DD\uB7B5 \uD560\uC99D (\xA757)"), /* @__PURE__ */ React.createElement("td", null, "+ ", formatWon(calc.genSkipSurcharge))), calc.giftCredit > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB0A9\uBD80\uC138\uC561\uACF5\uC81C (\uC0AC\uC804\uC99D\uC5EC \xA758)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.giftCredit))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC2E0\uACE0\uC138\uC561\uACF5\uC81C (\xA769, 3%)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.filingCredit))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 10 } }, calc.nonTaxableMsg), priorDedEstimated && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8, fontSize: 13, lineHeight: 1.6 } }, "\u203B \uC0AC\uC804\uC99D\uC5EC \uB2F9\uC2DC \uACF5\uC81C\uC561\uC744 \uC785\uB825\uD558\uC9C0 \uC54A\uC544 ", /* @__PURE__ */ React.createElement("strong", null, "\uAD00\uACC4\uBCC4 \uAE30\uBCF8\uACF5\uC81C(\uC9C1\uACC4\uC874\uC18D 5\uCC9C\uB9CC \uB4F1)\uB85C \uCD94\uC815"), "\uD574 \uB0A9\uBD80\uC138\uC561\uACF5\uC81C(\xA758)\uB97C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uB2F9\uC2DC \uACF5\uC81C\uC561\uC774 \uC774\uC640 \uB2E4\uB974\uBA74(\uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C\uB85C \uB354 \uCEF8\uB358 \uACBD\uC6B0 \uB4F1) \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uB2C8, \uC815\uD655\uD55C \uAC12\uC744 \uC785\uB825\uD558\uAC70\uB098 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694."), answers.marriageDed === "yes" && answers.childbirthDed === "yes" && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.85, marginTop: 8 } }, "\u203B \uD63C\uC778\xB7\uCD9C\uC0B0 \uC99D\uC5EC\uACF5\uC81C\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uD569\uCCD0\uC11C 1\uC5B5\uC6D0\uC774 \uD55C\uB3C4"), "\uC785\uB2C8\uB2E4(\xA753\uC7582\u2462).")), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${s["\uC870\uBB38"]}` : ""), /* @__PURE__ */ React.createElement("td", null, formatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uC0AC\uC2E4\uAD00\uACC4\xB7\uD3C9\uAC00\uC561\xB7\uC138\uBC95 \uAC1C\uC815\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC99D\uC5EC\uC77C\uC774 \uC18D\uD55C \uB2EC\uC758 \uB9D0\uC77C\uBD80\uD130 3\uAC1C\uC6D4\uC785\uB2C8\uB2E4(\uC2E0\uACE0\uC138\uC561\uACF5\uC81C 3%). \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), !giftBlocked && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: isBurdened ? "\uBD80\uB2F4\uBD80\uC99D\uC5EC (\uC99D\uC5EC\uC138+\uC591\uB3C4\uC138+\uCDE8\uB4DD\uC138)" : "\uC99D\uC5EC\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, nonResident && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "#fff4e5", borderLeft: "4px solid #d08b00", padding: "14px 18px", marginBottom: 16 } }, "\u26A0\uFE0F \uBE44\uAC70\uC8FC\uC790 \uC99D\uC5EC\uB294 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uBC30\uC81C \uB4F1 \uACC4\uC0B0\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC544\uB798\uB294 \uAC70\uC8FC\uC790 \uAE30\uC900 \uCC38\uACE0\uCE58\uC774\uBA70, \uC815\uD655\uD55C \uACC4\uC0B0\uC740 \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4."), giftBlocked && /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: giftGaps, onRetry: runAnalysis }), !giftBlocked && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC138\uBD80\uB2F4" : "\uCD1D \uC138\uBD80\uB2F4 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax)), !isBurdened && Array.isArray(calc.engineWarnings) && calc.engineWarnings.filter((w) => typeof w === "string" && w).map((w, i) => /* @__PURE__ */ React.createElement("p", { key: `ew${i}`, style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F ", w))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC(\uD569\uC0B0) \xB7 \uBD80\uB2F4\uBD80(\uBE5A\uB3C4 \uD568\uAED8 \uB118\uAE40) \xB7 \uC138\uB300\uC0DD\uB7B5(\uC190\uC8FC \uC99D\uC5EC) \xB7 \uD63C\uC778\xB7\uCD9C\uC0B0 \uACF5\uC81C."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), isBurdened ? /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131 (\uBD80\uB2F4\uBD80\uC99D\uC5EC)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC138 (\uBC1B\uB294 \uBD84 \xB7 \xA747)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.giftTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4\uC138 (\uC99D\uC5EC\uC790 \xB7 \uCC44\uBB34\uC778\uC218\uBD84)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.transferTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC138 (\uBC1B\uB294 \uBD84)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.acqTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uBD80\uB2F4")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCC44\uBB34 \uC778\uC218 \uBE44\uC728"), /* @__PURE__ */ React.createElement("td", null, Math.round((calc.debtRatio || 0) * 100), "%")))), calc.debtRecognized === false && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdecea", borderLeft: "4px solid #d14e3a", padding: "12px 16px", marginTop: 12 } }, "\u26A0\uFE0F \uAC00\uC871 \uAC04 \uCC44\uBB34\uB85C \uAC1D\uAD00\uC801 \uC785\uC99D\uC774 \uC5B4\uB824\uC6CC ", /* @__PURE__ */ React.createElement("strong", null, "\uCC44\uBB34\uAC00 \uC778\uC815\uB418\uC9C0 \uC54A\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4"), "(\xA747\u2462). \uC774 \uACBD\uC6B0 \uC804\uC561 \uC99D\uC5EC\uB85C \uACFC\uC138\uB418\uB2C8, \uCC44\uBB34\uBD80\uB2F4\uACC4\uC57D\uC11C\xB7\uC774\uC790\uC9C0\uAE09\uB0B4\uC5ED\xB7\uAE08\uC735\uAE30\uAD00 \uB300\uCD9C \uC99D\uBE59\uC744 \uC900\uBE44\uD558\uC138\uC694.")) : giftBlocked ? null : /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.giftValue))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.taxBase)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.calcTax))), calc.genSkipSurcharge > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC138\uB300\uC0DD\uB7B5 \uD560\uC99D (\xA757)"), /* @__PURE__ */ React.createElement("td", null, "+ ", formatWon(calc.genSkipSurcharge))), calc.giftCredit > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB0A9\uBD80\uC138\uC561\uACF5\uC81C (\uC0AC\uC804\uC99D\uC5EC \xA758)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.giftCredit))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC2E0\uACE0\uC138\uC561\uACF5\uC81C (\xA769, 3%)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.filingCredit))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 10 } }, calc.nonTaxableMsg), priorDedEstimated && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8, fontSize: 13, lineHeight: 1.6 } }, "\u203B \uC0AC\uC804\uC99D\uC5EC \uB2F9\uC2DC \uACF5\uC81C\uC561\uC744 \uC785\uB825\uD558\uC9C0 \uC54A\uC544 ", /* @__PURE__ */ React.createElement("strong", null, "\uAD00\uACC4\uBCC4 \uAE30\uBCF8\uACF5\uC81C(\uC9C1\uACC4\uC874\uC18D 5\uCC9C\uB9CC \uB4F1)\uB85C \uCD94\uC815"), "\uD574 \uB0A9\uBD80\uC138\uC561\uACF5\uC81C(\xA758)\uB97C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uB2F9\uC2DC \uACF5\uC81C\uC561\uC774 \uC774\uC640 \uB2E4\uB974\uBA74(\uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C\uB85C \uB354 \uCEF8\uB358 \uACBD\uC6B0 \uB4F1) \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uB2C8, \uC815\uD655\uD55C \uAC12\uC744 \uC785\uB825\uD558\uAC70\uB098 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694."), answers.marriageDed === "yes" && answers.childbirthDed === "yes" && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.85, marginTop: 8 } }, "\u203B \uD63C\uC778\xB7\uCD9C\uC0B0 \uC99D\uC5EC\uACF5\uC81C\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uD569\uCCD0\uC11C 1\uC5B5\uC6D0\uC774 \uD55C\uB3C4"), "\uC785\uB2C8\uB2E4(\xA753\uC7582\u2462).")), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${s["\uC870\uBB38"]}` : ""), /* @__PURE__ */ React.createElement("td", null, formatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uC0AC\uC2E4\uAD00\uACC4\xB7\uD3C9\uAC00\uC561\xB7\uC138\uBC95 \uAC1C\uC815\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC99D\uC5EC\uC77C\uC774 \uC18D\uD55C \uB2EC\uC758 \uB9D0\uC77C\uBD80\uD130 3\uAC1C\uC6D4\uC785\uB2C8\uB2E4(\uC2E0\uACE0\uC138\uC561\uACF5\uC81C 3%). \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), !giftBlocked && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         setRoute,
@@ -6955,7 +6910,7 @@ function JTReportGift({ setRoute, onBack }) {
         completeEligible: true,
         precise: calc.precise,
         quick: report.quick,
-        reportType: isBurdened ? "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uD1B5\uD569 \uACC4\uC0B0" : calc.precise ? "\uC99D\uC5EC\uC138 \uC815\uBC00 \uACC4\uC0B0" : "\uC99D\uC5EC\uC138 \uAC04\uC774 \uACC4\uC0B0",
+        reportType: isBurdened ? "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uD1B5\uD569 \uACC4\uC0B0" : "\uC99D\uC5EC\uC138 \uC815\uBC00 \uACC4\uC0B0",
         reportTag: "LEGACY",
         reportSummary: `\uCD1D \uC138\uBD80\uB2F4 ${formatWon(calc.totalTax)}${isBurdened ? " (\uBD80\uB2F4\uBD80)" : " / \uACFC\uC138\uD45C\uC900 " + formatWon(calc.taxBase)} / ${commentary.headline || ""}`,
         reportDetail: buildGiftDetail(answers, calc, commentary),

@@ -42,6 +42,8 @@ function engineAccepts(file, fnNames, constName, withStatus) {
 const acquisitionAccepts = () => engineAccepts('ReportAcquisition.jsx', ['acqCalcFromEngine'], 'ACQ_ENGINE_REQUIRED', true);
 /* 양도세(261004): 응답 검증이 cgtCalcFromEngine(cgtEngineVerdict 포함)으로 옮겨졌다. 구 엔진은 상태 키가 없으므로 fixture 를 그대로 부른다. */
 const transferAccepts = () => engineAccepts('ReportCGT.jsx', ['cgtEngineVerdict', 'cgtCalcFromEngine'], 'CGT_ENGINE_REQUIRED', false);
+/* 증여세(261004): 일반증여의 응답 검증이 giftCalcFromEngine(giftEngineVerdict 포함)으로 옮겨졌다. 부담부증여는 종전 if 문 검증이 남아 있어 둘 다 본다. */
+const giftAccepts = () => engineAccepts('ReportGift.jsx', ['giftEngineVerdict', 'giftCalcFromEngine'], 'GIFT_ENGINE_REQUIRED', false);
 function guards(file) {
   if (file === 'ReportAcquisition.jsx') return [acquisitionAccepts()];
   if (file === 'ReportCGT.jsx') return [transferAccepts()];
@@ -55,6 +57,7 @@ function guards(file) {
     }
   });
   assert.ok(found.length, file + ' must validate before setting precise');
+  if (file === 'ReportGift.jsx') found.push(giftAccepts());
   return found;
 }
 const zero = keys => Object.fromEntries(keys.map(k => [k, 0]));
@@ -63,7 +66,7 @@ const cases = [
   ['ReportAcquisition.jsx', zero(['세액', '취득세', '지방교육세', '농어촌특별세', '과세표준'])],
   ['ReportProperty.jsx', zero(['세액', '재산세본세', '지방교육세', '도시지역분', '소방분', '과세표준'])],
   ['ReportComprehensive.jsx', { ...zero(['세액', '종부세합계', '농어촌특별세']), 주택분: zero(['과세표준', '세액', '순세액']) }],
-  ['ReportGift.jsx', zero(['과세표준', '산출세액', '세액', '총세부담', '증여세', '양도세', '취득세'])],
+  ['ReportGift.jsx', zero(['과세표준', '산출세액', '세액', '신고세액공제', '세대생략할증', '총세부담', '증여세', '양도세', '취득세'])],
   ['ReportInheritance.jsx', zero(['과세표준', '산출세액', '세액'])],
   ['ReportIncome.jsx', zero(['과세표준', '산출세액', '결정세액', '지방소득세', '총세부담'])],
   ['ReportInsurance.jsx', zero(['결정세액', '지방소득세'])],

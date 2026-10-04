@@ -1,36 +1,14 @@
 /* @jsx React.createElement */
 /* 증여세 계산 — 부동산 중심(현금 직접입력) + 부담부증여 · JS 결정론 + claude 코멘터리 (v1)
-   엔진: /v1/calc/gift (일반증여) · /v1/calc/burdened-gift (부담부). 미응답 시 간이 폴백.
+   엔진: /v1/calc/gift (일반증여) · /v1/calc/burdened-gift (부담부).
+   261004: 일반증여 화면에는 자체 계산식(폴백)이 없다. 금액은 엔진이 준 값뿐이고, 엔진 값이 없으면
+   금액 필드가 «없는» calc 가 되어 차단 화면으로 간다(아래 giftCalcFromEngine·giftFallbackGaps).
+   모르는 사실은 «보내지 않는다»(키 생략) — 엔진이 가정을 경고사항([확인 필요])으로 알린다.
    공통 헬퍼(formatWon·isValidISODate·yearsBetween·formatStepValue·ENGINE_BASE)는
    ReportCGT.jsx가 먼저 로드되어 전역에 존재 → 재사용(중복 정의 방지). */
 
 const { useState: useGiftState } = React;
 
-/* 증여세 기본세율표 (상증법 §26, §56) — 간이 폴백용. 정밀계산은 엔진. */
-const GIFT_BRACKETS = [
-  [100_000_000, 0.10, 0],
-  [500_000_000, 0.20, 10_000_000],
-  [1_000_000_000, 0.30, 60_000_000],
-  [3_000_000_000, 0.40, 160_000_000],
-  [Infinity, 0.50, 460_000_000],
-];
-function calcGiftBaseTax(taxBase) {
-  if (taxBase <= 0) return 0;
-  for (const [limit, rate, deduct] of GIFT_BRACKETS) {
-    if (taxBase <= limit) return Math.round(taxBase * rate - deduct);
-  }
-  return 0;
-}
-/* 증여재산공제 (상증법 §53). 미성년 직계비속=2천만 고정. 기타친족=4촌이내혈족·3촌이내인척 1천만. */
-function giftDeduction(relationship, isMinor) {
-  switch (relationship) {
-    case '배우자': return 600_000_000;
-    case '직계존속': return isMinor ? 20_000_000 : 50_000_000;  // §53①2호: 직계존속으로부터 수증, 미성년 2천만
-    case '직계비속': return 50_000_000;                          // §53①3호: 직계비속으로부터 수증, 미성년 감액 없음
-    case '기타친족': return 10_000_000;
-    default: return 0; // 비친족
-  }
-}
 /* 큰 금액을 한글 단위(억·만)로 — 0이 많은 숫자 가독성 보조. 예: 800000000 → "8억원" */
 function koreanAmount(raw) {
   const n = Number(raw) || 0;
@@ -285,26 +263,20 @@ const GIFT_QS = [
 /* ── 답변 → 엔진 요청 빌더 ───────────────────────────────────────── */
 function giftAmount(a) { return Number(a.giftValue || a.giftValueCash) || 0; }
 
-/* 사전증여 당시 공제액(deduction_used)을 산정한다. 입력값이 있으면 그대로,
-   비어 있으면 0이 아니라 관계기반 기본공제로 추정한다.
-   이유: deduction_used가 작을수록(=0) 사전증여 deemed 증여세산출세액이 커져 상증법 §58
-   납부세액공제가 과다 산정되고, 그만큼 현재 증여세가 실제보다 낮아진다(침묵 0 기본값이 세금을
-   낮추는 쪽). 빈칸을 관계별 기본공제(§53: 직계존속 5천만 등)로 추정하면 가장 흔한 동일인
-   재증여에서 실제와 일치하고, 어긋나더라도 세금을 낮추지 않는 보수적 방향이 된다. 공제는
-   사전증여가액을 넘을 수 없어 캡한다. 사용자가 0을 명시 입력하면(비친족 등) 그 값을 존중한다.
-   근거: 상증법 §58①(납부세액공제=증여 당시 증여세산출세액) · §53(증여재산공제). */
-function priorGiftDeductionUsed(a, priorValue) {
-  const provided = a.priorGiftDed != null && String(a.priorGiftDed).trim() !== '';
-  if (provided) return { used: Number(a.priorGiftDed) || 0, estimated: false };
-  const rel = a.relationship || '직계존속';
-  const isMinor = (Number(a.doneeAge) || 30) < 19;
-  return { used: Math.min(giftDeduction(rel, isMinor), priorValue), estimated: true };
+/* 사전증여 공제액 입력란을 «채웠는가» — 비우면 total_deduction_used 키를 보내지 않는다.
+   비운 경우 엔진이 「한도 안에서 최초 증여부터 순차로 공제한 것」으로 보고 계산하며 경고를 붙인다
+   (화면이 관계별 기본공제로 추정하던 종전 로직은 삭제). 사용자가 0을 명시 입력하면 그 값을 존중한다. */
+function giftPriorDedGiven(a) {
+  return a.priorGiftDed != null && String(a.priorGiftDed).trim() !== '';
 }
 
 /* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
-   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 세액을 외부로 보내고 있었다
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
-   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다.
+   두 층이다: ① 입력 불확정(calc.precise 와 무관) ② 엔진 값 없음(calc.precise 가 거짓이면 항상 한 건).
+   261004: 이 화면에는 자체 계산식(폴백)이 없다 — 「폴백이 못 다루는 입력」(세대생략·혼인출산공제·사전증여)을
+   막던 규칙은 함께 지웠다(엔진이 직접 계산하거나, 못 하면 ②층이 어떤 입력이든 막는다). */
 function giftFallbackGaps(answers, calc) {
   /* ★ engineErr(부담부증여 엔진 실패)를 «예외»로 빼 두면 안 된다 — 화면은 금액을 숨기지만
      그 앞의 AI 프롬프트에 「총세부담: 0원」이 나가고, JTReportConvert 도 그대로 렌더돼
@@ -322,37 +294,48 @@ function giftFallbackGaps(answers, calc) {
     { when: nonResident,
       why: '받는 분의 거주자 여부가 «거주자»로 확인되지 않았습니다 — 비거주자는 증여재산공제(배우자 6억·직계 5천만 등)가 배제됩니다. 계산 엔진이 아직 거주자 기준만 지원해 금액을 표시하지 않습니다(상담에서 정확히 안내해 드립니다).' },
   ]);
-  /* ── ② 여기부터는 «간이 폴백만»의 한계 ── */
+  /* ── ② 엔진 값이 없으면 어떤 입력이든 막는다 ──────────────────────────────
+     이 화면에는 자체 계산식이 없으므로 «엔진이 준 금액»이 없으면 보여 줄 금액이 없다.
+     사유는 «엔진이 거부했다(refused)»와 «연결하지 못했다(down·미지정)» 둘이다. */
   if (calc.precise) return unknown;
-  return unknown.concat(window.jtFallbackGaps([
-    { when: answers.genSkip === 'yes',
-      why: '세대생략 증여(손주에게) — 30%(미성년·20억 초과는 40%) 할증이 간이 계산에 없습니다(실측 582만원 차이).' },
-    { when: answers.marriageDed === 'yes' || answers.childbirthDed === 'yes',
-      why: '혼인·출산 증여공제(최대 1억) — 간이 계산에 없어 세금이 «크게 많게» 나옵니다(실측 1,455만원 차이).' },
-    { when: answers.priorGiftHas === 'yes',
-      why: '10년 내 사전증여 — 합산은 하지만 기납부세액공제(§58)가 빠져 세금이 «많게» 나옵니다(실측 485만원 차이).' },
-  ]));
+  return unknown.concat([calc.engineState === 'refused'
+    ? '입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다 — 세무사 확인이 필요합니다.'
+    : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }
 
+/* 일반증여 엔진 요청. 모르는 사실은 «보내지 않는다»(키 생략):
+   · relationship — 답한 값 그대로(답이 없으면 생략 → 엔진이 거부)
+   · donee_age — 나이 문항(직계존속일 때만 보인다)에 답한 경우에만. is_minor 는 보내지 않는다(엔진이 나이로 판정)
+   · is_generation_skip — 세대생략 문항(직계존속일 때만 보인다)에 답한 경우에만. 빠른 단계에서는 문항이 없으므로 생략
+   · gift_history — 합계 1건. total_deduction_used 는 입력란을 채운 경우에만 */
 function mapAnswersToGift(a) {
-  const body = {
-    value: giftAmount(a),
-    relationship: a.relationship || '직계존속',
-    donee_age: Number(a.doneeAge) || 30,
-    is_minor: (Number(a.doneeAge) || 30) < 19,
-    is_generation_skip: a.genSkip === 'yes',
-    donor_child_deceased: a.childDeceased === 'yes',
-    marriage_deduction: a.marriageDed === 'yes',
-    childbirth_deduction: a.childbirthDed === 'yes',
-  };
+  const body = { value: giftAmount(a) };
+  if (a.relationship) body.relationship = a.relationship;
+  /* 보이지 않는 문항의 낡은 답(관계를 바꾸기 전에 답한 것)은 보내지 않는다 */
+  const lineal = a.relationship === '직계존속';
+  const ageAnswered = lineal && a.doneeAge != null && String(a.doneeAge).trim() !== '' && Number.isFinite(Number(a.doneeAge));
+  if (ageAnswered) body.donee_age = Number(a.doneeAge);
+  const skipAnswer = lineal && (a.genSkip === 'yes' || a.genSkip === 'no') ? a.genSkip : undefined;
+  if (skipAnswer) {
+    body.is_generation_skip = skipAnswer === 'yes';
+    if (skipAnswer === 'yes') body.donor_child_deceased = a.childDeceased === 'yes';
+  }
+  /* 혼인·출산공제 문항도 직계존속일 때만 보인다 — 관계를 바꾸기 전의 낡은 답을 보내지 않는다 */
+  body.marriage_deduction = lineal && a.marriageDed === 'yes';
+  body.childbirth_deduction = lineal && a.childbirthDed === 'yes';
   if (a.priorGiftHas === 'yes' && Number(a.priorGiftValue) > 0) {
-    const priorValue = Number(a.priorGiftValue) || 0;
-    body.gift_history = [{
-      value: priorValue,
-      deduction_used: priorGiftDeductionUsed(a, priorValue).used,
-      is_generation_skip: false,
-      is_minor: false,
-    }];
+    const item = { value: Number(a.priorGiftValue) || 0 };
+    /* 화면 문항은 「그때 적용받은 공제」를 한 칸으로 묻는다 — §53 공제와 혼인·출산공제(§53의2)가 섞인 합계일 수 있어
+       엔진의 deduction_used(§53 공제만, 한도 초과 시 거부)가 아니라 total_deduction_used(구분 모름 합계)로 보낸다.
+       두 키를 함께 보내면 엔진이 거부한다. */
+    if (giftPriorDedGiven(a)) item.total_deduction_used = Number(a.priorGiftDed) || 0;
+    /* 같은 증여자에게서 받은 증여이므로 세대생략 여부는 이번 증여와 같다 */
+    item.is_generation_skip = skipAnswer === 'yes';
+    /* 지금 19세 미만이면 10년 내 사전증여 당시에도 미성년자였다(할증률 40% 판정에 쓰인다, R1-F2).
+       지금 성년이면 당시 미성년이었는지 알 수 없어 보내지 않는다. */
+    if (ageAnswered && Number(a.doneeAge) < 19) item.is_minor = true;
+    item.donor_child_deceased = skipAnswer === 'yes' && a.childDeceased === 'yes';
+    body.gift_history = [item];
   }
   return body;
 }
@@ -404,6 +387,58 @@ async function callGiftEngine(body, endpoint) {
   throw lastErr;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   엔진 결과 → calc (261004 오너 방침: 프론트의 자체 계산식(폴백)을 삭제한다 — 양도세·취득세 화면과 같은 방식)
+
+   일반증여 화면에는 세액을 «스스로» 계산하는 코드가 없다. 금액은 엔진(`POST /v1/calc/gift`)이 준 값뿐이고,
+   엔진 값이 없으면 금액 필드(totalTax 등)를 아예 두지 않는다. 엔진 호출 결과는 셋이다.
+     · 유효 응답  — HTTP 200 + 오류 없음 + calc.상태 가 없거나(구 엔진) 'ok' + 필수 숫자 키가 유한한 실수
+                    (window.jtValidCalc) → precise:true 와 각 금액 필드
+     · 거부       — HTTP 200 인데 calc.오류 가 있거나 calc.상태 가 있는데 'ok' 가 아님(needs_input·unsupported·
+                    error), 또는 HTTP 4xx(408·429 제외) → precise:false, engineState:'refused'
+                    («금액이 아니다»라는 엔진의 답이다 — 오류 사유 문구를 사용자에게 그대로 내지 않는다)
+     · 연결 실패  — 네트워크 오류·타임아웃·HTTP 5xx·408·429·calc 없음·깨진 응답 → precise:false, engineState:'down'
+   (부담부증여 경로는 이 함수들을 쓰지 않는다 — 종전 그대로 runAnalysis 안에서 처리한다.)
+   ══════════════════════════════════════════════════════════════════════════ */
+/* 결과표·상담 전송문이 «항상» 표시하는 금액은 모두 필수다 — 없는 값을 0원으로 메우지 않는다(Codex TASK-261004-046 R1-F1) */
+const GIFT_ENGINE_REQUIRED = ['과세표준', '산출세액', '세액', '신고세액공제', '세대생략할증'];
+function giftEngineVerdict(c) {
+  if (!c || typeof c !== 'object' || Array.isArray(c)) return 'down';
+  /* 공통 검증기(jtValidCalc)가 무효로 보는 명시적 오류 필드(error·detail 등)도 «거부»다 — 무결성 검사로 넘기면
+     「연결 실패」로 잘못 안내된다. */
+  /* 상태 키는 새 엔진부터 있다. error = 엔진 내부 실패(입력 탓이 아니다 → 다시 시도), needs_input·unsupported = 거부.
+     구 엔진(키 없음)은 «오류 없음 + 유효성 통과»로만 받는다(R1-F3). */
+  if (Object.prototype.hasOwnProperty.call(c, '상태') && c['상태'] !== 'ok') return c['상태'] === 'error' ? 'down' : 'refused';
+  if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return 'refused';
+  if (!window.jtValidCalc(c, GIFT_ENGINE_REQUIRED)) return 'down';
+  return 'ok';
+}
+/* inputValue — 엔진이 증여재산가액(주요공제)을 안 줬을 때 표시할 «사용자가 입력한» 금액(계산값이 아니다) */
+function giftCalcFromEngine(ej, inputValue) {
+  const c = ej && ej.calc;
+  const verdict = giftEngineVerdict(c);
+  if (verdict !== 'ok') return { precise: false, engineState: verdict };
+  const mj = c['주요공제'] || {};
+  return {
+    precise: true, engineVer: ej.version && ej.version.engine,
+    taxBase: c['과세표준'], calcTax: c['산출세액'],
+    genSkipSurcharge: c['세대생략할증'], filingCredit: c['신고세액공제'],
+    totalTax: c['세액'],
+    giftValue: mj['증여재산가액'] != null ? mj['증여재산가액'] : inputValue,
+    giftCredit: mj['납부세액공제'] || 0,
+    nonTaxableMsg: c['비과세여부'] ? '증여재산공제 범위 내로 납부할 증여세가 없습니다(과세최저한).' : null,
+    steps: c['단계별계산'] || [],
+    engineWarnings: c['경고사항'] || [],   // 엔진이 알리는 가정·경고([확인 필요] 등) — 결과 화면에 그대로 보인다
+  };
+}
+/* 호출 자체가 던진 예외 — HTTP 4xx(callGiftEngine 이 status 를 달아 던진다)는 엔진의 «거부», 그 밖은 «연결 실패» */
+function giftCalcFromEngineError(e) {
+  /* 408(시간 초과)·429(호출 제한)는 입력 문제가 아니라 일시적 상태다 — 다시 시도를 안내한다 */
+  return (e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429)
+    ? { precise: false, engineState: 'refused' }
+    : { precise: false, engineState: 'down' };
+}
+
 /* 주소→상증법 평가 조회 (/v1/lookup/valuation: ①기준값 §15③ 시가 + ②실거래범위 + ③공시하한 §61).
    외부 API(VWORLD) 장애·해외리전 차단 시 success:false(manual_input_required)로 graceful 폴백. */
 async function lookupValuation(address, taxType, evalDate, unit) {
@@ -435,7 +470,7 @@ function buildGiftDetail(answers, calc, commentary) {
     const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
     L.push('  · ' + ql + ': ' + val);
   });
-  L.push('', '■ 계산 결과' + (calc.precise ? ' (검증 엔진)' : ' (간이 추정)'));
+  L.push('', '■ 계산 결과 (검증 엔진)');  // 차단이면 이 함수에 오지 않는다 — 금액은 전부 엔진 값
   if (calc.mode === 'burdened') {
     L.push('  · 증여세: ' + formatWon(calc.giftTax));
     L.push('  · 양도세(증여자): ' + formatWon(calc.transferTax));
@@ -565,10 +600,10 @@ function JTReportGift({ setRoute, onBack }) {
          판정 함수는 2층인데 ①불확정 층은 calc.precise 와 무관하다 — 그래서 여기서
          precise:true 로 불러 ①층만 본다. 못 낼 값이면 요청 자체가 낭비이고,
          「모르겠다」고 답한 사실이 기본값으로 둔갑해 엔진까지 가지도 않는다.
-         엔진 응답 직후의 기존 게이트는 그대로 ②폴백 한계를 잡는다. */
+         엔진 응답 직후의 게이트는 그대로 ②엔진 값 없음을 잡는다. */
       if (giftFallbackGaps(answers, { precise: true }).length > 0) {
         /* precise:true 로 저장하는 이유 — 렌더가 같은 판정 함수를 다시 부르는데,
-           precise:false 로 두면 ②폴백 한계 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
+           precise:false 로 두면 ②엔진 값 없음 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
            다른 항목이 화면에 뜬다 (260806 Codex R21 P2). preEngineBlock 은 그 상태를
            «정밀 계산 성공»과 구분하기 위한 표식이다. */
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === 'quick' };
@@ -581,7 +616,7 @@ function JTReportGift({ setRoute, onBack }) {
       let calc;
 
       if (isBurdened) {
-        // 부담부: 폴백 간이계산은 복잡 → 엔진 우선, 실패 시 안내
+        // 부담부: 엔진 우선, 실패 시 안내
         calc = { mode: 'burdened', giftValue: value, totalTax: 0, precise: false };
         try {
           const ej = await callGiftEngine(mapAnswersToBurdenedGift(answers), '/v1/calc/burdened-gift');
@@ -596,40 +631,20 @@ function JTReportGift({ setRoute, onBack }) {
           } else if (c) { calc.engineErr = true; console.warn('부담부증여 엔진 응답 무결성 실패', c); }
         } catch (e) { calc.engineErr = true; }
       } else {
-        // 일반증여: 간이 폴백
-        const isMinor = (Number(answers.doneeAge) || 30) < 19;
-        const ded = giftDeduction(answers.relationship, isMinor);
-        const prior = answers.priorGiftHas === 'yes' ? (Number(answers.priorGiftValue) || 0) : 0;
-        const taxableBase = Math.max(value + prior - ded, 0);
-        const baseTax = calcGiftBaseTax(taxableBase);
-        const filingCredit = Math.round(baseTax * 0.03);
-        calc = {
-          mode: 'gift', giftValue: value, taxBase: taxableBase, calcTax: baseTax,
-          genSkipSurcharge: 0, giftCredit: 0, filingCredit, totalTax: Math.max(baseTax - filingCredit, 0),
-          precise: false, nonTaxableMsg: taxableBase === 0 ? '증여재산공제 범위 내로 납부할 증여세가 없습니다.' : null,
-        };
+        /* ★ 엔진 값이 없으면 금액 필드가 «없는» calc 가 된다(giftCalcFromEngine 주석) —
+           자체 계산식으로 메우지 않는다. 유효 응답이면 precise:true, 거부면 engineState:'refused',
+           연결 실패면 engineState:'down'. */
         try {
-          const ej = await callGiftEngine(mapAnswersToGift(answers), '/v1/calc/gift');
-          const c = ej && ej.calc;
-          // 수정 260628(GIFT-R2-02): 엔진 오류바디/부분응답 검증 — 미충족 시 간이폴백 유지.
-          if (window.jtValidCalc(c, ['과세표준', '산출세액', '세액'])) {
-            calc.taxBase = c['과세표준']; calc.calcTax = c['산출세액'];
-            calc.genSkipSurcharge = c['세대생략할증'] || 0; calc.filingCredit = c['신고세액공제'] || 0;
-            calc.totalTax = c['세액'];
-            const mj = c['주요공제'] || {};
-            calc.giftValue = mj['증여재산가액'] != null ? mj['증여재산가액'] : value;
-            calc.giftCredit = mj['납부세액공제'] || 0;
-            calc.nonTaxableMsg = c['비과세여부'] ? '증여재산공제 범위 내로 납부할 증여세가 없습니다(과세최저한).' : null;
-            calc.steps = c['단계별계산'] || [];
-            calc.engineWarnings = c['경고사항'] || [];
-            calc.precise = true; calc.engineVer = ej.version && ej.version.engine;
-          }
-        } catch (e) { console.warn('증여 엔진 연결 실패 — 간이 추정 유지', e); }
+          calc = giftCalcFromEngine(await callGiftEngine(mapAnswersToGift(answers), '/v1/calc/gift'), value);
+        } catch (e) {
+          console.warn('증여 엔진 호출 실패', e);
+          calc = giftCalcFromEngineError(e);
+        }
       }
 
-      // Claude 코멘터리 (실패해도 폴백)
+      // Claude 코멘터리 (실패해도 기본 문구로 대체)
       /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
-         폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
+         세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
          렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
       if (giftFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
@@ -689,11 +704,11 @@ function JTReportGift({ setRoute, onBack }) {
   if (report) {
     const { calc, commentary, isBurdened } = report;
     const nonResident = answers.isResident === 'no';
-    // 사전증여 공제를 입력하지 않아 관계기반 기본공제로 추정 적용한 경우 → 결과화면에 캐비엇 노출
+    // 사전증여 공제액 입력란이 비어 있었던 경우(엔진이 한도 안 순차 공제로 보고 계산) → 결과화면에 캐비엇 노출
     const priorDedEstimated = !isBurdened && calc.precise &&
       answers.priorGiftHas === 'yes' && Number(answers.priorGiftValue) > 0 &&
-      priorGiftDeductionUsed(answers, Number(answers.priorGiftValue) || 0).estimated;
-    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반).
+      !giftPriorDedGiven(answers);
+    /* 엔진 값이 없거나(down·refused) 입력이 불확정이면 숫자를 내지 않는다 (261004: 자체 계산식 없음).
        부담부증여 엔진 실패(engineErr)도 여기서 함께 잡는다 — 종전엔 예외로 빼 두어
        화면만 가리고 AI·공유로는 0원이 나갔다. */
     const giftGaps = giftFallbackGaps(answers, calc);
@@ -702,10 +717,15 @@ function JTReportGift({ setRoute, onBack }) {
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
        AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
     if (giftBlocked) {
+      /* 사유 구분: ①입력 불확정 → 'input' / 엔진이 거부 → 'refused' / 그 밖(연결 실패·미지정) → 'down' */
+      const giftBlockReason = giftFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
+      const giftBlockTag = giftBlockReason === 'input' ? '정밀 계산 필요' : (giftBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패');
       return (
         <div className="jt-container">
-          <JTReportShell title="증여세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
-            <JTFallbackBlocked gaps={giftGaps} onRetry={runAnalysis} reason={giftFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
+          <JTReportShell title="증여세 계산 결과" subtitle={giftBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            {/* 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다.
+                단 부담부증여 엔진 실패(engineErr)의 사유 문구는 그대로 보인다(종전 동작) */}
+            <JTFallbackBlocked gaps={(giftBlockReason === 'input' || calc.engineErr) ? giftGaps : []} onRetry={runAnalysis} reason={giftBlockReason} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
             </div>
@@ -715,7 +735,7 @@ function JTReportGift({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : '증여세 정밀 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
               ⚠️ 비거주자 증여는 증여재산공제 배제 등 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
@@ -725,16 +745,16 @@ function JTReportGift({ setRoute, onBack }) {
           {!giftBlocked && (
           <div className="jt-report-result__grade jt-grade-mid">
             {/* engineErr 는 이제 giftBlocked 로 조기 반환된다 — 여기까지 오지 않는다 */}
-            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : (calc.precise ? '총 세부담 · 정밀 계산 (JT택스랩 엔진)' : '추정 총 세부담 · 간이')}</div>
+            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : '총 세부담 · 정밀 계산 (JT택스랩 엔진)'}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
+            {/* 엔진이 알리는 가정·경고(예: 세대생략 여부 미확인 → [확인 필요]) — 양도세 화면과 같은 표시 방식.
+                일반증여 결과에만 보인다(부담부증여 화면은 종전 그대로) */}
+            {!isBurdened && Array.isArray(calc.engineWarnings) && calc.engineWarnings
+              .filter(w => typeof w === 'string' && w)
+              .map((w, i) => (
+                <p key={`ew${i}`} style={{marginTop: 12, fontWeight: 500, color: 'var(--color-text-warning, #854F0B)'}}>⚠️ {w}</p>
+              ))}
           </div>
-          )}
-
-          {!calc.precise && !giftBlocked && (
-            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 세율표 · 관계별 증여재산공제 · 입력하신 <strong>10년 내 사전증여 금액의 합산</strong> · 신고세액공제.<br /><strong>반영하지 않은 것</strong>: <strong>세대생략 할증</strong>(손주 증여) · <strong>혼인·출산 공제</strong> · 사전증여분 <strong>기납부세액공제</strong> · 비거주자 공제 배제. 그래서 실제와 다를 수 있으니 정밀 계산을 권합니다 —
-              <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
-            </div>
           )}
 
           {report.quick && (
@@ -833,7 +853,7 @@ function JTReportGift({ setRoute, onBack }) {
           </p>
 
           {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
-              kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
+              kakaoSummary·reportSummary·reportDetail 에 세액이 담겨 클립보드와
               Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
           {!giftBlocked && (
           <JTReportConvert
@@ -842,7 +862,7 @@ function JTReportGift({ setRoute, onBack }) {
             completeEligible={true}
             precise={calc.precise}
             quick={report.quick}
-            reportType={isBurdened ? '부담부증여 통합 계산' : (calc.precise ? '증여세 정밀 계산' : '증여세 간이 계산')}
+            reportType={isBurdened ? '부담부증여 통합 계산' : '증여세 정밀 계산'}
             reportTag="LEGACY"
             reportSummary={`총 세부담 ${formatWon(calc.totalTax)}${isBurdened ? ' (부담부)' : ' / 과세표준 ' + formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
             reportDetail={buildGiftDetail(answers, calc, commentary)}

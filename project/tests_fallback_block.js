@@ -70,7 +70,8 @@ const DOWN = { precise: false };            // 엔진 장애
 const OK = { precise: true };               // 엔진 정상
 const REFUSED = { precise: false, engineState: 'refused' };   // 엔진이 계산을 거부 (취득세 — 261004)
 const INH = (x) => inhFallbackGaps(x, DOWN);
-const GIFT = (x) => giftFallbackGaps(x, DOWN);
+/* ★ 증여세도 261004 에 자체 계산식(폴백)을 삭제했다 — 양도세·취득세와 같다. 입력별 시험은 «엔진 값이 있을 때(OK)에도 남는 ①층»뿐이다. */
+const GIFT = (x) => giftFallbackGaps(x, OK);
 /* ★ 취득세는 261004 에 자체 계산식(폴백)을 삭제했다 — «엔진 값이 없으면(DOWN·REFUSED) 입력과 무관하게 항상 막고»,
    입력별 판정은 «엔진 값이 있을 때(OK)에도 남는 ①층(입력 불확정)»뿐이다. 그래서 입력별 시험은 OK 로 부른다. */
 const ACQ = (x) => acqFallbackGaps(x, OK);
@@ -93,12 +94,25 @@ eq('자녀 7명↑ + 정확인원 입력 → 통과', INH({ ...RES, numChildren:
 eq('평범한 입력 → 통과(숫자 표시)', INH({ ...RES, hasSpouse: 'yes', numChildren: '2' }).length, 0);
 
 console.log('\n════ 증여세 ════');
-eq('세대생략 → 차단', GIFT({ genSkip: 'yes' }).length > 0, true);
-eq('혼인공제 → 차단', GIFT({ marriageDed: 'yes' }).length > 0, true);
-eq('출산공제 → 차단', GIFT({ childbirthDed: 'yes' }).length > 0, true);
-eq('사전증여 → 차단', GIFT({ priorGiftHas: 'yes' }).length > 0, true);
+/* ① 입력 불확정 층 — 엔진 값이 있어도(OK) 막는다 */
 eq('비거주자 → 차단', GIFT({ isResident: 'no' }).length > 0, true);
+eq('거주자 미확인(미입력) → 차단', GIFT({ relationship: '직계존속' }).length > 0, true);
 eq('평범한 입력 → 통과', GIFT({ ...RES, relationship: '직계존속' }).length, 0);
+/* 종전 ②층(간이 폴백 한계: 세대생략·혼인출산공제·사전증여)은 삭제됐다 — 엔진 값이 있으면 이 입력들은 막지 않는다.
+   (다시 이 목록이 생기면 «폴백이 되살아난» 것이므로 여기서 울린다.) */
+eq('세대생략 + 엔진 값 있음 → 통과', GIFT({ ...RES, genSkip: 'yes' }).length, 0);
+eq('혼인공제 + 엔진 값 있음 → 통과', GIFT({ ...RES, marriageDed: 'yes' }).length, 0);
+eq('출산공제 + 엔진 값 있음 → 통과', GIFT({ ...RES, childbirthDed: 'yes' }).length, 0);
+eq('사전증여 + 엔진 값 있음 → 통과', GIFT({ ...RES, priorGiftHas: 'yes' }).length, 0);
+/* ② 엔진 값이 없으면 입력과 무관하게 항상 사유 한 건 */
+for (const ans of [{ ...RES, relationship: '직계존속' }, { ...RES, genSkip: 'yes' }, { ...RES, priorGiftHas: 'yes' }, { ...RES, marriageDed: 'yes' }]) {
+  eq('엔진 연결 실패(DOWN) → 어떤 입력이든 사유 1건: ' + JSON.stringify(ans), giftFallbackGaps(ans, DOWN).length, 1);
+  eq('엔진 거부(REFUSED) → 어떤 입력이든 사유 1건: ' + JSON.stringify(ans), giftFallbackGaps(ans, REFUSED).length, 1);
+}
+eq('DOWN 사유는 연결 실패 문구', giftFallbackGaps(RES, DOWN)[0].startsWith('계산 엔진에 연결하지 못했습니다'), true);
+eq('engineState 미지정도 연결 실패 문구', giftFallbackGaps(RES, { precise: false })[0].startsWith('계산 엔진에 연결하지 못했습니다'), true);
+eq('REFUSED 사유는 확정 불가 문구', giftFallbackGaps(RES, REFUSED)[0].startsWith('입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다'), true);
+eq('비거주자 + 엔진 실패 → ①사유와 ②사유 둘', giftFallbackGaps({ isResident: 'no' }, DOWN).length, 2);
 
 console.log('\n════ 취득세 ════');
 const ACQ_BASE = { propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', reduction: 'none', housingCount: '1' };
@@ -270,9 +284,9 @@ console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 �
      엔진이 죽어도 폴백이 감당하는 조합이어야 안심하고 통과시킬 수 있다.
      ②층에 걸리는 입력을 여기 넣으면 그건 「엔진 없으면 막아야 할 것」을 통과 목록에
      올린 셈이라, 나중에 조건이 흔들릴 때 이 줄이 먼저 울린다.
-     ★ 취득세·양도세는 261004 에 폴백을 삭제해 «엔진이 죽으면 항상 막는다» — 그래서 취득세 줄은
+     ★ 취득세·양도세·증여세는 261004 에 폴백을 삭제해 «엔진이 죽으면 항상 막는다» — 그래서 취득세 줄은
         아래에서 «엔진 죽음 → 막힘»으로 따로 확인한다(여기서는 DOWN 통과를 요구하지 않는다). */
-  if (fn === acqFallbackGaps || fn === cgtFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
+  if (fn === acqFallbackGaps || fn === cgtFallbackGaps || fn === giftFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
   else eq(`${name} · 엔진이 죽어도 폴백이 감당한다`, fn(ans, DOWN).length, 0);
 });
 
@@ -285,7 +299,7 @@ console.log('\n════ 엔진 전 게이트: precise=true 면 ①불확정 
 [['상속 · 비거주자', inhFallbackGaps, { isResident: 'no' }, 1],
  ['상속 · 사전증여(폴백 한계)', inhFallbackGaps, { isResident: 'yes', priorGiftHas: 'yes' }, 0],
  ['증여 · 비거주자', giftFallbackGaps, { isResident: 'no' }, 1],
- ['증여 · 세대생략(폴백 한계)', giftFallbackGaps, { isResident: 'yes', genSkip: 'yes' }, 0],
+ ['증여 · 세대생략(엔진이 계산 — ①층 아님)', giftFallbackGaps, { isResident: 'yes', genSkip: 'yes' }, 0],
  ['취득 · 조정 모름', acqFallbackGaps, { propertyType: '주택', acquisitionType: '증여', exclusiveArea: '84', isRegulatedArea: 'unsure' }, 1],
  ['취득 · 토지(①층 아님 — 엔진 값 없음 층은 precise=true 에서 빠진다)', acqFallbackGaps, { propertyType: '토지', exclusiveArea: '84' }, 0],
  ['양도 · 취득당시 모름', cgtFallbackGaps, { assetType: 'house_1', acqAdjustedZone: 'unsure' }, 1],
