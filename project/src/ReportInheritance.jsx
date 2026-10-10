@@ -1,19 +1,13 @@
 /* @jsx React.createElement */
 /* 상속세 계산 — 총상속재산 + 배우자/자녀 + 공제(채무·장례·금융재산·동거주택)·간주상속(보험·퇴직)·사전증여 합산
-   엔진: /v1/calc/inheritance (정밀, 상증법 §18~§30). 미응답 시 간이 폴백.
+   엔진: /v1/calc/inheritance (정밀, 상증법 §18~§30).
+   261010: 이 화면에는 자체 계산식(폴백)이 없다 — 증여세·양도세·취득세 화면과 같다. 금액은 엔진이 준 값뿐이고,
+   엔진 값이 없으면(입력 부족·거부·연결 실패) 금액을 내지 않는다. 모르는 사실은 요청에 «넣지 않는다»(키 생략).
    공통 헬퍼(formatWon·formatStepValue·isValidISODate·JTReportShell·JTReportConvert)는
    ReportCGT/Report/ReportConvert가 먼저 로드되어 전역에 존재 → 재사용(중복 정의 방지). */
 
 const { useState: useInhState } = React;
 
-/* 상속세 기본세율표 (상증법 §26) — 증여세와 동일. 간이 폴백용, 정밀계산은 엔진. */
-const INH_BRACKETS = [
-  [100_000_000, 0.10, 0],
-  [500_000_000, 0.20, 10_000_000],
-  [1_000_000_000, 0.30, 60_000_000],
-  [3_000_000_000, 0.40, 160_000_000],
-  [Infinity, 0.50, 460_000_000],
-];
 /* 자녀 수 — 「7명 이상」을 고르면 실제 인원을 쓴다. 「6명 이상」으로 뭉쳐 6을 보내면
    배우자 법정상속분이 실제보다 커져 세액이 과소 계산된다 (260806 Codex B P1). */
 function inhChildCount(a) {
@@ -23,13 +17,6 @@ function inhChildCount(a) {
 }
 window.jtInhChildCount = inhChildCount;
 
-function calcInhBaseTax(taxBase) {
-  if (taxBase <= 0) return 0;
-  for (const [limit, rate, deduct] of INH_BRACKETS) {
-    if (taxBase <= limit) return Math.round(taxBase * rate - deduct);
-  }
-  return 0;
-}
 /* 큰 금액 한글 단위(억·만) 보조. */
 function inhKoreanAmount(raw) {
   const n = Number(raw) || 0;
@@ -102,10 +89,38 @@ const INHERITANCE_QS = [
     tier: 'quick',
     section: '상속인',
     q: '자녀가 정확히 몇 명인가요? (명)',
-    sub: '배우자 법정상속분이 자녀 수로 갈리기 때문에 정확한 인원이 필요합니다.',
+    sub: '배우자 법정상속분이 자녀 수로 갈리기 때문에 정확한 인원이 필요합니다. 7명 이상이면 정확한 인원을 7 이상으로 적어 주십시오(7 미만을 적으면 인원을 임의로 올리지 않고 계산하지 않습니다).',
     numeric: true,
+    min: 7,
     placeholder: '예: 7',
     showIf: (a) => a.numChildren === 'many',
+  },
+  /* 배우자가 실제로 상속받는 금액은 배우자상속공제(§19)를 갈라 세액이 크게 달라진다 — 그래서 «빠른 계산»에서 묻는다.
+     종전엔 상세 단계에서 「법정상속분 / 받지 않음」 둘만 있었고, 묻지 않은 빠른 계산은 법정상속분으로 «확정»했다(261010 폐지).
+     「모름」은 엔진을 부르지 않는다 — 짐작으로 채우면 틀린 금액에 「정밀 계산」 딱지가 붙는다. */
+  {
+    id: 'spouseActual',
+    tier: 'quick',
+    section: '배우자 상속',
+    q: '배우자는 실제로 얼마를 상속받으시나요?',
+    sub: '배우자상속공제는 배우자가 실제로 상속받는 금액(법정상속분 한도, 최대 30억)까지 공제되어(상증법 §19) 이 답에 따라 세액이 크게 달라집니다. 상속인들이 나누기로 한 방식을 골라 주세요. 아직 정해지지 않아 「모름」을 고르시면 «틀린 금액을 보여 드리지 않기 위해» 금액 대신 안내를 드립니다.',
+    showIf: (a) => a.hasSpouse === 'yes',
+    opts: [
+      ['legal', '법정상속분대로 나눕니다', '배우자가 법정상속분만큼 상속'],
+      ['amount', '배우자가 받을 금액을 직접 입력합니다', '협의분할 등으로 금액이 정해진 경우'],
+      ['none', '배우자는 상속받지 않습니다', ''],
+      ['unsure', '모르겠습니다 (아직 정해지지 않았습니다)', '⚠️ 금액 대신 안내를 드립니다'],
+    ],
+  },
+  {
+    id: 'spouseInheritanceAmount',
+    tier: 'quick',
+    section: '배우자 상속',
+    q: '배우자가 실제로 상속받는 금액은 얼마인가요? (원)',
+    sub: '상속재산을 나누기로 한 결과 배우자가 받는 재산의 상속세 평가액을 입력하세요. 공제 한도(법정상속분·30억)는 엔진이 계산합니다.',
+    showIf: (a) => a.hasSpouse === 'yes' && a.spouseActual === 'amount',
+    numeric: true, money: true,
+    placeholder: '예: 1,500,000,000',
   },
 
   // ── 더 정확히 (상세) ──
@@ -136,10 +151,18 @@ const INHERITANCE_QS = [
   {
     id: 'funeralExpenses',
     section: '공제 항목',
-    q: '장례비용은 얼마나 드셨나요? (원)',
-    sub: '실제 장례비를 봉안시설·자연장지 비용까지 합산해 한 칸에 입력하세요. 합산 최소 500만원~최대 1,500만원까지 공제됩니다(상증령 §9②). 증빙이 없어도 500만원은 인정됩니다. 모르면 비워두세요.',
+    q: '일반 장례비용은 얼마나 드셨나요? (원)',
+    sub: '장례에 직접 쓴 금액을 입력하세요. 봉안시설·자연장지(납골당·수목장 등) 사용 비용은 이 칸에 넣지 말고 바로 다음 칸에 따로 적어 주세요. 일반 장례비는 최소 500만원~최대 1,000만원까지 공제되고(증빙이 없어도 500만원은 인정), 봉안시설·자연장지 비용은 별도로 최대 500만원까지 더 공제됩니다(상증령 §9②). 모르면 비워두세요.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 10,000,000',
+  },
+  {
+    id: 'burialFacilityExpenses',
+    section: '공제 항목',
+    q: '봉안시설·자연장지 사용 비용은 얼마인가요? (원)',
+    sub: '납골당(봉안시설)·수목장 등 자연장지를 사용하는 데 쓴 금액입니다. 일반 장례비와 별도로 최대 500만원까지 공제됩니다(상증령 §9②). 비용이 없었다면 0 을 입력하세요. 비워 두면 이 비용을 따로 반영하지 않고 일반 장례비(최대 1,000만원)만 계산하며, 결과 화면에 안내가 붙습니다.',
+    numeric: true, money: true, optional: true,
+    placeholder: '예: 3,000,000',
   },
   {
     id: 'netFinancialAssets',
@@ -187,19 +210,32 @@ const INHERITANCE_QS = [
   {
     id: 'priorGiftHas',
     section: '사전증여',
-    q: '상속인이 고인에게서 최근 10년 내 증여받은 적이 있나요?',
+    q: '돌아가신 분이 상속인에게 10년 안에, 또는 상속인이 아닌 사람에게 5년 안에 증여한 재산이 있나요?',
     sub: '상속 개시 전 10년 이내(상속인 외의 사람은 5년) 증여한 재산은 상속재산에 합산됩니다(상증법 §13). 이미 낸 증여세는 공제됩니다. 합산 누락은 가산세 사고로 이어지니 꼭 확인하세요.',
     opts: [
       ['yes', '네, 있습니다', '상속재산에 합산(§13)'],
       ['no', '아니오 / 없습니다', ''],
     ],
   },
+  /* 사전증여는 «한 사람이 받은 증여» 기준으로만 받는다 — 합계 1건으로 보내는데 수증자가 여럿이면 사람별 증여재산공제와
+     증여세액공제가 섞여 틀린 금액이 나온다(Codex 261010 R1 F1·F2). 여러 명이면 요청을 만들지 않는다. */
+  {
+    id: 'priorGiftOneRecipient',
+    section: '사전증여',
+    q: '그 기간 안에 증여받은 사람이 한 명인가요?',
+    sub: '이 계산기는 한 사람이 받은 증여만 계산합니다. 증여받은 사람이 여러 명이면 사람별 증여재산공제와 증여세액공제가 달라져 화면에서 계산하지 않고, 상담으로 안내해 드립니다.',
+    showIf: (a) => a.priorGiftHas === 'yes',
+    opts: [
+      ['one', '한 명입니다', '한 사람 기준으로 계산'],
+      ['many', '여러 명입니다', '⚠️ 금액 대신 상담 안내를 드립니다'],
+    ],
+  },
   {
     id: 'priorGiftValue',
     section: '사전증여',
-    q: '10년 내 증여받은 재산은 모두 얼마인가요? (증여 당시 평가액 · 원)',
-    sub: '여러 건이면 합산 금액을 입력하세요. 증여 당시의 평가액 기준입니다.',
-    showIf: (a) => a.priorGiftHas === 'yes',
+    q: '그 한 사람이 증여받은 재산은 모두 얼마인가요? (증여 당시 평가액 · 원)',
+    sub: '한 사람이 여러 건을 받았다면 합산 금액을 입력하세요. 증여 당시의 평가액 기준입니다.',
+    showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one',
     numeric: true, money: true, optional: true,
     requiredIf: (a) => a.priorGiftHas === 'yes',   // '있음' 선택 시 금액 필수 — 빈칸 방치로 §13 가산 누락(세금 과소) 방지
     placeholder: '예: 100,000,000',
@@ -207,13 +243,35 @@ const INHERITANCE_QS = [
   {
     id: 'priorGiftRelation',
     section: '사전증여',
-    q: '그 증여를 받은 분(상속인)은 고인과 어떤 사이였나요?',
-    sub: '증여 당시 적용된 증여재산공제(§53)를 가늠해, 이미 낸 증여세를 상속세에서 정확히 빼기(증여세액공제 §28) 위함입니다. 보통 자녀·손자녀가 받았으면 「직계비속」입니다.',
-    showIf: (a) => a.priorGiftHas === 'yes',
+    q: '그 증여를 받은 분은 고인과 어떤 사이였나요?',
+    sub: '증여 당시 적용된 증여재산공제(§53)를 가늠해, 이미 낸 증여세를 상속세에서 정확히 빼기(증여세액공제 §28) 위함입니다. 보통 자녀·손자녀가 받았으면 「직계비속」입니다. 배우자가 받은 증여는 배우자상속공제 한도 계산에도 반영됩니다(§19). 직계비속·배우자는 상속인으로 봅니다. 「그 외」(상속인이 아닌 친족·타인 포함)를 고르시면 상속인 여부와 증여 시기를 추가로 여쭙니다.',
+    showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one',
     opts: [
-      ['직계비속', '자녀·손자녀가 받음 (직계비속)', '증여공제 5천만 기준'],
-      ['배우자', '배우자가 받음', '증여공제 6억 기준'],
-      ['기타', '그 외 친족 등', '증여공제 1천만 기준'],
+      ['직계비속', '자녀·손자녀가 받음 (직계비속 · 상속인)', '증여공제 5천만 기준'],
+      ['배우자', '배우자가 받음 (상속인)', '증여공제 6억 기준'],
+      ['기타', '그 외 — 상속인이 아닌 친족·타인 포함', '상속인 여부를 추가로 여쭙니다 · 증여공제 1천만 기준'],
+    ],
+  },
+  {
+    id: 'priorGiftHeir',
+    section: '사전증여',
+    q: '그 증여를 받은 분은 이번 상속의 상속인인가요?',
+    sub: '상속재산에 합산하는 사전증여의 기간이 상속인은 10년, 상속인이 아닌 사람은 5년으로 다릅니다(상증법 §13). 한 사람 기준으로 답해 주세요.',
+    showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one' && a.priorGiftRelation === '기타',
+    opts: [
+      ['yes', '네, 상속인입니다', '10년 이내 증여를 합산'],
+      ['no', '아니오, 상속인이 아닙니다', '5년 이내 증여만 합산'],
+    ],
+  },
+  {
+    id: 'priorGiftWithin5y',
+    section: '사전증여',
+    q: '그 증여는 상속개시일(사망일) 전 5년 이내에 이루어졌나요?',
+    sub: '한 사람 기준입니다. 상속인이 아닌 분에게 5년보다 앞서 한 증여는 상속재산에 합산하지 않으므로 계산에 넣지 않습니다.',
+    showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one' && a.priorGiftRelation === '기타' && a.priorGiftHeir === 'no',
+    opts: [
+      ['yes', '네, 5년 이내입니다', '상속재산에 합산'],
+      ['no', '아니오, 5년보다 앞선 증여입니다', '합산하지 않음 — 계산에 넣지 않습니다'],
     ],
   },
   {
@@ -221,21 +279,10 @@ const INHERITANCE_QS = [
     section: '사전증여',
     q: '증여받은 분이 증여 당시 미성년자(만 19세 미만)였나요?',
     sub: '미성년 자녀·손자녀가 직계존속(고인)에게서 증여받았다면 증여재산공제가 2천만원으로 줄어듭니다(상증법 §53②단서). 이미 낸 증여세 계산에 반영됩니다.',
-    showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftRelation === '직계비속',
+    showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one' && a.priorGiftRelation === '직계비속',
     opts: [
       ['no', '아니오 (성년이었음)', '증여공제 5천만'],
       ['yes', '네, 미성년이었습니다', '증여공제 2천만'],
-    ],
-  },
-  {
-    id: 'spouseActual',
-    section: '배우자 상속',
-    q: '배우자가 실제로 재산을 상속받으시나요?',
-    sub: '배우자상속공제는 배우자가 실제 상속받는 금액(법정상속분·최대 30억 한도)까지 공제합니다. 배우자가 전혀 상속받지 않아도 최소 5억은 공제됩니다(상증법 §19). 협의분할로 배우자가 법정상속분보다 더 받기로 하면 공제가 더 커질 수 있어(최대 30억) 그 경우 상담에서 정밀 계산해 드립니다.',
-    showIf: (a) => a.hasSpouse === 'yes',
-    opts: [
-      ['auto', '법정상속분대로 받습니다 (자동 계산)', '배우자 법정상속분만큼 공제'],
-      ['zero', '배우자는 상속받지 않습니다', '최소 5억 공제(§19④)'],
     ],
   },
   {
@@ -249,15 +296,38 @@ const INHERITANCE_QS = [
   },
 ];
 
-/* answers → 엔진 요청 바디 (/v1/calc/inheritance) */
+/* 비상속인에게 5년보다 앞서 한 증여 — 상속재산에 합산하지 않으므로 요청에 넣지 않는다(결과 화면이 그 사실을 안내한다) */
+function inhPriorGiftDropped(a) {
+  return a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one' && Number(a.priorGiftValue) > 0 && a.priorGiftRelation === '기타'
+    && a.priorGiftHeir === 'no' && a.priorGiftWithin5y === 'no';
+}
+
+/* answers → 엔진 요청 바디 (/v1/calc/inheritance). 모르는 사실은 «보내지 않는다»(키 생략) — 엔진이 기본값으로 확정하지 않는다.
+   · has_spouse·num_children — 답한 경우에만(안 보내면 엔진이 입력 부족으로 거부한다)
+   · 배우자 실제 상속(배우자 있음일 때만): 법정상속분대로 → spouse_legal_share:true / 직접 입력 → spouse_inheritance:<원>
+     / 받지 않음 → spouse_no_inheritance:true. 「모름」·미응답·금액 미입력은 요청 자체를 만들지 않는다(null) — 호출 전 게이트가 먼저 막는다.
+   · burial_facility_expenses — 칸을 채운 경우에만(0 포함). 비우면 키 생략(엔진이 «미분리»로 보고 안내를 붙인다)
+   · gift_history[0] — «한 사람이 받은 증여» 1건(여러 명이면 요청을 만들지 않는다). 수증자 관계 배우자 → to_spouse:true, 그 외 친족 → 상속인 여부(is_heir)와 5년 이내 여부를 물은 뒤 보낸다
+   요청을 만들 수 없는 불확정 입력이면 null. */
 function mapAnswersToInheritance(a) {
-  const body = {
-    estate_value: Number(a.estateValue) || 0,
-    has_spouse: a.hasSpouse === 'yes',
-    num_children: inhChildCount(a),
-  };
+  const spouseYes = a.hasSpouse === 'yes';
+  const spouse = {};
+  if (spouseYes) {
+    if (a.spouseActual === 'legal') spouse.spouse_legal_share = true;
+    else if (a.spouseActual === 'amount' && Number(a.spouseInheritanceAmount) > 0) spouse.spouse_inheritance = Number(a.spouseInheritanceAmount);
+    else if (a.spouseActual === 'none') spouse.spouse_no_inheritance = true;
+    else return null;                                   // 모름·미응답·금액 미입력 — 짐작으로 채우지 않는다
+  }
+  if (a.numChildren === 'many' && !(Number(a.numChildrenExact) >= 7)) return null;   // 7명 이상인데 정확한 인원이 없거나 7 미만이다 — 임의로 올리지 않는다
+  if (a.priorGiftHas === 'yes' && a.priorGiftOneRecipient !== 'one') return null;   // 사전증여를 받은 사람이 여럿이거나 답이 없다 — 합계 1건으로 섞지 않는다
+  const body = { estate_value: Number(a.estateValue) || 0 };
+  if (a.hasSpouse === 'yes' || a.hasSpouse === 'no') body.has_spouse = spouseYes;
+  if (a.numChildren != null && a.numChildren !== '') body.num_children = inhChildCount(a);
+  Object.assign(body, spouse);
   if (Number(a.debts) > 0) body.debts = Number(a.debts);
   if (Number(a.funeralExpenses) > 0) body.funeral_expenses = Number(a.funeralExpenses);
+  const burial = a.burialFacilityExpenses;
+  if (burial != null && String(burial).trim() !== '' && Number.isFinite(Number(burial)) && Number(burial) >= 0) body.burial_facility_expenses = Number(burial);
   if (Number(a.netFinancialAssets) > 0) body.net_financial_assets = Number(a.netFinancialAssets);
   if (Number(a.insuranceAmount) > 0) body.insurance_amount = Number(a.insuranceAmount);
   if (Number(a.retirementPay) > 0) body.retirement_pay = Number(a.retirementPay);
@@ -265,56 +335,82 @@ function mapAnswersToInheritance(a) {
     body.has_cohabitation_house = true;
     body.cohabitation_house_value = Number(a.cohabitationHouseValue) || 0;
   }
-  if (a.priorGiftHas === 'yes' && Number(a.priorGiftValue) > 0) {
+  if (a.priorGiftHas === 'yes' && (!(Number(a.priorGiftValue) > 0) || !['직계비속', '배우자', '기타'].includes(a.priorGiftRelation))) return null;   // 금액·관계가 비었다 — 기본값(상속인·기본 공제)으로 채우지 않는다
+  if (a.priorGiftHas === 'yes' && !inhPriorGiftDropped(a)) {
     // gift_history(사실입력) 경로 — 엔진이 §58 증여세 산출세액을 자동도출해 §28 증여세액공제를 정상 반영.
     // (prior_gift_values만 보내면 §13 가산만 되고 §28 공제가 0이 되어 상속세가 과대추정됨)
     const pv = Number(a.priorGiftValue);
     // 수정 260628(INHERITANCE-R2-05): 미성년 직계비속이 직계존속(고인)에게서 수증 시 증여재산공제 2천만(상증법 §53②단서). 성년 5천만.
     const isMinorGift = a.priorGiftMinor === 'yes' && a.priorGiftRelation === '직계비속';
     const dedByRel = { '배우자': 600000000, '직계비속': 50000000, '기타': 10000000 };
-    const baseDed = isMinorGift ? 20000000 : (dedByRel[a.priorGiftRelation] != null ? dedByRel[a.priorGiftRelation] : 50000000);
+    const baseDed = isMinorGift ? 20000000 : dedByRel[a.priorGiftRelation];   // 관계는 위에서 세 값 중 하나로 확인했다 — 기본 공제액으로 메우지 않는다
     const ded = Math.min(baseDed, pv);
-    body.gift_history = [{ value: pv, deduction_used: ded, is_heir: true, is_minor: isMinorGift }];
+    const item = { value: pv, deduction_used: ded, is_heir: true, is_minor: isMinorGift };
+    if (a.priorGiftRelation === '배우자') item.to_spouse = true;
+    if (a.priorGiftRelation === '기타') {
+      if (a.priorGiftHeir === 'yes') item.is_heir = true;
+      else if (a.priorGiftHeir === 'no' && a.priorGiftWithin5y === 'yes') item.is_heir = false;
+      else return null;                                 // 상속인 여부·시기를 답하지 않았다 — 기간(10년/5년)을 짐작하지 않는다
+    }
+    body.gift_history = [item];
   }
-  if (a.spouseActual === 'zero') body.spouse_no_inheritance = true;
   return body;
 }
 
-/* 상담 전송용 상세 (이메일) */
-/* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
-   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+/* 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 세액을 외부로 보내고 있었다
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
-   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다.
+   두 층이다: ① 입력 불확정(calc.precise 와 무관) ② 엔진 값 없음(calc.precise 가 거짓이면 항상 한 건).
+   261010: 이 화면에는 자체 계산식(폴백)이 없다 — 「폴백이 못 다루는 입력」(사전증여·금융재산·동거주택·배우자 비수령)을
+   막던 규칙은 함께 지웠다(엔진이 직접 계산하거나, 못 하면 ②층이 어떤 입력이든 막는다).
+   ⚠️ 이 함수는 자기완결이어야 한다(tests_fallback_block.js 가 함수 본문만 꺼내 실행한다) — 다른 모듈 함수를 부르지 않는다. */
 function inhFallbackGaps(answers, calc) {
   /* «아니오»만 보면 미입력이 새어 나간다 — 거주자라고 «확인된» 경우만 계산한다.
      state 조작·문항 구성 변경으로 값이 빠져도 거주자 가정 수치가 안 나오게 하는 방어다. */
   const nonResident = answers.isResident !== 'yes';
-  /* ── ① 엔진도 «못 푸는» 입력 — precise 여도 막는다 ───────────────────────
+  const spouseYes = answers.hasSpouse === 'yes';
+  const sp = answers.spouseActual;
+  const spouseResolved = sp === 'legal' || sp === 'none' || (sp === 'amount' && Number(answers.spouseInheritanceAmount) > 0);
+  const giftOther = answers.priorGiftHas === 'yes' && answers.priorGiftOneRecipient === 'one' && answers.priorGiftRelation === '기타';
+  const giftHeirResolved = answers.priorGiftHeir === 'yes' || (answers.priorGiftHeir === 'no' && (answers.priorGiftWithin5y === 'yes' || answers.priorGiftWithin5y === 'no'));
+  /* ── ① 엔진도 «못 푸는» 입력 · 짐작으로 채울 수 없는 입력 — precise 여도 막는다 ───────────────────────
      260806 실측(POST /v1/calc/inheritance, 20억·배우자·자녀2):
        필드 없음 / is_resident:false / resident:false → 셋 다 127,416,380 으로 «동일».
      즉 엔진은 거주자 여부를 받지 않는다. 비거주자는 일괄공제·배우자공제가 배제돼
      계산 구조 자체가 다른데, 그대로 두면 거주자 기준 금액에 「정밀 계산」 딱지가 붙는다.
-     경고 배너만으로는 부족하다 — 사람은 숫자를 먼저 본다. */
+     경고 배너만으로는 부족하다 — 사람은 숫자를 먼저 본다.
+     배우자 「모름」은 요청을 보내지 않는다 — 배우자공제가 5억에서 30억까지 갈려 세액이 크게 달라진다(261010). */
   const unknown = window.jtFallbackGaps([
     { when: nonResident,
       why: '고인의 거주자 여부가 «거주자»로 확인되지 않았습니다 — 비거주자는 국내 재산만 과세되고 일괄공제·배우자상속공제가 배제됩니다. 계산 엔진이 아직 거주자 기준만 지원해 금액을 표시하지 않습니다(상담에서 정확히 안내해 드립니다).' },
+    { when: spouseYes && sp === 'unsure',
+      why: '배우자가 실제로 상속받을 금액에 따라 세액이 크게 달라집니다 — 「모름」으로는 금액을 계산할 수 없습니다. 「← 이전」으로 돌아가 「법정상속분대로」·「직접 입력」·「상속받지 않음」 중 하나를 골라 주세요(상속인들이 아직 나누지 않았다면 상담에서 시나리오별로 안내해 드립니다).' },
+    { when: spouseYes && sp !== 'unsure' && !spouseResolved,
+      why: '배우자가 실제로 상속받는 방식(법정상속분대로·직접 입력·상속받지 않음)이 정해지지 않았거나, 직접 입력의 금액이 비어 있습니다 — 배우자상속공제가 이 답에 따라 크게 달라집니다.' },
+    { when: answers.numChildren === 'many' && !(Number(answers.numChildrenExact) >= 7),
+      why: '자녀가 7명 이상인데 정확한 인원이 없거나 7 미만입니다 — 7명 이상이면 정확한 인원을 7 이상으로 적어 주십시오(배우자 법정상속분이 인원수로 갈립니다).' },
+    { when: answers.priorGiftHas === 'yes' && answers.priorGiftOneRecipient === 'many',
+      why: '증여받은 사람이 여러 명이면 사람별 공제와 증여세액공제가 달라져 화면에서 계산하지 않습니다 — 상담 문의로 사람별 금액을 적어 주십시오.' },
+    { when: answers.priorGiftHas === 'yes' && answers.priorGiftOneRecipient === 'one'
+        && (!(Number(answers.priorGiftValue) > 0) || !['직계비속', '배우자', '기타'].includes(answers.priorGiftRelation)),
+      why: '10년 내 사전증여를 받은 한 사람의 증여 금액 또는 고인과의 관계(직계비속·배우자·그 외)가 비어 있습니다 — 상속인 여부와 증여재산공제가 관계로 갈려 짐작으로 채울 수 없습니다.' },
+    { when: answers.priorGiftHas === 'yes' && answers.priorGiftOneRecipient !== 'one' && answers.priorGiftOneRecipient !== 'many',
+      why: '10년 내 사전증여를 받은 사람이 한 명인지 여러 명인지 정해지지 않았습니다 — 이 계산기는 한 사람이 받은 증여만 계산합니다.' },
+    { when: giftOther && !giftHeirResolved,
+      why: '10년 내 사전증여를 받은 «그 외» 한 사람이 상속인인지(그리고 아니라면 5년 이내 증여인지) 정해지지 않았습니다 — 합산 기간(상속인 10년·비상속인 5년)이 달라집니다.' },
   ]);
-  /* ── ② 여기부터는 «간이 폴백만»의 한계 ── */
+  /* ── ② 엔진 값이 없으면 어떤 입력이든 막는다 ──────────────────────────────
+     이 화면에는 자체 계산식이 없으므로 «엔진이 준 금액»이 없으면 보여 줄 금액이 없다.
+     사유는 «엔진이 거부했다(refused: 입력 부족·지원 안 함)»와 «연결하지 못했다(down·미지정)» 둘이다.
+     거부 사유는 엔진이 준 문구(calc.engineMessage)를 그대로 보인다. */
   if (calc.precise) return unknown;
-  return unknown.concat(window.jtFallbackGaps([
-    { when: answers.spouseActual === 'zero',
-      why: '배우자가 실제로 상속받지 않는 경우 — 간이 계산은 법정상속분대로 공제해 세금이 «크게 적게» 나옵니다(실측 1억 8,381만원 차이).' },
-    { when: answers.priorGiftHas === 'yes',
-      why: '10년 내 사전증여 — 상속재산 가산(§13)과 증여세액공제(§28)를 간이 계산이 다루지 못합니다(실측 6,741만원 차이).' },
-    { when: (Number(answers.netFinancialAssets) || 0) > 0,
-      why: '순금융재산 — 금융재산상속공제(§22, 최대 2억)가 간이 계산에 없습니다.' },
-    { when: answers.hasCohabitationHouse === 'yes',
-      why: '동거주택 — 동거주택상속공제(§23의2, 최대 6억)가 간이 계산에 없습니다.' },
-    { when: answers.numChildren === 'many' && !(Number(answers.numChildrenExact) > 0),
-      why: '자녀가 7명 이상인데 정확한 인원이 없습니다 — 배우자 법정상속분이 인원수로 갈립니다.' },
-  ]));
+  return unknown.concat([calc.engineState === 'refused'
+    ? '입력이 더 필요합니다 — ' + (calc.engineMessage || '이 계산기가 금액을 확정할 수 없는 조건입니다. 「← 이전」으로 돌아가 답을 보완하시거나 상담으로 확인해 주세요.')
+    : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }
 
+/* 상담 전송용 상세 (이메일) */
 function buildInhDetail(answers, calc, commentary) {
   const L = ['■ 고객 입력 정보'];
   INHERITANCE_QS.forEach(q => {
@@ -326,7 +422,11 @@ function buildInhDetail(answers, calc, commentary) {
     const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
     L.push('  · ' + ql + ': ' + val);
   });
-  L.push('', '■ 계산 결과' + (calc.precise ? ' (검증 엔진)' : ' (간이 추정)'));
+  L.push('', '■ 계산 결과 (검증 엔진)');
+  const dd = calc.deductions || {};
+  [['선택공제', '선택공제(일괄 또는 기초·인적)'], ['배우자공제', '배우자상속공제'], ['증여세액공제', '증여세액공제']].forEach(([k, label]) => {
+    if (typeof dd[k] === 'number' && dd[k] > 0) L.push('  · ' + label + ': ' + formatWon(dd[k]));
+  });
   L.push('  · 과세표준: ' + formatWon(calc.taxBase));
   L.push('  · 산출세액: ' + formatWon(calc.calcTax));
   L.push('  · 총 납부세액: ' + formatWon(calc.totalTax));
@@ -384,6 +484,55 @@ async function callInhEngine(body) {
   throw lastErr;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   엔진 결과 → calc (261010 오너 방침: 프론트의 자체 계산식(폴백)을 삭제한다 — 증여세·양도세·취득세 화면과 같은 방식)
+
+   상속세 화면에는 세액을 «스스로» 계산하는 코드가 없다. 금액은 엔진(`POST /v1/calc/inheritance`)이 준 값뿐이고,
+   엔진 값이 없으면 금액 필드(totalTax 등)를 아예 두지 않는다. 엔진 호출 결과는 셋이다.
+     · 유효 응답  — HTTP 200 + 오류 없음 + calc.상태 가 'ok' + 필수 숫자 키(과세표준·산출세액·세액)가 유한한 실수
+                    (window.jtValidCalc) → precise:true 와 각 금액 필드
+     · 거부       — HTTP 200 인데 calc.오류 가 있거나 calc.상태 가 'ok' 가 아님(needs_input·unsupported), 또는 HTTP 4xx(408·429 제외)
+                    → precise:false, engineState:'refused', engineMessage(엔진이 준 오류 문구 — «입력이 더 필요합니다» 안내에 그대로 보인다)
+     · 연결 실패  — 네트워크 오류·타임아웃·HTTP 5xx·408·429·calc 없음·깨진 응답·상태 'error'(엔진 내부 실패) → precise:false, engineState:'down'
+   ══════════════════════════════════════════════════════════════════════════ */
+const INH_ENGINE_REQUIRED = ['과세표준', '산출세액', '세액'];
+function inhEngineVerdict(c) {
+  if (!c || typeof c !== 'object' || Array.isArray(c)) return 'down';
+  /* 상태 키가 있으면 먼저 본다. error = 엔진 내부 실패(입력 탓이 아니다 → 다시 시도), needs_input·unsupported = 거부.
+     상태 키가 없는 응답(구 엔진)은 «오류 없음 + 유효성 통과»로만 받는다. */
+  if (Object.prototype.hasOwnProperty.call(c, '상태') && c['상태'] !== 'ok') return c['상태'] === 'error' ? 'down' : 'refused';
+  /* 공통 검증기(jtValidCalc)가 무효로 보는 명시적 오류 필드(error·detail 등)도 «거부»다 — 무결성 검사로 넘기면
+     「연결 실패」로 잘못 안내된다. */
+  if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return 'refused';
+  if (!window.jtValidCalc(c, INH_ENGINE_REQUIRED)) return 'down';
+  return 'ok';
+}
+function inhCalcFromEngine(ej) {
+  const c = ej && ej.calc;
+  const verdict = inhEngineVerdict(c);
+  if (verdict === 'refused') {
+    const msg = [c['오류'], c.error].find(x => typeof x === 'string' && x.trim());
+    return { precise: false, engineState: 'refused', engineMessage: msg ? msg.trim() : '' };
+  }
+  if (verdict !== 'ok') return { precise: false, engineState: verdict };
+  const mj = (c['주요공제'] && typeof c['주요공제'] === 'object' && !Array.isArray(c['주요공제'])) ? c['주요공제'] : {};
+  return {
+    precise: true, engineVer: ej.version && ej.version.engine,
+    taxBase: c['과세표준'], calcTax: c['산출세액'], totalTax: c['세액'],
+    deductions: mj,
+    steps: c['단계별계산'] || [],
+    engineWarnings: c['경고사항'] || [],   // 엔진이 알리는 가정·경고([확인 필요] 등) — 결과 화면에 그대로 보인다
+    nonTaxableMsg: c['세액'] === 0 ? '공제 범위 내로 납부할 상속세가 없습니다.' : null,
+  };
+}
+/* 호출 자체가 던진 예외 — HTTP 4xx(callInhEngine 이 status 를 달아 던진다)는 엔진의 «거부», 그 밖은 «연결 실패» */
+function inhCalcFromEngineError(e) {
+  /* 408(시간 초과)·429(호출 제한)는 입력 문제가 아니라 일시적 상태다 — 다시 시도를 안내한다 */
+  return (e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429)
+    ? { precise: false, engineState: 'refused', engineMessage: '' }
+    : { precise: false, engineState: 'down' };
+}
+
 function JTReportInheritance({ setRoute, onBack }) {
   const [step, setStep] = useInhState(0);
   const [answers, setAnswers] = useInhState({});
@@ -415,7 +564,7 @@ function JTReportInheritance({ setRoute, onBack }) {
       const mustFill = cur.requiredIf && cur.requiredIf(answers);   // 조건부 필수(예: 사전증여 '있음' 시 금액)
       if (cur.optional && !mustFill) return true;
       const v = Number(answers[cur.id]);
-      return !isNaN(v) && v > 0;
+      return !isNaN(v) && v > 0 && (cur.min == null || v >= cur.min);
     }
     return !!answers[cur.id];
   };
@@ -427,10 +576,10 @@ function JTReportInheritance({ setRoute, onBack }) {
          판정 함수는 2층인데 ①불확정 층은 calc.precise 와 무관하다 — 그래서 여기서
          precise:true 로 불러 ①층만 본다. 못 낼 값이면 요청 자체가 낭비이고,
          「모르겠다」고 답한 사실이 기본값으로 둔갑해 엔진까지 가지도 않는다.
-         엔진 응답 직후의 기존 게이트는 그대로 ②폴백 한계를 잡는다. */
+         엔진 응답 직후의 게이트는 ②엔진 값 없음(거부·연결 실패)을 잡는다. */
       if (inhFallbackGaps(answers, { precise: true }).length > 0) {
         /* precise:true 로 저장하는 이유 — 렌더가 같은 판정 함수를 다시 부르는데,
-           precise:false 로 두면 ②폴백 한계 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
+           precise:false 로 두면 ②엔진 값 없음 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
            다른 항목이 화면에 뜬다 (260806 Codex R21 P2). preEngineBlock 은 그 상태를
            «정밀 계산 성공»과 구분하기 위한 표식이다. */
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === 'quick' };
@@ -439,45 +588,24 @@ function JTReportInheritance({ setRoute, onBack }) {
         return;
       }
       const estate = Number(answers.estateValue) || 0;
-      // 간이 폴백: 일괄공제 5억 + 배우자 최소공제 5억 + 채무·장례 차감
-      // 배우자 단독상속(자녀 0)은 일괄공제 배제 → 기초공제 2억만(상증법 §21②) — 과소추정 방지
-      const childCount = inhChildCount(answers);
-      const lumpSum = (answers.hasSpouse === 'yes' && childCount === 0) ? 200_000_000 : 500_000_000;
-      const debts = Number(answers.debts) || 0;
-      const funeral = Math.min(Math.max(Number(answers.funeralExpenses) || 0, 5_000_000), 15_000_000);
-      const grossInh = estate + (Number(answers.insuranceAmount) || 0) + (Number(answers.retirementPay) || 0);
-      // 수정 260628(INH-A-01): 배우자공제를 법정상속분 기반 근사(종전 5억 고정 → 과대). 배우자 단독 1.0 / 배우자+자녀N 1.5/(1.5+N), 최소 5억·한도 30억(상증법 §19). 엔진 일치(자녀2 → 0.4286).
-      // 수정 260628(INHERITANCE-R2-03): 배우자공제 한도 base는 채무 차감 후(상증법 시행령 §17① — 자산총액 − 공과금·채무, 장례비는 미차감).
-      const spouseShare = answers.hasSpouse === 'yes' ? (childCount > 0 ? 1.5 / (1.5 + childCount) : 1.0) : 0;
-      const spouseBase = Math.max(grossInh - debts, 0);
-      const spouseDed = answers.hasSpouse === 'yes' ? Math.min(Math.max(Math.round(spouseBase * spouseShare), 500_000_000), 3_000_000_000) : 0;
-      const taxableBase = Math.floor(Math.max(grossInh - debts - funeral - lumpSum - spouseDed, 0) / 1000) * 1000; // 과세표준 천원 미만 절사(상증법 §25) — 엔진 일치 (INHERITANCE-R2-03 잔차 제거)
-      const baseTax = calcInhBaseTax(taxableBase);
-      const filingCredit = Math.round(baseTax * 0.03);
-      let calc = {
-        taxBase: taxableBase, calcTax: baseTax, filingCredit,
-        totalTax: Math.max(baseTax - filingCredit, 0), precise: false,
-        nonTaxableMsg: taxableBase === 0 ? '공제 범위 내로 납부할 상속세가 없는 것으로 추정됩니다(정밀 계산 권장).' : null,
-      };
-      try {
-        const ej = await callInhEngine(mapAnswersToInheritance(answers));
-        const c = ej && ej.calc;
-        // 수정 260628(INHERITANCE-R2-01): 엔진이 오류바디를 HTTP 200으로 흘릴 때 partial-response 오염('세액 0원·상속세 없음' 거짓 표시) 방지 — 필수키 무결성 검증 후에만 정밀 채택.
-        if (window.jtValidCalc(c, ['과세표준', '산출세액', '세액'])) {
-          calc.taxBase = c['과세표준']; calc.calcTax = c['산출세액'];
-          calc.totalTax = c['세액'];
-          calc.deductions = c['주요공제'] || {};
-          calc.steps = c['단계별계산'] || [];
-          calc.engineWarnings = c['경고사항'] || [];
-          calc.precise = true; calc.engineVer = ej.version && ej.version.engine;
-          calc.nonTaxableMsg = (c['세액'] === 0) ? '공제 범위 내로 납부할 상속세가 없습니다.' : null;
-        } else if (c) {
-          console.warn('상속 엔진 응답 무결성 실패(오류바디/필수키 누락) — 간이 추정 유지', c);
+      /* ★ 엔진 값이 없으면 금액 필드가 «없는» calc 가 된다(inhCalcFromEngine 주석) — 자체 계산식으로 메우지 않는다.
+         유효 응답이면 precise:true, 거부면 engineState:'refused', 연결 실패면 engineState:'down'. */
+      let calc;
+      const reqBody = mapAnswersToInheritance(answers);
+      if (!reqBody) {
+        /* 위 ①층 게이트가 먼저 막으므로 여기까지 오지 않는다 — 요청을 만들 수 없는 불확정 입력이면 엔진을 부르지 않는다(방어) */
+        calc = { precise: false, engineState: 'refused', engineMessage: '' };
+      } else {
+        try {
+          calc = inhCalcFromEngine(await callInhEngine(reqBody));
+        } catch (e) {
+          console.warn('상속 엔진 호출 실패', e);
+          calc = inhCalcFromEngineError(e);
         }
-      } catch (e) { console.warn('상속 엔진 연결 실패 — 간이 추정 유지', e); }
+      }
 
       /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
-         폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
+         세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
          렌더와 «같은 함수»로 판정해야 규칙이 두 벌로 갈라지지 않는다. */
       if (inhFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === 'quick' };
@@ -498,7 +626,7 @@ function JTReportInheritance({ setRoute, onBack }) {
           cautions: [
             { title: '신고기한 6개월', detail: '상속개시일(사망일)이 속한 달의 말일부터 6개월 이내에 신고·납부해야 합니다. 늦으면 가산세가 붙습니다(상증법 §67).' },
             { title: '사전증여 합산', detail: '상속 전 10년(상속인) 이내 증여한 재산은 상속재산에 합산됩니다(§13). 누락하면 추징·가산세 위험이 큽니다.' },
-            { title: '배우자상속공제', detail: '배우자가 실제 상속받는 금액(최대 30억)까지 공제되어 절세 효과가 큽니다(§19). 표시 세액은 별도 입력이 없으면 배우자가 법정상속분을 모두 상속받는다고 가정한 값이라, 배우자가 적게 상속받으면 세액이 늘어날 수 있습니다.' },
+            { title: '배우자상속공제', detail: '배우자가 실제 상속받는 금액(최대 30억)까지 공제되어 절세 효과가 큽니다(§19). 표시 세액은 입력하신 배우자 상속 방식을 기준으로 한 값이라, 실제 분할이 달라지면 세액이 달라질 수 있습니다.' },
           ],
           saving_ideas: [
             { title: '배우자 상속분 조정', detail: '배우자상속공제 한도(법정상속분·30억) 내에서 배우자 상속분을 늘리면 1차 상속세를 줄일 수 있습니다(단, 2차 상속까지 함께 설계해야 합니다).' },
@@ -538,18 +666,22 @@ function JTReportInheritance({ setRoute, onBack }) {
   if (report) {
     const { calc, commentary } = report;
     const nonResident = answers.isResident === 'no';
-    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex — 실측 최대 1.8억 오차).
-       ★ 엔진 정밀계산이 성공했으면(calc.precise) 아무것도 막지 않는다. */
+    /* 엔진 값이 없거나(down·refused) 입력이 불확정이면 숫자를 내지 않는다 (261010: 자체 계산식 없음). */
     const inhGaps = inhFallbackGaps(answers, calc);
     const inhBlocked = inhGaps.length > 0;
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
        AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
     if (inhBlocked) {
+      /* 사유 구분: ①입력 불확정 → 'input' / 엔진이 거부(입력 부족·지원 안 함) → 'refused' / 그 밖(연결 실패·미지정) → 'down' */
+      const inhBlockReason = inhFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
+      const inhBlockTag = inhBlockReason === 'input' ? '정밀 계산 필요' : (inhBlockReason === 'refused' ? '입력이 더 필요합니다' : '계산 엔진 연결 실패');
       return (
         <div className="jt-container">
-          <JTReportShell title="상속세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
-            <JTFallbackBlocked gaps={inhGaps} onRetry={runAnalysis} reason={inhFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
+          <JTReportShell title="상속세 계산 결과" subtitle={inhBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            {/* 'down' 은 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다.
+                'input'·'refused' 는 무엇을 채워야 하는지(엔진이 준 문구 포함)를 목록으로 보인다 */}
+            <JTFallbackBlocked gaps={inhBlockReason === 'down' ? [] : inhGaps} onRetry={runAnalysis} reason={inhBlockReason} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
             </div>
@@ -557,56 +689,48 @@ function JTReportInheritance({ setRoute, onBack }) {
         </div>
       );
     }
+    const dd = calc.deductions || {};
+    const ddNum = (k) => (typeof dd[k] === 'number' && isFinite(dd[k])) ? dd[k] : null;
     return (
       <div className="jt-container">
-        <JTReportShell title="상속세 계산 결과" subtitle={calc.precise ? '상속세 정밀 계산' : '상속세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell title="상속세 계산 결과" subtitle="상속세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
               ⚠️ 비거주자 상속은 국내 재산만 과세되고 일괄공제 등이 배제되어 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
             </div>
           )}
-          {inhBlocked ? (
-            <JTFallbackBlocked gaps={inhGaps} onRetry={runAnalysis} />
-          ) : (
           <div className="jt-report-result__grade jt-grade-mid">
-            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 상속세' : (calc.precise ? '총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '추정 납부세액 · 간이')}</div>
+            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 상속세' : '총 납부세액 · 정밀 계산 (JT택스랩 엔진)'}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
-          )}
-
-          {!calc.precise && !inhBlocked && (
-            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 세율표 · 채무·장례비 차감 · 보험금·퇴직금 합산 · 일괄공제 5억(<strong>배우자 단독상속</strong>, 즉 자녀가 없으면 일괄공제 대신 기초공제 2억) · <strong>법정상속분 기준 배우자상속공제</strong> · 신고세액공제.<br /><strong>반영하지 않은 것</strong>: <strong>금융재산상속공제</strong>(§22) · <strong>동거주택상속공제</strong>(§23의2) · <strong>사전증여 합산과 증여세액공제</strong>(§13·§28) · 배우자가 실제로 상속받지 않는 경우의 조정 · 공제 종합한도(§24). 정밀 계산에서 반영됩니다 —
-              <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
-            </div>
-          )}
 
           {report.quick && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
-                <strong>총재산·배우자·자녀만으로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
-                채무·장례비 · 금융재산공제 · 동거주택공제 · 10년 내 사전증여(합산) · 배우자 실제 상속분 · 비거주자 여부(일괄공제 배제).
+                <strong>총재산·가족·배우자 상속 방식만으로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
+                채무·장례비·봉안비 · 금융재산공제 · 동거주택공제 · 10년 내 사전증여(합산) · 보험금·퇴직금.
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
             </div>
           )}
 
-          {/* 차단 시에는 «계산 내역»도 감춘다 — 헤드라인만 가리고 표에 같은 숫자를 남기면 막은 게 아니다 */}
-          {!inhBlocked && (
           <section className="jt-report-result__section">
             <h3>계산 내역</h3>
             <table className="jt-report-calc">
               <tbody>
+                {ddNum('선택공제') != null && <tr><th>{typeof dd['공제유형'] === 'string' && dd['공제유형'] ? `${dd['공제유형']} (선택공제)` : '선택공제 (일괄공제 또는 기초·인적공제)'}</th><td>{formatWon(ddNum('선택공제'))}</td></tr>}
+                {ddNum('배우자공제') > 0 && <tr><th>배우자상속공제 (§19)</th><td>{formatWon(ddNum('배우자공제'))}</td></tr>}
+                {ddNum('공제한도초과') > 0 && <tr><th>공제 한도(§24) 초과로 되돌린 금액</th><td>+ {formatWon(ddNum('공제한도초과'))}</td></tr>}
                 <tr><th><strong>과세표준</strong></th><td><strong>{formatWon(calc.taxBase)}</strong></td></tr>
                 <tr><th>산출세액</th><td>{formatWon(calc.calcTax)}</td></tr>
+                {ddNum('증여세액공제') > 0 && <tr><th>증여세액공제 (사전증여 §28)</th><td>− {formatWon(ddNum('증여세액공제'))}</td></tr>}
                 <tr><th><strong>총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
               </tbody>
             </table>
             {calc.nonTaxableMsg && <p style={{ marginTop: 10 }}>{calc.nonTaxableMsg}</p>}
           </section>
-          )}
 
-          {calc.precise && calc.steps && calc.steps.length > 0 && (
+          {calc.steps && calc.steps.length > 0 && (
             <section className="jt-report-result__section">
               <h3>단계별 계산 (법조문 근거)</h3>
               <table className="jt-report-calc">
@@ -625,6 +749,13 @@ function JTReportInheritance({ setRoute, onBack }) {
               <ul style={{ margin: 0, paddingLeft: 18 }}>
                 {calc.engineWarnings.map((w, i) => <li key={i} style={{ marginBottom: 4 }}>{w}</li>)}
               </ul>
+            </section>
+          )}
+
+          {inhPriorGiftDropped(answers) && (
+            <section className="jt-report-result__section" style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', borderRadius: 8 }}>
+              <h3 style={{ marginTop: 0 }}>사전증여는 계산에 넣지 않았습니다</h3>
+              <p style={{ margin: 0 }}>한 사람 기준으로 답하신 증여 중, 상속인이 아닌 분에게 상속개시일 전 5년보다 앞서 한 증여는 상속재산에 합산하지 않으므로, 입력하신 사전증여는 이 계산에서 제외했습니다(상증법 §13).</p>
             </section>
           )}
 
@@ -653,24 +784,22 @@ function JTReportInheritance({ setRoute, onBack }) {
             본 계산은 입력 정보와 현행 세법을 기준으로 한 예상액입니다. 실제 세액은 재산 평가액·상속재산 분할·공제 적용·세법 개정에 따라 달라질 수 있으며, 신고기한은 상속개시일(사망일)이 속한 달의 말일부터 6개월입니다(피상속인 또는 상속인 중 한 분이라도 외국에 주소를 둔 경우 9개월, 신고세액공제 3%). 정확한 신고는 담당 세무사 확인이 필요합니다.
           </p>
 
-          {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
-              kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
-              Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
-          {!inhBlocked && (
+          {/* 차단 중에는 위 조기 반환으로 이 화면에 오지 않으므로 «공유·전송»도 열리지 않는다 —
+              화면에서 금액을 가려도 kakaoSummary·reportSummary·reportDetail 에 세액이 담겨 클립보드와
+              Web3Forms 로 나가던 경로 (260806 Codex P0). */}
           <JTReportConvert
             setRoute={setRoute}
             calcId="inheritance"
             completeEligible={true}
-            precise={calc.precise}
+            precise={true}
             quick={report.quick}
-            reportType={calc.precise ? '상속세 정밀 계산' : '상속세 간이 계산'}
+            reportType="상속세 정밀 계산"
             reportTag="LEGACY"
             reportSummary={`총 납부세액 ${formatWon(calc.totalTax)} / 과세표준 ${formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
             reportDetail={buildInhDetail(answers, calc, commentary)}
             kakaoSummary={buildInhKakao(answers, calc)}
             urgent={false}
           />
-          )}
         </JTReportShell>
       </div>
     );

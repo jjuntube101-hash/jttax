@@ -7036,26 +7036,12 @@ var __spreadValues = (a, b) => {
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 const { useState: useInhState } = React;
-const INH_BRACKETS = [
-  [1e8, 0.1, 0],
-  [5e8, 0.2, 1e7],
-  [1e9, 0.3, 6e7],
-  [3e9, 0.4, 16e7],
-  [Infinity, 0.5, 46e7]
-];
 function inhChildCount(a) {
   if (!a) return 0;
   if (a.numChildren === "many") return Math.max(7, Math.floor(Number(a.numChildrenExact) || 0));
   return Number(a.numChildren) || 0;
 }
 window.jtInhChildCount = inhChildCount;
-function calcInhBaseTax(taxBase) {
-  if (taxBase <= 0) return 0;
-  for (const [limit, rate, deduct] of INH_BRACKETS) {
-    if (taxBase <= limit) return Math.round(taxBase * rate - deduct);
-  }
-  return 0;
-}
 function inhKoreanAmount(raw) {
   const n = Number(raw) || 0;
   if (n <= 0) return "";
@@ -7125,10 +7111,39 @@ const INHERITANCE_QS = [
     tier: "quick",
     section: "\uC0C1\uC18D\uC778",
     q: "\uC790\uB140\uAC00 \uC815\uD655\uD788 \uBA87 \uBA85\uC778\uAC00\uC694? (\uBA85)",
-    sub: "\uBC30\uC6B0\uC790 \uBC95\uC815\uC0C1\uC18D\uBD84\uC774 \uC790\uB140 \uC218\uB85C \uAC08\uB9AC\uAE30 \uB54C\uBB38\uC5D0 \uC815\uD655\uD55C \uC778\uC6D0\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.",
+    sub: "\uBC30\uC6B0\uC790 \uBC95\uC815\uC0C1\uC18D\uBD84\uC774 \uC790\uB140 \uC218\uB85C \uAC08\uB9AC\uAE30 \uB54C\uBB38\uC5D0 \uC815\uD655\uD55C \uC778\uC6D0\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. 7\uBA85 \uC774\uC0C1\uC774\uBA74 \uC815\uD655\uD55C \uC778\uC6D0\uC744 7 \uC774\uC0C1\uC73C\uB85C \uC801\uC5B4 \uC8FC\uC2ED\uC2DC\uC624(7 \uBBF8\uB9CC\uC744 \uC801\uC73C\uBA74 \uC778\uC6D0\uC744 \uC784\uC758\uB85C \uC62C\uB9AC\uC9C0 \uC54A\uACE0 \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4).",
     numeric: true,
+    min: 7,
     placeholder: "\uC608: 7",
     showIf: (a) => a.numChildren === "many"
+  },
+  /* 배우자가 실제로 상속받는 금액은 배우자상속공제(§19)를 갈라 세액이 크게 달라진다 — 그래서 «빠른 계산»에서 묻는다.
+     종전엔 상세 단계에서 「법정상속분 / 받지 않음」 둘만 있었고, 묻지 않은 빠른 계산은 법정상속분으로 «확정»했다(261010 폐지).
+     「모름」은 엔진을 부르지 않는다 — 짐작으로 채우면 틀린 금액에 「정밀 계산」 딱지가 붙는다. */
+  {
+    id: "spouseActual",
+    tier: "quick",
+    section: "\uBC30\uC6B0\uC790 \uC0C1\uC18D",
+    q: "\uBC30\uC6B0\uC790\uB294 \uC2E4\uC81C\uB85C \uC5BC\uB9C8\uB97C \uC0C1\uC18D\uBC1B\uC73C\uC2DC\uB098\uC694?",
+    sub: "\uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C\uB294 \uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C\uB85C \uC0C1\uC18D\uBC1B\uB294 \uAE08\uC561(\uBC95\uC815\uC0C1\uC18D\uBD84 \uD55C\uB3C4, \uCD5C\uB300 30\uC5B5)\uAE4C\uC9C0 \uACF5\uC81C\uB418\uC5B4(\uC0C1\uC99D\uBC95 \xA719) \uC774 \uB2F5\uC5D0 \uB530\uB77C \uC138\uC561\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC0C1\uC18D\uC778\uB4E4\uC774 \uB098\uB204\uAE30\uB85C \uD55C \uBC29\uC2DD\uC744 \uACE8\uB77C \uC8FC\uC138\uC694. \uC544\uC9C1 \uC815\uD574\uC9C0\uC9C0 \uC54A\uC544 \u300C\uBAA8\uB984\u300D\uC744 \uACE0\uB974\uC2DC\uBA74 \xAB\uD2C0\uB9B0 \uAE08\uC561\uC744 \uBCF4\uC5EC \uB4DC\uB9AC\uC9C0 \uC54A\uAE30 \uC704\uD574\xBB \uAE08\uC561 \uB300\uC2E0 \uC548\uB0B4\uB97C \uB4DC\uB9BD\uB2C8\uB2E4.",
+    showIf: (a) => a.hasSpouse === "yes",
+    opts: [
+      ["legal", "\uBC95\uC815\uC0C1\uC18D\uBD84\uB300\uB85C \uB098\uB215\uB2C8\uB2E4", "\uBC30\uC6B0\uC790\uAC00 \uBC95\uC815\uC0C1\uC18D\uBD84\uB9CC\uD07C \uC0C1\uC18D"],
+      ["amount", "\uBC30\uC6B0\uC790\uAC00 \uBC1B\uC744 \uAE08\uC561\uC744 \uC9C1\uC811 \uC785\uB825\uD569\uB2C8\uB2E4", "\uD611\uC758\uBD84\uD560 \uB4F1\uC73C\uB85C \uAE08\uC561\uC774 \uC815\uD574\uC9C4 \uACBD\uC6B0"],
+      ["none", "\uBC30\uC6B0\uC790\uB294 \uC0C1\uC18D\uBC1B\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4", ""],
+      ["unsure", "\uBAA8\uB974\uACA0\uC2B5\uB2C8\uB2E4 (\uC544\uC9C1 \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4)", "\u26A0\uFE0F \uAE08\uC561 \uB300\uC2E0 \uC548\uB0B4\uB97C \uB4DC\uB9BD\uB2C8\uB2E4"]
+    ]
+  },
+  {
+    id: "spouseInheritanceAmount",
+    tier: "quick",
+    section: "\uBC30\uC6B0\uC790 \uC0C1\uC18D",
+    q: "\uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C\uB85C \uC0C1\uC18D\uBC1B\uB294 \uAE08\uC561\uC740 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC6D0)",
+    sub: "\uC0C1\uC18D\uC7AC\uC0B0\uC744 \uB098\uB204\uAE30\uB85C \uD55C \uACB0\uACFC \uBC30\uC6B0\uC790\uAC00 \uBC1B\uB294 \uC7AC\uC0B0\uC758 \uC0C1\uC18D\uC138 \uD3C9\uAC00\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uACF5\uC81C \uD55C\uB3C4(\uBC95\uC815\uC0C1\uC18D\uBD84\xB730\uC5B5)\uB294 \uC5D4\uC9C4\uC774 \uACC4\uC0B0\uD569\uB2C8\uB2E4.",
+    showIf: (a) => a.hasSpouse === "yes" && a.spouseActual === "amount",
+    numeric: true,
+    money: true,
+    placeholder: "\uC608: 1,500,000,000"
   },
   // ── 더 정확히 (상세) ──
   {
@@ -7160,12 +7175,22 @@ const INHERITANCE_QS = [
   {
     id: "funeralExpenses",
     section: "\uACF5\uC81C \uD56D\uBAA9",
-    q: "\uC7A5\uB840\uBE44\uC6A9\uC740 \uC5BC\uB9C8\uB098 \uB4DC\uC168\uB098\uC694? (\uC6D0)",
-    sub: "\uC2E4\uC81C \uC7A5\uB840\uBE44\uB97C \uBD09\uC548\uC2DC\uC124\xB7\uC790\uC5F0\uC7A5\uC9C0 \uBE44\uC6A9\uAE4C\uC9C0 \uD569\uC0B0\uD574 \uD55C \uCE78\uC5D0 \uC785\uB825\uD558\uC138\uC694. \uD569\uC0B0 \uCD5C\uC18C 500\uB9CC\uC6D0~\uCD5C\uB300 1,500\uB9CC\uC6D0\uAE4C\uC9C0 \uACF5\uC81C\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uB839 \xA79\u2461). \uC99D\uBE59\uC774 \uC5C6\uC5B4\uB3C4 500\uB9CC\uC6D0\uC740 \uC778\uC815\uB429\uB2C8\uB2E4. \uBAA8\uB974\uBA74 \uBE44\uC6CC\uB450\uC138\uC694.",
+    q: "\uC77C\uBC18 \uC7A5\uB840\uBE44\uC6A9\uC740 \uC5BC\uB9C8\uB098 \uB4DC\uC168\uB098\uC694? (\uC6D0)",
+    sub: "\uC7A5\uB840\uC5D0 \uC9C1\uC811 \uC4F4 \uAE08\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uBD09\uC548\uC2DC\uC124\xB7\uC790\uC5F0\uC7A5\uC9C0(\uB0A9\uACE8\uB2F9\xB7\uC218\uBAA9\uC7A5 \uB4F1) \uC0AC\uC6A9 \uBE44\uC6A9\uC740 \uC774 \uCE78\uC5D0 \uB123\uC9C0 \uB9D0\uACE0 \uBC14\uB85C \uB2E4\uC74C \uCE78\uC5D0 \uB530\uB85C \uC801\uC5B4 \uC8FC\uC138\uC694. \uC77C\uBC18 \uC7A5\uB840\uBE44\uB294 \uCD5C\uC18C 500\uB9CC\uC6D0~\uCD5C\uB300 1,000\uB9CC\uC6D0\uAE4C\uC9C0 \uACF5\uC81C\uB418\uACE0(\uC99D\uBE59\uC774 \uC5C6\uC5B4\uB3C4 500\uB9CC\uC6D0\uC740 \uC778\uC815), \uBD09\uC548\uC2DC\uC124\xB7\uC790\uC5F0\uC7A5\uC9C0 \uBE44\uC6A9\uC740 \uBCC4\uB3C4\uB85C \uCD5C\uB300 500\uB9CC\uC6D0\uAE4C\uC9C0 \uB354 \uACF5\uC81C\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uB839 \xA79\u2461). \uBAA8\uB974\uBA74 \uBE44\uC6CC\uB450\uC138\uC694.",
     numeric: true,
     money: true,
     optional: true,
     placeholder: "\uC608: 10,000,000"
+  },
+  {
+    id: "burialFacilityExpenses",
+    section: "\uACF5\uC81C \uD56D\uBAA9",
+    q: "\uBD09\uC548\uC2DC\uC124\xB7\uC790\uC5F0\uC7A5\uC9C0 \uC0AC\uC6A9 \uBE44\uC6A9\uC740 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC6D0)",
+    sub: "\uB0A9\uACE8\uB2F9(\uBD09\uC548\uC2DC\uC124)\xB7\uC218\uBAA9\uC7A5 \uB4F1 \uC790\uC5F0\uC7A5\uC9C0\uB97C \uC0AC\uC6A9\uD558\uB294 \uB370 \uC4F4 \uAE08\uC561\uC785\uB2C8\uB2E4. \uC77C\uBC18 \uC7A5\uB840\uBE44\uC640 \uBCC4\uB3C4\uB85C \uCD5C\uB300 500\uB9CC\uC6D0\uAE4C\uC9C0 \uACF5\uC81C\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uB839 \xA79\u2461). \uBE44\uC6A9\uC774 \uC5C6\uC5C8\uB2E4\uBA74 0 \uC744 \uC785\uB825\uD558\uC138\uC694. \uBE44\uC6CC \uB450\uBA74 \uC774 \uBE44\uC6A9\uC744 \uB530\uB85C \uBC18\uC601\uD558\uC9C0 \uC54A\uACE0 \uC77C\uBC18 \uC7A5\uB840\uBE44(\uCD5C\uB300 1,000\uB9CC\uC6D0)\uB9CC \uACC4\uC0B0\uD558\uBA70, \uACB0\uACFC \uD654\uBA74\uC5D0 \uC548\uB0B4\uAC00 \uBD99\uC2B5\uB2C8\uB2E4.",
+    numeric: true,
+    money: true,
+    optional: true,
+    placeholder: "\uC608: 3,000,000"
   },
   {
     id: "netFinancialAssets",
@@ -7221,19 +7246,32 @@ const INHERITANCE_QS = [
   {
     id: "priorGiftHas",
     section: "\uC0AC\uC804\uC99D\uC5EC",
-    q: "\uC0C1\uC18D\uC778\uC774 \uACE0\uC778\uC5D0\uAC8C\uC11C \uCD5C\uADFC 10\uB144 \uB0B4 \uC99D\uC5EC\uBC1B\uC740 \uC801\uC774 \uC788\uB098\uC694?",
+    q: "\uB3CC\uC544\uAC00\uC2E0 \uBD84\uC774 \uC0C1\uC18D\uC778\uC5D0\uAC8C 10\uB144 \uC548\uC5D0, \uB610\uB294 \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uC0AC\uB78C\uC5D0\uAC8C 5\uB144 \uC548\uC5D0 \uC99D\uC5EC\uD55C \uC7AC\uC0B0\uC774 \uC788\uB098\uC694?",
     sub: "\uC0C1\uC18D \uAC1C\uC2DC \uC804 10\uB144 \uC774\uB0B4(\uC0C1\uC18D\uC778 \uC678\uC758 \uC0AC\uB78C\uC740 5\uB144) \uC99D\uC5EC\uD55C \uC7AC\uC0B0\uC740 \uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA713). \uC774\uBBF8 \uB0B8 \uC99D\uC5EC\uC138\uB294 \uACF5\uC81C\uB429\uB2C8\uB2E4. \uD569\uC0B0 \uB204\uB77D\uC740 \uAC00\uC0B0\uC138 \uC0AC\uACE0\uB85C \uC774\uC5B4\uC9C0\uB2C8 \uAF2D \uD655\uC778\uD558\uC138\uC694.",
     opts: [
       ["yes", "\uB124, \uC788\uC2B5\uB2C8\uB2E4", "\uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0(\xA713)"],
       ["no", "\uC544\uB2C8\uC624 / \uC5C6\uC2B5\uB2C8\uB2E4", ""]
     ]
   },
+  /* 사전증여는 «한 사람이 받은 증여» 기준으로만 받는다 — 합계 1건으로 보내는데 수증자가 여럿이면 사람별 증여재산공제와
+     증여세액공제가 섞여 틀린 금액이 나온다(Codex 261010 R1 F1·F2). 여러 명이면 요청을 만들지 않는다. */
+  {
+    id: "priorGiftOneRecipient",
+    section: "\uC0AC\uC804\uC99D\uC5EC",
+    q: "\uADF8 \uAE30\uAC04 \uC548\uC5D0 \uC99D\uC5EC\uBC1B\uC740 \uC0AC\uB78C\uC774 \uD55C \uBA85\uC778\uAC00\uC694?",
+    sub: "\uC774 \uACC4\uC0B0\uAE30\uB294 \uD55C \uC0AC\uB78C\uC774 \uBC1B\uC740 \uC99D\uC5EC\uB9CC \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uC99D\uC5EC\uBC1B\uC740 \uC0AC\uB78C\uC774 \uC5EC\uB7EC \uBA85\uC774\uBA74 \uC0AC\uB78C\uBCC4 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uC640 \uC99D\uC5EC\uC138\uC561\uACF5\uC81C\uAC00 \uB2EC\uB77C\uC838 \uD654\uBA74\uC5D0\uC11C \uACC4\uC0B0\uD558\uC9C0 \uC54A\uACE0, \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4.",
+    showIf: (a) => a.priorGiftHas === "yes",
+    opts: [
+      ["one", "\uD55C \uBA85\uC785\uB2C8\uB2E4", "\uD55C \uC0AC\uB78C \uAE30\uC900\uC73C\uB85C \uACC4\uC0B0"],
+      ["many", "\uC5EC\uB7EC \uBA85\uC785\uB2C8\uB2E4", "\u26A0\uFE0F \uAE08\uC561 \uB300\uC2E0 \uC0C1\uB2F4 \uC548\uB0B4\uB97C \uB4DC\uB9BD\uB2C8\uB2E4"]
+    ]
+  },
   {
     id: "priorGiftValue",
     section: "\uC0AC\uC804\uC99D\uC5EC",
-    q: "10\uB144 \uB0B4 \uC99D\uC5EC\uBC1B\uC740 \uC7AC\uC0B0\uC740 \uBAA8\uB450 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC99D\uC5EC \uB2F9\uC2DC \uD3C9\uAC00\uC561 \xB7 \uC6D0)",
-    sub: "\uC5EC\uB7EC \uAC74\uC774\uBA74 \uD569\uC0B0 \uAE08\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uC99D\uC5EC \uB2F9\uC2DC\uC758 \uD3C9\uAC00\uC561 \uAE30\uC900\uC785\uB2C8\uB2E4.",
-    showIf: (a) => a.priorGiftHas === "yes",
+    q: "\uADF8 \uD55C \uC0AC\uB78C\uC774 \uC99D\uC5EC\uBC1B\uC740 \uC7AC\uC0B0\uC740 \uBAA8\uB450 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC99D\uC5EC \uB2F9\uC2DC \uD3C9\uAC00\uC561 \xB7 \uC6D0)",
+    sub: "\uD55C \uC0AC\uB78C\uC774 \uC5EC\uB7EC \uAC74\uC744 \uBC1B\uC558\uB2E4\uBA74 \uD569\uC0B0 \uAE08\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uC99D\uC5EC \uB2F9\uC2DC\uC758 \uD3C9\uAC00\uC561 \uAE30\uC900\uC785\uB2C8\uB2E4.",
+    showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one",
     numeric: true,
     money: true,
     optional: true,
@@ -7244,13 +7282,35 @@ const INHERITANCE_QS = [
   {
     id: "priorGiftRelation",
     section: "\uC0AC\uC804\uC99D\uC5EC",
-    q: "\uADF8 \uC99D\uC5EC\uB97C \uBC1B\uC740 \uBD84(\uC0C1\uC18D\uC778)\uC740 \uACE0\uC778\uACFC \uC5B4\uB5A4 \uC0AC\uC774\uC600\uB098\uC694?",
-    sub: "\uC99D\uC5EC \uB2F9\uC2DC \uC801\uC6A9\uB41C \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C(\xA753)\uB97C \uAC00\uB2A0\uD574, \uC774\uBBF8 \uB0B8 \uC99D\uC5EC\uC138\uB97C \uC0C1\uC18D\uC138\uC5D0\uC11C \uC815\uD655\uD788 \uBE7C\uAE30(\uC99D\uC5EC\uC138\uC561\uACF5\uC81C \xA728) \uC704\uD568\uC785\uB2C8\uB2E4. \uBCF4\uD1B5 \uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uBC1B\uC558\uC73C\uBA74 \u300C\uC9C1\uACC4\uBE44\uC18D\u300D\uC785\uB2C8\uB2E4.",
-    showIf: (a) => a.priorGiftHas === "yes",
+    q: "\uADF8 \uC99D\uC5EC\uB97C \uBC1B\uC740 \uBD84\uC740 \uACE0\uC778\uACFC \uC5B4\uB5A4 \uC0AC\uC774\uC600\uB098\uC694?",
+    sub: "\uC99D\uC5EC \uB2F9\uC2DC \uC801\uC6A9\uB41C \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C(\xA753)\uB97C \uAC00\uB2A0\uD574, \uC774\uBBF8 \uB0B8 \uC99D\uC5EC\uC138\uB97C \uC0C1\uC18D\uC138\uC5D0\uC11C \uC815\uD655\uD788 \uBE7C\uAE30(\uC99D\uC5EC\uC138\uC561\uACF5\uC81C \xA728) \uC704\uD568\uC785\uB2C8\uB2E4. \uBCF4\uD1B5 \uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uBC1B\uC558\uC73C\uBA74 \u300C\uC9C1\uACC4\uBE44\uC18D\u300D\uC785\uB2C8\uB2E4. \uBC30\uC6B0\uC790\uAC00 \uBC1B\uC740 \uC99D\uC5EC\uB294 \uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C \uD55C\uB3C4 \uACC4\uC0B0\uC5D0\uB3C4 \uBC18\uC601\uB429\uB2C8\uB2E4(\xA719). \uC9C1\uACC4\uBE44\uC18D\xB7\uBC30\uC6B0\uC790\uB294 \uC0C1\uC18D\uC778\uC73C\uB85C \uBD05\uB2C8\uB2E4. \u300C\uADF8 \uC678\u300D(\uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uCE5C\uC871\xB7\uD0C0\uC778 \uD3EC\uD568)\uB97C \uACE0\uB974\uC2DC\uBA74 \uC0C1\uC18D\uC778 \uC5EC\uBD80\uC640 \uC99D\uC5EC \uC2DC\uAE30\uB97C \uCD94\uAC00\uB85C \uC5EC\uCB59\uB2C8\uB2E4.",
+    showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one",
     opts: [
-      ["\uC9C1\uACC4\uBE44\uC18D", "\uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uBC1B\uC74C (\uC9C1\uACC4\uBE44\uC18D)", "\uC99D\uC5EC\uACF5\uC81C 5\uCC9C\uB9CC \uAE30\uC900"],
-      ["\uBC30\uC6B0\uC790", "\uBC30\uC6B0\uC790\uAC00 \uBC1B\uC74C", "\uC99D\uC5EC\uACF5\uC81C 6\uC5B5 \uAE30\uC900"],
-      ["\uAE30\uD0C0", "\uADF8 \uC678 \uCE5C\uC871 \uB4F1", "\uC99D\uC5EC\uACF5\uC81C 1\uCC9C\uB9CC \uAE30\uC900"]
+      ["\uC9C1\uACC4\uBE44\uC18D", "\uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uBC1B\uC74C (\uC9C1\uACC4\uBE44\uC18D \xB7 \uC0C1\uC18D\uC778)", "\uC99D\uC5EC\uACF5\uC81C 5\uCC9C\uB9CC \uAE30\uC900"],
+      ["\uBC30\uC6B0\uC790", "\uBC30\uC6B0\uC790\uAC00 \uBC1B\uC74C (\uC0C1\uC18D\uC778)", "\uC99D\uC5EC\uACF5\uC81C 6\uC5B5 \uAE30\uC900"],
+      ["\uAE30\uD0C0", "\uADF8 \uC678 \u2014 \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uCE5C\uC871\xB7\uD0C0\uC778 \uD3EC\uD568", "\uC0C1\uC18D\uC778 \uC5EC\uBD80\uB97C \uCD94\uAC00\uB85C \uC5EC\uCB59\uB2C8\uB2E4 \xB7 \uC99D\uC5EC\uACF5\uC81C 1\uCC9C\uB9CC \uAE30\uC900"]
+    ]
+  },
+  {
+    id: "priorGiftHeir",
+    section: "\uC0AC\uC804\uC99D\uC5EC",
+    q: "\uADF8 \uC99D\uC5EC\uB97C \uBC1B\uC740 \uBD84\uC740 \uC774\uBC88 \uC0C1\uC18D\uC758 \uC0C1\uC18D\uC778\uC778\uAC00\uC694?",
+    sub: "\uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0\uD558\uB294 \uC0AC\uC804\uC99D\uC5EC\uC758 \uAE30\uAC04\uC774 \uC0C1\uC18D\uC778\uC740 10\uB144, \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uC0AC\uB78C\uC740 5\uB144\uC73C\uB85C \uB2E4\uB985\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA713). \uD55C \uC0AC\uB78C \uAE30\uC900\uC73C\uB85C \uB2F5\uD574 \uC8FC\uC138\uC694.",
+    showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && a.priorGiftRelation === "\uAE30\uD0C0",
+    opts: [
+      ["yes", "\uB124, \uC0C1\uC18D\uC778\uC785\uB2C8\uB2E4", "10\uB144 \uC774\uB0B4 \uC99D\uC5EC\uB97C \uD569\uC0B0"],
+      ["no", "\uC544\uB2C8\uC624, \uC0C1\uC18D\uC778\uC774 \uC544\uB2D9\uB2C8\uB2E4", "5\uB144 \uC774\uB0B4 \uC99D\uC5EC\uB9CC \uD569\uC0B0"]
+    ]
+  },
+  {
+    id: "priorGiftWithin5y",
+    section: "\uC0AC\uC804\uC99D\uC5EC",
+    q: "\uADF8 \uC99D\uC5EC\uB294 \uC0C1\uC18D\uAC1C\uC2DC\uC77C(\uC0AC\uB9DD\uC77C) \uC804 5\uB144 \uC774\uB0B4\uC5D0 \uC774\uB8E8\uC5B4\uC84C\uB098\uC694?",
+    sub: "\uD55C \uC0AC\uB78C \uAE30\uC900\uC785\uB2C8\uB2E4. \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uBD84\uC5D0\uAC8C 5\uB144\uBCF4\uB2E4 \uC55E\uC11C \uD55C \uC99D\uC5EC\uB294 \uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0\uD558\uC9C0 \uC54A\uC73C\uBBC0\uB85C \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
+    showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && a.priorGiftRelation === "\uAE30\uD0C0" && a.priorGiftHeir === "no",
+    opts: [
+      ["yes", "\uB124, 5\uB144 \uC774\uB0B4\uC785\uB2C8\uB2E4", "\uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0"],
+      ["no", "\uC544\uB2C8\uC624, 5\uB144\uBCF4\uB2E4 \uC55E\uC120 \uC99D\uC5EC\uC785\uB2C8\uB2E4", "\uD569\uC0B0\uD558\uC9C0 \uC54A\uC74C \u2014 \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4"]
     ]
   },
   {
@@ -7258,21 +7318,10 @@ const INHERITANCE_QS = [
     section: "\uC0AC\uC804\uC99D\uC5EC",
     q: "\uC99D\uC5EC\uBC1B\uC740 \uBD84\uC774 \uC99D\uC5EC \uB2F9\uC2DC \uBBF8\uC131\uB144\uC790(\uB9CC 19\uC138 \uBBF8\uB9CC)\uC600\uB098\uC694?",
     sub: "\uBBF8\uC131\uB144 \uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uC9C1\uACC4\uC874\uC18D(\uACE0\uC778)\uC5D0\uAC8C\uC11C \uC99D\uC5EC\uBC1B\uC558\uB2E4\uBA74 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uAC00 2\uCC9C\uB9CC\uC6D0\uC73C\uB85C \uC904\uC5B4\uB4ED\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA753\u2461\uB2E8\uC11C). \uC774\uBBF8 \uB0B8 \uC99D\uC5EC\uC138 \uACC4\uC0B0\uC5D0 \uBC18\uC601\uB429\uB2C8\uB2E4.",
-    showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftRelation === "\uC9C1\uACC4\uBE44\uC18D",
+    showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && a.priorGiftRelation === "\uC9C1\uACC4\uBE44\uC18D",
     opts: [
       ["no", "\uC544\uB2C8\uC624 (\uC131\uB144\uC774\uC5C8\uC74C)", "\uC99D\uC5EC\uACF5\uC81C 5\uCC9C\uB9CC"],
       ["yes", "\uB124, \uBBF8\uC131\uB144\uC774\uC5C8\uC2B5\uB2C8\uB2E4", "\uC99D\uC5EC\uACF5\uC81C 2\uCC9C\uB9CC"]
-    ]
-  },
-  {
-    id: "spouseActual",
-    section: "\uBC30\uC6B0\uC790 \uC0C1\uC18D",
-    q: "\uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C\uB85C \uC7AC\uC0B0\uC744 \uC0C1\uC18D\uBC1B\uC73C\uC2DC\uB098\uC694?",
-    sub: "\uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C\uB294 \uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C \uC0C1\uC18D\uBC1B\uB294 \uAE08\uC561(\uBC95\uC815\uC0C1\uC18D\uBD84\xB7\uCD5C\uB300 30\uC5B5 \uD55C\uB3C4)\uAE4C\uC9C0 \uACF5\uC81C\uD569\uB2C8\uB2E4. \uBC30\uC6B0\uC790\uAC00 \uC804\uD600 \uC0C1\uC18D\uBC1B\uC9C0 \uC54A\uC544\uB3C4 \uCD5C\uC18C 5\uC5B5\uC740 \uACF5\uC81C\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA719). \uD611\uC758\uBD84\uD560\uB85C \uBC30\uC6B0\uC790\uAC00 \uBC95\uC815\uC0C1\uC18D\uBD84\uBCF4\uB2E4 \uB354 \uBC1B\uAE30\uB85C \uD558\uBA74 \uACF5\uC81C\uAC00 \uB354 \uCEE4\uC9C8 \uC218 \uC788\uC5B4(\uCD5C\uB300 30\uC5B5) \uADF8 \uACBD\uC6B0 \uC0C1\uB2F4\uC5D0\uC11C \uC815\uBC00 \uACC4\uC0B0\uD574 \uB4DC\uB9BD\uB2C8\uB2E4.",
-    showIf: (a) => a.hasSpouse === "yes",
-    opts: [
-      ["auto", "\uBC95\uC815\uC0C1\uC18D\uBD84\uB300\uB85C \uBC1B\uC2B5\uB2C8\uB2E4 (\uC790\uB3D9 \uACC4\uC0B0)", "\uBC30\uC6B0\uC790 \uBC95\uC815\uC0C1\uC18D\uBD84\uB9CC\uD07C \uACF5\uC81C"],
-      ["zero", "\uBC30\uC6B0\uC790\uB294 \uC0C1\uC18D\uBC1B\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4", "\uCD5C\uC18C 5\uC5B5 \uACF5\uC81C(\xA719\u2463)"]
     ]
   },
   {
@@ -7285,14 +7334,28 @@ const INHERITANCE_QS = [
     placeholder: "\uC608: \uACE0\uC778\uC774 \uC6B4\uC601\uD558\uB358 \uC911\uC18C\uAE30\uC5C5\uC744 \uC790\uB140\uAC00 \uC2B9\uACC4 / \uC7A5\uC560\uC778 \uC790\uB140 \uC788\uC74C \uB4F1"
   }
 ];
+function inhPriorGiftDropped(a) {
+  return a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && Number(a.priorGiftValue) > 0 && a.priorGiftRelation === "\uAE30\uD0C0" && a.priorGiftHeir === "no" && a.priorGiftWithin5y === "no";
+}
 function mapAnswersToInheritance(a) {
-  const body = {
-    estate_value: Number(a.estateValue) || 0,
-    has_spouse: a.hasSpouse === "yes",
-    num_children: inhChildCount(a)
-  };
+  const spouseYes = a.hasSpouse === "yes";
+  const spouse = {};
+  if (spouseYes) {
+    if (a.spouseActual === "legal") spouse.spouse_legal_share = true;
+    else if (a.spouseActual === "amount" && Number(a.spouseInheritanceAmount) > 0) spouse.spouse_inheritance = Number(a.spouseInheritanceAmount);
+    else if (a.spouseActual === "none") spouse.spouse_no_inheritance = true;
+    else return null;
+  }
+  if (a.numChildren === "many" && !(Number(a.numChildrenExact) >= 7)) return null;
+  if (a.priorGiftHas === "yes" && a.priorGiftOneRecipient !== "one") return null;
+  const body = { estate_value: Number(a.estateValue) || 0 };
+  if (a.hasSpouse === "yes" || a.hasSpouse === "no") body.has_spouse = spouseYes;
+  if (a.numChildren != null && a.numChildren !== "") body.num_children = inhChildCount(a);
+  Object.assign(body, spouse);
   if (Number(a.debts) > 0) body.debts = Number(a.debts);
   if (Number(a.funeralExpenses) > 0) body.funeral_expenses = Number(a.funeralExpenses);
+  const burial = a.burialFacilityExpenses;
+  if (burial != null && String(burial).trim() !== "" && Number.isFinite(Number(burial)) && Number(burial) >= 0) body.burial_facility_expenses = Number(burial);
   if (Number(a.netFinancialAssets) > 0) body.net_financial_assets = Number(a.netFinancialAssets);
   if (Number(a.insuranceAmount) > 0) body.insurance_amount = Number(a.insuranceAmount);
   if (Number(a.retirementPay) > 0) body.retirement_pay = Number(a.retirementPay);
@@ -7300,48 +7363,67 @@ function mapAnswersToInheritance(a) {
     body.has_cohabitation_house = true;
     body.cohabitation_house_value = Number(a.cohabitationHouseValue) || 0;
   }
-  if (a.priorGiftHas === "yes" && Number(a.priorGiftValue) > 0) {
+  if (a.priorGiftHas === "yes" && (!(Number(a.priorGiftValue) > 0) || !["\uC9C1\uACC4\uBE44\uC18D", "\uBC30\uC6B0\uC790", "\uAE30\uD0C0"].includes(a.priorGiftRelation))) return null;
+  if (a.priorGiftHas === "yes" && !inhPriorGiftDropped(a)) {
     const pv = Number(a.priorGiftValue);
     const isMinorGift = a.priorGiftMinor === "yes" && a.priorGiftRelation === "\uC9C1\uACC4\uBE44\uC18D";
     const dedByRel = { "\uBC30\uC6B0\uC790": 6e8, "\uC9C1\uACC4\uBE44\uC18D": 5e7, "\uAE30\uD0C0": 1e7 };
-    const baseDed = isMinorGift ? 2e7 : dedByRel[a.priorGiftRelation] != null ? dedByRel[a.priorGiftRelation] : 5e7;
+    const baseDed = isMinorGift ? 2e7 : dedByRel[a.priorGiftRelation];
     const ded = Math.min(baseDed, pv);
-    body.gift_history = [{ value: pv, deduction_used: ded, is_heir: true, is_minor: isMinorGift }];
+    const item = { value: pv, deduction_used: ded, is_heir: true, is_minor: isMinorGift };
+    if (a.priorGiftRelation === "\uBC30\uC6B0\uC790") item.to_spouse = true;
+    if (a.priorGiftRelation === "\uAE30\uD0C0") {
+      if (a.priorGiftHeir === "yes") item.is_heir = true;
+      else if (a.priorGiftHeir === "no" && a.priorGiftWithin5y === "yes") item.is_heir = false;
+      else return null;
+    }
+    body.gift_history = [item];
   }
-  if (a.spouseActual === "zero") body.spouse_no_inheritance = true;
   return body;
 }
 function inhFallbackGaps(answers, calc) {
   const nonResident = answers.isResident !== "yes";
+  const spouseYes = answers.hasSpouse === "yes";
+  const sp = answers.spouseActual;
+  const spouseResolved = sp === "legal" || sp === "none" || sp === "amount" && Number(answers.spouseInheritanceAmount) > 0;
+  const giftOther = answers.priorGiftHas === "yes" && answers.priorGiftOneRecipient === "one" && answers.priorGiftRelation === "\uAE30\uD0C0";
+  const giftHeirResolved = answers.priorGiftHeir === "yes" || answers.priorGiftHeir === "no" && (answers.priorGiftWithin5y === "yes" || answers.priorGiftWithin5y === "no");
   const unknown = window.jtFallbackGaps([
     {
       when: nonResident,
       why: "\uACE0\uC778\uC758 \uAC70\uC8FC\uC790 \uC5EC\uBD80\uAC00 \xAB\uAC70\uC8FC\uC790\xBB\uB85C \uD655\uC778\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uBE44\uAC70\uC8FC\uC790\uB294 \uAD6D\uB0B4 \uC7AC\uC0B0\uB9CC \uACFC\uC138\uB418\uACE0 \uC77C\uAD04\uACF5\uC81C\xB7\uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C\uAC00 \uBC30\uC81C\uB429\uB2C8\uB2E4. \uACC4\uC0B0 \uC5D4\uC9C4\uC774 \uC544\uC9C1 \uAC70\uC8FC\uC790 \uAE30\uC900\uB9CC \uC9C0\uC6D0\uD574 \uAE08\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\uC0C1\uB2F4\uC5D0\uC11C \uC815\uD655\uD788 \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4)."
+    },
+    {
+      when: spouseYes && sp === "unsure",
+      why: "\uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C\uB85C \uC0C1\uC18D\uBC1B\uC744 \uAE08\uC561\uC5D0 \uB530\uB77C \uC138\uC561\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4 \u2014 \u300C\uBAA8\uB984\u300D\uC73C\uB85C\uB294 \uAE08\uC561\uC744 \uACC4\uC0B0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \u300C\u2190 \uC774\uC804\u300D\uC73C\uB85C \uB3CC\uC544\uAC00 \u300C\uBC95\uC815\uC0C1\uC18D\uBD84\uB300\uB85C\u300D\xB7\u300C\uC9C1\uC811 \uC785\uB825\u300D\xB7\u300C\uC0C1\uC18D\uBC1B\uC9C0 \uC54A\uC74C\u300D \uC911 \uD558\uB098\uB97C \uACE8\uB77C \uC8FC\uC138\uC694(\uC0C1\uC18D\uC778\uB4E4\uC774 \uC544\uC9C1 \uB098\uB204\uC9C0 \uC54A\uC558\uB2E4\uBA74 \uC0C1\uB2F4\uC5D0\uC11C \uC2DC\uB098\uB9AC\uC624\uBCC4\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4)."
+    },
+    {
+      when: spouseYes && sp !== "unsure" && !spouseResolved,
+      why: "\uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C\uB85C \uC0C1\uC18D\uBC1B\uB294 \uBC29\uC2DD(\uBC95\uC815\uC0C1\uC18D\uBD84\uB300\uB85C\xB7\uC9C1\uC811 \uC785\uB825\xB7\uC0C1\uC18D\uBC1B\uC9C0 \uC54A\uC74C)\uC774 \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uAC70\uB098, \uC9C1\uC811 \uC785\uB825\uC758 \uAE08\uC561\uC774 \uBE44\uC5B4 \uC788\uC2B5\uB2C8\uB2E4 \u2014 \uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C\uAC00 \uC774 \uB2F5\uC5D0 \uB530\uB77C \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4."
+    },
+    {
+      when: answers.numChildren === "many" && !(Number(answers.numChildrenExact) >= 7),
+      why: "\uC790\uB140\uAC00 7\uBA85 \uC774\uC0C1\uC778\uB370 \uC815\uD655\uD55C \uC778\uC6D0\uC774 \uC5C6\uAC70\uB098 7 \uBBF8\uB9CC\uC785\uB2C8\uB2E4 \u2014 7\uBA85 \uC774\uC0C1\uC774\uBA74 \uC815\uD655\uD55C \uC778\uC6D0\uC744 7 \uC774\uC0C1\uC73C\uB85C \uC801\uC5B4 \uC8FC\uC2ED\uC2DC\uC624(\uBC30\uC6B0\uC790 \uBC95\uC815\uC0C1\uC18D\uBD84\uC774 \uC778\uC6D0\uC218\uB85C \uAC08\uB9BD\uB2C8\uB2E4)."
+    },
+    {
+      when: answers.priorGiftHas === "yes" && answers.priorGiftOneRecipient === "many",
+      why: "\uC99D\uC5EC\uBC1B\uC740 \uC0AC\uB78C\uC774 \uC5EC\uB7EC \uBA85\uC774\uBA74 \uC0AC\uB78C\uBCC4 \uACF5\uC81C\uC640 \uC99D\uC5EC\uC138\uC561\uACF5\uC81C\uAC00 \uB2EC\uB77C\uC838 \uD654\uBA74\uC5D0\uC11C \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4 \u2014 \uC0C1\uB2F4 \uBB38\uC758\uB85C \uC0AC\uB78C\uBCC4 \uAE08\uC561\uC744 \uC801\uC5B4 \uC8FC\uC2ED\uC2DC\uC624."
+    },
+    {
+      when: answers.priorGiftHas === "yes" && answers.priorGiftOneRecipient === "one" && (!(Number(answers.priorGiftValue) > 0) || !["\uC9C1\uACC4\uBE44\uC18D", "\uBC30\uC6B0\uC790", "\uAE30\uD0C0"].includes(answers.priorGiftRelation)),
+      why: "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC\uB97C \uBC1B\uC740 \uD55C \uC0AC\uB78C\uC758 \uC99D\uC5EC \uAE08\uC561 \uB610\uB294 \uACE0\uC778\uACFC\uC758 \uAD00\uACC4(\uC9C1\uACC4\uBE44\uC18D\xB7\uBC30\uC6B0\uC790\xB7\uADF8 \uC678)\uAC00 \uBE44\uC5B4 \uC788\uC2B5\uB2C8\uB2E4 \u2014 \uC0C1\uC18D\uC778 \uC5EC\uBD80\uC640 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uAC00 \uAD00\uACC4\uB85C \uAC08\uB824 \uC9D0\uC791\uC73C\uB85C \uCC44\uC6B8 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."
+    },
+    {
+      when: answers.priorGiftHas === "yes" && answers.priorGiftOneRecipient !== "one" && answers.priorGiftOneRecipient !== "many",
+      why: "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC\uB97C \uBC1B\uC740 \uC0AC\uB78C\uC774 \uD55C \uBA85\uC778\uC9C0 \uC5EC\uB7EC \uBA85\uC778\uC9C0 \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uC774 \uACC4\uC0B0\uAE30\uB294 \uD55C \uC0AC\uB78C\uC774 \uBC1B\uC740 \uC99D\uC5EC\uB9CC \uACC4\uC0B0\uD569\uB2C8\uB2E4."
+    },
+    {
+      when: giftOther && !giftHeirResolved,
+      why: "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC\uB97C \uBC1B\uC740 \xAB\uADF8 \uC678\xBB \uD55C \uC0AC\uB78C\uC774 \uC0C1\uC18D\uC778\uC778\uC9C0(\uADF8\uB9AC\uACE0 \uC544\uB2C8\uB77C\uBA74 5\uB144 \uC774\uB0B4 \uC99D\uC5EC\uC778\uC9C0) \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uD569\uC0B0 \uAE30\uAC04(\uC0C1\uC18D\uC778 10\uB144\xB7\uBE44\uC0C1\uC18D\uC778 5\uB144)\uC774 \uB2EC\uB77C\uC9D1\uB2C8\uB2E4."
     }
   ]);
   if (calc.precise) return unknown;
-  return unknown.concat(window.jtFallbackGaps([
-    {
-      when: answers.spouseActual === "zero",
-      why: "\uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C\uB85C \uC0C1\uC18D\uBC1B\uC9C0 \uC54A\uB294 \uACBD\uC6B0 \u2014 \uAC04\uC774 \uACC4\uC0B0\uC740 \uBC95\uC815\uC0C1\uC18D\uBD84\uB300\uB85C \uACF5\uC81C\uD574 \uC138\uAE08\uC774 \xAB\uD06C\uAC8C \uC801\uAC8C\xBB \uB098\uC635\uB2C8\uB2E4(\uC2E4\uCE21 1\uC5B5 8,381\uB9CC\uC6D0 \uCC28\uC774)."
-    },
-    {
-      when: answers.priorGiftHas === "yes",
-      why: "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC \u2014 \uC0C1\uC18D\uC7AC\uC0B0 \uAC00\uC0B0(\xA713)\uACFC \uC99D\uC5EC\uC138\uC561\uACF5\uC81C(\xA728)\uB97C \uAC04\uC774 \uACC4\uC0B0\uC774 \uB2E4\uB8E8\uC9C0 \uBABB\uD569\uB2C8\uB2E4(\uC2E4\uCE21 6,741\uB9CC\uC6D0 \uCC28\uC774)."
-    },
-    {
-      when: (Number(answers.netFinancialAssets) || 0) > 0,
-      why: "\uC21C\uAE08\uC735\uC7AC\uC0B0 \u2014 \uAE08\uC735\uC7AC\uC0B0\uC0C1\uC18D\uACF5\uC81C(\xA722, \uCD5C\uB300 2\uC5B5)\uAC00 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uC5C6\uC2B5\uB2C8\uB2E4."
-    },
-    {
-      when: answers.hasCohabitationHouse === "yes",
-      why: "\uB3D9\uAC70\uC8FC\uD0DD \u2014 \uB3D9\uAC70\uC8FC\uD0DD\uC0C1\uC18D\uACF5\uC81C(\xA723\uC7582, \uCD5C\uB300 6\uC5B5)\uAC00 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uC5C6\uC2B5\uB2C8\uB2E4."
-    },
-    {
-      when: answers.numChildren === "many" && !(Number(answers.numChildrenExact) > 0),
-      why: "\uC790\uB140\uAC00 7\uBA85 \uC774\uC0C1\uC778\uB370 \uC815\uD655\uD55C \uC778\uC6D0\uC774 \uC5C6\uC2B5\uB2C8\uB2E4 \u2014 \uBC30\uC6B0\uC790 \uBC95\uC815\uC0C1\uC18D\uBD84\uC774 \uC778\uC6D0\uC218\uB85C \uAC08\uB9BD\uB2C8\uB2E4."
-    }
-  ]));
+  return unknown.concat([calc.engineState === "refused" ? "\uC785\uB825\uC774 \uB354 \uD544\uC694\uD569\uB2C8\uB2E4 \u2014 " + (calc.engineMessage || "\uC774 \uACC4\uC0B0\uAE30\uAC00 \uAE08\uC561\uC744 \uD655\uC815\uD560 \uC218 \uC5C6\uB294 \uC870\uAC74\uC785\uB2C8\uB2E4. \u300C\u2190 \uC774\uC804\u300D\uC73C\uB85C \uB3CC\uC544\uAC00 \uB2F5\uC744 \uBCF4\uC644\uD558\uC2DC\uAC70\uB098 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD574 \uC8FC\uC138\uC694.") : "\uACC4\uC0B0 \uC5D4\uC9C4\uC5D0 \uC5F0\uACB0\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4 \u2014 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC740 \uC0C1\uD0DC\uC5D0\uC11C\uB294 \uAE08\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."]);
 }
 function buildInhDetail(answers, calc, commentary) {
   const L = ["\u25A0 \uACE0\uAC1D \uC785\uB825 \uC815\uBCF4"];
@@ -7356,7 +7438,11 @@ function buildInhDetail(answers, calc, commentary) {
     const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, "").trim();
     L.push("  \xB7 " + ql + ": " + val);
   });
-  L.push("", "\u25A0 \uACC4\uC0B0 \uACB0\uACFC" + (calc.precise ? " (\uAC80\uC99D \uC5D4\uC9C4)" : " (\uAC04\uC774 \uCD94\uC815)"));
+  L.push("", "\u25A0 \uACC4\uC0B0 \uACB0\uACFC (\uAC80\uC99D \uC5D4\uC9C4)");
+  const dd = calc.deductions || {};
+  [["\uC120\uD0DD\uACF5\uC81C", "\uC120\uD0DD\uACF5\uC81C(\uC77C\uAD04 \uB610\uB294 \uAE30\uCD08\xB7\uC778\uC801)"], ["\uBC30\uC6B0\uC790\uACF5\uC81C", "\uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C"], ["\uC99D\uC5EC\uC138\uC561\uACF5\uC81C", "\uC99D\uC5EC\uC138\uC561\uACF5\uC81C"]].forEach(([k, label]) => {
+    if (typeof dd[k] === "number" && dd[k] > 0) L.push("  \xB7 " + label + ": " + formatWon(dd[k]));
+  });
   L.push("  \xB7 \uACFC\uC138\uD45C\uC900: " + formatWon(calc.taxBase));
   L.push("  \xB7 \uC0B0\uCD9C\uC138\uC561: " + formatWon(calc.calcTax));
   L.push("  \xB7 \uCD1D \uB0A9\uBD80\uC138\uC561: " + formatWon(calc.totalTax));
@@ -7421,6 +7507,39 @@ async function callInhEngine(body) {
   }
   throw lastErr;
 }
+const INH_ENGINE_REQUIRED = ["\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uC138\uC561"];
+function inhEngineVerdict(c) {
+  if (!c || typeof c !== "object" || Array.isArray(c)) return "down";
+  if (Object.prototype.hasOwnProperty.call(c, "\uC0C1\uD0DC") && c["\uC0C1\uD0DC"] !== "ok") return c["\uC0C1\uD0DC"] === "error" ? "down" : "refused";
+  if (c["\uC624\uB958"] || c.error || c.errors || c.detail || c.success === false) return "refused";
+  if (!window.jtValidCalc(c, INH_ENGINE_REQUIRED)) return "down";
+  return "ok";
+}
+function inhCalcFromEngine(ej) {
+  const c = ej && ej.calc;
+  const verdict = inhEngineVerdict(c);
+  if (verdict === "refused") {
+    const msg = [c["\uC624\uB958"], c.error].find((x) => typeof x === "string" && x.trim());
+    return { precise: false, engineState: "refused", engineMessage: msg ? msg.trim() : "" };
+  }
+  if (verdict !== "ok") return { precise: false, engineState: verdict };
+  const mj = c["\uC8FC\uC694\uACF5\uC81C"] && typeof c["\uC8FC\uC694\uACF5\uC81C"] === "object" && !Array.isArray(c["\uC8FC\uC694\uACF5\uC81C"]) ? c["\uC8FC\uC694\uACF5\uC81C"] : {};
+  return {
+    precise: true,
+    engineVer: ej.version && ej.version.engine,
+    taxBase: c["\uACFC\uC138\uD45C\uC900"],
+    calcTax: c["\uC0B0\uCD9C\uC138\uC561"],
+    totalTax: c["\uC138\uC561"],
+    deductions: mj,
+    steps: c["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || [],
+    engineWarnings: c["\uACBD\uACE0\uC0AC\uD56D"] || [],
+    // 엔진이 알리는 가정·경고([확인 필요] 등) — 결과 화면에 그대로 보인다
+    nonTaxableMsg: c["\uC138\uC561"] === 0 ? "\uACF5\uC81C \uBC94\uC704 \uB0B4\uB85C \uB0A9\uBD80\uD560 \uC0C1\uC18D\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4." : null
+  };
+}
+function inhCalcFromEngineError(e) {
+  return e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429 ? { precise: false, engineState: "refused", engineMessage: "" } : { precise: false, engineState: "down" };
+}
 function JTReportInheritance({ setRoute, onBack }) {
   const [step, setStep] = useInhState(0);
   const [answers, setAnswers] = useInhState({});
@@ -7449,7 +7568,7 @@ function JTReportInheritance({ setRoute, onBack }) {
       const mustFill = cur.requiredIf && cur.requiredIf(answers);
       if (cur.optional && !mustFill) return true;
       const v = Number(answers[cur.id]);
-      return !isNaN(v) && v > 0;
+      return !isNaN(v) && v > 0 && (cur.min == null || v >= cur.min);
     }
     return !!answers[cur.id];
   };
@@ -7464,43 +7583,17 @@ function JTReportInheritance({ setRoute, onBack }) {
         return;
       }
       const estate = Number(answers.estateValue) || 0;
-      const childCount = inhChildCount(answers);
-      const lumpSum = answers.hasSpouse === "yes" && childCount === 0 ? 2e8 : 5e8;
-      const debts = Number(answers.debts) || 0;
-      const funeral = Math.min(Math.max(Number(answers.funeralExpenses) || 0, 5e6), 15e6);
-      const grossInh = estate + (Number(answers.insuranceAmount) || 0) + (Number(answers.retirementPay) || 0);
-      const spouseShare = answers.hasSpouse === "yes" ? childCount > 0 ? 1.5 / (1.5 + childCount) : 1 : 0;
-      const spouseBase = Math.max(grossInh - debts, 0);
-      const spouseDed = answers.hasSpouse === "yes" ? Math.min(Math.max(Math.round(spouseBase * spouseShare), 5e8), 3e9) : 0;
-      const taxableBase = Math.floor(Math.max(grossInh - debts - funeral - lumpSum - spouseDed, 0) / 1e3) * 1e3;
-      const baseTax = calcInhBaseTax(taxableBase);
-      const filingCredit = Math.round(baseTax * 0.03);
-      let calc = {
-        taxBase: taxableBase,
-        calcTax: baseTax,
-        filingCredit,
-        totalTax: Math.max(baseTax - filingCredit, 0),
-        precise: false,
-        nonTaxableMsg: taxableBase === 0 ? "\uACF5\uC81C \uBC94\uC704 \uB0B4\uB85C \uB0A9\uBD80\uD560 \uC0C1\uC18D\uC138\uAC00 \uC5C6\uB294 \uAC83\uC73C\uB85C \uCD94\uC815\uB429\uB2C8\uB2E4(\uC815\uBC00 \uACC4\uC0B0 \uAD8C\uC7A5)." : null
-      };
-      try {
-        const ej = await callInhEngine(mapAnswersToInheritance(answers));
-        const c = ej && ej.calc;
-        if (window.jtValidCalc(c, ["\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uC138\uC561"])) {
-          calc.taxBase = c["\uACFC\uC138\uD45C\uC900"];
-          calc.calcTax = c["\uC0B0\uCD9C\uC138\uC561"];
-          calc.totalTax = c["\uC138\uC561"];
-          calc.deductions = c["\uC8FC\uC694\uACF5\uC81C"] || {};
-          calc.steps = c["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || [];
-          calc.engineWarnings = c["\uACBD\uACE0\uC0AC\uD56D"] || [];
-          calc.precise = true;
-          calc.engineVer = ej.version && ej.version.engine;
-          calc.nonTaxableMsg = c["\uC138\uC561"] === 0 ? "\uACF5\uC81C \uBC94\uC704 \uB0B4\uB85C \uB0A9\uBD80\uD560 \uC0C1\uC18D\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4." : null;
-        } else if (c) {
-          console.warn("\uC0C1\uC18D \uC5D4\uC9C4 \uC751\uB2F5 \uBB34\uACB0\uC131 \uC2E4\uD328(\uC624\uB958\uBC14\uB514/\uD544\uC218\uD0A4 \uB204\uB77D) \u2014 \uAC04\uC774 \uCD94\uC815 \uC720\uC9C0", c);
+      let calc;
+      const reqBody = mapAnswersToInheritance(answers);
+      if (!reqBody) {
+        calc = { precise: false, engineState: "refused", engineMessage: "" };
+      } else {
+        try {
+          calc = inhCalcFromEngine(await callInhEngine(reqBody));
+        } catch (e) {
+          console.warn("\uC0C1\uC18D \uC5D4\uC9C4 \uD638\uCD9C \uC2E4\uD328", e);
+          calc = inhCalcFromEngineError(e);
         }
-      } catch (e) {
-        console.warn("\uC0C1\uC18D \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328 \u2014 \uAC04\uC774 \uCD94\uC815 \uC720\uC9C0", e);
       }
       if (inhFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === "quick" };
@@ -7522,7 +7615,7 @@ function JTReportInheritance({ setRoute, onBack }) {
           cautions: [
             { title: "\uC2E0\uACE0\uAE30\uD55C 6\uAC1C\uC6D4", detail: "\uC0C1\uC18D\uAC1C\uC2DC\uC77C(\uC0AC\uB9DD\uC77C)\uC774 \uC18D\uD55C \uB2EC\uC758 \uB9D0\uC77C\uBD80\uD130 6\uAC1C\uC6D4 \uC774\uB0B4\uC5D0 \uC2E0\uACE0\xB7\uB0A9\uBD80\uD574\uC57C \uD569\uB2C8\uB2E4. \uB2A6\uC73C\uBA74 \uAC00\uC0B0\uC138\uAC00 \uBD99\uC2B5\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA767)." },
             { title: "\uC0AC\uC804\uC99D\uC5EC \uD569\uC0B0", detail: "\uC0C1\uC18D \uC804 10\uB144(\uC0C1\uC18D\uC778) \uC774\uB0B4 \uC99D\uC5EC\uD55C \uC7AC\uC0B0\uC740 \uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0\uB429\uB2C8\uB2E4(\xA713). \uB204\uB77D\uD558\uBA74 \uCD94\uC9D5\xB7\uAC00\uC0B0\uC138 \uC704\uD5D8\uC774 \uD07D\uB2C8\uB2E4." },
-            { title: "\uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C", detail: "\uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C \uC0C1\uC18D\uBC1B\uB294 \uAE08\uC561(\uCD5C\uB300 30\uC5B5)\uAE4C\uC9C0 \uACF5\uC81C\uB418\uC5B4 \uC808\uC138 \uD6A8\uACFC\uAC00 \uD07D\uB2C8\uB2E4(\xA719). \uD45C\uC2DC \uC138\uC561\uC740 \uBCC4\uB3C4 \uC785\uB825\uC774 \uC5C6\uC73C\uBA74 \uBC30\uC6B0\uC790\uAC00 \uBC95\uC815\uC0C1\uC18D\uBD84\uC744 \uBAA8\uB450 \uC0C1\uC18D\uBC1B\uB294\uB2E4\uACE0 \uAC00\uC815\uD55C \uAC12\uC774\uB77C, \uBC30\uC6B0\uC790\uAC00 \uC801\uAC8C \uC0C1\uC18D\uBC1B\uC73C\uBA74 \uC138\uC561\uC774 \uB298\uC5B4\uB0A0 \uC218 \uC788\uC2B5\uB2C8\uB2E4." }
+            { title: "\uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C", detail: "\uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C \uC0C1\uC18D\uBC1B\uB294 \uAE08\uC561(\uCD5C\uB300 30\uC5B5)\uAE4C\uC9C0 \uACF5\uC81C\uB418\uC5B4 \uC808\uC138 \uD6A8\uACFC\uAC00 \uD07D\uB2C8\uB2E4(\xA719). \uD45C\uC2DC \uC138\uC561\uC740 \uC785\uB825\uD558\uC2E0 \uBC30\uC6B0\uC790 \uC0C1\uC18D \uBC29\uC2DD\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uAC12\uC774\uB77C, \uC2E4\uC81C \uBD84\uD560\uC774 \uB2EC\uB77C\uC9C0\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4." }
           ],
           saving_ideas: [
             { title: "\uBC30\uC6B0\uC790 \uC0C1\uC18D\uBD84 \uC870\uC815", detail: "\uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C \uD55C\uB3C4(\uBC95\uC815\uC0C1\uC18D\uBD84\xB730\uC5B5) \uB0B4\uC5D0\uC11C \uBC30\uC6B0\uC790 \uC0C1\uC18D\uBD84\uC744 \uB298\uB9AC\uBA74 1\uCC28 \uC0C1\uC18D\uC138\uB97C \uC904\uC77C \uC218 \uC788\uC2B5\uB2C8\uB2E4(\uB2E8, 2\uCC28 \uC0C1\uC18D\uAE4C\uC9C0 \uD568\uAED8 \uC124\uACC4\uD574\uC57C \uD569\uB2C8\uB2E4)." },
@@ -7573,22 +7666,26 @@ function JTReportInheritance({ setRoute, onBack }) {
     const inhGaps = inhFallbackGaps(answers, calc);
     const inhBlocked = inhGaps.length > 0;
     if (inhBlocked) {
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: inhGaps, onRetry: runAnalysis, reason: inhFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      const inhBlockReason = inhFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "refused" ? "refused" : "down";
+      const inhBlockTag = inhBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : inhBlockReason === "refused" ? "\uC785\uB825\uC774 \uB354 \uD544\uC694\uD569\uB2C8\uB2E4" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328";
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: inhBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: inhBlockReason === "down" ? [] : inhGaps, onRetry: runAnalysis, reason: inhBlockReason }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setPhase("quick");
         setStep(0);
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: calc.precise ? "\uC0C1\uC18D\uC138 \uC815\uBC00 \uACC4\uC0B0" : "\uC0C1\uC18D\uC138 \uAC04\uC774 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, nonResident && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "#fff4e5", borderLeft: "4px solid #d08b00", padding: "14px 18px", marginBottom: 16 } }, "\u26A0\uFE0F \uBE44\uAC70\uC8FC\uC790 \uC0C1\uC18D\uC740 \uAD6D\uB0B4 \uC7AC\uC0B0\uB9CC \uACFC\uC138\uB418\uACE0 \uC77C\uAD04\uACF5\uC81C \uB4F1\uC774 \uBC30\uC81C\uB418\uC5B4 \uACC4\uC0B0\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC544\uB798\uB294 \uAC70\uC8FC\uC790 \uAE30\uC900 \uCC38\uACE0\uCE58\uC774\uBA70, \uC815\uD655\uD55C \uACC4\uC0B0\uC740 \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4."), inhBlocked ? /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: inhGaps, onRetry: runAnalysis }) : /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC0C1\uC18D\uC138" : calc.precise ? "\uCD1D \uB0A9\uBD80\uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)" : "\uCD94\uC815 \uB0A9\uBD80\uC138\uC561 \xB7 \uAC04\uC774"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), !calc.precise && !inhBlocked && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, "\uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB418\uC5B4 ", /* @__PURE__ */ React.createElement("strong", null, "\uAC04\uC774 \uCD94\uC815"), "\uC73C\uB85C \uBCF4\uC5EC\uB4DC\uB9BD\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("strong", null, "\uBC18\uC601\uD55C \uAC83"), ": \uC138\uC728\uD45C \xB7 \uCC44\uBB34\xB7\uC7A5\uB840\uBE44 \uCC28\uAC10 \xB7 \uBCF4\uD5D8\uAE08\xB7\uD1F4\uC9C1\uAE08 \uD569\uC0B0 \xB7 \uC77C\uAD04\uACF5\uC81C 5\uC5B5(", /* @__PURE__ */ React.createElement("strong", null, "\uBC30\uC6B0\uC790 \uB2E8\uB3C5\uC0C1\uC18D"), ", \uC989 \uC790\uB140\uAC00 \uC5C6\uC73C\uBA74 \uC77C\uAD04\uACF5\uC81C \uB300\uC2E0 \uAE30\uCD08\uACF5\uC81C 2\uC5B5) \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uBC95\uC815\uC0C1\uC18D\uBD84 \uAE30\uC900 \uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C"), " \xB7 \uC2E0\uACE0\uC138\uC561\uACF5\uC81C.", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("strong", null, "\uBC18\uC601\uD558\uC9C0 \uC54A\uC740 \uAC83"), ": ", /* @__PURE__ */ React.createElement("strong", null, "\uAE08\uC735\uC7AC\uC0B0\uC0C1\uC18D\uACF5\uC81C"), "(\xA722) \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uB3D9\uAC70\uC8FC\uD0DD\uC0C1\uC18D\uACF5\uC81C"), "(\xA723\uC7582) \xB7 ", /* @__PURE__ */ React.createElement("strong", null, "\uC0AC\uC804\uC99D\uC5EC \uD569\uC0B0\uACFC \uC99D\uC5EC\uC138\uC561\uACF5\uC81C"), "(\xA713\xB7\xA728) \xB7 \uBC30\uC6B0\uC790\uAC00 \uC2E4\uC81C\uB85C \uC0C1\uC18D\uBC1B\uC9C0 \uC54A\uB294 \uACBD\uC6B0\uC758 \uC870\uC815 \xB7 \uACF5\uC81C \uC885\uD569\uD55C\uB3C4(\xA724). \uC815\uBC00 \uACC4\uC0B0\uC5D0\uC11C \uBC18\uC601\uB429\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: runAnalysis }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D\uC7AC\uC0B0\xB7\uBC30\uC6B0\uC790\xB7\uC790\uB140\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), "\uCC44\uBB34\xB7\uC7A5\uB840\uBE44 \xB7 \uAE08\uC735\uC7AC\uC0B0\uACF5\uC81C \xB7 \uB3D9\uAC70\uC8FC\uD0DD\uACF5\uC81C \xB7 10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC(\uD569\uC0B0) \xB7 \uBC30\uC6B0\uC790 \uC2E4\uC81C \uC0C1\uC18D\uBD84 \xB7 \uBE44\uAC70\uC8FC\uC790 \uC5EC\uBD80(\uC77C\uAD04\uACF5\uC81C \uBC30\uC81C)."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), !inhBlocked && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.taxBase)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.calcTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 10 } }, calc.nonTaxableMsg)), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${fmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, formatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uC7AC\uC0B0 \uD3C9\uAC00\uC561\xB7\uC0C1\uC18D\uC7AC\uC0B0 \uBD84\uD560\xB7\uACF5\uC81C \uC801\uC6A9\xB7\uC138\uBC95 \uAC1C\uC815\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC0C1\uC18D\uAC1C\uC2DC\uC77C(\uC0AC\uB9DD\uC77C)\uC774 \uC18D\uD55C \uB2EC\uC758 \uB9D0\uC77C\uBD80\uD130 6\uAC1C\uC6D4\uC785\uB2C8\uB2E4(\uD53C\uC0C1\uC18D\uC778 \uB610\uB294 \uC0C1\uC18D\uC778 \uC911 \uD55C \uBD84\uC774\uB77C\uB3C4 \uC678\uAD6D\uC5D0 \uC8FC\uC18C\uB97C \uB454 \uACBD\uC6B0 9\uAC1C\uC6D4, \uC2E0\uACE0\uC138\uC561\uACF5\uC81C 3%). \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), !inhBlocked && /* @__PURE__ */ React.createElement(
+    const dd = calc.deductions || {};
+    const ddNum = (k) => typeof dd[k] === "number" && isFinite(dd[k]) ? dd[k] : null;
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC0C1\uC18D\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, nonResident && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "#fff4e5", borderLeft: "4px solid #d08b00", padding: "14px 18px", marginBottom: 16 } }, "\u26A0\uFE0F \uBE44\uAC70\uC8FC\uC790 \uC0C1\uC18D\uC740 \uAD6D\uB0B4 \uC7AC\uC0B0\uB9CC \uACFC\uC138\uB418\uACE0 \uC77C\uAD04\uACF5\uC81C \uB4F1\uC774 \uBC30\uC81C\uB418\uC5B4 \uACC4\uC0B0\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC544\uB798\uB294 \uAC70\uC8FC\uC790 \uAE30\uC900 \uCC38\uACE0\uCE58\uC774\uBA70, \uC815\uD655\uD55C \uACC4\uC0B0\uC740 \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC0C1\uC18D\uC138" : "\uCD1D \uB0A9\uBD80\uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D\uC7AC\uC0B0\xB7\uAC00\uC871\xB7\uBC30\uC6B0\uC790 \uC0C1\uC18D \uBC29\uC2DD\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), "\uCC44\uBB34\xB7\uC7A5\uB840\uBE44\xB7\uBD09\uC548\uBE44 \xB7 \uAE08\uC735\uC7AC\uC0B0\uACF5\uC81C \xB7 \uB3D9\uAC70\uC8FC\uD0DD\uACF5\uC81C \xB7 10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC(\uD569\uC0B0) \xB7 \uBCF4\uD5D8\uAE08\xB7\uD1F4\uC9C1\uAE08."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, ddNum("\uC120\uD0DD\uACF5\uC81C") != null && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, typeof dd["\uACF5\uC81C\uC720\uD615"] === "string" && dd["\uACF5\uC81C\uC720\uD615"] ? `${dd["\uACF5\uC81C\uC720\uD615"]} (\uC120\uD0DD\uACF5\uC81C)` : "\uC120\uD0DD\uACF5\uC81C (\uC77C\uAD04\uACF5\uC81C \uB610\uB294 \uAE30\uCD08\xB7\uC778\uC801\uACF5\uC81C)"), /* @__PURE__ */ React.createElement("td", null, formatWon(ddNum("\uC120\uD0DD\uACF5\uC81C")))), ddNum("\uBC30\uC6B0\uC790\uACF5\uC81C") > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C (\xA719)"), /* @__PURE__ */ React.createElement("td", null, formatWon(ddNum("\uBC30\uC6B0\uC790\uACF5\uC81C")))), ddNum("\uACF5\uC81C\uD55C\uB3C4\uCD08\uACFC") > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACF5\uC81C \uD55C\uB3C4(\xA724) \uCD08\uACFC\uB85C \uB418\uB3CC\uB9B0 \uAE08\uC561"), /* @__PURE__ */ React.createElement("td", null, "+ ", formatWon(ddNum("\uACF5\uC81C\uD55C\uB3C4\uCD08\uACFC")))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.taxBase)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.calcTax))), ddNum("\uC99D\uC5EC\uC138\uC561\uACF5\uC81C") > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC138\uC561\uACF5\uC81C (\uC0AC\uC804\uC99D\uC5EC \xA728)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(ddNum("\uC99D\uC5EC\uC138\uC561\uACF5\uC81C")))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 10 } }, calc.nonTaxableMsg)), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${fmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, formatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), inhPriorGiftDropped(answers) && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uC0AC\uC804\uC99D\uC5EC\uB294 \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("p", { style: { margin: 0 } }, "\uD55C \uC0AC\uB78C \uAE30\uC900\uC73C\uB85C \uB2F5\uD558\uC2E0 \uC99D\uC5EC \uC911, \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uBD84\uC5D0\uAC8C \uC0C1\uC18D\uAC1C\uC2DC\uC77C \uC804 5\uB144\uBCF4\uB2E4 \uC55E\uC11C \uD55C \uC99D\uC5EC\uB294 \uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0\uD558\uC9C0 \uC54A\uC73C\uBBC0\uB85C, \uC785\uB825\uD558\uC2E0 \uC0AC\uC804\uC99D\uC5EC\uB294 \uC774 \uACC4\uC0B0\uC5D0\uC11C \uC81C\uC678\uD588\uC2B5\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA713).")), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uC7AC\uC0B0 \uD3C9\uAC00\uC561\xB7\uC0C1\uC18D\uC7AC\uC0B0 \uBD84\uD560\xB7\uACF5\uC81C \uC801\uC6A9\xB7\uC138\uBC95 \uAC1C\uC815\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC0C1\uC18D\uAC1C\uC2DC\uC77C(\uC0AC\uB9DD\uC77C)\uC774 \uC18D\uD55C \uB2EC\uC758 \uB9D0\uC77C\uBD80\uD130 6\uAC1C\uC6D4\uC785\uB2C8\uB2E4(\uD53C\uC0C1\uC18D\uC778 \uB610\uB294 \uC0C1\uC18D\uC778 \uC911 \uD55C \uBD84\uC774\uB77C\uB3C4 \uC678\uAD6D\uC5D0 \uC8FC\uC18C\uB97C \uB454 \uACBD\uC6B0 9\uAC1C\uC6D4, \uC2E0\uACE0\uC138\uC561\uACF5\uC81C 3%). \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         setRoute,
         calcId: "inheritance",
         completeEligible: true,
-        precise: calc.precise,
+        precise: true,
         quick: report.quick,
-        reportType: calc.precise ? "\uC0C1\uC18D\uC138 \uC815\uBC00 \uACC4\uC0B0" : "\uC0C1\uC18D\uC138 \uAC04\uC774 \uACC4\uC0B0",
+        reportType: "\uC0C1\uC18D\uC138 \uC815\uBC00 \uACC4\uC0B0",
         reportTag: "LEGACY",
         reportSummary: `\uCD1D \uB0A9\uBD80\uC138\uC561 ${formatWon(calc.totalTax)} / \uACFC\uC138\uD45C\uC900 ${formatWon(calc.taxBase)} / ${commentary.headline || ""}`,
         reportDetail: buildInhDetail(answers, calc, commentary),

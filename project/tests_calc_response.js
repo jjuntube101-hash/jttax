@@ -44,7 +44,10 @@ const acquisitionAccepts = () => engineAccepts('ReportAcquisition.jsx', ['acqCal
 const transferAccepts = () => engineAccepts('ReportCGT.jsx', ['cgtEngineVerdict', 'cgtCalcFromEngine'], 'CGT_ENGINE_REQUIRED', false);
 /* 증여세(261004): 일반증여의 응답 검증이 giftCalcFromEngine(giftEngineVerdict 포함)으로 옮겨졌다. 부담부증여는 종전 if 문 검증이 남아 있어 둘 다 본다. */
 const giftAccepts = () => engineAccepts('ReportGift.jsx', ['giftEngineVerdict', 'giftCalcFromEngine'], 'GIFT_ENGINE_REQUIRED', false);
+/* 상속세(261010): 응답 검증이 inhCalcFromEngine(inhEngineVerdict 포함)으로 옮겨졌다. 구 엔진은 상태 키가 없으므로 fixture 를 그대로 부른다. */
+const inheritanceAccepts = () => engineAccepts('ReportInheritance.jsx', ['inhEngineVerdict', 'inhCalcFromEngine'], 'INH_ENGINE_REQUIRED', false);
 function guards(file) {
+  if (file === 'ReportInheritance.jsx') return [inheritanceAccepts()];
   if (file === 'ReportAcquisition.jsx') return [acquisitionAccepts()];
   if (file === 'ReportCGT.jsx') return [transferAccepts()];
   const source = read(file), found = [];
@@ -104,6 +107,37 @@ for (const [file, fixture] of cases) {
   }
   const bad = rawCalc({ 상태: 'ok', 세액: NaN, 취득세: 0, 지방교육세: 0, 농어촌특별세: 0, 과세표준: 0 });
   assert.deepEqual([bad.precise, bad.engineState], [false, 'down']); checks++;
+}
+/* 상속세 상태 키·세 갈래(261010) — 취득세·양도세와 같은 계약이다. 거부 응답은 엔진이 준 오류 문구(engineMessage)를 함께 돌려준다.
+     · 오류 없음 + 상태 'ok' 또는 상태 키 없음(구 엔진) + 필수 숫자(과세표준·산출세액·세액) 유효 → 금액(precise)
+     · 오류가 있거나 상태 키가 있는데 'ok' 가 아님(needs_input·unsupported) → 거부(refused), 금액 필드 없음
+     · 상태 'error'(엔진 내부 실패)·calc 없음·깨진 응답·숫자 무효 → 연결 실패(down) */
+{
+  const inh = guards('ReportInheritance.jsx')[0], fx = cases[5][1];
+  const rawCalc = c => inh.raw({ calc: c });
+  check(rawCalc({ ...fx, 상태: 'ok' }).precise, true, 'inheritance: 상태 ok 는 유효');
+  check(rawCalc({ ...fx }).precise, true, 'inheritance: 상태 키가 없는 구 엔진 응답은 유효');
+  for (const status of ['needs_input', 'unsupported', '', null, 'OK', true]) {
+    const r = rawCalc({ ...fx, 상태: status });
+    check(r.precise, false, 'inheritance: 상태 ' + String(status) + ' 는 금액이 아니다');
+    assert.equal(r.engineState, 'refused', 'inheritance: 상태 ' + String(status) + ' → refused'); checks++;
+    assert.equal('totalTax' in r, false, 'inheritance: 거부 응답에는 금액 필드가 없다'); checks++;
+  }
+  const down = rawCalc({ ...fx, 상태: 'error', 오류: '내부 오류' });
+  assert.deepEqual([down.precise, down.engineState, 'totalTax' in down], [false, 'down', false], 'inheritance: 상태 error 는 연결 실패(다시 시도)'); checks++;
+  const msg = rawCalc({ ...fx, 상태: 'needs_input', 오류: '배우자 실제 상속액이 필요합니다' });
+  assert.deepEqual([msg.precise, msg.engineState, msg.engineMessage], [false, 'refused', '배우자 실제 상속액이 필요합니다'], 'inheritance: 거부 사유 문구를 전달한다'); checks++;
+  for (const c of [{ ...fx, 오류: '계산 실패' }, { ...fx, 상태: 'ok', 오류: '계산 실패' }]) {
+    const r = rawCalc(c);
+    assert.deepEqual([r.precise, r.engineState, 'totalTax' in r], [false, 'refused', false], 'inheritance: 오류가 있으면 거부'); checks++;
+  }
+  for (const c of [null, undefined, {}, [], 'x', { ...fx, 세액: NaN }, { ...fx, 과세표준: '0' }, { ...fx, 산출세액: -1 }]) {
+    const r = rawCalc(c);
+    assert.deepEqual([r.precise, r.engineState, 'totalTax' in r], [false, 'down', false], 'inheritance: 깨진 응답은 연결 실패 ' + JSON.stringify(c)); checks++;
+  }
+  // 유효 응답이 엔진 값을 그대로 담는지(자체 계산 없이) — 주요공제의 선택·배우자·증여세액공제 포함
+  const good = rawCalc({ 과세표준: 600000000, 산출세액: 100000000, 세액: 97000000, 주요공제: { 선택공제: 500000000, 배우자공제: 857142857, 공제한도초과: 0, 증여세액공제: 4850000 }, 경고사항: ['x'] });
+  assert.deepEqual([good.taxBase, good.calcTax, good.totalTax, good.deductions['배우자공제'], good.deductions['증여세액공제'], good.engineWarnings.length], [600000000, 100000000, 97000000, 857142857, 4850000, 1]); checks++;
 }
 /* 양도세 상태 키·세 갈래(261004) — 취득세와 같은 계약이다.
      · 오류 없음 + 상태 'ok' 또는 상태 키 없음(구 엔진) + 필수 숫자 유효 → 금액(precise)
