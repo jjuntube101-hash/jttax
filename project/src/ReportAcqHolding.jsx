@@ -61,10 +61,14 @@ function acqHoldUrbanQ() {
    가 그대로 먹는 모양으로 만든다. 여기서 만든 값을 «다시» 세액으로 계산하지 않는다 — 매퍼와
    엔진에게 넘길 뿐이다.
    ⚠️ 취득세 매매가(acqAnswers.propertyValue)를 절대 참조하지 않는다 — 이 함수는 그 인자를
-      아예 받지 않는다. 공시가격은 이 화면에서 «새로» 입력받은 yearValue 하나뿐이다. */
-function acqHoldPropAnswers(yearValue, oneHouse, isUrbanArea) {
+      아예 받지 않는다. 공시가격은 이 화면에서 «새로» 입력받은 yearValue 하나뿐이다.
+   priorYearValue 는 «같은 물건의 바로 전 연도 공시가격»(이 화면에서 입력한 전 연도 행) — 없으면 '모름'으로 넘겨
+   매퍼가 null 을 돌려주게 한다(과세표준상한 §110③ 을 짐작으로 채우지 않는다). */
+function acqHoldPropAnswers(yearValue, oneHouse, isUrbanArea, priorYearValue) {
   const a = { propertyKind: '주택', standardValue: String(yearValue || ''), isUrbanArea };
   if (oneHouse === 'yes') a.isOneHouse = 'yes';
+  if (Number(priorYearValue) > 0) { a.priorYearStandardValue = 'input'; a.priorYearStandardValueAmount = String(priorYearValue); }
+  else a.priorYearStandardValue = 'unknown';
   return a;
 }
 
@@ -160,12 +164,22 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
         continue;
       }
       // ── 재산세 (독립 실패 허용) ──
-      try {
-        const ej = await callPropEngine(mapAnswersToProperty(acqHoldPropAnswers(row.value, oneHouse, urban)));
-        const c = ej && ej.calc;
-        if (c) yearOut.prop = { status: 'ok', total: c['세액'], effDate: ej.version && ej.version.tax_rates_effective_date };
-        else yearOut.prop = { status: 'error' };
-      } catch (e) { yearOut.prop = { status: 'error' }; }
+      const priorRow = selectedRows.find((x) => x.year === row.year - 1);
+      const propReq = mapAnswersToProperty(acqHoldPropAnswers(row.value, oneHouse, urban, priorRow ? priorRow.value : ''));
+      if (!propReq) {
+        yearOut.prop = { status: 'needs_input' };   // 전 연도 공시가격이 없다 — 엔진을 부르지 않는다
+      } else {
+        try {
+          const ej = await callPropEngine(propReq);
+          const c = ej && ej.calc;
+          const st = c && c['상태'];
+          /* 상태가 ok 여도 세액이 유한한 0 이상의 숫자가 아니면 금액으로 쓰지 않는다 — 0원으로 보이지 않게 error */
+          const taxOk = !!c && typeof c['세액'] === 'number' && isFinite(c['세액']) && c['세액'] >= 0;
+          if (c && (st === 'ok' || (st === undefined && !c['오류']))) yearOut.prop = !taxOk ? { status: 'error' } : { status: 'ok', total: c['세액'], effDate: ej.version && ej.version.tax_rates_effective_date };
+          else if (st === 'needs_input' || st === 'unsupported') yearOut.prop = { status: 'needs_input' };
+          else yearOut.prop = { status: 'error' };
+        } catch (e) { yearOut.prop = { status: 'error' }; }
+      }
       // ── 종합부동산세 (독립 실패 허용, 「모름」이면 아예 호출하지 않는다) ──
       const compA = acqHoldCompAnswers(row.value, otherHousing, otherValue, otherCount, ownerAge, holdingYears);
       if (!compA) {
@@ -199,6 +213,7 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
     if (!row) return '확인 필요';
     if (row.status === 'ok') return formatWon(row.total);
     if (row.status === 'unknown') return '확인 필요 (공시가격 미입력)';
+    if (row.status === 'needs_input') return '작년 공시가격이 있어야 계산됩니다';
     return '엔진 연결 실패 — 다시 시도해 주세요';
   };
 

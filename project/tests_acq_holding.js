@@ -131,7 +131,7 @@ console.log('\n════ (b) 공시가격이 비어 있으면 fetch(엔진 �
 console.log('\n════ (c) 매매가가 공시가격 필드(standard_value·housing_values)로 들어가지 않는다 ════');
 {
   // 공시가격을 입력하지 않은 상태(빈 문자열) → 매퍼를 태워도 0(취득 매매가가 대신 들어가지 않는다)
-  const emptyProp = H.acqHoldPropAnswers('', 'yes', 'yes');
+  const emptyProp = H.acqHoldPropAnswers('', 'yes', 'yes', '400000000');
   const p1 = P.mapAnswersToProperty(emptyProp);
   eq('공시가격 미입력 · standard_value 는 0이다 (매매가로 대체되지 않는다)', p1.standard_value, 0);
 
@@ -150,7 +150,9 @@ console.log('\n════ (c) 매매가가 공시가격 필드(standard_value�
 
   // 정상 값이면 그대로 들어간다(과잉 차단 방지)
   const filled = H.acqHoldPropAnswers('600000000', 'no', 'yes');
-  eq('공시가격 6억을 넣으면 standard_value 가 그 값이다', P.mapAnswersToProperty(filled).standard_value, 600000000);
+  eq('공시가격 6억을 넣으면 standard_value 가 그 값이다 (전 연도 값이 없으면 요청 자체를 만들지 않으므로 전 연도를 함께 준다)',
+     P.mapAnswersToProperty(H.acqHoldPropAnswers('600000000', 'no', 'yes', '500000000')).standard_value, 600000000);
+  eq('전 연도 공시가격이 없으면 매퍼가 null 을 돌려준다(엔진을 부르지 않는다)', P.mapAnswersToProperty(filled), null);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -173,6 +175,41 @@ console.log('\n════ (d) 다른 주택 「모름」 → 종부세 fetch �
   eq('그 분기에 「계산할 수 없음」 문구가 있다', unsureBranch.includes('계산할 수 없음'), true);
   eq('그 분기에 formatWon 호출이 없다(숫자를 찍지 않는다)', unsureBranch.includes('formatWon'), false);
   eq('그 분기에 「0원」 표기가 없다', unsureBranch.includes('0원'), false);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   (c2) 전 연도 공시가격 — 같은 물건의 year-1 행 값을 넘기고, 없으면 «모름» → 요청을 만들지 않는다 (261010)
+   ══════════════════════════════════════════════════════════════════════ */
+console.log('\n════ (c2) 전 연도 공시가격: 있으면 입력, 없으면 needs_input (엔진 미호출) ════');
+{
+  const withPrior = H.acqHoldPropAnswers('600000000', 'yes', 'yes', '550000000');
+  eq('전 연도 값이 있으면 priorYearStandardValue:input + 금액', [withPrior.priorYearStandardValue, withPrior.priorYearStandardValueAmount], ['input', '550000000']);
+  eq('매퍼가 prior_year_standard_value 로 옮긴다', P.mapAnswersToProperty(withPrior).prior_year_standard_value, 550000000);
+  for (const none of [undefined, '', '0', null]) {
+    const a = H.acqHoldPropAnswers('600000000', 'yes', 'yes', none);
+    eq('전 연도 값이 ' + JSON.stringify(none) + ' 이면 priorYearStandardValue:unknown', a.priorYearStandardValue, 'unknown');
+    eq('… 매퍼가 null (요청을 만들지 않는다)', P.mapAnswersToProperty(a), null);
+  }
+  const runBody = sliceBody(holdSrc, 'const runHolding = async () => {');
+  eq('같은 물건의 year-1 행을 selectedRows 에서 찾는다', /selectedRows\.find\(\(x\) => x\.year === row\.year - 1\)/.test(runBody), true);
+  eq('매퍼가 null 이면 엔진 호출 없이 needs_input', /if \(!propReq\) \{\s*yearOut\.prop = \{ status: 'needs_input' \};/.test(runBody), true);
+  const reqIdx = runBody.indexOf('const propReq'), callIdx = runBody.indexOf('callPropEngine(');
+  eq('매퍼 호출이 엔진 호출보다 앞선다', reqIdx >= 0 && callIdx > reqIdx, true);
+  eq('응답은 상태 ok(또는 상태 키 없음 + 오류 없음)만 ok', /st === 'ok' \|\| \(st === undefined && !c\['오류'\]\)/.test(runBody), true);
+  eq('상태 needs_input·unsupported 는 needs_input', /st === 'needs_input' \|\| st === 'unsupported'\) yearOut\.prop = \{ status: 'needs_input' \}/.test(runBody), true);
+  eq('그 밖은 error', /else yearOut\.prop = \{ status: 'error' \};/.test(runBody), true);
+  eq('상태가 ok 여도 세액이 유한한 0 이상의 숫자가 아니면 error(0원으로 보이지 않게)',
+     /typeof c\['세액'\] === 'number' && isFinite\(c\['세액'\]\) && c\['세액'\] >= 0/.test(runBody) && /yearOut\.prop = !taxOk \? \{ status: 'error' \} :/.test(runBody), true);
+  {
+    // 판정식을 그대로 꺼내 실행한다 — 세액이 없거나 NaN·음수·문자열이면 ok 가 아니다
+    const m = runBody.match(/const taxOk = ([^;]+);/);
+    eq('taxOk 판정식을 찾았다', !!m, true);
+    const taxOk = (c) => new Function('c', 'return ' + m[1])(c);
+    eq('taxOk: 정상 0원은 허용, 누락·null·NaN·음수·문자열·calc 없음은 거부',
+       [taxOk({ 세액: 0 }), taxOk({ 세액: 906000 }), taxOk({}), taxOk({ 세액: null }), taxOk({ 세액: NaN }), taxOk({ 세액: -1 }), taxOk({ 세액: '5' }), taxOk(null)].join(','),
+       'true,true,false,false,false,false,false,false');
+  }
+  eq('표시: needs_input 은 「작년 공시가격이 있어야 계산됩니다」', holdSrc.includes("row.status === 'needs_input') return '작년 공시가격이 있어야 계산됩니다'"), true);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -241,8 +278,8 @@ console.log('\n════ (g) 금지 문구·새 계측 호출이 없다 ═�
 console.log('\n════ (h) 요청 본문 키 집합이 기존 매퍼(재산세·종부세) 것과 같다 ════');
 {
   // 같은 매퍼 함수를 그대로 재사용하므로, «같은 모양의 answers» 를 넣으면 키·값이 완전히 같아야 한다.
-  const viaHold = P.mapAnswersToProperty(H.acqHoldPropAnswers('700000000', 'yes', 'no'));
-  const viaOwnScreen = P.mapAnswersToProperty({ propertyKind: '주택', standardValue: '700000000', isOneHouse: 'yes', isUrbanArea: 'no' });
+  const viaHold = P.mapAnswersToProperty(H.acqHoldPropAnswers('700000000', 'yes', 'no', '650000000'));
+  const viaOwnScreen = P.mapAnswersToProperty({ propertyKind: '주택', standardValue: '700000000', isOneHouse: 'yes', isUrbanArea: 'no', priorYearStandardValue: 'input', priorYearStandardValueAmount: '650000000' });
   eq('재산세 · 이 블록이 만든 요청 본문이 기존 재산세 화면과 키·값까지 같다', viaHold, viaOwnScreen);
 
   const viaHoldC = C.mapAnswersToComprehensive(H.acqHoldCompAnswers('700000000', 'has', '800000000', '2', '', ''));

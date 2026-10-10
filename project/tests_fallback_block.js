@@ -76,7 +76,9 @@ const GIFT = (x) => giftFallbackGaps(x, OK);
 /* ★ 취득세는 261004 에 자체 계산식(폴백)을 삭제했다 — «엔진 값이 없으면(DOWN·REFUSED) 입력과 무관하게 항상 막고»,
    입력별 판정은 «엔진 값이 있을 때(OK)에도 남는 ①층(입력 불확정)»뿐이다. 그래서 입력별 시험은 OK 로 부른다. */
 const ACQ = (x) => acqFallbackGaps(x, OK);
-const PROP = (x) => propFallbackGaps(x, DOWN);
+/* ★ 재산세도 261010 에 자체 계산식(폴백)을 삭제했다 — 상속세와 같다. 입력별 시험은 «엔진 값이 있을 때(OK)에도 남는 ①층»뿐이다. */
+const PROP = (x) => propFallbackGaps(x, OK);
+const PROP_HOUSE = { propertyKind: '주택', priorYearStandardValue: 'input', priorYearStandardValueAmount: '400000000' };
 /* ★ 양도세도 261004 에 자체 계산식(폴백)을 삭제했다 — 취득세와 같다. 입력별 시험은 «엔진 값이 있을 때(OK)에도 남는 ①층»뿐이라 OK 로 부른다. */
 const CGT = (x) => cgtFallbackGaps(x, OK);
 /* ⚠️ 거주자 여부는 «yes 로 확인된» 경우만 통과한다(260806 하드닝) — 미입력도 막는다.
@@ -191,11 +193,15 @@ console.log('\n════ 취득세 — 엔진 값이 없으면 «모든 입�
 });
 
 console.log('\n════ 재산세 ════');
-eq('종합합산 토지 → 차단', PROP({ propertyKind: '토지', landType: '종합합산' }).length > 0, true);
-eq('별도합산 토지 → 차단', PROP({ propertyKind: '토지', landType: '별도합산' }).length > 0, true);
-eq('전년도 세액 입력 → 차단', PROP({ propertyKind: '주택', priorYearTax: '100000' }).length > 0, true);
-eq('건축물 → 차단', PROP({ propertyKind: '건축물' }).length > 0, true);
-eq('일반 주택 → 통과', PROP({ propertyKind: '주택', isOneHouse: 'yes' }).length, 0);
+eq('종합합산 토지 → 엔진 값이 있으면 통과(엔진이 계산한다)', PROP({ propertyKind: '토지', landType: '종합합산' }).length, 0);
+eq('별도합산 토지 → 엔진 값이 있으면 통과', PROP({ propertyKind: '토지', landType: '별도합산' }).length, 0);
+eq('전년도 세액 입력(토지) → 엔진 값이 있으면 통과', PROP({ propertyKind: '토지', priorYearTax: '100000' }).length, 0);
+eq('건축물 + 종류 → 엔진 값이 있으면 통과', PROP({ propertyKind: '건축물', buildingType: '일반' }).length, 0);
+eq('건축물 종류 미응답 → 차단(①층)', PROP({ propertyKind: '건축물' }).length > 0, true);
+eq('주택 + 작년 공시가격 입력 → 통과', PROP({ ...PROP_HOUSE, isOneHouse: 'yes' }).length, 0);
+eq('주택 + 작년 공시가격 모름 → 차단(①층)', PROP({ propertyKind: '주택', priorYearStandardValue: 'unknown' }).length > 0, true);
+eq('주택 + 작년 공시가격 미응답 → 차단(①층)', PROP({ propertyKind: '주택', isOneHouse: 'yes' }).length > 0, true);
+eq('엔진 연결 실패(DOWN) → 어떤 입력이든 차단', [PROP_HOUSE, { propertyKind: '토지' }, { propertyKind: '건축물', buildingType: '일반' }].every((x) => propFallbackGaps(x, DOWN).length > 0), true);
 
 console.log('\n════ 양도세 — ①입력 불확정 층 (엔진 값이 있어도 막는다) ════');
 eq('취득당시 조정지역 «모름» → 차단 (1주택)', CGT({ assetType: 'house_1', acqAdjustedZone: 'unsure' }).length > 0, true);
@@ -270,7 +276,7 @@ console.log('\n════ 엔진 성공(precise)이면 «폴백 한계»로는
 [['상속세', inhFallbackGaps, { ...RES, hasSpouse: 'yes', numChildren: '2', spouseActual: 'none', priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000', priorGiftRelation: '직계비속' }],
  ['증여세', giftFallbackGaps, { ...RES, genSkip: 'yes', priorGiftHas: 'yes' }],
  ['취득세', acqFallbackGaps, { propertyType: '토지', reduction: 'first' }],
- ['재산세', propFallbackGaps, { propertyKind: '건축물' }],
+ ['재산세', propFallbackGaps, { propertyKind: '건축물', buildingType: '일반' }],
  ['양도세', cgtFallbackGaps, { assetType: 'occupancy_succ' }]].forEach(([name, fn, ans]) => {
   eq(`${name} · 차단 입력 + 엔진 실패 → 막는다`, fn(ans, DOWN).length > 0, true);
   eq(`${name} · 같은 입력이라도 엔진 성공 → 안 막는다`, fn(ans, OK).length, 0);
@@ -302,7 +308,7 @@ console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 �
  ['증여 · 거주자·직계존속', giftFallbackGaps, { isResident: 'yes', relationship: '직계존속' }],
  ['취득 · 1주택 매매 84㎡', acqFallbackGaps, { propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', housingCount: '1', reduction: 'none' }],
  ['취득 · 2주택 비조정·일시적 아님', acqFallbackGaps, { propertyType: '주택', acquisitionType: '매매', exclusiveArea: '84', housingCount: '2', isRegulatedArea: 'no', temporaryTwoHouse: 'no', reduction: 'none' }],
- ['재산 · 일반 주택', propFallbackGaps, { propertyKind: '주택', isOneHouse: 'yes' }],
+ ['재산 · 일반 주택', propFallbackGaps, { ...PROP_HOUSE, isOneHouse: 'yes' }],
  ['양도 · 1주택 비조정', cgtFallbackGaps, { assetType: 'house_1', acqAdjustedZone: 'no', acquiredDate: '2015-01-01', moveInDate: '2015-06-01' }],
  ['양도 · 상가', cgtFallbackGaps, { assetType: 'commercial' }],
  ['소득 · 배당 없음', incFallbackGaps, { dividendIncome: '0' }],
@@ -318,7 +324,7 @@ console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 �
      올린 셈이라, 나중에 조건이 흔들릴 때 이 줄이 먼저 울린다.
      ★ 취득세·양도세·증여세는 261004 에 폴백을 삭제해 «엔진이 죽으면 항상 막는다» — 그래서 취득세 줄은
         아래에서 «엔진 죽음 → 막힘»으로 따로 확인한다(여기서는 DOWN 통과를 요구하지 않는다). */
-  if (fn === acqFallbackGaps || fn === cgtFallbackGaps || fn === giftFallbackGaps || fn === inhFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
+  if (fn === acqFallbackGaps || fn === cgtFallbackGaps || fn === giftFallbackGaps || fn === inhFallbackGaps || fn === propFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
   else eq(`${name} · 엔진이 죽어도 폴백이 감당한다`, fn(ans, DOWN).length, 0);
 });
 
@@ -337,7 +343,9 @@ console.log('\n════ 엔진 전 게이트: precise=true 면 ①불확정 
  ['취득 · 토지(①층 아님 — 엔진 값 없음 층은 precise=true 에서 빠진다)', acqFallbackGaps, { propertyType: '토지', exclusiveArea: '84' }, 0],
  ['양도 · 취득당시 모름', cgtFallbackGaps, { assetType: 'house_1', acqAdjustedZone: 'unsure' }, 1],
  ['양도 · 입주권(폴백 한계)', cgtFallbackGaps, { assetType: 'occupancy_succ' }, 0],
- ['재산 · 건축물(폴백 한계)', propFallbackGaps, { propertyKind: '건축물' }, 0],
+ ['재산 · 주택 작년 공시가격 모름', propFallbackGaps, { propertyKind: '주택', priorYearStandardValue: 'unknown' }, 1],
+ ['재산 · 건축물 종류 미응답', propFallbackGaps, { propertyKind: '건축물' }, 1],
+ ['재산 · 건축물 종류 응답(①층 아님)', propFallbackGaps, { propertyKind: '건축물', buildingType: '일반' }, 0],
  ['종부 · 지분 미입력', compFallbackGaps, { housingCount: 'one', ownership: 'joint' }, 1],
 ].forEach(([name, fn, ans, want]) => {
   eq(`${name} · precise=true 판정`, fn(ans, OK).length > 0 ? 1 : 0, want);

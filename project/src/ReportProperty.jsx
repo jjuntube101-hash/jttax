@@ -1,6 +1,6 @@
 /* @jsx React.createElement */
 /* 재산세 계산 — 주택/건축물/토지 + 공시가격·1세대1주택 특례·도시지역분·세부담상한
-   엔진: /v1/calc/property (지방세법 §110~§112, 1세대1주택 특례 §111의2). 미응답 시 간이 폴백.
+   엔진: /v1/calc/property (지방세법 §110~§112, 1세대1주택 특례 §111의2). 엔진 값이 없으면 금액을 내지 않는다(261010: 자체 계산식 삭제).
    공통 헬퍼(formatWon·JTReportShell·JTReportConvert)는 먼저 로드된 파일의 전역 사용. */
 
 const { useState: usePropState } = React;
@@ -26,7 +26,7 @@ const PROP_QS = [
     sub: '재산세는 매년 6월 1일 기준 소유자에게, 공시가격을 기준으로 부과됩니다(지방세법 §107·§114). 종류에 따라 세율·공정시장가액비율이 다릅니다.',
     opts: [
       ['주택', '주택 (아파트·빌라·단독)', '0.1~0.4% 누진 · 1세대1주택 특례'],
-      ['건축물', '건축물 (상가·사무실·공장)', '0.25% 단일'],
+      ['건축물', '건축물 (상가·사무실·공장)', '0.25% (공장·골프장은 다름)'],
       ['토지', '토지', '종합/별도/분리 합산'],
     ],
   },
@@ -38,6 +38,49 @@ const PROP_QS = [
     sub: '재산세는 「공시가격 × 공정시장가액비율」을 과세표준으로 합니다. 실거래가가 아니라 정부가 매년 고시하는 공시가격이며, 부동산공시가격알리미(realtyprice.kr)나 위택스에서 조회됩니다.',
     numeric: true, money: true,
     placeholder: '예: 600,000,000',
+  },
+  /* 주택 과세표준상한(§110③)은 «작년 공시가격»으로 갈린다 — 짐작으로 채우면 틀린 금액에 「정밀 계산」 딱지가 붙으므로
+     「모름」·미응답은 엔진을 부르지 않는다. 「직접 입력」을 고르면 같은 화면에 금액 칸(amountId)이 나타난다. */
+  {
+    id: 'priorYearStandardValue',
+    tier: 'quick',
+    section: '작년 공시가격',
+    q: '작년(2025년) 공시가격은 얼마였나요?',
+    sub: '주택 과세표준은 「작년 공시가격 × 공정시장가액비율 + 올해 과세표준의 5%」를 넘지 못합니다(지방세법 §110③ 과세표준상한, 2024년 시행). 공시가격이 5% 넘게 올랐다면 세금이 줄어드니 꼭 넣어 주세요. 부동산공시가격알리미(realtyprice.kr)에서 연도별로 조회됩니다.',
+    showIf: (a) => a.propertyKind === '주택',
+    amountId: 'priorYearStandardValueAmount', amountWhen: 'input',
+    opts: [
+      ['input', '작년 공시가격을 직접 입력', '금액 입력'],
+      ['none', '작년에는 공시가격이 없던 주택', '신축·신규 공시 등'],
+      ['unknown', '모름', '계산할 수 없음 — 조회 후 다시'],
+    ],
+  },
+  /* 2024년 전부터 재산세가 과세된 주택은 2028년까지 종전 세부담 상한이 적용된다(부칙) — 「모름」은 차단이 아니라 «상한 없이 계산 + 엔진 고지» 다. */
+  {
+    id: 'housingTaxedBefore2024',
+    tier: 'quick',
+    section: '종전 세부담 상한',
+    q: '이 주택은 2023년(또는 그 전)에도 재산세가 부과되던 주택인가요?',
+    sub: "2024년 이후에 매수했더라도 그 전부터 있던 주택이면 '네'입니다. 2024년 이후 신축·최초 공시된 주택만 '아니오'입니다. 2024년부터 주택 세부담 상한이 폐지됐지만, 그 전부터 재산세가 과세된 주택은 2028년까지 종전 상한(공시가격 3억 이하 105%·6억 이하 110%·초과 130%)이 적용됩니다(지방세법 부칙 제15조). 공시가격이 많이 올랐다면 세금이 크게 줄 수 있습니다.",
+    showIf: (a) => a.propertyKind === '주택',
+    opts: [
+      ['yes', '네, 그 전부터 있던 주택', '종전 세부담 상한 적용'],
+      ['no', '아니오, 2024년 이후 신축·최초 과세', '상한 없음'],
+      ['unknown', '모름', '상한 없이 계산 (세금이 많게 나올 수 있음)'],
+    ],
+  },
+  {
+    id: 'buildingType',
+    tier: 'quick',
+    section: '건축물 종류',
+    q: '건축물의 종류는 무엇인가요?',
+    sub: '건축물은 종류에 따라 세율이 갈립니다. 종류를 모르면 계산하지 않고 안내만 드립니다.',
+    showIf: (a) => a.propertyKind === '건축물',
+    opts: [
+      ['일반', '일반 건축물 (상가·사무실 등)', '0.25%'],
+      ['공장_주거지역', '시 지역 주거지역 등의 공장용 건축물', '0.5% (지방세법 §111①2호나)'],
+      ['골프장_고급오락장', '회원제 골프장·고급오락장용 건축물', '4%'],
+    ],
   },
   {
     id: 'isOneHouse',
@@ -75,14 +118,27 @@ const PROP_QS = [
       ['no', '아니오 (비도시지역)', '도시지역분 없음'],
     ],
   },
+  /* 비주택: 상세 단계의 선택 입력. 주택은 「2023년에도 냈다」일 때만 보이고 «필수»이며 빠른 계산 단계에서 묻는다(quickIf·requiredIf). */
   {
     id: 'priorYearTax',
     section: '전년도 재산세',
-    q: '작년에 낸 재산세 본세를 알면 입력해 주세요 (원, 선택)',
-    sub: '재산세는 전년 대비 일정 비율 이상 오르지 못하는 「세부담 상한」이 있습니다(토지·건축물 150%). 작년 본세를 넣으면 상한을 정확히 반영합니다. 모르면 비워두세요. (주택은 2023년부터 세부담 상한이 폐지되어 입력 불필요합니다.)',
-    showIf: (a) => a.propertyKind !== '주택',
+    q: '작년 재산세 본세(도시지역분·지방교육세 제외)를 알려 주세요 (토지·건축물은 선택)',
+    sub: '토지·건축물은 작년 세액의 150%를 넘지 못합니다(§122). 2024년 전부터 재산세가 과세된 주택은 종전 상한(105·110·130%)이 적용되므로 작년 본세가 꼭 필요합니다(부칙 제15조). 본세와 도시지역분에 각각 적용됩니다. 토지·건축물은 모르면 비워두세요.',
+    showIf: (a) => a.propertyKind !== '주택' || a.housingTaxedBefore2024 === 'yes',
+    quickIf: (a) => a.propertyKind === '주택',
+    requiredIf: (a) => a.propertyKind === '주택',
     numeric: true, money: true, optional: true,
     placeholder: '예: 500,000',
+  },
+  {
+    id: 'priorYearUrbanTax',
+    section: '전년도 도시지역분',
+    q: '작년 도시지역분은 얼마였나요? (원, 선택)',
+    sub: '도시지역분에도 세부담 상한이 따로 적용됩니다(§122). 작년 고지서의 도시지역분을 넣으면 반영하고, 비우면 도시지역분에는 상한 없이 계산합니다.',
+    showIf: (a) => a.propertyKind !== '주택' || a.housingTaxedBefore2024 === 'yes',
+    quickIf: (a) => a.propertyKind === '주택',
+    numeric: true, money: true, optional: true,
+    placeholder: '예: 300,000',
   },
   {
     id: 'context',
@@ -94,6 +150,15 @@ const PROP_QS = [
   },
 ];
 
+/* answers → 엔진 요청 바디 (/v1/calc/property). 모르는 사실은 «보내지 않는다»가 아니라 «요청을 만들지 않는다»(null) —
+   엔진이 기본값으로 확정하지 않게 하고, 호출 전 게이트(propFallbackGaps ①층)가 먼저 막는다.
+   · 주택: 작년 공시가격 — 직접 입력 → prior_year_standard_value:<원> / 작년에 없던 주택 → no_prior_year_standard_value:true
+     / 모름·미응답·금액 미입력 → null (과세표준상한 §110③ 을 판정할 수 없다)
+   · 건축물: building_type(일반·공장_주거지역·골프장_고급오락장) — 미응답이면 null
+   · 주택의 종전 세부담 상한: 2023년에도 과세 → housing_taxed_before_2024:true + prior_year_tax(필수, 없으면 null)·prior_year_urban_tax(양수일 때) /
+     아니오 → housing_taxed_before_2024:false / 모름·미응답 → 키 없음(차단 아님 — 엔진이 상한 없이 계산하고 고지)
+   · 비주택: 전년도 본세·도시지역분은 양수일 때만 prior_year_tax·prior_year_urban_tax 로 */
+const PROP_BUILDING_TYPES = ['일반', '공장_주거지역', '골프장_고급오락장'];
 function mapAnswersToProperty(a) {
   const kind = a.propertyKind;
   let category = '주택';
@@ -110,92 +175,102 @@ function mapAnswersToProperty(a) {
   };
   // 분리과세 토지 세부유형: 전·답·과수원·임야=0.07%, 기타=0.2% (지§111①1호다)
   if (category === '토지_분리과세') body.land_divided_type = a.landType === '분리전답' ? '전답과수원' : '기타분리';
-  // 1세대1주택 특례(§111의2)는 주택만
-  if (kind === '주택' && a.isOneHouse === 'yes') body.is_one_house = true;
-  // 세부담 상한(전년세액)은 주택 외(토지·건축물)만 의미 있음(주택은 2023~ 폐지)
-  if (kind !== '주택' && Number(a.priorYearTax) > 0) body.prior_year_tax = Number(a.priorYearTax);
+  if (category === '주택') {
+    // 1세대1주택 특례(§111의2)는 주택만
+    if (a.isOneHouse === 'yes') body.is_one_house = true;
+    // 과세표준상한(§110③) — 작년 공시가격을 짐작으로 채우지 않는다
+    if (a.priorYearStandardValue === 'input') {
+      const py = Number(a.priorYearStandardValueAmount);
+      if (!(py > 0)) return null;
+      body.prior_year_standard_value = py;
+    } else if (a.priorYearStandardValue === 'none') body.no_prior_year_standard_value = true;
+    else return null;                                   // 모름·미응답
+    // 종전 세부담 상한(부칙 제15조) — yes 는 작년 본세 필수, no 는 false, 모름·미응답은 키를 보내지 않는다(엔진이 상한 없이 계산하고 고지)
+    if (a.housingTaxedBefore2024 === 'yes') {
+      const pt = Number(a.priorYearTax);
+      if (!(pt > 0)) return null;
+      body.housing_taxed_before_2024 = true;
+      body.prior_year_tax = pt;
+      if (Number(a.priorYearUrbanTax) > 0) body.prior_year_urban_tax = Number(a.priorYearUrbanTax);
+    } else if (a.housingTaxedBefore2024 === 'no') body.housing_taxed_before_2024 = false;
+  } else {
+    if (category === '건축물') {
+      if (PROP_BUILDING_TYPES.indexOf(a.buildingType) < 0) return null;   // 종류 미응답 — 세율이 갈린다
+      body.building_type = a.buildingType;
+    }
+    // 세부담 상한(전년 세액)은 토지·건축물만 의미 있음(주택은 2023~ 폐지). 본세와 도시지역분은 각각 상한을 받는다
+    if (Number(a.priorYearTax) > 0) body.prior_year_tax = Number(a.priorYearTax);
+    if (Number(a.priorYearUrbanTax) > 0) body.prior_year_urban_tax = Number(a.priorYearUrbanTax);
+  }
   return body;
 }
 
-/* 간이 폴백(엔진 미응답 시) — 대략 세율. 정밀은 엔진. 폴백은 보수적(과대=안전): 누진 토지는 상한율 근사. */
-function fallbackPropTax(a) {
-  const v = Number(a.standardValue) || 0;
-  const kind = a.propertyKind;
-  // 수정 260628(PROP-A-01/B-01): 주택을 단일세율 → 4단계 누진(§111①3호 일반 / §111의2 1주택특례). 종전 0.15/0.25% 단일은 구간별 과소/과대.
-  // ⚠️ 일몰 가드 필요(PROPERTY-R2-03): §111의2 특례세율 2026.12.28 일몰 / §109①2호 1주택 누진비율 2026년도 한정 — 2027+ 재확인.
-  if (kind === '주택') {
-    const oneHouse = a.isOneHouse === 'yes';
-    // 공정시장가액비율 §109①2호(2026년도 1세대1주택 누진, 시행 2026.6.1): 3억↓ 43% / 3억~6억 44% / 6억↑ 45%. 일반(다주택) 60%. (수정 260628 PROPERTY-R2-01/02 — 종전 0.45 단일은 6억↓ 과대)
-    const ratio = oneHouse ? (v <= 300_000_000 ? 0.43 : v <= 600_000_000 ? 0.44 : 0.45) : 0.60;
-    const tb = v * ratio;
-    // 1주택 특례세율(§111의2)은 공시 9억 이하만. 9억 초과 1주택은 일반 누진(§111①3호). (PROP-A-01 오라클: 10억 1주택=일반 0.4%·ratio 45%, 총 2,034,000 일치)
-    const special = oneHouse && v <= 900_000_000;
-    const main = special
-      ? (tb <= 60_000_000 ? tb * 0.0005
-        : tb <= 150_000_000 ? 30_000 + (tb - 60_000_000) * 0.001
-        : tb <= 300_000_000 ? 120_000 + (tb - 150_000_000) * 0.002
-        : 420_000 + (tb - 300_000_000) * 0.0035)
-      : (tb <= 60_000_000 ? tb * 0.001
-        : tb <= 150_000_000 ? 60_000 + (tb - 60_000_000) * 0.0015
-        : tb <= 300_000_000 ? 195_000 + (tb - 150_000_000) * 0.0025
-        : 570_000 + (tb - 300_000_000) * 0.004);
-    const edu = main * 0.2;
-    const urban = (a.isUrbanArea !== 'no') ? tb * 0.0014 : 0;
-    return Math.round(main + edu + urban);
-  }
-  let ratio, rate;
-  if (kind === '건축물') { ratio = 0.70; rate = 0.0025; }
-  else { // 토지 — 종류별(종합/별도는 누진 상한율로 과대 보정, 분리는 정확율)
-    ratio = 0.70;
-    if (a.landType === '별도합산') rate = 0.004;        // 0.2~0.4% → 상한 근사
-    else if (a.landType === '분리전답') rate = 0.0007;  // 전·답·과수원·목장·임야 0.07%
-    else if (a.landType === '분리기타') rate = 0.002;   // 공장용지 등 기타분리 0.2%
-    else rate = 0.005;                                  // 종합합산 0.2~0.5% → 상한 근사(과소 방지)
-  }
-  const base = v * ratio;
-  const main = base * rate;
-  const edu = main * 0.2;
-  const urban = (a.isUrbanArea !== 'no') ? base * 0.0014 : 0;
-  return Math.round(main + edu + urban);
-}
-
-/* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
-   화면에서 금액을 가려도 그 전에 AI 프롬프트가 폴백 세액을 외부로 보내고 있었다
+/* 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
+   화면에서 금액을 가려도 그 전에 AI 프롬프트가 세액을 외부로 보내고 있었다
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
-   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다. */
+   렌더도 같은 함수를 쓴다 — 규칙이 두 벌이 되면 반드시 어긋난다.
+   두 층이다: ① 입력 불확정(calc.precise 와 무관) ② 엔진 값 없음(calc.precise 가 거짓이면 항상 한 건).
+   261010: 이 화면에는 자체 계산식(폴백)이 없다 — 엔진 값이 없으면 어떤 입력이든 막는다.
+   ①층은 mapAnswersToProperty 가 null 을 돌려주는 입력과 «같은 규칙»이어야 한다.
+   ⚠️ 이 함수는 자기완결이어야 한다(tests_fallback_block.js 가 함수 본문만 꺼내 실행한다) — 다른 모듈 함수를 부르지 않는다. */
 function propFallbackGaps(answers, calc) {
-  if (calc.precise) return [];
-  return window.jtFallbackGaps([
-    { when: answers.propertyKind === '토지' && (answers.landType === '종합합산' || answers.landType === '별도합산'),
-      why: '종합·별도합산 토지 — 간이 계산이 누진 구간을 쓰지 않고 최고세율만 곱해 세금이 «크게 많게» 나옵니다(실측 2배 이상 차이).' },
-    { when: (Number(answers.priorYearTax) || 0) > 0,
-      why: '전년도 재산세를 넣으셨는데 — 세부담 상한(§122)을 간이 계산이 적용하지 못해 세금이 «크게 많게» 나옵니다(실측 10배 이상 차이).' },
-    { when: answers.propertyKind === '건축물',
-      why: '건축물 — 지역자원시설세(소방분)가 간이 계산에 없어 세금이 «적게» 나옵니다.' },
+  const house = answers.propertyKind !== '건축물' && answers.propertyKind !== '토지';   // 매퍼와 같은 분류 — 미응답도 주택 쪽
+  const py = answers.priorYearStandardValue;
+  const pyResolved = py === 'none' || (py === 'input' && Number(answers.priorYearStandardValueAmount) > 0);
+  const unknown = window.jtFallbackGaps([
+    { when: house && !pyResolved,
+      why: '작년 공시가격을 모르면 과세표준상한(§110③)을 판정할 수 없어 세액을 확정할 수 없습니다 — 부동산공시가격알리미에서 조회해 넣어 주세요.' },
+    { when: house && answers.housingTaxedBefore2024 === 'yes' && !(Number(answers.priorYearTax) > 0),
+      why: '2024년 전부터 재산세가 과세된 주택은 작년 재산세 본세가 있어야 종전 세부담 상한(부칙 제15조)을 적용할 수 있습니다 — 작년 고지서의 본세를 입력해 주세요.' },
+    { when: answers.propertyKind === '건축물' && ['일반', '공장_주거지역', '골프장_고급오락장'].indexOf(answers.buildingType) < 0,
+      why: '건축물의 종류(일반·공장용·골프장/고급오락장용)가 정해지지 않았습니다 — 종류에 따라 세율이 달라 짐작으로 채울 수 없습니다.' },
   ]);
+  /* ── ② 엔진 값이 없으면 어떤 입력이든 막는다 ──────────────────────────────
+     사유는 «엔진이 거부했다(refused: 입력 부족·지원 안 함)»와 «연결하지 못했다(down·미지정)» 둘이다.
+     거부 사유는 엔진이 준 문구(calc.engineMessage)를 그대로 보인다. */
+  if (calc.precise) return unknown;
+  return unknown.concat([calc.engineState === 'refused'
+    ? '입력이 더 필요합니다 — ' + (calc.engineMessage || '이 계산기가 금액을 확정할 수 없는 조건입니다. 「← 이전」으로 돌아가 답을 보완하시거나 상담으로 확인해 주세요.')
+    : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }
 
-function buildPropDetail(answers, calc, commentary) {
-  const L = ['■ 고객 입력 정보'];
+/* 입력 요약 줄 — 상담 전송(상세·카카오)이 같이 쓴다. 금액 칸(amountId)이 붙은 선택지는 금액으로 보인다 */
+function propAnswerLines(answers, prefix, skipId) {
+  const L = [];
   PROP_QS.forEach(q => {
+    if (q.id === skipId) return;
     if (q.showIf && !q.showIf(answers)) return;
     const val = answers[q.id];
     if (val === undefined || val === null || val === '') return;
     let v = val;
-    if (q.opts) { const o = q.opts.find(x => x[0] === val); if (o) v = o[1]; }
+    if (q.opts) {
+      const o = q.opts.find(x => x[0] === val); if (o) v = o[1];
+      if (q.amountId && val === q.amountWhen && Number(answers[q.amountId]) > 0) v = formatWon(Number(answers[q.amountId]));
+    }
     else if (q.numeric && q.money) v = formatWon(Number(val));
     const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
-    L.push('  · ' + ql + ': ' + v);
+    L.push(prefix + ql + ': ' + v);
   });
-  L.push('', '■ 계산 결과' + (calc.precise ? ' (검증 엔진)' : ' (간이 추정)'));
-  if (calc.precise) {
-    L.push('  · 과세표준: ' + formatWon(calc.taxBase) + ' (공시가격 × 공정시장가액비율 ' + (calc.fairRatio || '') + ')');
-    L.push('  · 재산세 본세: ' + formatWon(calc.mainTax));
-    L.push('  · 지방교육세: ' + formatWon(calc.eduTax));
-    if (calc.urbanTax > 0) L.push('  · 도시지역분: ' + formatWon(calc.urbanTax));
-    if (calc.fireTax > 0) L.push('  · 지역자원시설세(소방분): ' + formatWon(calc.fireTax));
-    if (calc.burdenApplied) L.push('  · 세부담 상한 적용됨');
+  return L;
+}
+
+function buildPropDetail(answers, calc, commentary) {
+  const L = ['■ 고객 입력 정보'].concat(propAnswerLines(answers, '  · ', null));
+  L.push('', '■ 계산 결과 (검증 엔진)');
+  L.push('  · 과세표준: ' + formatWon(calc.taxBase) + ' (공시가격 × 공정시장가액비율 ' + (calc.fairRatio || '') + ')');
+  const cap = calc.baseCap || {};
+  if (cap['적용']) L.push('  · 과세표준상한액 적용(§110③): 상한 전 ' + formatWon(cap['상한전과세표준']) + ' → 상한 ' + formatWon(cap['상한액']));
+  L.push('  · 재산세 본세: ' + formatWon(calc.mainTax));
+  L.push('  · 지방교육세: ' + formatWon(calc.eduTax));
+  if (calc.urbanTax > 0) L.push('  · 도시지역분: ' + formatWon(calc.urbanTax));
+  if (calc.burdenApplied) {
+    const b = calc.burden || {};
+    if (b['본세적용']) L.push('  · 세부담 상한 적용(본세): ' + formatWon(b['상한전본세']) + ' → ' + formatWon(calc.mainTax));
+    if (b['도시지역분적용']) L.push('  · 세부담 상한 적용(도시지역분): ' + formatWon(b['상한전도시지역분']) + ' → ' + formatWon(calc.urbanTax));
+    if (!b['본세적용'] && !b['도시지역분적용']) L.push('  · 세부담 상한 적용됨');
+    if (typeof b['근거'] === 'string' && b['근거']) L.push('  · 세부담 상한 근거: ' + b['근거']);
   }
+  if (calc.smallExempt) L.push('  · 재산세 2천원 미만이라 징수하지 않음(§119)');
   L.push('  · 총 납부세액: ' + formatWon(calc.totalTax));
   if (calc.firstHalf > 0 && calc.secondHalf > 0) L.push('  · 납부시기: 7월 ' + formatWon(calc.firstHalf) + ' + 9월 ' + formatWon(calc.secondHalf) + ' (반분)');
   else if (calc.firstHalf > 0) L.push('  · 납부시기: 7월 ' + formatWon(calc.firstHalf) + ' (전액)');
@@ -209,21 +284,99 @@ function buildPropDetail(answers, calc, commentary) {
 }
 
 function buildPropKakao(answers, calc) {
-  const L = ['[JT택스랩 재산세 계산 — 상담 요청]', '', '▶ 입력'];
-  PROP_QS.forEach(q => {
-    if (q.id === 'context') return;
-    if (q.showIf && !q.showIf(answers)) return;
-    const val = answers[q.id];
-    if (val === undefined || val === null || val === '') return;
-    let v = val;
-    if (q.opts) { const o = q.opts.find(x => x[0] === val); if (o) v = o[1]; }
-    else if (q.numeric && q.money) v = formatWon(Number(val));
-    const ql = (q.q || q.id).replace(/\s*\([^)]*\)\s*$/, '').trim();
-    L.push('· ' + ql + ': ' + v);
-  });
+  const L = ['[JT택스랩 재산세 계산 — 상담 요청]', '', '▶ 입력'].concat(propAnswerLines(answers, '· ', 'context'));
   if (answers.context) L.push('· 추가: ' + answers.context);
-  L.push('', '▶ 추정 결과', '· 총 납부세액: ' + formatWon(calc.totalTax), '', '상담 부탁드립니다.');
+  L.push('', '▶ 계산 결과', '· 총 납부세액: ' + formatWon(calc.totalTax), '', '상담 부탁드립니다.');
   return L.join('\n');
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   엔진 결과 → calc (261010 오너 방침: 프론트의 자체 계산식(폴백)을 삭제한다 — 증여세·양도세·취득세·상속세 화면과 같은 방식)
+
+   재산세 화면에는 세액을 «스스로» 계산하는 코드가 없다. 금액은 엔진(`POST /v1/calc/property`)이 준 값뿐이고,
+   엔진 값이 없으면 금액 필드(totalTax 등)를 아예 두지 않는다. 엔진 호출 결과는 셋이다.
+     · 유효 응답  — HTTP 200 + 오류 없음 + calc.상태 가 'ok'(상태 키가 없으면 유효 응답이 아니다) + 필수 숫자 키(세액·재산세본세·지방교육세·도시지역분·과세표준)가 유한한 실수
+                    (window.jtValidCalc) → precise:true 와 각 금액 필드. «소방분»은 엔진이 계산하지 않아 항상 null — 필수 키가 아니다
+     · 거부       — HTTP 200 인데 calc.오류 가 있거나 calc.상태 가 'ok' 가 아님(needs_input·unsupported)·상태 키가 없음(형식 오류 — 연결 장애가 아니다), 또는 HTTP 4xx(408·429 제외)
+                    → precise:false, engineState:'refused', engineMessage(엔진이 준 오류 문구 — «입력이 더 필요합니다» 안내에 그대로 보인다)
+     · 연결 실패  — 네트워크 오류·타임아웃·HTTP 5xx·408·429·calc 없음·깨진 응답·상태 'error'(엔진 내부 실패) → precise:false, engineState:'down'
+   ══════════════════════════════════════════════════════════════════════════ */
+const PROP_NO_STATUS_MESSAGE = '엔진 응답 형식이 맞지 않습니다(상태 없음) — 잠시 후 다시 시도하거나 상담을 이용하세요';
+const PROP_ENGINE_REQUIRED = ['세액', '재산세본세', '지방교육세', '도시지역분', '과세표준'];
+function propEngineVerdict(c) {
+  if (!c || typeof c !== 'object' || Array.isArray(c)) return 'down';
+  /* 새 엔진은 항상 «상태» 를 낸다 — 상태 키가 없는 응답은 금액으로 받지 않는다. 연결은 됐고 «형식이 맞지 않는» 것이므로
+     연결 장애(down)가 아니라 거부(refused)로 분류한다(propCalcFromEngine 이 PROP_NO_STATUS_MESSAGE 를 안내한다).
+     error = 엔진 내부 실패(입력 탓이 아니다 → 다시 시도), 그 밖에 ok 가 아니면(needs_input·unsupported 등) 거부. */
+  if (!Object.prototype.hasOwnProperty.call(c, '상태')) return 'refused';
+  if (c['상태'] !== 'ok') return c['상태'] === 'error' ? 'down' : 'refused';
+  /* 공통 검증기(jtValidCalc)가 무효로 보는 명시적 오류 필드(error·detail 등)도 «거부»다 — 무결성 검사로 넘기면
+     「연결 실패」로 잘못 안내된다. */
+  if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return 'refused';
+  if (!window.jtValidCalc(c, PROP_ENGINE_REQUIRED)) return 'down';
+  return 'ok';
+}
+function propCalcFromEngine(ej) {
+  const c = ej && ej.calc;
+  const verdict = propEngineVerdict(c);
+  if (verdict === 'refused') {
+    if (!Object.prototype.hasOwnProperty.call(c, '상태')) return { precise: false, engineState: 'refused', engineMessage: PROP_NO_STATUS_MESSAGE };
+    const msg = [c['오류'], c.error].find(x => typeof x === 'string' && x.trim());
+    return { precise: false, engineState: 'refused', engineMessage: msg ? msg.trim() : '' };
+  }
+  if (verdict !== 'ok') return { precise: false, engineState: verdict };
+  const obj = (x) => (x && typeof x === 'object' && !Array.isArray(x)) ? x : {};
+  const np = obj(c['납부시기']);
+  return {
+    precise: true, engineVer: ej.version && ej.version.engine,
+    totalTax: c['세액'], mainTax: c['재산세본세'], eduTax: c['지방교육세'], urbanTax: c['도시지역분'] || 0,
+    taxBase: c['과세표준'], appliedRate: c['적용세율'], fairRatio: c['공정시장가액비율'],
+    burdenApplied: c['세부담상한적용'] === true, burden: obj(c['세부담상한']), baseCap: obj(c['과세표준상한']),
+    smallExempt: c['소액징수면제'] === true,
+    firstHalf: np['7월'] || 0, secondHalf: np['9월'] || 0,
+    steps: c['단계별계산'] || [],
+    engineWarnings: c['경고사항'] || [],   // 엔진이 알리는 가정·경고(소방분 미계산·조례 가감 등) — 결과 화면에 그대로 보인다
+  };
+}
+/* ── 작년 공시가격 자동 채움의 «출처 표식» 상태 전이 (순수 함수 — tests_property_request.js 가 vm 에서 그대로 돌린다) ─────────────
+   auto = { opt, amt } — opt: 선택지 'input' 이 자동 채움이 둔 것, amt: 금액이 자동 채움이 둔 것(사용자가 손대면 해당 표식이 꺼진다).
+   · 새 주소 조회가 시작되면 표식이 있는 값만 지운다(주소를 바꿨는데 이전 주소의 작년 금액이 되살아나지 않게). 표식 없는 값(사용자 값)은 보존한다.
+   · 응답이 도착했을 때 사용자 값이 이미 있으면 덮어쓰지 않는다. */
+function propPriorAutoUser(auto, what) {
+  const a = auto || {};
+  return what === 'amount' ? { opt: false, amt: false } : { opt: false, amt: !!a.amt };
+}
+function propPriorAutoReset(answers, auto) {
+  const a = { ...answers }, cur = auto || {};
+  if (cur.amt) delete a.priorYearStandardValueAmount;
+  if (cur.opt) delete a.priorYearStandardValue;
+  return { answers: a, auto: { opt: false, amt: false } };
+}
+function propPriorAutoApply(answers, auto, priorAmt) {
+  const cur = auto || {};
+  const userOwns = !!((answers.priorYearStandardValue && !cur.opt) || (answers.priorYearStandardValueAmount && !cur.amt));
+  if (!(priorAmt > 0) || userOwns) return { answers, auto: cur, userOwns, filled: false };
+  return { answers: { ...answers, priorYearStandardValue: 'input', priorYearStandardValueAmount: String(priorAmt) }, auto: { opt: true, amt: true }, userOwns: false, filled: true };
+}
+/* 올해·작년 조회가 «같은 세대» 인가 — 공동주택은 단지·동·호가 모두 같고 동·호가 비어 있지 않아야 한다(둘 다 비면 어느 세대인지 알 수 없다).
+   개별주택은 단지·동·호가 비는 것이 정상이므로 올해·작년 종류(kind)가 같을 때만 본다(두 조회는 같은 주소·같은 동호 입력으로 부른다). */
+function propPriorSameUnit(r, r2) {
+  if (!r || !r2 || !r.kind || r.kind !== r2.kind) return false;
+  if (r.kind === '개별주택') return true;
+  if (r.kind !== '공동주택') return false;
+  const m1 = r.matched, m2 = r2.matched;
+  if (!m1 || !m2 || typeof m1 !== 'object' || typeof m2 !== 'object') return false;
+  const sameStr = (x, y) => String(x == null ? '' : x).trim() === String(y == null ? '' : y).trim();
+  const sameUn = (x, y) => (typeof window !== 'undefined' && window.jtUnitSame) ? window.jtUnitSame(x, y) : sameStr(x, y);
+  if (!m1.dong || !m1.ho || !m2.dong || !m2.ho) return false;
+  return sameStr(m1.complex, m2.complex) && sameUn(m1.dong, m2.dong) && sameUn(m1.ho, m2.ho);
+}
+/* 호출 자체가 던진 예외 — HTTP 4xx(callPropEngine 이 status 를 달아 던진다)는 엔진의 «거부», 그 밖은 «연결 실패» */
+function propCalcFromEngineError(e) {
+  /* 408(시간 초과)·429(호출 제한)는 입력 문제가 아니라 일시적 상태다 — 다시 시도를 안내한다 */
+  return (e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429)
+    ? { precise: false, engineState: 'refused', engineMessage: '' }
+    : { precise: false, engineState: 'down' };
 }
 
 async function callPropEngine(body) {
@@ -526,14 +679,22 @@ function JTReportProperty({ setRoute, onBack }) {
   //    돌기 때문에 "주소 변경 렌더 ~ effect 실행" 사이에 응답이 도착하면 ref가 아직 옛 주소다.
   //    → 옛 응답이 반영되거나(위험) 최신 응답이 버려진다. 입력 시점에 **동기로** 갱신한다.
   const setLaddrSync = (v) => { jtAddrRef.current = v; setLaddr(v); };
+  // 주소 조회가 «작년 공시가격»을 자동으로 채웠는지 — 사용자가 손대면 꺼진다. 다른 주소 조회에서 작년 값을 못 찾았을 때
+  // 자동으로 채운 낡은 값만 치우기 위한 표식이다(사용자가 직접 넣은 값은 건드리지 않는다).
+  const priorAutoRef = React.useRef({ opt: false, amt: false });
+  // 비동기 응답이 도착했을 때의 «최신» 답 — 조회를 기다리는 동안 사용자가 작년 공시가격을 직접 넣었는지 본다
+  const answersRef = React.useRef({});
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
     if (base) { fetch(base + '/health', { method: 'GET' }).catch(function () {}); }
   }, []);
 
+  answersRef.current = answers;
   const allVisible = PROP_QS.filter(q => !q.showIf || q.showIf(answers));
-  const visibleQs = phase === 'quick' ? allVisible.filter(q => q.tier === 'quick') : allVisible.filter(q => q.tier !== 'quick');
+  /* quickIf: 답에 따라 빠른 계산 단계에 올라오는 문항(주택 + 2023년 과세 → 작년 본세) */
+  const isQuickQ = (q) => q.tier === 'quick' || !!(q.quickIf && q.quickIf(answers));
+  const visibleQs = phase === 'quick' ? allVisible.filter(isQuickQ) : allVisible.filter(q => !isQuickQ(q));
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
@@ -543,7 +704,9 @@ function JTReportProperty({ setRoute, onBack }) {
   const canNext = () => {
     if (!cur) return false;
     if (cur.freeform) return true;
-    if (cur.numeric) { if (cur.optional) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
+    if (cur.numeric) { if (cur.optional && !(cur.requiredIf && cur.requiredIf(answers))) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
+    /* 금액 칸이 붙은 선택지(작년 공시가격 「직접 입력」)는 금액이 있어야 다음으로 간다 */
+    if (cur.amountId && answers[cur.id] === cur.amountWhen) { const v = Number(answers[cur.amountId]); return !isNaN(v) && v > 0; }
     return !!answers[cur.id];
   };
 
@@ -559,6 +722,12 @@ function JTReportProperty({ setRoute, onBack }) {
     const seqStale = () => jtReqSeq.current !== mySeq;
     const stale = () => seqStale() || (jtAddrRef.current || '').trim() !== addrNow;
     setLbusy(true); setLinfo(null);
+    /* 새 주소 조회가 시작되면 자동 채움 표식이 있는 작년 값(이전 주소의 것)을 지운다 — 사용자가 직접 넣은 값은 보존한다 */
+    { const before = answersRef.current || {};
+      const rs = propPriorAutoReset(before, priorAutoRef.current);
+      priorAutoRef.current = rs.auto; answersRef.current = rs.answers;
+      if (before.priorYearStandardValueAmount !== undefined && rs.answers.priorYearStandardValueAmount === undefined) setAns('priorYearStandardValueAmount', undefined);
+      if (before.priorYearStandardValue !== undefined && rs.answers.priorYearStandardValue === undefined) setAns('priorYearStandardValue', undefined); }
     if (!unit) setUnitAsk(null);   // 주소를 새로 조회하면 이전 되묻기는 닫는다
     try {
       const r = await window.jtLookupHousePrice(addrNow, unit);
@@ -582,8 +751,29 @@ function JTReportProperty({ setRoute, onBack }) {
         && Number.isFinite(Number(r.amount)) && Number(r.amount) > 0
         && ['', 'exact', 'loose'].indexOf(r.matchQuality === undefined ? '' : r.matchQuality) >= 0;
       if (contractOk) {
+        /* 같은 주소·동·호의 «작년» 공시가격을 한 번 더 찾는다(과세표준상한 §110③). 못 찾으면 조용히 두고 사용자가 입력한다.
+           await 뒤에는 다시 stale 을 본다 — 그 사이 주소가 바뀌었으면 이 응답 전체를 버린다. */
+        let priorAmt = 0;
+        try {
+          const priorYear = new Date().getFullYear() - 1;
+          const r2 = await window.jtLookupHousePrice(addrNow, { ...(unit || {}), year: String(priorYear) });
+          /* 채우는 조건 — 응답이 «작년» 것임을 스스로 밝히고(year), 올해 조회와 «같은 세대» 일 때만(propPriorSameUnit:
+             공동주택은 단지·동·호가 모두 같고 동·호가 비어 있지 않아야 하며, 개별주택은 종류가 같을 때). */
+          const sameUnit = propPriorSameUnit(r, r2);
+          if (sameUnit && r2 && r2.status === 'ok' && Number(r2.amount) > 0 && r2.year && String(r2.year) === String(priorYear)) priorAmt = Number(r2.amount);
+        } catch (pe) { priorAmt = 0; }
+        if (stale()) return;
         setUnitAsk(null);
         setAns('standardValue', String(r.amount));
+        /* 조회를 기다리는 사이 사용자가 작년 공시가격을 직접 골랐거나 넣었다면(자동 채움 표식이 없는 값) 덮어쓰지 않는다.
+           올해 공시가격이 자동 조회로 «바뀌었는데» 작년 값이 사용자 것이면 다시 확인하라고 알린다. */
+        const prevThis = (answersRef.current || {}).standardValue;
+        const ap = propPriorAutoApply(answersRef.current || {}, priorAutoRef.current, priorAmt);
+        if (ap.filled) {
+          setAns('priorYearStandardValue', 'input'); setAns('priorYearStandardValueAmount', String(priorAmt));
+          priorAutoRef.current = ap.auto; answersRef.current = ap.answers;
+        } else priorAmt = 0;
+        const recheckPrior = ap.userOwns && String(prevThis || '') !== String(r.amount);
         const kindLabel = r.kind === '공동주택' ? '아파트·연립·다세대' : '단독·다가구주택';
         const ml = window.jtMatchedLabel && window.jtMatchedLabel(r.matched);
         // ⚠️ 금액만 보여주면 그게 내 집 값인지 알 수 없다. 무엇을 맞췄는지 반드시 함께.
@@ -599,6 +789,8 @@ function JTReportProperty({ setRoute, onBack }) {
         const reg = r.region;
         if (reg && reg.urban_area_likely === true) { setAns('isUrbanArea', 'yes'); msg += ` ${reg.sigungu || '해당 지역'}은 도시지역으로 자동판단했어요(다르면 뒤 단계에서 수정).`; }
         else if (reg && reg.urban_area_likely === false) { setAns('isUrbanArea', 'no'); msg += ' 비도시지역으로 자동판단했어요(다르면 수정).'; }
+        if (priorAmt > 0) msg += ` 작년 공시가격 ${formatWon(priorAmt)}도 찾았어요.`;
+        else if (recheckPrior) msg += ' ⚠️ 올해 공시가격이 바뀌었으니 앞서 넣으신 작년 공시가격을 다시 확인하세요.';
         msg += ' 값이 맞는지 확인하고 다음으로 진행하세요.';
         setLinfo({ ok: true, msg });
       } else if (r && r.region) {
@@ -624,7 +816,7 @@ function JTReportProperty({ setRoute, onBack }) {
          판정 함수는 2층인데 ①불확정 층은 calc.precise 와 무관하다 — 그래서 여기서
          precise:true 로 불러 ①층만 본다. 못 낼 값이면 요청 자체가 낭비이고,
          「모르겠다」고 답한 사실이 기본값으로 둔갑해 엔진까지 가지도 않는다.
-         엔진 응답 직후의 기존 게이트는 그대로 ②폴백 한계를 잡는다. */
+         엔진 응답 직후의 게이트는 ②엔진 값 없음(거부·연결 실패)을 잡는다. */
       if (propFallbackGaps(answers, { precise: true }).length > 0) {
         /* precise:true 로 저장하는 이유 — 렌더가 같은 판정 함수를 다시 부르는데,
            precise:false 로 두면 ②폴백 한계 사유까지 붙어 «엔진 POST 를 멈춘 이유»와
@@ -635,19 +827,21 @@ function JTReportProperty({ setRoute, onBack }) {
         if (phase === 'quick') setQuickReport(unknownRep);
         return;
       }
-      let calc = { totalTax: fallbackPropTax(answers), precise: false };
-      try {
-        const ej = await callPropEngine(mapAnswersToProperty(answers));
-        const c = ej && ej.calc;
-        if (window.jtValidCalc(c, ['세액', '재산세본세', '지방교육세', '도시지역분', '소방분', '과세표준'])) {
-          calc.totalTax = c['세액']; calc.mainTax = c['재산세본세']; calc.eduTax = c['지방교육세'];
-          calc.urbanTax = c['도시지역분'] || 0; calc.fireTax = c['소방분'] || 0; calc.taxBase = c['과세표준'];
-          calc.appliedRate = c['적용세율']; calc.fairRatio = c['공정시장가액비율']; calc.burdenApplied = c['세부담상한적용'];
-          const np = c['납부시기'] || {}; calc.firstHalf = np['7월'] || 0; calc.secondHalf = np['9월'] || 0;
-          calc.steps = c['단계별계산'] || []; calc.engineWarnings = c['경고사항'] || [];
-          calc.precise = true; calc.engineVer = ej.version && ej.version.engine;
+      /* ★ 엔진 값이 없으면 금액 필드가 «없는» calc 가 된다(propCalcFromEngine 주석) — 자체 계산식으로 메우지 않는다.
+         유효 응답이면 precise:true, 거부면 engineState:'refused', 연결 실패면 engineState:'down'. */
+      let calc;
+      const reqBody = mapAnswersToProperty(answers);
+      if (!reqBody) {
+        /* 위 ①층 게이트가 먼저 막으므로 여기까지 오지 않는다 — 요청을 만들 수 없는 불확정 입력이면 엔진을 부르지 않는다(방어) */
+        calc = { precise: false, engineState: 'refused', engineMessage: '' };
+      } else {
+        try {
+          calc = propCalcFromEngine(await callPropEngine(reqBody));
+        } catch (e) {
+          console.warn('재산세 엔진 호출 실패', e);
+          calc = propCalcFromEngineError(e);
         }
-      } catch (e) { console.warn('재산세 엔진 연결 실패 — 간이 추정 유지', e); }
+      }
 
       /* ★ AI 프롬프트를 만들기 «전»에 막는다. 화면에서 금액을 가려도 이 호출이 먼저 나가면
          폴백 세액이 외부로 흘러간다 — 260806 Codex P0 로 실제 그러고 있었다.
@@ -670,7 +864,7 @@ function JTReportProperty({ setRoute, onBack }) {
           headline: '재산세는 매년 6월 1일 소유자에게, 공시가격 기준으로 부과됩니다.',
           cautions: [
             { title: '과세기준일 6월 1일', detail: '6월 1일 현재 소유자가 그 해 재산세를 전부 냅니다. 6월 1일 직전 매도/직후 매수가 유리합니다(지방세법 §114).' },
-            { title: '납부 시기', detail: '주택 재산세는 7월과 9월에 절반씩 나눠 냅니다(연 20만원 이하면 7월 일괄). 건축물은 7월, 토지는 9월.' },
+            { title: '납부 시기', detail: '주택 재산세는 7월과 9월에 절반씩 나눠 냅니다(20만원 이하는 지자체 조례에 따라 7월에 한꺼번에 부과될 수 있음). 건축물은 7월, 토지는 9월.' },
             { title: '공시가격 기준', detail: '실거래가가 아니라 정부 고시 공시가격 × 공정시장가액비율이 과세표준입니다.' },
           ],
           saving_ideas: [
@@ -707,17 +901,21 @@ function JTReportProperty({ setRoute, onBack }) {
 
   if (report) {
     const { calc, commentary } = report;
-    /* 폴백이 «감당 못 하는» 사실관계면 숫자를 내지 않는다 (260806 Codex 실측 오차 기반) */
+    /* 엔진 값이 없거나(down·refused) 입력이 불확정이면 숫자를 내지 않는다 (261010: 자체 계산식 없음). */
     const propGaps = propFallbackGaps(answers, calc);
     const propBlocked = propGaps.length > 0;
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
        AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
     if (propBlocked) {
+      /* 사유 구분: ①입력 불확정 → 'input' / 엔진이 거부(입력 부족·지원 안 함) → 'refused' / 그 밖(연결 실패·미지정) → 'down' */
+      const propBlockReason = propFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
+      const propBlockTag = propBlockReason === 'input' ? '정밀 계산 필요' : (propBlockReason === 'refused' ? '입력이 더 필요합니다' : '계산 엔진 연결 실패');
       return (
         <div className="jt-container">
-          <JTReportShell title="재산세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
-            <JTFallbackBlocked gaps={propGaps} onRetry={runAnalysis} reason={propFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
+          <JTReportShell title="재산세 계산 결과" subtitle={propBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+            {/* 'down' 은 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다 */}
+            <JTFallbackBlocked gaps={propBlockReason === 'down' ? [] : propGaps} onRetry={runAnalysis} reason={propBlockReason} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
             </div>
@@ -727,26 +925,16 @@ function JTReportProperty({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell title="재산세 계산 결과" subtitle={calc.precise ? '재산세 정밀 계산' : '재산세 간이 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
-          {propBlocked && <JTFallbackBlocked gaps={propGaps} onRetry={runAnalysis} />}
-          {!propBlocked && (
+        <JTReportShell title="재산세 계산 결과" subtitle="재산세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <div className="jt-report-result__grade jt-grade-mid">
-            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 재산세(연간 총액)' : (calc.precise ? '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)' : '연간 추정 납부세액 · 간이')}</div>
+            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 재산세(연간 총액)' : '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)'}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
-          )}
 
           {report.quick && calc.appliedRate && (
             <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: 14, opacity: 0.8 }}>
               {answers.propertyKind} · 공시가격 {formatWon(Number(answers.standardValue) || 0)} 기준, 적용세율 약 {calc.appliedRate}로 계산했어요.
             </p>
-          )}
-
-          {!calc.precise && !propBlocked && (
-            <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-              정밀 엔진 연결이 지연되어 <strong>간이 추정</strong>으로 보여드립니다.<br /><strong>반영한 것</strong>: 주택 공정시장가액비율 · 누진세율 · <strong>1세대1주택 특례세율과 특례 공정비율(43~45%)</strong> · 지방교육세.<br /><strong>반영하지 않은 것</strong>: <strong>세부담 상한</strong>(§122 — 전년도 세액을 넣으셔도 간이에서는 쓰지 않습니다) · 토지 종합·별도합산의 누진 구간 · <strong>지역자원시설세(소방분)</strong> · 감면. 그래서 실제 세액과 차이가 날 수 있습니다 —
-              <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={runAnalysis}>정밀 계산 다시 시도 →</button></div>
-            </div>
           )}
 
           {report.quick && (
@@ -763,38 +951,48 @@ function JTReportProperty({ setRoute, onBack }) {
             </div>
           )}
 
-          {calc.precise && (
-            <section className="jt-report-result__section">
-              <h3>세금 구성</h3>
-              <table className="jt-report-calc">
-                <tbody>
-                  <tr><th>과세표준 (공시가격 × 공정비율 {calc.fairRatio})</th><td>{formatWon(calc.taxBase)}</td></tr>
-                  <tr><th>적용세율</th><td>{calc.appliedRate}</td></tr>
-                  <tr><th>재산세 본세</th><td>{formatWon(calc.mainTax)}</td></tr>
-                  <tr><th>지방교육세 (본세의 20%)</th><td>{formatWon(calc.eduTax)}</td></tr>
-                  {calc.urbanTax > 0 && <tr><th>도시지역분 (과표 × 0.14%)</th><td>{formatWon(calc.urbanTax)}</td></tr>}
-                  {calc.fireTax > 0 && <tr><th>지역자원시설세 (소방분)</th><td>{formatWon(calc.fireTax)}</td></tr>}
-                  <tr><th><strong>연간 총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
-                </tbody>
-              </table>
-              {(calc.firstHalf > 0 || calc.secondHalf > 0) && (
-                <div style={{ background: 'var(--bg-1,#f7f5f0)', padding: '10px 16px', marginTop: 10, borderRadius: 8, fontSize: 14 }}>
-                  <strong>납부 시기:</strong> {calc.firstHalf > 0 && calc.secondHalf > 0
-                    ? `7월 ${formatWon(calc.firstHalf)} + 9월 ${formatWon(calc.secondHalf)} (절반씩 나눠 납부)`
-                    : calc.firstHalf > 0
-                    ? `7월 ${formatWon(calc.firstHalf)} (전액)`
-                    : `9월 ${formatWon(calc.secondHalf)} (전액)`} <span style={{ opacity: 0.7 }}>(지방세법 §115)</span>
-                </div>
-              )}
-              {calc.burdenApplied && (
-                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginTop: 12, borderRadius: 8 }}>
-                  ⚠️ 세부담 상한이 적용되어, 전년 대비 일정 한도까지만 올랐습니다(지방세법 §122).
-                </div>
-              )}
-            </section>
-          )}
+          <section className="jt-report-result__section">
+            <h3>세금 구성</h3>
+            <table className="jt-report-calc">
+              <tbody>
+                <tr><th>과세표준 (공시가격 × 공정비율 {calc.fairRatio})</th><td>{formatWon(calc.taxBase)}</td></tr>
+                <tr><th>적용세율</th><td>{calc.appliedRate}</td></tr>
+                <tr><th>재산세 본세</th><td>{formatWon(calc.mainTax)}</td></tr>
+                <tr><th>지방교육세 (본세의 20%)</th><td>{formatWon(calc.eduTax)}</td></tr>
+                {calc.urbanTax > 0 && <tr><th>{calc.burden && calc.burden['도시지역분적용'] ? '도시지역분 (세부담 상한 적용 후)' : '도시지역분 (과표 × 0.14%)'}</th><td>{formatWon(calc.urbanTax)}</td></tr>}
+                <tr><th><strong>연간 총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
+              </tbody>
+            </table>
+            {(calc.firstHalf > 0 || calc.secondHalf > 0) && (
+              <div style={{ background: 'var(--bg-1,#f7f5f0)', padding: '10px 16px', marginTop: 10, borderRadius: 8, fontSize: 14 }}>
+                <strong>납부 시기:</strong> {calc.firstHalf > 0 && calc.secondHalf > 0
+                  ? `7월 ${formatWon(calc.firstHalf)} + 9월 ${formatWon(calc.secondHalf)} (절반씩 나눠 납부)`
+                  : calc.firstHalf > 0
+                  ? `7월 ${formatWon(calc.firstHalf)} (전액)`
+                  : `9월 ${formatWon(calc.secondHalf)} (전액)`} <span style={{ opacity: 0.7 }}>(지방세법 §115)</span>
+              </div>
+            )}
+            {calc.baseCap && calc.baseCap['적용'] && (
+              <div style={{ background: 'var(--bg-1,#f7f5f0)', padding: '10px 16px', marginTop: 10, borderRadius: 8, fontSize: 14 }}>
+                <strong>과세표준상한액 적용(§110③):</strong> 공시가격 × 비율 {formatWon(calc.baseCap['상한전과세표준'])} → 상한 {formatWon(calc.baseCap['상한액'])}
+              </div>
+            )}
+            {calc.burdenApplied && (
+              <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginTop: 12, borderRadius: 8 }}>
+                ⚠️ 세부담 상한이 적용되어, 전년 대비 일정 한도까지만 올랐습니다(지방세법 §122).
+                {calc.burden && typeof calc.burden['근거'] === 'string' && calc.burden['근거'] && <div>근거: {calc.burden['근거']}{typeof calc.burden['상한율'] === 'string' && calc.burden['상한율'] ? ` · 상한율 ${calc.burden['상한율']}` : ''}</div>}
+                {calc.burden && calc.burden['본세적용'] && <div>본세 {formatWon(calc.burden['상한전본세'])} → {formatWon(calc.mainTax)}</div>}
+                {calc.burden && calc.burden['도시지역분적용'] && <div>도시지역분 {formatWon(calc.burden['상한전도시지역분'])} → {formatWon(calc.urbanTax)}</div>}
+              </div>
+            )}
+            {calc.smallExempt && (
+              <div style={{ background: 'var(--bg-1,#f7f5f0)', padding: '10px 16px', marginTop: 10, borderRadius: 8, fontSize: 14 }}>
+                2천원 미만이라 징수하지 않습니다(§119)
+              </div>
+            )}
+          </section>
 
-          {calc.precise && calc.steps && calc.steps.length > 0 && (
+          {calc.steps && calc.steps.length > 0 && (
             <section className="jt-report-result__section">
               <h3>단계별 계산 (법조문 근거)</h3>
               <table className="jt-report-calc">
@@ -871,11 +1069,23 @@ function JTReportProperty({ setRoute, onBack }) {
           {cur.opts && (
             <div className="jt-report-q__opts">
               {cur.opts.map(o => (
-                <button key={o[0]} className={'jt-report-q__opt' + (answers[cur.id] === o[0] ? ' is-selected' : '')} onClick={() => setAns(cur.id, o[0])}>
+                <button key={o[0]} className={'jt-report-q__opt' + (answers[cur.id] === o[0] ? ' is-selected' : '')} onClick={() => { if (cur.amountId) priorAutoRef.current = propPriorAutoUser(priorAutoRef.current, 'option'); setAns(cur.id, o[0]); }}>
                   <span className="jt-report-q__opt-mark">{answers[cur.id] === o[0] ? '●' : '○'}</span>
                   <span><strong>{o[1]}</strong>{o[2] ? <span style={{ opacity: 0.7 }}> · {o[2]}</span> : null}</span>
                 </button>
               ))}
+            </div>
+          )}
+
+          {cur.amountId && answers[cur.id] === cur.amountWhen && (
+            <div style={{ marginTop: 12 }}>
+              <label style={{ display: 'block', fontSize: 13, marginBottom: 4 }}>작년 공시가격 (원)</label>
+              <JTNumericInput money className="jt-report-q__input" type="text" inputMode="numeric" placeholder="예: 550,000,000"
+                value={answers[cur.amountId]}
+                onChange={e => { priorAutoRef.current = propPriorAutoUser(priorAutoRef.current, 'amount'); window.jtSetNumericAns(setAns, cur.amountId, e.target.value, true); }} />
+              {Number(answers[cur.amountId]) > 0 && (
+                <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {propKoreanAmountOrWon(Number(answers[cur.amountId]))}</div>
+              )}
             </div>
           )}
 
