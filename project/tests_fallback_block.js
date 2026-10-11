@@ -322,9 +322,9 @@ console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 �
      엔진이 죽어도 폴백이 감당하는 조합이어야 안심하고 통과시킬 수 있다.
      ②층에 걸리는 입력을 여기 넣으면 그건 「엔진 없으면 막아야 할 것」을 통과 목록에
      올린 셈이라, 나중에 조건이 흔들릴 때 이 줄이 먼저 울린다.
-     ★ 취득세·양도세·증여세는 261004 에 폴백을 삭제해 «엔진이 죽으면 항상 막는다» — 그래서 취득세 줄은
+     ★ 취득세·양도세·증여세는 261004 에, 종부세는 261011 에 폴백을 삭제해 «엔진이 죽으면 항상 막는다» — 그래서 취득세 줄은
         아래에서 «엔진 죽음 → 막힘»으로 따로 확인한다(여기서는 DOWN 통과를 요구하지 않는다). */
-  if (fn === acqFallbackGaps || fn === cgtFallbackGaps || fn === giftFallbackGaps || fn === inhFallbackGaps || fn === propFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
+  if (fn === acqFallbackGaps || fn === cgtFallbackGaps || fn === giftFallbackGaps || fn === inhFallbackGaps || fn === propFallbackGaps || fn === compFallbackGaps) eq(`${name} · 엔진이 죽으면 막힌다 (폴백 없음)`, fn(ans, DOWN).length, 1);
   else eq(`${name} · 엔진이 죽어도 폴백이 감당한다`, fn(ans, DOWN).length, 0);
 });
 
@@ -347,6 +347,9 @@ console.log('\n════ 엔진 전 게이트: precise=true 면 ①불확정 
  ['재산 · 건축물 종류 미응답', propFallbackGaps, { propertyKind: '건축물' }, 1],
  ['재산 · 건축물 종류 응답(①층 아님)', propFallbackGaps, { propertyKind: '건축물', buildingType: '일반' }, 0],
  ['종부 · 지분 미입력', compFallbackGaps, { housingCount: 'one', ownership: 'joint' }, 1],
+ ['종부 · 2채 의제 «모름»', compFallbackGaps, { housingCount: 'two', deemedOneHouse: 'unknown' }, 1],
+ ['종부 · 2채 의제 일시적 + 특례 대상 공시가격 없음', compFallbackGaps, { housingCount: 'two', deemedOneHouse: 'temp', totalValue: '2000000000' }, 1],
+ ['종부 · 2채 의제 일시적 + 합계 > 특례 대상(①층 아님)', compFallbackGaps, { housingCount: 'two', deemedOneHouse: 'temp', totalValue: '2000000000', secondValue: '600000000' }, 0],
 ].forEach(([name, fn, ans, want]) => {
   eq(`${name} · precise=true 판정`, fn(ans, OK).length > 0 ? 1 : 0, want);
 });
@@ -375,6 +378,38 @@ eq('단독명의 → 지분과 무관하게 통과',
 /* 2주택으로 바꾸면 계산이 지분을 안 쓴다 — state 에 joint 가 남아도 막으면 안 된다 (R19 P2) */
 eq('2주택인데 joint 잔존 → 통과 (계산이 지분을 쓰지 않는다)',
    compFallbackGaps({ housingCount: 'two', ownership: 'joint' }, OK).length, 0);
+
+console.log('\n════ 종부세 — 1세대 1주택 의제(§8④) 문항 (261011) ════');
+{
+  const C = (a, c = OK) => compFallbackGaps(a, c);
+  const base = { housingCount: 'two', totalValue: '2000000000' };
+  eq('일반 2주택(no) → 통과', C({ ...base, deemedOneHouse: 'no' }).length, 0);
+  eq('빠른 계산 단계(문항 미응답) → 일반 2주택으로 통과', C(base).length, 0);
+  eq('모름 → 차단(공제 12억/9억·세액공제가 갈린다)', C({ ...base, deemedOneHouse: 'unknown' }).length, 1);
+  eq('… 안내 문구', C({ ...base, deemedOneHouse: 'unknown' })[0].includes('1세대 1주택 의제 여부에 따라 공제 12억/9억과 세액공제가 갈립니다'), true);
+  eq('목록 밖의 값 → 차단', C({ ...base, deemedOneHouse: 'auto' }).length, 1);
+  for (const t of ['temp', 'inherit', 'rural', 'land']) {
+    eq(t + ' + 특례 대상 공시가격 없음 → 차단', C({ ...base, deemedOneHouse: t }).length, 1);
+    eq(t + ' + 특례 대상 공시가격 0 → 차단', C({ ...base, deemedOneHouse: t, secondValue: '0' }).length, 1);
+    eq(t + ' + 합계 ≤ 특례 대상 → 차단(모순)', C({ ...base, deemedOneHouse: t, secondValue: '2000000000' }).length, 1);
+    eq(t + ' + 합계 > 특례 대상 → 통과', C({ ...base, deemedOneHouse: t, secondValue: '600000000' }).length, 0);
+  }
+  for (const k of ['temp', 'inherit', 'rural', 'land']) {
+    eq(k + ' + 부부 공동명의 → 차단(엔진이 지원하지 않는다 — 단독으로 확정하지 않는다)', C({ ...base, deemedOneHouse: k, secondValue: '600000000', ownership: 'joint' }).length, 1);
+    eq(k + ' + 단독명의 → 통과', C({ ...base, deemedOneHouse: k, secondValue: '600000000', ownership: 'single' }).length, 0);
+  }
+  eq('일반 2주택 + 낡은 joint → 통과', C({ ...base, deemedOneHouse: 'no', ownership: 'joint' }).length, 0);
+  eq('2채가 아니면(3채) 낡은 «모름» 답이 남아도 통과', C({ housingCount: 'three', totalValue: '3000000000', deemedOneHouse: 'unknown' }).length, 0);
+  eq('1채면 낡은 «모름» 답이 남아도 통과', C({ housingCount: 'one', totalValue: '3000000000', deemedOneHouse: 'unknown' }).length, 0);
+  /* ②층: 엔진 상태별 사유 문구 */
+  const NI = { precise: false, engineState: 'needs_input', engineMessage: '주택 수를 확정할 수 없다' };
+  eq('needs_input → «입력이 더 필요합니다 — » + 엔진 문구', C({ housingCount: 'three', totalValue: '1' }, NI)[0], '입력이 더 필요합니다 — 주택 수를 확정할 수 없다');
+  eq('unsupported → «세무사 확인이 필요한 조건입니다 — » + 엔진 문구', C({ housingCount: 'three', totalValue: '1' }, { precise: false, engineState: 'unsupported', engineMessage: '지원하지 않는 연도' })[0], '세무사 확인이 필요한 조건입니다 — 지원하지 않는 연도');
+  eq('refused(형식 오류·4xx) → «세무사 확인이 필요한 조건입니다 — »', C({ housingCount: 'three', totalValue: '1' }, { precise: false, engineState: 'refused', engineMessage: '' })[0].startsWith('세무사 확인이 필요한 조건입니다 — '), true);
+  eq('down → 연결 실패 문구', C({ housingCount: 'three', totalValue: '1' }, { precise: false, engineState: 'down' })[0].startsWith('계산 엔진에 연결하지 못했습니다'), true);
+  eq('엔진 상태 미지정(DOWN) → 연결 실패 문구', C({ housingCount: 'three', totalValue: '1' }, DOWN)[0].startsWith('계산 엔진에 연결하지 못했습니다'), true);
+  eq('불확정 + 엔진 실패 → ①사유와 ②사유 둘', C({ ...base, deemedOneHouse: 'unknown' }, DOWN).length, 2);
+}
 
 console.log('\n════ 법인 전환 — 입력값을 말없이 바꾸지 않는다 ════');
 eq('대표급여 ≤ 사업이익 → 통과',

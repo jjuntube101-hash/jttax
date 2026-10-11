@@ -185,12 +185,22 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
       if (!compA) {
         yearOut.comp = { status: 'unsure' };
       } else {
-        try {
-          const ej2 = await callCompEngine(mapAnswersToComprehensive(compA));
-          const c2 = ej2 && ej2.calc;
-          if (c2 && !c2['오류']) yearOut.comp = { status: 'ok', total: c2['세액'], effDate: ej2.version && ej2.version.tax_rates_effective_date };
-          else yearOut.comp = { status: 'error' };
-        } catch (e) { yearOut.comp = { status: 'error' }; }
+        /* 261011: 종부세 엔진 응답은 상태 'ok' 일 때만 금액이다(재산세 행과 같은 방식). 입력 보완·지원 안 함은 «확인 필요», 그 밖은 error. */
+        const compReq = mapAnswersToComprehensive(compA);
+        if (!compReq) {
+          yearOut.comp = { status: 'check' };   // 요청을 만들 수 없는 입력 — 엔진을 부르지 않는다
+        } else {
+          try {
+            const ej2 = await callCompEngine(compReq);
+            const c2 = ej2 && ej2.calc;
+            const st2 = c2 && c2['상태'];
+            /* 상태가 ok 여도 세액이 유한한 0 이상의 숫자가 아니면 금액으로 쓰지 않는다 — 0원으로 보이지 않게 error */
+            const compTaxOk = !!c2 && typeof c2['세액'] === 'number' && isFinite(c2['세액']) && c2['세액'] >= 0;
+            if (c2 && st2 === 'ok' && !c2['오류'] && !c2.error) yearOut.comp = !compTaxOk ? { status: 'error' } : { status: 'ok', total: c2['세액'], effDate: ej2.version && ej2.version.tax_rates_effective_date };
+            else if (st2 === 'needs_input' || st2 === 'unsupported' || (c2 && st2 === 'ok')) yearOut.comp = { status: 'check' };   // ok 인데 오류 필드가 함께 온 응답도 금액이 아니다
+            else yearOut.comp = { status: 'error' };
+          } catch (e) { yearOut.comp = { status: 'error' }; }
+        }
       }
       out.push(yearOut);
     }
@@ -214,6 +224,7 @@ function JTAcqHoldingForecast({ acqAnswers, acqCalc, setRoute }) {
     if (row.status === 'ok') return formatWon(row.total);
     if (row.status === 'unknown') return '확인 필요 (공시가격 미입력)';
     if (row.status === 'needs_input') return '작년 공시가격이 있어야 계산됩니다';
+    if (row.status === 'check') return '확인 필요 — 입력이 더 필요하거나 이 계산기가 다루지 못하는 조건입니다(상담으로 확인)';
     return '엔진 연결 실패 — 다시 시도해 주세요';
   };
 

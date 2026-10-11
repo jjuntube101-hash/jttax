@@ -48,7 +48,10 @@ const giftAccepts = () => engineAccepts('ReportGift.jsx', ['giftEngineVerdict', 
 const inheritanceAccepts = () => engineAccepts('ReportInheritance.jsx', ['inhEngineVerdict', 'inhCalcFromEngine'], 'INH_ENGINE_REQUIRED', false);
 /* 재산세(261010): 응답 검증이 propCalcFromEngine(propEngineVerdict 포함)으로 옮겨졌다. 상태 키가 없는 응답은 받지 않으므로 공용 fixture 에 상태 'ok' 를 덧붙여 부른다. */
 const propertyAccepts = () => engineAccepts('ReportProperty.jsx', ['propEngineVerdict', 'propCalcFromEngine'], 'PROP_ENGINE_REQUIRED', true);
+/* 종부세(261011): 응답 검증이 compCalcFromEngine(compEngineVerdict 포함)으로 옮겨졌다. 상태 키가 없는 응답은 받지 않으므로 공용 fixture 에 상태 'ok' 를 덧붙여 부른다. */
+const comprehensiveAccepts = () => engineAccepts('ReportComprehensive.jsx', ['compEngineVerdict', 'compCalcFromEngine'], 'COMP_ENGINE_REQUIRED', true);
 function guards(file) {
+  if (file === 'ReportComprehensive.jsx') return [comprehensiveAccepts()];
   if (file === 'ReportProperty.jsx') return [propertyAccepts()];
   if (file === 'ReportInheritance.jsx') return [inheritanceAccepts()];
   if (file === 'ReportAcquisition.jsx') return [acquisitionAccepts()];
