@@ -302,7 +302,7 @@ function giftPriorDedGiven(a) {
 /* 답 저장 — 순수 함수(시험 대상). 앞 문항이 바뀌면 그 답에 딸린 부담부증여 답을 지운다(최적화 화면의 bgApplyAnswer 와 같은 취지, 261011):
    · 취득일·증여자 세대의 다른 주택 수·부담부 여부·부동산 유형이 바뀌면 취득 당시 조정대상지역·전입일 — 묻는 조건이 달라지므로 낡은 답이 새 사실로 실리지 않게
    · 인수 채무액이 바뀌면 객관적 채무 답 — 그 답은 «그 채무»에 대한 것이었다
-   · 부동산 주소가 바뀌면 그 부동산에 딸린 답(취득일·취득가액·조정대상지역·전입일·취득 당시 지역·증여자 세대 주택 수)
+   · 부동산 유형·주소·동·호가 바뀌면 그 부동산에 딸린 답(평가액·인수 채무액·객관적 채무·취득일·취득가액·조정대상지역·전입일·취득 당시 지역·증여자 세대 주택 수)
    같은 값을 다시 고르거나 무관한 문항을 바꾸면 지우지 않는다. */
 function giftApplyAnswer(a, id, v) {
   const next = Object.assign({}, a);
@@ -310,8 +310,11 @@ function giftApplyAnswer(a, id, v) {
   if (a[id] !== v) {
     if (id === 'acqDate' || id === 'donorHouseCount' || id === 'isBurdened' || id === 'reType' || id === 'assetType') { delete next.regulatedAtAcq; delete next.moveInDate; }
     if (id === 'debtAssumed') delete next.debtObjective;
-    // 부동산 주소가 바뀌면 «그 부동산»에 딸린 답을 모두 지운다 — 취득일·취득가액·조정대상지역·전입일·취득 당시 지역, 그리고 «이 부동산 외» 기준인 증여자 세대 주택 수
-    if (id === 'reAddress') { for (const k of ['regulatedAtAcq', 'moveInDate', 'regulatedArea', 'acqDate', 'acqPrice', 'donorHouseCount']) delete next[k]; }
+    // 부동산을 가리키는 답(유형·주소·동·호)이 바뀌면 «그 부동산»에 딸린 답을 모두 지운다 — 평가액·인수 채무액·객관적 채무·취득일·취득가액·조정대상지역·전입일·취득 당시 지역,
+    //   그리고 «이 부동산 외» 기준인 증여자 세대 주택 수. (공시가격 기준 연도 reYear 는 같은 부동산의 조회 조건이라 지우지 않는다.)
+    if (id === 'reType' || id === 'reAddress' || id === 'reDong' || id === 'reHo') {
+      for (const k of ['regulatedAtAcq', 'moveInDate', 'regulatedArea', 'acqDate', 'acqPrice', 'donorHouseCount', 'giftValue', 'debtAssumed', 'debtObjective']) delete next[k];
+    }
   }
   return next;
 }

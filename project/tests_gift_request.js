@@ -357,7 +357,7 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
     {
       const S = { ...B0, donorHouseCount: '0', acqDate: '2020-01-01', regulatedAtAcq: 'no', moveInDate: '2020-03-01' };
       const ap = (id, v) => plain(F.giftApplyAnswer(S, id, v));
-      for (const [id, v] of [['acqDate', '2021-01-01'], ['donorHouseCount', '1'], ['isBurdened', 'no'], ['reType', '개별주택'], ['assetType', 'cash']]) {
+      for (const [id, v] of [['acqDate', '2021-01-01'], ['donorHouseCount', '1'], ['isBurdened', 'no'], ['assetType', 'cash']]) {
         const r = ap(id, v);
         ok(!('regulatedAtAcq' in r) && !('moveInDate' in r) && r[id] === v && r.debtAssumed === S.debtAssumed, id + ' 변경 → 취득 당시 지역·전입일 삭제, 나머지 보존');
       }
@@ -378,8 +378,17 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
     {
       const S = { ...B0, reAddress: '서울 A', donorHouseCount: '0', acqDate: '2020-01-01', regulatedAtAcq: 'no', moveInDate: '2020-03-01', regulatedArea: 'yes' };
       const r = plain(F.giftApplyAnswer(S, 'reAddress', '서울 B'));
-      for (const k of ['regulatedAtAcq', 'moveInDate', 'regulatedArea', 'acqDate', 'acqPrice', 'donorHouseCount']) ok(!(k in r), '주소 변경 → ' + k + ' 삭제');
-      ok(r.reAddress === '서울 B' && r.giftValue === S.giftValue && r.debtAssumed === S.debtAssumed && r.relationship === S.relationship && r.debtObjective === 'objective', '주소 변경 → 부동산에 딸리지 않은 답은 보존');
+      const PROP_KEYS = ['regulatedAtAcq', 'moveInDate', 'regulatedArea', 'acqDate', 'acqPrice', 'donorHouseCount', 'giftValue', 'debtAssumed', 'debtObjective'];
+      for (const k of PROP_KEYS) ok(!(k in r), '주소 변경 → ' + k + ' 삭제(그 부동산의 사실)');
+      ok(r.reAddress === '서울 B' && r.relationship === S.relationship && r.assetType === S.assetType && r.isBurdened === 'yes', '주소 변경 → 부동산에 딸리지 않은 답(관계·자산 종류·부담부 여부)은 보존');
+      // 동·호·유형 변경도 같은 삭제 — 부동산을 가리키는 모든 답
+      for (const [id, v] of [['reDong', '101'], ['reHo', '1203'], ['reType', '개별주택']]) {
+        const x = plain(F.giftApplyAnswer(S, id, v));
+        ok(x[id] === v && PROP_KEYS.every((k) => !(k in x)) && x.relationship === S.relationship, id + ' 변경 → 부동산에 딸린 답 삭제');
+        const y = plain(F.giftApplyAnswer({ ...S, [id]: v }, id, v));
+        ok(PROP_KEYS.every((k) => k in y || S[k] === undefined), id + ' 같은 값을 다시 고르면 유지');
+      }
+      ok(plain(F.giftApplyAnswer(S, 'reYear', '2024')).giftValue === S.giftValue, '공시가격 기준 연도 변경은 지우지 않는다');
       const same = plain(F.giftApplyAnswer(S, 'reAddress', '서울 A'));
       ok(same.acqDate === '2020-01-01' && same.acqPrice === S.acqPrice && same.donorHouseCount === '0' && same.regulatedArea === 'yes', '같은 주소를 다시 고르면 지우지 않는다');
       ok(F.giftFallbackGaps({ isResident: 'yes', ...r }, { precise: true }).length === 2, '주소 변경 뒤에는 취득일·취득가액을 다시 답해야 한다(차단 사유 2건)');
