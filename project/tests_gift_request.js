@@ -10,7 +10,9 @@
    · giftEngineVerdict 의 세 갈래(ok · refused · down) — 상태 키 없는 구 엔진 응답은 «오류 없음 + 필수 키 유효»이면 ok
    · giftCalcFromEngine 이 엔진 값을 그대로 옮기는지, 거부·연결 실패에는 금액 필드가 없는지
    · giftCalcFromEngineError(·callGiftEngine 경유) 의 HTTP 422·503·네트워크 실패·시간 초과 분류
-   · 자체 계산식(폴백)이 소스에 남아 있지 않은지 */
+   · 자체 계산식(폴백)이 소스에 남아 있지 않은지
+   · (261011) mapAnswersToBurdenedGift — 모름·미응답을 사실(false·0·직계존속)로 바꿔 보내지 않는다(키 생략), giftBurdenedStatus 의 상태 분류,
+     부담부 응답이 giftFallbackGaps 로 엔진 안내 문구와 함께 차단되는지 */
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -46,10 +48,10 @@ function loadDecls(src, names) {
 const validCalcSrc = commonSrc.match(/window\.jtValidCalc = function[\s\S]*?\n  };/)[0];
 const gapsSrc = commonSrc.match(/window\.jtFallbackGaps = function[\s\S]*?\n};/)[0];
 
-const DECLS = ['giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'callGiftEngine',
-  'GIFT_ENGINE_REQUIRED', 'giftEngineVerdict', 'giftCalcFromEngine', 'giftCalcFromEngineError', 'giftFallbackGaps'];
+const DECLS = ['giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'mapAnswersToBurdenedGift', 'callGiftEngine',
+  'GIFT_ENGINE_REQUIRED', 'GIFT_BURDENED_REQUIRED', 'giftEngineVerdict', 'giftBurdenedStatus', 'giftCalcFromEngine', 'giftCalcFromEngineError', 'giftFallbackGaps'];
 const declSrc = loadDecls(code, DECLS);
-const EXPORTS = '\nglobalThis.__e = { mapAnswersToGift, giftEngineVerdict, giftCalcFromEngine, giftCalcFromEngineError, giftFallbackGaps, callGiftEngine };';
+const EXPORTS = '\nglobalThis.__e = { mapAnswersToGift, mapAnswersToBurdenedGift, giftBurdenedStatus, giftEngineVerdict, giftCalcFromEngine, giftCalcFromEngineError, giftFallbackGaps, callGiftEngine };';
 
 function makeEnv(fetchImpl, timers) {
   const e = vm.createContext({
@@ -273,6 +275,59 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
   }
   const to = await pending;
   eq([to.precise, to.engineState], [false, 'down'], '시간 초과 → down');
+
+  // ───────────────────────── 부담부증여(단건) — 모름을 사실로 보내지 않는다 (261011) ─────────────────────────
+  console.log('════ mapAnswersToBurdenedGift · giftBurdenedStatus (261011) ════');
+  {
+    const bb = (a) => plain(F.mapAnswersToBurdenedGift(a));
+    const B0 = { assetType: 'realestate', reType: '공동주택', giftValue: '1000000000', debtAssumed: '300000000', acqPrice: '400000000', relationship: '직계존속',
+      debtObjective: 'objective', regulatedArea: 'no', donorHouseCount: '1' };
+    eq(bb(B0), { property_value: 1000000000, debt_assumed: 300000000, acquisition_price: 400000000, relationship: '직계존속', donee_age: 30,
+      is_objective_debt: true, property_type: '주택', is_generation_skip: false, donor_child_deceased: false, is_regulated_area: false, donor_other_house_count: 1 },
+    '기준 답 → 요청');
+    // 조정대상지역: 예·아니오만 보낸다. 모름·미응답·비주택은 키가 없다
+    eq(bb({ ...B0, regulatedArea: 'yes' }).is_regulated_area, true, '조정대상지역 예 → true');
+    eq(bb({ ...B0, regulatedArea: 'no' }).is_regulated_area, false, '조정대상지역 아니오 → false');
+    for (const v of ['unknown', undefined, '']) ok(!('is_regulated_area' in bb({ ...B0, regulatedArea: v })), '조정대상지역 ' + JSON.stringify(v) + ' → 키 없음(false 로 바꿔 보내지 않는다)');
+    ok(!('is_regulated_area' in bb({ ...B0, reType: '토지', regulatedArea: 'yes' })), '토지는 묻지 않는 문항 — 낡은 답이 있어도 보내지 않는다');
+    // 증여자 다른 주택 수: 숫자를 입력한 경우에만(0 포함). 비움은 0채로 바꾸지 않는다
+    eq(bb({ ...B0, donorHouseCount: '0' }).donor_other_house_count, 0, '0 을 입력하면 0 으로 간다');
+    eq(bb({ ...B0, donorHouseCount: 3 }).donor_other_house_count, 3, '숫자 3');
+    for (const v of [undefined, null, '', '  ', 'abc', '-1']) ok(!('donor_other_house_count' in bb({ ...B0, donorHouseCount: v })), '증여자 다른 주택 수 ' + JSON.stringify(v) + ' → 키 없음(0채로 바꿔 보내지 않는다)');
+    ok(!('donor_other_house_count' in bb({ ...B0, reType: '상가', donorHouseCount: '2' })), '상가는 묻지 않는 문항 — 낡은 답이 있어도 보내지 않는다');
+    // 관계: 답한 값 그대로, 없으면 «직계존속» 으로 채우지 않는다
+    eq(bb({ ...B0, relationship: '배우자' }).relationship, '배우자', '관계 그대로');
+    ok(!('relationship' in bb({ ...B0, relationship: undefined })), '관계 미응답 → 키 없음(직계존속 기본값 대체 삭제)');
+    // 문항 구조
+    ok(/'unknown', '모름'/.test(code.slice(code.indexOf("id: 'regulatedArea'"), code.indexOf("id: 'context'"))), '조정대상지역 문항에 「모름」 선택지가 따로 있다');
+    ok(!/\['no', '아니오\/모름'/.test(code), '「아니오/모름」 합친 선택지가 소스에 없다');
+
+    // 상태 분류
+    const G = { 상태: 'ok', 총세부담: 100, 증여세: 50, 양도세: 30, 취득세: 20, 채무비율: 0.3, 경고사항: [] };
+    const st = (c) => F.giftBurdenedStatus(plain(c));
+    eq(st(G), 'ok', '상태 ok + 필수 키 유효 → ok');
+    eq(st({ ...G, 총세부담: 0, 증여세: 0, 양도세: 0, 취득세: 0 }), 'ok', '정상 0원 허용');
+    { const { 상태, ...x } = G; eq(st(x), 'refused', '상태 키 없음 → 거부(금액이 있어도)'); }
+    eq(st({}), 'refused', '빈 객체 → 거부');
+    eq(st({ ...G, 상태: 'needs_input', 오류: '증여자 취득일 필요' }), 'needs_input', 'needs_input');
+    eq(st({ ...G, 상태: 'unsupported' }), 'unsupported', 'unsupported');
+    eq(st({ ...G, 상태: 'error' }), 'down', '상태 error → down(금액이 있어도 재시도)');
+    for (const s of ['OK', '', null, true, 'x']) eq(st({ ...G, 상태: s }), 'refused', '알 수 없는 상태 ' + JSON.stringify(s) + ' → 거부');
+    eq(st({ ...G, 오류: '실패' }), 'refused', 'ok 인데 오류 필드 → 거부');
+    eq(st({ ...G, 취득세: NaN }), 'down', '필수 키 무효 → down');
+    eq(st({ ...G, 총세부담: undefined }), 'down', '필수 키 누락 → down');
+    for (const bad of [null, undefined, [], 'x']) eq(F.giftBurdenedStatus(bad), 'down', '객체가 아닌 calc → down');
+
+    // 거부 응답은 차단 화면의 사유(엔진 안내 문구)가 된다 — 금액 필드 없는 calc
+    const blocked = { mode: 'burdened', giftValue: 1, totalTax: 0, precise: false, engineState: 'refused', engineMessage: '증여자 취득일이 필요합니다' };
+    const gaps = F.giftFallbackGaps({ isResident: 'yes' }, blocked);
+    ok(gaps.length === 1 && /엔진 안내: 증여자 취득일이 필요합니다/.test(gaps[0]), '부담부 needs_input → 차단 사유에 엔진 안내 문구');
+    const noMsg = F.giftFallbackGaps({ isResident: 'yes' }, { ...blocked, engineMessage: '' });
+    ok(noMsg.length === 1 && /세무사 확인이 필요합니다/.test(noMsg[0]), '안내 문구가 없으면 종전 문구');
+    // 화면 배선
+    ok(/const bst = giftBurdenedStatus\(c\);/.test(code) && /bst === 'needs_input' \|\| bst === 'unsupported' \|\| bst === 'refused'/.test(code), '부담부 경로가 응답 상태를 읽는다');
+    ok(/else if \(bst === 'down'\)/.test(code), '상태 error·불완전한 응답은 다시 시도 안내');
+  }
 
   // ───────────────────────── 소스에 폴백이 없다 ─────────────────────────
   console.log('════ 소스에 자체 계산식(폴백)이 없다 ════');

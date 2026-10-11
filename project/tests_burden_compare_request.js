@@ -1,4 +1,6 @@
 /* 처분 비교·부담부증여 — 화면 답 → 엔진 요청 변환과 응답 판독을 «실행»으로 고정한다 (261003 정확성 개편).
+   261011: 새 입력 계약(「모름」은 사실로 보내지 않는다 · 응답 `상태` 를 읽는다)에 맞춰 갱신했다. 상태 분류·새 문항의 세부 규칙은
+   tests_compare_request.js · tests_burden_request.js 가 맡고, 이 파일은 두 화면이 «함께» 지키는 요청 변환·화면 배선·상담 요약을 고정한다.
 
    왜 필요한가: 두 화면은 종전에 요청 변환을 runAnalysis 안에 두어 시험이 없었고, 화면이 묻지 않은 사실을
    채워 보내거나(취득가 빈칸 → 엔진이 시세의 절반으로 가정) 값을 뭉갰다(보유 1.5년 → 2년).
@@ -28,20 +30,20 @@ const validSrc = common.match(/window\.jtValidCalc = function[\s\S]*?\n  };/)[0]
 // ───────────────────────── 부담부증여 ─────────────────────────
 const bgSrc = read('ReportBurdenedOptimize.jsx');
 const bg = { window: {} };
-vm.runInNewContext(validSrc + '\n' + fn(bgSrc, 'bgValidISODate') + fn(bgSrc, 'bgIsoDate') + fn(bgSrc, 'bgIsDwelling') + fn(bgSrc, 'bgNeedsDoneeHouses') + fn(bgSrc, 'bgApplyAnswer') + fn(bgSrc, 'bgBuildBody') + fn(bgSrc, 'bgReadResponse'), bg);
+vm.runInNewContext(validSrc + '\n' + fn(bgSrc, 'bgValidISODate') + fn(bgSrc, 'bgIsoDate') + fn(bgSrc, 'bgIsDwelling') + fn(bgSrc, 'bgAsksZoneAtAcq') + fn(bgSrc, 'bgNeedsDoneeHouses') + fn(bgSrc, 'bgApplyAnswer') + fn(bgSrc, 'bgBuildBody') + fn(bgSrc, 'bgReadResponse'), bg);
 const TODAY = '2026-10-03';
 
 const bgAnswers = {
   propertyValue: '1500000000', assetType: 'house', acquisitionPrice: '400000000',
-  acquisitionDate: '2016-09-03', actualDebt: '437000000', doneeCanRepay: 'yes',
+  acquisitionDate: '2016-09-03', actualDebt: '437000000', debtObjective: 'yes', doneeCanRepay: 'yes',
   donorHouseCount: '0', recipient: 'child_adult', doneeHouseCount: '0', adjustedZone: 'no', areaClass: 'under',
 };
 eq(JSON.parse(JSON.stringify(bg.bgBuildBody(bgAnswers, TODAY).body)), {
   property_value: 1500000000, acquisition_price: 400000000, acquisition_date: '2016-09-03',
   relationship: '직계존속', donee_age: 30, is_regulated_area: false, property_type: '주택',
-  donor_other_house_count: 0, max_debt: 437000000, regulated_at_acquisition: false, donee_can_repay: true,
+  donor_other_house_count: 0, max_debt: 437000000, is_objective_debt: true, donee_can_repay: true,
   area_class: '85이하', donee_other_house_count: 0,
-}, '부담부증여: 답이 그대로 요청이 된다');
+}, '부담부증여: 답이 그대로 요청이 된다(기준일 전 취득 → 취득 당시 지역 키 없음)');
 // 면적 구분(오너 결재 261004 A-3): 주택에만 묻고 보낸다. 「모름」도 보낸다(엔진이 과세로 계산하고 경고).
 eq(bg.bgBuildBody({ ...bgAnswers, areaClass: 'over' }, TODAY).body.area_class, '85초과', '부담부증여: 85㎡ 초과');
 eq(bg.bgBuildBody({ ...bgAnswers, areaClass: 'unknown' }, TODAY).body.area_class, '모름', '부담부증여: 면적 「모름」 → 그대로 보낸다');
@@ -57,7 +59,7 @@ ok(bg.bgApplyAnswer(bgAnswers, 'adjustedZone', 'yes').areaClass === 'under', '�
 // 받는 분 세대의 주택 수(엔진 R7-F1): 채무 부분이 유상취득(변제 능력 증명 가능)이고 받는 분이 성년 자녀일 때만 묻고 보낸다
 eq(bg.bgBuildBody({ ...bgAnswers, doneeHouseCount: '2' }, TODAY).body.donee_other_house_count, 2, '받는 분 세대의 다른 주택 2채');
 eq(bg.bgBuildBody({ ...bgAnswers, doneeHouseCount: '3' }, TODAY).body.donee_other_house_count, 3, '받는 분 세대의 다른 주택 3채 이상');
-ok(!('donee_other_house_count' in bg.bgBuildBody({ ...bgAnswers, doneeHouseCount: 'unknown' }, TODAY).body), '「모름」 → 보내지 않는다(엔진이 1주택 기준으로 계산하고 경고)');
+ok(bg.bgBuildBody({ ...bgAnswers, doneeHouseCount: 'unknown' }, TODAY).blocked === true, '「모름」 → 엔진을 부르지 않고 차단(1주택 기준으로 계산하지 않는다)');
 ok(bg.bgBuildBody({ ...bgAnswers, doneeHouseCount: undefined }, TODAY).error, '성년 자녀·유상취득인데 받는 분 세대의 주택 수를 답하지 않으면 요청 거부');
 for (const [over, label] of [
   [{ recipient: 'spouse' }, '배우자(증여자와 같은 세대 — 엔진이 증여자 세대의 주택 수를 쓴다)'],
@@ -87,18 +89,18 @@ ok(!('donee_can_repay' in bgBody({ actualDebt: '0', doneeCanRepay: 'yes' }).body
 eq(bgBody({ actualDebt: '0' }).body.max_debt, 0, '채무 0 은 0 으로 간다(미입력과 다르다)');
 eq(bgBody({ donorHouseCount: '2' }).body.donor_other_house_count, 2, '다른 주택 수');
 eq(bgBody({ adjustedZone: 'yes' }).body.is_regulated_area, true, '조정대상지역 「네」');
-eq(bgBody({ adjustedZone: 'unknown' }).body.is_regulated_area, false, '조정대상지역 「모름」 → 비조정으로 계산(결과 화면이 전제를 알린다)');
+ok(bgBody({ adjustedZone: 'unknown' }).blocked === true && !bgBody({ adjustedZone: 'unknown' }).body, '조정대상지역 「모름」 → 엔진을 부르지 않고 차단(비조정으로 바꿔 보내지 않는다)');
 eq(bgBody({ recipient: 'spouse' }).body.relationship, '배우자', '배우자');
 eq(bgBody({ recipient: 'child_minor' }).body.donee_age, 10, '미성년');
 eq(bgBody({ assetType: 'land' }).body.property_type, '토지', '토지');
 // 취득일은 입력한 날짜 그대로 — 연 단위 반올림도, 월 환산 밀림도 없다
 for (const d of ['2025-03-31', '2024-02-29', '2025-04-15']) eq(bgBody({ acquisitionDate: d, regulatedAtAcq: 'no' }).body.acquisition_date, d, '취득일 ' + d);
 // 취득 당시 조정대상지역(1세대1주택 거주 요건) — 지금의 지정 여부와 다른 사실 (TASK-261003-007 R1-F1)
-eq(bgBody({}).body.regulated_at_acquisition, false, '기준일 전 취득(2016)은 거주 요건 없음 → false');
+ok(!('regulated_at_acquisition' in bgBody({}).body), '기준일 전 취득(2016)은 거주 요건 없음 → 묻지도 보내지도 않는다');
 const late = { acquisitionDate: '2020-01-01' };
 eq(bgBody({ ...late, regulatedAtAcq: 'yes' }).body.regulated_at_acquisition, true, '취득 당시 조정대상지역 「네」');
 eq(bgBody({ ...late, regulatedAtAcq: 'no' }).body.regulated_at_acquisition, false, '취득 당시 조정대상지역 「아니오」');
-eq(bgBody({ ...late, regulatedAtAcq: 'unknown' }).body.regulated_at_acquisition, true, '취득 당시 「모름」 → 유리하게 추정하지 않는다(true)');
+ok(!('regulated_at_acquisition' in bgBody({ ...late, regulatedAtAcq: 'unknown' }).body), '취득 당시 「모름」 → 키를 보내지 않는다(엔진이 두 값으로 대조 계산)');
 ok(bgBody({ ...late }).error, '기준일 이후 취득인데 취득 당시 지역을 답하지 않으면 요청 거부');
 ok(!('regulated_at_acquisition' in bgBody({ ...late, assetType: 'land' }).body), '주택이 아니면 거주 요건 사실을 보내지 않는다');
 // 오피스텔은 검증되지 않은 조합 → 요청을 만들지 않고 차단한다(금액 대신 「세무사 확인 필요」) (TASK-261003-006 R6-F2·007 R2-F1)
@@ -125,7 +127,8 @@ checks++;
   let d = { ...bgAnswers, actualDebt: '100000000', doneeCanRepay: 'yes' };
   d = bg.bgApplyAnswer(bg.bgApplyAnswer(d, 'actualDebt', '0'), 'actualDebt', '900000000');
   ok(!('doneeCanRepay' in d), '채무액 변경 → 변제 능력 답 삭제');
-  ok(!('donee_can_repay' in bg.bgBuildBody(d, TODAY).body), '낡은 변제 능력 답이 요청에 실리지 않는다(엔진이 모름으로 계산)');
+  ok(!('donee_can_repay' in bg.bgBuildBody({ ...d, debtObjective: 'yes' }, TODAY).body), '낡은 변제 능력 답이 요청에 실리지 않는다(엔진이 모름으로 계산)');
+  ok(!('debtObjective' in d), '채무액 변경 → 객관적 채무 답도 삭제(그 채무에 대한 답이었다)');
   ok(bg.bgApplyAnswer({ actualDebt: '5', doneeCanRepay: 'yes' }, 'actualDebt', '5').doneeCanRepay === 'yes', '같은 채무액이면 유지');
   // 받는 분이 바뀌면 변제 능력 답을 지운다(R5-F1). 처음 고를 때는 유지한다.
   let rr = bg.bgApplyAnswer({ ...bgAnswers, recipient: undefined }, 'recipient', 'child_adult');
@@ -144,9 +147,10 @@ checks++;
 {
   const qs = bgSrc.match(/id: 'regulatedAtAcq'[\s\S]*?showIf: \(a\) => ([^\r\n]*),/)[1];
   const qm = bgSrc.match(/id: 'moveInDate'[\s\S]*?showIf: \(a\) => ([^\r\n]*),/)[1];
-  const show = (expr, a) => vm.runInNewContext('(' + expr + ')', { a, bgIsDwelling: bg.bgIsDwelling });
-  eq([show(qs, { assetType: 'officetel', acquisitionDate: '2020-01-01' }), show(qs, { assetType: 'land', acquisitionDate: '2020-01-01' }), show(qs, { assetType: 'house', acquisitionDate: '2016-01-01' })],
-    [true, false, false], '취득 당시 지역 문항: 주택·오피스텔이고 기준일 이후 취득일 때만 표시');
+  const show = (expr, a) => vm.runInNewContext('(' + expr + ')', { a, bgIsDwelling: bg.bgIsDwelling, bgAsksZoneAtAcq: bg.bgAsksZoneAtAcq });
+  eq([show(qs, { assetType: 'officetel', acquisitionDate: '2020-01-01', donorHouseCount: '0' }), show(qs, { assetType: 'land', acquisitionDate: '2020-01-01', donorHouseCount: '0' }),
+    show(qs, { assetType: 'house', acquisitionDate: '2016-01-01', donorHouseCount: '0' }), show(qs, { assetType: 'house', acquisitionDate: '2020-01-01', donorHouseCount: '1' })],
+    [true, false, false, false], '취득 당시 지역 문항: 주택·오피스텔이고 기준일 이후 취득이며 증여자 세대에 다른 주택이 없을 때만 표시');
   eq([show(qm, { assetType: 'officetel' }), show(qm, { assetType: 'house' }), show(qm, { assetType: 'commercial' })], [true, true, false], '전입일 문항: 주택·오피스텔만 표시');
 }
 // 전입일: 입력했을 때만, 취득일~오늘 사이만
@@ -164,6 +168,7 @@ for (const [over, label] of [
   [{ actualDebt: '' }, '채무 미입력'], [{ actualDebt: undefined }, '채무 미입력(undefined)'],
   [{ actualDebt: '1500000001' }, '채무 > 시세'],
   [{ donorHouseCount: undefined }, '주택 수 미선택'], [{ donorHouseCount: '' }, '주택 수 빈칸'],
+  [{ debtObjective: undefined }, '객관적 채무 미선택'],
 ]) {
   const r = bgBody(over);
   ok(r.error && !r.body, '부담부증여 요청 거부: ' + label);
@@ -171,7 +176,7 @@ for (const [over, label] of [
 
 // 응답 판독
 const row = (debt, total) => ({ 채무비율: debt / 1500000000, 채무액: debt, 증여세: total - 10, 양도세: 0, 취득세: 10, 총세부담: total });
-const good = { 채무없는경우세액: 1000, 최적총세부담: 700, 최적채무비율: 0.2, 절세액: 300,
+const good = { 상태: 'ok', 채무없는경우세액: 1000, 최적총세부담: 700, 최적채무비율: 0.2, 절세액: 300,
   시뮬레이션결과: [row(0, 1000), row(300000000, 700), row(437000000, 800)], 경고사항: ['전제'] };
 const readBg = c => bg.bgReadResponse(c, 437000000);
 let r = readBg(good);
@@ -181,7 +186,7 @@ eq(r.warnings, ['전제'], '엔진 경고 전달');
 r = readBg({ 최적채무비율: 0, 절세액: 0, 오류: '채무 > 증여가액', 경고사항: [] });
 ok(r.blocked && !r.precise, '엔진 오류 → 차단(세무사 확인 필요), 정밀 아님');
 for (const [c, label] of [
-  [null, 'null'], [{}, '빈 객체'], [[], '배열'],
+  [null, 'null'], [[], '배열'],
   [{ ...good, 시뮬레이션결과: [] }, '빈 표'],
   [{ ...good, 시뮬레이션결과: [row(0, 1000), {}] }, '불완전한 행'],
   [{ ...good, 시뮬레이션결과: [row(300000000, 700), row(437000000, 800)] }, '채무 0 행 없음'],
@@ -231,10 +236,10 @@ const cmpAnswers = {
 };
 eq(JSON.parse(JSON.stringify(cmp.cmpBuildBody(cmpAnswers, TODAY).body)), {
   property_value: 1200000000, acquisition_price: 300000000, acquisition_date: '2011-07-12',
-  owner_housing_count: 2, is_regulated_area: true, regulated_at_acquisition: false, relationship: '직계존속', recipient_age: 30,
+  owner_housing_count: 2, is_regulated_area: true, relationship: '직계존속', recipient_age: 30,
   has_spouse: true, num_children: 2, other_estate_value: 500000000, property_type: '주택',
   area_class: '85초과', recipient_other_house_count: 0,
-}, '처분 비교: 답이 그대로 요청이 된다');
+}, '처분 비교: 답이 그대로 요청이 된다(기준일 전 취득 → 취득 당시 지역 키 없음)');
 const cmpBody = over => cmp.cmpBuildBody({ ...cmpAnswers, ...over }, TODAY);
 // 면적 구분(오너 결재 261004 A-3)
 eq(cmpBody({ areaClass: 'under' }).body.area_class, '85이하', '처분 비교: 85㎡ 이하');
@@ -243,7 +248,7 @@ ok(cmpBody({ areaClass: undefined }).error, '처분 비교: 면적 구분을 답
 ok(cmpBody({ areaClass: 'big' }).error, '처분 비교: 목록 밖의 면적 답은 거부');
 // 받는 분 세대의 주택 수(엔진 R7-F1): 매매 시나리오의 매수인 취득세율 — 성년 자녀에게만 묻고 보낸다
 eq(cmpBody({ recipientHouseCount: '2' }).body.recipient_other_house_count, 2, '처분 비교: 받는 분 세대의 다른 주택 2채');
-ok(!('recipient_other_house_count' in cmpBody({ recipientHouseCount: 'unknown' }).body), '처분 비교: 「모름」 → 보내지 않는다');
+ok(cmpBody({ recipientHouseCount: 'unknown' }).blocked === true && !cmpBody({ recipientHouseCount: 'unknown' }).body, '처분 비교: 「모름」 → 엔진을 부르지 않고 차단(1주택 기준으로 계산하지 않는다)');
 ok(cmpBody({ recipientHouseCount: undefined }).error, '처분 비교: 성년 자녀인데 받는 분 세대의 주택 수를 답하지 않으면 요청 거부');
 for (const rc of ['spouse', 'child_minor']) {
   const rbc = cmpBody({ recipient: rc, recipientHouseCount: '2' });
@@ -264,7 +269,7 @@ ok(cmpBody({ recipient: 'spouse', numChildren: '0' }).body, '처분 비교: 받�
 const cLate = { acquisitionDate: '2020-01-01' };
 eq([cmpBody({ ...cLate, adjustedZone: 'yes', regulatedAtAcq: 'no' }).body.is_regulated_area, cmpBody({ ...cLate, adjustedZone: 'yes', regulatedAtAcq: 'no' }).body.regulated_at_acquisition], [true, false], '지금은 조정대상지역·취득 당시는 아님');
 eq(cmpBody({ ...cLate, adjustedZone: 'no', regulatedAtAcq: 'yes' }).body.regulated_at_acquisition, true, '지금은 아님·취득 당시는 조정대상지역');
-eq(cmpBody({ ...cLate, regulatedAtAcq: 'unknown' }).body.regulated_at_acquisition, true, '취득 당시 「모름」 → true');
+ok(!('regulated_at_acquisition' in cmpBody({ ...cLate, regulatedAtAcq: 'unknown' }).body), '취득 당시 「모름」 → 키를 보내지 않는다(엔진이 두 값으로 대조 계산)');
 ok(cmpBody({ ...cLate }).error, '기준일 이후 취득인데 취득 당시 지역을 답하지 않으면 요청 거부');
 // 답 저장: 취득일이 바뀌면 취득 당시 지역·전입일 답을 지운다 (007 R3-F2)
 {
@@ -285,17 +290,20 @@ ok(!('standard_value' in cmpBody({}).body), '처분 비교: 공시가격을 비�
 eq(cmpBody({ standardValue: '700000000' }).body.standard_value, 700000000, '처분 비교: 공시가격 입력 → 그대로');
 eq(cmpBody({ recipient: 'spouse', hasSpouse: undefined }).body.has_spouse, true, '받는 사람이 배우자면 배우자 있음');
 eq(cmpBody({ hasSpouse: 'no' }).body.has_spouse, false, '배우자 없음');
-eq(cmpBody({ adjustedZone: 'unknown' }).body.is_regulated_area, false, '조정대상지역 「모름」');
+ok(cmpBody({ adjustedZone: 'unknown' }).blocked === true && !cmpBody({ adjustedZone: 'unknown' }).body, '조정대상지역 「모름」 → 엔진을 부르지 않고 차단');
 eq(cmpBody({ otherEstate: '' }).body.other_estate_value, 0, '다른 재산 빈칸은 0(선택 문항)');
 for (const [over, label] of [
   [{ propertyValue: '0' }, '시세 0'],
-  [{ acquisitionPrice: '' }, '취득가 없음 — 엔진의 「시세의 절반」 가정으로 넘기지 않는다'], [{ acquisitionPrice: '0' }, '취득가 0'],
   [{ housingCount: '' }, '주택 수 없음'], [{ housingCount: '0' }, '주택 수 0'],
   [{ acquisitionDate: '' }, '취득일 없음'], [{ acquisitionDate: '2011-13-01' }, '없는 날짜'],
   [{ numChildren: '' }, '자녀 수 없음'],
 ]) {
   const r2 = cmpBody(over);
   ok(r2.error && !r2.body, '처분 비교 요청 거부: ' + label);
+}
+for (const p of ['', '0']) {
+  const r3 = cmpBody({ acquisitionPrice: p });
+  ok(r3.blocked === true && !r3.body && !r3.error, '처분 비교: 취득가 ' + JSON.stringify(p) + ' → 차단 — 엔진의 「시세의 절반」 가정으로 넘기지 않는다');
 }
 assert.doesNotMatch(cmpSrc, /시세의 절반으로 가정/, '취득가 미입력 가정 문구 제거');
 assert.doesNotMatch(cmpSrc, /clamp\(answers\.housingCount\) \|\| 1/, '주택 수 기본값 1 제거');

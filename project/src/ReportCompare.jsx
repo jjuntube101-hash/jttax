@@ -6,6 +6,9 @@
    261003 정확성 개편: ①취득가·보유 주택 수를 필수로(종전: 취득가를 비우면 엔진이 시세의 50%로 대신 채웠다)
    ②보유 연수 대신 취득일을 받는다(월 환산의 날짜 밀림 제거) ③조정대상지역 여부를 묻고 「모름」을 구분한다
    ④엔진이 계산을 거부한 경우(지원 범위 밖)와 연결 실패를 구분해 안내한다.
+   261011 계약 정합: ①세대 주택 수·조정대상지역·받는 분 세대 주택 수·취득가액의 「모름」·빈칸은 사실로 바꿔 보내지 않고 엔진을 부르지 않은 채
+   «세무사 확인» 안내로 막는다 ②취득 당시 조정대상지역 「모름」은 키를 보내지 않는다(엔진이 두 값으로 대조 계산해 갈리면 입력 보완을 돌려준다)
+   ③응답 `상태` 를 읽는다(ok 만 채택 · needs_input/unsupported 는 엔진 안내 문구와 함께 차단 · error/연결 실패는 재시도 · 상태 키 없음은 거부).
    공통 헬퍼(formatWon·JTReportShell·JTReportConvert·acqKoreanAmount)는 먼저 로드된 파일의 전역 사용. */
 
 const { useState: useCmpState } = React;
@@ -57,14 +60,14 @@ const CMP_QS = [
   {
     id: 'acquisitionPrice', section: '대상 부동산',
     q: '지금 소유자가 그 부동산을 살 때 얼마였나요? (취득가, 원)',
-    sub: '현재 소유자(예: 부모님)가 처음 취득한 가격. 매매 시 양도차익(양도세)을 계산하는 데 꼭 필요합니다 — 취득가를 모르면 양도세를 계산할 수 없으므로, 등기부등본·매매계약서로 확인해 주세요.',
-    numeric: true, money: true, placeholder: '예: 400,000,000',
+    sub: '현재 소유자(예: 부모님)가 처음 취득한 가격. 매매 시 양도차익(양도세)을 계산하는 데 꼭 필요합니다 — 등기부등본·매매계약서로 확인해 주세요. 모르면 비워 두고 다음으로 가세요: 환산취득가액 등 확인이 필요하므로 금액을 표시하지 않고 세무사 확인 안내로 넘어갑니다.',
+    numeric: true, money: true, blockOnBlank: true, placeholder: '예: 400,000,000 (모르면 비움)',
   },
   {
     id: 'housingCount', section: '현재 소유자',
     q: '지금 소유자(넘겨주는 분)의 「세대」는 주택을 몇 채 갖고 있나요?',
-    sub: '이 부동산을 포함한 수입니다. 본인뿐 아니라 같은 세대의 배우자 등이 가진 주택까지 셉니다. 매매 시 1세대1주택 비과세·다주택 중과, 증여 시 취득세 중과 여부를 가릅니다.',
-    numeric: true, placeholder: '예: 1 (이 부동산뿐이면 1)',
+    sub: '이 부동산을 포함한 수입니다. 본인뿐 아니라 같은 세대의 배우자 등이 가진 주택까지 셉니다. 매매 시 1세대1주택 비과세·다주택 중과, 증여 시 취득세 중과 여부를 가릅니다. 모르면 「모름」을 고르세요 — 세대 주택 수에 따라 양도세 비과세·취득세 중과가 갈리므로 금액을 표시하지 않고 세무사 확인 안내로 넘어갑니다.',
+    opts: [['1', '이 부동산뿐 (1채)', '1세대1주택'], ['2', '2채', '다주택'], ['3', '3채 이상', '다주택'], ['unknown', '모름', '세무사 확인 필요 — 금액을 표시하지 않음']],
   },
   {
     id: 'acquisitionDate', section: '현재 소유자',
@@ -75,10 +78,10 @@ const CMP_QS = [
   {
     id: 'regulatedAtAcq', section: '현재 소유자',
     q: '지금 소유자가 그 주택을 「취득할 당시」, 그곳이 조정대상지역이었나요?',
-    sub: '취득할 당시 조정대상지역에 있던 주택은, 1세대1주택 비과세를 받으려면 보유 기간 중 2년 이상 거주해야 합니다(소득세법 시행령 §154①). 지금의 지정 여부와는 다른 질문입니다. 모르면 「모름」을 고르세요 — 조정대상지역이었던 것으로 보고(거주 요건 적용) 계산합니다.',
+    sub: '취득할 당시 조정대상지역에 있던 주택은, 1세대1주택 비과세를 받으려면 보유 기간 중 2년 이상 거주해야 합니다(소득세법 시행령 §154①). 지금의 지정 여부와는 다른 질문입니다. 모르면 「모름」을 고르세요 — 어느 쪽이었는지를 정해서 계산하지 않고, 조정대상지역이었던 경우와 아니었던 경우를 모두 계산해 결과가 같으면 그대로 보여 드리고 달라지면 확인(취득 당시 지역·거주 여부)을 요청드립니다.',
     // 기준일은 엔진의 REGULATED_RESIDENCE_START(support/exemption_rules.py)와 같은 값.
     showIf: (a) => typeof a.acquisitionDate === 'string' && a.acquisitionDate >= '2017-08-03',
-    opts: [['yes', '네, 조정대상지역이었습니다', '거주 2년 요건 적용'], ['no', '아니오', ''], ['unknown', '모름', '조정대상지역이었던 것으로 계산']],
+    opts: [['yes', '네, 조정대상지역이었습니다', '거주 2년 요건 적용'], ['no', '아니오', ''], ['unknown', '모름', '결과가 갈리면 확인 요청']],
   },
   {
     id: 'moveInDate', section: '현재 소유자',
@@ -89,8 +92,8 @@ const CMP_QS = [
   {
     id: 'adjustedZone', section: '대상 부동산',
     q: '그 부동산이 조정대상지역에 있나요?',
-    sub: '조정대상지역이면 매매 시 다주택 양도세 중과, 증여 시 취득세 중과가 적용될 수 있어 결과가 크게 달라집니다. 모르면 「모름」을 고르세요 — 조정대상지역이 아닌 것으로 계산하고, 결과 화면에서 그 전제를 알려 드립니다.',
-    opts: [['yes', '네, 조정대상지역', '중과 가능'], ['no', '아니오', ''], ['unknown', '모름', '비조정으로 계산 — 확인 필요']],
+    sub: '조정대상지역이면 매매 시 다주택 양도세 중과, 증여 시 취득세 중과가 적용될 수 있어 결과가 크게 달라집니다. 모르면 「모름」을 고르세요 — 어느 쪽으로도 짐작해 계산하지 않고, 금액을 표시하지 않은 채 세무사 확인 안내로 넘어갑니다.',
+    opts: [['yes', '네, 조정대상지역', '중과 가능'], ['no', '아니오', ''], ['unknown', '모름', '세무사 확인 필요 — 금액을 표시하지 않음']],
   },
   {
     // 오너 결재 261004 A-3: 종전에는 면적을 묻지 않고 84㎡(농어촌특별세 비과세)로 가정했다.
@@ -108,10 +111,10 @@ const CMP_QS = [
   {
     id: 'recipientHouseCount', section: '받는 사람',
     q: '받는 분의 「세대」가 이 부동산 외에 보유한 주택은 몇 채인가요?',
-    sub: '매매로 넘기는 경우, 사는 사람(받는 분) 세대의 주택 수에 따라 취득세율이 달라집니다(지방세법 §13의2①). ' + '받는 분과 같은 세대의 배우자·미혼 30세 미만 자녀 등이 가진 주택까지 셉니다. 받는 분이 미혼이고 30세 미만이면 원칙적으로 부모와 같은 세대로 보므로, 그 경우 부모 세대의 주택까지 세어 주세요(지방세법 시행령 §28의3). 조합원입주권·주택분양권·오피스텔도 주택 수에 들어갑니다(시행령 §28의4①). 모르면 「모름」을 고르세요 — 1주택 기준으로 계산하고, 결과 화면에서 그 전제를 알려 드립니다.',
+    sub: '매매로 넘기는 경우, 사는 사람(받는 분) 세대의 주택 수에 따라 취득세율이 달라집니다(지방세법 §13의2①). ' + '받는 분과 같은 세대의 배우자·미혼 30세 미만 자녀 등이 가진 주택까지 셉니다. 받는 분이 미혼이고 30세 미만이면 원칙적으로 부모와 같은 세대로 보므로, 그 경우 부모 세대의 주택까지 세어 주세요(지방세법 시행령 §28의3). 조합원입주권·주택분양권·오피스텔도 주택 수에 들어갑니다(시행령 §28의4①). 모르면 「모름」을 고르세요 — 매수인의 취득세율을 정할 수 없어 금액을 표시하지 않고 세무사 확인 안내로 넘어갑니다.',
     // 배우자·미성년 자녀는 소유자와 같은 세대라서 엔진이 소유자 세대의 주택 수를 그대로 쓴다 — 성년 자녀에게만 묻는다.
     showIf: (a) => a.recipient === 'child_adult',
-    opts: [['0', '없음 (무주택)', ''], ['1', '1채', ''], ['2', '2채', ''], ['3', '3채 이상', ''], ['unknown', '모름', '1주택 기준으로 계산']],
+    opts: [['0', '없음 (무주택)', ''], ['1', '1채', ''], ['2', '2채', ''], ['3', '3채 이상', ''], ['unknown', '모름', '세무사 확인 필요 — 금액을 표시하지 않음']],
   },
   {
     id: 'hasSpouse', section: '상속 비교용',
@@ -164,10 +167,9 @@ function cmpApplyAnswer(a, id, v) {
 function cmpBuildBody(answers, todayIso) {
   const clamp = (x) => Math.max(0, Math.round(Number(x) || 0));
   const today = todayIso || cmpIsoDate(new Date());
-  const value = clamp(answers.propertyValue), acq = clamp(answers.acquisitionPrice), houses = clamp(answers.housingCount);
+  const value = clamp(answers.propertyValue), acq = clamp(answers.acquisitionPrice);
   if (value <= 0) return { error: '부동산 시세를 입력해 주세요.' };
-  if (acq <= 0) return { error: '지금 소유자의 취득가를 입력해 주세요.' };
-  if (houses < 1) return { error: '지금 소유자 세대의 보유 주택 수를 입력해 주세요(이 부동산 포함, 1 이상).' };
+  if (!['1', '2', '3', 'unknown'].includes(String(answers.housingCount))) return { error: '지금 소유자 세대의 보유 주택 수를 선택해 주세요.' };
   if (!cmpValidISODate(answers.acquisitionDate)) return { error: '지금 소유자의 취득일을 입력해 주세요.' };
   if (answers.acquisitionDate > today) return { error: '취득일은 오늘보다 뒤일 수 없습니다.' };
   const moveIn = answers.moveInDate || '';
@@ -177,6 +179,7 @@ function cmpBuildBody(answers, todayIso) {
   }
   const needsZoneAtAcq = answers.acquisitionDate >= '2017-08-03';
   if (needsZoneAtAcq && !['yes', 'no', 'unknown'].includes(answers.regulatedAtAcq)) return { error: '취득 당시 조정대상지역 여부를 선택해 주세요.' };
+  if (!['yes', 'no', 'unknown'].includes(answers.adjustedZone)) return { error: '그 부동산이 조정대상지역에 있는지 선택해 주세요.' };
   const rawChildren = answers.numChildren;
   if (rawChildren === '' || rawChildren === undefined || rawChildren === null) return { error: '자녀 수를 입력해 주세요(없으면 0).' };
   const toChild = answers.recipient === 'child_adult' || answers.recipient === 'child_minor';
@@ -185,16 +188,24 @@ function cmpBuildBody(answers, todayIso) {
   if (needsRecipientHouses && !['0', '1', '2', '3', 'unknown'].includes(String(answers.recipientHouseCount))) return { error: '받는 분 세대의 주택 수를 선택해 주세요.' };
   const areaClass = { under: '85이하', over: '85초과', unknown: '모름' }[answers.areaClass];
   if (!areaClass) return { error: '전용면적이 85㎡ 이하인지 선택해 주세요.' };
+  /* 막는 답 — 엔진을 부르지 않고 «세무사 확인» 안내로 간다. 「모름」·빈칸을 1채·비조정·시세의 절반 같은 값으로 바꿔 보내지 않는다(261011). */
+  const blockReasons = [];
+  if (acq <= 0) blockReasons.push('취득가액을 모르면 환산취득가액 등 확인이 필요하므로 상담을 권합니다. 매매(양도세) 금액은 취득가액에 따라 크게 달라지는데, 이 계산기는 취득가액을 짐작해 계산하지 않습니다.');
+  if (answers.housingCount === 'unknown') blockReasons.push('지금 소유자 세대의 주택 수를 모르면 세무사 확인이 필요합니다. 세대 주택 수에 따라 양도세 비과세·다주택 중과와 취득세 중과 여부가 갈립니다.');
+  if (answers.adjustedZone === 'unknown') blockReasons.push('대상 주택이 조정대상지역에 있는지 모르면 세무사 확인이 필요합니다. 조정대상지역 여부에 따라 양도세 중과·증여 취득세 중과가 갈립니다.');
+  if (needsRecipientHouses && answers.recipientHouseCount === 'unknown') blockReasons.push('받는 분 세대의 주택 수를 모르면 세무사 확인이 필요합니다. 매수인의 취득세율이 받는 분 세대의 주택 수로 갈립니다.');
+  if (blockReasons.length > 0) return { blocked: true, blockReasons };
   const sv = clamp(answers.standardValue);
   return { body: {
     property_value: value,
     ...(sv > 0 ? { standard_value: sv } : {}),   // 공시가격: 입력했을 때만(비우면 엔진이 미입력으로 보고 경고)
     acquisition_price: acq,
     acquisition_date: answers.acquisitionDate,
-    owner_housing_count: houses,
+    owner_housing_count: Number(answers.housingCount),
     is_regulated_area: answers.adjustedZone === 'yes',
-    // 취득 «당시» 조정대상지역(거주 요건) — 지금의 지정 여부와 다른 사실. 「모름」은 유리하게 추정하지 않는다.
-    regulated_at_acquisition: needsZoneAtAcq ? answers.regulatedAtAcq !== 'no' : false,
+    // 취득 «당시» 조정대상지역(거주 요건) — 지금의 지정 여부와 다른 사실. 답한 것만 보낸다: 「모름」·묻지 않은 경우(기준일 전 취득)는 키가 없다.
+    //   모르면 엔진이 두 값으로 대조 계산해 결과가 갈리면 입력 보완(needs_input)을 돌려준다.
+    ...(needsZoneAtAcq && answers.regulatedAtAcq !== 'unknown' ? { regulated_at_acquisition: answers.regulatedAtAcq === 'yes' } : {}),
     ...(moveIn !== '' ? { owner_move_in_date: moveIn } : {}),
     relationship: answers.recipient === 'spouse' ? '배우자' : '직계존속',
     recipient_age: answers.recipient === 'child_minor' ? 10 : 30,   // 미성년(만19세 미만)→엔진이 §53②단서 2천만 공제 적용
@@ -204,8 +215,8 @@ function cmpBuildBody(answers, todayIso) {
     property_type: '주택',
     // 면적 구분(농어촌특별세): 「모름」도 그대로 보낸다 — 엔진이 과세로 계산하고 경고한다(보내지 않으면 84㎡ 가정).
     area_class: areaClass,
-    // 받는 분 세대의 다른 주택 수(매매 시나리오의 매수인 취득세율): 「모름」은 보내지 않는다(엔진이 1주택 기준으로 계산하고 경고).
-    ...(needsRecipientHouses && answers.recipientHouseCount !== 'unknown' ? { recipient_other_house_count: Number(answers.recipientHouseCount) } : {}),
+    // 받는 분 세대의 다른 주택 수(매매 시나리오의 매수인 취득세율): 성년 자녀에게만 묻고 답한 값만 보낸다(「모름」은 위에서 막았다).
+    ...(needsRecipientHouses ? { recipient_other_house_count: Number(answers.recipientHouseCount) } : {}),
   } };
 }
 if (typeof window !== 'undefined') { window.jtCompareBuildBody = cmpBuildBody; }
@@ -228,6 +239,61 @@ async function callCompareEng(body) {
     } catch (e) { lastErr = e; if (e && e.status >= 400 && e.status < 500) break; if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt])); }
   }
   throw lastErr;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   엔진 응답 판독 (261011 계약 정합) — 금액은 엔진이 `상태: ok` 로 답한 값뿐이다. 종부세 화면(compEngineVerdict)과 같은 갈래:
+     · ok          — 상태 'ok' + 오류 필드 없음 + 세 시나리오(증여·매매·상속)가 모두 유효(아래 allValid) → precise:true
+     · needs_input — 상태 'needs_input'(입력을 채우거나 고치면 계산 가능) → 차단 안내 + 엔진 안내 문구(engineMessage)
+     · unsupported — 상태 'unsupported' → 차단 안내 + 엔진 안내 문구
+     · refused     — 상태 키가 없음(형식 오류)·알 수 없는 상태·ok 인데 오류 필드, 또는 HTTP 4xx(408·429 제외) → 차단 안내
+     · down        — 상태 'error'(시나리오 계산 실패 등 엔진 내부 실패)·ok 인데 응답이 불완전·calc 없음·네트워크 오류·타임아웃·5xx·408·429 → 다시 시도 안내
+   ⚠️ 시험(tests_compare_request.js)이 «이 함수 + 같은 파일의 allValid 식» 만 꺼내 실행한다 — 다른 모듈 상수·함수를 부르지 않는다.
+   ══════════════════════════════════════════════════════════════════════════ */
+function cmpEngineVerdict(c) {
+  if (!c || typeof c !== 'object' || Array.isArray(c)) return 'down';
+  /* 새 엔진은 항상 «상태» 를 낸다 — 상태 키가 없는 응답은 금액으로 받지 않는다(연결은 됐고 형식이 맞지 않는 것이므로 down 이 아니라 refused). */
+  if (!Object.prototype.hasOwnProperty.call(c, '상태')) return 'refused';
+  if (c['상태'] === 'needs_input') return 'needs_input';
+  if (c['상태'] === 'unsupported') return 'unsupported';
+  if (c['상태'] === 'error') return 'down';
+  if (c['상태'] !== 'ok') return 'refused';
+  if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return 'refused';
+  const scv = c['시나리오별'];
+  // 수정 260628(COMPARE-R2-01): 빈 dict·부분 0원을 '정밀'로 신뢰하지 않음. 처분비교는 취득세(양수)가 늘 포함되어 정상 시 총세부담>0 — 0원/누락은 계산실패 신호(지법 §11①). 3시나리오 모두 유효할 때만 precise.
+  // P1-4(코덱스): 공통 무결성 검증기로 오류·NaN·누락 거부. 처분비교는 취득세(양수)가 늘 포함되어
+  // 정상 시 총세부담>0이므로, 이 세목 한정 도메인 규칙으로 >0을 함께 확인(0원/빈응답=계산실패 신호).
+  // 261003(TASK-261003-007 R1-F4): 실패 시나리오가 하나라도 있으면 정밀 결과가 아니다. 화면·상담 본문에 쓰는
+  // 세목별 금액도 모두 유한한 수여야 하고, 총세부담은 그 합과 같아야 한다.
+  const allValid = c && !c['오류'] && !c.error && c.success !== false && scv
+    && !(Array.isArray(c['실패시나리오']) && c['실패시나리오'].length > 0)
+    && ['증여', '매매', '상속'].every(m => window.jtValidCalc(scv[m], ['총세부담', '증여세', '양도세', '상속세', '취득세'])
+      && scv[m]['계산실패'] !== true && Number(scv[m]['총세부담']) > 0
+      && scv[m]['총세부담'] === scv[m]['증여세'] + scv[m]['양도세'] + scv[m]['상속세'] + scv[m]['취득세']);
+  return allValid ? 'ok' : 'down';
+}
+function cmpCalcFromEngine(ej) {
+  const c = ej && ej.calc;
+  const verdict = cmpEngineVerdict(c);
+  if (verdict === 'down') return { precise: false, engineErr: true, engineState: 'down' };
+  if (verdict !== 'ok') {
+    if (!Object.prototype.hasOwnProperty.call(c, '상태')) return { precise: false, blocked: true, engineState: 'refused', engineMessage: '엔진 응답 형식이 맞지 않습니다(상태 없음) — 잠시 후 다시 시도하거나 상담을 이용하세요' };
+    const msg = [c['오류'], c.error].find(x => typeof x === 'string' && x.trim());
+    return { precise: false, blocked: true, engineState: verdict, engineMessage: msg ? msg.trim() : '' };
+  }
+  // ★ c['최적방법']·c['절세액'] 은 의도적으로 사용하지 않음(판단 라벨 억제)
+  return {
+    precise: true, engineVer: ej.version && ej.version.engine,
+    scenarios: c['시나리오별'],   // {증여, 매매, 상속}
+    engineWarnings: Array.isArray(c['경고사항']) ? c['경고사항'] : [],
+  };
+}
+/* 호출 자체가 던진 예외 — HTTP 4xx(callCompareEng 이 status 를 달아 던진다)는 엔진의 «거부», 그 밖은 «연결 실패».
+   408(시간 초과)·429(호출 제한)는 입력 문제가 아니라 일시적 상태다 — 다시 시도를 안내한다. */
+function cmpCalcFromEngineError(e) {
+  return (e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429)
+    ? { precise: false, blocked: true, engineState: 'refused', engineMessage: '' }
+    : { precise: false, engineErr: true, engineState: 'down' };
 }
 
 function buildCompareDetail(answers, calc) {
@@ -298,6 +364,7 @@ function JTReportCompare({ setRoute, onBack }) {
     if (cur.freeform) return true;
     if (cur.numeric) {
       if (cur.optional) return true;
+      if (cur.blockOnBlank) return true;   // 빈칸·0 도 통과 — 요청 단계에서 «세무사 확인» 안내로 막는다(0원으로 계산하지 않는다)
       const raw = answers[cur.id];
       if (raw === '' || raw === undefined || raw === null) return false;   // 빈칸=미상태(차단). '0'은 통과 — 미상태 vs 0 구분
       const v = Number(raw);
@@ -318,42 +385,20 @@ function JTReportCompare({ setRoute, onBack }) {
     try {
       const built = cmpBuildBody(answers);
       if (built.error) { setErr(built.error); setLoading(false); return; }
+      /* 막는 답(모름·취득가액 없음)이면 엔진을 부르지 않고 안내 화면으로 — 금액을 짐작해 내지 않는다 */
+      if (built.blocked) { setReport({ calc: { precise: false, blocked: true, blockReasons: built.blockReasons, zoneYes: false, areaUnknown: false } }); setLoading(false); return; }
       const body = built.body;
 
-      let calc = { precise: false, blocked: false, zoneUnknown: answers.adjustedZone === 'unknown', zoneYes: answers.adjustedZone === 'yes',
-        areaUnknown: answers.areaClass === 'unknown',
-        acqZoneUnknown: answers.regulatedAtAcq === 'unknown' && body.regulated_at_acquisition === true };
+      /* ★ 금액은 엔진이 `상태: ok` 로 준 값뿐이다 — 자체 계산식으로 메우지 않는다(cmpEngineVerdict 주석). */
+      let calc;
       try {
-        const j = await callCompareEng(body);
-        const c = j && j.calc;
-        const scv = c && c['시나리오별'];
-        // 수정 260628(COMPARE-R2-01): 빈 dict·부분 0원을 '정밀'로 신뢰하지 않음. 처분비교는 취득세(양수)가 늘 포함되어 정상 시 총세부담>0 — 0원/누락은 계산실패 신호(지법 §11①). 3시나리오 모두 유효할 때만 precise.
-        // P1-4(코덱스): 공통 무결성 검증기로 오류·NaN·누락 거부. 처분비교는 취득세(양수)가 늘 포함되어
-        // 정상 시 총세부담>0이므로, 이 세목 한정 도메인 규칙으로 >0을 함께 확인(0원/빈응답=계산실패 신호).
-        // 261003(TASK-261003-007 R1-F4): 실패 시나리오가 하나라도 있으면 정밀 결과가 아니다. 화면·상담 본문에 쓰는
-        // 세목별 금액도 모두 유한한 수여야 하고, 총세부담은 그 합과 같아야 한다.
-        const allValid = c && !c['오류'] && !c.error && c.success !== false && scv
-          && !(Array.isArray(c['실패시나리오']) && c['실패시나리오'].length > 0)
-          && ['증여', '매매', '상속'].every(m => window.jtValidCalc(scv[m], ['총세부담', '증여세', '양도세', '상속세', '취득세'])
-            && scv[m]['계산실패'] !== true && Number(scv[m]['총세부담']) > 0
-            && scv[m]['총세부담'] === scv[m]['증여세'] + scv[m]['양도세'] + scv[m]['상속세'] + scv[m]['취득세']);
-        if (allValid) {
-          calc.scenarios = scv;   // {증여, 매매, 상속}
-          // ★ c['최적방법']·c['절세액'] 은 의도적으로 사용하지 않음(판단 라벨 억제)
-          calc.engineWarnings = c['경고사항'] || [];
-          calc.precise = true;
-          calc.engineVer = j.version && j.version.engine;
-        } else if (c && typeof c === 'object' && (c['오류'] || (Array.isArray(c['실패시나리오']) && c['실패시나리오'].length > 0))) {
-          // 엔진이 «계산하지 않겠다»고 답했거나 일부 시나리오를 계산하지 못했다 → 연결 지연이 아니라 「세무사 확인 필요」
-          calc.blocked = true;
-        } else if (scv) {
-          console.warn('처분비교 시나리오 불완전(0원/누락) — 정밀 미채택', scv);
-        }
+        calc = cmpCalcFromEngine(await callCompareEng(body));
       } catch (e) {
         console.warn('처분비교 엔진 호출 실패', e);
-        if (e && e.status === 422) calc.blocked = true; else calc.engineErr = true;   // 422=입력 거부(지원 범위 밖)
+        calc = cmpCalcFromEngineError(e);
       }
-
+      calc.zoneYes = answers.adjustedZone === 'yes';
+      calc.areaUnknown = answers.areaClass === 'unknown';
       setReport({ calc });
     } catch (e) { console.error(e); setErr(e.message || '계산 중 오류가 발생했습니다.'); }
     finally { setLoading(false); }
@@ -381,8 +426,19 @@ function JTReportCompare({ setRoute, onBack }) {
         <JTReportShell title="처분방법 비교 결과" subtitle="증여 vs 매매 vs 상속 — 예상 세금(세액만 비교)" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           {calc.blocked ? (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
-              <strong>세무사 확인이 필요한 조건입니다.</strong> 입력하신 조건은 자동 계산이 지원하는 범위 밖이어서, 잘못된 세액을 안내하지 않기 위해 금액을 표시하지 않았어요. 입력을 다시 확인하시거나 상담을 권합니다.
-              <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={() => setReport(null)}>입력 다시 확인 →</button></div>
+              <strong>{calc.engineState === 'needs_input' ? '입력 확인이 필요합니다.' : '세무사 확인이 필요한 조건입니다.'}</strong> 입력하신 조건으로는 금액을 확정할 수 없어, 잘못된 세액을 안내하지 않기 위해 금액을 표시하지 않았어요. 입력을 다시 확인하시거나 상담을 권합니다.
+              {Array.isArray(calc.blockReasons) && calc.blockReasons.length > 0 && (
+                <ul style={{ margin: '8px 0 0', paddingLeft: 18 }}>{calc.blockReasons.map((w, i) => <li key={i} style={{ marginBottom: 4 }}>{String(w)}</li>)}</ul>
+              )}
+              {calc.engineMessage && (
+                <p style={{ margin: '8px 0 0', fontSize: 13.5 }}>엔진 안내: {String(calc.engineMessage)}</p>
+              )}
+              <div style={{ marginTop: 8 }}>
+                <button className="jt-btn jt-btn--ghost" onClick={() => setReport(null)}>입력 다시 확인 →</button>
+                {calc.engineState === 'refused' && !calc.blockReasons && (
+                  <button className="jt-btn jt-btn--ghost" style={{ marginLeft: 8 }} onClick={() => runAnalysis()}>다시 시도 →</button>
+                )}
+              </div>
             </div>
           ) : !calc.precise ? (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
@@ -391,16 +447,6 @@ function JTReportCompare({ setRoute, onBack }) {
             </div>
           ) : (
             <>
-              {calc.zoneUnknown && (
-                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6, fontSize: 13.5 }}>
-                  <strong>조정대상지역 여부를 「모름」으로 두셨습니다.</strong> 조정대상지역이 아닌 것으로 계산했습니다. 조정대상지역이면 매매의 양도세와 증여의 취득세가 크게 달라지므로, 확인한 뒤 다시 계산해 주세요.
-                </div>
-              )}
-              {calc.acqZoneUnknown && (
-                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6, fontSize: 13.5 }}>
-                  <strong>취득 당시 조정대상지역 여부를 「모름」으로 두셨습니다.</strong> 조정대상지역이었던 것으로 보고 매매의 1세대1주택 비과세에 거주 2년 요건을 적용했습니다. 조정대상지역이 아니었다면 매매 쪽 세금이 줄어들 수 있으므로, 확인한 뒤 다시 계산해 주세요.
-                </div>
-              )}
               {calc.areaUnknown && (
                 <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6, fontSize: 13.5 }}>
                   <strong>전용면적을 「모름」으로 두셨습니다.</strong> 전용 85㎡를 넘는 것으로 보고 받는 분의 취득세에 농어촌특별세를 넣어 계산했습니다. 85㎡ 이하이면 농어촌특별세가 없어 세금이 줄어들므로, 확인한 뒤 다시 계산해 주세요.
@@ -439,7 +485,7 @@ function JTReportCompare({ setRoute, onBack }) {
                 </div>
 
                 <div style={{ marginTop: 12, fontSize: 13, lineHeight: 1.6, color: '#b8860b' }}>※ <strong>세금(세액)만 비교한 추정</strong>입니다. 금액이 가장 적은 방법이 곧 정답은 아니에요 — 방법마다 「세금 외」 함정(증여 이월과세·매매 증여추정·상속 시점 등)과 실행가능성·자금 사정이 있어, 이 숫자만으로 결정하면 안 됩니다.</div>
-                <div style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.65, color: '#8a6d3b' }}>· <strong>매매(양도세)</strong>는 입력하신 취득일·취득가와 「오늘 시세대로 파는 것」을 기준으로 했고, <strong>{calc.zoneYes ? '조정대상지역' : '조정대상지역이 아닌 것'}</strong>으로 계산했습니다. 매수인(받는 분)의 취득세율은 받는 분 세대의 주택 수로 판정했고(입력하지 않은 경우의 전제는 위 안내에 표시), 대금을 실제로 지급한다고 전제했습니다.</div>
+                <div style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.65, color: '#8a6d3b' }}>· <strong>매매(양도세)</strong>는 입력하신 취득일·취득가와 「오늘 시세대로 파는 것」을 기준으로 했고, 입력하신 대로 <strong>{calc.zoneYes ? '조정대상지역' : '조정대상지역이 아닌 것'}</strong>으로 계산했습니다. 매수인(받는 분)의 취득세율은 받는 분 세대의 주택 수로 판정했고, 대금을 실제로 지급한다고 전제했습니다.</div>
               </div>
 
               {/* 🔒 프리미엄 게이트 (옵션 B) — 세목별 상세·2차효과 설명·맞춤 전략은 상담에서 */}

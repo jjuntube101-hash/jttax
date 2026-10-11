@@ -237,7 +237,7 @@ const GIFT_QS = [
     id: 'donorHouseCount',
     section: '부담부증여',
     q: '증여하는 분이 이 집 외에 보유한 주택은 몇 채인가요? (증여자 양도세 판정용)',
-    sub: '증여자가 1세대 1주택이면 채무인수분 양도세가 비과세될 수 있습니다(소득세법 §89). 다주택이면 과세·중과될 수 있습니다. ⚠️ 비워두면 「1주택(비과세)」으로 가정해 양도세가 0원으로 계산됩니다 — 다른 주택이 있으면 반드시 채수를 입력하세요.',
+    sub: '증여자가 1세대 1주택이면 채무인수분 양도세가 비과세될 수 있습니다(소득세법 §89). 다주택이면 과세·중과될 수 있습니다. ⚠️ 비워두면 증여자의 다른 주택 수를 알 수 없어 금액을 확정하지 않고 확인을 요청합니다 — 다른 주택이 없으면 0 을 입력하세요.',
     showIf: (a) => a.isBurdened === 'yes' && (a.reType === '공동주택' || a.reType === '개별주택'),
     numeric: true,
     optional: true,
@@ -248,8 +248,8 @@ const GIFT_QS = [
     section: '부담부증여',
     q: '증여 대상 주택이 조정대상지역에 있나요? (취득세 중과 판정용)',
     showIf: (a) => a.isBurdened === 'yes' && (a.reType === '공동주택' || a.reType === '개별주택'),
-    sub: '모르시면 「아니오/모름」을 고르세요 — 비조정대상지역(기본 세율)으로 계산되며, 실제 조정대상지역이면 취득세가 중과돼 실제 세액이 더 클 수 있습니다. 정확한 지정 여부는 국토부 고시·관할 시군구로 확인하세요.',
-    opts: [['yes', '네, 조정대상지역', '다주택 중과 가능'], ['no', '아니오/모름', '기본 세율']],
+    sub: '모르시면 「모름」을 고르세요 — 어느 쪽으로도 짐작해 계산하지 않고, 지정 여부를 확인하라는 안내가 나옵니다. 정확한 지정 여부는 국토부 고시·관할 시군구로 확인하세요.',
+    opts: [['yes', '네, 조정대상지역', '다주택 중과 가능'], ['no', '아니오', '기본 세율'], ['unknown', '모름', '확인 전에는 금액을 확정하지 않음']],
   },
   {
     id: 'context',
@@ -299,7 +299,9 @@ function giftFallbackGaps(answers, calc) {
      사유는 «엔진이 거부했다(refused)»와 «연결하지 못했다(down·미지정)» 둘이다. */
   if (calc.precise) return unknown;
   return unknown.concat([calc.engineState === 'refused'
-    ? '입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다 — 세무사 확인이 필요합니다.'
+    ? (calc.engineMessage
+      ? '엔진 안내: ' + calc.engineMessage
+      : '입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다 — 세무사 확인이 필요합니다.')
     : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }
 
@@ -340,6 +342,10 @@ function mapAnswersToGift(a) {
   return body;
 }
 
+/* 부담부증여 엔진 요청 (261011 계약 정합). 모르는 사실은 «보내지 않는다»(키 생략) — 엔진이 모름을 입력 보완(needs_input)으로 돌려준다:
+   · relationship — 답한 값 그대로(답이 없으면 생략 → 엔진이 입력 보완을 요구한다. 종전 「직계존속」 기본값 대체 삭제)
+   · is_regulated_area — 주택에서 「네」·「아니오」로 답한 경우에만. 「모름」·미응답·주택이 아닌 경우는 생략(종전엔 「아니오/모름」이 false 로 갔다)
+   · donor_other_house_count — 주택에서 숫자(0 이상)를 입력한 경우에만. 비움이면 생략(종전엔 0채로 갔다) */
 function mapAnswersToBurdenedGift(a) {
   const isHouse = a.reType === '공동주택' || a.reType === '개별주택';
   // 수정 260628(GIFT-R2-04): 상가를 '오피스텔'로 오매핑하던 것을 '상가' enum 직접 전달(비주택 양도·취득세 정상 과세, 소법 §89①3호 비과세 배제).
@@ -348,17 +354,33 @@ function mapAnswersToBurdenedGift(a) {
     property_value: giftAmount(a),
     debt_assumed: Number(a.debtAssumed) || 0,
     acquisition_price: Number(a.acqPrice) || 0,
-    relationship: a.relationship || '직계존속',
+    ...(a.relationship ? { relationship: a.relationship } : {}),
     donee_age: Number(a.doneeAge) || 30,
     is_objective_debt: a.debtObjective === 'objective',
     property_type: propertyType,
-    is_regulated_area: isHouse && a.regulatedArea === 'yes',
-    donor_other_house_count: Number(a.donorHouseCount) || 0,
     // 수정 260628(GIFT-R2-01): 세대생략 할증 플래그 누락 보정(§57). 일반 매퍼와 동일 전달.
     is_generation_skip: a.genSkip === 'yes',
     donor_child_deceased: a.childDeceased === 'yes',
   };
+  if (isHouse && (a.regulatedArea === 'yes' || a.regulatedArea === 'no')) body.is_regulated_area = a.regulatedArea === 'yes';
+  const donorN = a.donorHouseCount;
+  if (isHouse && donorN !== undefined && donorN !== null && String(donorN).trim() !== '' && Number.isFinite(Number(donorN)) && Number(donorN) >= 0) body.donor_other_house_count = Number(donorN);
   return body;
+}
+
+/* 부담부증여 응답의 상태 분류 (261011) — 금액은 엔진이 `상태: ok` 로 답한 값뿐이다. 종부세 화면(compEngineVerdict)과 같은 갈래:
+     ok · needs_input(입력을 채우면 계산 가능) · unsupported · refused(상태 키 없음·알 수 없는 상태·오류 필드) · down(상태 'error'·calc 없음·깨진 응답·필수 키 무효)
+   ⚠️ 시험이 «이 함수 + GIFT_BURDENED_REQUIRED» 만 꺼내 실행한다. */
+const GIFT_BURDENED_REQUIRED = ['총세부담', '증여세', '양도세', '취득세'];
+function giftBurdenedStatus(c) {
+  if (!c || typeof c !== 'object' || Array.isArray(c)) return 'down';
+  if (!Object.prototype.hasOwnProperty.call(c, '상태')) return 'refused';
+  if (c['상태'] === 'needs_input') return 'needs_input';
+  if (c['상태'] === 'unsupported') return 'unsupported';
+  if (c['상태'] === 'error') return 'down';
+  if (c['상태'] !== 'ok') return 'refused';
+  if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return 'refused';
+  return window.jtValidCalc(c, GIFT_BURDENED_REQUIRED) ? 'ok' : 'down';
 }
 
 async function callGiftEngine(body, endpoint) {
@@ -621,15 +643,28 @@ function JTReportGift({ setRoute, onBack }) {
         try {
           const ej = await callGiftEngine(mapAnswersToBurdenedGift(answers), '/v1/calc/burdened-gift');
           const c = ej && ej.calc;
-          // 수정 260628(GIFT-R2-02): 엔진 오류바디/부분응답을 precise로 신뢰하지 않음(세액0 거짓표시 방지).
-          if (window.jtValidCalc(c, ['총세부담', '증여세', '양도세', '취득세'])) {
+          const bst = giftBurdenedStatus(c);
+          if (bst === 'needs_input' || bst === 'unsupported' || bst === 'refused') {
+            /* 엔진이 «금액을 확정하지 않겠다»고 답했다(입력 보완·지원 안 함·형식 오류) — 엔진 안내 문구를 그대로 보이고 금액은 내지 않는다 */
+            const msg = !Object.prototype.hasOwnProperty.call(c, '상태') ? '엔진 응답 형식이 맞지 않습니다(상태 없음) — 잠시 후 다시 시도하거나 상담을 이용하세요'
+              : ([c['오류'], c.error].find(x => typeof x === 'string' && x.trim()) || '').trim();
+            calc.engineState = 'refused'; calc.engineMessage = msg;
+          } else if (bst === 'down') {
+            calc.engineErr = true; if (c) console.warn('부담부증여 엔진 응답: 상태 error 또는 무결성 실패', c);
+          }
+          // 수정 260628(GIFT-R2-02): 엔진 오류바디/부분응답을 precise로 신뢰하지 않음(세액0 거짓표시 방지). 여기까지 오면 상태는 'ok' 이다.
+          else if (window.jtValidCalc(c, ['총세부담', '증여세', '양도세', '취득세'])) {
             calc.giftTax = c['증여세']; calc.transferTax = c['양도세']; calc.acqTax = c['취득세'];
             calc.totalTax = c['총세부담']; calc.debtRatio = c['채무비율']; calc.debtRecognized = c['채무인정여부'];
             calc.engineWarnings = c['경고사항'] || [];
             calc.steps = (c['원본결과'] && c['원본결과'].steps_summary) || c['단계별계산'] || [];
             calc.precise = true; calc.engineVer = ej.version && ej.version.engine;
           } else if (c) { calc.engineErr = true; console.warn('부담부증여 엔진 응답 무결성 실패', c); }
-        } catch (e) { calc.engineErr = true; }
+        } catch (e) {
+          /* HTTP 4xx(408·429 제외)는 엔진의 «거부», 그 밖은 «연결 실패» — 일반증여(giftCalcFromEngineError)와 같은 분류 */
+          if (e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429) { calc.engineState = 'refused'; }
+          else calc.engineErr = true;
+        }
       } else {
         /* ★ 엔진 값이 없으면 금액 필드가 «없는» calc 가 된다(giftCalcFromEngine 주석) —
            자체 계산식으로 메우지 않는다. 유효 응답이면 precise:true, 거부면 engineState:'refused',
@@ -725,7 +760,7 @@ function JTReportGift({ setRoute, onBack }) {
           <JTReportShell title="증여세 계산 결과" subtitle={giftBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
             {/* 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다.
                 단 부담부증여 엔진 실패(engineErr)의 사유 문구는 그대로 보인다(종전 동작) */}
-            <JTFallbackBlocked gaps={(giftBlockReason === 'input' || calc.engineErr) ? giftGaps : []} onRetry={runAnalysis} reason={giftBlockReason} />
+            <JTFallbackBlocked gaps={(giftBlockReason === 'input' || calc.engineErr || calc.engineMessage) ? giftGaps : []} onRetry={runAnalysis} reason={giftBlockReason} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
             </div>
