@@ -6551,6 +6551,9 @@ function giftApplyAnswer(a, id, v) {
       delete next.moveInDate;
     }
     if (id === "debtAssumed") delete next.debtObjective;
+    if (id === "reAddress") {
+      for (const k of ["regulatedAtAcq", "moveInDate", "regulatedArea", "acqDate", "acqPrice", "donorHouseCount"]) delete next[k];
+    }
   }
   return next;
 }

@@ -374,6 +374,17 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
       ok(S.regulatedAtAcq === 'no', '원본 답 객체를 바꾸지 않는다');
       ok(/const setAns = \(id, v\) => setAnswers\(a => giftApplyAnswer\(a, id, v\)\);/.test(code), '화면의 setAns 가 giftApplyAnswer 를 쓴다');
     }
+    // 주소가 바뀌면 그 부동산에 딸린 답을 지운다 (261011 Codex R3)
+    {
+      const S = { ...B0, reAddress: '서울 A', donorHouseCount: '0', acqDate: '2020-01-01', regulatedAtAcq: 'no', moveInDate: '2020-03-01', regulatedArea: 'yes' };
+      const r = plain(F.giftApplyAnswer(S, 'reAddress', '서울 B'));
+      for (const k of ['regulatedAtAcq', 'moveInDate', 'regulatedArea', 'acqDate', 'acqPrice', 'donorHouseCount']) ok(!(k in r), '주소 변경 → ' + k + ' 삭제');
+      ok(r.reAddress === '서울 B' && r.giftValue === S.giftValue && r.debtAssumed === S.debtAssumed && r.relationship === S.relationship && r.debtObjective === 'objective', '주소 변경 → 부동산에 딸리지 않은 답은 보존');
+      const same = plain(F.giftApplyAnswer(S, 'reAddress', '서울 A'));
+      ok(same.acqDate === '2020-01-01' && same.acqPrice === S.acqPrice && same.donorHouseCount === '0' && same.regulatedArea === 'yes', '같은 주소를 다시 고르면 지우지 않는다');
+      ok(F.giftFallbackGaps({ isResident: 'yes', ...r }, { precise: true }).length === 2, '주소 변경 뒤에는 취득일·취득가액을 다시 답해야 한다(차단 사유 2건)');
+      ok(!('regulated_at_acquisition' in plain(F.mapAnswersToBurdenedGift(r))) && !('donor_other_house_count' in plain(F.mapAnswersToBurdenedGift(r))), '낡은 답이 요청에 실리지 않는다');
+    }
     // 증여자 «세대» 기준 문항
     {
       const dq = code.slice(code.indexOf("id: 'donorHouseCount'"), code.indexOf("id: 'regulatedAtAcq'"));
