@@ -235,11 +235,12 @@ const GIFT_QS = [
     id: 'debtObjective',
     section: '부담부증여',
     q: '받는 분이 떠안는 그 빚, 증빙 서류가 있나요?',
-    sub: '⚠️ 가족 간(배우자·부모·자녀) 빚 넘기기는 서류로 증명돼야 인정됩니다(상증법 §47③). 증명이 안 되면 빚을 뺀 게 아니라 전체를 증여한 것으로 보아 세금이 더 나올 수 있어요.',
+    sub: '⚠️ 가족 간(배우자·부모·자녀) 빚 넘기기는 서류로 증명돼야 인정됩니다(상증법 §47③). 증명이 안 되면 빚을 뺀 게 아니라 전체를 증여한 것으로 보아 세금이 더 나올 수 있어요. 모르면 「모름」을 고르세요 — 서류로 확인되는지 짐작해 계산하지 않고, 확인이 필요하다는 안내가 나옵니다.',
     showIf: (a) => a.isBurdened === 'yes',
     opts: [
       ['objective', '네, 은행 대출이거나 전세계약서·차용증으로 보여줄 수 있어요', '채무 인정 → 양도세 분리'],
       ['subjective', '아니오, 가족끼리 말로 한 빚이에요', '⚠️ 채무 불인정 가능 → 전액 증여 과세'],
+      ['unknown', '모름', '세무사 확인 필요 — 금액을 표시하지 않음'],
     ],
   },
   {
@@ -251,6 +252,25 @@ const GIFT_QS = [
     numeric: true,
     optional: true,
     placeholder: '예: 0',
+  },
+  {
+    id: 'regulatedAtAcq',
+    section: '부담부증여',
+    q: '증여하는 분이 그 주택을 「취득할 당시」, 그곳이 조정대상지역이었나요?',
+    sub: '취득할 당시 조정대상지역에 있던 주택은, 1세대1주택 비과세를 받으려면 보유 기간 중 2년 이상 거주해야 합니다(소득세법 시행령 §154①). 지금의 지정 여부와는 다른 질문입니다. 모르면 「모름」을 고르세요 — 어느 쪽이었는지를 정해서 계산하지 않고, 조정대상지역이었던 경우와 아니었던 경우를 모두 계산해 결과가 같으면 그대로 보여 드리고 달라지면 확인(취득 당시 지역·거주 여부)을 요청드립니다.',
+    // 증여자 세대에 다른 주택이 없고(1주택) 취득일이 2017-08-03 이후인 주택에만 묻는다 — 다주택이면 거주 요건이 결과를 가르지 않는다.
+    // 이 화면에는 앞 문항을 바꿀 때 딸린 답을 지우는 패턴이 없으므로, 요청 변환(mapAnswersToBurdenedGift)과 차단 판정이 같은 조건(giftAsksZoneAtAcq)을 다시 확인한다.
+    showIf: (a) => giftAsksZoneAtAcq(a),
+    opts: [['yes', '네, 조정대상지역이었습니다', '거주 2년 요건 적용'], ['no', '아니오', ''], ['unknown', '모름', '결과가 갈리면 확인 요청']],
+  },
+  {
+    id: 'moveInDate',
+    section: '부담부증여',
+    q: '증여하는 분이 그 주택에 들어가 살기 시작한 날(전입일)은? (선택)',
+    sub: '거주 기간은 1세대1주택 비과세의 거주 요건과 장기보유특별공제율에 반영됩니다. 그날부터 지금까지 계속 거주한 것으로 계산합니다. 실제로 살지 않았으면 비워 두세요. 숫자 8자리로 입력하면 자동 정리됩니다.',
+    showIf: (a) => giftBurdenedHouse(a),
+    date: true,
+    optional: true,
   },
   {
     id: 'regulatedArea',
@@ -279,6 +299,17 @@ function giftPriorDedGiven(a) {
   return a.priorGiftDed != null && String(a.priorGiftDed).trim() !== '';
 }
 
+/* 부담부증여(단건) 보조 판정 — 문항 표시 조건과 요청 변환·차단 판정이 «같은 함수»를 쓴다(이 화면에는 딸린 답을 지우는 패턴이 없다). */
+function giftBurdenedHouse(a) {
+  return a.isBurdened === 'yes' && a.assetType === 'realestate' && (a.reType === '공동주택' || a.reType === '개별주택');
+}
+/* 취득 당시 조정대상지역을 묻는 경우: 부담부증여 주택 + 증여자 세대에 다른 주택이 없음(0 을 입력) + 취득일 ≥ 2017-08-03(엔진의 거주 요건 기준일) */
+function giftAsksZoneAtAcq(a) {
+  const n = a.donorHouseCount;
+  return giftBurdenedHouse(a) && n !== undefined && n !== null && String(n).trim() !== '' && Number(n) === 0
+    && typeof a.acqDate === 'string' && isValidISODate(a.acqDate) && a.acqDate >= '2017-08-03';
+}
+
 /* 폴백 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
    화면에서 금액을 가려도 그 전에 AI 프롬프트가 세액을 외부로 보내고 있었다
    (260806 Codex P0). runAnalysis 가 엔진 응답 직후 이 함수로 먼저 판정하고,
@@ -304,6 +335,13 @@ function giftFallbackGaps(answers, calc) {
   const unknown = window.jtFallbackGaps([
     { when: burdened && !isValidISODate(answers.acqDate || ''),
       why: '증여하는 분의 취득일을 모르면 세무사 확인이 필요합니다 — 보유기간이 채무 인수분 양도세의 세율·장기보유특별공제·1세대1주택 비과세를 가릅니다. 등기부등본으로 취득일(잔금일 또는 등기접수일)을 확인해 입력해 주세요.' },
+    { when: burdened && answers.debtObjective === 'unknown',
+      why: '넘기려는 채무가 금융기관 대출·전세보증금처럼 객관적으로 확인되는지 모르면 세무사 확인이 필요합니다. 가족 간 채무는 객관적으로 확인되어야 인정됩니다(상증법 §47③).' },
+    { when: burdened && giftAsksZoneAtAcq(answers) && !['yes', 'no', 'unknown'].includes(answers.regulatedAtAcq),
+      why: '증여하는 분이 그 주택을 취득할 당시 조정대상지역이었는지 선택해 주세요(모르면 「모름」).' },
+    { when: burdened && giftBurdenedHouse(answers) && (answers.moveInDate || '') !== ''
+        && (!isValidISODate(answers.moveInDate) || (isValidISODate(answers.acqDate || '') && answers.moveInDate < answers.acqDate)),
+      why: '전입일을 다시 확인해 주세요 — 취득일 이후의 실제 날짜여야 합니다(살지 않았으면 비워 두세요).' },
     { when: burdened && !(Number(answers.acqPrice) > 0),
       why: '증여하는 분의 취득가액을 모르면 환산취득가액 등 확인이 필요하므로 상담을 권합니다 — 채무 인수분 양도세는 취득가액에 따라 크게 달라지는데, 이 계산기는 취득가액을 짐작해 계산하지 않습니다.' },
     { when: nonResident,
@@ -361,7 +399,9 @@ function mapAnswersToGift(a) {
    · relationship — 답한 값 그대로(답이 없으면 생략 → 엔진이 입력 보완을 요구한다. 종전 「직계존속」 기본값 대체 삭제)
    · is_regulated_area — 주택에서 「네」·「아니오」로 답한 경우에만. 「모름」·미응답·주택이 아닌 경우는 생략(종전엔 「아니오/모름」이 false 로 갔다)
    · donor_other_house_count — 주택에서 숫자(0 이상)를 입력한 경우에만. 비움이면 생략(종전엔 0채로 갔다)
-   · acquisition_date·acquisition_price — 증여자의 취득일·취득가액을 답한 경우에만(빈칸·0 은 생략; giftFallbackGaps 가 엔진 호출 전에 막는다) */
+   · acquisition_date·acquisition_price — 증여자의 취득일·취득가액을 답한 경우에만(빈칸·0 은 생략; giftFallbackGaps 가 엔진 호출 전에 막는다)
+   · is_objective_debt — 답한 경우에만(모름·미응답은 생략). is_generation_skip·donor_child_deceased — 관계가 직계존속일 때만
+   · regulated_at_acquisition·move_in_date — 묻는 경우(giftAsksZoneAtAcq / 주택)에 답한 값만 */
 function mapAnswersToBurdenedGift(a) {
   const isHouse = a.reType === '공동주택' || a.reType === '개별주택';
   // 수정 260628(GIFT-R2-04): 상가를 '오피스텔'로 오매핑하던 것을 '상가' enum 직접 전달(비주택 양도·취득세 정상 과세, 소법 §89①3호 비과세 배제).
@@ -373,12 +413,21 @@ function mapAnswersToBurdenedGift(a) {
     ...(isValidISODate(a.acqDate || '') ? { acquisition_date: a.acqDate } : {}),
     ...(a.relationship ? { relationship: a.relationship } : {}),
     donee_age: Number(a.doneeAge) || 30,
-    is_objective_debt: a.debtObjective === 'objective',
     property_type: propertyType,
-    // 수정 260628(GIFT-R2-01): 세대생략 할증 플래그 누락 보정(§57). 일반 매퍼와 동일 전달.
-    is_generation_skip: a.genSkip === 'yes',
-    donor_child_deceased: a.childDeceased === 'yes',
   };
+  // 객관적 채무(§47③): 답한 경우에만 — 객관적 → true, 아니오 → false, 모름·미응답은 키 없음(모름은 giftFallbackGaps 가 엔진 호출 전에 막는다)
+  if (a.debtObjective === 'objective') body.is_objective_debt = true;
+  else if (a.debtObjective === 'subjective') body.is_objective_debt = false;
+  // 수정 260628(GIFT-R2-01): 세대생략 할증 플래그 누락 보정(§57). 세대생략 문항은 직계존속일 때만 보이므로, 관계를 바꾼 뒤 숨겨진 낡은 답이
+  //   다른 관계의 요청에 실리지 않게 직계존속일 때만 보낸다(261011).
+  if (a.relationship === '직계존속') {
+    body.is_generation_skip = a.genSkip === 'yes';
+    body.donor_child_deceased = a.genSkip === 'yes' && a.childDeceased === 'yes';
+  }
+  // 취득 당시 조정대상지역(증여자 1주택·주택·기준일 이후 취득일 때만 묻는다): 「예/아니오」만 보내고 «모름»은 키 없음(엔진이 두 값으로 대조 계산)
+  if (giftAsksZoneAtAcq(a) && (a.regulatedAtAcq === 'yes' || a.regulatedAtAcq === 'no')) body.regulated_at_acquisition = a.regulatedAtAcq === 'yes';
+  // 전입일: 주택에서 입력했고 취득일 이후의 실제 날짜일 때만(비우면 거주하지 않은 것으로 계산)
+  if (giftBurdenedHouse(a) && isValidISODate(a.moveInDate || '') && isValidISODate(a.acqDate || '') && a.moveInDate >= a.acqDate) body.move_in_date = a.moveInDate;
   if (isHouse && (a.regulatedArea === 'yes' || a.regulatedArea === 'no')) body.is_regulated_area = a.regulatedArea === 'yes';
   const donorN = a.donorHouseCount;
   if (isHouse && donorN !== undefined && donorN !== null && String(donorN).trim() !== '' && Number.isFinite(Number(donorN)) && Number(donorN) >= 0) body.donor_other_house_count = Number(donorN);
@@ -397,7 +446,11 @@ function giftBurdenedStatus(c) {
   if (c['상태'] === 'error') return 'down';
   if (c['상태'] !== 'ok') return 'refused';
   if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return 'refused';
-  return window.jtValidCalc(c, GIFT_BURDENED_REQUIRED) ? 'ok' : 'down';
+  if (!window.jtValidCalc(c, GIFT_BURDENED_REQUIRED)) return 'down';
+  /* 부동산 부담부증여는 증여 부분 또는 채무(유상) 부분의 취득세가 항상 양수라 정상이면 총세부담 > 0 — 전부 0원은 계산 실패 신호다.
+     처분 비교·최적화 화면과 같이 총세부담 = 증여세 + 양도세 + 취득세 도 확인한다. */
+  if (!(c['총세부담'] > 0) || c['총세부담'] !== c['증여세'] + c['양도세'] + c['취득세']) return 'down';
+  return 'ok';
 }
 
 async function callGiftEngine(body, endpoint) {

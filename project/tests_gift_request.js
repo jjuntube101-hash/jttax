@@ -50,10 +50,10 @@ const gapsSrc = commonSrc.match(/window\.jtFallbackGaps = function[\s\S]*?\n};/)
 /* isValidISODate 는 ReportCGT.jsx 의 공통 헬퍼다(전역 공유) — 같은 본문을 꺼내 쓴다 */
 const isoSrc = fs.readFileSync(path.join(__dirname, 'src', 'ReportCGT.jsx'), 'utf8').match(/function isValidISODate\(v\) \{[\s\S]*?\n\}\r?\n/)[0];
 
-const DECLS = ['giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'mapAnswersToBurdenedGift', 'callGiftEngine',
+const DECLS = ['giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'mapAnswersToBurdenedGift', 'giftBurdenedHouse', 'giftAsksZoneAtAcq', 'callGiftEngine',
   'GIFT_ENGINE_REQUIRED', 'GIFT_BURDENED_REQUIRED', 'giftEngineVerdict', 'giftBurdenedStatus', 'giftCalcFromEngine', 'giftCalcFromEngineError', 'giftFallbackGaps'];
 const declSrc = loadDecls(code, DECLS);
-const EXPORTS = '\nglobalThis.__e = { mapAnswersToGift, mapAnswersToBurdenedGift, giftBurdenedStatus, giftEngineVerdict, giftCalcFromEngine, giftCalcFromEngineError, giftFallbackGaps, callGiftEngine };';
+const EXPORTS = '\nglobalThis.__e = { mapAnswersToGift, mapAnswersToBurdenedGift, giftAsksZoneAtAcq, giftBurdenedStatus, giftEngineVerdict, giftCalcFromEngine, giftCalcFromEngineError, giftFallbackGaps, callGiftEngine };';
 
 function makeEnv(fetchImpl, timers) {
   const e = vm.createContext({
@@ -305,6 +305,54 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
     ok(/'unknown', '모름'/.test(code.slice(code.indexOf("id: 'regulatedArea'"), code.indexOf("id: 'context'"))), '조정대상지역 문항에 「모름」 선택지가 따로 있다');
     ok(!/\['no', '아니오\/모름'/.test(code), '「아니오/모름」 합친 선택지가 소스에 없다');
 
+    // 객관적 채무(§47③): 답한 경우에만 보낸다 — 미응답을 «아니오(false)» 로 바꿔 보내지 않는다 (261011 Codex R1)
+    eq(bb({ ...B0, debtObjective: 'objective' }).is_objective_debt, true, '네 → true');
+    eq(bb({ ...B0, debtObjective: 'subjective' }).is_objective_debt, false, '아니오 → false');
+    for (const v of [undefined, '', 'unknown']) ok(!('is_objective_debt' in bb({ ...B0, debtObjective: v })), '객관적 채무 ' + JSON.stringify(v) + ' → 키 없음');
+    {
+      const g = F.giftFallbackGaps({ isResident: 'yes', ...B0, debtObjective: 'unknown' }, { precise: true });
+      ok(g.length === 1 && /객관적으로 확인되는지 모르면 세무사 확인/.test(g[0]), '객관적 채무 모름 → 엔진 호출 전 차단');
+      ok(/'unknown', '모름'/.test(code.slice(code.indexOf("id: 'debtObjective'"), code.indexOf("id: 'donorHouseCount'"))), '객관적 채무 문항에 「모름」 선택지');
+    }
+    // 세대생략: 직계존속일 때만 보낸다 — 관계를 바꾼 뒤 숨겨진 낡은 답이 실리지 않는다
+    for (const rel of ['배우자', '직계비속', '기타친족', '기타']) {
+      const r = bb({ ...B0, relationship: rel, genSkip: 'yes', childDeceased: 'yes' });
+      ok(!('is_generation_skip' in r) && !('donor_child_deceased' in r), rel + ' + 낡은 세대생략 답 → 두 키 모두 없음');
+    }
+    eq([bb({ ...B0, genSkip: 'yes' }).is_generation_skip, bb({ ...B0, genSkip: 'yes', childDeceased: 'yes' }).donor_child_deceased], [true, true], '직계존속 + 세대생략 → 그대로');
+    eq([bb({ ...B0, genSkip: 'no', childDeceased: 'yes' }).donor_child_deceased], [false], '세대생략 아님 + 낡은 사망 답 → false');
+    // 취득 당시 조정대상지역·전입일: 증여자 1주택·주택·취득일 ≥ 2017-08-03 일 때만 묻고, 답한 값만 보낸다
+    {
+      const Z = { ...B0, donorHouseCount: '0', acqDate: '2020-01-01', regulatedAtAcq: 'yes' };
+      eq(F.giftAsksZoneAtAcq(Z), true, '표시 조건: 부담부 주택 + 다른 주택 0 + 2020 취득');
+      for (const [over, label] of [[{ donorHouseCount: '1' }, '다른 주택 1채'], [{ donorHouseCount: '' }, '다른 주택 수 비움'], [{ donorHouseCount: undefined }, '다른 주택 수 미입력'],
+        [{ acqDate: '2017-08-02' }, '기준일 전 취득'], [{ acqDate: '' }, '취득일 없음'], [{ reType: '토지' }, '토지'], [{ reType: '상가' }, '상가'],
+        [{ isBurdened: 'no' }, '부담부 아님'], [{ assetType: 'cash' }, '현금']]) {
+        ok(!F.giftAsksZoneAtAcq({ ...Z, ...over }), label + ' → 묻지 않는다');
+        ok(!('regulated_at_acquisition' in bb({ ...Z, ...over })), label + ' + 낡은 답 → 보내지 않는다');
+      }
+      eq(F.giftAsksZoneAtAcq({ ...Z, acqDate: '2017-08-03' }), true, '경계일 2017-08-03 은 묻는다');
+      eq(bb(Z).regulated_at_acquisition, true, '예 → true');
+      eq(bb({ ...Z, regulatedAtAcq: 'no' }).regulated_at_acquisition, false, '아니오 → false');
+      for (const v of ['unknown', undefined]) ok(!('regulated_at_acquisition' in bb({ ...Z, regulatedAtAcq: v })), '취득 당시 ' + JSON.stringify(v) + ' → 키 없음');
+      const gz = (a) => F.giftFallbackGaps({ isResident: 'yes', ...a }, { precise: true });
+      eq(gz(Z).length, 0, '답했으면 차단 없음');
+      eq(gz({ ...Z, regulatedAtAcq: 'unknown' }).length, 0, '모름은 차단하지 않는다(엔진이 갈리는지 판정)');
+      eq(gz({ ...Z, regulatedAtAcq: undefined }).length, 1, '묻는 경우인데 답이 없으면 차단 사유');
+      eq(gz({ ...Z, donorHouseCount: '1', regulatedAtAcq: undefined }).length, 0, '묻지 않는 경우엔 답이 없어도 차단하지 않는다');
+      // 전입일
+      eq(bb({ ...Z, moveInDate: '2020-03-01' }).move_in_date, '2020-03-01', '전입일 입력 → 그대로');
+      for (const v of [undefined, '', '2019-12-31', '2020-02-30', 'abc']) ok(!('move_in_date' in bb({ ...Z, moveInDate: v })), '전입일 ' + JSON.stringify(v) + ' → 키 없음');
+      ok(!('move_in_date' in bb({ ...Z, reType: '토지', moveInDate: '2020-03-01' })), '토지는 전입일을 보내지 않는다');
+      eq(gz({ ...Z, moveInDate: '2020-03-01' }).length, 0, '전입일이 취득일 이후면 차단 없음');
+      eq(gz({ ...Z, moveInDate: '2019-12-31' }).length, 1, '전입일이 취득일보다 앞서면 차단 사유');
+      eq(gz({ ...Z, moveInDate: '2020-02-30' }).length, 1, '없는 전입일은 차단 사유');
+      eq(gz({ ...Z, moveInDate: '' }).length, 0, '전입일 비움 = 거주하지 않음(차단 없음)');
+      const order = [...code.matchAll(/^    id: '(\w+)',$/gm)].map((m) => m[1]);
+      ok(order.indexOf('donorHouseCount') < order.indexOf('regulatedAtAcq') && order.indexOf('regulatedAtAcq') < order.indexOf('moveInDate') && order.indexOf('acqDate') < order.indexOf('donorHouseCount'),
+        '문항 순서: 취득일 → 증여자 다른 주택 수 → 취득 당시 지역 → 전입일');
+    }
+
     // 증여자 취득일·취득가액: 답한 경우에만 보내고, 모름(빈칸·0·없는 날짜)은 엔진을 부르기 전에 막는다 (261011)
     eq(bb({ ...B0, acqDate: '2020-02-29' }).acquisition_date, '2020-02-29', '취득일 그대로');
     for (const v of [undefined, '', '2016-09', '2019-02-30', 'abc']) ok(!('acquisition_date' in bb({ ...B0, acqDate: v })), '취득일 ' + JSON.stringify(v) + ' → 키 없음');
@@ -334,7 +382,10 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
     const G = { 상태: 'ok', 총세부담: 100, 증여세: 50, 양도세: 30, 취득세: 20, 채무비율: 0.3, 경고사항: [] };
     const st = (c) => F.giftBurdenedStatus(plain(c));
     eq(st(G), 'ok', '상태 ok + 필수 키 유효 → ok');
-    eq(st({ ...G, 총세부담: 0, 증여세: 0, 양도세: 0, 취득세: 0 }), 'ok', '정상 0원 허용');
+    eq(st({ ...G, 총세부담: 0, 증여세: 0, 양도세: 0, 취득세: 0 }), 'down', '전부 0원은 계산 실패 신호(부동산 부담부증여는 취득세가 항상 양수) → down');
+    eq(st({ ...G, 총세부담: 101 }), 'down', '총세부담이 세목 합계와 다르면 down');
+    eq(st({ ...G, 총세부담: -50, 증여세: -50, 양도세: 0, 취득세: 0 }), 'down', '음수 → down');
+    eq(st({ ...G, 총세부담: 20, 증여세: 0, 양도세: 0, 취득세: 20 }), 'ok', '증여세·양도세가 0 이어도 취득세가 있으면 ok');
     { const { 상태, ...x } = G; eq(st(x), 'refused', '상태 키 없음 → 거부(금액이 있어도)'); }
     eq(st({}), 'refused', '빈 객체 → 거부');
     eq(st({ ...G, 상태: 'needs_input', 오류: '증여자 취득일 필요' }), 'needs_input', 'needs_input');

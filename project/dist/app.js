@@ -6483,11 +6483,12 @@ const GIFT_QS = [
     id: "debtObjective",
     section: "\uBD80\uB2F4\uBD80\uC99D\uC5EC",
     q: "\uBC1B\uB294 \uBD84\uC774 \uB5A0\uC548\uB294 \uADF8 \uBE5A, \uC99D\uBE59 \uC11C\uB958\uAC00 \uC788\uB098\uC694?",
-    sub: "\u26A0\uFE0F \uAC00\uC871 \uAC04(\uBC30\uC6B0\uC790\xB7\uBD80\uBAA8\xB7\uC790\uB140) \uBE5A \uB118\uAE30\uAE30\uB294 \uC11C\uB958\uB85C \uC99D\uBA85\uB3FC\uC57C \uC778\uC815\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA747\u2462). \uC99D\uBA85\uC774 \uC548 \uB418\uBA74 \uBE5A\uC744 \uBE80 \uAC8C \uC544\uB2C8\uB77C \uC804\uCCB4\uB97C \uC99D\uC5EC\uD55C \uAC83\uC73C\uB85C \uBCF4\uC544 \uC138\uAE08\uC774 \uB354 \uB098\uC62C \uC218 \uC788\uC5B4\uC694.",
+    sub: "\u26A0\uFE0F \uAC00\uC871 \uAC04(\uBC30\uC6B0\uC790\xB7\uBD80\uBAA8\xB7\uC790\uB140) \uBE5A \uB118\uAE30\uAE30\uB294 \uC11C\uB958\uB85C \uC99D\uBA85\uB3FC\uC57C \uC778\uC815\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA747\u2462). \uC99D\uBA85\uC774 \uC548 \uB418\uBA74 \uBE5A\uC744 \uBE80 \uAC8C \uC544\uB2C8\uB77C \uC804\uCCB4\uB97C \uC99D\uC5EC\uD55C \uAC83\uC73C\uB85C \uBCF4\uC544 \uC138\uAE08\uC774 \uB354 \uB098\uC62C \uC218 \uC788\uC5B4\uC694. \uBAA8\uB974\uBA74 \u300C\uBAA8\uB984\u300D\uC744 \uACE0\uB974\uC138\uC694 \u2014 \uC11C\uB958\uB85C \uD655\uC778\uB418\uB294\uC9C0 \uC9D0\uC791\uD574 \uACC4\uC0B0\uD558\uC9C0 \uC54A\uACE0, \uD655\uC778\uC774 \uD544\uC694\uD558\uB2E4\uB294 \uC548\uB0B4\uAC00 \uB098\uC635\uB2C8\uB2E4.",
     showIf: (a) => a.isBurdened === "yes",
     opts: [
       ["objective", "\uB124, \uC740\uD589 \uB300\uCD9C\uC774\uAC70\uB098 \uC804\uC138\uACC4\uC57D\uC11C\xB7\uCC28\uC6A9\uC99D\uC73C\uB85C \uBCF4\uC5EC\uC904 \uC218 \uC788\uC5B4\uC694", "\uCC44\uBB34 \uC778\uC815 \u2192 \uC591\uB3C4\uC138 \uBD84\uB9AC"],
-      ["subjective", "\uC544\uB2C8\uC624, \uAC00\uC871\uB07C\uB9AC \uB9D0\uB85C \uD55C \uBE5A\uC774\uC5D0\uC694", "\u26A0\uFE0F \uCC44\uBB34 \uBD88\uC778\uC815 \uAC00\uB2A5 \u2192 \uC804\uC561 \uC99D\uC5EC \uACFC\uC138"]
+      ["subjective", "\uC544\uB2C8\uC624, \uAC00\uC871\uB07C\uB9AC \uB9D0\uB85C \uD55C \uBE5A\uC774\uC5D0\uC694", "\u26A0\uFE0F \uCC44\uBB34 \uBD88\uC778\uC815 \uAC00\uB2A5 \u2192 \uC804\uC561 \uC99D\uC5EC \uACFC\uC138"],
+      ["unknown", "\uBAA8\uB984", "\uC138\uBB34\uC0AC \uD655\uC778 \uD544\uC694 \u2014 \uAE08\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC74C"]
     ]
   },
   {
@@ -6499,6 +6500,25 @@ const GIFT_QS = [
     numeric: true,
     optional: true,
     placeholder: "\uC608: 0"
+  },
+  {
+    id: "regulatedAtAcq",
+    section: "\uBD80\uB2F4\uBD80\uC99D\uC5EC",
+    q: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC774 \uADF8 \uC8FC\uD0DD\uC744 \u300C\uCDE8\uB4DD\uD560 \uB2F9\uC2DC\u300D, \uADF8\uACF3\uC774 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB098\uC694?",
+    sub: "\uCDE8\uB4DD\uD560 \uB2F9\uC2DC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC5D0 \uC788\uB358 \uC8FC\uD0DD\uC740, 1\uC138\uB3001\uC8FC\uD0DD \uBE44\uACFC\uC138\uB97C \uBC1B\uC73C\uB824\uBA74 \uBCF4\uC720 \uAE30\uAC04 \uC911 2\uB144 \uC774\uC0C1 \uAC70\uC8FC\uD574\uC57C \uD569\uB2C8\uB2E4(\uC18C\uB4DD\uC138\uBC95 \uC2DC\uD589\uB839 \xA7154\u2460). \uC9C0\uAE08\uC758 \uC9C0\uC815 \uC5EC\uBD80\uC640\uB294 \uB2E4\uB978 \uC9C8\uBB38\uC785\uB2C8\uB2E4. \uBAA8\uB974\uBA74 \u300C\uBAA8\uB984\u300D\uC744 \uACE0\uB974\uC138\uC694 \u2014 \uC5B4\uB290 \uCABD\uC774\uC5C8\uB294\uC9C0\uB97C \uC815\uD574\uC11C \uACC4\uC0B0\uD558\uC9C0 \uC54A\uACE0, \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB358 \uACBD\uC6B0\uC640 \uC544\uB2C8\uC5C8\uB358 \uACBD\uC6B0\uB97C \uBAA8\uB450 \uACC4\uC0B0\uD574 \uACB0\uACFC\uAC00 \uAC19\uC73C\uBA74 \uADF8\uB300\uB85C \uBCF4\uC5EC \uB4DC\uB9AC\uACE0 \uB2EC\uB77C\uC9C0\uBA74 \uD655\uC778(\uCDE8\uB4DD \uB2F9\uC2DC \uC9C0\uC5ED\xB7\uAC70\uC8FC \uC5EC\uBD80)\uC744 \uC694\uCCAD\uB4DC\uB9BD\uB2C8\uB2E4.",
+    // 증여자 세대에 다른 주택이 없고(1주택) 취득일이 2017-08-03 이후인 주택에만 묻는다 — 다주택이면 거주 요건이 결과를 가르지 않는다.
+    // 이 화면에는 앞 문항을 바꿀 때 딸린 답을 지우는 패턴이 없으므로, 요청 변환(mapAnswersToBurdenedGift)과 차단 판정이 같은 조건(giftAsksZoneAtAcq)을 다시 확인한다.
+    showIf: (a) => giftAsksZoneAtAcq(a),
+    opts: [["yes", "\uB124, \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uC2B5\uB2C8\uB2E4", "\uAC70\uC8FC 2\uB144 \uC694\uAC74 \uC801\uC6A9"], ["no", "\uC544\uB2C8\uC624", ""], ["unknown", "\uBAA8\uB984", "\uACB0\uACFC\uAC00 \uAC08\uB9AC\uBA74 \uD655\uC778 \uC694\uCCAD"]]
+  },
+  {
+    id: "moveInDate",
+    section: "\uBD80\uB2F4\uBD80\uC99D\uC5EC",
+    q: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC774 \uADF8 \uC8FC\uD0DD\uC5D0 \uB4E4\uC5B4\uAC00 \uC0B4\uAE30 \uC2DC\uC791\uD55C \uB0A0(\uC804\uC785\uC77C)\uC740? (\uC120\uD0DD)",
+    sub: "\uAC70\uC8FC \uAE30\uAC04\uC740 1\uC138\uB3001\uC8FC\uD0DD \uBE44\uACFC\uC138\uC758 \uAC70\uC8FC \uC694\uAC74\uACFC \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\uC728\uC5D0 \uBC18\uC601\uB429\uB2C8\uB2E4. \uADF8\uB0A0\uBD80\uD130 \uC9C0\uAE08\uAE4C\uC9C0 \uACC4\uC18D \uAC70\uC8FC\uD55C \uAC83\uC73C\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uC2E4\uC81C\uB85C \uC0B4\uC9C0 \uC54A\uC558\uC73C\uBA74 \uBE44\uC6CC \uB450\uC138\uC694. \uC22B\uC790 8\uC790\uB9AC\uB85C \uC785\uB825\uD558\uBA74 \uC790\uB3D9 \uC815\uB9AC\uB429\uB2C8\uB2E4.",
+    showIf: (a) => giftBurdenedHouse(a),
+    date: true,
+    optional: true
   },
   {
     id: "regulatedArea",
@@ -6522,6 +6542,13 @@ function giftAmount(a) {
 function giftPriorDedGiven(a) {
   return a.priorGiftDed != null && String(a.priorGiftDed).trim() !== "";
 }
+function giftBurdenedHouse(a) {
+  return a.isBurdened === "yes" && a.assetType === "realestate" && (a.reType === "\uACF5\uB3D9\uC8FC\uD0DD" || a.reType === "\uAC1C\uBCC4\uC8FC\uD0DD");
+}
+function giftAsksZoneAtAcq(a) {
+  const n = a.donorHouseCount;
+  return giftBurdenedHouse(a) && n !== void 0 && n !== null && String(n).trim() !== "" && Number(n) === 0 && typeof a.acqDate === "string" && isValidISODate(a.acqDate) && a.acqDate >= "2017-08-03";
+}
 function giftFallbackGaps(answers, calc) {
   if (calc.engineErr) {
     return ["\uBD80\uB2F4\uBD80\uC99D\uC5EC\uB294 \xAB\uC99D\uC5EC\uC138 + \uC591\uB3C4\uC138 + \uCDE8\uB4DD\uC138\xBB\uAC00 \uD568\uAED8 \uBC1C\uC0DD\uD574 \uAC04\uC774 \uACC4\uC0B0\uC73C\uB85C\uB294 \uCD94\uC815\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4(0\uC6D0\uC774 \uC544\uB2D9\uB2C8\uB2E4). \uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB410\uC73C\uB2C8 \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uAC70\uB098 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD574 \uC8FC\uC138\uC694."];
@@ -6532,6 +6559,18 @@ function giftFallbackGaps(answers, calc) {
     {
       when: burdened && !isValidISODate(answers.acqDate || ""),
       why: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC758 \uCDE8\uB4DD\uC77C\uC744 \uBAA8\uB974\uBA74 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4 \u2014 \uBCF4\uC720\uAE30\uAC04\uC774 \uCC44\uBB34 \uC778\uC218\uBD84 \uC591\uB3C4\uC138\uC758 \uC138\uC728\xB7\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\xB71\uC138\uB3001\uC8FC\uD0DD \uBE44\uACFC\uC138\uB97C \uAC00\uB985\uB2C8\uB2E4. \uB4F1\uAE30\uBD80\uB4F1\uBCF8\uC73C\uB85C \uCDE8\uB4DD\uC77C(\uC794\uAE08\uC77C \uB610\uB294 \uB4F1\uAE30\uC811\uC218\uC77C)\uC744 \uD655\uC778\uD574 \uC785\uB825\uD574 \uC8FC\uC138\uC694."
+    },
+    {
+      when: burdened && answers.debtObjective === "unknown",
+      why: "\uB118\uAE30\uB824\uB294 \uCC44\uBB34\uAC00 \uAE08\uC735\uAE30\uAD00 \uB300\uCD9C\xB7\uC804\uC138\uBCF4\uC99D\uAE08\uCC98\uB7FC \uAC1D\uAD00\uC801\uC73C\uB85C \uD655\uC778\uB418\uB294\uC9C0 \uBAA8\uB974\uBA74 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uAC00\uC871 \uAC04 \uCC44\uBB34\uB294 \uAC1D\uAD00\uC801\uC73C\uB85C \uD655\uC778\uB418\uC5B4\uC57C \uC778\uC815\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA747\u2462)."
+    },
+    {
+      when: burdened && giftAsksZoneAtAcq(answers) && !["yes", "no", "unknown"].includes(answers.regulatedAtAcq),
+      why: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC774 \uADF8 \uC8FC\uD0DD\uC744 \uCDE8\uB4DD\uD560 \uB2F9\uC2DC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB294\uC9C0 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694(\uBAA8\uB974\uBA74 \u300C\uBAA8\uB984\u300D)."
+    },
+    {
+      when: burdened && giftBurdenedHouse(answers) && (answers.moveInDate || "") !== "" && (!isValidISODate(answers.moveInDate) || isValidISODate(answers.acqDate || "") && answers.moveInDate < answers.acqDate),
+      why: "\uC804\uC785\uC77C\uC744 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694 \u2014 \uCDE8\uB4DD\uC77C \uC774\uD6C4\uC758 \uC2E4\uC81C \uB0A0\uC9DC\uC5EC\uC57C \uD569\uB2C8\uB2E4(\uC0B4\uC9C0 \uC54A\uC558\uC73C\uBA74 \uBE44\uC6CC \uB450\uC138\uC694)."
     },
     {
       when: burdened && !(Number(answers.acqPrice) > 0),
@@ -6576,12 +6615,16 @@ function mapAnswersToBurdenedGift(a) {
     debt_assumed: Number(a.debtAssumed) || 0
   }, Number(a.acqPrice) > 0 ? { acquisition_price: Number(a.acqPrice) } : {}), isValidISODate(a.acqDate || "") ? { acquisition_date: a.acqDate } : {}), a.relationship ? { relationship: a.relationship } : {}), {
     donee_age: Number(a.doneeAge) || 30,
-    is_objective_debt: a.debtObjective === "objective",
-    property_type: propertyType,
-    // 수정 260628(GIFT-R2-01): 세대생략 할증 플래그 누락 보정(§57). 일반 매퍼와 동일 전달.
-    is_generation_skip: a.genSkip === "yes",
-    donor_child_deceased: a.childDeceased === "yes"
+    property_type: propertyType
   });
+  if (a.debtObjective === "objective") body.is_objective_debt = true;
+  else if (a.debtObjective === "subjective") body.is_objective_debt = false;
+  if (a.relationship === "\uC9C1\uACC4\uC874\uC18D") {
+    body.is_generation_skip = a.genSkip === "yes";
+    body.donor_child_deceased = a.genSkip === "yes" && a.childDeceased === "yes";
+  }
+  if (giftAsksZoneAtAcq(a) && (a.regulatedAtAcq === "yes" || a.regulatedAtAcq === "no")) body.regulated_at_acquisition = a.regulatedAtAcq === "yes";
+  if (giftBurdenedHouse(a) && isValidISODate(a.moveInDate || "") && isValidISODate(a.acqDate || "") && a.moveInDate >= a.acqDate) body.move_in_date = a.moveInDate;
   if (isHouse && (a.regulatedArea === "yes" || a.regulatedArea === "no")) body.is_regulated_area = a.regulatedArea === "yes";
   const donorN = a.donorHouseCount;
   if (isHouse && donorN !== void 0 && donorN !== null && String(donorN).trim() !== "" && Number.isFinite(Number(donorN)) && Number(donorN) >= 0) body.donor_other_house_count = Number(donorN);
@@ -6596,7 +6639,9 @@ function giftBurdenedStatus(c) {
   if (c["\uC0C1\uD0DC"] === "error") return "down";
   if (c["\uC0C1\uD0DC"] !== "ok") return "refused";
   if (c["\uC624\uB958"] || c.error || c.errors || c.detail || c.success === false) return "refused";
-  return window.jtValidCalc(c, GIFT_BURDENED_REQUIRED) ? "ok" : "down";
+  if (!window.jtValidCalc(c, GIFT_BURDENED_REQUIRED)) return "down";
+  if (!(c["\uCD1D\uC138\uBD80\uB2F4"] > 0) || c["\uCD1D\uC138\uBD80\uB2F4"] !== c["\uC99D\uC5EC\uC138"] + c["\uC591\uB3C4\uC138"] + c["\uCDE8\uB4DD\uC138"]) return "down";
+  return "ok";
 }
 async function callGiftEngine(body, endpoint) {
   const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "http://127.0.0.1:8000";
