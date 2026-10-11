@@ -212,15 +212,24 @@ const GIFT_QS = [
     placeholder: '예: 400,000,000',
   },
   {
+    id: 'acqDate',
+    section: '부담부증여',
+    q: '증여하는 분이 이 부동산을 취득한 날은? (잔금일 또는 등기접수일 · 증여자 양도세 계산용)',
+    sub: '채무 인수분(유상양도)의 양도세는 보유기간으로 갈립니다 — 단기 보유 세율과 장기보유특별공제, 1세대1주택 비과세가 날짜 단위로 달라지므로 「몇 년쯤」이 아니라 취득일을 넣어 주세요. 모르면 비워 두고 다음으로 가세요: 취득일을 짐작해 계산하지 않고, 확인이 필요하다는 안내로 넘어갑니다. 숫자 8자리로 입력하면 자동 정리됩니다 (예: 20160903 → 2016-09-03).',
+    showIf: (a) => a.isBurdened === 'yes',
+    date: true,
+    blockOnBlank: true,
+  },
+  {
     id: 'acqPrice',
     section: '부담부증여',
-    q: '증여하는 분이 이 부동산을 처음 취득한 가액은? (증여자 양도세 계산용 · 선택)',
-    sub: '받는 분이 인수한 채무(유상 양도분)에 대한 증여자의 양도차익을 계산합니다(소득세법 §97). ⚠️ 증여자가 다주택 등으로 양도세가 과세되는 경우, 이 값을 비우면 취득가 0원으로 보아 양도세가 크게 과대 계상됩니다 — 실제 취득가(또는 환산취득가)를 입력하세요. 증여자가 1세대1주택 비과세면 비워도 됩니다.',
+    q: '증여하는 분이 이 부동산을 취득한 가액은? (증여자 양도세 계산용)',
+    sub: '받는 분이 인수한 채무(유상 양도분)에 대한 증여자의 양도차익을 계산합니다(소득세법 §97). 취득가액은 양도차익의 핵심이라 짐작해 계산하지 않습니다 — 등기부등본·매매계약서로 확인해 입력하세요. 모르면 비워 두고 다음으로 가세요: 환산취득가액 등 확인이 필요하다는 안내로 넘어갑니다.',
     showIf: (a) => a.isBurdened === 'yes',
     numeric: true,
     money: true,
-    optional: true,
-    placeholder: '예: 400,000,000',
+    blockOnBlank: true,
+    placeholder: '예: 400,000,000 (모르면 비움)',
   },
   {
     id: 'debtObjective',
@@ -290,7 +299,13 @@ function giftFallbackGaps(answers, calc) {
   /* ── ① 엔진도 «못 푸는» 입력 — precise 여도 막는다 ───────────────────────
      mapAnswersToGift 는 거주자 여부를 아예 보내지 않는다(260806 확인). 비거주자는
      증여재산공제가 통째로 배제되는데, 그대로 두면 «공제받은» 금액이 정밀 계산으로 나온다. */
+  /* 부담부증여(단건): 증여자의 취득일·취득가액은 양도세(세율·장기보유특별공제·비과세·양도차익)를 가른다 — 모르면(빈칸·0) 엔진을 부르지 않고 막는다(261011) */
+  const burdened = answers.isBurdened === 'yes' && answers.assetType === 'realestate';
   const unknown = window.jtFallbackGaps([
+    { when: burdened && !isValidISODate(answers.acqDate || ''),
+      why: '증여하는 분의 취득일을 모르면 세무사 확인이 필요합니다 — 보유기간이 채무 인수분 양도세의 세율·장기보유특별공제·1세대1주택 비과세를 가릅니다. 등기부등본으로 취득일(잔금일 또는 등기접수일)을 확인해 입력해 주세요.' },
+    { when: burdened && !(Number(answers.acqPrice) > 0),
+      why: '증여하는 분의 취득가액을 모르면 환산취득가액 등 확인이 필요하므로 상담을 권합니다 — 채무 인수분 양도세는 취득가액에 따라 크게 달라지는데, 이 계산기는 취득가액을 짐작해 계산하지 않습니다.' },
     { when: nonResident,
       why: '받는 분의 거주자 여부가 «거주자»로 확인되지 않았습니다 — 비거주자는 증여재산공제(배우자 6억·직계 5천만 등)가 배제됩니다. 계산 엔진이 아직 거주자 기준만 지원해 금액을 표시하지 않습니다(상담에서 정확히 안내해 드립니다).' },
   ]);
@@ -345,7 +360,8 @@ function mapAnswersToGift(a) {
 /* 부담부증여 엔진 요청 (261011 계약 정합). 모르는 사실은 «보내지 않는다»(키 생략) — 엔진이 모름을 입력 보완(needs_input)으로 돌려준다:
    · relationship — 답한 값 그대로(답이 없으면 생략 → 엔진이 입력 보완을 요구한다. 종전 「직계존속」 기본값 대체 삭제)
    · is_regulated_area — 주택에서 「네」·「아니오」로 답한 경우에만. 「모름」·미응답·주택이 아닌 경우는 생략(종전엔 「아니오/모름」이 false 로 갔다)
-   · donor_other_house_count — 주택에서 숫자(0 이상)를 입력한 경우에만. 비움이면 생략(종전엔 0채로 갔다) */
+   · donor_other_house_count — 주택에서 숫자(0 이상)를 입력한 경우에만. 비움이면 생략(종전엔 0채로 갔다)
+   · acquisition_date·acquisition_price — 증여자의 취득일·취득가액을 답한 경우에만(빈칸·0 은 생략; giftFallbackGaps 가 엔진 호출 전에 막는다) */
 function mapAnswersToBurdenedGift(a) {
   const isHouse = a.reType === '공동주택' || a.reType === '개별주택';
   // 수정 260628(GIFT-R2-04): 상가를 '오피스텔'로 오매핑하던 것을 '상가' enum 직접 전달(비주택 양도·취득세 정상 과세, 소법 §89①3호 비과세 배제).
@@ -353,7 +369,8 @@ function mapAnswersToBurdenedGift(a) {
   const body = {
     property_value: giftAmount(a),
     debt_assumed: Number(a.debtAssumed) || 0,
-    acquisition_price: Number(a.acqPrice) || 0,
+    ...(Number(a.acqPrice) > 0 ? { acquisition_price: Number(a.acqPrice) } : {}),   // 빈칸·0 은 보내지 않는다(결과 단계 이전에 giftFallbackGaps 가 막는다)
+    ...(isValidISODate(a.acqDate || '') ? { acquisition_date: a.acqDate } : {}),
     ...(a.relationship ? { relationship: a.relationship } : {}),
     donee_age: Number(a.doneeAge) || 30,
     is_objective_debt: a.debtObjective === 'objective',
@@ -577,7 +594,7 @@ function JTReportGift({ setRoute, onBack }) {
   const canNext = () => {
     if (cur.freeform) return true;
     if (cur.numeric) {
-      if (cur.optional) return true;
+      if (cur.optional || cur.blockOnBlank) return true;   // blockOnBlank: 비워도 통과 — 결과 단계에서 «확인 필요» 안내로 막는다(0원으로 계산하지 않는다)
       const v = Number(answers[cur.id]);
       return !isNaN(v) && v > 0;
     }
@@ -585,6 +602,7 @@ function JTReportGift({ setRoute, onBack }) {
       const v = answers[cur.id] || '';
       const valid = isValidISODate(v);
       if (cur.optional) return v === '' || valid;
+      if (cur.blockOnBlank) return v === '' || valid;
       return valid;
     }
     return !!answers[cur.id];

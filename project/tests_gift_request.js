@@ -47,6 +47,8 @@ function loadDecls(src, names) {
 }
 const validCalcSrc = commonSrc.match(/window\.jtValidCalc = function[\s\S]*?\n  };/)[0];
 const gapsSrc = commonSrc.match(/window\.jtFallbackGaps = function[\s\S]*?\n};/)[0];
+/* isValidISODate 는 ReportCGT.jsx 의 공통 헬퍼다(전역 공유) — 같은 본문을 꺼내 쓴다 */
+const isoSrc = fs.readFileSync(path.join(__dirname, 'src', 'ReportCGT.jsx'), 'utf8').match(/function isValidISODate\(v\) \{[\s\S]*?\n\}\r?\n/)[0];
 
 const DECLS = ['giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'mapAnswersToBurdenedGift', 'callGiftEngine',
   'GIFT_ENGINE_REQUIRED', 'GIFT_BURDENED_REQUIRED', 'giftEngineVerdict', 'giftBurdenedStatus', 'giftCalcFromEngine', 'giftCalcFromEngineError', 'giftFallbackGaps'];
@@ -63,6 +65,7 @@ function makeEnv(fetchImpl, timers) {
   });
   vm.runInContext(validCalcSrc, e);
   vm.runInContext(gapsSrc, e);
+  vm.runInContext(isoSrc, e);
   vm.runInContext(declSrc + EXPORTS, e);
   return e.__e;
 }
@@ -281,8 +284,8 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
   {
     const bb = (a) => plain(F.mapAnswersToBurdenedGift(a));
     const B0 = { assetType: 'realestate', reType: '공동주택', giftValue: '1000000000', debtAssumed: '300000000', acqPrice: '400000000', relationship: '직계존속',
-      debtObjective: 'objective', regulatedArea: 'no', donorHouseCount: '1' };
-    eq(bb(B0), { property_value: 1000000000, debt_assumed: 300000000, acquisition_price: 400000000, relationship: '직계존속', donee_age: 30,
+      debtObjective: 'objective', regulatedArea: 'no', donorHouseCount: '1', acqDate: '2016-09-03', isBurdened: 'yes' };
+    eq(bb(B0), { property_value: 1000000000, debt_assumed: 300000000, acquisition_price: 400000000, acquisition_date: '2016-09-03', relationship: '직계존속', donee_age: 30,
       is_objective_debt: true, property_type: '주택', is_generation_skip: false, donor_child_deceased: false, is_regulated_area: false, donor_other_house_count: 1 },
     '기준 답 → 요청');
     // 조정대상지역: 예·아니오만 보낸다. 모름·미응답·비주택은 키가 없다
@@ -301,6 +304,31 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
     // 문항 구조
     ok(/'unknown', '모름'/.test(code.slice(code.indexOf("id: 'regulatedArea'"), code.indexOf("id: 'context'"))), '조정대상지역 문항에 「모름」 선택지가 따로 있다');
     ok(!/\['no', '아니오\/모름'/.test(code), '「아니오/모름」 합친 선택지가 소스에 없다');
+
+    // 증여자 취득일·취득가액: 답한 경우에만 보내고, 모름(빈칸·0·없는 날짜)은 엔진을 부르기 전에 막는다 (261011)
+    eq(bb({ ...B0, acqDate: '2020-02-29' }).acquisition_date, '2020-02-29', '취득일 그대로');
+    for (const v of [undefined, '', '2016-09', '2019-02-30', 'abc']) ok(!('acquisition_date' in bb({ ...B0, acqDate: v })), '취득일 ' + JSON.stringify(v) + ' → 키 없음');
+    for (const v of [undefined, '', '0', '-5', 'x']) ok(!('acquisition_price' in bb({ ...B0, acqPrice: v })), '취득가액 ' + JSON.stringify(v) + ' → 키 없음(0 을 보내지 않는다)');
+    {
+      const gaps = (a) => F.giftFallbackGaps({ isResident: 'yes', ...a }, { precise: true });
+      eq(gaps(B0).length, 0, '취득일·취득가액을 모두 답하면 차단 사유 없음');
+      for (const v of [undefined, '', '2019-02-30', '2016-09']) {
+        const g = gaps({ ...B0, acqDate: v });
+        ok(g.length === 1 && /취득일을 모르면 세무사 확인/.test(g[0]) && /장기보유특별공제/.test(g[0]), '취득일 ' + JSON.stringify(v) + ' → 차단(보유기간이 세율·장특·비과세를 가른다)');
+      }
+      for (const v of [undefined, '', '0', 'x']) {
+        const g = gaps({ ...B0, acqPrice: v });
+        ok(g.length === 1 && /환산취득가액 등 확인이 필요/.test(g[0]), '취득가액 ' + JSON.stringify(v) + ' → 차단(환산취득가액 확인 필요)');
+      }
+      eq(gaps({ ...B0, acqDate: '', acqPrice: '' }).length, 2, '둘 다 모르면 사유 2개');
+      // 부담부증여가 아니면 묻지 않는다 — 일반 증여·현금은 영향 없음
+      eq(gaps({ ...B0, isBurdened: 'no', acqDate: '', acqPrice: '' }).length, 0, '부담부 아님 → 차단 없음');
+      eq(gaps({ ...B0, assetType: 'cash', acqDate: '', acqPrice: '' }).length, 0, '현금 증여 → 차단 없음');
+    }
+    const aq = code.slice(code.indexOf("id: 'acqDate'"), code.indexOf("id: 'debtObjective'"));
+    ok(/date: true/.test(aq) && /showIf: \(a\) => a\.isBurdened === 'yes'/.test(aq), '취득일 문항: 날짜 형식, 부담부증여일 때만');
+    ok(!/optional: true/.test(aq) && /blockOnBlank: true/.test(aq), '취득일·취득가액 문항은 선택이 아니다(비우면 통과하되 결과 단계에서 차단)');
+    ok(code.indexOf("id: 'acqDate'") < code.indexOf("id: 'acqPrice'"), '문항 순서: 취득일 → 취득가액');
 
     // 상태 분류
     const G = { 상태: 'ok', 총세부담: 100, 증여세: 50, 양도세: 30, 취득세: 20, 채무비율: 0.3, 경고사항: [] };
