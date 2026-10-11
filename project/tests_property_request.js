@@ -45,6 +45,7 @@ function loadDecls(src, names) {
 }
 const validCalcSrc = commonSrc.match(/window\.jtValidCalc = function[\s\S]*?\n  };/)[0];
 const gapsSrc = commonSrc.match(/window\.jtFallbackGaps = function[\s\S]*?\n};/)[0];
+const dispSrc = commonSrc.match(/window\.jtEngineMessageForDisplay = function[\s\S]*?\n};/)[0];   // 표시용 문구 변환기(261011)
 
 const DECLS = ['PROP_QS', 'PROP_BUILDING_TYPES', 'mapAnswersToProperty', 'callPropEngine',
   'PROP_NO_STATUS_MESSAGE', 'propPriorAutoUser', 'propPriorAutoReset', 'propPriorAutoApply', 'propPriorSameUnit',
@@ -65,6 +66,7 @@ function makeEnv(fetchImpl, timers) {
   });
   vm.runInContext(validCalcSrc, e);
   vm.runInContext(gapsSrc, e);
+  vm.runInContext(dispSrc, e);
   vm.runInContext(declSrc + EXPORTS, e);
   return e.__e;
 }
@@ -251,7 +253,9 @@ console.log('════ propFallbackGaps — ①입력 불확정 · ②엔진 
   }
   ok(G(HOUSE, DOWN)[0].startsWith('계산 엔진에 연결하지 못했습니다'), 'DOWN 사유는 연결 실패 문구');
   ok(G(HOUSE, { precise: false, engineState: 'down' })[0].startsWith('계산 엔진에 연결하지 못했습니다'), 'down 도 연결 실패 문구');
-  ok(G(HOUSE, REFUSED('prior_year_standard_value 가 필요합니다'))[0] === '입력이 더 필요합니다 — prior_year_standard_value 가 필요합니다', 'REFUSED 사유는 «입력이 더 필요합니다» + 엔진의 오류 문구');
+  /* 261011: 엔진 문구의 요청 필드 식별자는 화면에서 설명으로 바뀐다(window.jtEngineMessageForDisplay) */
+  ok(G(HOUSE, REFUSED('작년 공시가격을 확정할 수 없다 — 필요: prior_year_standard_value(작년 공시가격) [지방세법 §110③]'))[0] === '입력이 더 필요합니다 — 작년 공시가격을 확정할 수 없다 — 필요: 「작년 공시가격」 [지방세법 §110③]', 'REFUSED 사유는 «입력이 더 필요합니다» + 엔진의 오류 문구(식별자는 설명으로)');
+  ok(G(HOUSE, REFUSED('배우자 실제 상속액이 필요합니다'))[0] === '입력이 더 필요합니다 — 배우자 실제 상속액이 필요합니다', '식별자 없는 문구는 그대로');
   ok(G(HOUSE, REFUSED(''))[0].startsWith('입력이 더 필요합니다 — '), '오류 문구가 없어도 «입력이 더 필요합니다» 안내');
   { const ns = G(HOUSE, F.propCalcFromEngine({ calc: { 세액: 1, 재산세본세: 1, 지방교육세: 1, 도시지역분: 1, 과세표준: 1 } }));
     ok(ns.length === 1 && ns[0].includes('엔진 응답 형식이 맞지 않습니다(상태 없음)') && !ns[0].includes('연결하지 못했습니다'), '상태 없는 200 응답의 차단 사유는 형식 오류이지 «연결하지 못했습니다» 가 아니다'); }

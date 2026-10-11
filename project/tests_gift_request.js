@@ -47,6 +47,7 @@ function loadDecls(src, names) {
 }
 const validCalcSrc = commonSrc.match(/window\.jtValidCalc = function[\s\S]*?\n  };/)[0];
 const gapsSrc = commonSrc.match(/window\.jtFallbackGaps = function[\s\S]*?\n};/)[0];
+const dispSrc = commonSrc.match(/window\.jtEngineMessageForDisplay = function[\s\S]*?\n};/)[0];   // 표시용 문구 변환기(261011)
 /* isValidISODate 는 ReportCGT.jsx 의 공통 헬퍼다(전역 공유) — 같은 본문을 꺼내 쓴다 */
 const isoSrc = fs.readFileSync(path.join(__dirname, 'src', 'ReportCGT.jsx'), 'utf8').match(/function isValidISODate\(v\) \{[\s\S]*?\n\}\r?\n/)[0];
 
@@ -65,6 +66,7 @@ function makeEnv(fetchImpl, timers) {
   });
   vm.runInContext(validCalcSrc, e);
   vm.runInContext(gapsSrc, e);
+  vm.runInContext(dispSrc, e);
   vm.runInContext(isoSrc, e);
   vm.runInContext(declSrc + EXPORTS, e);
   return e.__e;

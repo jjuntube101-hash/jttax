@@ -23,6 +23,10 @@ if (end < 0) throw new Error('jtFallbackGaps 끝을 찾지 못했습니다.');
 global.window = {};
 eval(rs.slice(a, end + 3));
 const GAPS = window.jtFallbackGaps;
+/* 표시용 문구 변환기(261011) — 각 계산기의 FallbackGaps 가 호출한다 */
+const dm = rs.match(/window\.jtEngineMessageForDisplay = function[\s\S]*?\n};/);
+if (!dm) throw new Error('Report.jsx 의 jtEngineMessageForDisplay 를 찾지 못했습니다.');
+eval(dm[0]);
 
 let fails = 0;
 function eq(label, got, want) {

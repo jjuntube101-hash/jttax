@@ -46,6 +46,7 @@ function loadDecls(src, names) {
 }
 const validCalcSrc = commonSrc.match(/window\.jtValidCalc = function[\s\S]*?\n  };/)[0];
 const gapsSrc = commonSrc.match(/window\.jtFallbackGaps = function[\s\S]*?\n};/)[0];
+const dispSrc = commonSrc.match(/window\.jtEngineMessageForDisplay = function[\s\S]*?\n};/)[0];   // 표시용 문구 변환기(261011)
 
 const DECLS = ['COMP_CIRCLED', 'compFmtArticle', 'compIsDeemed', 'COMP_QS', 'compFallbackGaps', 'mapAnswersToComprehensive', 'COMP_ENGINE_REQUIRED',
   'compEngineVerdict', 'compCalcFromEngine', 'compCalcFromEngineError', 'callCompEngine'];
@@ -62,6 +63,7 @@ function makeEnv(fetchImpl, timers) {
   });
   vm.runInContext(validCalcSrc, e);
   vm.runInContext(gapsSrc, e);
+  vm.runInContext(dispSrc, e);
   vm.runInContext(declSrc + EXPORTS, e);
   return e.__e;
 }

@@ -376,9 +376,10 @@ function giftFallbackGaps(answers, calc) {
      이 화면에는 자체 계산식이 없으므로 «엔진이 준 금액»이 없으면 보여 줄 금액이 없다.
      사유는 «엔진이 거부했다(refused)»와 «연결하지 못했다(down·미지정)» 둘이다. */
   if (calc.precise) return unknown;
+  const engineMsg = window.jtEngineMessageForDisplay(calc.engineMessage);   // 식별자·개발자용 꼬리말을 뗀 표시용 문구(261011)
   return unknown.concat([calc.engineState === 'refused'
-    ? (calc.engineMessage
-      ? '엔진 안내: ' + calc.engineMessage
+    ? (engineMsg
+      ? '엔진 안내: ' + engineMsg
       : '입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다 — 세무사 확인이 필요합니다.')
     : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }

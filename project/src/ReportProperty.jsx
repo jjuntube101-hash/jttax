@@ -230,7 +230,7 @@ function propFallbackGaps(answers, calc) {
      거부 사유는 엔진이 준 문구(calc.engineMessage)를 그대로 보인다. */
   if (calc.precise) return unknown;
   return unknown.concat([calc.engineState === 'refused'
-    ? '입력이 더 필요합니다 — ' + (calc.engineMessage || '이 계산기가 금액을 확정할 수 없는 조건입니다. 「← 이전」으로 돌아가 답을 보완하시거나 상담으로 확인해 주세요.')
+    ? '입력이 더 필요합니다 — ' + (window.jtEngineMessageForDisplay(calc.engineMessage) || '이 계산기가 금액을 확정할 수 없는 조건입니다. 「← 이전」으로 돌아가 답을 보완하시거나 상담으로 확인해 주세요.')
     : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }
 

@@ -488,7 +488,7 @@ function JTReportBurden({ setRoute, onBack }) {
                 <ul style={{ margin: '8px 0 0', paddingLeft: 18 }}>{calc.blockReasons.map((w, i) => <li key={i} style={{ marginBottom: 4 }}>{String(w)}</li>)}</ul>
               )}
               {calc.engineMessage && (
-                <p style={{ margin: '8px 0 0', fontSize: 13.5 }}>엔진 안내: {String(calc.engineMessage)}</p>
+                <p style={{ margin: '8px 0 0', fontSize: 13.5 }}>엔진 안내: {window.jtEngineMessageForDisplay(calc.engineMessage)}</p>
               )}
               <div style={{ marginTop: 8 }}>
                 <button className="jt-btn jt-btn--ghost" onClick={() => setReport(null)}>입력 다시 확인 →</button>

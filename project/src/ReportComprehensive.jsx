@@ -177,9 +177,9 @@ function compFallbackGaps(answers, calc) {
   if (calc.precise) return unknown;
   const st = calc.engineState;
   return unknown.concat([st === 'needs_input'
-    ? '입력이 더 필요합니다 — ' + (calc.engineMessage || '이 계산기가 금액을 확정할 수 없는 조건입니다. 「← 이전」으로 돌아가 답을 보완하시거나 상담으로 확인해 주세요.')
+    ? '입력이 더 필요합니다 — ' + (window.jtEngineMessageForDisplay(calc.engineMessage) || '이 계산기가 금액을 확정할 수 없는 조건입니다. 「← 이전」으로 돌아가 답을 보완하시거나 상담으로 확인해 주세요.')
     : (st === 'unsupported' || st === 'refused')
-    ? '세무사 확인이 필요한 조건입니다 — ' + (calc.engineMessage || '이 계산기가 금액을 확정할 수 없는 조건입니다. 상담으로 확인해 주세요.')
+    ? '세무사 확인이 필요한 조건입니다 — ' + (window.jtEngineMessageForDisplay(calc.engineMessage) || '이 계산기가 금액을 확정할 수 없는 조건입니다. 상담으로 확인해 주세요.')
     : '계산 엔진에 연결하지 못했습니다 — 연결되지 않은 상태에서는 금액을 표시하지 않습니다.']);
 }
 
