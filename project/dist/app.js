@@ -6494,8 +6494,8 @@ const GIFT_QS = [
   {
     id: "donorHouseCount",
     section: "\uBD80\uB2F4\uBD80\uC99D\uC5EC",
-    q: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC774 \uC774 \uC9D1 \uC678\uC5D0 \uBCF4\uC720\uD55C \uC8FC\uD0DD\uC740 \uBA87 \uCC44\uC778\uAC00\uC694? (\uC99D\uC5EC\uC790 \uC591\uB3C4\uC138 \uD310\uC815\uC6A9)",
-    sub: "\uC99D\uC5EC\uC790\uAC00 1\uC138\uB300 1\uC8FC\uD0DD\uC774\uBA74 \uCC44\uBB34\uC778\uC218\uBD84 \uC591\uB3C4\uC138\uAC00 \uBE44\uACFC\uC138\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4(\uC18C\uB4DD\uC138\uBC95 \xA789). \uB2E4\uC8FC\uD0DD\uC774\uBA74 \uACFC\uC138\xB7\uC911\uACFC\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \u26A0\uFE0F \uBE44\uC6CC\uB450\uBA74 \uC99D\uC5EC\uC790\uC758 \uB2E4\uB978 \uC8FC\uD0DD \uC218\uB97C \uC54C \uC218 \uC5C6\uC5B4 \uAE08\uC561\uC744 \uD655\uC815\uD558\uC9C0 \uC54A\uACE0 \uD655\uC778\uC744 \uC694\uCCAD\uD569\uB2C8\uB2E4 \u2014 \uB2E4\uB978 \uC8FC\uD0DD\uC774 \uC5C6\uC73C\uBA74 0 \uC744 \uC785\uB825\uD558\uC138\uC694.",
+    q: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC758 \u300C\uC138\uB300\u300D\uAC00 \uC774 \uBD80\uB3D9\uC0B0 \uC678\uC5D0 \uBCF4\uC720\uD55C \uC8FC\uD0DD\uC740 \uBA87 \uCC44\uC778\uAC00\uC694? (\uC99D\uC5EC\uC790 \uC591\uB3C4\uC138 \uD310\uC815\uC6A9)",
+    sub: "\uBCF8\uC778\uBFD0 \uC544\uB2C8\uB77C \uAC19\uC740 \uC138\uB300\uC758 \uBC30\uC6B0\uC790 \uB4F1\uC774 \uAC00\uC9C4 \uC8FC\uD0DD\uAE4C\uC9C0 \uC149\uB2C8\uB2E4. \uC99D\uC5EC\uC790 \uC138\uB300\uAC00 1\uC138\uB300 1\uC8FC\uD0DD\uC774\uBA74 \uCC44\uBB34\uC778\uC218\uBD84 \uC591\uB3C4\uC138\uAC00 \uBE44\uACFC\uC138\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4(\uC18C\uB4DD\uC138\uBC95 \xA789). \uB2E4\uC8FC\uD0DD\uC774\uBA74 \uACFC\uC138\xB7\uC911\uACFC\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \u26A0\uFE0F \uBE44\uC6CC\uB450\uBA74 \uC99D\uC5EC\uC790\uC758 \uB2E4\uB978 \uC8FC\uD0DD \uC218\uB97C \uC54C \uC218 \uC5C6\uC5B4 \uAE08\uC561\uC744 \uD655\uC815\uD558\uC9C0 \uC54A\uACE0 \uD655\uC778\uC744 \uC694\uCCAD\uD569\uB2C8\uB2E4 \u2014 \uB2E4\uB978 \uC8FC\uD0DD\uC774 \uC5C6\uC73C\uBA74 0 \uC744 \uC785\uB825\uD558\uC138\uC694.",
     showIf: (a) => a.isBurdened === "yes" && (a.reType === "\uACF5\uB3D9\uC8FC\uD0DD" || a.reType === "\uAC1C\uBCC4\uC8FC\uD0DD"),
     numeric: true,
     optional: true,
@@ -6542,6 +6542,22 @@ function giftAmount(a) {
 function giftPriorDedGiven(a) {
   return a.priorGiftDed != null && String(a.priorGiftDed).trim() !== "";
 }
+function giftApplyAnswer(a, id, v) {
+  const next = Object.assign({}, a);
+  next[id] = v;
+  if (a[id] !== v) {
+    if (id === "acqDate" || id === "donorHouseCount" || id === "isBurdened" || id === "reType" || id === "assetType") {
+      delete next.regulatedAtAcq;
+      delete next.moveInDate;
+    }
+    if (id === "debtAssumed") delete next.debtObjective;
+  }
+  return next;
+}
+function giftTodayISO() {
+  const d = /* @__PURE__ */ new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
 function giftBurdenedHouse(a) {
   return a.isBurdened === "yes" && a.assetType === "realestate" && (a.reType === "\uACF5\uB3D9\uC8FC\uD0DD" || a.reType === "\uAC1C\uBCC4\uC8FC\uD0DD");
 }
@@ -6569,8 +6585,8 @@ function giftFallbackGaps(answers, calc) {
       why: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC774 \uADF8 \uC8FC\uD0DD\uC744 \uCDE8\uB4DD\uD560 \uB2F9\uC2DC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774\uC5C8\uB294\uC9C0 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694(\uBAA8\uB974\uBA74 \u300C\uBAA8\uB984\u300D)."
     },
     {
-      when: burdened && giftBurdenedHouse(answers) && (answers.moveInDate || "") !== "" && (!isValidISODate(answers.moveInDate) || isValidISODate(answers.acqDate || "") && answers.moveInDate < answers.acqDate),
-      why: "\uC804\uC785\uC77C\uC744 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694 \u2014 \uCDE8\uB4DD\uC77C \uC774\uD6C4\uC758 \uC2E4\uC81C \uB0A0\uC9DC\uC5EC\uC57C \uD569\uB2C8\uB2E4(\uC0B4\uC9C0 \uC54A\uC558\uC73C\uBA74 \uBE44\uC6CC \uB450\uC138\uC694)."
+      when: burdened && giftBurdenedHouse(answers) && (answers.moveInDate || "") !== "" && (!isValidISODate(answers.moveInDate) || isValidISODate(answers.acqDate || "") && answers.moveInDate < answers.acqDate || answers.moveInDate > giftTodayISO()),
+      why: "\uC804\uC785\uC77C\uC744 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694 \u2014 \uCDE8\uB4DD\uC77C\uBD80\uD130 \uC624\uB298 \uC0AC\uC774\uC758 \uC2E4\uC81C \uB0A0\uC9DC\uC5EC\uC57C \uD569\uB2C8\uB2E4(\uC0B4\uC9C0 \uC54A\uC558\uC73C\uBA74 \uBE44\uC6CC \uB450\uC138\uC694)."
     },
     {
       when: burdened && !(Number(answers.acqPrice) > 0),
@@ -6624,7 +6640,7 @@ function mapAnswersToBurdenedGift(a) {
     body.donor_child_deceased = a.genSkip === "yes" && a.childDeceased === "yes";
   }
   if (giftAsksZoneAtAcq(a) && (a.regulatedAtAcq === "yes" || a.regulatedAtAcq === "no")) body.regulated_at_acquisition = a.regulatedAtAcq === "yes";
-  if (giftBurdenedHouse(a) && isValidISODate(a.moveInDate || "") && isValidISODate(a.acqDate || "") && a.moveInDate >= a.acqDate) body.move_in_date = a.moveInDate;
+  if (giftBurdenedHouse(a) && isValidISODate(a.moveInDate || "") && isValidISODate(a.acqDate || "") && a.moveInDate >= a.acqDate && a.moveInDate <= giftTodayISO()) body.move_in_date = a.moveInDate;
   if (isHouse && (a.regulatedArea === "yes" || a.regulatedArea === "no")) body.is_regulated_area = a.regulatedArea === "yes";
   const donorN = a.donorHouseCount;
   if (isHouse && donorN !== void 0 && donorN !== null && String(donorN).trim() !== "" && Number.isFinite(Number(donorN)) && Number(donorN) >= 0) body.donor_other_house_count = Number(donorN);
@@ -6823,7 +6839,7 @@ function JTReportGift({ setRoute, onBack }) {
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
   const isLast = safeStep === total - 1;
-  const setAns = (id, v) => setAnswers((a) => __spreadProps(__spreadValues({}, a), { [id]: v }));
+  const setAns = (id, v) => setAnswers((a) => giftApplyAnswer(a, id, v));
   const canNext = () => {
     if (cur.freeform) return true;
     if (cur.numeric) {

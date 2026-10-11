@@ -50,10 +50,10 @@ const gapsSrc = commonSrc.match(/window\.jtFallbackGaps = function[\s\S]*?\n};/)
 /* isValidISODate 는 ReportCGT.jsx 의 공통 헬퍼다(전역 공유) — 같은 본문을 꺼내 쓴다 */
 const isoSrc = fs.readFileSync(path.join(__dirname, 'src', 'ReportCGT.jsx'), 'utf8').match(/function isValidISODate\(v\) \{[\s\S]*?\n\}\r?\n/)[0];
 
-const DECLS = ['giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'mapAnswersToBurdenedGift', 'giftBurdenedHouse', 'giftAsksZoneAtAcq', 'callGiftEngine',
+const DECLS = ['giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'mapAnswersToBurdenedGift', 'giftApplyAnswer', 'giftTodayISO', 'giftBurdenedHouse', 'giftAsksZoneAtAcq', 'callGiftEngine',
   'GIFT_ENGINE_REQUIRED', 'GIFT_BURDENED_REQUIRED', 'giftEngineVerdict', 'giftBurdenedStatus', 'giftCalcFromEngine', 'giftCalcFromEngineError', 'giftFallbackGaps'];
 const declSrc = loadDecls(code, DECLS);
-const EXPORTS = '\nglobalThis.__e = { mapAnswersToGift, mapAnswersToBurdenedGift, giftAsksZoneAtAcq, giftBurdenedStatus, giftEngineVerdict, giftCalcFromEngine, giftCalcFromEngineError, giftFallbackGaps, callGiftEngine };';
+const EXPORTS = '\nglobalThis.__e = { mapAnswersToGift, mapAnswersToBurdenedGift, giftAsksZoneAtAcq, giftApplyAnswer, giftTodayISO, giftBurdenedStatus, giftEngineVerdict, giftCalcFromEngine, giftCalcFromEngineError, giftFallbackGaps, callGiftEngine };';
 
 function makeEnv(fetchImpl, timers) {
   const e = vm.createContext({
@@ -351,6 +351,48 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
       const order = [...code.matchAll(/^    id: '(\w+)',$/gm)].map((m) => m[1]);
       ok(order.indexOf('donorHouseCount') < order.indexOf('regulatedAtAcq') && order.indexOf('regulatedAtAcq') < order.indexOf('moveInDate') && order.indexOf('acqDate') < order.indexOf('donorHouseCount'),
         '문항 순서: 취득일 → 증여자 다른 주택 수 → 취득 당시 지역 → 전입일');
+    }
+
+    // 답 저장: 앞 문항이 바뀌면 딸린 답을 지운다 (261011 Codex R2)
+    {
+      const S = { ...B0, donorHouseCount: '0', acqDate: '2020-01-01', regulatedAtAcq: 'no', moveInDate: '2020-03-01' };
+      const ap = (id, v) => plain(F.giftApplyAnswer(S, id, v));
+      for (const [id, v] of [['acqDate', '2021-01-01'], ['donorHouseCount', '1'], ['isBurdened', 'no'], ['reType', '개별주택'], ['assetType', 'cash']]) {
+        const r = ap(id, v);
+        ok(!('regulatedAtAcq' in r) && !('moveInDate' in r) && r[id] === v && r.debtAssumed === S.debtAssumed, id + ' 변경 → 취득 당시 지역·전입일 삭제, 나머지 보존');
+      }
+      // 바뀐 사실로는 낡은 답이 요청에 실리지 않는다 — 취득일을 2020 → 2021 로 바꾸면 다시 답해야 한다
+      const r2 = ap('acqDate', '2021-01-01');
+      ok(!('regulated_at_acquisition' in plain(F.mapAnswersToBurdenedGift(r2))), '취득일 변경 후 낡은 «아니오» 가 전송되지 않는다');
+      ok(F.giftFallbackGaps({ isResident: 'yes', ...r2 }, { precise: true }).length === 1, '취득 당시 지역을 다시 답해야 한다(차단 사유 1건)');
+      const same = plain(F.giftApplyAnswer(S, 'acqDate', '2020-01-01'));
+      ok(same.regulatedAtAcq === 'no' && same.moveInDate === '2020-03-01', '같은 값을 다시 고르면 지우지 않는다');
+      ok(ap('giftValue', '5').regulatedAtAcq === 'no' && ap('relationship', '배우자').moveInDate === '2020-03-01', '무관한 문항 변경은 건드리지 않는다');
+      const d = plain(F.giftApplyAnswer(S, 'debtAssumed', '1'));
+      ok(!('debtObjective' in d) && d.acqDate === '2020-01-01', '인수 채무액 변경 → 객관적 채무 답 삭제');
+      ok(plain(F.giftApplyAnswer(S, 'debtAssumed', S.debtAssumed)).debtObjective === 'objective', '같은 채무액이면 유지');
+      ok(S.regulatedAtAcq === 'no', '원본 답 객체를 바꾸지 않는다');
+      ok(/const setAns = \(id, v\) => setAnswers\(a => giftApplyAnswer\(a, id, v\)\);/.test(code), '화면의 setAns 가 giftApplyAnswer 를 쓴다');
+    }
+    // 증여자 «세대» 기준 문항
+    {
+      const dq = code.slice(code.indexOf("id: 'donorHouseCount'"), code.indexOf("id: 'regulatedAtAcq'"));
+      ok(/「세대」가 이 부동산 외에 보유한 주택/.test(dq) && /같은 세대의 배우자 등이 가진 주택까지/.test(dq), '증여자 다른 주택 수 문항은 «세대» 기준으로 묻는다');
+      ok(!/증여하는 분이 이 집 외에 보유한/.test(dq), '개인 기준 문구 삭제');
+    }
+    // 전입일: 오늘 이후는 보내지 않고 차단 사유
+    {
+      const Z = { ...B0, donorHouseCount: '0', acqDate: '2020-01-01', regulatedAtAcq: 'no' };
+      const today = F.giftTodayISO();
+      ok(/^\d{4}-\d{2}-\d{2}$/.test(today), 'giftTodayISO 형식');
+      const gz = (a) => F.giftFallbackGaps({ isResident: 'yes', ...a }, { precise: true });
+      eq(plain(F.mapAnswersToBurdenedGift({ ...Z, moveInDate: today })).move_in_date, today, '오늘 전입 → 보낸다');
+      for (const f of ['2999-01-01']) {
+        ok(!('move_in_date' in plain(F.mapAnswersToBurdenedGift({ ...Z, moveInDate: f }))), '미래 전입일 ' + f + ' → 보내지 않는다');
+        const g = gz({ ...Z, moveInDate: f });
+        ok(g.length === 1 && /취득일부터 오늘 사이/.test(g[0]), '미래 전입일 → 차단 사유');
+      }
+      eq(gz({ ...Z, moveInDate: today }).length, 0, '오늘 전입은 차단하지 않는다');
     }
 
     // 증여자 취득일·취득가액: 답한 경우에만 보내고, 모름(빈칸·0·없는 날짜)은 엔진을 부르기 전에 막는다 (261011)

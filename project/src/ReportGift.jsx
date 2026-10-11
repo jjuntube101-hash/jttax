@@ -246,8 +246,8 @@ const GIFT_QS = [
   {
     id: 'donorHouseCount',
     section: '부담부증여',
-    q: '증여하는 분이 이 집 외에 보유한 주택은 몇 채인가요? (증여자 양도세 판정용)',
-    sub: '증여자가 1세대 1주택이면 채무인수분 양도세가 비과세될 수 있습니다(소득세법 §89). 다주택이면 과세·중과될 수 있습니다. ⚠️ 비워두면 증여자의 다른 주택 수를 알 수 없어 금액을 확정하지 않고 확인을 요청합니다 — 다른 주택이 없으면 0 을 입력하세요.',
+    q: '증여하는 분의 「세대」가 이 부동산 외에 보유한 주택은 몇 채인가요? (증여자 양도세 판정용)',
+    sub: '본인뿐 아니라 같은 세대의 배우자 등이 가진 주택까지 셉니다. 증여자 세대가 1세대 1주택이면 채무인수분 양도세가 비과세될 수 있습니다(소득세법 §89). 다주택이면 과세·중과될 수 있습니다. ⚠️ 비워두면 증여자의 다른 주택 수를 알 수 없어 금액을 확정하지 않고 확인을 요청합니다 — 다른 주택이 없으면 0 을 입력하세요.',
     showIf: (a) => a.isBurdened === 'yes' && (a.reType === '공동주택' || a.reType === '개별주택'),
     numeric: true,
     optional: true,
@@ -299,6 +299,25 @@ function giftPriorDedGiven(a) {
   return a.priorGiftDed != null && String(a.priorGiftDed).trim() !== '';
 }
 
+/* 답 저장 — 순수 함수(시험 대상). 앞 문항이 바뀌면 그 답에 딸린 부담부증여 답을 지운다(최적화 화면의 bgApplyAnswer 와 같은 취지, 261011):
+   · 취득일·증여자 세대의 다른 주택 수·부담부 여부·부동산 유형이 바뀌면 취득 당시 조정대상지역·전입일 — 묻는 조건이 달라지므로 낡은 답이 새 사실로 실리지 않게
+   · 인수 채무액이 바뀌면 객관적 채무 답 — 그 답은 «그 채무»에 대한 것이었다
+   같은 값을 다시 고르거나 무관한 문항을 바꾸면 지우지 않는다. */
+function giftApplyAnswer(a, id, v) {
+  const next = Object.assign({}, a);
+  next[id] = v;
+  if (a[id] !== v) {
+    if (id === 'acqDate' || id === 'donorHouseCount' || id === 'isBurdened' || id === 'reType' || id === 'assetType') { delete next.regulatedAtAcq; delete next.moveInDate; }
+    if (id === 'debtAssumed') delete next.debtObjective;
+  }
+  return next;
+}
+/* 오늘(로컬) YYYY-MM-DD — 전입일이 미래인지 판정한다 */
+function giftTodayISO() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
 /* 부담부증여(단건) 보조 판정 — 문항 표시 조건과 요청 변환·차단 판정이 «같은 함수»를 쓴다(이 화면에는 딸린 답을 지우는 패턴이 없다). */
 function giftBurdenedHouse(a) {
   return a.isBurdened === 'yes' && a.assetType === 'realestate' && (a.reType === '공동주택' || a.reType === '개별주택');
@@ -340,8 +359,8 @@ function giftFallbackGaps(answers, calc) {
     { when: burdened && giftAsksZoneAtAcq(answers) && !['yes', 'no', 'unknown'].includes(answers.regulatedAtAcq),
       why: '증여하는 분이 그 주택을 취득할 당시 조정대상지역이었는지 선택해 주세요(모르면 「모름」).' },
     { when: burdened && giftBurdenedHouse(answers) && (answers.moveInDate || '') !== ''
-        && (!isValidISODate(answers.moveInDate) || (isValidISODate(answers.acqDate || '') && answers.moveInDate < answers.acqDate)),
-      why: '전입일을 다시 확인해 주세요 — 취득일 이후의 실제 날짜여야 합니다(살지 않았으면 비워 두세요).' },
+        && (!isValidISODate(answers.moveInDate) || (isValidISODate(answers.acqDate || '') && answers.moveInDate < answers.acqDate) || answers.moveInDate > giftTodayISO()),
+      why: '전입일을 다시 확인해 주세요 — 취득일부터 오늘 사이의 실제 날짜여야 합니다(살지 않았으면 비워 두세요).' },
     { when: burdened && !(Number(answers.acqPrice) > 0),
       why: '증여하는 분의 취득가액을 모르면 환산취득가액 등 확인이 필요하므로 상담을 권합니다 — 채무 인수분 양도세는 취득가액에 따라 크게 달라지는데, 이 계산기는 취득가액을 짐작해 계산하지 않습니다.' },
     { when: nonResident,
@@ -426,8 +445,8 @@ function mapAnswersToBurdenedGift(a) {
   }
   // 취득 당시 조정대상지역(증여자 1주택·주택·기준일 이후 취득일 때만 묻는다): 「예/아니오」만 보내고 «모름»은 키 없음(엔진이 두 값으로 대조 계산)
   if (giftAsksZoneAtAcq(a) && (a.regulatedAtAcq === 'yes' || a.regulatedAtAcq === 'no')) body.regulated_at_acquisition = a.regulatedAtAcq === 'yes';
-  // 전입일: 주택에서 입력했고 취득일 이후의 실제 날짜일 때만(비우면 거주하지 않은 것으로 계산)
-  if (giftBurdenedHouse(a) && isValidISODate(a.moveInDate || '') && isValidISODate(a.acqDate || '') && a.moveInDate >= a.acqDate) body.move_in_date = a.moveInDate;
+  // 전입일: 주택에서 입력했고 취득일부터 오늘 사이의 실제 날짜일 때만(비우면 거주하지 않은 것으로 계산)
+  if (giftBurdenedHouse(a) && isValidISODate(a.moveInDate || '') && isValidISODate(a.acqDate || '') && a.moveInDate >= a.acqDate && a.moveInDate <= giftTodayISO()) body.move_in_date = a.moveInDate;
   if (isHouse && (a.regulatedArea === 'yes' || a.regulatedArea === 'no')) body.is_regulated_area = a.regulatedArea === 'yes';
   const donorN = a.donorHouseCount;
   if (isHouse && donorN !== undefined && donorN !== null && String(donorN).trim() !== '' && Number.isFinite(Number(donorN)) && Number(donorN) >= 0) body.donor_other_house_count = Number(donorN);
@@ -642,7 +661,7 @@ function JTReportGift({ setRoute, onBack }) {
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
   const isLast = safeStep === total - 1;
-  const setAns = (id, v) => setAnswers(a => ({ ...a, [id]: v }));
+  const setAns = (id, v) => setAnswers(a => giftApplyAnswer(a, id, v));
 
   const canNext = () => {
     if (cur.freeform) return true;
