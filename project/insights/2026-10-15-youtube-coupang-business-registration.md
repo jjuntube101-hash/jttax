@@ -80,4 +80,4 @@ heroCaption: 자료 확인 순서를 표현한 AI 생성 시각자료입니다. 
 <p><a href="https://www.jttax.co.kr/insights/youtube-youth-startup-tax-relief.html">유튜버 청년창업 세액감면의 기존 사업자 확인사항</a> · <a href="https://www.jttax.co.kr/insights/adsense-reconciliation.html">애드센스 정산자료 대조</a></p>
 <h2>근거와 적용 범위</h2>
 <p><a href="https://www.law.go.kr/법령/소득세법/제19조">소득세법 제19조</a>, <a href="https://www.law.go.kr/법령/소득세법/제168조">소득세법 제168조</a>, <a href="https://www.law.go.kr/법령/부가가치세법/제8조">부가가치세법 제8조</a>, <a href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7804&amp;mi=2483">국세청 SNS 마켓 세무 안내</a>를 참고했습니다. 이 글은 일반적인 검토 순서이며 개별 등록·과세·감면 판단은 실제 계약과 거래 및 사업 이력을 확인해 진행합니다.</p>
-<p>제이티 세무법인 · 광고 담당 세무사 이현준</p></div>
+<p>제이티 세무법인 · 광고 담당 세무사 이현준</p><p class="read-more">블로그에서 쉽게 읽기: <a href="https://blog.naver.com/jt_tax/224442819122">쿠팡파트너스 사업자등록, 유튜브 수익도 있다면?</a></p></div>

@@ -72,4 +72,4 @@ heroCaption: 자료 확인 순서를 표현한 AI 생성 시각자료입니다. 
 <p><a href="https://www.jttax.co.kr/insights/adsense-reconciliation.html">애드센스 정산자료 대조</a> · <a href="https://www.jttax.co.kr/insights/creator-record-retention.html">크리에이터 자료 보관</a></p>
 <h2>참고 근거</h2>
 <p><a href="https://www.law.go.kr/법령/소득세법/제160조">소득세법 제160조</a>, <a href="https://www.law.go.kr/법령/소득세법/제27조">소득세법 제27조</a>, <a href="https://www.law.go.kr/법령/부가가치세법/제39조">부가가치세법 제39조</a>, <a href="https://www.nts.go.kr/nts/na/ntt/selectNttInfo.do?nttSn=1355405">국세청 사업용 신용카드 안내 포함 자료</a>를 참고했습니다. 일반적인 업무 안내이며 자료 조회·비용 반영·신고 결과는 실제 거래와 적용 요건에 따라 달라집니다.</p>
-<p>제이티 세무법인 · 광고 담당 세무사 이현준</p></div>
+<p>제이티 세무법인 · 광고 담당 세무사 이현준</p><p class="read-more">블로그에서 쉽게 읽기: <a href="https://blog.naver.com/jt_tax/224442822138">직접 신고하던 유튜버, 기장을 맡기면 어떤 자료를 보내나요?</a></p></div>
