@@ -93,6 +93,8 @@ heroCaption: AI로 제작한 시각자료입니다. 기록할 내용은 아래 �
 
 정산 내역과 입금액 차이는 [애드센스 정산자료 대조](https://www.jttax.co.kr/insights/adsense-reconciliation.html), 기장 시작 시 전달할 자료는 [홈택스 자료와 별도 정산자료 나누기](https://www.jttax.co.kr/insights/youtuber-bookkeeping-handover.html)에서 확인할 수 있습니다. [기장 업무 안내](https://www.jttax.co.kr/services/bookkeeping.html)도 함께 참고하세요.
 
+같은 주제를 질문 중심으로 읽으려면 [네이버 블로그의 손익계산서 안내](https://blog.naver.com/jt_tax/224444552730)를 참고하세요.
+
 ## 근거와 적용 범위
 
 - [소득세법 제19조](https://www.law.go.kr/법령/소득세법/제19조): 사업소득금액의 기본 계산.
