@@ -137,7 +137,7 @@
 
     <section class="jt-cc-sec" id="ask">
       <h2>문의 남기기</h2>
-      <form class="jt-form" action="https://api.web3forms.com/submit" method="POST">
+      <form class="jt-form" data-partner-type="broker" action="https://api.web3forms.com/submit" method="POST">
         <input type="hidden" name="access_key" value="c3a5ab0f-c275-4434-a4ba-bda8500378fa">
         <input type="hidden" name="subject" value="[중개사 데스크] 문의">
         <input type="hidden" name="from_name" value="jttax.co.kr 중개사 데스크">
@@ -177,6 +177,7 @@
         </label>
         <button type="submit" class="jt-btn jt-btn--primary" onclick="jtTrackCta('form_submit','desk_broker')">문의 남기기 →</button>
         <p class="jt-quiet" style="margin-top:10px;">카카오톡 채널이나 전화(02-554-6405)로도 문의하실 수 있습니다. 입력하신 정보는 문의에 회신드리는 데에만 사용합니다. 자세한 내용은 <a href="/#/privacy" target="_blank" rel="noopener">개인정보 처리방침 <span>(새 창)</span></a>에서 확인하실 수 있습니다.</p>
+        <p role="status" aria-live="polite" aria-atomic="true" style="margin-top:12px;"></p>
       </form>
     </section>
 
@@ -191,5 +192,6 @@
     <div>제이티 세무법인 · 광고책임세무사 이현준 대표세무사</div>
     <div>© 2026 JT TAX CORP. — www.jttax.co.kr</div>
   </footer>
+<script defer src="/desk/partner-form.js?v=1"></script>
 </body>
 </html>
