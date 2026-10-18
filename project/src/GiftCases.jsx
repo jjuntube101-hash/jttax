@@ -23,6 +23,7 @@ function giftNewDraft(answers = {}) {
       prior_gifts: [], assets: [], multiasset_confirmed: false, primary_value_source: "" }, valuation_snapshot: null };
 }
 function giftInputIssue(issue) {
+  if(issue.code==='NONHOUSING_SOURCE_REIMPORT_REQUIRED')return '토지·상가 채택 당시 금액·당사자·날짜·평가자료가 변경됐습니다. 검토 후 원본을 다시 채택하세요.';
   if(issue.code==='ADDITIONAL_SOURCE_REIMPORT_REQUIRED')return '추가 원본의 사건 당사자·날짜 또는 재산 조건이 달라졌습니다. 해당 행을 다시 채택하거나 제거하세요.';
   if(issue.code==='SOURCE_PROPERTY_DUPLICATE')return '첫 재산과 추가 재산의 원본이 중복됩니다. 중복 행을 제거하세요.';
   const messages = { OWNERSHIP_HISTORY_REIMPORT_REQUIRED:'사건 날짜 또는 증여자가 바뀌었습니다. 해당 날짜의 소유 지분 자료를 다시 가져와 주세요', REQUIRED_FIELD: '필수 입력을 확인해 주세요', INVALID_CHOICE: '선택값을 확인해 주세요',
@@ -55,6 +56,19 @@ function giftPackDraft(draft) {
     }
   }
   return packed;
+}
+const GIFT_NONHOUSING_CHECKS = [
+  ['market_priority_confirmed','시가 우선·평가방법과 최종 가액의 법령 적용을 확인했습니다'],
+  ['lease_security_confirmed','임대차·담보재산의 평가 특례를 검토한 최종 가액입니다'],
+  ['no_debt_assumption_confirmed','이번 증여에서는 채무·임대보증금을 인수하지 않습니다'],
+  ['no_overlap_confirmed','다른 재산 행과 토지·건물·대지권 가액이 중복되지 않습니다']];
+function giftNonhousingReview() { return {coverage:'',valuation_method:'',scope_note:'',review_note:'',...Object.fromEntries(GIFT_NONHOUSING_CHECKS.map(([k])=>[k,false]))}; }
+function GiftNonhousingSaved({source}) {
+  const r=source?.selection?.nonhousing_review;
+  return r?<div data-testid="nonhousing-saved"><p>재산ID {source.property.id} · 소유ID {source.ownership.id} · 평가ID {source.valuation.id}</p>
+    <p>포함 범위: {{land_only:'토지만',building_only:'건물만',land_and_building:'토지·건물 함께'}[r.coverage]} · {r.scope_note}</p>
+    <p>평가 검토: {r.valuation_method==='market'?'시가':'시가 산정 곤란에 따른 보충적 평가'} · {r.review_note}</p>
+    <p>채무 미인수·중복 제외·시가 우선·임대차/담보 특례 검토 확인을 원본과 함께 보존합니다.</p></div>:null;
 }
 function GiftCaseField({ title, hint, children }) {
   return <label className="gc-field"><span>{title}</span>{children}{hint && <small>{hint}</small>}</label>;
@@ -107,7 +121,7 @@ function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exit
   const [ownerTimeline,setOwnerTimeline] = React.useState(null);
   const ownerQuery = React.useRef(0);
   const [sourceCatalog, setSourceCatalog] = React.useState(null);
-  const [sourceChoice, setSourceChoice] = React.useState({ property_id:'', ownership_id:'', donee_person_id:'', valuation_id:'', gift_share:'', gift_date:'', re_type:'', adoption_reason:'', valuation_confirmed:false });
+  const [sourceChoice, setSourceChoice] = React.useState({ property_id:'', ownership_id:'', donee_person_id:'', valuation_id:'', gift_share:'', gift_date:'', re_type:'', adoption_reason:'', valuation_confirmed:false, nonhousing_review:giftNonhousingReview() });
   const [sourcePreview, setSourcePreview] = React.useState(null);
   const [sourceTarget,setSourceTarget] = React.useState('primary');
   const [sourceQueue,setSourceQueue] = React.useState([]);
@@ -168,7 +182,9 @@ function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exit
           SOURCE_BURDENED_UNSUPPORTED:'부담부증여의 추가 원본 채택은 아직 지원하지 않습니다.',
           SOURCE_ASSET_LIMIT:'첫 재산을 포함해 최대 100개까지 채택할 수 있습니다.',
           SOURCE_NOT_FOUND: '선택한 자료가 없거나 이 고객의 자료가 아닙니다.',
-          SOURCE_PROPERTY_UNSUPPORTED: '현재 자료 가져오기는 주택만 지원합니다. 분양권·입주권은 아직 연결하지 않았습니다.',
+          SOURCE_NONHOUSING_REVIEW_REQUIRED:'토지·상가의 포함 범위·평가방법·검토 확인과 증여일 기준 최종 평가자료를 확인하세요. 지원 사건일은 2026-10-01~2026-10-18입니다.',
+          SOURCE_PROPERTY_TYPE_MISMATCH:'등록 재산 유형과 선택한 부동산 구분이 다릅니다.',
+          SOURCE_PROPERTY_UNSUPPORTED: '현재 자료 가져오기는 주택·토지·상가를 지원합니다. 분양권·입주권은 아직 연결하지 않았습니다.',
           SOURCE_SHARE_INVALID: '증여 지분은 0 초과이고 증여자 소유 지분 이하여야 합니다.',
           SOURCE_SAME_PARTY: '증여자와 수증자는 서로 다른 당사자를 선택해 주세요.',
           SOURCE_REVIEW_REQUIRED: '평가액 채택 이유를 입력해 주세요.',
@@ -325,7 +341,7 @@ function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exit
     sourceVersion.current++;
     setSourceCatalog(null); setSourcePreview(null); setSourceTarget('primary'); setSourceQueue([]);
     ownerQuery.current++;setOwnerTimeline(null);
-    setSourceChoice({ property_id:'', ownership_id:'', donee_person_id:'', valuation_id:'', gift_share:'', gift_date:'', re_type:'', adoption_reason:'', valuation_confirmed:false });
+    setSourceChoice({ property_id:'', ownership_id:'', donee_person_id:'', valuation_id:'', gift_share:'', gift_date:'', re_type:'', adoption_reason:'', valuation_confirmed:false, nonhousing_review:giftNonhousingReview() });
   }, [meta?.case_id]);
   const loadSources = async (more = false) => {
     const version = ++sourceVersion.current;
@@ -338,6 +354,7 @@ function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exit
   const chooseSource = (key, value) => {
     if(['property_id','gift_date'].includes(key)){ownerQuery.current++;setOwnerTimeline(null);}
     setSourceChoice(old => ({ ...old, [key]: value,
+      ...(key!=='nonhousing_review'?{nonhousing_review:{...(old.nonhousing_review||giftNonhousingReview()),...Object.fromEntries(GIFT_NONHOUSING_CHECKS.map(([k])=>[k,false]))}}:{}),
       ...(['property_id','ownership_id','ownership_version','donee_person_id','valuation_id','gift_date'].includes(key)?{fact_selection:null}:{}),
       ...(key === 'property_id' ? { ownership_id:'', valuation_id:'', gift_share:'', valuation_confirmed:false } : {}),
       ...((['property_id','ownership_version'].includes(key)||(key==='gift_date'&&old.ownership_version))?{ownership_id:'',ownership_history_confirmed:false}:{}),
@@ -348,8 +365,10 @@ function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exit
   const selectedProperty = sourceCatalog?.properties.find(p => p.id === sourceChoice.property_id);
   const selectionPayload = () => {
     if (['property_id','ownership_id','donee_person_id','valuation_id','gift_share','gift_date','re_type','adoption_reason'].some(k => !sourceChoice[k].trim()))
-      throw new Error('재산·소유자·수증자·평가자료·지분·날짜·주택 구분·채택 이유를 모두 입력해 주세요.');
-    return { ...sourceChoice, valuation_basis:'whole_property' };
+      throw new Error('재산·소유자·수증자·평가자료·지분·날짜·부동산 구분·채택 이유를 모두 입력해 주세요.');
+    const payload={ ...sourceChoice, valuation_basis:'whole_property' };
+    if(!['토지','상가'].includes(selectedProperty?.property_type))delete payload.nonhousing_review;
+    return payload;
   };
   const previewSource = async () => {
     setSourcePreview(null);
@@ -411,9 +430,9 @@ function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exit
       <p>{dirty?'저장 후 입력이 변경됐습니다. 아래는 마지막 저장 당시 상태입니다.':'저장된 원본 연결 상태입니다.'}</p>
       {Object.entries(meta.property_sources).map(([id,v])=><div key={id}><p>{v.property.address} · {v.parties.donor.name} → {v.parties.donee.name} · {v.selection.gift_date}</p>
         <p>{v.valuation.amount}원 × {v.selection.gift_share} = {giftExactWon(v.adopted_amount)} · 평가 기준일 {v.valuation.as_of_date} · {{matched:'채택값과 일치',manually_modified:'입력값 수동 수정',context_mismatch:'사건·재산 조건 변경: 재채택 필요'}[meta.property_source_status?.[id]]||'상태 확인 필요'}</p>
-        <p className="gc-help">{v.selection.adoption_reason} · 원본 해시 {v.source_hash}</p></div>)}
+        <GiftNonhousingSaved source={v}/><p className="gc-help">{v.selection.adoption_reason} · 원본 해시 {v.source_hash}</p></div>)}
     </section>}
-    {meta?.master_snapshot && <section className="gc-card" aria-label="가져오기 당시 원본 자료"><h3>가져오기 당시 자료</h3>
+    {meta?.master_snapshot && <section className="gc-card" aria-label="가져오기 당시 원본 자료"><h3>가져오기 당시 자료</h3><GiftNonhousingSaved source={meta.master_snapshot}/>
       <p>{meta.master_snapshot.property.address} · 증여자 {meta.master_snapshot.parties.donor.name} → 수증자 {meta.master_snapshot.parties.donee.name}</p>
       {meta.master_snapshot.fact_history&&<p data-testid="gift-saved-fact-period">과거 사실 적용기간 {meta.master_snapshot.fact_history.applicability.applicable_from} ~ {meta.master_snapshot.fact_history.applicability.applicable_until} · 확인 근거: {meta.master_snapshot.fact_history.applicability.reason} · 당시 선택한 취득·당사자·평가자료 보존</p>}
       {meta.master_snapshot.ownership_history&&<p data-testid="gift-saved-ownership-period">채택 소유 기간: {meta.master_snapshot.ownership_history.valid_from}부터 {meta.master_snapshot.ownership_history.valid_until||'이후'} (변동 당일은 확인한 선후관계 기준) · 기록 {meta.master_snapshot.ownership_history.revision} · 다른 원본 사실은 아래 선택 버전 또는 가져오기 시점 자료</p>}
@@ -430,22 +449,31 @@ function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exit
       })}/></>}
       {a.assetType==='stock'&&<p>첫 주식 채택액: {a.giftValueStock||'미선택'}원 · {s.primary_equity_ref?.shares||'미선택'}주 · 결과 {s.primary_equity_ref?.run_id||'미선택'} (수량/금액 변경은 평가를 다시 선택)</p>}
       <section className="gc-card"><h3>기존 재산·당사자·평가자료 가져오기</h3>
-        <p className="gc-help">이 고객의 주택·소유자·수증자·평가자료를 선택합니다. 평가액은 재산 전체 금액임을 확인해야 하며, 증여할 지분만 곱해 입력합니다. 자료를 가져오면 현재 입력을 새 버전으로 저장합니다.</p>
+        <p className="gc-help">이 고객의 주택·토지·상가·소유자·수증자·평가자료를 선택합니다. 평가액은 재산 전체 금액임을 확인해야 하며, 증여할 지분만 곱해 입력합니다. 자료를 가져오면 현재 입력을 새 버전으로 저장합니다.</p>
         <button className="jt-btn jt-btn--ghost" disabled={!meta || !token || busy || readonly} onClick={() => act(() => loadSources())}>기존 자료 조회</button>
         {!meta && <p className="gc-help">먼저 고객을 선택하고 초안을 저장해 주세요.</p>}
         {sourceCatalog && <><div className="gc-grid" style={{marginTop:16}}>
           <GiftCaseField title="채택할 위치"><select data-testid="source-target" value={sourceTarget} onChange={e=>setSourceTarget(e.target.value)}>
             <option value="primary">첫 재산 교체</option><option value="new">추가 부동산 새 행</option>
             {s.assets.filter(x=>x.kind==='realestate').map(x=><option key={x.local_id} value={x.local_id}>추가 행 교체·재채택: {x.address_text||x.local_id}</option>)}</select></GiftCaseField>
-          <GiftCaseField title="가져올 재산"><select data-testid="source-property_id" value={sourceChoice.property_id} onChange={e => chooseSource('property_id',e.target.value)}><option value="">재산 선택</option>{sourceCatalog.properties.map(p => <option key={p.id} value={p.id} disabled={p.property_type !== '주택'}>{p.address || '주소 없음'} · {p.property_type}{p.property_type !== '주택' ? ' (연결 준비 중)' : ''}</option>)}</select></GiftCaseField>
+          <GiftCaseField title="가져올 재산"><select data-testid="source-property_id" value={sourceChoice.property_id} onChange={e => chooseSource('property_id',e.target.value)}><option value="">재산 선택</option>{sourceCatalog.properties.map(p => <option key={p.id} value={p.id} disabled={!['주택','토지','상가'].includes(p.property_type)}>{p.address || '주소 없음'} · {p.property_type}{!['주택','토지','상가'].includes(p.property_type) ? ' (연결 준비 중)' : ''}</option>)}</select></GiftCaseField>
           <GiftCaseField title="증여자 소유 지분"><select data-testid="source-ownership_id" value={sourceChoice.ownership_id} onChange={e => chooseSource('ownership_id',e.target.value)}><option value="">소유자 선택</option>{(ownerTimeline?.items.find(x=>x.version===sourceChoice.ownership_version)?.ownerships || selectedProperty?.ownerships || []).map(o => <option key={o.id} value={o.id}>{o.name || '이름 없음'} · 소유 지분 {o.share_ratio}</option>)}</select></GiftCaseField>
           <GiftCaseField title="수증자"><select data-testid="source-donee_person_id" value={sourceChoice.donee_person_id} onChange={e => chooseSource('donee_person_id',e.target.value)}><option value="">수증자 선택</option>{sourceCatalog.persons.map(p => <option key={p.id} value={p.id}>{p.name || '이름 없음'} · 고객 기준 {p.relationship}</option>)}</select></GiftCaseField>
           <GiftCaseField title="평가자료"><select data-testid="source-valuation_id" value={sourceChoice.valuation_id} onChange={e => chooseSource('valuation_id',e.target.value)}><option value="">평가자료 선택</option>{(selectedProperty?.valuations || []).map(v => <option key={v.id} value={v.id}>{v.as_of_date} · {v.valuation_type} · {v.amount}원 · {v.source}{v.hometax_confirm_required ? ' · 별도 확인 필요' : ''}</option>)}</select></GiftCaseField>
           <GiftCaseField title="증여할 지분 (전체 1, 절반 0.5)"><input data-testid="source-gift_share" inputMode="decimal" value={sourceChoice.gift_share} onChange={e => chooseSource('gift_share',e.target.value)} /></GiftCaseField>
           <GiftCaseField title="증여일"><input data-testid="source-gift_date" type="date" value={sourceChoice.gift_date} onChange={e => chooseSource('gift_date',e.target.value)} /></GiftCaseField>
-          <GiftCaseField title="주택 구분"><select data-testid="source-re_type" value={sourceChoice.re_type} onChange={e => chooseSource('re_type',e.target.value)}><option value="">선택</option><option>공동주택</option><option>개별주택</option></select></GiftCaseField>
+          <GiftCaseField title="부동산 구분"><select data-testid="source-re_type" value={sourceChoice.re_type} onChange={e => chooseSource('re_type',e.target.value)}><option value="">선택</option><option>공동주택</option><option>개별주택</option><option>토지</option><option>상가</option></select></GiftCaseField>
           <GiftCaseField title="이 평가액을 채택한 이유·확인 내용"><input data-testid="source-adoption_reason" maxLength={500} value={sourceChoice.adoption_reason} onChange={e => chooseSource('adoption_reason',e.target.value)} /></GiftCaseField>
         </div><GiftCaseCheck label="재산 전체 평가액임을 확인했고 평가기준일·유형과 이번 증여에 사용할 값을 검토했습니다" checked={sourceChoice.valuation_confirmed} onChange={v => chooseSource('valuation_confirmed',v)} />
+        {['토지','상가'].includes(selectedProperty?.property_type)&&<section data-testid="nonhousing-review"><h4>토지·상가 최종 평가 검토</h4>
+          <p>2026-10-01~2026-10-18 증여일 기준 최종 전체 가액만 채택합니다. 평가자료의 기준일은 증여일이며, 거래·감정의 실제 날짜와 적정성은 근거에서 따로 확인합니다. 토지·건물의 이전 지분이 다르면 별도 재산으로 등록하세요.</p>
+          <GiftCaseField title="평가에 포함한 범위"><select data-testid="nonhousing-coverage" value={sourceChoice.nonhousing_review.coverage} onChange={e=>chooseSource('nonhousing_review',{...giftNonhousingReview(),...sourceChoice.nonhousing_review,coverage:e.target.value,...Object.fromEntries(GIFT_NONHOUSING_CHECKS.map(([k])=>[k,false]))})}>
+            <option value="">선택</option>{selectedProperty.property_type==='토지'?<option value="land_only">토지만</option>:<><option value="building_only">건물만 (대지권 제외)</option><option value="land_and_building">토지·건물 함께 (같은 증여 지분)</option></>}</select></GiftCaseField>
+          <GiftCaseField title="최종 평가 방법"><select data-testid="nonhousing-valuation_method" value={sourceChoice.nonhousing_review.valuation_method} onChange={e=>chooseSource('nonhousing_review',{...sourceChoice.nonhousing_review,valuation_method:e.target.value,...Object.fromEntries(GIFT_NONHOUSING_CHECKS.map(([k])=>[k,false]))})}>
+            <option value="">선택</option><option value="market">시가 (매매·감정)</option><option value="supplementary">시가 산정 곤란에 따른 보충적 평가</option></select></GiftCaseField>
+          {[['scope_note','필지·건물·대지권 포함 범위와 중복 검토'],['review_note','시가 우선·임대차/담보 평가 검토 근거']].map(([k,title])=><GiftCaseField key={k} title={title}><input data-testid={'nonhousing-'+k} maxLength={k==='scope_note'?500:1000} value={sourceChoice.nonhousing_review[k]} onChange={e=>chooseSource('nonhousing_review',{...sourceChoice.nonhousing_review,[k]:e.target.value,...Object.fromEntries(GIFT_NONHOUSING_CHECKS.map(([k])=>[k,false]))})}/></GiftCaseField>)}
+          {GIFT_NONHOUSING_CHECKS.map(([k,label])=><label key={k} className="gc-check"><input data-testid={'nonhousing-'+k} type="checkbox" checked={sourceChoice.nonhousing_review[k]} onChange={e=>chooseSource('nonhousing_review',{...sourceChoice.nonhousing_review,[k]:e.target.checked})}/>{label}</label>)}
+        </section>}
         <div aria-label="사건일 소유 이력">
           <button data-testid="gift-ownership-load" disabled={busy||readonly||!sourceChoice.property_id||!sourceChoice.gift_date} onClick={()=>act(async()=>{
             const generation=++ownerQuery.current;setSourcePreview(null);setOwnerTimeline(null);
@@ -458,10 +486,10 @@ function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exit
           {sourceChoice.ownership_version&&<label><input data-testid="gift-ownership-confirm" type="checkbox" disabled={busy||readonly} checked={!!sourceChoice.ownership_history_confirmed} onChange={e=>chooseSource('ownership_history_confirmed',e.target.checked)}/>사건과 소유 변동의 선후관계·선택 지분·이전 변동 누락 여부를 확인했습니다. 재산·당사자·평가자료는 별도 과거 버전을 선택하거나 현재 자료를 사용하므로 취득 사실·금액을 함께 검토합니다.</label>}
         </div>
         <JTFactVersionPicker api={requestApi} clientId={clientId} propertyId={sourceChoice.property_id} ownerId={(ownerTimeline?.items.find(x=>x.version===sourceChoice.ownership_version)?.ownerships||selectedProperty?.ownerships||[]).find(x=>x.id===sourceChoice.ownership_id)?.person_id} doneeId={sourceChoice.donee_person_id} eventDate={sourceChoice.gift_date} valuationId={sourceChoice.valuation_id} selection={sourceChoice.fact_selection} onChange={v=>chooseSource('fact_selection',v)} disabled={busy||readonly}/>
-        <p className="gc-help">평가액 적정성을 자동 판정하지 않습니다. 소유 지분과 이번 증여 지분은 다를 수 있습니다. 첫 재산은 원 미만을 버립니다. 추가 원본은 사건 당사자·날짜가 같고 증여일 기준 평가자료이며 지분 가액이 정수 원인 경우에 채택합니다. 고객 기준 가족관계는 증여자·수증자 사이 관계로 자동 적용하지 않습니다.</p>
+        <p className="gc-help">평가액 적정성을 자동 판정하지 않습니다. 소유 지분과 이번 증여 지분은 다를 수 있습니다. 첫 주택은 원 미만을 버리며, 토지·상가는 정확한 정수 원 지분 가액만 채택합니다. 추가 원본은 사건 당사자·날짜가 같고 증여일 기준 평가자료이며 지분 가액이 정수 원인 경우에 채택합니다. 고객 기준 가족관계는 증여자·수증자 사이 관계로 자동 적용하지 않습니다.</p>
         <div className="gc-actions"><button className="jt-btn jt-btn--ghost" disabled={busy || !sourceChoice.valuation_confirmed} onClick={() => act(previewSource)}>선택 자료 확인</button>
           {sourceCatalog.next_cursor && <button disabled={busy} onClick={() => act(() => loadSources(true))}>재산 더 보기</button>}</div>
-        {sourcePreview && <div className="gc-status" style={{marginTop:12}}><p>증여자 {sourcePreview.parties.donor.name} → 수증자 {sourcePreview.parties.donee.name}</p>
+        {sourcePreview && <div className="gc-status" style={{marginTop:12}}><GiftNonhousingSaved source={sourcePreview}/><p>증여자 {sourcePreview.parties.donor.name} → 수증자 {sourcePreview.parties.donee.name}</p>
           <p>{sourcePreview.property.address} · 전체 평가액 {sourcePreview.valuation.amount}원 × 증여 지분 {sourcePreview.selection.gift_share} = 입력 가액 {giftExactWon(sourcePreview.adopted_amount)}</p>
           <p>원본 평가기준일 {sourcePreview.valuation.as_of_date} · 증여일 {sourcePreview.selection.gift_date}</p>
           <button className="jt-btn jt-btn--primary" disabled={busy} data-testid="source-import" onClick={() => act(()=>importSource())}>가져와 새 버전 저장</button>

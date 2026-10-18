@@ -6,12 +6,13 @@ const asset={equity_case_id:'issuer-case-id',company_name:'합성 회사',run_id
  input_hash:'a'.repeat(64),share_fraction:'2000/10000',ownership_source:'주주명부 확인',valuation_date:'2026-10-17',unit_value:100000,value:200000000};
 const contract={identity:{equities:[{equity_case_id:asset.equity_case_id}],event_date:'2026-10-17',tax_scope:'증여세 계산액만'},
  party_names:{donor:'donor-id',donee:'donee-id'},equity_assets:[asset],address:'합성 회사'};
-function render(legacy=false,mixed=false){
+function render(legacy=false,mixed=false,nonhousing=false){
  const draft={year:2026,run_ids:[],scope_confirmed:true,review_note:'검토',...(!legacy?{equity_identity_confirmed:true,equity_identity_note:'회사·주식·권한 근거'}:{})};
  let c=legacy?{identity:{share:'1',event_date:'2026-10-17',tax_scope:'증여세 계산액만'},address:'주택',party_names:{donor:'증여자',donee:'수증자'}}:contract;
  if(mixed)c={...c,identity:{...c.identity,assets:[{property_id:'property-id'}],cash:[{cash_source_id:'cash-source-id'}]},
  assets:[{property_id:'property-id',address:'주택 원본',share:'0.5',owner_share:'1',valuation_date:'2026-10-17',valuation_type:'시가',valuation_source:'주택 근거',value:300000000}],
  cash_assets:[{cash_source_id:'cash-source-id',asset_id:'cash-asset-id',valuation_date:'2026-10-17',share_basis:'이전금액 전액',value_source:'현금 계약',source_note:'동일 이전 대상 확인',value:100000000}]};
+ if(nonhousing)c.assets[0]={...c.assets[0],property_type:'상가',coverage:'land_and_building',nonhousing_review:{scope_note:'필지 A와 101호 대지권 포함',review_note:'시가 및 임대차 담보 검토 완료'}};
  const meta={comparison_id:'comparison',revision:1,read_only:true,draft,validation:{can_run:true,checked_contracts:[c]}};
  const row={...c,run_id:'gift-result',revision:1,label:'증여',value:200000000,total:19400000,delta:0,
  components:{증여세:19400000},input_differences:[],source_warnings:[],...(!legacy?{equity_value_differences:[{equity_case_id:asset.equity_case_id,alternative:200000000,delta:0,
@@ -35,4 +36,6 @@ r=render(false,true);
 for(const value of ['property-id','주택 원본','0.5','cash-source-id','cash-asset-id','2026-10-17','이전금액 전액','현금 계약','동일 이전 대상 확인','현금 가액 차이 50,000,000원'])assert.ok(r.text.includes(value),value);
 assert.ok(r.nodes.some(n=>n.props?.['data-testid']==='comparison-cash-0'));
 assert.ok(r.nodes.some(n=>n.props?.['data-testid']==='comparison-assets-0'));
-console.log('PASS case-comparison JSX: legacy + stock + mixed property/cash identity, scope, proof, deltas, readonly (27 checks)');
+r=render(false,true,true);
+for(const value of ['상가','토지·건물 함께','필지 A와 101호 대지권 포함','시가 및 임대차 담보 검토 완료'])assert.ok(r.text.includes(value),value);
+console.log('PASS case-comparison JSX: legacy + stock + mixed property/cash identity, scope, proof, deltas, readonly (31 checks)');
