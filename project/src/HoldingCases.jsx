@@ -74,7 +74,7 @@ function JTHoldingCases({ clientId, caseId, onExit }) {
   };
   const save=async()=>{if(!holdingDirty(ref.current))return ref.current.meta;const saved=await mutation(base,'PUT',{label:ref.current.label,draft:ref.current.draft},ref.current.meta.etag);await load(saved.case_id);return ref.current.meta;};
   const d=current?w.draft:null;
-  const priorOriginal=w?.meta?.case_input?.master_snapshot?.schema_version==='holding-master-source/3';
+  const priorOriginal=['holding-master-source/3','holding-master-source/4'].includes(w?.meta?.case_input?.master_snapshot?.schema_version);
   const savedCalc=w?.run?.response_snapshot?.calc;
   // Display the stored production response; never infer a missing flag as false.
   const mainCap=savedCalc?.['세부담상한']?.['본세적용']??savedCalc?.['세부담상한적용'];
@@ -149,7 +149,7 @@ function JTHoldingSources({api,clientId,base,busy,act,onImport,comprehensive=fal
         </>}
         {[['current','올해',current,setCurrent,2026],['prior','전년',prior,setPrior,2025]].filter(([key])=>key!=='prior'||(!comprehensive&&priorState==='exists')).map(([key,label,value,setValue,year])=><label key={key}>{label} 공시가격<select data-testid={'holding-source-'+key} value={value} onChange={e=>change(()=>setValue(e.target.value))}><option value="">선택</option>{options.valuations.filter(x=>x.as_of_date.startsWith(String(year))).map(x=><option key={x.id} value={x.id}>{x.as_of_date} · {Number(x.amount).toLocaleString('ko-KR')}원 · {x.source}</option>)}</select></label>)}
         <JTFactVersionPicker key={current+':'+prior} api={api} clientId={clientId} propertyId={pid} ownerId={owner?.person_id} eventDate="2026-06-01" valuationId={current} selection={facts} onChange={v=>{setFacts(v);setPreview(null);setConfirmed(false);}} disabled={busy}/>
-        {!comprehensive&&priorState==='exists'&&<JTPropertyPriorEditor value={assessment} onChange={v=>change(()=>setAssessment(v))}/>}
+        {!comprehensive&&priorState==='exists'&&<JTPropertyPriorEditor priorOptions={options.prior_ownership} currentOwner={owner?.person_id} value={assessment} onChange={v=>change(()=>setAssessment(v))}/>}
         <label>공시가격·과세단위 확인 근거<input data-testid="holding-source-reason" value={reason} maxLength={1000} onChange={e=>change(()=>setReason(e.target.value))}/></label>
         <label><input type="checkbox" data-testid="holding-source-confirm" checked={confirmed} onChange={e=>{setConfirmed(e.target.checked);setPreview(null);}}/>선택한 소유 이력의 적용일·변동 당일 선후, 전체 주택 공시가격과 각각의 연도·정정 여부를 확인했습니다.</label>
         <button disabled={busy||!owner||!current||(!comprehensive&&(priorState==='exists'?!prior:!absenceReason.trim()))||!facts?.confirmed||!confirmed||!reason.trim()} data-testid="holding-source-preview" onClick={()=>act(async()=>setPreview(await api(base+'/source-preview',{method:'POST',body:JSON.stringify(selection())})))}>채택 미리보기</button>
@@ -188,13 +188,18 @@ function JTHoldingTaxSources({api,base,busy,act,onImport}) {
 }
 
 
-function JTPropertyPriorEditor({value:v,onChange}) {
+function JTPropertyPriorEditor({value:v,onChange,priorOptions,currentOwner}) {
   const blank=period=>({document_id:'',reference:'',period,principal:0,urban:0});
   const edit=(key,value)=>onChange({...v,[key]:value,...(['unchanged_scope_confirmed','final_assessments_confirmed'].includes(key)?{}:{unchanged_scope_confirmed:false,final_assessments_confirmed:false})});
   const bill=(i,key,value)=>edit('bills',v.bills.map((b,j)=>i===j?{...b,[key]:value}:b));
+  const changed=v?.schema_version==='property-prior-assessment/2';
+  const same=()=>({schema_version:'property-prior-assessment/1',prior_tax_base:0,urban_area:'no',bills:[blank('july'),blank('september')],unchanged_scope_confirmed:false,final_assessments_confirmed:false,transition_reference:'',review_reference:''});
+  const reconstruct=()=>({schema_version:'property-prior-assessment/2',prior_tax_base:0,urban_area:'no',document_id:'',reference:'',previous_taxpayer_id:'',prior_ownership_id:'',prior_ownership_version:'',ordinary_scope_confirmed:false,prior_base_confirmed:false,nearby_no_adjustment_confirmed:false,nearby_reference:'',transition_reference:'',review_reference:''});
   return <section aria-label="전년 재산세 고지 원본"><h3>2025년 최종 과세 원본에서 상당액 산정</h3>
-    <label><input type="checkbox" data-testid="prior-original-enable" checked={!!v} onChange={e=>onChange(e.target.checked?{schema_version:'property-prior-assessment/1',prior_tax_base:0,urban_area:'no',bills:[blank('july'),blank('september')],unchanged_scope_confirmed:false,final_assessments_confirmed:false,transition_reference:'',review_reference:''}:null)}/>전년 고지 원본을 함께 채택합니다</label>
-    {v&&<><p>2023년 6월 이전 매매취득부터 동일 개인이 단독 계속 보유한 일반 1주택, 양 연도 공시가격 9억원 초과~1,000억원만 지원합니다. 증축·용도·납세자·특례·감면·조례세율 변동은 별도 검토입니다. 문서 사실을 수기 등록하며 파일 진위나 바이트를 검증하는 기능은 아닙니다.</p>
+    <label><input type="checkbox" data-testid="prior-original-enable" checked={!!v} onChange={e=>onChange(e.target.checked?same():null)}/>전년 과세 원본을 함께 채택합니다</label>
+    {v&&<label>전년 상당액 산정 경로<select data-testid="prior-original-method" value={changed?'changed':'same'} onChange={e=>onChange(e.target.value==='changed'?reconstruct():same())}><option value="same">동일 납세자: 최종 과세액 합산</option><option value="changed">납세자 변경: 전년 과표로 재구성</option></select></label>}
+    {changed&&<JTPropertyChangedEditor value={v} onChange={onChange} options={priorOptions} currentOwner={currentOwner}/>}
+    {v&&!changed&&<><p>2023년 6월 이전 매매취득부터 동일 개인이 단독 계속 보유한 일반 1주택, 양 연도 공시가격 9억원 초과~1,000억원만 지원합니다. 증축·용도·납세자·특례·감면·조례세율 변동은 별도 검토입니다. 문서 사실을 수기 등록하며 파일 진위나 바이트를 검증하는 기능은 아닙니다.</p>
       <div className="ic-grid"><label>2025년 고지 원본의 연간 적용 과세표준 (원)<input data-testid="prior-original-base" inputMode="numeric" value={v.prior_tax_base||''} onChange={e=>edit('prior_tax_base',Number(e.target.value))}/></label>
       <label>두 연도 도시지역분 과세<select data-testid="prior-original-urban" value={v.urban_area} onChange={e=>edit('urban_area',e.target.value)}><option value="no">없음 (도시지역분 0)</option><option value="yes">있음 (표준세율)</option></select></label>
       <label>원본 구성<select data-testid="prior-original-periods" value={v.bills.length===1?'annual':'installments'} onChange={e=>edit('bills',e.target.value==='annual'?[blank('annual')]:[blank('july'),blank('september')])}><option value="installments">7월·9월 최종 고지 각 1건</option><option value="annual">최종 연간 과세명세서 1건</option></select></label></div>
@@ -211,9 +216,27 @@ function JTPropertyPriorSaved({source}) {
   const w=source.property_prior_worksheet,a=source.selection.prior_assessment;
   return <section data-testid="property-prior-worksheet" aria-label="재산세 전년 상당액 원본 산정표"><h3>재산세 사건의 전년 상당액</h3>
     <p>재산 {w.property_id} · 납세자 {w.taxpayer_id} · 지분 {w.share} · 기준일 {w.assessment_date}</p>
-    <table><thead><tr><th>문서 ID·회차</th><th>원본 참조</th><th>본세</th><th>도시지역분</th></tr></thead><tbody>{a.bills.map(b=><tr key={b.document_id}><td>{b.document_id} · {b.period}</td><td>{b.reference}</td><td>{b.principal.toLocaleString('ko-KR')}원</td><td>{b.urban.toLocaleString('ko-KR')}원</td></tr>)}</tbody></table>
+    {w.method==='changed_taxpayer_existing_base'?<>
+      <p data-testid="prior-changed-identity">전년 납세자 {w.previous_taxpayer_id} · 소유권 이전 {w.ownership_change_date} · 전년 소유행 {w.prior_ownership_id}</p>
+      <p>문서 {a.document_id} · {a.reference}</p><p>인근 유사주택 검토: {a.nearby_reference}</p>
+      <p>2025년 원본 과표에 일반 주택 누진세율을 적용하여 본세를 재구성했습니다. 도시지역분은 별도 표준세율로 계산하며 종전 소유자의 고지·납부액을 복사하지 않습니다.</p>
+    </>:<table><thead><tr><th>문서 ID·회차</th><th>원본 참조</th><th>본세</th><th>도시지역분</th></tr></thead><tbody>{a.bills.map(b=><tr key={b.document_id}><td>{b.document_id} · {b.period}</td><td>{b.reference}</td><td>{b.principal.toLocaleString('ko-KR')}원</td><td>{b.urban.toLocaleString('ko-KR')}원</td></tr>)}</tbody></table>}
     <p data-testid="prior-original-totals">전년 본세 상당액 {w.prior_equivalent_tax.toLocaleString('ko-KR')}원 · 도시지역분 상당액 {w.prior_urban_tax.toLocaleString('ko-KR')}원</p>
     <p>고지 과표 {w.prior_tax_base.toLocaleString('ko-KR')}원 · 표준 산출액 대조 {w.prior_uncapped_principal.toLocaleString('ko-KR')}원 · 원본 해시 {w.originals_hash}</p>
-    <p>동일 납세자의 최종 과세액 합산입니다. 종부세용 전년 상당액과 다릅니다. 원본 정정은 새 채택·새 계산에만 반영되고 과거 결과는 보존됩니다.</p>
+    <p>{w.method==='same_taxpayer_final_assessments'?'동일 납세자의 최종 과세액 합산입니다.':'납세자 변경 후 전년 기존 과표를 사용한 재구성입니다.'} 종부세용 전년 상당액과 다릅니다. 원본 정정은 새 채택·새 계산에만 반영되고 과거 결과는 보존됩니다.</p>
+  </section>;
+}
+
+
+function JTPropertyChangedEditor({value:v,onChange,options,currentOwner}) {
+  const reviews=['ordinary_scope_confirmed','prior_base_confirmed','nearby_no_adjustment_confirmed'];
+  const edit=(key,value)=>onChange({...v,[key]:value,...(reviews.includes(key)?{}:Object.fromEntries(reviews.map(k=>[k,false])))});
+  const periods=(options?.items||[]).filter(x=>x.eligible&&!x.boundary_review_required&&x.ownerships.length===1&&Number(x.ownerships[0].share_ratio)===1&&x.ownerships[0].person_id!==currentOwner);
+  return <section aria-label="납세자 변경 전년 과표 재구성"><p>2025년 6월 2일~2026년 5월 31일 사이 한 번의 매매로 개인 단독 소유자가 바뀐 일반 주택입니다. 양 연도 공시가격 9억원 초과~1,000억원이며 전년 전체 주택 과표가 있어야 합니다. 감면·특례·조례세율·용도 변경과 신증축, 인근 유사주택 조정이 필요한 경우는 지원하지 않습니다. 문서는 수기 등록하며 진위를 자동 확인하지 않습니다.</p>
+    <label>2025년 6월 1일 전년 소유 이력<select data-testid="prior-changed-ownership" value={v.prior_ownership_version} onChange={e=>{const p=periods.find(x=>x.version===e.target.value),o=p?.ownerships[0];onChange({...v,prior_ownership_version:p?.version||'',prior_ownership_id:o?.id||'',previous_taxpayer_id:o?.person_id||'',...Object.fromEntries(reviews.map(k=>[k,false]))});}}><option value="">선택</option>{periods.map(p=><option key={p.version} value={p.version}>{p.ownerships[0].name} · {p.valid_from}~{p.valid_until} · {p.ownerships[0].id}</option>)}</select></label>
+    <label>전년 전체 주택의 실제 적용 과세표준 (원)<input data-testid="prior-changed-base" inputMode="numeric" value={v.prior_tax_base||''} onChange={e=>edit('prior_tax_base',Number(e.target.value))}/></label>
+    <label>두 연도 도시지역분<select data-testid="prior-changed-urban" value={v.urban_area} onChange={e=>edit('urban_area',e.target.value)}><option value="no">비과세지역</option><option value="yes">과세지역 · 표준세율</option></select></label>
+    {[['document_id','전년 과표 문서 ID'],['reference','공식 과표 원본 위치·확인 근거'],['nearby_reference','인근 유사주택과 공시가격·전년 과세액 대조 및 조정 불필요 근거'],['transition_reference','2024년 이전 해당 주택 과세 이력'],['review_reference','전후 납세자·일반 과세범위 검토 근거']].map(([k,label])=><label key={k}>{label}<input data-testid={'prior-changed-'+k} value={v[k]} onChange={e=>edit(k,e.target.value)}/></label>)}
+    {[['ordinary_scope_confirmed','전후 개인 단독 일반1주택이고 물건·용도·도시지역·감면·특례·조례가감 변동이 없으며 매매 이전은 한 번입니다'],['prior_base_confirmed','전년 전체 주택의 최종 적용 과표를 확인했고 현재 납세자에게 전년 과세된 주택이 아닙니다'],['nearby_no_adjustment_confirmed','시행령118의 인근 유사주택 대조를 검토했고 현저한 차이로 인한 조정이 필요하지 않습니다']].map(([k,label])=><label key={k}><input type="checkbox" data-testid={'prior-changed-'+k} checked={v[k]} onChange={e=>edit(k,e.target.checked)}/>{label}</label>)}
   </section>;
 }
