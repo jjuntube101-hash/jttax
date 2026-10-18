@@ -526,8 +526,8 @@ function JTReportHub({ setRoute, setSubRoute }) {
           </p>
           <button className="jt-btn jt-btn--primary" onClick={() => setSubRoute("workspace")}>고객·사건 작업대 열기</button>
           <div className="jt-report-hero__meta reveal">
-            <span>● 로그인 불필요</span>
-            <span>● 입력값을 계정에 저장하지 않습니다</span>
+            <span>● 빠른 계산은 로그인 불필요</span>
+            <span>● 빠른 계산 입력은 계정에 저장하지 않습니다</span>
             <span>● 결과로 바로 상담 연결</span>
           </div>
         </div>
