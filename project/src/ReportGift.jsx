@@ -638,6 +638,8 @@ function buildGiftKakao(answers, calc) {
 }
 
 function JTReportGift({ setRoute, onBack }) {
+  const [caseMode, setCaseMode] = useGiftState(false);
+  const [caseValuation, setCaseValuation] = useGiftState(null);
   const [step, setStep] = useGiftState(0);
   const [answers, setAnswers] = useGiftState({});
   const [loading, setLoading] = useGiftState(false);
@@ -823,6 +825,8 @@ function JTReportGift({ setRoute, onBack }) {
     onBack();
   };
 
+  if (caseMode) return <JTGiftCases initialAnswers={answers} initialValuation={caseValuation} onAnswers={next => { setAnswers(next); setReport(null); setQuickReport(null); }} onExit={() => setCaseMode(false)} />;
+
   if (loading) {
     return (
       <div className="jt-container">
@@ -868,6 +872,7 @@ function JTReportGift({ setRoute, onBack }) {
     return (
       <div className="jt-container">
         <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : '증여세 정밀 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <button className="jt-btn jt-btn--ghost" onClick={() => setCaseMode(true)}>사건 저장·불러오기</button>
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
               ⚠️ 비거주자 증여는 증여재산공제 배제 등 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
@@ -1011,6 +1016,7 @@ function JTReportGift({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <JTReportShell title="증여세 계산" subtitle={phase === 'quick' ? '관계·금액만 입력하면 예상 증여세를 바로 보여드려요.' : '사전증여·부담부 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+        <button className="jt-btn jt-btn--ghost" style={{ marginBottom: 16 }} onClick={() => setCaseMode(true)}>사건 저장·불러오기</button>
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
           <h2>{cur.q}</h2>

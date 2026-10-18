@@ -927,7 +927,7 @@ function JTReportProperty({ setRoute, onBack }) {
       <div className="jt-container">
         <JTReportShell title="재산세 계산 결과" subtitle="재산세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <div className="jt-report-result__grade jt-grade-mid">
-            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 재산세(연간 총액)' : '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)'}</div>
+            <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 재산세(연간 총액)' : '재산세·부가세목 계산 소계 (지원 범위 확인 필요)'}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
 
@@ -1058,6 +1058,7 @@ function JTReportProperty({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
+      <button className="jt-btn jt-btn--ghost" onClick={() => { window.location.hash = "/report/workspace"; }}>보유세 사건 입력·저장 작업대 열기</button>
       <JTReportShell title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <JTVWorldAttributes propertyKind={answers.propertyKind} onApplyValue={value => setAnswers(prior => ({ ...prior, standardValue: String(value) }))} />
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}

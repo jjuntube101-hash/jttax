@@ -1,6 +1,6 @@
 /* 자동 생성 파일 — 직접 수정하지 마세요.
    생성: node project/scripts/build_bundle.mjs
-   소스: project/src/*.jsx (29개, ORDER 순서)
+   소스: project/src/*.jsx (46개, ORDER 순서)
    ⛔ 이 파일을 손으로 고치면 다음 빌드에 덮어써집니다. 소스를 고치고 다시 빌드하세요.
    ⛔ 커밋에서 빠뜨리면 라이브가 «옛 코드»로 돕니다 — tests_build_fresh.js 가 막습니다. */
 
@@ -2130,7 +2130,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
     { tag: "AI ASSISTANT", kr: "AI \uC138\uBB34 \uAE38\uC7A1\uC774", d: "\uC0C1\uD669\uC744 \uD3C9\uBC94\uD55C \uB9D0\uB85C \uC785\uB825\uD558\uBA74, \uB9DE\uB294 \uBD84\uC57C\uC640 \uB2E4\uC74C \uC808\uCC28\uB85C \uC548\uB0B4\uD569\uB2C8\uB2E4.", star: true },
     { tag: "AUDIT", kr: "\uC138\uBB34\uC870\uC0AC \uC704\uD5D8\uB3C4 \uC9C4\uB2E8", d: "\uC7C1\uC810 \uB178\uCD9C\uB3C4\uB97C \uC810\uC218\uB85C \uBCF4\uACE0, \uB300\uBE44 \uD3EC\uC778\uD2B8\uB97C \uC815\uB9AC\uD569\uB2C8\uB2E4." }
   ];
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "jt-section jt-report-hero" }, /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("div", { className: "jt-eyebrow reveal" }, "JT TAX CORP. \xB7 \uC138\uAE08 \uACC4\uC0B0\uAE30"), /* @__PURE__ */ React.createElement("h1", { className: "jt-report-hero__title reveal" }, /* @__PURE__ */ React.createElement("span", null, "\uB0B4"), " ", /* @__PURE__ */ React.createElement("span", null, "\uC138\uAE08,"), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { className: "is-accent" }, "\uC9C1\uC811 \uACC4\uC0B0\uD574 \uBCF4\uC138\uC694.")), /* @__PURE__ */ React.createElement("p", { className: "jt-report-hero__sub reveal" }, "\uC591\uB3C4\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC\xB7\uCDE8\uB4DD\xB7\uC7AC\uC0B0\xB7\uC885\uBD80\uC758 \uBD80\uB3D9\uC0B0 \uC138\uAE08\uBD80\uD130 ", /* @__PURE__ */ React.createElement("strong", null, "\uC885\uD569\uC18C\uB4DD\uC138\xB7\uC2E4\uC218\uB839\xB7\uBC95\uC778 \uC804\uD658\xB7\uCCAD\uB144\uCC3D\uC5C5 \uAC10\uBA74 \uC9C4\uB2E8\uAE4C\uC9C0"), " \u2014 \uAC80\uC99D\uB41C \uACC4\uC0B0 \uC5D4\uC9C4\uC73C\uB85C \uBC14\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("br", null), "\uC138\uBC95\uC744 \uAC00\uB974\uCE58\uB294 \uC138\uBB34\uC0AC\uAC00 \uC9C1\uC811 \uC124\uACC4\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "jt-report-hero__meta reveal" }, /* @__PURE__ */ React.createElement("span", null, "\u25CF \uB85C\uADF8\uC778 \uBD88\uD544\uC694"), /* @__PURE__ */ React.createElement("span", null, "\u25CF \uC785\uB825\uAC12\uC744 \uACC4\uC815\uC5D0 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("span", null, "\u25CF \uACB0\uACFC\uB85C \uBC14\uB85C \uC0C1\uB2F4 \uC5F0\uACB0")))), /* @__PURE__ */ React.createElement("section", { className: "jt-section jt-report-grid", style: { background: "linear-gradient(180deg,#fff4e8 0%,#fffaf4 100%)", borderTop: "3px solid #d0680a" } }, /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-grid__head reveal" }, /* @__PURE__ */ React.createElement("div", { style: { display: "inline-flex", alignItems: "center", gap: 7, padding: "5px 14px", borderRadius: 999, background: "rgba(208,104,10,.12)", border: "1px solid rgba(208,104,10,.45)", color: "#a8500a", fontSize: 12.5, fontWeight: 800, letterSpacing: ".04em", marginBottom: 14 } }, "NEW \xB7 2026.8.3 \uBC1C\uD45C"), /* @__PURE__ */ React.createElement("h2", null, "2026 \uC138\uC81C\uAC1C\uD3B8\uC548, \uB0B4 \uC138\uAE08\uC740 \uC5BC\uB9C8\uB098 \uB2EC\uB77C\uC9C0\uB098"), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uC138 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\uAC00 ", /* @__PURE__ */ React.createElement("strong", { style: { color: "#a8500a" } }, "\u300C\uBCF4\uC720\u300D\uC5D0\uC11C \u300C\uAC70\uC8FC\u300D\uB85C"), ", \uC885\uBD80\uC138\uB294 ", /* @__PURE__ */ React.createElement("strong", { style: { color: "#a8500a" } }, "\u300C\uC8FC\uD0DD \uC218\u300D\uC5D0\uC11C \u300C\uAC00\uC561\uACFC \uC2E4\uAC70\uC8FC\u300D\uB85C"), " \uBC14\uB01D\uB2C8\uB2E4. \uAC19\uC740 \uC9D1\uB3C4 \uD30C\uB294 \uD574\uC5D0 \uB530\uB77C \uC138\uAE08\uC774 \uB2EC\uB77C\uC9D1\uB2C8\uB2E4 \u2014 \uC5F0\uB3C4\uBCC4\uB85C \uD55C \uBC88\uC5D0 \uBE44\uAD50\uD574 \uBCF4\uC138\uC694. ", /* @__PURE__ */ React.createElement("span", { style: { color: "#8a6224" } }, "(\uAD6D\uD68C \uD1B5\uACFC \uC804 \uC815\uBD80\uC548 \uAE30\uC900)"))), /* @__PURE__ */ React.createElement("div", { className: "jt-report-live-grid" }, [
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "jt-section jt-report-hero" }, /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("div", { className: "jt-eyebrow reveal" }, "JT TAX CORP. \xB7 \uC138\uAE08 \uACC4\uC0B0\uAE30"), /* @__PURE__ */ React.createElement("h1", { className: "jt-report-hero__title reveal" }, /* @__PURE__ */ React.createElement("span", null, "\uB0B4"), " ", /* @__PURE__ */ React.createElement("span", null, "\uC138\uAE08,"), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { className: "is-accent" }, "\uC9C1\uC811 \uACC4\uC0B0\uD574 \uBCF4\uC138\uC694.")), /* @__PURE__ */ React.createElement("p", { className: "jt-report-hero__sub reveal" }, "\uC591\uB3C4\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC\xB7\uCDE8\uB4DD\xB7\uC7AC\uC0B0\xB7\uC885\uBD80\uC758 \uBD80\uB3D9\uC0B0 \uC138\uAE08\uBD80\uD130 ", /* @__PURE__ */ React.createElement("strong", null, "\uC885\uD569\uC18C\uB4DD\uC138\xB7\uC2E4\uC218\uB839\xB7\uBC95\uC778 \uC804\uD658\xB7\uCCAD\uB144\uCC3D\uC5C5 \uAC10\uBA74 \uC9C4\uB2E8\uAE4C\uC9C0"), " \u2014 \uAC80\uC99D\uB41C \uACC4\uC0B0 \uC5D4\uC9C4\uC73C\uB85C \uBC14\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("br", null), "\uC138\uBC95\uC744 \uAC00\uB974\uCE58\uB294 \uC138\uBB34\uC0AC\uAC00 \uC9C1\uC811 \uC124\uACC4\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => setSubRoute("workspace") }, "\uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-hero__meta reveal" }, /* @__PURE__ */ React.createElement("span", null, "\u25CF \uB85C\uADF8\uC778 \uBD88\uD544\uC694"), /* @__PURE__ */ React.createElement("span", null, "\u25CF \uC785\uB825\uAC12\uC744 \uACC4\uC815\uC5D0 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("span", null, "\u25CF \uACB0\uACFC\uB85C \uBC14\uB85C \uC0C1\uB2F4 \uC5F0\uACB0")))), /* @__PURE__ */ React.createElement("section", { className: "jt-section jt-report-grid", style: { background: "linear-gradient(180deg,#fff4e8 0%,#fffaf4 100%)", borderTop: "3px solid #d0680a" } }, /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-grid__head reveal" }, /* @__PURE__ */ React.createElement("div", { style: { display: "inline-flex", alignItems: "center", gap: 7, padding: "5px 14px", borderRadius: 999, background: "rgba(208,104,10,.12)", border: "1px solid rgba(208,104,10,.45)", color: "#a8500a", fontSize: 12.5, fontWeight: 800, letterSpacing: ".04em", marginBottom: 14 } }, "NEW \xB7 2026.8.3 \uBC1C\uD45C"), /* @__PURE__ */ React.createElement("h2", null, "2026 \uC138\uC81C\uAC1C\uD3B8\uC548, \uB0B4 \uC138\uAE08\uC740 \uC5BC\uB9C8\uB098 \uB2EC\uB77C\uC9C0\uB098"), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uC138 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\uAC00 ", /* @__PURE__ */ React.createElement("strong", { style: { color: "#a8500a" } }, "\u300C\uBCF4\uC720\u300D\uC5D0\uC11C \u300C\uAC70\uC8FC\u300D\uB85C"), ", \uC885\uBD80\uC138\uB294 ", /* @__PURE__ */ React.createElement("strong", { style: { color: "#a8500a" } }, "\u300C\uC8FC\uD0DD \uC218\u300D\uC5D0\uC11C \u300C\uAC00\uC561\uACFC \uC2E4\uAC70\uC8FC\u300D\uB85C"), " \uBC14\uB01D\uB2C8\uB2E4. \uAC19\uC740 \uC9D1\uB3C4 \uD30C\uB294 \uD574\uC5D0 \uB530\uB77C \uC138\uAE08\uC774 \uB2EC\uB77C\uC9D1\uB2C8\uB2E4 \u2014 \uC5F0\uB3C4\uBCC4\uB85C \uD55C \uBC88\uC5D0 \uBE44\uAD50\uD574 \uBCF4\uC138\uC694. ", /* @__PURE__ */ React.createElement("span", { style: { color: "#8a6224" } }, "(\uAD6D\uD68C \uD1B5\uACFC \uC804 \uC815\uBD80\uC548 \uAE30\uC900)"))), /* @__PURE__ */ React.createElement("div", { className: "jt-report-live-grid" }, [
     { sub: "reform-cgt", kr: "2026 \uC138\uC81C\uAC1C\uD3B8\uC548 \uC591\uB3C4\uC138 \uACC4\uC0B0\uAE30", tagline: "2026 \xB7 2027 \xB7 2028 \xB7 2029\uB144 \uBE44\uAD50", d: "\uC7A5\uD2B9\uACF5\uC81C\uAC00 \uAC70\uC8FC \uAE30\uC900\uC73C\uB85C \uBC14\uB00C\uBA74 \uB0B4 \uC591\uB3C4\uC138\uB294 \uC5BC\uB9C8\uAC00 \uB420\uAE4C. \uB2E4\uC8FC\uD0DD \uC911\uACFC \uD55C\uC2DC \uC644\uD654(2027~2028\uB144)\uC640 \uC0C8\uB85C \uC0DD\uAE30\uB294 \uACF5\uC81C \uD55C\uB3C4(20\uC5B5\u219210\uC5B5)\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB124 \uAC1C \uC5F0\uB3C4\uB97C \uD55C \uD654\uBA74\uC5D0\uC11C \uBE44\uAD50\uD569\uB2C8\uB2E4." },
     { sub: "reform-cre", kr: "2026 \uC885\uBD80\uC138 \uAC1C\uD3B8\uC548 \uACC4\uC0B0\uAE30", tagline: "\uAC70\uC8FC 14\uC5B5 vs \uBE44\uAC70\uC8FC 9\uC5B5", d: "1\uC8FC\uD0DD \uAE30\uBCF8\uACF5\uC81C\uAC00 \uC2E4\uAC70\uC8FC \uC5EC\uBD80\uB85C \uAC08\uB9BD\uB2C8\uB2E4. \uACF5\uC815\uC2DC\uC7A5\uAC00\uC561\uBE44\uC728 \uC778\uC0C1(60\u219270\u219280%)\uACFC \uAC00\uC561 \uAE30\uC900 \uC138\uC728 \uC77C\uC6D0\uD654\uAE4C\uC9C0 \uBC18\uC601\uD574 2026\xB72027\xB72028\uB144 \uC885\uBD80\uC138\uB97C \uBE44\uAD50\uD569\uB2C8\uB2E4." },
     { sub: "crypto", kr: "\uAC00\uC0C1\uC790\uC0B0(\uCF54\uC778) \uC138\uAE08 \uACC4\uC0B0\uAE30", tagline: "2027.1.1 \uC2DC\uD589 \uC608\uC815 \xB7 22%", d: "\uCF54\uC778 \uC138\uAE08\uC740 2027\uB144 1\uC6D4 1\uC77C\uBD80\uD130\uC785\uB2C8\uB2E4. 2026\uB144 \uB9D0\uAE4C\uC9C0 \uC624\uB978 \uBD80\uBD84\uC740 \u300C\uC758\uC81C\uCDE8\uB4DD\uAC00\uC561\u300D\uC73C\uB85C \uACFC\uC138 \uB300\uC0C1\uC5D0\uC11C \uBE60\uC9D1\uB2C8\uB2E4 \u2014 2026\uB144\uC5D0 \uD314 \uB54C\uC640 2027\uB144\uC5D0 \uD314 \uB54C\uAC00 \uC5BC\uB9C8\uB098 \uB2E4\uB978\uC9C0 \uACC4\uC0B0\uD569\uB2C8\uB2E4." }
@@ -2204,7 +2204,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
   } }, "\uC0C1\uB2F4 \uC608\uC57D ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192")), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setRoute("services") }, "\uC5C5\uBB34\uBD84\uC57C \uBCF4\uAE30")))));
 }
 window.JTReportHub = JTReportHub;
-const JT_KNOWN_SUBS = ["hub", "appeal", "cgt", "income", "vat", "gift", "inheritance", "acquisition", "acq-check", "property", "comprehensive", "corporate", "insurance", "compare", "burden", "youthstartup", "reform-cgt", "reform-cre", "crypto"];
+const JT_KNOWN_SUBS = ["hub", "workspace", "appeal", "cgt", "income", "vat", "gift", "inheritance", "acquisition", "acq-check", "property", "comprehensive", "corporate", "insurance", "compare", "burden", "youthstartup", "reform-cgt", "reform-cre", "crypto"];
 const jtNormSub = (s) => JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : "hub";
 function JTReportPage({ setRoute }) {
   const [subRoute, setSubRouteRaw] = useReportState(() => {
@@ -2258,7 +2258,7 @@ function JTReportPage({ setRoute }) {
     return () => clearTimeout(t);
   }, [subRoute]);
   const back = () => setSubRoute("hub");
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-report" }, subRoute === "hub" && /* @__PURE__ */ React.createElement(JTReportHub, { setRoute, setSubRoute }), subRoute === "reform-cgt" && /* @__PURE__ */ React.createElement(JTReportReformCGT, { setRoute, setSubRoute, onBack: back }), subRoute === "reform-cre" && /* @__PURE__ */ React.createElement(JTReportReformCRE, { setRoute, setSubRoute, onBack: back }), subRoute === "crypto" && /* @__PURE__ */ React.createElement(JTReportCrypto, { setRoute, setSubRoute, onBack: back }), subRoute === "appeal" && /* @__PURE__ */ React.createElement(JTReportAppeal, { setRoute, onBack: back }), subRoute === "cgt" && /* @__PURE__ */ React.createElement(JTReportCGT, { setRoute, onBack: back }), subRoute === "income" && /* @__PURE__ */ React.createElement(JTReportIncome, { setRoute, onBack: back }), subRoute === "gift" && /* @__PURE__ */ React.createElement(JTReportGift, { setRoute, onBack: back }), subRoute === "inheritance" && /* @__PURE__ */ React.createElement(JTReportInheritance, { setRoute, onBack: back }), subRoute === "acquisition" && /* @__PURE__ */ React.createElement(JTReportAcquisition, { setRoute, onBack: back }), subRoute === "acq-check" && /* @__PURE__ */ React.createElement(JTReportAcqCheck, { setRoute, onBack: back }), subRoute === "property" && /* @__PURE__ */ React.createElement(JTReportProperty, { setRoute, onBack: back }), subRoute === "comprehensive" && /* @__PURE__ */ React.createElement(JTReportComprehensive, { setRoute, onBack: back }), subRoute === "corporate" && /* @__PURE__ */ React.createElement(JTReportCorporate, { setRoute, onBack: back }), subRoute === "insurance" && /* @__PURE__ */ React.createElement(JTReportInsurance, { setRoute, onBack: back }), subRoute === "vat" && /* @__PURE__ */ React.createElement(JTReportVat, { setRoute, onBack: back }), subRoute === "compare" && /* @__PURE__ */ React.createElement(JTReportCompare, { setRoute, onBack: back }), subRoute === "burden" && /* @__PURE__ */ React.createElement(JTReportBurden, { setRoute, onBack: back }), subRoute === "youthstartup" && /* @__PURE__ */ React.createElement(JTReportYouthStartup, { setRoute, onBack: back }));
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-report" }, subRoute === "workspace" && /* @__PURE__ */ React.createElement(JTCaseWorkspace, { onBack: back }), subRoute === "hub" && /* @__PURE__ */ React.createElement(JTReportHub, { setRoute, setSubRoute }), subRoute === "reform-cgt" && /* @__PURE__ */ React.createElement(JTReportReformCGT, { setRoute, setSubRoute, onBack: back }), subRoute === "reform-cre" && /* @__PURE__ */ React.createElement(JTReportReformCRE, { setRoute, setSubRoute, onBack: back }), subRoute === "crypto" && /* @__PURE__ */ React.createElement(JTReportCrypto, { setRoute, setSubRoute, onBack: back }), subRoute === "appeal" && /* @__PURE__ */ React.createElement(JTReportAppeal, { setRoute, onBack: back }), subRoute === "cgt" && /* @__PURE__ */ React.createElement(JTReportCGT, { setRoute, onBack: back }), subRoute === "income" && /* @__PURE__ */ React.createElement(JTReportIncome, { setRoute, onBack: back }), subRoute === "gift" && /* @__PURE__ */ React.createElement(JTReportGift, { setRoute, onBack: back }), subRoute === "inheritance" && /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setSubRoute("workspace") }, "\uC0C1\uC18D \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5 \uC791\uC5C5\uB300 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement("p", null, "\uC0AC\uAC74 \uC791\uC5C5\uB300\uC5D0\uC11C\uB294 \uACE0\uAC1D\uBCC4 \uC7AC\uC0B0\xB7\uC0C1\uC18D\uC778 \uC0AC\uC2E4\uC744 \uD655\uC778\uD558\uACE0 \uC800\uC7A5\xB7\uACC4\uC0B0\xB7\uACFC\uAC70 \uACB0\uACFC\uB97C \uAD00\uB9AC\uD569\uB2C8\uB2E4. \uC544\uB798 \uBE60\uB978 \uACC4\uC0B0 \uB2F5\uC548\uC740 \uC790\uB3D9 \uC774\uC804\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")), subRoute === "inheritance" && /* @__PURE__ */ React.createElement(JTReportInheritance, { setRoute, onBack: back }), subRoute === "acquisition" && /* @__PURE__ */ React.createElement(JTReportAcquisition, { setRoute, onBack: back }), subRoute === "acq-check" && /* @__PURE__ */ React.createElement(JTReportAcqCheck, { setRoute, onBack: back }), subRoute === "property" && /* @__PURE__ */ React.createElement(JTReportProperty, { setRoute, onBack: back }), subRoute === "comprehensive" && /* @__PURE__ */ React.createElement(JTReportComprehensive, { setRoute, onBack: back }), subRoute === "corporate" && /* @__PURE__ */ React.createElement(JTReportCorporate, { setRoute, onBack: back }), subRoute === "insurance" && /* @__PURE__ */ React.createElement(JTReportInsurance, { setRoute, onBack: back }), subRoute === "vat" && /* @__PURE__ */ React.createElement(JTReportVat, { setRoute, onBack: back }), subRoute === "compare" && /* @__PURE__ */ React.createElement(JTReportCompare, { setRoute, onBack: back }), subRoute === "burden" && /* @__PURE__ */ React.createElement(JTReportBurden, { setRoute, onBack: back }), subRoute === "youthstartup" && /* @__PURE__ */ React.createElement(JTReportYouthStartup, { setRoute, onBack: back }));
 }
 window.JTReportPage = JTReportPage;
 
@@ -6253,6 +6253,4558 @@ function JTReportIncome({ setRoute, onBack }) {
 window.JTReportIncome = JTReportIncome;
 
 
+/* ────────── GiftFilings.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const GIFT_FILING_FIELDS = {
+  header: [
+    ["hometax_user_id", "\uD648\uD0DD\uC2A4 \uC0AC\uC6A9\uC790 ID", "text", true],
+    ["submission_ym", "\uC81C\uCD9C \uC5F0\uC6D4 (YYYYMM)", "text", true],
+    ["payment_ym", "\uB0A9\uBD80 \uC5F0\uC6D4 (YYYYMM)", "text", true],
+    ["agent_name", "\uC138\uBB34\uB300\uB9AC\uC778 \uC131\uBA85"],
+    ["agent_registration", "\uC138\uBB34\uB300\uB9AC\uC778 \uAD00\uB9AC\uBC88\uD638"],
+    ["agent_phone", "\uC138\uBB34\uB300\uB9AC\uC778 \uC804\uD654\uBC88\uD638"],
+    ["agent_business_number", "\uC138\uBB34\uB300\uB9AC\uC778 \uC0AC\uC5C5\uC790\uB4F1\uB85D\uBC88\uD638"]
+  ],
+  basic: [
+    ["donee_identifier", "\uC218\uC99D\uC790 \uC8FC\uBBFC\uB4F1\uB85D\uBC88\uD638 (\uC22B\uC790 13\uC790\uB9AC)", "password", true],
+    ["donee_name", "\uC218\uC99D\uC790 \uC131\uBA85", "text", true],
+    ["donee_phone", "\uC218\uC99D\uC790 \uC804\uD654\uBC88\uD638", "text", true],
+    ["donee_email", "\uC218\uC99D\uC790 \uC774\uBA54\uC77C"],
+    ["donor_identifier", "\uC99D\uC5EC\uC790 \uC8FC\uBBFC\uB4F1\uB85D\uBC88\uD638 (\uC22B\uC790 13\uC790\uB9AC)", "password", true],
+    ["donor_name", "\uC99D\uC5EC\uC790 \uC131\uBA85", "text", true],
+    ["donor_address", "\uC99D\uC5EC\uC790 \uC8FC\uC18C"],
+    ["donor_phone", "\uC99D\uC5EC\uC790 \uC804\uD654\uBC88\uD638"],
+    ["legal_dong_code", "\uC218\uC99D\uC790 \uBC95\uC815\uB3D9 \uCF54\uB4DC (10\uC790\uB9AC)", "text", true],
+    ["legal_dong_name", "\uC218\uC99D\uC790 \uBC95\uC815\uB3D9 \uBA85\uCE6D", "text", true],
+    ["mountain_code", "\uC0B0 \uAD6C\uBD84 \uCF54\uB4DC", "text", true],
+    ["lot_main", "\uC9C0\uBC88 \uBCF8\uBC88", "integer", true],
+    ["lot_sub", "\uC9C0\uBC88 \uBD80\uBC88 (\uC5C6\uC73C\uBA74 0)", "integer", true],
+    ["building_name", "\uAC74\uBB3C\xB7\uB2E8\uC9C0\uBA85"],
+    ["building_dong", "\uB3D9"],
+    ["building_ho", "\uD638"],
+    ["tong", "\uD1B5", "integer"],
+    ["ban", "\uBC18", "integer"]
+  ]
+};
+const GIFT_FILING_RELATIONS = [
+  ["02", "\uCC98"],
+  ["07", "\uB0A8\uD3B8"],
+  ["05", "\uC790\uB140"],
+  ["03", "\uBD80"],
+  ["04", "\uBAA8"],
+  ["40", "\uC190\uC790\uB140"],
+  ["43", "\uC99D\uC190"],
+  ["45", "\uACE0\uC190"],
+  ["76", "\uC678\uC190"],
+  ["ZA", "\uBB34\uAD00\uACC4"]
+];
+function giftFilingBlank() {
+  return {
+    header: __spreadValues({
+      program_code: "9000",
+      taxpayer_type: "1",
+      filing_role: "self"
+    }, Object.fromEntries(GIFT_FILING_FIELDS.header.map(([k]) => [k, ""]))),
+    basic: __spreadValues({ relationship_code: "" }, Object.fromEntries(GIFT_FILING_FIELDS.basic.map(([k]) => [k, ""])))
+  };
+}
+function giftFilingPack(form) {
+  const packed = JSON.parse(JSON.stringify(form));
+  for (const group of ["header", "basic"]) for (const [key, title, kind] of GIFT_FILING_FIELDS[group]) {
+    const value = packed[group][key];
+    if (value == null || value === "") packed[group][key] = null;
+    else if (kind === "integer") {
+      const n = Number(value);
+      if (!/^[0-9]+$/.test(String(value)) || !Number.isSafeInteger(n)) throw new Error(title + ": 0 \uC774\uC0C1\uC758 \uC815\uC218\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+      packed[group][key] = n;
+    }
+  }
+  if (packed.basic.relationship_code === "") packed.basic.relationship_code = null;
+  return packed;
+}
+function giftFilingIssue(issue) {
+  const titles = Object.fromEntries(Object.entries(GIFT_FILING_FIELDS).flatMap(([group, fields]) => fields.map(([key, title]) => ["filing_input." + group + "." + key, title])));
+  Object.assign(titles, {
+    "filing_input.basic.relationship_code": "\uC99D\uC5EC\uC790 \uAE30\uC900 \uC218\uC99D\uC790\uC758 \uAD00\uACC4",
+    "source.gift_date": "\uC800\uC7A5\uB41C \uC99D\uC5EC\uC77C",
+    "source.donee_age": "\uC800\uC7A5\uB41C \uC218\uC99D\uC790 \uB098\uC774",
+    "source.residency": "\uC800\uC7A5\uB41C \uAC70\uC8FC\uC790 \uC5EC\uBD80",
+    "source.generation_skip": "\uC800\uC7A5\uB41C \uC138\uB300\uC0DD\uB7B5 \uC0AC\uC2E4"
+  });
+  const messages = {
+    REQUIRED_FIELD: "\uD544\uC218 \uC785\uB825\uC785\uB2C8\uB2E4.",
+    BYTE_WIDTH_EXCEEDED: "\uC2E0\uACE0 \uADDC\uACA9\uC758 \uBC14\uC774\uD2B8 \uAE38\uC774\uB97C \uCD08\uACFC\uD588\uC2B5\uB2C8\uB2E4.",
+    INVALID_KSC5601_TEXT: "\uC2E0\uACE0 \uD30C\uC77C\uC5D0\uC11C \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uBB38\uC790\uC785\uB2C8\uB2E4.",
+    INVALID_FIELD_FORMAT: "\uC785\uB825 \uD615\uC2DD\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+    INVALID_MONTH: "\uC720\uD6A8\uD55C \uC5F0\uC6D4\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.",
+    SOURCE_GIFT_DATE_MISSING: "\uC0AC\uAC74\uC5D0 \uC99D\uC5EC\uC77C\uC744 \uC800\uC7A5\uD558\uACE0 \uACC4\uC0B0\uD55C \uACB0\uACFC\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4.",
+    SAVED_RUN_AGE_MISMATCH: "\uC8FC\uBBFC\uBC88\uD638\uC758 \uC0DD\uB144\uC6D4\uC77C\uACFC \uC99D\uC5EC\uC77C \uAE30\uC900 \uB098\uC774\uAC00 \uC800\uC7A5\uB41C \uACC4\uC0B0\uACFC \uB2E4\uB985\uB2C8\uB2E4.",
+    SAVED_RUN_RELATIONSHIP_MISMATCH: "\uC800\uC7A5\uB41C \uACC4\uC0B0\uC758 \uC99D\uC5EC \uAD00\uACC4\uC640 \uB2E4\uB985\uB2C8\uB2E4.",
+    SAVED_RUN_GENERATION_MISMATCH: "\uC800\uC7A5\uB41C \uACC4\uC0B0\uC758 \uC138\uB300\uC0DD\uB7B5 \uC0AC\uC2E4\uACFC \uB2E4\uB985\uB2C8\uB2E4.",
+    SAVED_RUN_FACT_MISMATCH: "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uC0AC\uC2E4\uACFC \uB2E4\uB985\uB2C8\uB2E4.",
+    SOURCE_FACT_MISMATCH: "\uACC4\uC0B0 \uC6D0\uBCF8\uC758 \uC0AC\uC2E4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.",
+    UNSUPPORTED_OR_INVALID_IDENTIFIER: "\uAD6D\uB0B4 \uC790\uC5F0\uC778\uC758 \uBC88\uD638 \uD615\uC2DD\xB7\uC0DD\uB144\uC6D4\uC77C\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+    PARTIES_MUST_DIFFER: "\uC218\uC99D\uC790\uC640 \uC99D\uC5EC\uC790\uC758 \uC2DD\uBCC4\uBC88\uD638\uAC00 \uAC19\uC2B5\uB2C8\uB2E4.",
+    UNSUPPORTED_NONRESIDENT: "\uBE44\uAC70\uC8FC\uC790 \uC2E0\uACE0 \uD30C\uC77C\uC740 \uC544\uC9C1 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
+    UNSUPPORTED_RELATIONSHIP_CODE: "\uC774 \uAD00\uACC4 \uCF54\uB4DC\uB294 \uC544\uC9C1 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
+    AGENT_ROLE_REQUIRED: "\uC138\uBB34\uB300\uB9AC\uC778 \uC791\uC131 \uAD6C\uBD84\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694."
+  };
+  return (titles[issue.field_path] || "\uC2E0\uACE0 \uD56D\uBAA9") + ": " + (messages[issue.code] || "\uD604\uC7AC \uC9C0\uC6D0 \uBC94\uC704\uC640 \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.") + " [" + issue.code + "]";
+}
+function JTGiftFilings({ run, requestApi, token, busy, act, dirty, onDirty, keyFor }) {
+  var _a, _b, _c, _d;
+  const memory = React.useRef((_a = jtGiftSession.filings) == null ? void 0 : _a[run.run_id]).current;
+  const [form, setForm] = React.useState((memory == null ? void 0 : memory.form) || giftFilingBlank);
+  const [baseline, setBaseline] = React.useState((memory == null ? void 0 : memory.baseline) || null);
+  const [saved, setSaved] = React.useState((memory == null ? void 0 : memory.saved) || null);
+  const [touched, setTouched] = React.useState((memory == null ? void 0 : memory.touched) || false);
+  const [items, setItems] = React.useState([]);
+  const [choice, setChoice] = React.useState(((_b = memory == null ? void 0 : memory.saved) == null ? void 0 : _b.filing_id) || "");
+  const [message, setMessage] = React.useState("");
+  const [listError, setListError] = React.useState("");
+  const listVersion = React.useRef(0);
+  const formDirty = baseline == null ? touched : JSON.stringify(form) !== baseline;
+  const path = "/v1/gift-cases/" + run.case_id + "/runs/" + run.run_id + "/filings";
+  React.useEffect(() => {
+    (jtGiftSession.filings || (jtGiftSession.filings = {}))[run.run_id] = { form, baseline, saved, touched };
+    onDirty(formDirty);
+  }, [form, baseline, saved, touched, formDirty]);
+  React.useEffect(() => () => onDirty(false), []);
+  React.useEffect(() => {
+    if (!token) return;
+    let active = true;
+    const version = ++listVersion.current;
+    requestApi(path).then((data) => {
+      if (active && version === listVersion.current) {
+        setItems(data.items);
+        setListError("");
+      }
+    }).catch(() => {
+      if (active && version === listVersion.current) setListError("\uC2E0\uACE0 \uBAA9\uB85D\uC744 \uBD88\uB7EC\uC624\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC870\uD68C\uD574 \uC8FC\uC138\uC694.");
+    });
+    return () => {
+      active = false;
+    };
+  }, [token, run.run_id]);
+  const change = (group, key, value) => {
+    setForm((old) => __spreadProps(__spreadValues({}, old), { [group]: __spreadProps(__spreadValues({}, old[group]), { [key]: value }) }));
+    setTouched(true);
+    setMessage("");
+  };
+  const accept = (data) => {
+    var _a2;
+    if (data.run_id !== run.run_id || data.case_id !== run.case_id || data.revision_id !== run.revision_id || !((_a2 = data.snapshot) == null ? void 0 : _a2.filing_input))
+      throw new Error("\uC2E0\uACE0 \uC800\uC7A5\uBCF8\uACFC \uC120\uD0DD\uD55C \uACC4\uC0B0 \uACB0\uACFC\uAC00 \uB2E4\uB985\uB2C8\uB2E4. \uBAA9\uB85D\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    ++listVersion.current;
+    setSaved(data);
+    setForm(data.snapshot.filing_input);
+    setBaseline(JSON.stringify(data.snapshot.filing_input));
+    setTouched(false);
+    setChoice(data.filing_id);
+    setItems((old) => [data, ...old.filter((x) => x.filing_id !== data.filing_id)]);
+    setListError("");
+  };
+  const save = async () => {
+    const body = { filing_input: giftFilingPack(form) };
+    accept(await requestApi(path, { method: "POST", headers: { "Idempotency-Key": keyFor(path, body) }, body: JSON.stringify(body) }));
+    setMessage("\uC2E0\uACE0 \uC785\uB825\uC744 \uC800\uC7A5\uD588\uC2B5\uB2C8\uB2E4. \uC544\uB798\uB294 \uC800\uC7A5\uBCF8\uC758 \uC900\uBE44 \uC0C1\uD0DC\uC785\uB2C8\uB2E4.");
+  };
+  const refresh = async () => {
+    const version = ++listVersion.current;
+    const data = await requestApi(path);
+    if (version === listVersion.current) {
+      setItems(data.items);
+      setListError("");
+    }
+  };
+  const reopen = async () => {
+    if (formDirty && !window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC2E0\uACE0 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC120\uD0DD\uD55C \uC800\uC7A5\uBCF8\uC744 \uC5F4\uAE4C\uC694?")) return;
+    accept(await requestApi("/v1/gift-filings/" + choice));
+    setMessage("\uC2E0\uACE0 \uC785\uB825\uACFC \uC900\uBE44 \uC0C1\uD0DC\uB97C \uC800\uC7A5\uBCF8\uC5D0\uC11C \uB2E4\uC2DC \uC5F4\uC5C8\uC2B5\uB2C8\uB2E4.");
+  };
+  const generate = async () => {
+    const route = "/v1/gift-filings/" + saved.filing_id + "/artifacts";
+    accept(await requestApi(route, { method: "POST", headers: { "Idempotency-Key": keyFor(route, {}) }, body: "{}" }));
+    setMessage("01\xB702 \uBD80\uBD84 \uD30C\uC77C\uC774 \uC800\uC7A5\uB410\uC2B5\uB2C8\uB2E4. \uD648\uD0DD\uC2A4 \uC81C\uCD9C\uC6A9 \uD30C\uC77C\uC740 \uC544\uB2D9\uB2C8\uB2E4.");
+  };
+  const download = async (kind) => {
+    const blob = await requestApi("/v1/gift-filings/" + saved.filing_id + "/files/" + kind, { download: true });
+    const url = URL.createObjectURL(blob), anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "gift-PARTIAL-" + saved.filing_id + (kind === "manifest" ? ".manifest.json" : ".records.txt");
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1e4);
+  };
+  const field = (group, descriptor) => {
+    var _a2;
+    const [key, title, kind = "text", required] = descriptor;
+    return /* @__PURE__ */ React.createElement(GiftCaseField, { key, title: title + (required ? " \xB7 \uD544\uC218" : "") }, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        "data-testid": "filing-" + key,
+        autoComplete: "off",
+        spellCheck: false,
+        type: kind === "password" ? "password" : "text",
+        inputMode: kind === "integer" || kind === "password" ? "numeric" : void 0,
+        value: (_a2 = form[group][key]) != null ? _a2 : "",
+        onChange: (e) => change(group, key, e.target.value)
+      }
+    ));
+  };
+  const issues = ((_c = saved == null ? void 0 : saved.validation) == null ? void 0 : _c.issues) || [];
+  const conflicts = issues.filter((x) => x.code === "SPEC_RECORD_LENGTH_CONFLICT");
+  const attachments = issues.filter((x) => x.code === "ATTACHMENT_NOT_IMPLEMENTED");
+  const inputs = issues.filter((x) => !["SPEC_RECORD_LENGTH_CONFLICT", "ATTACHMENT_NOT_IMPLEMENTED"].includes(x.code));
+  const ready = !!((_d = saved == null ? void 0 : saved.validation) == null ? void 0 : _d.resolved_records_ready) && !formDirty;
+  return /* @__PURE__ */ React.createElement("section", { className: "gc-card", "aria-label": "\uC99D\uC5EC \uC2E0\uACE0 \uC900\uBE44" }, /* @__PURE__ */ React.createElement("h3", null, "\uC774 \uACC4\uC0B0 \uACB0\uACFC\uC758 \uC2E0\uACE0 \uC900\uBE44"), /* @__PURE__ */ React.createElement("p", { className: "gc-status" }, "\uC81C\uCD9C\uC6A9 \uD30C\uC77C \uBBF8\uC644\uC131 \xB7 \uD604\uC7AC\uB294 \uAE30\uBCF8\uC815\uBCF4 01\xB702 \uBD80\uBD84 \uD30C\uC77C\uB9CC \uB9CC\uB4E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, dirty ? "\uD604\uC7AC \uC218\uC815 \uC911\uC778 \uACC4\uC0B0 \uC785\uB825\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC704\uC5D0 \uD45C\uC2DC\uB41C \uC800\uC7A5 \uACC4\uC0B0 \uACB0\uACFC\uC5D0 \uC5F0\uACB0\uD569\uB2C8\uB2E4." : "\uC704\uC5D0 \uD45C\uC2DC\uB41C \uC800\uC7A5 \uC785\uB825\xB7\uACC4\uC0B0 \uACB0\uACFC\uC5D0 \uC5F0\uACB0\uD558\uBA70 \uC138\uC561\uC744 \uB2E4\uC2DC \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.", " \uC2E0\uACE0 \uC785\uB825\uC744 \uBC14\uAFD4\uB3C4 \uACC4\uC0B0 \uC6D0\uBCF8\uC740 \uBC14\uB00C\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uD604\uC7AC \uC9C0\uC6D0: \uAD6D\uB0B4 \uC790\uC5F0\uC778\xB7\uAC70\uC8FC\uC790\xB7\uC9C0\uBC88 \uC8FC\uC18C\uC640 \uC544\uB798 \uAD00\uACC4 \uCF54\uB4DC. \uC8FC\uBBFC\uBC88\uD638\uB294 \uD615\uC2DD\xB7\uC0DD\uB144\uC6D4\uC77C\uB9CC \uD655\uC778\uD558\uBA70 \uD648\uD0DD\uC2A4 ID\xB7\uC8FC\uC18C \uCF54\uB4DC\uC758 \uC2E4\uC874\uC774\uB098 \uD648\uD0DD\uC2A4 \uC218\uC6A9\uC740 \uD655\uC778\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), message && /* @__PURE__ */ React.createElement("p", { role: "status", className: "gc-status" }, message), listError && /* @__PURE__ */ React.createElement("p", { role: "alert", className: "gc-status gc-error" }, listError), /* @__PURE__ */ React.createElement("div", { className: "gc-actions" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy, onClick: () => act(refresh) }, "\uC2E0\uACE0 \uC800\uC7A5 \uBAA9\uB85D \uC870\uD68C"), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC2E0\uACE0 \uC800\uC7A5\uBCF8 \uC120\uD0DD" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "filing-selection", value: choice, disabled: busy, onChange: (e) => setChoice(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), items.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.filing_id, value: x.filing_id }, new Date(x.created_at).toLocaleString("ko-KR"), " \xB7 ", x.artifact ? "\uBD80\uBD84 \uD30C\uC77C \uC788\uC74C" : "\uC2E0\uACE0 \uC785\uB825", " \xB7 ", x.filing_id.slice(0, 8))))), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy || !choice, onClick: () => act(reopen) }, "\uC2E0\uACE0 \uC800\uC7A5\uBCF8 \uC5F4\uAE30")), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy }, /* @__PURE__ */ React.createElement("h4", null, "\uC791\uC131\uC790\uC640 \uC81C\uCD9C \uC815\uBCF4"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC5F0\uC6D4\uC740 202610\uCC98\uB7FC \uC785\uB825\uD569\uB2C8\uB2E4. \uD544\uC218 \uD56D\uBAA9\uC774 \uBE44\uC5B4 \uC788\uC5B4\uB3C4 \uCD08\uC548 \uC800\uC7A5\uC740 \uAC00\uB2A5\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, GIFT_FILING_FIELDS.header.slice(0, 3).map((f) => field("header", f)), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC791\uC131 \uAD6C\uBD84" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "filing-role", value: form.header.filing_role, onChange: (e) => change("header", "filing_role", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "self" }, "\uBCF8\uC778 \uC791\uC131"), /* @__PURE__ */ React.createElement("option", { value: "agent" }, "\uC138\uBB34\uB300\uB9AC\uC778 \uC791\uC131")))), /* @__PURE__ */ React.createElement("details", { open: form.header.filing_role === "agent" }, /* @__PURE__ */ React.createElement("summary", null, "\uC138\uBB34\uB300\uB9AC\uC778 \uC815\uBCF4 (\uB300\uB9AC \uC791\uC131 \uC2DC \uD544\uC218)"), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, GIFT_FILING_FIELDS.header.slice(3).map((f) => field("header", f)))), /* @__PURE__ */ React.createElement("h4", null, "\uC2E0\uACE0 \uC778\uC801\uC0AC\uD56D\uACFC \uC9C0\uBC88 \uC8FC\uC18C"), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, GIFT_FILING_FIELDS.basic.map((f) => field("basic", f)), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC99D\uC5EC\uC790 \uAE30\uC900 \uC218\uC99D\uC790\uC758 \uAD00\uACC4 \xB7 \uD544\uC218", hint: "\uC608: \uBD80\uBAA8\uAC00 \uC790\uB140\uC5D0\uAC8C \uC99D\uC5EC\uD558\uBA74 \uC790\uB140(05). \uACC4\uC0B0 \uD654\uBA74\uC758 \u2018\uB204\uAD6C\uC5D0\uAC8C\uC11C \uBC1B\uC558\uB294\uAC00\u2019\uC640 \uAE30\uC900\uC774 \uB2E4\uB985\uB2C8\uB2E4." }, /* @__PURE__ */ React.createElement("select", { "data-testid": "filing-relationship_code", value: form.basic.relationship_code || "", onChange: (e) => change("basic", "relationship_code", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), GIFT_FILING_RELATIONS.map(([code, title]) => /* @__PURE__ */ React.createElement("option", { key: code, value: code }, title, " (", code, ")")))))), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, formDirty ? "\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC2E0\uACE0 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC800\uC7A5 \uD6C4 \uC900\uBE44 \uC0C1\uD0DC\uB97C \uB2E4\uC2DC \uD655\uC778\uD558\uC138\uC694." : saved ? "\uD604\uC7AC \uD45C\uC2DC\uB41C \uC2E0\uACE0 \uC785\uB825\uC740 \uC800\uC7A5\uBCF8\uC785\uB2C8\uB2E4." : "\uC2E0\uACE0 \uC815\uBCF4\uB97C \uC785\uB825\uD558\uAC70\uB098 \uC800\uC7A5\uBCF8\uC744 \uC5F4\uC5B4 \uC8FC\uC138\uC694.", " \uC0C8\uB85C\uACE0\uCE68 \uC804 \uC800\uC7A5\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: !token || busy, onClick: () => act(save) }, "\uC2E0\uACE0 \uC785\uB825 \uC800\uC7A5\xB7\uAC80\uC99D"), saved && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uC2E0\uACE0 \uC900\uBE44 \uAC80\uC99D \uACB0\uACFC" }, /* @__PURE__ */ React.createElement("h4", null, "\uC800\uC7A5\uBCF8\uC758 \uC900\uBE44 \uC0C1\uD0DC ", formDirty ? "\xB7 \uC218\uC815 \uC804 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC99D\uC5EC\uC77C: ", saved.snapshot.input_snapshot.case_input.gift_date || "\uBBF8\uC785\uB825", " \xB7 \uC5F0\uACB0\uB41C \uC2E0\uACE0 \uC800\uC7A5\uBCF8: ", saved.filing_id.slice(0, 8)), /* @__PURE__ */ React.createElement("h5", null, "\uC785\uB825 \uD655\uC778 (", inputs.length, ")"), inputs.length ? /* @__PURE__ */ React.createElement("ul", null, inputs.map((x, i) => /* @__PURE__ */ React.createElement("li", { key: i }, giftFilingIssue(x)))) : /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uC6D0 \uBC94\uC704 \uB0B4 \uAE30\uBCF8\uC815\uBCF4 \uAC80\uC0AC \uD1B5\uACFC"), /* @__PURE__ */ React.createElement("h5", null, "\uADDC\uACA9 \uCDA9\uB3CC (", conflicts.length, ")"), /* @__PURE__ */ React.createElement("ul", null, conflicts.map((x, i) => /* @__PURE__ */ React.createElement("li", { key: i }, x.record_code, " \uB808\uCF54\uB4DC: \uACF5\uC2DD \uC124\uBA85\uC11C\uC758 \uC694\uC57D\xB7\uC0C1\uC138 \uAE38\uC774\uAC00 \uB2EC\uB77C \uC0DD\uC131\uC744 \uBCF4\uB958\uD588\uC2B5\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("h5", null, "\uCCA8\uBD80 \uBBF8\uC9C0\uC6D0 (", attachments.length, ")"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, attachments.map((x) => x.record_code).join(", ") || "\uC5C6\uC74C", " \xB7 \uAC01 \uC0AC\uAC74\uC5D0 \uD544\uC694\uD55C \uCCA8\uBD80\uB97C \uC544\uC9C1 \uC0DD\uC131\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uBAA8\uB4E0 \uCCA8\uBD80\uAC00 \uD544\uC218\uB77C\uB294 \uB73B\uC740 \uC544\uB2D9\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "gc-actions" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy || !ready || !!saved.artifact, onClick: () => act(generate) }, "01\xB702 \uBD80\uBD84 \uD30C\uC77C \uB9CC\uB4E4\uAE30"), saved.artifact && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy || formDirty, onClick: () => act(() => download("resolved-records")) }, "\uC800\uC7A5\uB41C \uBD80\uBD84 \uD30C\uC77C \uB2E4\uC6B4\uB85C\uB4DC"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy || formDirty, onClick: () => act(() => download("manifest")) }, "\uD30C\uC77C \uAC80\uC99D \uC815\uBCF4 \uB2E4\uC6B4\uB85C\uB4DC"))), saved.artifact && /* @__PURE__ */ React.createElement("p", { className: "gc-help", style: { overflowWrap: "anywhere" } }, "\uBD80\uBD84 \uD30C\uC77C ", saved.artifact.bytes, "\uBC14\uC774\uD2B8 \xB7 SHA-256 ", saved.artifact.sha256)));
+}
+window.JTGiftFilings = JTGiftFilings;
+
+
+/* ────────── FactVersionPicker.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+function JTFactVersionPicker({ api, clientId, propertyId, ownerId, doneeId, eventDate, valuationId, selection, onChange, disabled }) {
+  var _a, _b;
+  const [options, setOptions] = React.useState(null), [loading, setLoading] = React.useState(false), [error, setError] = React.useState("");
+  const generation = React.useRef(0), alive = React.useRef(true);
+  const scope = [clientId, propertyId, ownerId, doneeId, eventDate, valuationId].join("|"), scopeRef = React.useRef(scope);
+  scopeRef.current = scope;
+  React.useEffect(() => {
+    generation.current++;
+    setOptions(null);
+    setError("");
+    setLoading(false);
+    onChange(null);
+  }, [scope]);
+  React.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      generation.current++;
+    };
+  }, []);
+  const change = (key, value) => onChange(__spreadValues(__spreadProps(__spreadValues({}, selection), { [key]: value }), key === "confirmed" ? {} : { confirmed: false }));
+  const load = async () => {
+    const id = ++generation.current, initial = scopeRef.current;
+    setLoading(true);
+    setError("");
+    onChange(__spreadProps(__spreadValues({ property_version: "", owner_version: "" }, doneeId ? { donee_version: "" } : {}), { applicable_from: "", applicable_until: "", reason: "", confirmed: false }));
+    try {
+      const data = await api("/v1/clients/" + clientId + "/masters/properties/" + propertyId + "/fact-options?event_date=" + eventDate + "&owner_person_id=" + ownerId + (doneeId ? "&donee_person_id=" + doneeId : ""));
+      if (alive.current && id === generation.current && scopeRef.current === initial) setOptions(data);
+    } catch (e) {
+      if (alive.current && id === generation.current) setError(e.message);
+    } finally {
+      if (alive.current && id === generation.current) setLoading(false);
+    }
+  };
+  const locked = disabled || loading;
+  return /* @__PURE__ */ React.createElement("section", { "aria-label": "\uACFC\uAC70 \uCDE8\uB4DD\xB7\uB2F9\uC0AC\uC790\xB7\uD3C9\uAC00\uC790\uB8CC" }, /* @__PURE__ */ React.createElement("h3", null, "\uACFC\uAC70 \uCDE8\uB4DD\xB7\uB2F9\uC0AC\uC790 \uC790\uB8CC \uC120\uD0DD"), /* @__PURE__ */ React.createElement("p", null, "\uC18C\uC720\uC790\xB7\uC0AC\uAC74\uC77C\xB7\uD3C9\uAC00\uC790\uB8CC\uB97C \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694. \uAE30\uB85D \uC2DC\uAC01\uC740 \uC801\uC6A9\uC77C\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uC120\uD0DD \uBC84\uC804\uACFC \uD3C9\uAC00\uC561\uC744 \uC774\uBC88 \uC0AC\uAC74\uC5D0 \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 \uAE30\uAC04\uACFC \uADFC\uAC70\uB97C \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { "data-testid": "fact-load", disabled: locked || !propertyId || !ownerId || !eventDate || !valuationId, onClick: load }, "\uACFC\uAC70 \uC6D0\uBCF8 \uBC84\uC804 \uC870\uD68C"), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), options && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC0AC\uAC74\uC77C ", eventDate, " \xB7 \uC120\uD0DD \uD3C9\uAC00\uC790\uB8CC ", (_a = options.valuations.find((v) => v.id === valuationId)) == null ? void 0 : _a.as_of_date, " \xB7 ", (_b = options.valuations.find((v) => v.id === valuationId)) == null ? void 0 : _b.amount, "\uC6D0 (\uB2E4\uB978 \uAE30\uC900\uC77C \uC790\uB8CC \uC0AC\uC6A9\uC740 \uC544\uB798 \uADFC\uAC70 \uD544\uC218)"), ["property", "owner", ...doneeId ? ["donee"] : []].map((kind) => /* @__PURE__ */ React.createElement("label", { key: kind }, kind === "property" ? "\uCDE8\uB4DD\uAE08\uC561\xB7\uC7AC\uC0B0 \uBC84\uC804" : kind === "owner" ? "\uC18C\uC720\uC790/\uC99D\uC5EC\uC790 \uBC84\uC804" : "\uC218\uC99D\uC790 \uBC84\uC804", /* @__PURE__ */ React.createElement("select", { "data-testid": "fact-" + kind, disabled: locked, value: (selection == null ? void 0 : selection[kind + "_version"]) || "", onChange: (e) => change(kind + "_version", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uBC84\uC804 \uC120\uD0DD"), options[kind].map((x) => /* @__PURE__ */ React.createElement("option", { key: x.version, value: x.version }, x.label, " \xB7 ", x.recorded_at || "\uD604\uC7AC", " \xB7 ", kind === "property" ? x.record.acquisition_price + "\uC6D0 / " + x.record.address : x.record.name + " / " + (x.record.birth_date || "\uC0DD\uB144\uC6D4\uC77C \uBBF8\uC0C1")))))), /* @__PURE__ */ React.createElement("label", null, "\uC801\uC6A9 \uC2DC\uC791\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "fact-from", type: "date", disabled: locked, value: (selection == null ? void 0 : selection.applicable_from) || "", onChange: (e) => change("applicable_from", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC801\uC6A9 \uC885\uB8CC\uC77C(\uD3EC\uD568)", /* @__PURE__ */ React.createElement("input", { "data-testid": "fact-until", type: "date", disabled: locked, value: (selection == null ? void 0 : selection.applicable_until) || "", onChange: (e) => change("applicable_until", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uD574\uB2F9 \uC0AC\uAC74\uC77C\uC758 \uC790\uB8CC\uB85C \uC120\uD0DD\uD55C \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "fact-reason", disabled: locked, maxLength: 1e3, value: (selection == null ? void 0 : selection.reason) || "", onChange: (e) => change("reason", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "fact-confirm", type: "checkbox", disabled: locked, checked: !!(selection == null ? void 0 : selection.confirmed), onChange: (e) => change("confirmed", e.target.checked) }), "\uC120\uD0DD\uD55C \uC7AC\uC0B0\xB7\uB2F9\uC0AC\uC790 \uBC84\uC804\uACFC \uD3C9\uAC00\uC790\uB8CC\uC758 \uC801\uC6A9\uAE30\uAC04\xB7\uAE30\uC900\uC77C\xB7\uAE08\uC561\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { disabled: locked, onClick: () => {
+    setOptions(null);
+    onChange(null);
+  } }, "\uACFC\uAC70 \uC0AC\uC2E4 \uC120\uD0DD \uD574\uC81C")));
+}
+window.JTFactVersionPicker = JTFactVersionPicker;
+
+
+/* ────────── EquityPicker.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+function JTEquityPicker({ api, clientId, eventDate, purpose, onAdopt, disabled = false }) {
+  const [items, setItems] = React.useState([]), [cursor, setCursor] = React.useState(null), [selected, setSelected] = React.useState("");
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState(""), [note, setNote] = React.useState(""), [confirmed, setConfirmed] = React.useState(false);
+  const generation = React.useRef(0), alive = React.useRef(true), lock = React.useRef(false);
+  React.useEffect(() => {
+    generation.current++;
+    setItems([]);
+    setSelected("");
+    setCursor(null);
+    setConfirmed(false);
+    setError("");
+  }, [clientId, eventDate, purpose]);
+  React.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      generation.current++;
+    };
+  }, []);
+  const load = async (more = false) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    const g = ++generation.current;
+    try {
+      const r = await api("/v1/equity-cases?client_id=" + encodeURIComponent(clientId) + "&event_date=" + encodeURIComponent(eventDate) + "&purpose=" + encodeURIComponent(purpose) + (more && cursor ? "&cursor=" + cursor : ""));
+      if (alive.current && g === generation.current) {
+        setItems((old) => more ? [...old, ...r.items] : r.items);
+        setCursor(r.next_cursor);
+        setSelected("");
+        setConfirmed(false);
+      }
+    } catch (e) {
+      if (alive.current && g === generation.current) setError(e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const value = items.find((x) => x.run_id === selected);
+  return /* @__PURE__ */ React.createElement("section", { className: "gc-card ic-section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC800\uC7A5\uB41C \uBE44\uC0C1\uC7A5\uC8FC\uC2DD \uD3C9\uAC00 \uAC00\uC838\uC624\uAE30"), /* @__PURE__ */ React.createElement("p", null, "\uC120\uD0DD \uACE0\uAC1D\xB7\uC0AC\uAC74\uC77C\xB7\uD3C9\uAC00 \uBAA9\uC801\uC774 \uAC19\uC740 \uC800\uC7A5 \uACB0\uACFC\uB9CC \uC870\uD68C\uD569\uB2C8\uB2E4. \uD3C9\uAC00\uD55C \uC8FC\uC2DD\uC218 \uC804\uCCB4\uB97C \uCC44\uD0DD\uD558\uBA70 \uC77C\uBD80 \uC218\uB7C9\uC740 \uD574\uB2F9 \uC218\uB7C9\uC73C\uB85C \uC0C8 \uD3C9\uAC00\uB97C \uC800\uC7A5\uD574 \uC8FC\uC138\uC694. \uC7AC\uD3C9\uAC00\uD574\uB3C4 \uC774\uBBF8 \uAC00\uC838\uC628 \uACB0\uACFC\uB294 \uBC14\uB00C\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "equity-picker-load", disabled: disabled || busy || !clientId || !eventDate, onClick: () => load() }, "\uC800\uC7A5 \uD3C9\uAC00 \uC870\uD68C"), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), /* @__PURE__ */ React.createElement("label", null, "\uD3C9\uAC00 \uACB0\uACFC", /* @__PURE__ */ React.createElement("select", { "data-testid": "equity-picker-run", disabled: disabled || busy, value: selected, onChange: (e) => {
+    setSelected(e.target.value);
+    setConfirmed(false);
+  } }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uACB0\uACFC \uC120\uD0DD"), items.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.run_id, value: x.run_id }, x.company_name, " \xB7 ", x.eval_date, " \xB7 ", x.shares, "\uC8FC \xB7 ", x.total_value.toLocaleString("ko-KR"), "\uC6D0 \xB7 ", x.run_id)))), cursor && /* @__PURE__ */ React.createElement("button", { disabled: disabled || busy, onClick: () => load(true) }, "\uD3C9\uAC00 \uB354 \uBCF4\uAE30"), value && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, value.unit_value.toLocaleString("ko-KR"), "\uC6D0 \xD7 ", value.shares.toLocaleString("ko-KR"), "\uC8FC = ", value.total_value.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("label", null, "\uC18C\uC720\xB7\uC774\uC804 \uC218\uB7C9\xB7\uC77C\uC790 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-picker-note", disabled: disabled || busy, value: note, maxLength: 1e3, onChange: (e) => {
+    setNote(e.target.value);
+    setConfirmed(false);
+  } })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-picker-confirm", disabled: disabled || busy, type: "checkbox", checked: confirmed, onChange: (e) => setConfirmed(e.target.checked) }), "\uB2F9\uC0AC\uC790 \uC18C\uC720\xB7\uC774\uBC88 \uC774\uC804 \uC8FC\uC2DD\uC218\uC640 \uD3C9\uAC00\uC77C\xB7\uBAA9\uC801\xB7\uC911\uBCF5 \uC5C6\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "equity-picker-adopt", disabled: disabled || busy || !confirmed || !note.trim(), onClick: () => {
+    onAdopt(__spreadProps(__spreadValues({}, value), { reference: { run_id: value.run_id, input_hash: value.input_hash, shares: value.shares, ownership_confirmed: true, ownership_source: note } }));
+    setSelected("");
+    setConfirmed(false);
+  } }, "\uC120\uD0DD \uD3C9\uAC00\uB97C \uC785\uB825\uC5D0 \uBC18\uC601"), /* @__PURE__ */ React.createElement("p", null, "\uC544\uB798 \uC0AC\uAC74 \uC800\uC7A5\uC744 \uC644\uB8CC\uD574\uC57C \uC0C8 \uC785\uB825 \uBC84\uC804\uC73C\uB85C \uBCF4\uC874\uB429\uB2C8\uB2E4.")));
+}
+window.JTEquityPicker = JTEquityPicker;
+
+
+/* ────────── GiftCases.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __objRest = (source, exclude) => {
+  var target = {};
+  for (var prop in source)
+    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+      target[prop] = source[prop];
+  if (source != null && __getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(source)) {
+      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+        target[prop] = source[prop];
+    }
+  return target;
+};
+let jtGiftSession = { token: "", uid: "", workspace: null };
+const GIFT_ADJUSTMENTS = [
+  ["prior_marriage_child_deduction_used", "\uD63C\uC778\xB7\uCD9C\uC0B0 \uACF5\uC81C \uAE30\uC0AC\uC6A9\uC561"],
+  ["non_taxable", "\uBE44\uACFC\uC138 \uC7AC\uC0B0\uAC00\uC561"],
+  ["appraisal_fee", "\uAC10\uC815\uD3C9\uAC00 \uC218\uC218\uB8CC"],
+  ["foreign_tax_paid", "\uC678\uAD6D\uB0A9\uBD80\uC138\uC561"]
+];
+const GIFT_HISTORY_FLAGS = [
+  ["is_generation_skip", "\uACFC\uAC70 \uC99D\uC5EC\uB3C4 \uC138\uB300\uC0DD\uB7B5\uC774\uC5C8\uB098\uC694?"],
+  ["is_minor", "\uACFC\uAC70 \uC99D\uC5EC \uB2F9\uC2DC \uBBF8\uC131\uB144\uC774\uC5C8\uB098\uC694?"],
+  ["donor_child_deceased", "\uACFC\uAC70 \uC99D\uC5EC \uB2F9\uC2DC \uAC74\uB108\uB6F4 \uC790\uB140\uAC00 \uC0AC\uB9DD\uD588\uB098\uC694?"]
+];
+function giftNewDraft(answers = {}) {
+  return {
+    schema_version: "gift-case/1",
+    ui_schema_version: "gift-ui/1",
+    answers_raw: __spreadValues({}, answers),
+    ui_state: { phase: "detail", current_question_id: null, step: 0, ui_schema_version: "gift-ui/1" },
+    supplemental: {
+      calculation_basis: "current_engine",
+      gift_date: null,
+      donor_person_id: null,
+      donee_person_id: null,
+      relationship_as_of: null,
+      marriage_date: null,
+      childbirth_date: null,
+      child_name: null,
+      deduction_eligibility_confirmed: false,
+      value_basis: "gifted_interest_value",
+      adjustments: Object.fromEntries(GIFT_ADJUSTMENTS.map(([k]) => [k, 0])),
+      adjustments_confirmed: false,
+      history_inclusion_confirmed: false,
+      prior_gift_deduction_confirmed: false,
+      history_flags_confirmed: false,
+      aggregate_history_flags: Object.fromEntries(GIFT_HISTORY_FLAGS.map(([k]) => [k, null])),
+      prior_gifts: [],
+      assets: [],
+      multiasset_confirmed: false,
+      primary_value_source: ""
+    },
+    valuation_snapshot: null
+  };
+}
+function giftInputIssue(issue) {
+  if (issue.code === "ADDITIONAL_SOURCE_REIMPORT_REQUIRED") return "\uCD94\uAC00 \uC6D0\uBCF8\uC758 \uC0AC\uAC74 \uB2F9\uC0AC\uC790\xB7\uB0A0\uC9DC \uB610\uB294 \uC7AC\uC0B0 \uC870\uAC74\uC774 \uB2EC\uB77C\uC84C\uC2B5\uB2C8\uB2E4. \uD574\uB2F9 \uD589\uC744 \uB2E4\uC2DC \uCC44\uD0DD\uD558\uAC70\uB098 \uC81C\uAC70\uD558\uC138\uC694.";
+  if (issue.code === "SOURCE_PROPERTY_DUPLICATE") return "\uCCAB \uC7AC\uC0B0\uACFC \uCD94\uAC00 \uC7AC\uC0B0\uC758 \uC6D0\uBCF8\uC774 \uC911\uBCF5\uB429\uB2C8\uB2E4. \uC911\uBCF5 \uD589\uC744 \uC81C\uAC70\uD558\uC138\uC694.";
+  const messages = {
+    OWNERSHIP_HISTORY_REIMPORT_REQUIRED: "\uC0AC\uAC74 \uB0A0\uC9DC \uB610\uB294 \uC99D\uC5EC\uC790\uAC00 \uBC14\uB00C\uC5C8\uC2B5\uB2C8\uB2E4. \uD574\uB2F9 \uB0A0\uC9DC\uC758 \uC18C\uC720 \uC9C0\uBD84 \uC790\uB8CC\uB97C \uB2E4\uC2DC \uAC00\uC838\uC640 \uC8FC\uC138\uC694",
+    REQUIRED_FIELD: "\uD544\uC218 \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    INVALID_CHOICE: "\uC120\uD0DD\uAC12\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    ADJUSTMENTS_UNCONFIRMED: "\uC870\uC815\uAE08\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    PRIOR_FLAGS_UNCONFIRMED: "\uACFC\uAC70 \uC99D\uC5EC\uC758 \uC138 \uC0C1\uD0DC\uB97C \uC120\uD0DD\uD558\uACE0 \uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    PRIOR_DEDUCTION_UNCONFIRMED: "\uACFC\uAC70 \uACF5\uC81C \uC0AC\uC6A9\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    PRIOR_INCLUSION_UNCONFIRMED: "\uACFC\uAC70 \uC99D\uC5EC\uC758 \uD569\uC0B0 \uB300\uC0C1 \uC5EC\uBD80\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    DEDUCTION_ELIGIBILITY_UNCONFIRMED: "\uD63C\uC778\xB7\uCD9C\uC0B0 \uC801\uC6A9 \uC694\uAC74\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    UNSUPPORTED_NONRESIDENT: "\uBE44\uAC70\uC8FC\uC790\uB294 \uCD08\uC548 \uC800\uC7A5\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4",
+    UNSUPPORTED_BURDENED_GIFT: "\uBD80\uB2F4\uBD80\uC99D\uC5EC\uB294 \uCD08\uC548 \uC800\uC7A5\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4",
+    MULTIASSET_REVIEW_REQUIRED: "\uAC19\uC740 \uB2F9\uC0AC\uC790\xB7\uC99D\uC5EC\uC77C\xB7\uC77C\uBC18 \uC99D\uC5EC \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    MULTIASSET_DATE_UNSUPPORTED: "\uB2E4\uC790\uC0B0\uC740 2026\uB144 \uC99D\uC5EC\uC77C\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694",
+    MULTIASSET_PARTIES_REQUIRED: "\uC11C\uB85C \uB2E4\uB978 \uC99D\uC5EC\uC790\xB7\uC218\uC99D\uC790\uB97C \uC120\uD0DD\uD574 \uC8FC\uC138\uC694",
+    MULTIASSET_VALUATION_DATE_MISMATCH: "\uCD94\uAC00 \uC7AC\uC0B0\uC758 \uD3C9\uAC00 \uAE30\uC900\uC77C\uC740 \uC0AC\uAC74 \uC99D\uC5EC\uC77C\uACFC \uAC19\uC544\uC57C \uD569\uB2C8\uB2E4",
+    VALUATION_AMOUNT_MISMATCH: "\uCC44\uD0DD \uD3C9\uAC00\uC561\uACFC \uC785\uB825 \uD3C9\uAC00\uC561\uC774 \uB2E4\uB985\uB2C8\uB2E4",
+    VALUATION_REVIEW_REQUIRED: "\uD3C9\uAC00 \uC790\uB8CC\uB97C \uC7AC\uD655\uC778\uD574 \uC8FC\uC138\uC694",
+    DETAIL_INCOMPLETE: "\uC0C1\uC138 \uC785\uB825\uC774 \uD544\uC694\uD569\uB2C8\uB2E4"
+  };
+  const key = (issue.field_path || "").split(".").pop();
+  const question = typeof GIFT_QS === "undefined" ? null : GIFT_QS.find((q) => q.id === key);
+  return (messages[issue.code] || "\uC785\uB825 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4") + (question ? ": " + question.q : "") + " [" + issue.code + "]";
+}
+function giftExactWon(value) {
+  return Number(value).toLocaleString("ko-KR") + "\uC6D0";
+}
+function giftPackDraft(draft) {
+  const packed = JSON.parse(JSON.stringify(draft));
+  for (const [key, title] of GIFT_ADJUSTMENTS) {
+    const raw = packed.supplemental.adjustments[key];
+    const n = Number(String(raw).replace(/,/g, ""));
+    if (!/^(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)$/.test(String(raw)) || !Number.isSafeInteger(n) || n < 0) throw new Error(title + ": 0 \uC774\uC0C1\uC758 \uC6D0 \uB2E8\uC704 \uC815\uC218\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    packed.supplemental.adjustments[key] = n;
+  }
+  if (packed.valuation_snapshot) {
+    for (const k of ["candidate_amount", "adopted_amount"]) {
+      const raw = packed.valuation_snapshot[k];
+      if (raw == null || raw === "") {
+        packed.valuation_snapshot[k] = null;
+        continue;
+      }
+      const n = Number(String(raw).replace(/,/g, ""));
+      if (!/^(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)$/.test(String(raw)) || !Number.isSafeInteger(n) || n < 0) throw new Error("\uD3C9\uAC00\uAE08\uC561\uC740 0 \uC774\uC0C1\uC758 \uC6D0 \uB2E8\uC704 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+      packed.valuation_snapshot[k] = n;
+    }
+  }
+  return packed;
+}
+function GiftCaseField({ title, hint, children }) {
+  return /* @__PURE__ */ React.createElement("label", { className: "gc-field" }, /* @__PURE__ */ React.createElement("span", null, title), children, hint && /* @__PURE__ */ React.createElement("small", null, hint));
+}
+function GiftCaseCheck({ label, checked, onChange }) {
+  return /* @__PURE__ */ React.createElement("label", { className: "gc-check" }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: !!checked, onChange: (e) => onChange(e.target.checked) }), label);
+}
+function GiftCaseBool({ title, value, onChange }) {
+  return /* @__PURE__ */ React.createElement(GiftCaseField, { title }, /* @__PURE__ */ React.createElement("select", { value: value == null ? "" : String(value), onChange: (e) => onChange(e.target.value === "" ? null : e.target.value === "true") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "true" }, "\uC608"), /* @__PURE__ */ React.createElement("option", { value: "false" }, "\uC544\uB2C8\uC624")));
+}
+function JTGiftCases({ initialAnswers, initialValuation, onAnswers, onExit, exitLabel = "\u2190 \uBE60\uB978 \uACC4\uC0B0\uC73C\uB85C" }) {
+  var _a, _b, _c, _d, _e, _f, _g, _h;
+  const savedMemory = React.useRef(jtGiftSession.workspace).current;
+  const [draft, setDraft] = React.useState(() => {
+    var _a2, _b2, _c2, _d2, _e2;
+    if (!savedMemory) return __spreadProps(__spreadValues({}, giftNewDraft(initialAnswers)), { valuation_snapshot: initialValuation || null });
+    if (!Object.keys(initialAnswers || {}).length || ((_a2 = savedMemory.meta) == null ? void 0 : _a2.read_only) || ((_b2 = savedMemory.meta) == null ? void 0 : _b2.revision) !== ((_c2 = savedMemory.meta) == null ? void 0 : _c2.current_revision)) return savedMemory.draft;
+    const changed = JSON.stringify(initialAnswers) !== JSON.stringify(savedMemory.draft.answers_raw);
+    if (!changed) return savedMemory.draft;
+    const next = __spreadProps(__spreadValues({}, savedMemory.draft), { answers_raw: __spreadValues({}, initialAnswers) });
+    if (initialValuation && initialValuation !== savedMemory.initialValuation) next.valuation_snapshot = initialValuation;
+    if (next.valuation_snapshot && String((_d2 = next.valuation_snapshot.adopted_amount) != null ? _d2 : "") !== String((_e2 = initialAnswers.giftValue) != null ? _e2 : ""))
+      next.valuation_snapshot = __spreadProps(__spreadValues({}, next.valuation_snapshot), { adopted_amount: initialAnswers.giftValue || null, manual_override: true });
+    next.supplemental = __spreadProps(__spreadValues({}, next.supplemental), { multiasset_confirmed: false, deduction_eligibility_confirmed: false, prior_gift_deduction_confirmed: false, history_inclusion_confirmed: false });
+    return next;
+  });
+  const [equityTarget, setEquityTarget] = React.useState("primary");
+  const [clientId, setClientId] = React.useState((savedMemory == null ? void 0 : savedMemory.clientId) || "");
+  const [label, setLabel] = React.useState((savedMemory == null ? void 0 : savedMemory.label) || "");
+  const [meta, setMeta] = React.useState((savedMemory == null ? void 0 : savedMemory.meta) || null);
+  const [baseline, setBaseline] = React.useState((savedMemory == null ? void 0 : savedMemory.baseline) || null);
+  const [touched, setTouched] = React.useState((savedMemory == null ? void 0 : savedMemory.touched) || Object.keys(initialAnswers || {}).length > 0);
+  const [run, setRun] = React.useState((savedMemory == null ? void 0 : savedMemory.run) || null);
+  const [request, setRequest] = React.useState((savedMemory == null ? void 0 : savedMemory.request) || null);
+  const [token, setToken] = React.useState(jtGiftSession.token);
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [clients, setClients] = React.useState([]);
+  const [persons, setPersons] = React.useState([]);
+  const [cases, setCases] = React.useState([]);
+  const [cursor, setCursor] = React.useState(null);
+  const [busy, setBusy] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [notice, setNotice] = React.useState("");
+  const [reopenRevision, setReopenRevision] = React.useState("");
+  const [reports, setReports] = React.useState([]);
+  const [reportId, setReportId] = React.useState("");
+  const [filingDirty, setFilingDirty] = React.useState(false);
+  const [ownerTimeline, setOwnerTimeline] = React.useState(null);
+  const ownerQuery = React.useRef(0);
+  const [sourceCatalog, setSourceCatalog] = React.useState(null);
+  const [sourceChoice, setSourceChoice] = React.useState({ property_id: "", ownership_id: "", donee_person_id: "", valuation_id: "", gift_share: "", gift_date: "", re_type: "", adoption_reason: "", valuation_confirmed: false });
+  const [sourcePreview, setSourcePreview] = React.useState(null);
+  const [sourceTarget, setSourceTarget] = React.useState("primary");
+  const [sourceQueue, setSourceQueue] = React.useState([]);
+  const sourceVersion = React.useRef(0);
+  const operationKeys = React.useRef((savedMemory == null ? void 0 : savedMemory.operationKeys) || {});
+  const contentKey = JSON.stringify({ clientId, label, draft });
+  const dirty = baseline == null ? touched : contentKey !== baseline;
+  const readonly = !!(meta == null ? void 0 : meta.read_only) || meta && meta.revision !== meta.current_revision;
+  const a = draft.answers_raw, s = draft.supplemental;
+  const base = () => (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "");
+  const keyFor = (kind, body) => {
+    var _a2;
+    const fingerprint = JSON.stringify([kind, body]);
+    return (_a2 = operationKeys.current)[fingerprint] || (_a2[fingerprint] = window.crypto.randomUUID());
+  };
+  React.useEffect(() => {
+    jtGiftSession.workspace = { draft, initialValuation, clientId, label, meta, baseline, touched, run, request, operationKeys: operationKeys.current };
+  }, [draft, clientId, label, meta, baseline, touched, run, request]);
+  React.useEffect(() => {
+    const protect = (e) => {
+      if (dirty || filingDirty || busy) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => window.removeEventListener("beforeunload", protect);
+  }, [dirty, filingDirty, busy]);
+  const requestApi = async (path, options = {}, authToken = token) => {
+    var _b2;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const _a2 = options, { download = false } = _a2, requestOptions = __objRest(_a2, ["download"]);
+      const response = await fetch(base() + path, __spreadProps(__spreadValues({}, requestOptions), {
+        signal: controller.signal,
+        headers: __spreadValues(__spreadValues({ "Content-Type": "application/json" }, authToken ? { Authorization: "Bearer " + authToken } : {}), options.headers)
+      }));
+      const body = download && response.ok ? await response.blob() : await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) {
+          jtGiftSession.token = "";
+          setToken("");
+        }
+        const code = (_b2 = body.detail) == null ? void 0 : _b2.code;
+        const messages = {
+          REVISION_CONFLICT: "\uB2E4\uB978 \uD654\uBA74\uC5D0\uC11C \uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uD588\uC2B5\uB2C8\uB2E4. \uC0C8 \uC0AC\uAC74\uC73C\uB85C \uC800\uC7A5\uD558\uAC70\uB098 \uC800\uC7A5\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uC8FC\uC138\uC694.",
+          IDEMPOTENCY_CONFLICT: "\uAC19\uC740 \uC694\uCCAD\uC758 \uB0B4\uC6A9\uC774 \uB2EC\uB77C\uC84C\uC2B5\uB2C8\uB2E4. \uC800\uC7A5 \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          SNAPSHOT_MIGRATION_REQUIRED: "\uC774 \uC800\uC7A5\uBCF8\uC740 \uC77D\uAE30 \uC804\uC6A9\uC785\uB2C8\uB2E4. \uC9C0\uC6D0 \uBC84\uC804 \uBCC0\uD658\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.",
+          DRAFT_NOT_RUNNABLE: "\uCD08\uC548\uC740 \uC800\uC7A5\uB410\uC2B5\uB2C8\uB2E4. \uC544\uB798 \uD655\uC778 \uD56D\uBAA9\uC744 \uBCF4\uC644\uD55C \uD6C4 \uACC4\uC0B0\uD574 \uC8FC\uC138\uC694.",
+          RUN_STILL_PENDING: "\uC774\uC804 \uACC4\uC0B0\uC774 \uC9C4\uD589 \uC911\uC785\uB2C8\uB2E4. \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          REPORT_STILL_PENDING: "\uBB38\uC11C\uB97C \uC0DD\uC131 \uC911\uC785\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          ARTIFACT_ALREADY_READY: "\uC774\uBBF8 \uC0DD\uC131\uB41C \uD30C\uC77C\uC740 \uB2E4\uC2DC \uB9CC\uB4E4\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uB41C \uD30C\uC77C\uC744 \uB0B4\uB824\uBC1B\uC73C\uC138\uC694.",
+          RENDERER_VERSION_UNAVAILABLE: "\uC774 \uBCF4\uACE0\uC11C \uBC84\uC804\uC758 \uCD9C\uB825 \uD658\uACBD\uC744 \uC0AC\uC6A9\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+          FILING_SOURCE_UNSUPPORTED: "\uC120\uD0DD\uD55C \uACC4\uC0B0 \uC6D0\uBCF8\uC73C\uB85C\uB294 \uC2E0\uACE0 \uC785\uB825\uC744 \uB9CC\uB4E4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC785\uB825 \uBC84\uC804\uACFC \uC131\uACF5\uD55C \uACC4\uC0B0 \uACB0\uACFC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          RESOLVED_RECORDS_NOT_READY: "\uC2E0\uACE0 \uC785\uB825\uC758 \uD655\uC778 \uD56D\uBAA9\uC744 \uBCF4\uC644\uD558\uACE0 \uB2E4\uC2DC \uC800\uC7A5\uD574 \uC8FC\uC138\uC694.",
+          FILING_EXPORT_UNAVAILABLE: "\uC774 \uC2E0\uACE0 \uC800\uC7A5\uBCF8\uC758 \uADDC\uACA9\xB7\uCD9C\uB825 \uBC84\uC804\uC744 \uD604\uC7AC \uC11C\uBC84\uC5D0\uC11C \uC0DD\uC131\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+          INVALID_FILING_REQUEST: "\uC2E0\uACE0 \uC785\uB825 \uD615\uC2DD\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC785\uB825\uAC12\uC740 \uC720\uC9C0\uD588\uC2B5\uB2C8\uB2E4.",
+          FILE_NOT_CREATED: "\uC544\uC9C1 \uC0DD\uC131\uB41C \uBD80\uBD84 \uD30C\uC77C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.",
+          ARTIFACT_INTEGRITY_FAILED: "\uC800\uC7A5 \uD30C\uC77C\uC758 \uBB34\uACB0\uC131 \uAC80\uC0AC\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC6B4\uB85C\uB4DC\uB97C \uC911\uB2E8\uD588\uC2B5\uB2C8\uB2E4.",
+          DOCX_NOT_READY: "DOCX\uAC00 \uBA3C\uC800 \uC0DD\uC131\uB418\uC5B4\uC57C PDF\uB97C \uB9CC\uB4E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+        };
+        Object.assign(messages, {
+          SOURCE_FACT_HISTORY_GAP: "\uC6D0\uBCF8 \uC774\uB825\uC758 \uC5F0\uACB0\uC774 \uB04A\uACBC\uC2B5\uB2C8\uB2E4. \uBCC0\uACBD \uB0B4\uC5ED\uC744 \uD655\uC778\uD558\uC138\uC694.",
+          SOURCE_FACT_VERSION_NOT_FOUND: "\uC120\uD0DD\uD55C \uC6D0\uBCF8 \uBC84\uC804\uC744 \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+          SOURCE_FACT_NOT_FOUND: "\uD574\uB2F9 \uACE0\uAC1D\uC758 \uC6D0\uBCF8 \uC790\uB8CC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.",
+          SOURCE_FACT_DATE_INVALID: "\uC120\uD0DD \uBC84\uC804\uC758 \uCDE8\uB4DD\uC77C\xB7\uC0DD\uB144\uC6D4\uC77C\uC774 \uC0AC\uAC74\uC77C\uBCF4\uB2E4 \uB2A6\uC2B5\uB2C8\uB2E4.",
+          SOURCE_FACT_APPLICABILITY_REQUIRED: "\uC0AC\uAC74\uC77C\uC744 \uD3EC\uD568\uD558\uB294 \uC801\uC6A9\uAE30\uAC04\uACFC \uC120\uD0DD \uADFC\uAC70\uB97C \uD655\uC778\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_HISTORY_GAP: "\uC18C\uC720 \uC774\uB825\uACFC \uD604\uC7AC \uC6D0\uBCF8\uC774 \uC77C\uCE58\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uBCC0\uB3D9 \uAE30\uB85D\uC744 \uD655\uC778\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_VERSION_DATE_MISMATCH: "\uC0AC\uAC74 \uB0A0\uC9DC\uC5D0 \uB9DE\uB294 \uC18C\uC720 \uC774\uB825\uC744 \uB2E4\uC2DC \uC870\uD68C\uD558\uACE0 \uC120\uD0DD\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_VERSION_OWNER_MISMATCH: "\uC120\uD0DD\uD55C \uC774\uB825\uC758 \uC18C\uC720\uC790\uB97C \uB2E4\uC2DC \uC120\uD0DD\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_HISTORY_CONFIRM_REQUIRED: "\uACFC\uAC70 \uC18C\uC720 \uC9C0\uBD84\uACFC \uD604\uC7AC \uCDE8\uB4DD\xB7\uD3C9\uAC00\uC790\uB8CC\uC758 \uC0AC\uC6A9\uC744 \uD655\uC778\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_DATE_REVIEW_REQUIRED: "\uD604\uC7AC \uC18C\uC720 \uBCC0\uB3D9\uC77C\uBCF4\uB2E4 \uC774\uB978 \uC0AC\uAC74\uC785\uB2C8\uB2E4. \uACFC\uAC70 \uC18C\uC720 \uC790\uB8CC\uB97C \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4.",
+          SOURCE_CHANGED: "\uC6D0\uBCF8 \uC790\uB8CC\uAC00 \uD655\uC778 \uC774\uD6C4 \uBCC0\uACBD\uB410\uC2B5\uB2C8\uB2E4. \uC120\uD0DD \uC790\uB8CC\uB97C \uB2E4\uC2DC \uD655\uC778\uD55C \uB4A4 \uAC00\uC838\uC624\uC138\uC694.",
+          SOURCE_EVENT_REQUIRED: "\uBA3C\uC800 \uC0AC\uAC74\uC758 \uC99D\uC5EC\uC790\xB7\uC218\uC99D\uC790\xB72026\uB144 \uC99D\uC5EC\uC77C\uC744 \uC785\uB825\uD558\uC138\uC694.",
+          SOURCE_EVENT_MISMATCH: "\uCD94\uAC00 \uC7AC\uC0B0\uC740 \uD604\uC7AC \uC0AC\uAC74\uACFC \uC99D\uC5EC\uC790\xB7\uC218\uC99D\uC790\xB7\uC99D\uC5EC\uC77C\uC774 \uAC19\uC544\uC57C \uD569\uB2C8\uB2E4.",
+          SOURCE_VALUATION_DATE_MISMATCH: "\uCD94\uAC00 \uC6D0\uBCF8 \uCC44\uD0DD\uC740 \uC99D\uC5EC\uC77C \uAE30\uC900 \uD3C9\uAC00\uC790\uB8CC\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.",
+          SOURCE_FRACTIONAL_WON_UNSUPPORTED: "\uC9C0\uBD84\uC744 \uACF1\uD55C \uAC00\uC561\uC5D0 \uC6D0 \uBBF8\uB9CC \uAE08\uC561\uC774 \uC788\uC5B4 \uC790\uB3D9 \uCC44\uD0DD\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+          SOURCE_PROPERTY_DUPLICATE: "\uC774\uBBF8 \uCC44\uD0DD\uD55C \uC7AC\uC0B0\uC785\uB2C8\uB2E4. \uD574\uB2F9 \uCD94\uAC00 \uD589\uC744 \uC120\uD0DD\uD574 \uC7AC\uCC44\uD0DD\uD558\uAC70\uB098 \uC911\uBCF5 \uC120\uD0DD\uC744 \uC81C\uAC70\uD558\uC138\uC694.",
+          SOURCE_TARGET_DUPLICATE: "\uAC19\uC740 \uCD94\uAC00 \uD589\uC744 \uB450 \uBC88 \uC120\uD0DD\uD588\uC2B5\uB2C8\uB2E4. \uBAA9\uB85D\uC5D0\uC11C \uC911\uBCF5\uC744 \uC81C\uAC70\uD558\uC138\uC694.",
+          SOURCE_TARGET_INVALID: "\uCC44\uD0DD \uB300\uC0C1 \uCD94\uAC00 \uBD80\uB3D9\uC0B0 \uD589\uC774 \uC5C6\uC2B5\uB2C8\uB2E4. \uB300\uC0C1\uC744 \uB2E4\uC2DC \uC120\uD0DD\uD558\uC138\uC694.",
+          SOURCE_BURDENED_UNSUPPORTED: "\uBD80\uB2F4\uBD80\uC99D\uC5EC\uC758 \uCD94\uAC00 \uC6D0\uBCF8 \uCC44\uD0DD\uC740 \uC544\uC9C1 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
+          SOURCE_ASSET_LIMIT: "\uCCAB \uC7AC\uC0B0\uC744 \uD3EC\uD568\uD574 \uCD5C\uB300 100\uAC1C\uAE4C\uC9C0 \uCC44\uD0DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
+          SOURCE_NOT_FOUND: "\uC120\uD0DD\uD55C \uC790\uB8CC\uAC00 \uC5C6\uAC70\uB098 \uC774 \uACE0\uAC1D\uC758 \uC790\uB8CC\uAC00 \uC544\uB2D9\uB2C8\uB2E4.",
+          SOURCE_PROPERTY_UNSUPPORTED: "\uD604\uC7AC \uC790\uB8CC \uAC00\uC838\uC624\uAE30\uB294 \uC8FC\uD0DD\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uBD84\uC591\uAD8C\xB7\uC785\uC8FC\uAD8C\uC740 \uC544\uC9C1 \uC5F0\uACB0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.",
+          SOURCE_SHARE_INVALID: "\uC99D\uC5EC \uC9C0\uBD84\uC740 0 \uCD08\uACFC\uC774\uACE0 \uC99D\uC5EC\uC790 \uC18C\uC720 \uC9C0\uBD84 \uC774\uD558\uC5EC\uC57C \uD569\uB2C8\uB2E4.",
+          SOURCE_SAME_PARTY: "\uC99D\uC5EC\uC790\uC640 \uC218\uC99D\uC790\uB294 \uC11C\uB85C \uB2E4\uB978 \uB2F9\uC0AC\uC790\uB97C \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.",
+          SOURCE_REVIEW_REQUIRED: "\uD3C9\uAC00\uC561 \uCC44\uD0DD \uC774\uC720\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.",
+          SOURCE_BIRTH_DATE_INVALID: "\uC218\uC99D\uC790\uC758 \uC0DD\uB144\uC6D4\uC77C\uACFC \uC99D\uC5EC\uC77C\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          SOURCE_AMOUNT_INVALID: "\uC120\uD0DD\uD55C \uD3C9\uAC00\uAE08\uC561\uC758 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694."
+        });
+        const exception = new Error(response.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uB418\uC5B4 \uC788\uC2B5\uB2C8\uB2E4." : messages[code] || (response.status === 404 ? "\uC0AC\uAC74 \uC11C\uBE44\uC2A4 \uB610\uB294 \uC694\uCCAD \uC790\uB8CC\uB97C \uCC3E\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4." : response.status === 403 ? "\uC0AC\uBB34\uC18C \uB4F1\uB85D\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uC694\uCCAD\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uC720\uC9C0\uD588\uC2B5\uB2C8\uB2E4."));
+        exception.status = response.status;
+        exception.detail = body.detail;
+        throw exception;
+      }
+      return body;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const act = async (fn) => {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    setNotice("");
+    try {
+      await fn();
+    } catch (e) {
+      setError(e.name === "AbortError" || e instanceof TypeError ? "\uC5F0\uACB0\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC785\uB825\uC744 \uC720\uC9C0\uD588\uC2B5\uB2C8\uB2E4. \uAC19\uC740 \uC791\uC5C5\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uCC98\uB9AC \uC0C1\uD0DC\uB97C \uD655\uC778\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  React.useEffect(() => {
+    if (!token) return;
+    let active = true;
+    requestApi("/v1/gift-cases/context" + (clientId ? "?client_id=" + encodeURIComponent(clientId) : "")).then((data) => {
+      if (active) {
+        setClients(data.clients);
+        setPersons(data.persons);
+      }
+    }).catch((e) => {
+      if (active) setError(e.message);
+    });
+    return () => {
+      active = false;
+    };
+  }, [token, clientId]);
+  React.useEffect(() => {
+    setReports([]);
+    setReportId("");
+    if (!token || !run) return;
+    let active = true;
+    requestApi("/v1/gift-cases/" + run.case_id + "/runs/" + run.run_id + "/reports").then((data) => {
+      var _a2;
+      if (active) {
+        setReports(data.items);
+        setReportId(((_a2 = data.items[0]) == null ? void 0 : _a2.report_id) || "");
+      }
+    }).catch((e) => {
+      if (active) setError(e.message);
+    });
+    return () => {
+      active = false;
+    };
+  }, [token, run == null ? void 0 : run.run_id]);
+  const currentReport = reports.find((item) => item.report_id === reportId);
+  const acceptReport = (data) => {
+    setReports((old) => [data, ...old.filter((item) => item.report_id !== data.report_id)]);
+    setReportId(data.report_id);
+    setNotice(data.status === "ready" ? "DOCX\uC640 PDF\uAC00 \uC800\uC7A5\uB410\uC2B5\uB2C8\uB2E4. \uC7AC\uACC4\uC0B0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4." : "\uBCF4\uACE0\uC11C \uD615\uC2DD\uBCC4 \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+  };
+  const generateReport = async () => {
+    const route = "/v1/gift-cases/" + run.case_id + "/runs/" + run.run_id + "/reports";
+    const body = { template_version: "gift-report/1", locale: "ko-KR", formats: ["docx", "pdf"] };
+    const data = await requestApi(route, { method: "POST", headers: { "Idempotency-Key": keyFor(route, body) }, body: JSON.stringify(body) });
+    if (data.status !== "pending") delete operationKeys.current[JSON.stringify([route, body])];
+    acceptReport(data);
+  };
+  const refreshReports = async () => {
+    var _a2;
+    const data = await requestApi("/v1/gift-cases/" + run.case_id + "/runs/" + run.run_id + "/reports");
+    setReports(data.items);
+    setReportId(data.items.some((item) => item.report_id === reportId) ? reportId : ((_a2 = data.items[0]) == null ? void 0 : _a2.report_id) || "");
+  };
+  const retryReport = async () => {
+    const route = "/v1/gift-reports/" + currentReport.report_id + "/retries";
+    const body = { failed_formats: currentReport.artifacts.filter((item) => item.retryable).map((item) => item.format) };
+    const attemptIdentity = currentReport.artifacts.map((item) => [item.format, item.attempt_no]);
+    acceptReport(await requestApi(route, { method: "POST", headers: { "Idempotency-Key": keyFor(route, { body, attemptIdentity }) }, body: JSON.stringify(body) }));
+  };
+  const downloadReport = async (format) => {
+    const blob = await requestApi("/v1/gift-reports/" + currentReport.report_id + "/files/" + format, { download: true });
+    const url = URL.createObjectURL(blob), anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "gift-" + currentReport.report_id + "." + format;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1e4);
+  };
+  const reloadList = async (more = false, customer = clientId) => {
+    if (!customer) return;
+    const data = await requestApi("/v1/gift-cases?client_id=" + encodeURIComponent(customer) + (more && cursor ? "&cursor=" + cursor : ""));
+    setCases((old) => more ? [...old, ...data.items] : data.items);
+    setCursor(data.next_cursor);
+  };
+  const confirmDiscard = () => !dirty && !filingDirty || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uD604\uC7AC \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uACC4\uC18D\uD560\uAE4C\uC694?");
+  const change = (fn) => {
+    setDraft((d) => {
+      const next = fn(d);
+      const facts = (v) => JSON.stringify([v.answers_raw, v.valuation_snapshot, __spreadProps(__spreadValues({}, v.supplemental), { multiasset_confirmed: false })]);
+      if (facts(next) !== facts(d)) next.supplemental = __spreadProps(__spreadValues({}, next.supplemental), { multiasset_confirmed: false });
+      return next;
+    });
+    setTouched(true);
+    setNotice("");
+  };
+  const setAnswer = (id, value) => {
+    change((d) => {
+      const next = __spreadProps(__spreadValues({}, d), { answers_raw: __spreadProps(__spreadValues({}, d.answers_raw), { [id]: value }) });
+      if (id === "assetType" && value !== "stock") next.supplemental = __spreadProps(__spreadValues({}, next.supplemental), { primary_equity_ref: null });
+      if (["priorGiftValue", "priorGiftDed", "priorGiftHas"].includes(id)) next.supplemental = __spreadProps(__spreadValues({}, d.supplemental), { prior_gift_deduction_confirmed: false, history_inclusion_confirmed: false });
+      if (["marriageDed", "childbirthDed", "relationship"].includes(id)) next.supplemental = __spreadProps(__spreadValues({}, next.supplemental), { multiasset_confirmed: false, deduction_eligibility_confirmed: false });
+      if (id === "giftValue" && d.valuation_snapshot) next.valuation_snapshot = __spreadProps(__spreadValues({}, d.valuation_snapshot), { adopted_amount: value, manual_override: true });
+      return next;
+    });
+  };
+  const setSupplemental = (key, value) => change((d) => __spreadProps(__spreadValues({}, d), { supplemental: __spreadProps(__spreadValues({}, d.supplemental), { [key]: value }) }));
+  const save = async (asNew = false) => {
+    if (!clientId) throw new Error("\uACE0\uAC1D\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.");
+    if (!asNew && (meta == null ? void 0 : meta.read_only)) throw new Error("\uC77D\uAE30 \uC804\uC6A9 \uC800\uC7A5\uBCF8\uC785\uB2C8\uB2E4.");
+    if (!asNew && meta && !dirty) return meta;
+    const packed = giftPackDraft(draft);
+    const copying = !!meta && asNew;
+    const updating = meta && !asNew;
+    const body = copying ? { label, draft: packed, source_revision_id: meta.revision_id } : __spreadValues({ label, draft: packed }, !updating ? { client_id: clientId } : {});
+    const route = "/v1/gift-cases" + (copying ? "/" + meta.case_id + "/copies" : updating ? "/" + meta.case_id : "");
+    const headers = __spreadValues({ "Idempotency-Key": keyFor(route, { body, etag: updating ? meta.etag : null }) }, updating ? { "If-Match": meta.etag } : {});
+    const result = await requestApi(route, { method: updating ? "PUT" : "POST", headers, body: JSON.stringify(body) });
+    const next = __spreadProps(__spreadValues({}, result), { current_revision: result.revision, read_only: false });
+    const committedDraft = copying ? result.draft : packed;
+    setMeta(next);
+    setDraft(committedDraft);
+    setBaseline(JSON.stringify({ clientId, label, draft: committedDraft }));
+    setTouched(false);
+    setRun(null);
+    setRequest(null);
+    setNotice("\uC800\uC7A5 \uC644\uB8CC \xB7 \uC785\uB825 \uBC84\uC804 " + result.revision);
+    await reloadList().catch(() => {
+    });
+    return next;
+  };
+  const adoptRun = async (status, caseId) => {
+    setRequest(status);
+    if (status.status === "succeeded" && status.run_id) {
+      const stored = await requestApi("/v1/gift-cases/" + caseId + "/runs/" + status.run_id);
+      setRun(stored);
+      setNotice("\uACC4\uC0B0 \uC644\uB8CC \xB7 \uC800\uC7A5\uB41C \uACB0\uACFC\uB97C \uD45C\uC2DC\uD569\uB2C8\uB2E4.");
+    } else setNotice(status.status === "pending" ? "\uACC4\uC0B0 \uCC98\uB9AC \uC911\uC785\uB2C8\uB2E4. \uC0C1\uD0DC \uD655\uC778\uC73C\uB85C \uC774\uC5B4\uAC08 \uC218 \uC788\uC2B5\uB2C8\uB2E4." : "\uACC4\uC0B0 \uACB0\uACFC\uAC00 \uC800\uC7A5\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uD655\uC778 \uD6C4 \uB2E4\uC2DC \uACC4\uC0B0\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.");
+  };
+  const calculate = async () => {
+    const saved = await save();
+    if (!saved.validation.can_run) {
+      setNotice("\uCD08\uC548 \uC800\uC7A5 \uC644\uB8CC \xB7 \uC544\uB798 \uD655\uC778 \uD56D\uBAA9\uC744 \uBCF4\uC644\uD574 \uC8FC\uC138\uC694.");
+      return;
+    }
+    const payload = { revision_id: saved.revision_id, expected_input_hash: saved.input_hash };
+    if (request && request.revision_id === saved.revision_id && request.status !== "succeeded") payload.retry_of_request_id = request.request_id;
+    const route = "/v1/gift-cases/" + saved.case_id + "/runs";
+    const status = await requestApi(route, { method: "POST", headers: { "Idempotency-Key": keyFor(route, payload) }, body: JSON.stringify(payload) });
+    await adoptRun(status, saved.case_id);
+  };
+  const reopen = async (id, revision = "") => {
+    if (!confirmDiscard()) return;
+    const data = await requestApi("/v1/gift-cases/" + id + (revision ? "?revision=" + Number(revision) : ""));
+    const storedRun = data.last_successful_run_id ? await requestApi("/v1/gift-cases/" + id + "/runs/" + data.last_successful_run_id) : null;
+    setClientId(data.client_id);
+    setLabel(data.label);
+    setDraft(data.draft);
+    setMeta(data);
+    setBaseline(JSON.stringify({ clientId: data.client_id, label: data.label, draft: data.draft }));
+    setTouched(false);
+    setRun(storedRun);
+    setRequest(null);
+    setReopenRevision("");
+    setNotice("\uC800\uC7A5\uB41C \uC785\uB825 \uBC84\uC804 " + data.revision + "\uC744 \uB2E4\uC2DC \uC5F4\uC5C8\uC2B5\uB2C8\uB2E4. \uC7AC\uACC4\uC0B0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+  };
+  const login = async (e) => {
+    e.preventDefault();
+    await act(async () => {
+      const data = await requestApi("/v1/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }, "");
+      if (!data.access_token || !data.uid) throw new Error("\uB85C\uADF8\uC778 \uC751\uB2F5\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+      if (jtGiftSession.uid && jtGiftSession.uid !== data.uid && jtGiftSession.workspace) throw new Error("\uC785\uB825\uC774 \uB0A8\uC544 \uC788\uC2B5\uB2C8\uB2E4. \uAE30\uC874 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+      jtGiftSession.token = data.access_token;
+      jtGiftSession.uid = data.uid;
+      setToken(data.access_token);
+      setPassword("");
+      setNotice("\uB85C\uADF8\uC778\uB418\uC5C8\uC2B5\uB2C8\uB2E4.");
+    });
+  };
+  const reset = () => {
+    if (!confirmDiscard()) return;
+    operationKeys.current = {};
+    setDraft(giftNewDraft());
+    setLabel("");
+    setMeta(null);
+    setBaseline(null);
+    setTouched(false);
+    setRun(null);
+    setRequest(null);
+  };
+  React.useEffect(() => {
+    sourceVersion.current++;
+    setSourceCatalog(null);
+    setSourcePreview(null);
+    setSourceTarget("primary");
+    setSourceQueue([]);
+    ownerQuery.current++;
+    setOwnerTimeline(null);
+    setSourceChoice({ property_id: "", ownership_id: "", donee_person_id: "", valuation_id: "", gift_share: "", gift_date: "", re_type: "", adoption_reason: "", valuation_confirmed: false });
+  }, [meta == null ? void 0 : meta.case_id]);
+  const loadSources = async (more = false) => {
+    const version = ++sourceVersion.current;
+    const data = await requestApi("/v1/gift-cases/" + meta.case_id + "/sources" + (more && (sourceCatalog == null ? void 0 : sourceCatalog.next_cursor) ? "?cursor=" + sourceCatalog.next_cursor : ""));
+    if (version === sourceVersion.current) {
+      setSourceCatalog((old) => __spreadProps(__spreadValues({}, data), { properties: more ? [...(old == null ? void 0 : old.properties) || [], ...data.properties] : data.properties }));
+      setSourcePreview(null);
+    }
+  };
+  const chooseSource = (key, value) => {
+    if (["property_id", "gift_date"].includes(key)) {
+      ownerQuery.current++;
+      setOwnerTimeline(null);
+    }
+    setSourceChoice((old) => __spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadProps(__spreadValues({}, old), {
+      [key]: value
+    }), ["property_id", "ownership_id", "ownership_version", "donee_person_id", "valuation_id", "gift_date"].includes(key) ? { fact_selection: null } : {}), key === "property_id" ? { ownership_id: "", valuation_id: "", gift_share: "", valuation_confirmed: false } : {}), ["property_id", "ownership_version"].includes(key) || key === "gift_date" && old.ownership_version ? { ownership_id: "", ownership_history_confirmed: false } : {}), ["property_id", "gift_date"].includes(key) ? { ownership_version: null } : {}), key === "valuation_id" ? { valuation_confirmed: false } : {}));
+    setSourcePreview(null);
+  };
+  const selectedProperty = sourceCatalog == null ? void 0 : sourceCatalog.properties.find((p) => p.id === sourceChoice.property_id);
+  const selectionPayload = () => {
+    if (["property_id", "ownership_id", "donee_person_id", "valuation_id", "gift_share", "gift_date", "re_type", "adoption_reason"].some((k) => !sourceChoice[k].trim()))
+      throw new Error("\uC7AC\uC0B0\xB7\uC18C\uC720\uC790\xB7\uC218\uC99D\uC790\xB7\uD3C9\uAC00\uC790\uB8CC\xB7\uC9C0\uBD84\xB7\uB0A0\uC9DC\xB7\uC8FC\uD0DD \uAD6C\uBD84\xB7\uCC44\uD0DD \uC774\uC720\uB97C \uBAA8\uB450 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return __spreadProps(__spreadValues({}, sourceChoice), { valuation_basis: "whole_property" });
+  };
+  const previewSource = async () => {
+    setSourcePreview(null);
+    const data = await requestApi("/v1/gift-cases/" + meta.case_id + "/source-preview", { method: "POST", body: JSON.stringify(selectionPayload()) });
+    setSourcePreview(data);
+  };
+  const queuedSource = () => ({
+    selection: sourcePreview.selection,
+    expected_source_hash: sourcePreview.source_hash,
+    target_local_id: sourceTarget === "new" ? null : sourceTarget
+  });
+  const importSource = async (queued = false) => {
+    if (!queued && !sourcePreview || queued && !sourceQueue.length || !window.confirm("\uC120\uD0DD\uD55C \uC7AC\uC0B0\xB7\uB2F9\uC0AC\uC790\xB7\uD3C9\uAC00\uC790\uB8CC\uB97C \uD604\uC7AC \uC785\uB825\uC5D0 \uBC18\uC601\uD558\uACE0 \uC0C8 \uBC84\uC804\uC73C\uB85C \uC800\uC7A5\uD569\uB2C8\uB2E4. \uAD00\uACC4\xB7\uAC70\uC8FC\uC790 \uC5EC\uBD80\xB7\uACFC\uAC70 \uC99D\uC5EC\xB7\uCC44\uBB34 \uC778\uC218 \uD310\uB2E8\uC740 \uB2E4\uC2DC \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uACC4\uC18D\uD560\uAE4C\uC694?")) return;
+    const additional = queued || sourceTarget !== "primary";
+    const route = "/v1/gift-cases/" + meta.case_id + (additional ? "/additional-source-imports" : "/source-imports");
+    const body = __spreadValues({ label, draft: giftPackDraft(draft) }, additional ? { items: queued ? sourceQueue.map((x) => x.item) : [queuedSource()] } : { selection: sourcePreview.selection, expected_source_hash: sourcePreview.source_hash });
+    const key = keyFor(route, { body, etag: meta.etag });
+    const data = await requestApi(route, { method: "POST", headers: { "If-Match": meta.etag, "Idempotency-Key": key }, body: JSON.stringify(body) });
+    setDraft(data.draft);
+    setMeta(__spreadProps(__spreadValues({}, data), { current_revision: data.revision, read_only: false }));
+    setBaseline(JSON.stringify({ clientId, label, draft: data.draft }));
+    setTouched(false);
+    setRun(null);
+    setRequest(null);
+    setSourcePreview(null);
+    if (queued) setSourceQueue([]);
+    setNotice("\uC6D0\uBCF8 \uC790\uB8CC\uC640 \uAC00\uC838\uC624\uAE30 \uB2F9\uC2DC \uAC12\uC744 \uC0C8 \uC785\uB825 \uBC84\uC804\uC5D0 \uC800\uC7A5\uD588\uC2B5\uB2C8\uB2E4. \uAD00\uACC4\xB7\uAC70\uC8FC\uC790 \uC5EC\uBD80\xB7\uC870\uC815\uAE08\uC561 \uB4F1\uC744 \uD655\uC778\uD55C \uB4A4 \uACC4\uC0B0\uD574 \uC8FC\uC138\uC694.");
+    await reloadList().catch(() => {
+    });
+  };
+  const dateField = (key, title) => /* @__PURE__ */ React.createElement(GiftCaseField, { title, key }, /* @__PURE__ */ React.createElement("input", { "data-testid": "gift-s-" + key, type: "date", value: (s == null ? void 0 : s[key]) || "", onInput: (e) => setSupplemental(key, e.target.value || null), onChange: (e) => setSupplemental(key, e.target.value || null) }));
+  const assetUpdate = (index, key, value) => setSupplemental("assets", s.assets.map((row, i) => i === index ? __spreadValues(__spreadProps(__spreadValues({}, row), { [key]: value }), key === "kind" ? { property_type: null, address_text: null } : {}) : row));
+  const assetTotal = (() => {
+    const values = [a.assetType === "realestate" ? a.giftValue : a.assetType === "stock" ? a.giftValueStock : a.giftValueCash, ...(s.assets || []).map((row) => row.adopted_value_krw)];
+    if (values.some((v) => v == null || !/^[0-9]+$/.test(String(v).replace(/,/g, "")))) return "\uAE08\uC561 \uC785\uB825 \uD544\uC694";
+    const total = values.reduce((sum, v) => sum + BigInt(String(v).replace(/,/g, "")), /* @__PURE__ */ BigInt("0"));
+    return total > BigInt(Number.MAX_SAFE_INTEGER) ? "\uBC94\uC704 \uCD08\uACFC" : total.toLocaleString("ko-KR") + "\uC6D0";
+  })();
+  const rowUpdate = (index, key, value) => setSupplemental("prior_gifts", s.prior_gifts.map((row, i) => i === index ? __spreadValues(__spreadValues(__spreadProps(__spreadValues({}, row), { [key]: value }), key === "deduction_used_krw" ? { deduction_origin: "unknown" } : {}), GIFT_HISTORY_FLAGS.some(([k]) => k === key) ? { history_flags_confirmed: false } : {}) : row));
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container gc-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.gc-workspace{max-width:1040px;padding-bottom:56px}.gc-workspace h2{font-size:23px;margin:0 0 8px}.gc-workspace h3{font-size:18px;margin:0 0 12px}.gc-card{padding:24px;border:1px solid #d9e0d9;border-radius:12px;margin:18px 0;background:#fff}.gc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.gc-field{display:flex;flex-direction:column;gap:6px;font-size:14px}.gc-field>span{font-weight:600}.gc-field input,.gc-field select,.gc-field textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #aebcaf;border-radius:6px;background:#fff;color:#193629;font:inherit;min-height:42px}.gc-field small,.gc-help{font-size:13px;color:#54645a;line-height:1.6}.gc-check{display:flex;gap:10px;align-items:flex-start;margin:14px 0;font-size:14px}.gc-check input{margin-top:4px}.gc-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.gc-workspace button{cursor:pointer}.gc-workspace button:disabled{cursor:default;opacity:.55}.gc-workspace fieldset{border:0;padding:0;margin:0;min-width:0}.gc-status{padding:12px 16px;background:#edf6ef;border-radius:8px;overflow-wrap:anywhere}.gc-error{background:#fff1e9;color:#82391e}.gc-workspace :focus-visible{outline:3px solid #3d7855;outline-offset:3px}.gc-row{padding:16px;border:1px solid #dde5de;border-radius:8px;margin:12px 0}.gc-result{border:2px solid #3b7050}.gc-result output{display:block;font-size:32px;font-weight:700;margin:12px 0}.gc-raw{white-space:pre-wrap;max-height:300px;overflow:auto;font-size:12px}.gc-table{width:100%;border-collapse:collapse}.gc-table td,.gc-table th{padding:10px;text-align:left;border-bottom:1px solid #dde5de}.gc-workspace legend{font-weight:700;margin-bottom:12px}@media(max-width:620px){.gc-grid{grid-template-columns:1fr}.gc-card{padding:16px}.gc-actions>button{flex:1;min-width:140px}.gc-workspace h2{font-size:21px}}`), /* @__PURE__ */ React.createElement("div", { className: "gc-actions" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy, onClick: () => {
+    onAnswers(a);
+    onExit();
+  } }, exitLabel), /* @__PURE__ */ React.createElement("h2", null, "\uC99D\uC5EC \uC0AC\uAC74 \uC800\uC7A5\xB7\uACC4\uC0B0")), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC785\uB825\uACFC \uACC4\uC0B0 \uACB0\uACFC\uB97C \uACE0\uAC1D\uBCC4\uB85C \uC800\uC7A5\uD569\uB2C8\uB2E4. \uD604\uC7AC\uB294 \uAC70\uC8FC\uC790\uC758 \uC77C\uBC18 \uC99D\uC5EC\xB7\uAC19\uC740 \uB2F9\uC0AC\uC790\uC640 \uB0A0\uC9DC\uC758 \uB2E4\uC790\uC0B0 \uACC4\uC0B0\uC744 \uC9C0\uC6D0\uD558\uBA70, \uB2E4\uB978 \uC870\uAC74\uC740 \uCD08\uC548\uC73C\uB85C \uBCF4\uAD00\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert", className: "gc-status gc-error" }, error), notice && /* @__PURE__ */ React.createElement("p", { role: "status", className: "gc-status" }, notice), !token ? /* @__PURE__ */ React.createElement("form", { className: "gc-card", onSubmit: login }, /* @__PURE__ */ React.createElement("h3", null, "\uC0AC\uAC74 \uC800\uC7A5\uC6A9 \uB85C\uADF8\uC778"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uACC4\uC0B0\uAE30 \uC11C\uBE44\uC2A4 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD558\uC138\uC694. \uB85C\uADF8\uC778 \uC804 \uC785\uB825\uB3C4 \uC774 \uD654\uBA74\uC5D0 \uC720\uC9C0\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC774\uBA54\uC77C" }, /* @__PURE__ */ React.createElement("input", { type: "email", autoComplete: "username", value: email, onChange: (e) => setEmail(e.target.value), required: true })), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uBE44\uBC00\uBC88\uD638" }, /* @__PURE__ */ React.createElement("input", { type: "password", autoComplete: "current-password", value: password, onChange: (e) => setPassword(e.target.value), required: true }))), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: busy, style: { marginTop: 16 } }, "\uB85C\uADF8\uC778")) : /* @__PURE__ */ React.createElement("section", { className: "gc-card" }, /* @__PURE__ */ React.createElement("h3", null, "\uACE0\uAC1D\uACFC \uC800\uC7A5\uB41C \uC0AC\uAC74"), /* @__PURE__ */ React.createElement("div", { className: "gc-actions" }, /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uACE0\uAC1D" }, /* @__PURE__ */ React.createElement("select", { value: clientId, disabled: busy || !!meta, onChange: (e) => {
+    if (clientId && !confirmDiscard()) return;
+    if (clientId) {
+      operationKeys.current = {};
+      setDraft(giftNewDraft());
+      setTouched(false);
+      setBaseline(null);
+    }
+    setClientId(e.target.value);
+    setCases([]);
+    setCursor(null);
+  } }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uACE0\uAC1D \uC120\uD0DD"), clients.map((c) => /* @__PURE__ */ React.createElement("option", { key: c.id, value: c.id }, c.name)))), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !clientId || busy, onClick: () => act(() => reloadList()) }, "\uC800\uC7A5 \uBAA9\uB85D"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy, onClick: reset }, "\uC0C8 \uC0AC\uAC74"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy, onClick: () => {
+    if (!confirmDiscard()) return;
+    operationKeys.current = {};
+    jtGiftSession = { token: "", uid: "", workspace: null };
+    setToken("");
+    setDraft(giftNewDraft());
+    setClientId("");
+    setMeta(null);
+    setBaseline(null);
+    setTouched(false);
+    setRun(null);
+    setRequest(null);
+  } }, "\uB85C\uADF8\uC544\uC6C3")), clients.length === 0 && /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uB4F1\uB85D\uB41C \uACE0\uAC1D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4. \uC0AC\uBB34\uC18C \uACE0\uAC1D\uC744 \uBA3C\uC800 \uB4F1\uB85D\uD574 \uC8FC\uC138\uC694."), cases.length > 0 && /* @__PURE__ */ React.createElement("ul", null, cases.map((item) => /* @__PURE__ */ React.createElement("li", { key: item.case_id }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy, onClick: () => act(() => reopen(item.case_id)) }, item.label || "\uC81C\uBAA9 \uC5C6\uB294 \uC0AC\uAC74", " \xB7 \uBC84\uC804 ", item.current_revision, " \uC5F4\uAE30")))), cursor && /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => act(() => reloadList(true)), disabled: busy }, "\uBAA9\uB85D \uB354 \uBCF4\uAE30")), /* @__PURE__ */ React.createElement("p", { className: "gc-help", "data-testid": "gift-save-state" }, dirty ? "\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD\uC774 \uC788\uC2B5\uB2C8\uB2E4." : meta ? "\uC800\uC7A5\uB41C \uC785\uB825\uC785\uB2C8\uB2E4." : "\uC0C8 \uCD08\uC548\uC785\uB2C8\uB2E4.", meta && ` \xB7 \uC785\uB825 \uBC84\uC804 ${meta.revision} / \uCD5C\uC2E0 ${meta.current_revision}`), meta && /* @__PURE__ */ React.createElement("div", { className: "gc-actions" }, /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uB2E4\uC2DC \uC5F4 \uC785\uB825 \uBC84\uC804" }, /* @__PURE__ */ React.createElement("input", { inputMode: "numeric", value: reopenRevision, onChange: (e) => setReopenRevision(e.target.value.replace(/\D/g, "")), placeholder: `1~${meta.current_revision}` })), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy || !token, onClick: () => act(() => reopen(meta.case_id, reopenRevision)) }, "\uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30")), readonly && /* @__PURE__ */ React.createElement("p", { className: "gc-status" }, "\uC77D\uAE30 \uC804\uC6A9 \uC800\uC7A5\uBCF8\uC785\uB2C8\uB2E4. \uD604\uC7AC \uC785\uB825\uC73C\uB85C \uC0C8 \uC0AC\uAC74\uC744 \uC800\uC7A5\uD558\uAC70\uB098 \uCD5C\uC2E0 \uBC84\uC804\uC744 \uB2E4\uC2DC \uC5F4 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), Object.keys((meta == null ? void 0 : meta.property_sources) || {}).length > 0 && /* @__PURE__ */ React.createElement("section", { className: "gc-card", "data-testid": "gift-saved-property-sources" }, /* @__PURE__ */ React.createElement("h3", null, "\uCD94\uAC00 \uC7AC\uC0B0\uC758 \uCC44\uD0DD \uB2F9\uC2DC \uC6D0\uBCF8"), /* @__PURE__ */ React.createElement("p", null, dirty ? "\uC800\uC7A5 \uD6C4 \uC785\uB825\uC774 \uBCC0\uACBD\uB410\uC2B5\uB2C8\uB2E4. \uC544\uB798\uB294 \uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uB2F9\uC2DC \uC0C1\uD0DC\uC785\uB2C8\uB2E4." : "\uC800\uC7A5\uB41C \uC6D0\uBCF8 \uC5F0\uACB0 \uC0C1\uD0DC\uC785\uB2C8\uB2E4."), Object.entries(meta.property_sources).map(([id, v]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("div", { key: id }, /* @__PURE__ */ React.createElement("p", null, v.property.address, " \xB7 ", v.parties.donor.name, " \u2192 ", v.parties.donee.name, " \xB7 ", v.selection.gift_date), /* @__PURE__ */ React.createElement("p", null, v.valuation.amount, "\uC6D0 \xD7 ", v.selection.gift_share, " = ", giftExactWon(v.adopted_amount), " \xB7 \uD3C9\uAC00 \uAE30\uC900\uC77C ", v.valuation.as_of_date, " \xB7 ", { matched: "\uCC44\uD0DD\uAC12\uACFC \uC77C\uCE58", manually_modified: "\uC785\uB825\uAC12 \uC218\uB3D9 \uC218\uC815", context_mismatch: "\uC0AC\uAC74\xB7\uC7AC\uC0B0 \uC870\uAC74 \uBCC0\uACBD: \uC7AC\uCC44\uD0DD \uD544\uC694" }[(_a2 = meta.property_source_status) == null ? void 0 : _a2[id]] || "\uC0C1\uD0DC \uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, v.selection.adoption_reason, " \xB7 \uC6D0\uBCF8 \uD574\uC2DC ", v.source_hash));
+  })), (meta == null ? void 0 : meta.master_snapshot) && /* @__PURE__ */ React.createElement("section", { className: "gc-card", "aria-label": "\uAC00\uC838\uC624\uAE30 \uB2F9\uC2DC \uC6D0\uBCF8 \uC790\uB8CC" }, /* @__PURE__ */ React.createElement("h3", null, "\uAC00\uC838\uC624\uAE30 \uB2F9\uC2DC \uC790\uB8CC"), /* @__PURE__ */ React.createElement("p", null, meta.master_snapshot.property.address, " \xB7 \uC99D\uC5EC\uC790 ", meta.master_snapshot.parties.donor.name, " \u2192 \uC218\uC99D\uC790 ", meta.master_snapshot.parties.donee.name), meta.master_snapshot.fact_history && /* @__PURE__ */ React.createElement("p", { "data-testid": "gift-saved-fact-period" }, "\uACFC\uAC70 \uC0AC\uC2E4 \uC801\uC6A9\uAE30\uAC04 ", meta.master_snapshot.fact_history.applicability.applicable_from, " ~ ", meta.master_snapshot.fact_history.applicability.applicable_until, " \xB7 \uD655\uC778 \uADFC\uAC70: ", meta.master_snapshot.fact_history.applicability.reason, " \xB7 \uB2F9\uC2DC \uC120\uD0DD\uD55C \uCDE8\uB4DD\xB7\uB2F9\uC0AC\uC790\xB7\uD3C9\uAC00\uC790\uB8CC \uBCF4\uC874"), meta.master_snapshot.ownership_history && /* @__PURE__ */ React.createElement("p", { "data-testid": "gift-saved-ownership-period" }, "\uCC44\uD0DD \uC18C\uC720 \uAE30\uAC04: ", meta.master_snapshot.ownership_history.valid_from, "\uBD80\uD130 ", meta.master_snapshot.ownership_history.valid_until || "\uC774\uD6C4", " (\uBCC0\uB3D9 \uB2F9\uC77C\uC740 \uD655\uC778\uD55C \uC120\uD6C4\uAD00\uACC4 \uAE30\uC900) \xB7 \uAE30\uB85D ", meta.master_snapshot.ownership_history.revision, " \xB7 \uB2E4\uB978 \uC6D0\uBCF8 \uC0AC\uC2E4\uC740 \uC544\uB798 \uC120\uD0DD \uBC84\uC804 \uB610\uB294 \uAC00\uC838\uC624\uAE30 \uC2DC\uC810 \uC790\uB8CC"), /* @__PURE__ */ React.createElement("p", null, "\uC804\uCCB4 \uD3C9\uAC00\uC561 ", meta.master_snapshot.valuation.amount, "\uC6D0 \xB7 \uAE30\uC900\uC77C ", meta.master_snapshot.valuation.as_of_date, " \xB7 \uC99D\uC5EC \uC9C0\uBD84 ", meta.master_snapshot.selection.gift_share, " \xB7 \uAC00\uC838\uC628 \uAC00\uC561 ", giftExactWon(meta.master_snapshot.adopted_amount)), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uCC44\uD0DD \uC774\uC720: ", meta.master_snapshot.selection.adoption_reason, /* @__PURE__ */ React.createElement("br", null), "\uAC00\uC838\uC628 \uC2DC\uAC01: ", meta.master_snapshot.captured_at, /* @__PURE__ */ React.createElement("br", null), "\uC6D0\uBCF8\uC774 \uBC14\uB00C\uC5B4\uB3C4 \uC774 \uAE30\uB85D\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uC774\uD6C4 \uC9C1\uC811 \uC218\uC815\uD55C \uD604\uC7AC \uC785\uB825\uAC12\uACFC\uB294 \uB2E4\uB97C \uC218 \uC788\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, typeof JTEquityPicker !== "undefined" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uD3C9\uAC00 \uBC18\uC601 \uC704\uCE58", /* @__PURE__ */ React.createElement("select", { "data-testid": "gift-equity-target", value: equityTarget, onChange: (e) => setEquityTarget(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "primary" }, "\uCCAB \uC7AC\uC0B0\uC73C\uB85C \uBC18\uC601/\uAD50\uCCB4"), /* @__PURE__ */ React.createElement("option", { value: "new" }, "\uCD94\uAC00 \uC8FC\uC2DD \uC7AC\uC0B0"), (s.assets || []).filter((x) => x.kind === "stock").map((x) => /* @__PURE__ */ React.createElement("option", { key: x.local_id, value: x.local_id }, "\uAE30\uC874 \uC8FC\uC2DD ", x.local_id, " \uAD50\uCCB4")))), /* @__PURE__ */ React.createElement(JTEquityPicker, { api: requestApi, clientId, eventDate: s.gift_date, purpose: "\uC99D\uC5EC", disabled: busy || readonly, onAdopt: (x) => change((d) => {
+    const row = { local_id: window.crypto.randomUUID(), kind: "stock", property_type: null, address_text: null, adopted_value_krw: String(x.total_value), valuation_as_of: x.eval_date, value_source: x.company_name + " \xB7 \uD3C9\uAC00 \uACB0\uACFC " + x.run_id, equity_ref: x.reference };
+    if (equityTarget === "primary") return __spreadProps(__spreadValues({}, d), { answers_raw: __spreadProps(__spreadValues({}, d.answers_raw), { assetType: "stock", giftValueStock: String(x.total_value) }), valuation_snapshot: null, supplemental: __spreadProps(__spreadValues({}, d.supplemental), { primary_equity_ref: x.reference, primary_value_source: row.value_source, multiasset_confirmed: false }) });
+    const rows = equityTarget === "new" ? [...d.supplemental.assets, row] : d.supplemental.assets.map((a2) => a2.local_id === equityTarget ? __spreadProps(__spreadValues({}, row), { local_id: a2.local_id }) : a2);
+    return __spreadProps(__spreadValues({}, d), { supplemental: __spreadProps(__spreadValues({}, d.supplemental), { assets: rows, multiasset_confirmed: false }) });
+  }) })), a.assetType === "stock" && /* @__PURE__ */ React.createElement("p", null, "\uCCAB \uC8FC\uC2DD \uCC44\uD0DD\uC561: ", a.giftValueStock || "\uBBF8\uC120\uD0DD", "\uC6D0 \xB7 ", ((_a = s.primary_equity_ref) == null ? void 0 : _a.shares) || "\uBBF8\uC120\uD0DD", "\uC8FC \xB7 \uACB0\uACFC ", ((_b = s.primary_equity_ref) == null ? void 0 : _b.run_id) || "\uBBF8\uC120\uD0DD", " (\uC218\uB7C9/\uAE08\uC561 \uBCC0\uACBD\uC740 \uD3C9\uAC00\uB97C \uB2E4\uC2DC \uC120\uD0DD)"), /* @__PURE__ */ React.createElement("section", { className: "gc-card" }, /* @__PURE__ */ React.createElement("h3", null, "\uAE30\uC874 \uC7AC\uC0B0\xB7\uB2F9\uC0AC\uC790\xB7\uD3C9\uAC00\uC790\uB8CC \uAC00\uC838\uC624\uAE30"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC774 \uACE0\uAC1D\uC758 \uC8FC\uD0DD\xB7\uC18C\uC720\uC790\xB7\uC218\uC99D\uC790\xB7\uD3C9\uAC00\uC790\uB8CC\uB97C \uC120\uD0DD\uD569\uB2C8\uB2E4. \uD3C9\uAC00\uC561\uC740 \uC7AC\uC0B0 \uC804\uCCB4 \uAE08\uC561\uC784\uC744 \uD655\uC778\uD574\uC57C \uD558\uBA70, \uC99D\uC5EC\uD560 \uC9C0\uBD84\uB9CC \uACF1\uD574 \uC785\uB825\uD569\uB2C8\uB2E4. \uC790\uB8CC\uB97C \uAC00\uC838\uC624\uBA74 \uD604\uC7AC \uC785\uB825\uC744 \uC0C8 \uBC84\uC804\uC73C\uB85C \uC800\uC7A5\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !meta || !token || busy || readonly, onClick: () => act(() => loadSources()) }, "\uAE30\uC874 \uC790\uB8CC \uC870\uD68C"), !meta && /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uBA3C\uC800 \uACE0\uAC1D\uC744 \uC120\uD0DD\uD558\uACE0 \uCD08\uC548\uC744 \uC800\uC7A5\uD574 \uC8FC\uC138\uC694."), sourceCatalog && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "gc-grid", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uCC44\uD0DD\uD560 \uC704\uCE58" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "source-target", value: sourceTarget, onChange: (e) => setSourceTarget(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "primary" }, "\uCCAB \uC7AC\uC0B0 \uAD50\uCCB4"), /* @__PURE__ */ React.createElement("option", { value: "new" }, "\uCD94\uAC00 \uBD80\uB3D9\uC0B0 \uC0C8 \uD589"), s.assets.filter((x) => x.kind === "realestate").map((x) => /* @__PURE__ */ React.createElement("option", { key: x.local_id, value: x.local_id }, "\uCD94\uAC00 \uD589 \uAD50\uCCB4\xB7\uC7AC\uCC44\uD0DD: ", x.address_text || x.local_id)))), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uAC00\uC838\uC62C \uC7AC\uC0B0" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "source-property_id", value: sourceChoice.property_id, onChange: (e) => chooseSource("property_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC7AC\uC0B0 \uC120\uD0DD"), sourceCatalog.properties.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id, disabled: p.property_type !== "\uC8FC\uD0DD" }, p.address || "\uC8FC\uC18C \uC5C6\uC74C", " \xB7 ", p.property_type, p.property_type !== "\uC8FC\uD0DD" ? " (\uC5F0\uACB0 \uC900\uBE44 \uC911)" : "")))), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC99D\uC5EC\uC790 \uC18C\uC720 \uC9C0\uBD84" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "source-ownership_id", value: sourceChoice.ownership_id, onChange: (e) => chooseSource("ownership_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC18C\uC720\uC790 \uC120\uD0DD"), (((_c = ownerTimeline == null ? void 0 : ownerTimeline.items.find((x) => x.version === sourceChoice.ownership_version)) == null ? void 0 : _c.ownerships) || (selectedProperty == null ? void 0 : selectedProperty.ownerships) || []).map((o) => /* @__PURE__ */ React.createElement("option", { key: o.id, value: o.id }, o.name || "\uC774\uB984 \uC5C6\uC74C", " \xB7 \uC18C\uC720 \uC9C0\uBD84 ", o.share_ratio)))), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC218\uC99D\uC790" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "source-donee_person_id", value: sourceChoice.donee_person_id, onChange: (e) => chooseSource("donee_person_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC218\uC99D\uC790 \uC120\uD0DD"), sourceCatalog.persons.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id }, p.name || "\uC774\uB984 \uC5C6\uC74C", " \xB7 \uACE0\uAC1D \uAE30\uC900 ", p.relationship)))), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uD3C9\uAC00\uC790\uB8CC" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "source-valuation_id", value: sourceChoice.valuation_id, onChange: (e) => chooseSource("valuation_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD3C9\uAC00\uC790\uB8CC \uC120\uD0DD"), ((selectedProperty == null ? void 0 : selectedProperty.valuations) || []).map((v) => /* @__PURE__ */ React.createElement("option", { key: v.id, value: v.id }, v.as_of_date, " \xB7 ", v.valuation_type, " \xB7 ", v.amount, "\uC6D0 \xB7 ", v.source, v.hometax_confirm_required ? " \xB7 \uBCC4\uB3C4 \uD655\uC778 \uD544\uC694" : "")))), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC99D\uC5EC\uD560 \uC9C0\uBD84 (\uC804\uCCB4 1, \uC808\uBC18 0.5)" }, /* @__PURE__ */ React.createElement("input", { "data-testid": "source-gift_share", inputMode: "decimal", value: sourceChoice.gift_share, onChange: (e) => chooseSource("gift_share", e.target.value) })), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC99D\uC5EC\uC77C" }, /* @__PURE__ */ React.createElement("input", { "data-testid": "source-gift_date", type: "date", value: sourceChoice.gift_date, onChange: (e) => chooseSource("gift_date", e.target.value) })), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC8FC\uD0DD \uAD6C\uBD84" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "source-re_type", value: sourceChoice.re_type, onChange: (e) => chooseSource("re_type", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), /* @__PURE__ */ React.createElement("option", null, "\uACF5\uB3D9\uC8FC\uD0DD"), /* @__PURE__ */ React.createElement("option", null, "\uAC1C\uBCC4\uC8FC\uD0DD"))), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC774 \uD3C9\uAC00\uC561\uC744 \uCC44\uD0DD\uD55C \uC774\uC720\xB7\uD655\uC778 \uB0B4\uC6A9" }, /* @__PURE__ */ React.createElement("input", { "data-testid": "source-adoption_reason", maxLength: 500, value: sourceChoice.adoption_reason, onChange: (e) => chooseSource("adoption_reason", e.target.value) }))), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uC7AC\uC0B0 \uC804\uCCB4 \uD3C9\uAC00\uC561\uC784\uC744 \uD655\uC778\uD588\uACE0 \uD3C9\uAC00\uAE30\uC900\uC77C\xB7\uC720\uD615\uACFC \uC774\uBC88 \uC99D\uC5EC\uC5D0 \uC0AC\uC6A9\uD560 \uAC12\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4", checked: sourceChoice.valuation_confirmed, onChange: (v) => chooseSource("valuation_confirmed", v) }), /* @__PURE__ */ React.createElement("div", { "aria-label": "\uC0AC\uAC74\uC77C \uC18C\uC720 \uC774\uB825" }, /* @__PURE__ */ React.createElement("button", { "data-testid": "gift-ownership-load", disabled: busy || readonly || !sourceChoice.property_id || !sourceChoice.gift_date, onClick: () => act(async () => {
+    const generation = ++ownerQuery.current;
+    setSourcePreview(null);
+    setOwnerTimeline(null);
+    const data = await requestApi("/v1/clients/" + clientId + "/masters/properties/" + sourceChoice.property_id + "/ownership-options?event_date=" + sourceChoice.gift_date);
+    if (generation === ownerQuery.current) {
+      setOwnerTimeline(data);
+      chooseSource("ownership_version", null);
+    }
+  }) }, "\uC0AC\uAC74\uC77C \uC18C\uC720 \uC774\uB825 \uC870\uD68C"), ownerTimeline && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74 \uB0A0\uC9DC\uC5D0 \uB9DE\uB294 \uC9C0\uBD84 \uAE30\uB85D", /* @__PURE__ */ React.createElement("select", { "data-testid": "gift-ownership-version", disabled: busy || readonly, value: sourceChoice.ownership_version || "", onChange: (e) => chooseSource("ownership_version", e.target.value || null) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uBA85\uC2DC\uC801\uC73C\uB85C \uC120\uD0DD"), ownerTimeline.items.filter((x) => x.eligible).map((x) => /* @__PURE__ */ React.createElement("option", { key: x.version, value: x.version }, x.valid_from, "\uBD80\uD130 ", x.valid_until ? "~ " + x.valid_until + " (\uB2F9\uC77C \uC120\uD6C4 \uD655\uC778)" : "\uC774\uD6C4", " \xB7 \uAE30\uB85D ", x.revision, x.boundary_review_required ? " \xB7 \uB2F9\uC77C \uBCC0\uB3D9 \uD6C4\uBCF4" : "", x.basis === "before_first_retained_change" ? " (\uCCAB \uBCF4\uAD00 \uC804 \uC0C1\uD0DC\xB7\uC774\uC804 \uBCC0\uB3D9 \uD655\uC778 \uD544\uC694)" : "")))), !ownerTimeline.items.some((x) => x.eligible) && /* @__PURE__ */ React.createElement("p", null, "\uC774 \uB0A0\uC9DC\uB97C \uB4B7\uBC1B\uCE68\uD558\uB294 \uC18C\uC720 \uAE30\uB85D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.")), sourceChoice.ownership_version && /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "gift-ownership-confirm", type: "checkbox", disabled: busy || readonly, checked: !!sourceChoice.ownership_history_confirmed, onChange: (e) => chooseSource("ownership_history_confirmed", e.target.checked) }), "\uC0AC\uAC74\uACFC \uC18C\uC720 \uBCC0\uB3D9\uC758 \uC120\uD6C4\uAD00\uACC4\xB7\uC120\uD0DD \uC9C0\uBD84\xB7\uC774\uC804 \uBCC0\uB3D9 \uB204\uB77D \uC5EC\uBD80\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4. \uC7AC\uC0B0\xB7\uB2F9\uC0AC\uC790\xB7\uD3C9\uAC00\uC790\uB8CC\uB294 \uBCC4\uB3C4 \uACFC\uAC70 \uBC84\uC804\uC744 \uC120\uD0DD\uD558\uAC70\uB098 \uD604\uC7AC \uC790\uB8CC\uB97C \uC0AC\uC6A9\uD558\uBBC0\uB85C \uCDE8\uB4DD \uC0AC\uC2E4\xB7\uAE08\uC561\uC744 \uD568\uAED8 \uAC80\uD1A0\uD569\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement(JTFactVersionPicker, { api: requestApi, clientId, propertyId: sourceChoice.property_id, ownerId: (_e = (((_d = ownerTimeline == null ? void 0 : ownerTimeline.items.find((x) => x.version === sourceChoice.ownership_version)) == null ? void 0 : _d.ownerships) || (selectedProperty == null ? void 0 : selectedProperty.ownerships) || []).find((x) => x.id === sourceChoice.ownership_id)) == null ? void 0 : _e.person_id, doneeId: sourceChoice.donee_person_id, eventDate: sourceChoice.gift_date, valuationId: sourceChoice.valuation_id, selection: sourceChoice.fact_selection, onChange: (v) => chooseSource("fact_selection", v), disabled: busy || readonly }), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uD3C9\uAC00\uC561 \uC801\uC815\uC131\uC744 \uC790\uB3D9 \uD310\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC18C\uC720 \uC9C0\uBD84\uACFC \uC774\uBC88 \uC99D\uC5EC \uC9C0\uBD84\uC740 \uB2E4\uB97C \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uCCAB \uC7AC\uC0B0\uC740 \uC6D0 \uBBF8\uB9CC\uC744 \uBC84\uB9BD\uB2C8\uB2E4. \uCD94\uAC00 \uC6D0\uBCF8\uC740 \uC0AC\uAC74 \uB2F9\uC0AC\uC790\xB7\uB0A0\uC9DC\uAC00 \uAC19\uACE0 \uC99D\uC5EC\uC77C \uAE30\uC900 \uD3C9\uAC00\uC790\uB8CC\uC774\uBA70 \uC9C0\uBD84 \uAC00\uC561\uC774 \uC815\uC218 \uC6D0\uC778 \uACBD\uC6B0\uC5D0 \uCC44\uD0DD\uD569\uB2C8\uB2E4. \uACE0\uAC1D \uAE30\uC900 \uAC00\uC871\uAD00\uACC4\uB294 \uC99D\uC5EC\uC790\xB7\uC218\uC99D\uC790 \uC0AC\uC774 \uAD00\uACC4\uB85C \uC790\uB3D9 \uC801\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "gc-actions" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy || !sourceChoice.valuation_confirmed, onClick: () => act(previewSource) }, "\uC120\uD0DD \uC790\uB8CC \uD655\uC778"), sourceCatalog.next_cursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadSources(true)) }, "\uC7AC\uC0B0 \uB354 \uBCF4\uAE30")), sourcePreview && /* @__PURE__ */ React.createElement("div", { className: "gc-status", style: { marginTop: 12 } }, /* @__PURE__ */ React.createElement("p", null, "\uC99D\uC5EC\uC790 ", sourcePreview.parties.donor.name, " \u2192 \uC218\uC99D\uC790 ", sourcePreview.parties.donee.name), /* @__PURE__ */ React.createElement("p", null, sourcePreview.property.address, " \xB7 \uC804\uCCB4 \uD3C9\uAC00\uC561 ", sourcePreview.valuation.amount, "\uC6D0 \xD7 \uC99D\uC5EC \uC9C0\uBD84 ", sourcePreview.selection.gift_share, " = \uC785\uB825 \uAC00\uC561 ", giftExactWon(sourcePreview.adopted_amount)), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8 \uD3C9\uAC00\uAE30\uC900\uC77C ", sourcePreview.valuation.as_of_date, " \xB7 \uC99D\uC5EC\uC77C ", sourcePreview.selection.gift_date), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: busy, "data-testid": "source-import", onClick: () => act(() => importSource()) }, "\uAC00\uC838\uC640 \uC0C8 \uBC84\uC804 \uC800\uC7A5"), sourceTarget !== "primary" && /* @__PURE__ */ React.createElement("button", { "data-testid": "source-queue-add", disabled: busy || sourceQueue.length >= 20, onClick: () => setSourceQueue((q) => [...q, { item: queuedSource(), address: sourcePreview.property.address }]) }, "\uCD94\uAC00 \uCC44\uD0DD \uBAA9\uB85D\uC5D0 \uB2F4\uAE30")), sourceQueue.length > 0 && /* @__PURE__ */ React.createElement("div", { "data-testid": "source-queue" }, /* @__PURE__ */ React.createElement("p", null, "\uC77C\uAD04 \uCC44\uD0DD ", sourceQueue.length, "\uAC74 \xB7 \uBAA8\uB450 \uAC80\uC99D\uB418\uBA74 \uD55C \uBC84\uC804\uC73C\uB85C \uC800\uC7A5\uD569\uB2C8\uB2E4."), sourceQueue.map((x, i) => /* @__PURE__ */ React.createElement("p", { key: i }, x.address, " \xB7 ", x.item.target_local_id ? "\uAE30\uC874 \uD589 \uAD50\uCCB4" : "\uC0C8 \uD589", /* @__PURE__ */ React.createElement("button", { onClick: () => setSourceQueue((q) => q.filter((_, j) => i !== j)) }, "\uBAA9\uB85D ", i + 1, " \uC81C\uAC70"))), /* @__PURE__ */ React.createElement("button", { "data-testid": "source-queue-import", disabled: busy || readonly, onClick: () => act(() => importSource(true)) }, "\uCD94\uAC00 \uC7AC\uC0B0 \uC77C\uAD04 \uCC44\uD0DD")), sourceCatalog.properties.length === 0 && /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC774 \uACE0\uAC1D\uC758 \uB4F1\uB85D \uC7AC\uC0B0\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("section", { className: "gc-card" }, /* @__PURE__ */ React.createElement("h3", null, "\uAE30\uBCF8 \uC785\uB825"), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC0AC\uAC74 \uC774\uB984" }, /* @__PURE__ */ React.createElement("input", { maxLength: 200, value: label, onChange: (e) => {
+    setLabel(e.target.value);
+    setTouched(true);
+  } })), /* @__PURE__ */ React.createElement("div", { className: "gc-grid", style: { marginTop: 16 } }, GIFT_QS.filter((q) => !q.showIf || q.showIf(a)).map((q) => {
+    var _a2, _b2, _c2;
+    return /* @__PURE__ */ React.createElement(GiftCaseField, { key: q.id, title: q.id === "priorGiftDed" ? "\uACFC\uAC70 \uC99D\uC5EC \uB2F9\uC2DC \uACF5\uC81C \uC0AC\uC6A9\uC561 (\uC6D0 \xB7 \uBAA8\uB974\uBA74 \uACF5\uB780)" : q.q, hint: q.id === "priorGiftDed" ? "\uBAA8\uB974\uB294 \uACF5\uC81C\uC561\uC740 \uCD94\uC815\uD574\uC11C \uC800\uC7A5\uB41C \uACC4\uC0B0\uC5D0 \uC0AC\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4." : q.id === "giftValue" ? "\uC2E4\uC81C\uB85C \uC774\uC804\uD558\uB294 \uC9C0\uBD84\uC758 \uC6D0 \uB2E8\uC704 \uAC00\uC561\uC744 \uC785\uB825\uD558\uC138\uC694." : null }, q.opts ? /* @__PURE__ */ React.createElement("select", { "data-testid": "gift-" + q.id, value: (_a2 = a[q.id]) != null ? _a2 : "", onChange: (e) => setAnswer(q.id, e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), (q.id === "assetType" ? [...q.opts, ["stock", "\uBE44\uC0C1\uC7A5\uC8FC\uC2DD (\uC800\uC7A5 \uD3C9\uAC00 \uC120\uD0DD)"]] : q.opts).map(([v, text]) => /* @__PURE__ */ React.createElement("option", { value: v, key: v }, text))) : q.freeform ? /* @__PURE__ */ React.createElement("textarea", { "data-testid": "gift-" + q.id, value: (_b2 = a[q.id]) != null ? _b2 : "", maxLength: q.id === "context" ? 200 : 120, onChange: (e) => setAnswer(q.id, e.target.value) }) : /* @__PURE__ */ React.createElement("input", { "data-testid": "gift-" + q.id, inputMode: "numeric", value: (_c2 = a[q.id]) != null ? _c2 : "", onChange: (e) => setAnswer(q.id, e.target.value.replace(/[^0-9]/g, "")) }));
+  }))), s && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "gc-card" }, /* @__PURE__ */ React.createElement("h3", null, "\uC0AC\uAC74 \uAE30\uC900\uACFC \uB2F9\uC0AC\uC790"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC99D\uC5EC\uC77C\uACFC \uB2F9\uC0AC\uC790\uB97C \uB0A8\uACA8 \uB2E4\uC2DC \uC5F4 \uB54C \uAC19\uC740 \uC0AC\uC2E4\uAD00\uACC4\uB97C \uD655\uC778\uD569\uB2C8\uB2E4. \uB0A0\uC9DC\uBCC4 \uACFC\uAC70 \uADDC\uCE59 \uC120\uD0DD\uC740 \uC544\uC9C1 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC73C\uBA70 \uD604\uC7AC \uC5D4\uC9C4 \uAE30\uC900\uC73C\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, dateField("gift_date", "\uC99D\uC5EC\uC77C"), dateField("relationship_as_of", "\uAD00\uACC4 \uD655\uC778 \uAE30\uC900\uC77C"), [["donor_person_id", "\uC99D\uC5EC\uC790"], ["donee_person_id", "\uC218\uC99D\uC790"]].map(([k, title]) => /* @__PURE__ */ React.createElement(GiftCaseField, { title, key: k }, /* @__PURE__ */ React.createElement("select", { "data-testid": "gift-s-" + k, value: s[k] || "", onChange: (e) => setSupplemental(k, e.target.value || null) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD558\uC9C0 \uC54A\uC74C"), persons.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id }, p.name || "\uC774\uB984 \uC5C6\uC74C", " \xB7 ", p.relationship))))))), /* @__PURE__ */ React.createElement("section", { className: "gc-card" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0\uC5D0 \uBC18\uC601\uD560 \uC870\uC815\uAE08\uC561"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uAE30\uC0AC\uC6A9 \uACF5\uC81C\uC561\uACFC \uBE44\uC6A9\xB7\uC678\uAD6D\uB0A9\uBD80\uC561\uC744 \uAE30\uC874 \uACC4\uC0B0 \uC5D4\uC9C4\uC5D0 \uC804\uB2EC\uD569\uB2C8\uB2E4. \uD45C\uC2DC\uB41C 0\uC6D0\uB3C4 \uD655\uC778\uD574\uC57C \uACC4\uC0B0\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, GIFT_ADJUSTMENTS.map(([k, title]) => /* @__PURE__ */ React.createElement(GiftCaseField, { key: k, title: title + " (\uC6D0)" }, /* @__PURE__ */ React.createElement("input", { inputMode: "numeric", value: s.adjustments[k], onChange: (e) => change((d) => __spreadProps(__spreadValues({}, d), { supplemental: __spreadProps(__spreadValues({}, d.supplemental), { adjustments: __spreadProps(__spreadValues({}, d.supplemental.adjustments), { [k]: e.target.value.replace(/[^0-9]/g, "") }), adjustments_confirmed: false }) })) })))), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uC704 \uC870\uC815\uAE08\uC561\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4 (\uD574\uB2F9 \uC5C6\uC73C\uBA74 0\uC6D0)", checked: s.adjustments_confirmed, onChange: (v) => setSupplemental("adjustments_confirmed", v) })), a.relationship === "\uC9C1\uACC4\uC874\uC18D" && (a.marriageDed === "yes" || a.childbirthDed === "yes") && /* @__PURE__ */ React.createElement("section", { className: "gc-card" }, /* @__PURE__ */ React.createElement("h3", null, "\uD63C\uC778\xB7\uCD9C\uC0B0 \uD655\uC778 \uC790\uB8CC"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC801\uC6A9 \uC0AC\uC720\uC640 \uB0A0\uC9DC, \uC774\uC804 \uC0AC\uC6A9\uC561\uC744 \uD568\uAED8 \uBCF4\uC874\uD569\uB2C8\uB2E4. \uCCB4\uD06C\uB294 \uC0AC\uC6A9\uC790 \uD655\uC778 \uAE30\uB85D\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, dateField("marriage_date", "\uD63C\uC778\uC77C"), dateField("childbirth_date", "\uCD9C\uC0DD\xB7\uC785\uC591\uC77C"), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uAD00\uB828 \uC790\uB140 \uD45C\uC2DC\uBA85" }, /* @__PURE__ */ React.createElement("input", { value: s.child_name || "", onChange: (e) => setSupplemental("child_name", e.target.value || null) }))), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uD63C\uC778\xB7\uCD9C\uC0B0 \uC801\uC6A9 \uC694\uAC74\uACFC \uAE30\uC0AC\uC6A9\uC561\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4", checked: s.deduction_eligibility_confirmed, onChange: (v) => setSupplemental("deduction_eligibility_confirmed", v) })), a.priorGiftHas === "yes" && /* @__PURE__ */ React.createElement("section", { className: "gc-card" }, /* @__PURE__ */ React.createElement("h3", null, "\uACFC\uAC70 \uC99D\uC5EC \uC0AC\uC2E4 \uD655\uC778"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uD604\uC7AC \uB098\uC774\xB7\uC138\uB300\uC0DD\uB7B5 \uC5EC\uBD80\uB97C \uACFC\uAC70 \uC99D\uC5EC\uC5D0 \uADF8\uB300\uB85C \uC801\uC6A9\uD558\uC9C0 \uC54A\uB3C4\uB85D \uB2F9\uC2DC \uC0AC\uC2E4\uC744 \uBC1B\uC2B5\uB2C8\uB2E4. \uAC1C\uBCC4 \uC774\uB825\uC774 \uC788\uC73C\uBA74 \uC704 \uD569\uACC4 \uC785\uB825 \uB300\uC2E0 \uAC1C\uBCC4 \uC774\uB825\uC744 \uACC4\uC0B0\uC5D0 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."), s.prior_gifts.length === 0 && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, GIFT_HISTORY_FLAGS.map(([k, title]) => /* @__PURE__ */ React.createElement(GiftCaseBool, { key: k, title, value: s.aggregate_history_flags[k], onChange: (v) => change((d) => __spreadProps(__spreadValues({}, d), { supplemental: __spreadProps(__spreadValues({}, d.supplemental), { aggregate_history_flags: __spreadProps(__spreadValues({}, d.supplemental.aggregate_history_flags), { [k]: v }), history_flags_confirmed: false }) })) }))), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uC704 \uACFC\uAC70 \uC0C1\uD0DC \uC138 \uD56D\uBAA9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4", checked: s.history_flags_confirmed, onChange: (v) => setSupplemental("history_flags_confirmed", v) }), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uACFC\uAC70 \uACF5\uC81C \uC0AC\uC6A9\uC561\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4", checked: s.prior_gift_deduction_confirmed, onChange: (v) => setSupplemental("prior_gift_deduction_confirmed", v) }), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uC774\uBC88 \uACC4\uC0B0\uC758 \uD569\uC0B0 \uB300\uC0C1\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4", checked: s.history_inclusion_confirmed, onChange: (v) => setSupplemental("history_inclusion_confirmed", v) })), s.prior_gifts.map((row, i) => /* @__PURE__ */ React.createElement("div", { className: "gc-row", key: row.local_id }, /* @__PURE__ */ React.createElement("h4", null, "\uACFC\uAC70 \uC99D\uC5EC ", i + 1), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, [["value_krw", "\uACFC\uAC70 \uC7AC\uC0B0\uAC00\uC561"], ["deduction_used_krw", "\uACFC\uAC70 \uACF5\uC81C \uC0AC\uC6A9\uC561"]].map(([k, title]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement(GiftCaseField, { key: k, title: title + " (\uC6D0)" }, /* @__PURE__ */ React.createElement("input", { inputMode: "numeric", value: (_a2 = row[k]) != null ? _a2 : "", onChange: (e) => rowUpdate(i, k, e.target.value.replace(/[^0-9]/g, "")) }));
+  }), GIFT_HISTORY_FLAGS.map(([k, title]) => /* @__PURE__ */ React.createElement(GiftCaseBool, { key: k, title, value: row[k], onChange: (v) => rowUpdate(i, k, v) })), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uACFC\uAC70 \uC99D\uC5EC \uBA54\uBAA8" }, /* @__PURE__ */ React.createElement("input", { value: row.description || "", onChange: (e) => rowUpdate(i, "description", e.target.value) }))), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uACFC\uAC70 \uC99D\uC5EC " + (i + 1) + " \uACF5\uC81C\uC561 \uD655\uC778", checked: row.deduction_origin === "confirmed", onChange: (v) => rowUpdate(i, "deduction_origin", v ? "confirmed" : "unknown") }), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uACFC\uAC70 \uC99D\uC5EC " + (i + 1) + " \uC0C1\uD0DC \uD655\uC778", checked: row.history_flags_confirmed, onChange: (v) => rowUpdate(i, "history_flags_confirmed", v) }), /* @__PURE__ */ React.createElement(GiftCaseCheck, { label: "\uACFC\uAC70 \uC99D\uC5EC " + (i + 1) + " \uD569\uC0B0 \uB300\uC0C1 \uD655\uC778", checked: row.inclusion_confirmed, onChange: (v) => rowUpdate(i, "inclusion_confirmed", v) }), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setSupplemental("prior_gifts", s.prior_gifts.filter((_, n) => n !== i)) }, "\uC774 \uC774\uB825 \uC81C\uAC70"))), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setSupplemental("prior_gifts", [...s.prior_gifts, { local_id: window.crypto.randomUUID(), value_krw: null, deduction_used_krw: null, history_source: "event", deduction_origin: "unknown", inclusion_confirmed: false, history_flags_confirmed: false, is_generation_skip: null, is_minor: null, donor_child_deceased: null, description: "" }]) }, "\uAC1C\uBCC4 \uACFC\uAC70 \uC99D\uC5EC \uCD94\uAC00")), a.assetType === "realestate" && /* @__PURE__ */ React.createElement("section", { className: "gc-card" }, /* @__PURE__ */ React.createElement("h3", null, "\uD3C9\uAC00 \uADFC\uAC70 \uBCF4\uC874"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC870\uD68C \uD6C4\uBCF4\uC561\uACFC \uC2E4\uC81C \uCC44\uD0DD\uC561, \uC218\uB3D9 \uC218\uC815 \uC774\uC720\uB97C \uAD6C\uBCC4\uD569\uB2C8\uB2E4. \uC544\uB798 \uCD9C\uCC98\uB294 \uC0AC\uC6A9\uC790 \uAE30\uB85D\uC774\uBA70 \uC678\uBD80 \uAE30\uAD00 \uAC80\uC99D \uD45C\uC2DC\uB294 \uC544\uB2D9\uB2C8\uB2E4."), !draft.valuation_snapshot ? /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => change((d) => __spreadProps(__spreadValues({}, d), { valuation_snapshot: { query: a.reAddress || null, result_id: null, candidate_id: null, queried_at: null, as_of_date: s.gift_date, candidate_amount: null, adopted_amount: a.giftValue || null, adopted_at: (/* @__PURE__ */ new Date()).toISOString(), source: "\uC0AC\uC6A9\uC790 \uC785\uB825", manual_override: true, override_reason: null, review_required: false } })) }, "\uD3C9\uAC00 \uADFC\uAC70 \uC785\uB825") : /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, [["source", "\uD3C9\uAC00 \uCD9C\uCC98"], ["as_of_date", "\uD3C9\uAC00 \uAE30\uC900\uC77C"], ["candidate_amount", "\uC870\uD68C \uD6C4\uBCF4\uC561 (\uC6D0)"], ["adopted_amount", "\uCC44\uD0DD \uD3C9\uAC00\uC561 (\uC6D0)"], ["override_reason", "\uAE08\uC561 \uC218\uC815 \uC774\uC720"]].map(([k, title]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement(GiftCaseField, { title, key: k }, /* @__PURE__ */ React.createElement("input", { type: k === "as_of_date" ? "date" : "text", onInput: k === "as_of_date" ? (e) => change((d) => __spreadProps(__spreadValues({}, d), { valuation_snapshot: __spreadProps(__spreadValues({}, d.valuation_snapshot), { [k]: e.target.value || null }) })) : void 0, value: (_a2 = draft.valuation_snapshot[k]) != null ? _a2 : "", onChange: (e) => change((d) => __spreadProps(__spreadValues({}, d), { valuation_snapshot: __spreadValues(__spreadProps(__spreadValues({}, d.valuation_snapshot), { [k]: e.target.value || null }), k === "adopted_amount" ? { manual_override: true } : {}) })) }));
+  }))), /* @__PURE__ */ React.createElement("section", { className: "gc-card", "aria-label": "\uC774\uBC88 \uC99D\uC5EC \uC7AC\uC0B0 \uBAA9\uB85D" }, /* @__PURE__ */ React.createElement("h3", null, "\uC774\uBC88 \uC99D\uC5EC \uC7AC\uC0B0 \uBAA9\uB85D"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uAE30\uBCF8 \uBB38\uD56D\uC758 \uC7AC\uC0B0 1\uAC74\uC5D0 \uC544\uB798 \uC7AC\uC0B0\uC744 \uB354\uD569\uB2C8\uB2E4. \uAC01 \uAE08\uC561\uC740 \uC804\uCCB4 \uC7AC\uC0B0 \uAC00\uACA9\uC774 \uC544\uB2CC \uC774\uBC88\uC5D0 \uC99D\uC5EC\uD558\uB294 \uC9C0\uBD84\uC758 \uD3C9\uAC00\uC561\uC785\uB2C8\uB2E4. \uB3D9\uC77C\uD55C \uC99D\uC5EC\uC790\xB7\uC218\uC99D\uC790\xB72026\uB144 \uC99D\uC5EC\uC77C\uC758 \uC77C\uBC18 \uD604\uAE08\xB7\uBD80\uB3D9\uC0B0\uB9CC \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uBD80\uB2F4\uBD80\xB7\uD569\uC0B0\uBC30\uC81C\xB7\uD2B9\uB840 \uC7AC\uC0B0 \uBC0F \uB2E4\uB978 \uC99D\uC5EC\uC77C\uC740 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uCCAB \uC7AC\uC0B0: ", a.assetType === "realestate" ? "\uBD80\uB3D9\uC0B0" : a.assetType === "stock" ? "\uBE44\uC0C1\uC7A5\uC8FC\uC2DD" : "\uD604\uAE08", " \xB7 ", a.assetType === "realestate" ? a.giftValue : a.assetType === "stock" ? a.giftValueStock : a.giftValueCash, "\uC6D0"), (s.assets || []).map((row, i) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("div", { className: "gc-row", key: row.local_id }, /* @__PURE__ */ React.createElement("h4", null, "\uCD94\uAC00 \uC7AC\uC0B0 ", i + 1), /* @__PURE__ */ React.createElement("div", { className: "gc-grid" }, /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC7AC\uC0B0 \uC885\uB958" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "gift-asset-" + i + "-kind", disabled: row.kind === "stock", value: row.kind, onChange: (e) => assetUpdate(i, "kind", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "stock" }, "\uBE44\uC0C1\uC7A5\uC8FC\uC2DD"), /* @__PURE__ */ React.createElement("option", { value: "cash" }, "\uD604\uAE08"), /* @__PURE__ */ React.createElement("option", { value: "realestate" }, "\uBD80\uB3D9\uC0B0"))), row.kind === "realestate" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uBD80\uB3D9\uC0B0 \uAD6C\uBD84" }, /* @__PURE__ */ React.createElement("select", { "data-testid": "gift-asset-" + i + "-property_type", value: row.property_type || "", onChange: (e) => assetUpdate(i, "property_type", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), ["\uACF5\uB3D9\uC8FC\uD0DD", "\uAC1C\uBCC4\uC8FC\uD0DD", "\uD1A0\uC9C0", "\uC0C1\uAC00"].map((v) => /* @__PURE__ */ React.createElement("option", { key: v }, v)))), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uBD80\uB3D9\uC0B0 \uC8FC\uC18C" }, /* @__PURE__ */ React.createElement("input", { "data-testid": "gift-asset-" + i + "-address_text", value: row.address_text || "", onChange: (e) => assetUpdate(i, "address_text", e.target.value) }))), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC99D\uC5EC \uC9C0\uBD84 \uAC00\uC561 (\uC6D0)" }, /* @__PURE__ */ React.createElement("input", { readOnly: row.kind === "stock", "data-testid": "gift-asset-" + i + "-adopted_value_krw", inputMode: "numeric", value: (_a2 = row.adopted_value_krw) != null ? _a2 : "", onChange: (e) => assetUpdate(i, "adopted_value_krw", e.target.value) })), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uD3C9\uAC00 \uAE30\uC900\uC77C (\uC99D\uC5EC\uC77C)" }, /* @__PURE__ */ React.createElement("input", { readOnly: row.kind === "stock", "data-testid": "gift-asset-" + i + "-valuation_as_of", type: "date", value: row.valuation_as_of || "", onChange: (e) => assetUpdate(i, "valuation_as_of", e.target.value || null) })), /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC7AC\uC0B0 \uC2DD\uBCC4\xB7\uAC00\uC561 \uCD9C\uCC98\xB7\uCC44\uD0DD \uADFC\uAC70" }, /* @__PURE__ */ React.createElement("textarea", { readOnly: row.kind === "stock", "data-testid": "gift-asset-" + i + "-value_source", maxLength: 1e3, value: row.value_source || "", onChange: (e) => assetUpdate(i, "value_source", e.target.value) }))), /* @__PURE__ */ React.createElement("button", { "data-testid": "gift-asset-" + i + "-remove", className: "jt-btn jt-btn--ghost", onClick: () => setSupplemental("assets", s.assets.filter((_, n) => n !== i)) }, "\uCD94\uAC00 \uC7AC\uC0B0 \uC81C\uAC70"));
+  }), /* @__PURE__ */ React.createElement("button", { "data-testid": "gift-asset-add", className: "jt-btn jt-btn--ghost", onClick: () => setSupplemental("assets", [...s.assets || [], { local_id: window.crypto.randomUUID(), kind: "cash", property_type: null, address_text: null, adopted_value_krw: null, value_source: "", valuation_as_of: s.gift_date || null }]) }, "\uC774\uBC88 \uC99D\uC5EC \uC7AC\uC0B0 \uCD94\uAC00"), /* @__PURE__ */ React.createElement("p", null, "\uC774\uBC88 \uC99D\uC5EC \uC7AC\uC0B0 \uD569\uACC4: ", /* @__PURE__ */ React.createElement("output", { "data-testid": "gift-assets-total" }, assetTotal)), (((_f = s.assets) == null ? void 0 : _f.length) > 0 || a.assetType === "stock") && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uCCAB \uC7AC\uC0B0 \uC2DD\uBCC4\xB7\uAC00\uC561 \uCD9C\uCC98\xB7\uC99D\uC5EC\uC77C \uD3C9\uAC00 \uADFC\uAC70" }, /* @__PURE__ */ React.createElement("textarea", { "data-testid": "gift-primary-value-source", maxLength: 1e3, value: s.primary_value_source || "", onChange: (e) => setSupplemental("primary_value_source", e.target.value) })), /* @__PURE__ */ React.createElement("label", { className: "gc-check" }, /* @__PURE__ */ React.createElement("input", { "data-testid": "gift-multiasset-confirm", type: "checkbox", checked: !!s.multiasset_confirmed, onChange: (e) => setSupplemental("multiasset_confirmed", e.target.checked) }), "\uBAA8\uB4E0 \uC7AC\uC0B0\uC740 \uC704 \uB2F9\uC0AC\uC790\xB7\uC99D\uC5EC\uC77C\uC758 \uC77C\uBC18 \uC99D\uC5EC\uC774\uBA70 \uCC44\uBB34 \uC778\uC218\xB7\uD569\uC0B0\uBC30\uC81C\xB7\uD2B9\uB840\uAC00 \uC5C6\uACE0, \uC99D\uC5EC \uC9C0\uBD84 \uAC00\uC561\xB7\uD3C9\uAC00 \uADFC\uAC70\xB7\uC911\uBCF5 \uC5C6\uC74C\uACFC \uD569\uACC4\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uCD94\uAC00 \uC7AC\uC0B0 \uCD9C\uCC98\uB294 \uC0AC\uC6A9\uC790 \uD655\uC778 \uAE30\uB85D\uC785\uB2C8\uB2E4. \uB2E4\uC790\uC0B0 \uC804\uC790\uC2E0\uACE0 \uD30C\uC77C\uC740 \uC544\uC9C1 \uC0DD\uC131\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."))))), ((_h = (_g = meta == null ? void 0 : meta.validation) == null ? void 0 : _g.issues) == null ? void 0 : _h.length) > 0 && /* @__PURE__ */ React.createElement("section", { className: "gc-card", "aria-label": "\uACC4\uC0B0 \uC804 \uD655\uC778 \uD56D\uBAA9" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uC804 \uD655\uC778 \uD56D\uBAA9"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900\uC785\uB2C8\uB2E4. \uC218\uC815 \uD6C4 \uC800\uC7A5\uD558\uBA74 \uB2E4\uC2DC \uD655\uC778\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("ul", null, meta.validation.issues.map((issue, i) => /* @__PURE__ */ React.createElement("li", { key: i }, giftInputIssue(issue))))), /* @__PURE__ */ React.createElement("div", { className: "gc-actions" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy || readonly, onClick: () => act(() => save()) }, "\uCD08\uC548 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: !token || busy || readonly, onClick: () => act(calculate) }, busy ? "\uCC98\uB9AC \uC911\u2026" : "\uC800\uC7A5\uD558\uACE0 \uACC4\uC0B0"), meta && /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy || meta.read_only, onClick: () => act(() => save(true)) }, "\uD604\uC7AC \uC785\uB825\uC744 \uC0C8 \uC0AC\uAC74\uC73C\uB85C \uC800\uC7A5"), request && /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy, onClick: () => act(async () => adoptRun(await requestApi(request.status_url), meta.case_id)) }, "\uACC4\uC0B0 \uC0C1\uD0DC \uD655\uC778")), run && /* @__PURE__ */ React.createElement("section", { className: "gc-card gc-result", "aria-label": "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC" }, /* @__PURE__ */ React.createElement("h3", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC", dirty ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, new Date(run.computed_at).toLocaleString("ko-KR"), " \xB7 ", run.version.engine), /* @__PURE__ */ React.createElement("output", { "aria-label": "\uC800\uC7A5\uB41C \uC99D\uC5EC\uC138" }, giftExactWon(run.response_snapshot.calc["\uC138\uC561"])), /* @__PURE__ */ React.createElement("table", { className: "gc-table" }, /* @__PURE__ */ React.createElement("tbody", null, [["\uACFC\uC138\uD45C\uC900", run.response_snapshot.calc["\uACFC\uC138\uD45C\uC900"]], ["\uC0B0\uCD9C\uC138\uC561", run.response_snapshot.calc["\uC0B0\uCD9C\uC138\uC561"]]].map(([k, v]) => /* @__PURE__ */ React.createElement("tr", { key: k }, /* @__PURE__ */ React.createElement("th", null, k), /* @__PURE__ */ React.createElement("td", null, giftExactWon(v)))))), /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, "\uACC4\uC0B0 \uB2E8\uACC4\uC640 \uACBD\uACE0"), /* @__PURE__ */ React.createElement("table", { className: "gc-table" }, /* @__PURE__ */ React.createElement("tbody", null, (run.response_snapshot.calc["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || []).map((step, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, step["\uD56D\uBAA9"], /* @__PURE__ */ React.createElement("small", { className: "gc-help", style: { display: "block" } }, step["\uBE44\uACE0"])), /* @__PURE__ */ React.createElement("td", null, giftExactWon(step["\uAE08\uC561"])))))), (run.response_snapshot.calc["\uACBD\uACE0\uC0AC\uD56D"] || []).length > 0 ? /* @__PURE__ */ React.createElement("ul", null, run.response_snapshot.calc["\uACBD\uACE0\uC0AC\uD56D"].map((warning, i) => /* @__PURE__ */ React.createElement("li", { key: i }, typeof warning === "string" ? warning : warning.message || "\uACC4\uC0B0 \uC870\uAC74\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694."))) : /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uC800\uC7A5\uB41C \uACBD\uACE0\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, "\uACB0\uACFC ID: ", run.run_id, /* @__PURE__ */ React.createElement("br", null), "\uC785\uB825 ID: ", run.revision_id, /* @__PURE__ */ React.createElement("br", null), "\uADDC\uCE59 \uBC84\uC804: ", run.version.tax_rates_version), /* @__PURE__ */ React.createElement("section", { "aria-label": "\uC800\uC7A5\uB41C \uBCF4\uACE0\uC11C" }, /* @__PURE__ */ React.createElement("h4", null, "\uC774 \uACC4\uC0B0 \uACB0\uACFC\uC758 \uBCF4\uACE0\uC11C"), /* @__PURE__ */ React.createElement("p", { className: "gc-help" }, dirty ? "\uD604\uC7AC \uC218\uC815 \uC911\uC778 \uC785\uB825\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uACE0 \uC704\uC5D0 \uD45C\uC2DC\uB41C \uC800\uC7A5 \uACB0\uACFC\uB97C \uCD9C\uB825\uD569\uB2C8\uB2E4." : "\uC704\uC5D0 \uD45C\uC2DC\uB41C \uC785\uB825 \uBC84\uC804\uACFC \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC7AC\uACC4\uC0B0 \uC5C6\uC774 \uCD9C\uB825\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "gc-actions" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: !token || busy, onClick: () => act(generateReport) }, "DOCX\xB7PDF \uBCF4\uACE0\uC11C \uB9CC\uB4E4\uAE30"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy, onClick: () => act(refreshReports) }, "\uBCF4\uACE0\uC11C \uC0C1\uD0DC \uD655\uC778")), reports.length > 0 && /* @__PURE__ */ React.createElement(GiftCaseField, { title: "\uC800\uC7A5\uB41C \uBCF4\uACE0\uC11C \uC120\uD0DD" }, /* @__PURE__ */ React.createElement("select", { value: reportId, disabled: busy, onChange: (e) => setReportId(e.target.value) }, reports.map((item, i) => /* @__PURE__ */ React.createElement("option", { key: item.report_id, value: item.report_id }, "\uBCF4\uACE0\uC11C ", i + 1, " \xB7 ", item.status === "ready" ? "\uC0DD\uC131 \uC644\uB8CC" : item.status === "pending" ? "\uC0DD\uC131 \uC911" : "\uC77C\uBD80 \uB610\uB294 \uC804\uCCB4 \uC2E4\uD328", " \xB7 ", item.report_id.slice(0, 8))))), currentReport && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("ul", null, currentReport.artifacts.map((item) => /* @__PURE__ */ React.createElement("li", { key: item.format }, item.format.toUpperCase(), " \xB7 ", item.status === "ready" ? "\uC800\uC7A5 \uC644\uB8CC" : item.status === "pending" ? "\uCC98\uB9AC \uC911" : "\uC0DD\uC131 \uC2E4\uD328", item.status === "ready" && /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy, onClick: () => act(() => downloadReport(item.format)) }, item.format.toUpperCase(), " \uB2E4\uC6B4\uB85C\uB4DC"), item.error_code && /* @__PURE__ */ React.createElement("span", { className: "gc-help" }, " \xB7 ", item.error_code === "RENDERER_UNAVAILABLE" ? "\uCD9C\uB825 \uD658\uACBD\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694." : item.error_code === "DOCX_NOT_READY" ? "DOCX \uC0DD\uC131 \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4." : "\uC800\uC7A5 \uACB0\uACFC\uB294 \uC720\uC9C0\uB418\uC5B4 \uC788\uC2B5\uB2C8\uB2E4.")))), currentReport.artifacts.some((item) => item.retryable) && /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !token || busy, onClick: () => act(retryReport) }, "\uC2E4\uD328\uD55C \uBB38\uC11C \uB2E4\uC2DC \uC0DD\uC131")))), run && /* @__PURE__ */ React.createElement(JTGiftFilings, { key: run.run_id, run, requestApi, token, busy, act, dirty, onDirty: setFilingDirty, keyFor }));
+}
+window.JTGiftCases = JTGiftCases;
+
+
+/* ────────── TransferSplit.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __objRest = (source, exclude) => {
+  var target = {};
+  for (var prop in source)
+    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+      target[prop] = source[prop];
+  if (source != null && __getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(source)) {
+      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+        target[prop] = source[prop];
+    }
+  return target;
+};
+function JTTransferSplit({ w, base, api, mutation, act, busy, error, load, onExit, onCancel, remember }) {
+  var _a;
+  const [catalog, setCatalog] = React.useState({ properties: [] }), [choice, setChoice] = React.useState({ property_id: "", ownership_id: "", valuation_id: "", transfer_date: "" });
+  const [original, setOriginal] = React.useState(null), [lots, setLots] = React.useState([]), [reason, setReason] = React.useState("");
+  const [originalConfirmed, setOriginalConfirmed] = React.useState(false), [costConfirmed, setCostConfirmed] = React.useState(false);
+  const [loaded, setLoaded] = React.useState(""), [dirty, setDirty] = React.useState(false), [alloc, setAlloc] = React.useState([]), [preview, setPreview] = React.useState(null);
+  const [revision, setRevision] = React.useState("");
+  const readonly = w.meta.read_only || w.meta.revision !== w.meta.current_revision;
+  const property = catalog.properties.find((p) => p.id === choice.property_id), source = w.meta.master_snapshot;
+  const currentIdentity = choice.property_id + ":" + choice.ownership_id;
+  React.useEffect(() => {
+    act(async () => setCatalog(await api(base + "/sources?limit=100")));
+  }, []);
+  React.useEffect(() => {
+    const protect = (e) => {
+      if (dirty || busy) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => window.removeEventListener("beforeunload", protect);
+  }, [dirty, busy]);
+  const emptyLot = () => ({ lot_id: window.crypto.randomUUID(), acquisition_date: "", acquired_share: "", acquisition_price: "", expenses_total: "", evidence: "" });
+  const resetPreview = () => {
+    setPreview(null);
+    setCostConfirmed(false);
+  };
+  const editLot = (n, k, v) => {
+    setLots((old) => old.map((x, j) => j === n ? __spreadProps(__spreadValues({}, x), { [k]: v }) : x));
+    setDirty(true);
+    setOriginalConfirmed(false);
+    resetPreview();
+  };
+  const choose = (k, v) => {
+    setChoice(__spreadValues(__spreadProps(__spreadValues({}, choice), { [k]: v }), k === "property_id" ? { ownership_id: "", valuation_id: "" } : {}));
+    resetPreview();
+    if (["property_id", "ownership_id"].includes(k)) {
+      setLoaded("");
+      setOriginal(null);
+      setLots([]);
+      setAlloc([]);
+      setDirty(false);
+      setOriginalConfirmed(false);
+    }
+  };
+  const originals = async () => {
+    const r = await api(base + "/split-originals?property_id=" + choice.property_id + "&ownership_id=" + choice.ownership_id);
+    const obj = r.original;
+    setOriginal(obj);
+    const rows = (obj == null ? void 0 : obj.source_snapshot.lots) || [emptyLot(), emptyLot()];
+    setLots(rows);
+    setReason((obj == null ? void 0 : obj.source_snapshot.reason) || "");
+    setOriginalConfirmed(false);
+    setDirty(false);
+    setLoaded(currentIdentity);
+    resetPreview();
+    setAlloc(rows.map((x) => ({ lot_id: x.lot_id, include: true, transfer_share: "", transfer_price: "", evidence: "" })));
+  };
+  const number = (value) => {
+    if (!/^\d+$/.test(String(value)) || !Number.isSafeInteger(Number(value))) throw new Error("\uAE08\uC561\uC740 \uC6D0 \uB2E8\uC704\uC758 \uC815\uD655\uD55C \uC815\uC218\uB85C \uC785\uB825\uD558\uC138\uC694.");
+    return Number(value);
+  };
+  const selection = () => ({
+    original_revision_id: original.id,
+    valuation_id: choice.valuation_id,
+    transfer_date: choice.transfer_date,
+    proportional_cost_confirmed: costConfirmed,
+    reason,
+    allocations: alloc.filter((x) => x.include).map((_a2) => {
+      var _b = _a2, { include } = _b, x = __objRest(_b, ["include"]);
+      return __spreadProps(__spreadValues({}, x), { transfer_price: number(x.transfer_price) });
+    })
+  });
+  const reviews = [["domestic_resident_registered_actual", "\uAC70\uC8FC\uC790\xB7\uAD6D\uB0B4 \uB4F1\uAE30 \uC7AC\uC0B0\xB7\uC2E4\uC9C0\uAC70\uB798"], ["business_nonresidential_no_specials", "\uC0AC\uC5C5\uC6A9 \uBE44\uC8FC\uD0DD\uC774\uBA70 \uBE44\uACFC\uC138\xB7\uAC10\uBA74\xB7\uC911\uACFC\xB7\uD2B9\uB840 \uC5C6\uC74C"], ["no_depreciation_or_cost_adjustments", "\uAC10\uAC00\uC0C1\uAC01 \uBC0F \uBCC4\uB3C4 \uC6D0\uAC00 \uC870\uC815 \uC5C6\uC74C"], ["known_lot_attribution", "\uCDE8\uB4DD\uC77C\xB7\uCDE8\uB4DD\uBD84\uBCC4 \uC591\uB3C4 \uC9C0\uBD84\uACFC \uB300\uAE08\uC758 \uADC0\uC18D \uBA85\uD655"], ["no_other_annual_transfers_or_deductions", "\uC774 \uB0A9\uC138\uC790\uC758 \uAC19\uC740 \uD574 \uB2E4\uB978 \uC591\uB3C4 \uBC0F \uAE30\uBCF8\uACF5\uC81C \uC0AC\uC6A9 \uC5C6\uC74C"], ["local_standard_rate", "\uC9C0\uBC29\uC18C\uB4DD\uC138 \uD45C\uC900\uC138\uC728 \uC801\uC6A9"]];
+  const review = (k, v) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { facts_confirmed: false, ordinary_sale_confirmed: false, split_review: __spreadProps(__spreadValues({}, w.draft.split_review), { [k]: v }) }) }));
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.ts-section{border:1px solid #ccd8cd;padding:18px;margin:18px 0}.ts-section label{display:block;margin:10px 0}.ts-section input,.ts-section select,.ts-section textarea{padding:9px;max-width:100%;margin-left:8px}.ts-section button{margin:8px;padding:10px}.ts-table{overflow:auto}.ts-table td,.ts-table th{padding:8px;border-bottom:1px solid #ddd;text-align:left}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: onExit }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uBD84\uD560\uCDE8\uB4DD \uC591\uB3C4 \uC0AC\uAC74"), !w.draft.split_request && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: onCancel }, "\uC77C\uBC18 \uC591\uB3C4 \uC785\uB825\uC73C\uB85C"), /* @__PURE__ */ React.createElement("p", null, "\uD1A0\uC9C0\xB7\uC0C1\uAC00 \uB9E4\uB9E4 \uCDE8\uB4DD\uBD84\uC744 \uAC01\uAC01 2\uB144 \uC774\uC0C1 \uBCF4\uC720\uD55C \uC77C\uBC18 \uC591\uB3C4, \uC591\uC758 \uCC28\uC775, 2026-07-01~2026-10-17 \uBC94\uC704\uB97C \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uCDE8\uB4DD\uC77C \uBD88\uBA85\xB7\uC8FC\uD0DD\xB7\uB2E8\uAE30\xB7\uCC28\uC190\xB7\uD2B9\uB840\uB294 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), /* @__PURE__ */ React.createElement("fieldset", { className: "ts-section", disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "1. \uCDE8\uB4DD\uBD84 \uC6D0\uBCF8"), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uAC00\uC640 \uBE44\uC6A9\uC740 \uC804\uCCB4 \uBD80\uB3D9\uC0B0 \uAE08\uC561\uC774 \uC544\uB2C8\uB77C \uAC01 \uCDE8\uB4DD\uBD84\uC758 \uAE08\uC561\uC785\uB2C8\uB2E4. \uC218\uC815\uD558\uBA74 \uC0C8 \uC6D0\uBCF8 \uBC84\uC804\uC774 \uC0DD\uAE41\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uC7AC\uC0B0", /* @__PURE__ */ React.createElement("select", { "data-testid": "split-property", value: choice.property_id, onChange: (e) => choose("property_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), catalog.properties.filter((x) => ["\uD1A0\uC9C0", "\uC0C1\uAC00"].includes(x.property_type)).map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.address, " \xB7 ", x.property_type)))), catalog.next_cursor && /* @__PURE__ */ React.createElement("button", { onClick: () => act(async () => {
+    const n = await api(base + "/sources?limit=100&cursor=" + catalog.next_cursor);
+    setCatalog({ properties: [...catalog.properties, ...n.properties], next_cursor: n.next_cursor });
+  }) }, "\uC7AC\uC0B0 \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("label", null, "\uC591\uB3C4\uC778", /* @__PURE__ */ React.createElement("select", { "data-testid": "split-owner", value: choice.ownership_id, onChange: (e) => choose("ownership_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), property == null ? void 0 : property.ownerships.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.name, " \xB7 \uBCF4\uC720 ", x.share_ratio)))), /* @__PURE__ */ React.createElement("button", { "data-testid": "split-load-original", disabled: !choice.ownership_id || busy, onClick: () => act(originals) }, "\uCDE8\uB4DD\uBD84 \uC6D0\uBCF8 \uC5F4\uAE30"), loaded === currentIdentity && lots.map((x, n) => /* @__PURE__ */ React.createElement("div", { className: "ts-section", key: x.lot_id }, /* @__PURE__ */ React.createElement("strong", null, "\uCDE8\uB4DD\uBD84 ", n + 1), /* @__PURE__ */ React.createElement("p", null, "ID: ", x.lot_id), [["acquisition_date", "\uCDE8\uB4DD\uC77C", "date"], ["acquired_share", "\uCDE8\uB4DD \uC9C0\uBD84(\uC804\uCCB4 \uC7AC\uC0B0 \uB300\uBE44)", "text"], ["acquisition_price", "\uCDE8\uB4DD\uBD84 \uC6D0\uAC00(\uC6D0)", "text"], ["expenses_total", "\uCDE8\uB4DD\uBD84 \uD544\uC694\uACBD\uBE44(\uC6D0)", "text"], ["evidence", "\uCDE8\uB4DD\uC77C\xB7\uAE08\uC561 \uC99D\uBE59", "text"]].map(([k, l, type]) => /* @__PURE__ */ React.createElement("label", { key: k }, l, /* @__PURE__ */ React.createElement("input", { type, "data-testid": "split-lot-" + n + "-" + k, value: x[k], onChange: (e) => editLot(n, k, e.target.value) }))))), loaded === currentIdentity && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { disabled: lots.length >= 50, onClick: () => {
+    const x = emptyLot();
+    setLots([...lots, x]);
+    setAlloc([...alloc, { lot_id: x.lot_id, include: true, transfer_share: "", transfer_price: "", evidence: "" }]);
+    setDirty(true);
+    setOriginalConfirmed(false);
+    resetPreview();
+  } }, "\uCDE8\uB4DD\uBD84 \uCD94\uAC00"), /* @__PURE__ */ React.createElement("label", null, "\uC6D0\uBCF8\xB7\uADC0\uC18D \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "split-reason", value: reason, onChange: (e) => {
+    setReason(e.target.value);
+    setDirty(true);
+    setOriginalConfirmed(false);
+    resetPreview();
+  } })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "split-original-confirm", checked: originalConfirmed, onChange: (e) => setOriginalConfirmed(e.target.checked) }), "\uBAA8\uB4E0 \uCDE8\uB4DD\uC77C\uC774 \uBA85\uD655\uD558\uBA70 \uC120\uD589 \uCC98\uBD84 \uC5C6\uC774 \uD604\uC7AC \uBCF4\uC720\uD55C \uCDE8\uB4DD\uBD84 \uC804\uBD80\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "split-save-original", disabled: !originalConfirmed || busy, onClick: () => act(async () => {
+    const r = await mutation(base + "/split-originals", "POST", { property_id: choice.property_id, ownership_id: choice.ownership_id, expected_revision_id: (original == null ? void 0 : original.id) || null, known_dates_and_no_prior_disposal: originalConfirmed, reason, lots: lots.map((x) => __spreadProps(__spreadValues({}, x), { acquisition_price: number(x.acquisition_price), expenses_total: number(x.expenses_total) })) });
+    setOriginal(r);
+    setDirty(false);
+    resetPreview();
+  }) }, "\uCDE8\uB4DD\uBD84 \uC6D0\uBCF8 \uC800\uC7A5"), original && /* @__PURE__ */ React.createElement("p", { "data-testid": "split-original-version" }, "\uC6D0\uBCF8 \uBC84\uC804 ", original.revision, " \xB7 ", original.id))), original && loaded === currentIdentity && /* @__PURE__ */ React.createElement("fieldset", { className: "ts-section", disabled: busy || readonly || dirty }, /* @__PURE__ */ React.createElement("legend", null, "2. \uC591\uB3C4 \uADC0\uC18D\xB7\uD3C9\uAC00 \uC5F0\uACB0"), /* @__PURE__ */ React.createElement("label", null, "\uC591\uB3C4\uC77C", /* @__PURE__ */ React.createElement("input", { type: "date", "data-testid": "split-transfer-date", value: choice.transfer_date, onChange: (e) => choose("transfer_date", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC804\uCCB4 \uC7AC\uC0B0 \uC2E4\uC9C0\uAC70\uB798 \uD3C9\uAC00", /* @__PURE__ */ React.createElement("select", { "data-testid": "split-value", value: choice.valuation_id, onChange: (e) => choose("valuation_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), property == null ? void 0 : property.valuations.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.as_of_date, " \xB7 ", x.amount, "\uC6D0 \xB7 ", x.valuation_type)))), alloc.map((x, n) => /* @__PURE__ */ React.createElement("div", { key: x.lot_id }, /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uBD84 ", n + 1, " \xB7 ", x.lot_id), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: x.include, onChange: (e) => {
+    setAlloc(alloc.map((a, j) => j === n ? __spreadProps(__spreadValues({}, a), { include: e.target.checked }) : a));
+    resetPreview();
+  } }), "\uC774\uBC88 \uC591\uB3C4\uC5D0 \uD3EC\uD568"), x.include && [["transfer_share", "\uC591\uB3C4 \uC9C0\uBD84(\uC804\uCCB4 \uB300\uBE44)"], ["transfer_price", "\uADC0\uC18D \uC591\uB3C4\uAC00\uC561(\uC6D0)"], ["evidence", "\uB300\uAE08 \uADC0\uC18D \uADFC\uAC70"]].map(([k, l]) => /* @__PURE__ */ React.createElement("label", { key: k }, l, /* @__PURE__ */ React.createElement("input", { "data-testid": "split-allocation-" + n + "-" + k, value: x[k], onChange: (e) => {
+    setAlloc(alloc.map((a, j) => j === n ? __spreadProps(__spreadValues({}, a), { [k]: e.target.value }) : a));
+    resetPreview();
+  } }))))), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "split-cost-confirm", checked: costConfirmed, onChange: (e) => {
+    setCostConfirmed(e.target.checked);
+    setPreview(null);
+  } }), "\uCDE8\uB4DD\uBD84 \uC6D0\uAC00\xB7\uBE44\uC6A9\uC774 \uD574\uB2F9 \uCDE8\uB4DD\uBD84 \uB0B4 \uC591\uB3C4 \uC9C0\uBD84\uC5D0 \uBE44\uB840\uD558\uC5EC \uADC0\uC18D\uB428\uC744 \uC99D\uBE59\uC73C\uB85C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "split-preview", disabled: !costConfirmed || busy, onClick: () => act(async () => setPreview(await api(base + "/split-preview", { method: "POST", body: JSON.stringify(selection()) }))) }, "\uADC0\uC18D \uBBF8\uB9AC\uBCF4\uAE30"), preview && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(preview.request.rows, null, 2)), /* @__PURE__ */ React.createElement("button", { "data-testid": "split-adopt", onClick: () => act(async () => {
+    await mutation(base + "/split-imports", "POST", { selection: selection(), expected_source_hash: preview.source_hash }, w.meta.etag);
+    await load(w.meta.case_id);
+    setPreview(null);
+  }) }, "\uC0AC\uAC74\uC5D0 \uCDE8\uB4DD\uBD84 \uCC44\uD0DD"))), w.draft.split_request && /* @__PURE__ */ React.createElement("section", { className: "ts-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uCDE8\uB4DD\uBD84\uACFC \uADC0\uC18D"), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uC778 ", source.ownership.name, " \xB7 ", source.ownership.person_id, " \xB7 \uC7AC\uC0B0 ", source.property.id, " \xB7 \uC6D0\uBCF8 \uBC84\uC804 ", source.original_revision, " \xB7 \uC591\uB3C4\uC77C ", w.draft.split_request.transfer_date), /* @__PURE__ */ React.createElement("div", { className: "ts-table" }, /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, ["\uCDE8\uB4DD\uBD84 ID", "\uCDE8\uB4DD\uC77C", "\uCDE8\uB4DD \uC9C0\uBD84", "\uC591\uB3C4 \uC9C0\uBD84", "\uC591\uB3C4\uAC00\uC561", "\uADC0\uC18D \uC6D0\uAC00", "\uADC0\uC18D \uBE44\uC6A9"].map((x) => /* @__PURE__ */ React.createElement("th", { key: x }, x)))), /* @__PURE__ */ React.createElement("tbody", null, w.draft.split_request.rows.map((x) => /* @__PURE__ */ React.createElement("tr", { key: x.lot_id }, ["lot_id", "acquisition_date", "acquired_share", "transfer_share", "transfer_price", "acquisition_price", "expenses_total"].map((k) => /* @__PURE__ */ React.createElement("td", { key: k }, x[k]))))))), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, reviews.map(([k, l]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key: k }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "split-review-" + k, checked: !!((_a2 = w.draft.split_review) == null ? void 0 : _a2[k]), onChange: (e) => review(k, e.target.checked) }), l);
+  }), /* @__PURE__ */ React.createElement("label", null, "\uAC80\uD1A0 \uBA54\uBAA8", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "split-review-note", value: ((_a = w.draft.split_review) == null ? void 0 : _a.note) || "", onChange: (e) => review("note", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "split-facts", checked: w.draft.facts_confirmed && w.draft.ordinary_sale_confirmed, onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { facts_confirmed: e.target.checked, ordinary_sale_confirmed: e.target.checked }) })) }), "\uC77C\uBC18 \uC591\uB3C4 \uC0AC\uC2E4\uACFC \uCDE8\uB4DD\uBD84\uBCC4 \uACC4\uC0B0 \uBC94\uC704\uB97C \uCD5C\uC885 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "split-save", onClick: () => act(async () => {
+    await mutation(base, "PUT", { label: w.label, draft: w.draft }, w.meta.etag);
+    await load(w.meta.case_id);
+  }) }, "\uBD84\uD560\uCDE8\uB4DD \uC0AC\uAC74 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { "data-testid": "split-run", disabled: busy || transferDirty(w) || !w.meta.validation.can_run, onClick: () => act(async () => {
+    await mutation(base + "/runs", "POST", { revision_id: w.meta.revision_id, expected_input_hash: w.meta.input_hash });
+    await load(w.meta.case_id);
+  }) }, "\uC800\uC7A5\uBCF8 \uACC4\uC0B0")), w.meta.validation.errors.map((x) => /* @__PURE__ */ React.createElement("p", { key: x }, x)), w.run && /* @__PURE__ */ React.createElement("div", { "data-testid": "split-result" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uC18C\uB4DD\uC138 ", w.run.response_snapshot.calc.\uC138\uC561.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC9C0\uBC29\uC18C\uB4DD\uC138 ", w.run.response_snapshot.calc.\uC9C0\uBC29\uC18C\uB4DD\uC138.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uBD84\uBCC4 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C \uD6C4 \uC18C\uB4DD\uC744 \uD569\uC0B0\uD558\uACE0 \uAE30\uBCF8\uACF5\uC81C\uB97C \uD55C \uBC88 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(w.run.response_snapshot.calc.\uC6D0\uBCF8\uACB0\uACFC, null, 2)))), /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74 \uBC84\uC804(\uBE44\uC6B0\uBA74 \uCD5C\uC2E0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "split-revision", value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { "data-testid": "split-reopen", disabled: busy, onClick: () => act(() => load(w.meta.case_id, revision)) }, "\uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30"));
+}
+window.JTTransferSplit = JTTransferSplit;
+
+
+/* ────────── TransferCases.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+let jtTransferSession = null;
+function transferDirty(w = jtTransferSession) {
+  return !!w && JSON.stringify({ label: w.label, draft: w.draft }) !== w.baseline;
+}
+function JTTransferCases({ clientId, caseId, onExit }) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+  const [w, setW] = React.useState(jtTransferSession);
+  const [opened, setOpened] = React.useState(false);
+  const [splitMode, setSplitMode] = React.useState(false);
+  const ref = React.useRef(w), lock = React.useRef(false), alive = React.useRef(true);
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState("");
+  const [catalog, setCatalog] = React.useState({ properties: [] }), [choice, setChoice] = React.useState({ transfer_share: "1", transfer_date: "", adoption_reason: "", confirmed: false });
+  const [ownerTimeline, setOwnerTimeline] = React.useState(null);
+  const ownerQuery = React.useRef(0);
+  const [preview, setPreview] = React.useState(null), [revision, setRevision] = React.useState("");
+  const keys = React.useRef({});
+  const remember = (value) => {
+    ref.current = value;
+    jtTransferSession = value;
+    if (alive.current) setW(value);
+  };
+  const api = async (path, options = {}) => {
+    var _a2;
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const r = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        if (r.status === 401) jtGiftSession.token = "";
+        const messages = {
+          SOURCE_FACT_HISTORY_GAP: "\uC6D0\uBCF8 \uC774\uB825\uC758 \uC5F0\uACB0\uC774 \uB04A\uACBC\uC2B5\uB2C8\uB2E4. \uBCC0\uACBD \uB0B4\uC5ED\uC744 \uD655\uC778\uD558\uC138\uC694.",
+          SOURCE_FACT_VERSION_NOT_FOUND: "\uC120\uD0DD\uD55C \uC6D0\uBCF8 \uBC84\uC804\uC744 \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+          SOURCE_FACT_NOT_FOUND: "\uD574\uB2F9 \uACE0\uAC1D\uC758 \uC6D0\uBCF8 \uC790\uB8CC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.",
+          SOURCE_FACT_DATE_INVALID: "\uC120\uD0DD \uBC84\uC804\uC758 \uCDE8\uB4DD\uC77C\xB7\uC0DD\uB144\uC6D4\uC77C\uC774 \uC0AC\uAC74\uC77C\uBCF4\uB2E4 \uB2A6\uC2B5\uB2C8\uB2E4.",
+          SOURCE_FACT_APPLICABILITY_REQUIRED: "\uC0AC\uAC74\uC77C\uC744 \uD3EC\uD568\uD558\uB294 \uC801\uC6A9\uAE30\uAC04\uACFC \uC120\uD0DD \uADFC\uAC70\uB97C \uD655\uC778\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_HISTORY_GAP: "\uC18C\uC720 \uC774\uB825\uACFC \uD604\uC7AC \uC6D0\uBCF8\uC774 \uC77C\uCE58\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uBCC0\uB3D9 \uAE30\uB85D\uC744 \uD655\uC778\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_VERSION_DATE_MISMATCH: "\uC0AC\uAC74 \uB0A0\uC9DC\uC5D0 \uB9DE\uB294 \uC18C\uC720 \uC774\uB825\uC744 \uB2E4\uC2DC \uC870\uD68C\uD558\uACE0 \uC120\uD0DD\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_VERSION_OWNER_MISMATCH: "\uC120\uD0DD\uD55C \uC774\uB825\uC758 \uC18C\uC720\uC790\uB97C \uB2E4\uC2DC \uC120\uD0DD\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_HISTORY_CONFIRM_REQUIRED: "\uACFC\uAC70 \uC18C\uC720 \uC9C0\uBD84\uACFC \uD604\uC7AC \uCDE8\uB4DD\xB7\uD3C9\uAC00\uC790\uB8CC\uC758 \uC0AC\uC6A9\uC744 \uD655\uC778\uD558\uC138\uC694.",
+          SOURCE_OWNERSHIP_DATE_REVIEW_REQUIRED: "\uD604\uC7AC \uC18C\uC720 \uBCC0\uB3D9\uC77C\uBCF4\uB2E4 \uC774\uB978 \uC0AC\uAC74\uC785\uB2C8\uB2E4. \uACFC\uAC70 \uC18C\uC720 \uC790\uB8CC\uB97C \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4.",
+          SOURCE_CHANGED: "\uC6D0\uBCF8 \uC790\uB8CC\uAC00 \uBCC0\uACBD\uB410\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          REVISION_CONFLICT: "\uB2E4\uB978 \uC800\uC7A5\uBCF8\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          SOURCE_PROPERTY_UNSUPPORTED: "\uC8FC\uD0DD \uB610\uB294 \uB9E4\uB9E4 \uCDE8\uB4DD \uD1A0\uC9C0\xB7\uC0C1\uAC00 \uC6D0\uBCF8\uC744 \uC120\uD0DD\uD558\uC138\uC694. \uC6D0\uBCF8 \uD658\uC0B0\uCDE8\uB4DD\uAC00\uB294 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
+          SOURCE_NONHOUSING_SHARE_UNSUPPORTED: "\uC77C\uBC18 \uBE44\uC8FC\uD0DD\uC740 \uC804\uCCB4 \uC9C0\uBD84 1\uC758 \uC591\uB3C4\uBD80\uD130 \uC9C0\uC6D0\uD569\uB2C8\uB2E4.",
+          SOURCE_SHARE_INVALID: "\uC591\uB3C4 \uC9C0\uBD84\uC740 \uBCF4\uC720 \uC9C0\uBD84 \uC774\uD558\uC5EC\uC57C \uD569\uB2C8\uB2E4.",
+          DRAFT_NOT_RUNNABLE: "\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          ENGINE_CALCULATION_ERROR: "\uACC4\uC0B0 \uC785\uB825\uC744 \uCD94\uAC00 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uACB0\uACFC\uB294 \uC800\uC7A5\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."
+        };
+        throw new Error(r.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uAC19\uC740 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD558\uC138\uC694." : messages[(_a2 = data.detail) == null ? void 0 : _a2.code] || (r.status === 422 ? "\uC785\uB825 \uD615\uC2DD\uACFC \uB0A0\uC9DC\xB7\uAE08\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uC790\uB8CC\uB97C \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uD655\uC778\uD558\uACE0 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694."));
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const mutation = (path, method, body, etag) => {
+    var _a2;
+    const signature = JSON.stringify({ path, method, body, etag });
+    const memory = path === "/v1/transfer-cases" ? keys.current : ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current;
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({ "Idempotency-Key": memory[signature] || (memory[signature] = window.crypto.randomUUID()) }, etag ? { "If-Match": etag } : {}) });
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e instanceof TypeError || e.name === "AbortError" ? "\uC751\uB2F5\uC744 \uBC1B\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uAC19\uC740 \uC791\uC5C5\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uC800\uC7A5 \uC5EC\uBD80\uB97C \uD655\uC778\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const load = async (id, number = "") => {
+    var _a2;
+    const saved = await api("/v1/transfer-cases/" + id + (number ? "?revision=" + number : ""));
+    if (saved.client_id !== clientId) throw new Error("\uC120\uD0DD\uD55C \uACE0\uAC1D\uC758 \uC0AC\uAC74\uC774 \uC544\uB2D9\uB2C8\uB2E4.");
+    const run = saved.last_successful_run_id ? await api("/v1/transfer-cases/" + id + "/runs/" + saved.last_successful_run_id) : null;
+    remember({
+      uid: jtGiftSession.uid,
+      meta: saved,
+      label: saved.label,
+      draft: saved.draft,
+      run,
+      keys: ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current,
+      baseline: JSON.stringify({ label: saved.label, draft: saved.draft })
+    });
+    if (alive.current) setOpened(true);
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(async () => {
+      var _a2, _b2;
+      if (caseId === "resume" && ((_b2 = (_a2 = ref.current) == null ? void 0 : _a2.meta) == null ? void 0 : _b2.client_id) === clientId) {
+        if (ref.current.uid !== jtGiftSession.uid) throw new Error("\uD3B8\uC9D1\uD558\uB358 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+        setOpened(true);
+        return;
+      }
+      if (caseId) await load(caseId);
+      else {
+        const made = await mutation("/v1/transfer-cases", "POST", { client_id: clientId, label: "\uC0C8 \uC591\uB3C4 \uC0AC\uAC74", draft: {} });
+        await load(made.case_id);
+      }
+    });
+    const protect = (e) => {
+      if (lock.current || transferDirty(ref.current)) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => {
+      alive.current = false;
+      window.removeEventListener("beforeunload", protect);
+    };
+  }, []);
+  const current = opened && ((_a = w == null ? void 0 : w.meta) == null ? void 0 : _a.client_id) === clientId && (caseId === "resume" || !caseId || w.meta.case_id === caseId);
+  const readonly = !current || w.meta.read_only || w.meta.revision !== w.meta.current_revision;
+  const base = current ? "/v1/transfer-cases/" + w.meta.case_id : "";
+  const change = (key, value) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), {
+    facts_confirmed: false,
+    special_facts_confirmed: false,
+    nonhousing_review: ref.current.draft.nonhousing_review ? __spreadProps(__spreadValues({}, ref.current.draft.nonhousing_review), { facts_confirmed: false }) : null,
+    merge_each_one_house_confirmed: false,
+    acquisition_facts_confirmed: false,
+    share_facts_confirmed: false,
+    unregistered_review: ref.current.draft.unregistered_review ? __spreadProps(__spreadValues({}, ref.current.draft.unregistered_review), { facts_confirmed: false }) : null,
+    depreciation_review: ref.current.draft.depreciation_review ? __spreadProps(__spreadValues({}, ref.current.draft.depreciation_review), { facts_confirmed: false }) : null,
+    converted_review: ref.current.draft.converted_review ? __spreadProps(__spreadValues({}, ref.current.draft.converted_review), { facts_confirmed: false }) : null,
+    request: __spreadProps(__spreadValues({}, ref.current.draft.request), { [key]: value })
+  }) }));
+  const mode = ((_c = (_b = w == null ? void 0 : w.draft) == null ? void 0 : _b.request) == null ? void 0 : _c.exemption_special_type) || (((_e = (_d = w == null ? void 0 : w.draft) == null ? void 0 : _d.request) == null ? void 0 : _e.inherited_house_count) ? "inherited" : "ordinary");
+  const acquisitionMode = ((_g = (_f = w == null ? void 0 : w.draft) == null ? void 0 : _f.request) == null ? void 0 : _g.is_inherited) ? "inherited" : ((_i = (_h = w == null ? void 0 : w.draft) == null ? void 0 : _h.request) == null ? void 0 : _i.is_gifted) ? "gifted" : "purchased";
+  const changeAcquisition = (value) => {
+    const request = __spreadProps(__spreadValues({}, ref.current.draft.request), {
+      is_inherited: value === "inherited",
+      is_gifted: value === "gifted",
+      is_unregistered: false,
+      depreciation_recaptured: 0,
+      use_converted_price: false,
+      standard_price_at_acq: 0,
+      standard_price_at_transfer: 0,
+      acquisition_date: null,
+      acquisition_price: 0,
+      expenses_total: 0,
+      regulated_at_acquisition: null,
+      move_in_date: null,
+      move_out_date: null,
+      decedent_acquisition_date: null,
+      gift_date: null,
+      is_deferred: false,
+      donor_acquisition_date: null,
+      donor_acquisition_price: 0,
+      donor_gift_tax_paid: 0,
+      donor_relationship: "",
+      exemption_special_type: "",
+      new_house_acquisition_date: null,
+      new_house_contract_date: null,
+      temp2_both_regulated: null,
+      new_house_before_designation: null,
+      temp2_one_year_waived: null,
+      inheritance_start_date: null,
+      inherited_house_count: 0,
+      marriage_date: null,
+      merge_date: null,
+      parent_age: 0
+    });
+    remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), {
+      request,
+      unregistered_review: null,
+      depreciation_review: null,
+      converted_review: null,
+      acquisition_facts_confirmed: false,
+      acquisition_review_note: "",
+      gift_deferred_review: "",
+      gift_donor_relationship: "",
+      facts_confirmed: false,
+      ordinary_sale_confirmed: false,
+      special_facts_confirmed: false,
+      special_review_note: "",
+      merge_other_house_acquisition_date: null,
+      merge_each_one_house_confirmed: false,
+      share_facts_confirmed: false,
+      share_review_note: ""
+    }) }));
+  };
+  const converted = !!((_k = (_j = w == null ? void 0 : w.draft) == null ? void 0 : _j.request) == null ? void 0 : _k.use_converted_price);
+  const changeConverted = (value) => {
+    if (!window.confirm("\uCDE8\uB4DD\uAC00\uC561 \uBC29\uC2DD\uC744 \uBC14\uAFB8\uBA74 \uC0AC\uAC74\uC758 \uCDE8\uB4DD\uAC00\uC561\xB7\uD544\uC694\uACBD\uBE44\xB7\uAC10\uAC00\uC0C1\uAC01\xB7\uAE30\uC900\uC2DC\uAC00\xB7\uD655\uC778\uC744 \uBE44\uC6C1\uB2C8\uB2E4. \uC6D0\uBCF8 \uC790\uB8CC\uC640 \uACFC\uAC70 \uACB0\uACFC\uB294 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uACC4\uC18D\uD560\uAE4C\uC694?")) return;
+    const old = ref.current;
+    remember(__spreadProps(__spreadValues({}, old), { draft: __spreadProps(__spreadValues({}, old.draft), {
+      facts_confirmed: false,
+      ordinary_sale_confirmed: false,
+      share_facts_confirmed: false,
+      unregistered_review: null,
+      depreciation_review: null,
+      converted_review: value ? {
+        actual_unavailable: false,
+        prior_methods_unavailable: false,
+        simple_basis_confirmed: false,
+        facts_confirmed: false,
+        acquisition_source: "",
+        transfer_source: "",
+        review_note: "",
+        actual_capital_transfer_expenses: null
+      } : null,
+      request: __spreadProps(__spreadValues({}, old.draft.request), { is_unregistered: false, depreciation_recaptured: 0, use_converted_price: value, acquisition_price: 0, expenses_total: 0, standard_price_at_acq: 0, standard_price_at_transfer: 0 })
+    }) }));
+  };
+  const changeConvertedReview = (key, value) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), {
+    facts_confirmed: false,
+    converted_review: __spreadProps(__spreadValues({}, w.draft.converted_review), { facts_confirmed: false, [key]: value })
+  }) }));
+  const changeMode = (value) => {
+    const request = __spreadProps(__spreadValues({}, ref.current.draft.request), {
+      is_unregistered: false,
+      depreciation_recaptured: 0,
+      exemption_special_type: value === "ordinary" ? "" : value,
+      new_house_acquisition_date: null,
+      new_house_contract_date: null,
+      temp2_both_regulated: null,
+      new_house_before_designation: null,
+      temp2_one_year_waived: null,
+      inheritance_start_date: null,
+      inherited_house_count: value === "inherited" ? 1 : 0,
+      marriage_date: null,
+      merge_date: null,
+      parent_age: 0
+    });
+    remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), {
+      request,
+      unregistered_review: null,
+      depreciation_review: null,
+      facts_confirmed: false,
+      ordinary_sale_confirmed: false,
+      special_facts_confirmed: false,
+      special_review_note: "",
+      merge_other_house_acquisition_date: null,
+      merge_each_one_house_confirmed: false
+    }) }));
+  };
+  const changeUnregistered = (value) => {
+    const old = ref.current;
+    remember(__spreadProps(__spreadValues({}, old), { draft: __spreadProps(__spreadValues({}, old.draft), {
+      facts_confirmed: false,
+      ordinary_sale_confirmed: false,
+      unregistered_review: value ? { acquisition_not_registered: false, exceptions_excluded: false, facts_confirmed: false, review_note: "" } : null,
+      request: __spreadProps(__spreadValues({}, old.draft.request), { is_unregistered: value })
+    }) }));
+  };
+  const reviewUnregistered = (key, value) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), {
+    facts_confirmed: false,
+    unregistered_review: __spreadProps(__spreadValues({}, ref.current.draft.unregistered_review), { facts_confirmed: false, [key]: value })
+  }) }));
+  const save = async () => {
+    if (!transferDirty(ref.current)) return ref.current.meta;
+    const saved = await mutation(base, "PUT", { label: ref.current.label, draft: ref.current.draft }, ref.current.meta.etag);
+    await load(saved.case_id);
+    return ref.current.meta;
+  };
+  const select = (key, value) => {
+    setPreview(null);
+    if (["property_id", "transfer_date"].includes(key)) {
+      ownerQuery.current++;
+      setOwnerTimeline(null);
+    }
+    setChoice((old) => __spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadProps(__spreadValues({}, old), { [key]: value }), ["property_id", "ownership_id", "ownership_version", "valuation_id", "transfer_date"].includes(key) ? { fact_selection: null } : {}), key !== "confirmed" ? { confirmed: false } : {}), !["confirmed", "nonhousing_share_basis_confirmed"].includes(key) ? { nonhousing_share_basis_confirmed: false } : {}), ["property_id", "ownership_version"].includes(key) || key === "transfer_date" && old.ownership_version ? { ownership_id: "", ownership_history_confirmed: false } : {}), ["property_id", "transfer_date"].includes(key) ? { ownership_version: null } : {}), key === "property_id" ? { ownership_id: "", valuation_id: "" } : {}));
+  };
+  const selection = () => __spreadProps(__spreadValues({
+    property_id: choice.property_id,
+    ownership_id: choice.ownership_id,
+    valuation_id: choice.valuation_id,
+    transfer_share: choice.transfer_share,
+    transfer_date: choice.transfer_date,
+    adoption_reason: choice.adoption_reason
+  }, ["\uD1A0\uC9C0", "\uC0C1\uAC00"].includes(property == null ? void 0 : property.property_type) && Number(choice.transfer_share) < 1 ? { nonhousing_share_basis_confirmed: !!choice.nonhousing_share_basis_confirmed } : {}), {
+    fact_selection: choice.fact_selection || null,
+    amount_basis: "whole_property",
+    amounts_confirmed: choice.confirmed,
+    ownership_version: choice.ownership_version || null,
+    ownership_history_confirmed: !!choice.ownership_history_confirmed
+  });
+  const property = catalog.properties.find((p) => p.id === choice.property_id);
+  if (current && (splitMode || w.draft.split_request)) return /* @__PURE__ */ React.createElement(JTTransferSplit, { w, base, api, mutation, act, busy, error, load, onExit, onCancel: () => setSplitMode(false), remember });
+  const source = current ? w.meta.master_snapshot : null;
+  const nonhousing = ["\uD1A0\uC9C0", "\uC0C1\uAC00"].includes((_m = (_l = w == null ? void 0 : w.draft) == null ? void 0 : _l.request) == null ? void 0 : _m.property_type);
+  const reviewNonhousing = (key, value) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { facts_confirmed: false, nonhousing_review: __spreadProps(__spreadValues({}, w.draft.nonhousing_review), { facts_confirmed: false, [key]: value }) }) }));
+  const partial = !!source && Number(source.selection.transfer_share) < 1;
+  const pendingSource = !!source && !!choice.property_id && ["property_id", "ownership_id", "valuation_id", "transfer_share", "ownership_version", "transfer_date"].some((k) => k === "transfer_share" ? Number(choice[k]) !== Number(source.selection[k]) : choice[k] !== source.selection[k]);
+  const fields = [
+    ["address", "\uC7AC\uC0B0 \uC8FC\uC18C", "text"],
+    ["transfer_price", "\uC591\uB3C4\uAC00\uC561(\uC6D0)", "number"],
+    ["acquisition_price", "\uCDE8\uB4DD\uAC00\uC561(\uC6D0)", "number"],
+    ["expenses_total", "\uD544\uC694\uACBD\uBE44(\uC6D0)", "number"],
+    ["exclusive_area", "\uC804\uC6A9\uBA74\uC801(\u33A1)", "number"],
+    ["acquisition_date", "\uCDE8\uB4DD\uC77C", "date"],
+    ["transfer_date", "\uC591\uB3C4\uC77C", "date"],
+    ["housing_count", "\uC138\uB300 \uC8FC\uD0DD \uC218", "number"],
+    ["move_in_date", "\uC804\uC785\uC77C(\uAC70\uC8FC \uC5C6\uC73C\uBA74 \uBE44\uC6C0)", "date"],
+    ["move_out_date", "\uC804\uCD9C\uC77C(\uACC4\uC18D \uAC70\uC8FC\uD558\uBA74 \uBE44\uC6C0)", "date"]
+  ];
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.tc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.tc-grid label{display:flex;flex-direction:column;gap:6px}.tc-grid input,.tc-grid select{padding:10px;font:inherit;min-height:44px}.tc-section{border:1px solid #ccd8cd;padding:20px;margin:20px 0;border-radius:10px}.tc-section button{margin:8px;min-height:44px}.tc-section p{line-height:1.6}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: onExit }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uC591\uB3C4 \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { "data-testid": "transfer-split-mode", disabled: busy || readonly, onClick: () => setSplitMode(true) }, "\uBD84\uD560\uCDE8\uB4DD \uC6D0\uBCF8\xB7\uC591\uB3C4 \uC5F0\uACB0"), /* @__PURE__ */ React.createElement("p", null, "\uC8FC\uD0DD \uBC0F \uB9E4\uB9E4 \uCDE8\uB4DD \uD1A0\uC9C0\xB7\uC0C1\uAC00\uC758 \uC77C\uBC18 \uC591\uB3C4\uB97C \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uBE44\uC8FC\uD0DD\uC740 2026-07-01~2026-10-17 \uC591\uB3C4, \uB2E8\uC77C \uCDE8\uB4DD\xB7\uC804\uCCB4 \uC9C0\uBD84, \uAD6D\uB0B4 \uAC70\uC8FC\uC790\uC758 \uB4F1\uAE30 \uC2E4\uAC00 \uC591\uB3C4\uBD80\uD130 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC9C0\uBD84\uC740 \uC7AC\uC0B0 \uC804\uCCB4 \uAE30\uC900\uC73C\uB85C \uC785\uB825\uD558\uACE0 \uBCF4\uC720 \uC9C0\uBD84 \uC774\uB0B4\uC5D0\uC11C \uC120\uD0DD\uD558\uC138\uC694. \uB2E4\uB978 \uC8FC\uD0DD \uD2B9\uB840\uB294 \uB9E4\uB9E4 \uCDE8\uB4DD \uB300\uC0C1\uC5D0\uC11C \uAC80\uD1A0\uD558\uBA70, \uD658\uC0B0\uCDE8\uB4DD\uAC00\uB294 \uC544\uB798\uC5D0\uC11C \uC801\uC6A9 \uC870\uAC74\uACFC \uB450 \uAE30\uC900\uC2DC\uAC00\uB97C \uD655\uC778\uD569\uB2C8\uB2E4. \uBCF5\uD569 \uCDE8\uB4DD\xB7\uBD84\uD560 \uCDE8\uB4DD\xB7\uAC10\uBA74\uC740 \uC544\uC9C1 \uC5F0\uACB0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), !current && !busy && /* @__PURE__ */ React.createElement("button", { onClick: () => act(async () => {
+    if (caseId && caseId !== "resume") await load(caseId);
+    else {
+      const made = await mutation("/v1/transfer-cases", "POST", { client_id: clientId, label: "\uC0C8 \uC591\uB3C4 \uC0AC\uAC74", draft: {} });
+      await load(made.case_id);
+    }
+  }) }, "\uC0AC\uAC74 \uC5F4\uAE30 \uB2E4\uC2DC \uC2DC\uB3C4"), current && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uBC84\uC804 ", w.meta.revision, " / \uCD5C\uC2E0 ", w.meta.current_revision, readonly ? " \xB7 \uC77D\uAE30 \uC804\uC6A9 \uC800\uC7A5\uBCF8" : "", transferDirty(w) ? " \xB7 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD \uC788\uC74C" : ""), /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74\uBA85", /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-label", disabled: busy || readonly, value: w.label, onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { label: e.target.value })) })), source && /* @__PURE__ */ React.createElement("section", { className: "tc-section", "aria-label": "\uC591\uB3C4 \uAC00\uC838\uC624\uAE30 \uB2F9\uC2DC \uC6D0\uBCF8 \uC790\uB8CC" }, /* @__PURE__ */ React.createElement("h2", null, "\uAC00\uC838\uC624\uAE30 \uB2F9\uC2DC \uC790\uB8CC"), /* @__PURE__ */ React.createElement("p", null, source.property.address, " \xB7 \uC18C\uC720\uC790 ", source.ownership.name, " \xB7 \uBCF4\uC720 \uC9C0\uBD84 ", source.ownership.share_ratio, " \xB7 \uC591\uB3C4 \uC9C0\uBD84 ", source.selection.transfer_share), source.fact_history && /* @__PURE__ */ React.createElement("p", { "data-testid": "transfer-saved-fact-period" }, "\uACFC\uAC70 \uC0AC\uC2E4 \uC801\uC6A9\uAE30\uAC04 ", source.fact_history.applicability.applicable_from, " ~ ", source.fact_history.applicability.applicable_until, " \xB7 \uD655\uC778 \uADFC\uAC70: ", source.fact_history.applicability.reason, " \xB7 \uB2F9\uC2DC \uC120\uD0DD\uD55C \uCDE8\uB4DD\xB7\uB2F9\uC0AC\uC790\xB7\uD3C9\uAC00\uC790\uB8CC \uBCF4\uC874"), source.ownership_history && /* @__PURE__ */ React.createElement("p", { "data-testid": "transfer-saved-ownership-period" }, "\uCC44\uD0DD \uC18C\uC720 \uAE30\uAC04: ", source.ownership_history.valid_from, "\uBD80\uD130 ", source.ownership_history.valid_until || "\uC774\uD6C4", " (\uBCC0\uB3D9 \uB2F9\uC77C\uC740 \uD655\uC778\uD55C \uC120\uD6C4\uAD00\uACC4 \uAE30\uC900) \xB7 \uAE30\uB85D ", source.ownership_history.revision, " \xB7 \uB2E4\uB978 \uC6D0\uBCF8 \uC0AC\uC2E4\uC740 \uC544\uB798 \uC120\uD0DD \uBC84\uC804 \uB610\uB294 \uAC00\uC838\uC624\uAE30 \uC2DC\uC810 \uC790\uB8CC"), /* @__PURE__ */ React.createElement("p", null, "\uD3C9\uAC00\uC77C ", source.valuation.as_of_date, " \xB7 ", source.valuation.valuation_type, " \xB7 ", source.valuation.source, " \xB7 \uC804\uCCB4 \uD3C9\uAC00\uC561 ", Number(source.valuation.amount).toLocaleString(), "\uC6D0"), ((_n = source.property.necessary_expenses_detail) == null ? void 0 : _n.schema_version) === "property-expenses/1" && /* @__PURE__ */ React.createElement("details", { "data-testid": "transfer-expense-detail" }, /* @__PURE__ */ React.createElement("summary", null, "\uCC44\uD0DD \uB2F9\uC2DC \uD544\uC694\uACBD\uBE44 \uBA85\uC138(\uC804\uCCB4 \uC7AC\uC0B0 \uAE30\uC900)"), /* @__PURE__ */ React.createElement("ul", null, source.property.necessary_expenses_detail.rows.map((r) => /* @__PURE__ */ React.createElement("li", { key: r.local_id }, r.description, " \xB7 ", r.amount_krw, "\uC6D0 \xB7 ", r.included ? "\uC0B0\uC785" : "\uC81C\uC678", " \xB7 ", r.source))), /* @__PURE__ */ React.createElement("p", null, "\uAC80\uD1A0 \uADFC\uAC70: ", source.property.necessary_expenses_detail.review_note), /* @__PURE__ */ React.createElement("p", null, "\uC77C\uBC18 \uCDE8\uB4DD \uBC29\uC2DD\uC5D0\uC11C\uB294 \uBA85\uC138 \uD569\uACC4\uC5D0 \uC591\uB3C4 \uC9C0\uBD84\uC744 \uC801\uC6A9\uD55C \uAE08\uC561\uC744 \uC804\uB2EC\uD569\uB2C8\uB2E4. \uD658\uC0B0 \uBC29\uC2DD\uC5D0\uC11C\uB294 \uC774 \uD569\uACC4\uB97C \uACF5\uC81C\uD558\uC9C0 \uC54A\uACE0 \uBCC4\uB3C4 \uD655\uC778\uD55C \uAE30\uC900\uC2DC\uAC00\uB85C \uAC1C\uC0B0\uACF5\uC81C\uB97C \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uAE08\uC561 \uC218\uC815\uC740 \uC6D0\uBCF8 \uBA85\uC138\uB97C \uC218\uC815\uD55C \uB4A4 \uB2E4\uC2DC \uAC00\uC838\uC624\uC138\uC694.")), /* @__PURE__ */ React.createElement("p", null, "\uCC44\uD0DD \uB2F9\uC2DC \uC591\uB3C4\uAC00\uC561 ", source.adopted.transfer_price.toLocaleString(), "\uC6D0 \xB7 \uCDE8\uB4DD\uAC00 ", source.adopted.acquisition_price.toLocaleString(), "\uC6D0 \xB7 \uD544\uC694\uACBD\uBE44 ", source.adopted.expenses_total.toLocaleString(), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uCC44\uD0DD \uC0AC\uC720: ", source.selection.adoption_reason, " \xB7 \uC800\uC7A5 \uC2DC\uAC01 ", source.captured_at), /* @__PURE__ */ React.createElement("p", null, "\uC544\uB798 \uC785\uB825\uC740 \uBCC4\uB3C4\uB85C \uC218\uC815\uD560 \uC218 \uC788\uC73C\uBA70, \uB2F9\uC2DC \uC6D0\uBCF8\uACFC \uACFC\uAC70 \uACC4\uC0B0 \uACB0\uACFC\uB294 \uC720\uC9C0\uB429\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("section", { className: "tc-section" }, /* @__PURE__ */ React.createElement("h2", null, "1. \uC7AC\uC0B0\xB7\uC18C\uC720\xB7\uD3C9\uAC00\uC790\uB8CC \uAC00\uC838\uC624\uAE30"), pendingSource && /* @__PURE__ */ React.createElement("div", { role: "status" }, /* @__PURE__ */ React.createElement("p", null, "\uC120\uD0DD \uC911\uC778 \uC9C0\uBD84 ", choice.transfer_share, " / \uC800\uC7A5\uBCF8 \uC9C0\uBD84 ", source.selection.transfer_share, ": \uC544\uC9C1 \uC785\uB825\uACFC \uACB0\uACFC\uC5D0 \uBC18\uC601\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC790\uB8CC\uB97C \uD655\uC778\uD574 \uC0C8 \uBC84\uC804\uC73C\uB85C \uAC00\uC838\uC624\uAC70\uB098 \uC120\uD0DD\uC744 \uCDE8\uC18C\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    ownerQuery.current++;
+    setOwnerTimeline(null);
+    setChoice(__spreadProps(__spreadValues({}, source.selection), { ownership_version: null, ownership_history_confirmed: false, ownership_id: "", fact_selection: null, confirmed: false }));
+    setPreview(null);
+  } }, "\uC790\uB8CC \uC120\uD0DD \uCDE8\uC18C")), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(async () => {
+    setCatalog(await api(base + "/sources"));
+    setPreview(null);
+  }) }, "\uAE30\uC874 \uC790\uB8CC \uC870\uD68C"), catalog.next_cursor && /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(async () => {
+    const data = await api(base + "/sources?cursor=" + catalog.next_cursor);
+    setCatalog({ properties: [...catalog.properties, ...data.properties], next_cursor: data.next_cursor });
+  }) }, "\uC7AC\uC0B0 \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "tc-grid" }, [
+    ["property_id", "\uC7AC\uC0B0", catalog.properties.map((p) => [p.id, p.address + " \xB7 " + p.property_type + " \xB7 " + p.acquired_by])],
+    ["ownership_id", "\uC18C\uC720\uC790", ((_p = ((_o = ownerTimeline == null ? void 0 : ownerTimeline.items.find((x) => x.version === choice.ownership_version)) == null ? void 0 : _o.ownerships) || (property == null ? void 0 : property.ownerships)) == null ? void 0 : _p.map((o) => [o.id, o.name + " \xB7 \uC9C0\uBD84 " + o.share_ratio])) || []],
+    ["valuation_id", "\uC591\uB3C4\uAC00\uC561\uC73C\uB85C \uCC44\uD0DD\uD560 \uD3C9\uAC00 \uD6C4\uBCF4", (property == null ? void 0 : property.valuations.map((v) => [v.id, v.as_of_date + " \xB7 " + v.valuation_type + " \xB7 " + Number(v.amount).toLocaleString() + "\uC6D0"])) || []]
+  ].map(([key, label, items]) => /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("select", { "data-testid": "transfer-source-" + key, disabled: busy || readonly, value: choice[key] || "", onChange: (e) => select(key, e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), items.map(([id, name]) => /* @__PURE__ */ React.createElement("option", { key: id, value: id }, name))))), [["transfer_share", "\uC591\uB3C4 \uC9C0\uBD84(0 \uCD08\uACFC~1)", "text"], ["transfer_date", "\uC591\uB3C4\uC77C", "date"], ["adoption_reason", "\uC774 \uD3C9\uAC00\uC561\uC744 \uC591\uB3C4\uAC00\uC561\uC73C\uB85C \uCC44\uD0DD\uD55C \uC0AC\uC720", "text"]].map(([key, label, type]) => /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-source-" + key, disabled: busy || readonly, type, value: choice[key], onChange: (e) => select(key, e.target.value) })))), /* @__PURE__ */ React.createElement("div", { "aria-label": "\uC0AC\uAC74\uC77C \uC18C\uC720 \uC774\uB825" }, /* @__PURE__ */ React.createElement("button", { "data-testid": "transfer-ownership-load", disabled: busy || readonly || !choice.property_id || !choice.transfer_date, onClick: () => act(async () => {
+    const generation = ++ownerQuery.current;
+    setPreview(null);
+    setOwnerTimeline(null);
+    const data = await api("/v1/clients/" + clientId + "/masters/properties/" + choice.property_id + "/ownership-options?event_date=" + choice.transfer_date);
+    if (generation === ownerQuery.current) {
+      setOwnerTimeline(data);
+      select("ownership_version", null);
+    }
+  }) }, "\uC0AC\uAC74\uC77C \uC18C\uC720 \uC774\uB825 \uC870\uD68C"), ownerTimeline && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74 \uB0A0\uC9DC\uC5D0 \uB9DE\uB294 \uC9C0\uBD84 \uAE30\uB85D", /* @__PURE__ */ React.createElement("select", { "data-testid": "transfer-ownership-version", disabled: busy || readonly, value: choice.ownership_version || "", onChange: (e) => select("ownership_version", e.target.value || null) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uBA85\uC2DC\uC801\uC73C\uB85C \uC120\uD0DD"), ownerTimeline.items.filter((x) => x.eligible).map((x) => /* @__PURE__ */ React.createElement("option", { key: x.version, value: x.version }, x.valid_from, "\uBD80\uD130 ", x.valid_until ? "~ " + x.valid_until + " (\uB2F9\uC77C \uC120\uD6C4 \uD655\uC778)" : "\uC774\uD6C4", " \xB7 \uAE30\uB85D ", x.revision, x.boundary_review_required ? " \xB7 \uB2F9\uC77C \uBCC0\uB3D9 \uD6C4\uBCF4" : "", x.basis === "before_first_retained_change" ? " (\uCCAB \uBCF4\uAD00 \uC804 \uC0C1\uD0DC\xB7\uC774\uC804 \uBCC0\uB3D9 \uD655\uC778 \uD544\uC694)" : "")))), !ownerTimeline.items.some((x) => x.eligible) && /* @__PURE__ */ React.createElement("p", null, "\uC774 \uB0A0\uC9DC\uB97C \uB4B7\uBC1B\uCE68\uD558\uB294 \uC18C\uC720 \uAE30\uB85D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.")), choice.ownership_version && /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-ownership-confirm", type: "checkbox", disabled: busy || readonly, checked: !!choice.ownership_history_confirmed, onChange: (e) => select("ownership_history_confirmed", e.target.checked) }), "\uC0AC\uAC74\uACFC \uC18C\uC720 \uBCC0\uB3D9\uC758 \uC120\uD6C4\uAD00\uACC4\xB7\uC120\uD0DD \uC9C0\uBD84\xB7\uC774\uC804 \uBCC0\uB3D9 \uB204\uB77D \uC5EC\uBD80\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4. \uC7AC\uC0B0\xB7\uB2F9\uC0AC\uC790\xB7\uD3C9\uAC00\uC790\uB8CC\uB294 \uBCC4\uB3C4 \uACFC\uAC70 \uBC84\uC804\uC744 \uC120\uD0DD\uD558\uAC70\uB098 \uD604\uC7AC \uC790\uB8CC\uB97C \uC0AC\uC6A9\uD558\uBBC0\uB85C \uCDE8\uB4DD \uC0AC\uC2E4\xB7\uAE08\uC561\uC744 \uD568\uAED8 \uAC80\uD1A0\uD569\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement(JTFactVersionPicker, { api, clientId, propertyId: choice.property_id, ownerId: (_r = (((_q = ownerTimeline == null ? void 0 : ownerTimeline.items.find((x) => x.version === choice.ownership_version)) == null ? void 0 : _q.ownerships) || (property == null ? void 0 : property.ownerships) || []).find((x) => x.id === choice.ownership_id)) == null ? void 0 : _r.person_id, doneeId: choice.donee_person_id, eventDate: choice.transfer_date, valuationId: choice.valuation_id, selection: choice.fact_selection, onChange: (v) => select("fact_selection", v), disabled: busy || readonly }), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-source-confirmed", type: "checkbox", disabled: busy || readonly, checked: choice.confirmed, onChange: (e) => select("confirmed", e.target.checked) }), "\uD3C9\uAC00\uC561\xB7\uCDE8\uB4DD\uAC00\xB7\uD544\uC694\uACBD\uBE44\uAC00 \uBAA8\uB450 \uC7AC\uC0B0 \uC804\uCCB4 \uAE08\uC561\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), ["\uD1A0\uC9C0", "\uC0C1\uAC00"].includes(property == null ? void 0 : property.property_type) && Number(choice.transfer_share) < 1 && /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-source-nonhousing_share_basis_confirmed", type: "checkbox", disabled: busy || readonly, checked: !!choice.nonhousing_share_basis_confirmed, onChange: (e) => select("nonhousing_share_basis_confirmed", e.target.checked) }), "\uB3D9\uC77C \uCDE8\uB4DD\uC77C\xB7\uB3D9\uC77C \uB2E8\uAC00\uC758 \uD55C \uCDE8\uB4DD\uBD84\uC774\uBA70 \uC804\uCCB4 \uC7AC\uC0B0 \uAE08\uC561 \xD7 \uC591\uB3C4 \uC9C0\uBD84\uC774 \uC2E4\uC81C \uADC0\uC18D \uAC00\uC561\uACFC \uC77C\uCE58\uD569\uB2C8\uB2E4. \uD1A0\uC9C0\xB7\uAC74\uBB3C \uC77C\uAD04\uAC00\uC561/\uAC1C\uBCC4 \uC9C0\uBD84 \uBE44\uC6A9/\uBD84\uD560\uCDE8\uB4DD\uC774 \uC5C6\uACE0 \uD604\uC7AC \uC18C\uC720 \uAE30\uB85D\uACFC \uC591\uB3C4\uC77C\uC790 \uC2E4\uAC00 \uC790\uB8CC\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uBE44\uC8FC\uD0DD \uC77C\uBD80 \uC9C0\uBD84\uC740 \uC6D0 \uB2E8\uC704\uB85C \uC815\uD655\uD788 \uC548\uBD84\uB418\uB294 \uAE08\uC561\uB9CC \uAC00\uC838\uC635\uB2C8\uB2E4. \uAE08\uC561\xB7\uB0A0\uC9DC \uBCC0\uACBD\uC740 \uC6D0\uBCF8\uC744 \uC218\uC815\uD55C \uB4A4 \uB2E4\uC2DC \uAC00\uC838\uC624\uC138\uC694."), /* @__PURE__ */ React.createElement("p", null, "\uD3C9\uAC00\uC561\uC774 \uC2E4\uC81C \uACC4\uC57D\uAE08\uC561\uACFC \uB2E4\uB974\uBA74 \uAC00\uC838\uC628 \uB4A4 \uC591\uB3C4\uAC00\uC561\uC744 \uC218\uC815\uD558\uC138\uC694. \uC6D0\uBCF8 \uC790\uB8CC\uB97C \uB2E4\uC2DC \uAC00\uC838\uC624\uBA74 \uD604\uC7AC \uC591\uB3C4 \uC785\uB825\uACFC \uD655\uC778 \uC0AC\uD56D\uC774 \uCD08\uAE30\uD654\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly || !choice.confirmed, onClick: () => act(async () => setPreview(await api(base + "/source-preview", { method: "POST", body: JSON.stringify(selection()) }))) }, "\uC120\uD0DD \uC790\uB8CC \uD655\uC778"), preview && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC804\uCCB4 \uC7AC\uC0B0\uAC00\uC561 ", Number(preview.valuation.amount).toLocaleString(), "\uC6D0 \xD7 \uC591\uB3C4 \uC9C0\uBD84 ", preview.selection.transfer_share, " (", preview.amount_rule.endsWith("exact_won") ? "\uC6D0 \uB2E8\uC704 \uC815\uD655 \uC548\uBD84" : "\uC6D0 \uBBF8\uB9CC \uBC84\uB9BC", ")"), /* @__PURE__ */ React.createElement("p", null, "\uCC44\uD0DD \uC591\uB3C4\uAC00\uC561 ", preview.adopted.transfer_price.toLocaleString(), "\uC6D0 \xB7 \uCDE8\uB4DD\uAC00 ", preview.adopted.acquisition_price.toLocaleString(), "\uC6D0 \xB7 \uD544\uC694\uACBD\uBE44 ", preview.adopted.expenses_total.toLocaleString(), "\uC6D0"), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(async () => {
+    if (!window.confirm("\uC120\uD0DD\uD55C \uC6D0\uBCF8\uC73C\uB85C \uC785\uB825\uC744 \uAD50\uCCB4\uD558\uACE0 \uC0C8 \uBC84\uC804\uC73C\uB85C \uC800\uC7A5\uD560\uAE4C\uC694?")) return;
+    const saved = await mutation(base + "/source-imports", "POST", { label: w.label, draft: w.draft, selection: selection(), expected_source_hash: preview.source_hash }, w.meta.etag);
+    await load(saved.case_id);
+    setPreview(null);
+  }) }, "\uAC00\uC838\uC640 \uC0C8 \uBC84\uC804 \uC800\uC7A5"))), w.draft.request && /* @__PURE__ */ React.createElement("section", { className: "tc-section" }, /* @__PURE__ */ React.createElement("h2", null, "2. \uC591\uB3C4 \uC785\uB825 \uD655\uC778"), !nonhousing && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uC591\uB3C4 \uB300\uC0C1 \uC790\uCCB4\uC758 \uCDE8\uB4DD \uACBD\uB85C", /* @__PURE__ */ React.createElement("select", { "data-testid": "transfer-acquisition-mode", disabled: busy || readonly, value: acquisitionMode, onChange: (e) => changeAcquisition(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "purchased" }, "\uB9E4\uB9E4 \uCDE8\uB4DD"), /* @__PURE__ */ React.createElement("option", { value: "inherited" }, "\uC0C1\uC18D\uC73C\uB85C \uCDE8\uB4DD\uD55C \uC8FC\uD0DD \uC591\uB3C4"), /* @__PURE__ */ React.createElement("option", { value: "gifted" }, "\uC99D\uC5EC\uBC1B\uC740 \uC8FC\uD0DD \uC591\uB3C4"))), /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD \uACBD\uB85C\uB97C \uBC14\uAFB8\uBA74 \uCDE8\uB4DD\uAC00\uC561\xB7\uD544\uC694\uACBD\uBE44\xB7\uCDE8\uB4DD/\uAC70\uC8FC \uB0A0\uC9DC\xB7\uCDE8\uB4DD \uB2F9\uC2DC \uC870\uC815\uC9C0\uC5ED\xB7\uD2B9\uB840\xB7\uD655\uC778 \uC785\uB825\uC744 \uBE44\uC6C1\uB2C8\uB2E4. \uAC00\uC838\uC624\uAE30 \uB2F9\uC2DC \uC6D0\uBCF8\uACFC \uACFC\uAC70 \uC800\uC7A5\uBCF8\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4.")), acquisitionMode !== "purchased" && /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uC77C\uC5D0\uB294 \uC0C1\uC18D\uAC1C\uC2DC\uC77C \uB610\uB294 \uC99D\uC5EC \uCDE8\uB4DD\uC77C\uC744, \uCDE8\uB4DD\uAC00\uC561\uC5D0\uB294 \uD574\uB2F9 \uCDE8\uB4DD\uAC00\uC561\uC73C\uB85C \uD655\uC778\uD55C \uD3C9\uAC00\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uD604\uC7AC \uC591\uB3C4\uAC00\uC561\uC6A9 \uD3C9\uAC00 \uD6C4\uBCF4\uB97C \uCDE8\uB4DD\uAC00\uC561\uC73C\uB85C \uC790\uB3D9 \uB300\uCCB4\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "tc-grid" }, fields.filter(([key]) => !nonhousing || !["housing_count", "move_in_date", "move_out_date"].includes(key)).map(([key, label, type]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, key === "exclusive_area" && w.draft.request.property_type === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0\uBA74\uC801(\u33A1)" : label, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        "data-testid": "transfer-" + key,
+        type,
+        disabled: busy || readonly || converted && ["acquisition_price", "expenses_total"].includes(key),
+        min: type === "number" ? 0 : void 0,
+        value: (_a2 = w.draft.request[key]) != null ? _a2 : "",
+        onChange: (e) => change(key, type === "number" ? e.target.value === "" ? null : Number(e.target.value) : e.target.value || null)
+      }
+    ));
+  }), !nonhousing && [["is_regulated_area", "\uC591\uB3C4 \uB2F9\uC2DC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED"], ["regulated_at_acquisition", "\uCDE8\uB4DD \uB2F9\uC2DC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED"]].map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("select", { "data-testid": "transfer-" + key, disabled: busy || readonly, value: w.draft.request[key] == null ? "" : String(w.draft.request[key]), onChange: (e) => change(key, e.target.value === "" ? null : e.target.value === "true") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("option", { value: "true" }, "\uC608"), /* @__PURE__ */ React.createElement("option", { value: "false" }, "\uC544\uB2C8\uC624"))))), !nonhousing && acquisitionMode === "purchased" && /* @__PURE__ */ React.createElement("section", { className: "tc-section", "aria-label": "\uD658\uC0B0\uCDE8\uB4DD\uAC00\uC561 \uC785\uB825" }, /* @__PURE__ */ React.createElement("h3", null, "\uCDE8\uB4DD\uAC00\uC561 \uACB0\uC815 \uBC29\uC2DD"), /* @__PURE__ */ React.createElement("select", { "data-testid": "transfer-converted-mode", disabled: busy || readonly || mode !== "ordinary", value: converted ? "converted" : "actual", onChange: (e) => changeConverted(e.target.value === "converted") }, /* @__PURE__ */ React.createElement("option", { value: "actual" }, "\uC2E4\uC9C0\uCDE8\uB4DD\uAC00\uC561"), /* @__PURE__ */ React.createElement("option", { value: "converted" }, "\uC2E4\uC9C0\uCDE8\uB4DD\uAC00\uC561 \uD655\uC778 \uBD88\uAC00 \xB7 \uD658\uC0B0 \uAC80\uD1A0")), /* @__PURE__ */ React.createElement("p", null, "\uBC29\uC2DD \uC804\uD658 \uC2DC \uC0AC\uAC74\uC758 \uAE08\uC561\uACFC \uD655\uC778\uC744 \uBE44\uC6C1\uB2C8\uB2E4. \uC77C\uBC18 \uBC29\uC2DD\uC73C\uB85C \uB3CC\uC544\uC624\uBA74 \uCDE8\uB4DD\uAC00\uC561\xB7\uD544\uC694\uACBD\uBE44\uB97C \uB2E4\uC2DC \uC785\uB825\uD558\uAC70\uB098 \uC6D0\uBCF8\uC744 \uB2E4\uC2DC \uAC00\uC838\uC624\uC138\uC694."), converted && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uC77C\uBC18 \uC591\uB3C4, 1996\uB144 \uC774\uD6C4 \uB9E4\uB9E4 \uCDE8\uB4DD\uD55C \uB4F1\uAE30 \uC8FC\uD0DD\uBD80\uD130 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC0C1\uC18D\xB7\uC99D\uC5EC\xB7\uD2B9\uB840 \uACB0\uD569, \uCD5C\uCD08 \uACF5\uC2DC \uC804 \uCDE8\uB4DD, \uB3D9\uC77C \uACE0\uC2DC\uAE30\uAC04\uC758 \uAE30\uC900\uC2DC\uAC00 \uC870\uC815, \uC2E0\uCD95\xB7\uC99D\uCD95\xB7\uAC10\uAC00\uC0C1\uAC01 \uB4F1 \uBCC4\uB3C4 \uCC98\uB9AC\uAC00 \uD544\uC694\uD55C \uACBD\uC6B0\uC5D0\uB294 \uACC4\uC0B0\uC744 \uBCF4\uB958\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uAC00\uC561 \xD7 \uCDE8\uB4DD \uB2F9\uC2DC \uAE30\uC900\uC2DC\uAC00 \xF7 \uC591\uB3C4 \uB2F9\uC2DC \uAE30\uC900\uC2DC\uAC00\uB85C \uD658\uC0B0\uD558\uACE0 \uCDE8\uB4DD \uB2F9\uC2DC \uAE30\uC900\uC2DC\uAC00\uC758 3%\uB97C \uAC1C\uC0B0\uACF5\uC81C\uD569\uB2C8\uB2E4. \uB450 \uAE30\uC900\uC2DC\uAC00 \uBAA8\uB450 \uC774 \uC591\uB3C4 \uC9C0\uBD84\uC5D0 \uD574\uB2F9\uD558\uB294 \uAE08\uC561\uC774\uC5B4\uC57C \uD558\uBA70 \uC9C0\uBD84\uC744 \uB2E4\uC2DC \uACF1\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "tc-grid" }, [["standard_price_at_acq", "\uCDE8\uB4DD \uB2F9\uC2DC \uAE30\uC900\uC2DC\uAC00(\uC591\uB3C4 \uC9C0\uBD84 \uAE30\uC900, \uC6D0)"], ["standard_price_at_transfer", "\uC591\uB3C4 \uB2F9\uC2DC \uAE30\uC900\uC2DC\uAC00(\uC591\uB3C4 \uC9C0\uBD84 \uAE30\uC900, \uC6D0)"]].map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-" + key, type: "number", min: "1", step: "1", disabled: busy || readonly, value: w.draft.request[key] || "", onChange: (e) => change(key, Number(e.target.value) || 0) }))), ["acquisition_source", "transfer_source", "review_note"].map((key, i) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, ["\uCDE8\uB4DD \uAE30\uC900\uC2DC\uAC00\uC758 \uACF5\uC2DC\uC77C\xB7\uAE08\uC561\xB7\uCD9C\uCC98\xB7\uC9C0\uBD84 \uADFC\uAC70", "\uC591\uB3C4 \uAE30\uC900\uC2DC\uAC00\uC758 \uACF5\uC2DC\uC77C\xB7\uAE08\uC561\xB7\uCD9C\uCC98\xB7\uC9C0\uBD84 \uADFC\uAC70", "\uC2E4\uAC00\xB7\uC120\uC21C\uC704 \uBC29\uBC95 \uD655\uC778 \uBD88\uAC00 \uC0AC\uC720\uC640 \uAC80\uD1A0 \uADFC\uAC70"][i], /* @__PURE__ */ React.createElement("textarea", { "data-testid": "converted-" + key, maxLength: 1e3, disabled: busy || readonly, value: ((_a2 = w.draft.converted_review) == null ? void 0 : _a2[key]) || "", onChange: (e) => changeConvertedReview(key, e.target.value) }));
+  }), /* @__PURE__ */ React.createElement("label", null, "\uBE44\uAD50\uC6A9 \uC2E4\uC81C \uC790\uBCF8\uC801 \uC9C0\uCD9C\xB7\uC591\uB3C4\uBE44 \uD569\uACC4(\uC6D0, \uC5C6\uC73C\uBA74 \uD655\uC778\uD55C 0\uC6D0)", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "converted-actual_capital_transfer_expenses",
+      type: "number",
+      min: "0",
+      step: "1",
+      disabled: busy || readonly,
+      value: (_t = (_s = w.draft.converted_review) == null ? void 0 : _s.actual_capital_transfer_expenses) != null ? _t : "",
+      onChange: (e) => changeConvertedReview("actual_capital_transfer_expenses", e.target.value === "" ? null : Number(e.target.value))
+    }
+  ))), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8 \uD544\uC694\uACBD\uBE44\uC5D0\uB294 \uCDE8\uB4DD \uBE44\uC6A9 \uB4F1\uC774 \uC11E\uC77C \uC218 \uC788\uC5B4 \uBE44\uAD50 \uAE08\uC561\uC73C\uB85C \uC790\uB3D9 \uBCF5\uC0AC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uBE44\uAD50 \uAE08\uC561\uC774 \uD658\uC0B0\uCDE8\uB4DD\uAC00\uC561+\uAC1C\uC0B0\uACF5\uC81C\uBCF4\uB2E4 \uD06C\uBA74 \uC2E4\uC561 \uC120\uD0DD \uACBD\uB85C \uC5F0\uACB0 \uC804\uAE4C\uC9C0 \uACC4\uC0B0\uC744 \uBCF4\uB958\uD569\uB2C8\uB2E4."), [
+    ["actual_unavailable", "\uACC4\uC57D\uC11C\xB7\uC804 \uC18C\uC720\uC790 \uD655\uC778 \uB4F1\uC744 \uAC80\uD1A0\uD588\uC73C\uB098 \uC2E4\uC81C \uCDE8\uB4DD\uAC00\uC561\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."],
+    ["prior_methods_unavailable", "\uC120\uC21C\uC704 \uB9E4\uB9E4\uC0AC\uB840\uAC00\uC561\xB7\uAC10\uC815\uAC00\uC561\uC744 \uAC80\uD1A0\uD588\uC73C\uB098 \uC801\uC6A9 \uAC00\uB2A5\uD55C \uAC00\uC561\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."],
+    ["simple_basis_confirmed", "\uCD5C\uCD08 \uC8FC\uD0DD\uAC00\uACA9 \uACF5\uC2DC \uD6C4 \uCDE8\uB4DD\uD588\uACE0 \uBCF4\uC720 \uC911 \uC0C8 \uAC00\uACA9\uC774 \uACF5\uC2DC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uC785\uB825 \uAE08\uC561\uC740 \uAC01 \uB0A0\uC9DC\uC758 \uC720\uD6A8\uD55C \uAE30\uC900\uC2DC\uAC00\uC774\uBA70, \uBCC4\uB3C4 \uC870\uC815\xB7\uC2E0\uCD95\xB7\uC99D\uCD95\xB7\uAC10\uAC00\uC0C1\uAC01 \uC0AC\uC2E4\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."],
+    ["facts_confirmed", "\uB450 \uAE30\uC900\uC2DC\uAC00\xB7\uC591\uB3C4 \uC9C0\uBD84\xB7\uBE44\uAD50 \uBE44\uC6A9\uACFC \uC801\uC6A9 \uC0AC\uC720\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."]
+  ].map(([key, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "converted-" + key, type: "checkbox", disabled: busy || readonly, checked: !!((_a2 = w.draft.converted_review) == null ? void 0 : _a2[key]), onChange: (e) => changeConvertedReview(key, e.target.checked) }), label);
+  }))), !nonhousing && acquisitionMode === "purchased" && !converted && mode === "ordinary" && /* @__PURE__ */ React.createElement("section", { className: "tc-section", "aria-label": "\uBBF8\uB4F1\uAE30 \uC591\uB3C4 \uAC80\uD1A0" }, /* @__PURE__ */ React.createElement("h3", null, "\uCDE8\uB4DD \uB4F1\uAE30 \uC0C1\uD0DC"), /* @__PURE__ */ React.createElement("label", null, "\uB4F1\uAE30 \uAC80\uD1A0 \uACBD\uB85C", /* @__PURE__ */ React.createElement("select", { "data-testid": "transfer-unregistered-mode", disabled: busy || readonly || !!w.draft.request.depreciation_recaptured, value: w.draft.request.is_unregistered ? "unregistered" : "registered", onChange: (e) => changeUnregistered(e.target.value === "unregistered") }, /* @__PURE__ */ React.createElement("option", { value: "registered" }, "\uB4F1\uAE30 \uC77C\uBC18 \uACBD\uB85C"), /* @__PURE__ */ React.createElement("option", { value: "unregistered" }, "\uCDE8\uB4DD \uB4F1\uAE30 \uC5C6\uC774 \uC591\uB3C4 \xB7 \uBBF8\uB4F1\uAE30 \uAC80\uD1A0"))), /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uB9E4\uB9E4 \uCDE8\uB4DD \uC77C\uBC18 \uC8FC\uD0DD\uC758 \uBBF8\uB4F1\uAE30\uB97C \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uC911\uACFC \uD6C4\uBCF4\xB7\uD658\uC0B0\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC\xB7\uAC10\uAC00\uC0C1\uAC01\xB7\uD2B9\uB840 \uACB0\uD569\uC740 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4."), w.draft.request.is_unregistered && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC7A5\uAE30\uD560\uBD80\uACC4\uC57D\uC0C1 \uB4F1\uAE30 \uBD88\uAC00\uB2A5, \uBC95\uB960\xB7\uBC95\uC6D0 \uACB0\uC815\uC0C1 \uB4F1\uAE30 \uBD88\uAC00\uB2A5, \uBC95\uC815 \uB18D\uC9C0, \uD5C8\uAC00 \uBBF8\uCDE8\uB4DD\uC73C\uB85C \uB4F1\uAE30 \uBD88\uAC00\uB2A5\uD55C \uBC95\uC815 \uBE44\uACFC\uC138 \uC8FC\uD0DD, \uBBF8\uC644\uC131 \uB3C4\uC2DC\uAC1C\uBC1C \uD1A0\uC9C0, \uACF5\uC0AC\uB300\uAE08\uC73C\uB85C \uCDE8\uB4DD\uD55C \uCCB4\uBE44\uC9C0 \uB4F1 \uC2DC\uD589\uB839\uC0C1 \uC81C\uC678 \uC0AC\uC720\uB97C \uD655\uC778\uD558\uC138\uC694. \uC608\uC678 \uD574\uB2F9 \uB610\uB294 \uBBF8\uD655\uC778\uC774\uBA74 \uD655\uC778\uB780\uC744 \uC120\uD0DD\uD558\uC9C0 \uB9D0\uACE0 \uACC4\uC0B0\uC744 \uBCF4\uB958\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("p", null, "\uBBF8\uB4F1\uAE30 \uD574\uB2F9 \uC2DC \uBE44\uACFC\uC138\xB7\uAC10\uBA74\xB7\uC7A5\uAE30\uBCF4\uC720\uACF5\uC81C\xB7\uAE30\uBCF8\uACF5\uC81C\uB97C \uC801\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC5F0\uAC04 \uD569\uC0B0\uC740 \uBBF8\uB4F1\uAE30 \uC0AC\uAC74\uB07C\uB9AC \uC9C0\uC6D0\uD558\uBA70 \uB4F1\uAE30 \uC0AC\uAC74\uACFC\uC758 \uD63C\uD569\uC740 \uBCF4\uB958\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uB4F1\uAE30\xB7\uCDE8\uB4DD\uACC4\uC57D \uBC0F \uC81C\uC678 \uC0AC\uC720 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "unregistered-review_note", maxLength: 1e3, disabled: busy || readonly, value: ((_u = w.draft.unregistered_review) == null ? void 0 : _u.review_note) || "", onChange: (e) => reviewUnregistered("review_note", e.target.value) })), [
+    ["acquisition_not_registered", "\uCDE8\uB4DD\uD55C \uC7AC\uC0B0\uC744 \uCDE8\uB4DD \uB4F1\uAE30 \uC5C6\uC774 \uC591\uB3C4\uD558\uB294 \uC0AC\uC2E4\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."],
+    ["exceptions_excluded", "\uBBF8\uB4F1\uAE30\uC591\uB3C4\uC790\uC0B0\uC5D0\uC11C \uC81C\uC678\uB418\uB294 \uBC95\uC815 \uC0AC\uC720\uC5D0 \uD574\uB2F9\uD558\uC9C0 \uC54A\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."],
+    ["facts_confirmed", "\uAD00\uB828 \uC0AC\uC2E4\xB7\uB4F1\uAE30 \uC790\uB8CC\uC640 \uC801\uC6A9 \uBC94\uC704\uB97C \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4."]
+  ].map(([key, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "unregistered-" + key, type: "checkbox", disabled: busy || readonly, checked: !!((_a2 = w.draft.unregistered_review) == null ? void 0 : _a2[key]), onChange: (e) => reviewUnregistered(key, e.target.checked) }), label);
+  }))), acquisitionMode === "purchased" && !converted && !w.draft.request.is_unregistered && mode === "ordinary" && /* @__PURE__ */ React.createElement("section", { className: "tc-section", "aria-label": "\uAC10\uAC00\uC0C1\uAC01 \uCC28\uAC10 \uC785\uB825" }, /* @__PURE__ */ React.createElement("h3", null, "\uC0AC\uC5C5\uC18C\uB4DD \uD544\uC694\uACBD\uBE44\uC5D0 \uC0B0\uC785\uD55C \uAC10\uAC00\uC0C1\uAC01\uBE44"), /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uAC00\uC561\uC5D0\uB294 \uAC10\uAC00\uC0C1\uAC01 \uCC28\uAC10 \uC804 \uAE08\uC561\uC744 \uC785\uB825\uD569\uB2C8\uB2E4. \uC0AC\uC5C5\uC18C\uB4DD \uD544\uC694\uACBD\uBE44\uC5D0 \uC0B0\uC785\uD588\uAC70\uB098 \uC0B0\uC785\uD560 \uAC10\uAC00\uC0C1\uAC01\uBE44 \uC911 \uC774 \uC591\uB3C4 \uC9C0\uBD84\uC5D0 \uADC0\uC18D\uB418\uB294 \uB204\uACC4\uC561\uC744 \uBCC4\uB3C4\uB85C \uC785\uB825\uD558\uBA74 \uAE30\uC874 \uC5D4\uC9C4\uC774 \uCDE8\uB4DD\uAC00\uC561\uC5D0\uC11C \uD55C \uBC88 \uCC28\uAC10\uD569\uB2C8\uB2E4. \uC77C\uBC18 \uD544\uC694\uACBD\uBE44\uC5D0 \uB2E4\uC2DC \uB354\uD558\uC9C0 \uB9C8\uC138\uC694."), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uAC00\uC561\uC5D0\uC11C \uCC28\uAC10\uD560 \uAC10\uAC00\uC0C1\uAC01\uBE44(\uC6D0, \uD574\uB2F9 \uC5C6\uC73C\uBA74 0)", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-depreciation_recaptured",
+      type: "number",
+      min: "0",
+      step: "1",
+      disabled: busy || readonly,
+      value: w.draft.request.depreciation_recaptured || 0,
+      onChange: (e) => {
+        const amount = Number(e.target.value) || 0;
+        remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), {
+          facts_confirmed: false,
+          share_facts_confirmed: false,
+          nonhousing_review: w.draft.nonhousing_review ? __spreadProps(__spreadValues({}, w.draft.nonhousing_review), { facts_confirmed: false }) : null,
+          depreciation_review: amount ? __spreadProps(__spreadValues({}, w.draft.depreciation_review || { review_note: "" }), { facts_confirmed: false }) : null,
+          request: __spreadProps(__spreadValues({}, w.draft.request), { depreciation_recaptured: amount })
+        }) }));
+      }
+    }
+  )), w.draft.request.depreciation_recaptured > 0 && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uC5C5\uC18C\uB4DD \uC2E0\uACE0\xB7\uC7A5\uBD80 \uCD9C\uCC98, \uC0B0\uC785\uAE30\uAC04, \uAC74\uBB3C\xB7\uC9C0\uBD84 \uADC0\uC18D \uBC0F \uCC28\uAC10 \uC804 \uCDE8\uB4DD\uAC00\uC561 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement(
+    "textarea",
+    {
+      "data-testid": "depreciation-review-note",
+      maxLength: 1e3,
+      disabled: busy || readonly,
+      value: ((_v = w.draft.depreciation_review) == null ? void 0 : _v.review_note) || "",
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { facts_confirmed: false, depreciation_review: { review_note: e.target.value, facts_confirmed: false } }) }))
+    }
+  )), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "depreciation-confirm",
+      type: "checkbox",
+      disabled: busy || readonly,
+      checked: !!((_w = w.draft.depreciation_review) == null ? void 0 : _w.facts_confirmed),
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { facts_confirmed: false, depreciation_review: __spreadProps(__spreadValues({}, w.draft.depreciation_review), { facts_confirmed: e.target.checked }) }) }))
+    }
+  ), "\uC0AC\uC5C5\uC18C\uB4DD\uC5D0 \uC0B0\uC785\uD588\uAC70\uB098 \uC0B0\uC785\uD560 \uB204\uACC4\uC561\uACFC \uC591\uB3C4 \uC9C0\uBD84\uC744 \uD655\uC778\uD588\uACE0, \uCDE8\uB4DD\uAC00\uC561\uC5D0\uC11C \uC774\uBBF8 \uCC28\uAC10\uD558\uAC70\uB098 \uC77C\uBC18 \uD544\uC694\uACBD\uBE44\uC5D0 \uC911\uBCF5 \uC0B0\uC785\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("p", null, "\uB9E4\uB9E4 \uCDE8\uB4DD \uB4F1\uAE30 \uC8FC\uD0DD\xB7\uC0C1\uAC00\uC758 \uC9C0\uC6D0 \uAE30\uAC04 \uB0B4 \uC77C\uBC18 \uC591\uB3C4\uC5D0\uC11C \uD655\uC778\uD569\uB2C8\uB2E4. \uD658\uC0B0\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC\xB7\uB2E4\uB978 \uC8FC\uD0DD \uD2B9\uB840\uB85C \uACBD\uB85C\uB97C \uC804\uD658\uD558\uBA74 \uAC10\uAC00\uC0C1\uAC01 \uC785\uB825\uACFC \uD655\uC778\uC744 \uBE44\uC6C1\uB2C8\uB2E4. \uC6D0\uBCF8 \uC790\uB8CC\uC640 \uACFC\uAC70 \uACB0\uACFC\uB294 \uC720\uC9C0\uB429\uB2C8\uB2E4.")), partial && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uC77C\uBD80 \uC9C0\uBD84 \uAE08\uC561 \uD655\uC778" }, /* @__PURE__ */ React.createElement("h3", null, "\uD604\uC7AC \uC785\uB825\uC758 \uC591\uB3C4 \uC9C0\uBD84 ", source.selection.transfer_share), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uAC00\uC561\xB7\uCDE8\uB4DD\uAC00\uC561\xB7\uD544\uC694\uACBD\uBE44\uB294 \uC591\uB3C4 \uC9C0\uBD84\uC5D0 \uD574\uB2F9\uD558\uB294 \uAE08\uC561\uC785\uB2C8\uB2E4. \uAC00\uC838\uC62C \uB54C \uD55C \uBC88\uB9CC \uC548\uBD84\uD558\uBA70 \uC9C1\uC811 \uC218\uC815\uD55C \uAE08\uC561\uC5D0\uB294 \uC9C0\uBD84\uC744 \uB2E4\uC2DC \uACF1\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. ", !nonhousing && "\uC8FC\uD0DD \uC218\xB7\uBA74\uC801\uC740 \uC804\uCCB4 \uC8FC\uD0DD \uAE30\uC900\uC785\uB2C8\uB2E4."), !nonhousing && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uACE0\uAC00\uC8FC\uD0DD \uD310\uC815\uC6A9 \uC804\uCCB4 \uC8FC\uD0DD\uAC00\uC561(\uC6D0)", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-whole_house_value",
+      type: "number",
+      min: "0",
+      disabled: busy || readonly,
+      value: (_x = w.draft.request.whole_house_value) != null ? _x : 0,
+      onChange: (e) => change("whole_house_value", Number(e.target.value) || 0)
+    }
+  )), /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uBD84 \uC591\uB3C4\uAC00\uC561\uC744 \uC218\uC815\uD558\uBA74 \uC804\uCCB4 \uC8FC\uD0DD\uAC00\uC561\uB3C4 \uAC19\uC740 \uAC70\uB798 \uAE30\uC900\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694. \uC99D\uC5EC\uC790 \uCDE8\uB4DD\uAC00\uC561\xB7\uC99D\uC5EC\uC138\uC561\uC740 \uC774 \uC591\uB3C4 \uC9C0\uBD84\uC5D0 \uD574\uB2F9\uD558\uB294 \uAE08\uC561\uC744 \uBCC4\uB3C4\uB85C \uD655\uC778\uD574 \uC785\uB825\uD569\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("label", null, "\uC9C0\uBD84\xB7\uAE08\uC561 \uC548\uBD84 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement(
+    "textarea",
+    {
+      "data-testid": "transfer-share_review_note",
+      maxLength: 1e3,
+      disabled: busy || readonly,
+      value: w.draft.share_review_note || "",
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { share_review_note: e.target.value, share_facts_confirmed: false }) }))
+    }
+  )), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-share_facts_confirmed",
+      type: "checkbox",
+      disabled: busy || readonly,
+      checked: !!w.draft.share_facts_confirmed,
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { share_facts_confirmed: e.target.checked }) }))
+    }
+  ), "\uD604\uC7AC \uC9C0\uBD84\uACFC \uAC01 \uAE08\uC561\uC758 \uBC94\uC704\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4. \uB3D9\uC77C \uCDE8\uB4DD\uBD84\uC758 \uC9C0\uBD84 \uC591\uB3C4\uC774\uBA70 \uB2E4\uB978 \uC591\uB3C4\uC640\uC758 \uD569\uC0B0\xB7\uACF5\uC81C \uBC30\uBD84\uC774 \uD544\uC694\uD55C \uACBD\uC6B0\uAC00 \uC544\uB2D9\uB2C8\uB2E4.")), acquisitionMode === "inherited" && /* @__PURE__ */ React.createElement("label", null, "\uD53C\uC0C1\uC18D\uC778 \uCDE8\uB4DD\uC77C", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-decedent_acquisition_date",
+      type: "date",
+      disabled: busy || readonly,
+      value: w.draft.request.decedent_acquisition_date || "",
+      onChange: (e) => change("decedent_acquisition_date", e.target.value || null)
+    }
+  )), acquisitionMode === "gifted" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "tc-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC99D\uC5EC\uC77C(\uC704 \uCDE8\uB4DD\uC77C\uACFC \uB3D9\uC77C\uD55C \uB0A0\uC9DC)", /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-gift_date", type: "date", disabled: busy || readonly, value: w.draft.request.gift_date || "", onChange: (e) => change("gift_date", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uC99D\uC5EC\uC790\uB294 \uC591\uB3C4\uC790 \uAE30\uC900 \uB204\uAD6C\uC778\uAC00", /* @__PURE__ */ React.createElement(
+    "select",
+    {
+      "data-testid": "transfer-gift_donor_relationship",
+      disabled: busy || readonly,
+      value: w.draft.gift_donor_relationship || "",
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), {
+        gift_donor_relationship: e.target.value,
+        acquisition_facts_confirmed: false,
+        facts_confirmed: false,
+        request: __spreadProps(__spreadValues({}, w.draft.request), { donor_relationship: e.target.value === "\uAE30\uD0C0" ? "" : e.target.value })
+      }) }))
+    },
+    /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD655\uC778 \uD544\uC694"),
+    ["\uBC30\uC6B0\uC790", "\uC9C1\uACC4\uC874\uC18D", "\uC9C1\uACC4\uBE44\uC18D", "\uC9C1\uACC4\uC874\uBE44\uC18D", "\uAE30\uD0C0"].map((x) => /* @__PURE__ */ React.createElement("option", { key: x, value: x }, x))
+  )), /* @__PURE__ */ React.createElement("label", null, "\uC774\uC6D4\uACFC\uC138 \uAC80\uD1A0", /* @__PURE__ */ React.createElement(
+    "select",
+    {
+      "data-testid": "transfer-gift_deferred_review",
+      disabled: busy || readonly,
+      value: w.draft.gift_deferred_review || "",
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), {
+        gift_deferred_review: e.target.value,
+        acquisition_facts_confirmed: false,
+        facts_confirmed: false,
+        acquisition_review_note: "",
+        request: __spreadValues(__spreadProps(__spreadValues({}, w.draft.request), {
+          is_deferred: e.target.value === "engine_review"
+        }), e.target.value === "engine_review" && !w.draft.gift_deferred_review ? {} : { donor_acquisition_date: null, donor_acquisition_price: 0, donor_gift_tax_paid: 0 })
+      }) }))
+    },
+    /* @__PURE__ */ React.createElement("option", { value: "" }, "\uAC80\uD1A0 \uD544\uC694"),
+    /* @__PURE__ */ React.createElement("option", { value: "engine_review" }, "\uBC30\uC6B0\uC790\xB7\uC9C1\uACC4\uC874\uBE44\uC18D \uC99D\uC5EC \xB7 \uAE30\uC874 \uC5D4\uC9C4\uC73C\uB85C \uAC80\uD1A0"),
+    /* @__PURE__ */ React.createElement("option", { value: "not_applicable" }, "\uBCC4\uB3C4 \uAC80\uD1A0 \uACB0\uACFC \uB300\uC0C1 \uC544\uB2D8 \xB7 \uADFC\uAC70 \uAE30\uB85D")
+  ))), w.draft.gift_deferred_review === "engine_review" && /* @__PURE__ */ React.createElement("div", { className: "tc-grid" }, [["donor_acquisition_date", "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uC77C", "date"], ["donor_acquisition_price", "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uAC00\uC561(\uC6D0)", "number"], ["donor_gift_tax_paid", "\uAE30\uC874 \uC5D4\uC9C4 \uAC80\uD1A0\uC6A9 \uC99D\uC5EC\uC138 \uC0B0\uCD9C\uC138\uC561(\uC6D0, 0\uC6D0\uB3C4 \uD655\uC778)", "number"]].map(([key, label, type]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        "data-testid": "transfer-" + key,
+        type,
+        min: type === "number" ? 0 : void 0,
+        disabled: busy || readonly,
+        value: (_a2 = w.draft.request[key]) != null ? _a2 : "",
+        onChange: (e) => change(key, type === "number" ? e.target.value === "" ? 0 : Number(e.target.value) : e.target.value || null)
+      }
+    ));
+  })), /* @__PURE__ */ React.createElement("p", null, "\uAC80\uD1A0 \uC120\uD0DD\uC740 \uC774\uC6D4\uACFC\uC138 \uC801\uC6A9 \uD655\uC815\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uAE30\uC874 \uC5D4\uC9C4\uC758 \uAE30\uAC04\xB7\uBE44\uAD50 \uACB0\uACFC\uB97C \uACC4\uC0B0 \uB2E8\uACC4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694. \uBD80\uB2F4\uBD80\uC99D\uC5EC\xB7\uC218\uC6A9 \uC608\uC678 \uB4F1 \uBCC4\uB3C4 \uC0AC\uC2E4\uC774 \uD544\uC694\uD55C \uACBD\uC6B0\uB294 \uC774 \uACBD\uB85C\uC5D0\uC11C \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")), acquisitionMode !== "purchased" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", { style: { display: "block" } }, "\uCDE8\uB4DD\uAC00\uC561\xB7\uB0A0\uC9DC\xB7\uD544\uC694\uACBD\uBE44 \uD655\uC778 \uADFC\uAC70 \uBC0F \uC774\uC6D4\uACFC\uC138 \uAC80\uD1A0 \uC0AC\uC720", /* @__PURE__ */ React.createElement(
+    "textarea",
+    {
+      "data-testid": "transfer-acquisition_review_note",
+      maxLength: 1e3,
+      disabled: busy || readonly,
+      value: w.draft.acquisition_review_note || "",
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { acquisition_review_note: e.target.value, acquisition_facts_confirmed: false }) }))
+    }
+  )), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-acquisition_facts_confirmed",
+      type: "checkbox",
+      disabled: busy || readonly,
+      checked: !!w.draft.acquisition_facts_confirmed,
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { acquisition_facts_confirmed: e.target.checked }) }))
+    }
+  ), "\uCDE8\uB4DD \uACBD\uB85C\xB7\uB0A0\uC9DC\xB7\uD3C9\uAC00\uC561\xB7\uD544\uC694\uACBD\uBE44\uC640 \uC99D\uC5EC \uAC80\uD1A0 \uC790\uB8CC(0\uC6D0 \uD3EC\uD568)\uB97C \uD655\uC778\uD588\uC73C\uBA70, \uBD80\uB2F4\uBD80\uC99D\uC5EC\xB7\uC218\uC6A9\xB7\uBCF5\uD569 \uCDE8\uB4DD \uB4F1 \uBCC4\uB3C4 \uC801\uC6A9 \uC0AC\uD56D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.")), !nonhousing && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h3", null, "\uB2E4\uB978 \uC8FC\uD0DD\uC758 \uCDE8\uB4DD \uC0AC\uC2E4\uACFC \uAC80\uD1A0 \uACBD\uB85C"), acquisitionMode !== "purchased" && /* @__PURE__ */ React.createElement("p", null, "\uB300\uC0C1 \uC790\uCCB4\uC758 \uC0C1\uC18D\xB7\uC99D\uC5EC \uCDE8\uB4DD\uC740 \uC544\uB798 \uB2E4\uB978 \uC8FC\uD0DD \uD2B9\uB840\uC640 \uAD6C\uBCC4\uD558\uBA70, \uD604\uC7AC\uB294 \uB3D9\uC2DC \uAC80\uD1A0\uB97C \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uAC80\uD1A0 \uACBD\uB85C", /* @__PURE__ */ React.createElement("select", { "data-testid": "transfer-special-mode", disabled: busy || readonly || acquisitionMode !== "purchased" || converted, value: mode, onChange: (e) => changeMode(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "ordinary" }, "\uD2B9\uB840 \uAC80\uD1A0 \uC5C6\uC74C \xB7 \uC77C\uBC18 \uC591\uB3C4"), /* @__PURE__ */ React.createElement("option", { value: "temporary_2house" }, "\uB2E4\uB978 \uC8FC\uD0DD \uB9E4\uC218 \xB7 \uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uAC80\uD1A0"), /* @__PURE__ */ React.createElement("option", { value: "inherited" }, "\uB2E4\uB978 \uC8FC\uD0DD \uC0C1\uC18D \xB7 \uC77C\uBC18\uC8FC\uD0DD \uC591\uB3C4 \uAC80\uD1A0"), /* @__PURE__ */ React.createElement("option", { value: "marriage_merge" }, "\uD63C\uC778\uC73C\uB85C \uD569\uAC00 \xB7 2\uC8FC\uD0DD \uAC80\uD1A0"), /* @__PURE__ */ React.createElement("option", { value: "parent_care" }, "\uC9C1\uACC4\uC874\uC18D \uBD09\uC591\uC73C\uB85C \uD569\uAC00 \xB7 2\uC8FC\uD0DD \uAC80\uD1A0"), !["ordinary", "temporary_2house", "inherited", "marriage_merge", "parent_care"].includes(mode) && /* @__PURE__ */ React.createElement("option", { value: mode }, "\uC544\uC9C1 \uC5F0\uACB0\uD558\uC9C0 \uC54A\uC740 \uAC80\uD1A0 \uACBD\uB85C"))), /* @__PURE__ */ React.createElement("p", null, "\uACBD\uB85C \uC120\uD0DD\uB9CC\uC73C\uB85C \uBE44\uACFC\uC138\uAC00 \uD655\uC815\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uC8FC\uD0DD \uC218\uC640 \uC0AC\uC2E4\uC744 \uC785\uB825\uD558\uBA74 \uAE30\uC874 \uC5D4\uC9C4\uC774 \uACC4\uC0B0\uD558\uBA70, \uACC4\uC0B0 \uADFC\uAC70\uC640 \uD655\uC778\uD560 \uC0AC\uD56D\uC740 \uACB0\uACFC\uC5D0 \uD45C\uC2DC\uB429\uB2C8\uB2E4."), mode === "temporary_2house" && /* @__PURE__ */ React.createElement("div", { className: "tc-grid" }, [["new_house_acquisition_date", "\uC2E0\uADDC\uC8FC\uD0DD \uCDE8\uB4DD\uC77C"], ["new_house_contract_date", "\uC2E0\uADDC\uC8FC\uD0DD \uACC4\uC57D\uAE08 \uC9C0\uAE09\uC77C"]].map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-" + key, type: "date", disabled: busy || readonly, value: w.draft.request[key] || "", onChange: (e) => change(key, e.target.value || null) }))), [["temp2_both_regulated", "\uC2E0\uADDC\uC8FC\uD0DD \uCDE8\uB4DD \uB2F9\uC2DC \uB450 \uC8FC\uD0DD \uBAA8\uB450 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED"], ["new_house_before_designation", "\uC2E0\uADDC\uC8FC\uD0DD\uC758 \uC870\uC815\uC9C0\uC5ED \uACF5\uACE0 \uC804 \uCDE8\uB4DD \uB610\uB294 \uACC4\uC57D\uAE08 \uC9C0\uAE09"], ["temp2_one_year_waived", "\uCDE8\uB4DD \uAC04\uACA9\xB7\uBCF4\uC720\xB7\uAC70\uC8FC \uC694\uAC74 \uBA74\uC81C \uC0AC\uC720 \uAC80\uD1A0"]].map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("select", { "data-testid": "transfer-" + key, disabled: busy || readonly, value: w.draft.request[key] == null ? "" : String(w.draft.request[key]), onChange: (e) => change(key, e.target.value === "" ? null : e.target.value === "true") }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("option", { value: "true" }, "\uC608 \xB7 \uC0AC\uC2E4 \uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "false" }, "\uC544\uB2C8\uC624"))))), mode === "inherited" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC0C1\uC18D\uBC1B\uC740 \uC9D1\uC744 \uD30C\uB294 \uACBD\uB85C\uAC00 \uC544\uB2D9\uB2C8\uB2E4. \uD604\uC7AC \uC591\uB3C4\uD560 \uC77C\uBC18\uC8FC\uD0DD \uC678\uC5D0 \uC0C1\uC18D\uC8FC\uD0DD 1\uCC44\uB97C \uBCF4\uC720\uD55C \uACBD\uC6B0\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uB978 \uC8FC\uD0DD\uC758 \uC0C1\uC18D\uAC1C\uC2DC\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-inheritance_start_date", type: "date", disabled: busy || readonly, value: w.draft.request.inheritance_start_date || "", onChange: (e) => change("inheritance_start_date", e.target.value || null) }))), ["marriage_merge", "parent_care"].includes(mode) && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "tc-grid" }, /* @__PURE__ */ React.createElement("label", null, mode === "marriage_merge" ? "\uD63C\uC778\uC77C" : "\uBD09\uC591 \uD569\uAC00\uC77C", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-" + (mode === "marriage_merge" ? "marriage_date" : "merge_date"),
+      type: "date",
+      disabled: busy || readonly,
+      value: w.draft.request[mode === "marriage_merge" ? "marriage_date" : "merge_date"] || "",
+      onChange: (e) => change(mode === "marriage_merge" ? "marriage_date" : "merge_date", e.target.value || null)
+    }
+  )), mode === "parent_care" && /* @__PURE__ */ React.createElement("label", null, "\uD569\uAC00 \uB2F9\uC2DC \uBD09\uC591 \uC9C1\uACC4\uC874\uC18D\uC758 \uB9CC \uB098\uC774", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-parent_age",
+      type: "number",
+      min: "1",
+      step: "1",
+      disabled: busy || readonly,
+      value: w.draft.request.parent_age || "",
+      onChange: (e) => change("parent_age", e.target.value === "" ? 0 : Number(e.target.value))
+    }
+  )), /* @__PURE__ */ React.createElement("label", null, mode === "marriage_merge" ? "\uBC30\uC6B0\uC790" : "\uBD09\uC591 \uC9C1\uACC4\uC874\uC18D", " \uCE21 \uB2E4\uB978 \uC8FC\uD0DD \uCDE8\uB4DD\uC77C", /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-merge_other_house_acquisition_date",
+      type: "date",
+      disabled: busy || readonly,
+      value: w.draft.merge_other_house_acquisition_date || "",
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), {
+        merge_other_house_acquisition_date: e.target.value || null,
+        facts_confirmed: false,
+        special_facts_confirmed: false,
+        merge_each_one_house_confirmed: false
+      }) }))
+    }
+  ))), /* @__PURE__ */ React.createElement("p", null, "\uD569\uAC00 \uC9C1\uC804 \uAC01\uAC01 1\uC8FC\uD0DD\uC744 \uBCF4\uC720\uD558\uC5EC \uD569\uAC00\uB85C 2\uC8FC\uD0DD\uC774 \uB418\uC5C8\uACE0, \uC774\uD6C4 \uC8FC\uD0DD \uBCC0\uB3D9\uC774 \uC5C6\uB294 \uACBD\uC6B0\uB97C \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uB2E4\uB978 \uC8FC\uD0DD \uCDE8\uB4DD\uC77C\uC740 \uC774 \uC0AC\uC2E4\uC744 \uD655\uC778\uD558\uB294 \uC800\uC7A5 \uC790\uB8CC\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "transfer-merge_each_one_house_confirmed",
+      type: "checkbox",
+      disabled: busy || readonly,
+      checked: !!w.draft.merge_each_one_house_confirmed,
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { merge_each_one_house_confirmed: e.target.checked, special_facts_confirmed: false }) }))
+    }
+  ), mode === "marriage_merge" ? "\uD63C\uC778" : "\uC9C1\uACC4\uC874\uC18D \uBD09\uC591\uC744 \uC704\uD55C \uD569\uAC00", " \uC804 \uAC01\uAC01 1\uC8FC\uD0DD\uC744 \uBCF4\uC720\uD588\uACE0, \uD569\uAC00\uB85C 2\uC8FC\uD0DD\uC774 \uB418\uC5C8\uC73C\uBA70 \uC774\uD6C4 \uC8FC\uD0DD \uBCC0\uB3D9\uC774 \uC5C6\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), mode !== "ordinary" && /* @__PURE__ */ React.createElement("label", { style: { display: "block", marginTop: 12 } }, "\uD2B9\uB840 \uC0AC\uC2E4 \uD655\uC778 \uADFC\uAC70\xB7\uAC80\uD1A0 \uBA54\uBAA8(\uC694\uAC74 \uBA74\uC81C \uC120\uD0DD \uC2DC \uD544\uC218)", /* @__PURE__ */ React.createElement(
+    "textarea",
+    {
+      "data-testid": "transfer-special_review_note",
+      disabled: busy || readonly,
+      maxLength: 1e3,
+      value: w.draft.special_review_note || "",
+      onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { special_review_note: e.target.value, special_facts_confirmed: false }) }))
+    }
+  ))), nonhousing && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uC77C\uBC18 \uBE44\uC8FC\uD0DD \uAC80\uD1A0" }, /* @__PURE__ */ React.createElement("h3", null, "\uC77C\uBC18 \uBE44\uC8FC\uD0DD \xB7 ", w.draft.request.property_type), /* @__PURE__ */ React.createElement("p", null, "\uC2E4\uC81C \uC8FC\uAC70\uC6A9\xB7\uACB8\uC6A9 \uAC74\uBB3C, \uBE44\uC0AC\uC5C5\uC6A9 \uD1A0\uC9C0, \uBD84\uD560 \uCDE8\uB4DD, \uBBF8\uD655\uC778 \uC9C0\uBD84 \uC548\uBD84, \uAC10\uBA74\xB7\uC218\uC6A9\xB7\uD658\uC0B0\uC740 \uC774 \uACBD\uB85C\uC5D0\uC11C \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uD1A0\uC9C0\uC640 \uAC74\uBB3C\uC744 \uD568\uAED8 \uAC70\uB798\uD588\uB2E4\uBA74 \uBA3C\uC800 \uAC00\uC561\xB7\uACBD\uBE44\uB97C \uAD6C\uBD84\uD55C \uB2E8\uC77C \uC790\uC0B0\uBCC4\uB85C \uB4F1\uB85D\uD558\uC138\uC694. \uD1A0\uC9C0\uC758 \uC0AC\uC6A9 \uC774\uB825\uACFC \uAC74\uBB3C \uBD80\uC218\uD1A0\uC9C0\uC758 \uBE44\uC0AC\uC5C5\uC6A9 \uC5EC\uBD80\uB3C4 \uAC80\uD1A0\uD574\uC57C \uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uC8FC\uD0DD \uC218\xB7\uC8FC\uD0DD \uC870\uC815\uC9C0\uC5ED \uAC12\uC740 \uBE44\uC8FC\uD0DD \uACC4\uC0B0\uC5D0 \uC801\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC6D0\uBCF8\uC740 \uC804\uCCB4 \uC7AC\uC0B0 \uAE30\uC900\uC774\uBA70 \uC544\uB798 \uC0AC\uAC74 \uAE08\uC561\uC740 \uC591\uB3C4 \uC9C0\uBD84\uC5D0 \uD574\uB2F9\uD569\uB2C8\uB2E4. \uAC10\uAC00\uC0C1\uAC01 \uCC28\uAC10 \uC804 \uCDE8\uB4DD\uAC00\uC561\uC744 \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("label", null, "\uC6A9\uB3C4\xB7\uB4F1\uAE30\xB7\uD1A0\uC9C0 \uC0AC\uC6A9\uAE30\uAC04\xB7\uC2E4\uAC00 \uBC0F \uAC10\uAC00\uC0C1\uAC01 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "nonhousing-review_note", maxLength: 1e3, disabled: busy || readonly, value: ((_y = w.draft.nonhousing_review) == null ? void 0 : _y.review_note) || "", onChange: (e) => reviewNonhousing("review_note", e.target.value) })), [
+    ["resident_domestic", "\uAC70\uC8FC\uC790\uC758 \uAD6D\uB0B4 \uC790\uC0B0 \uC591\uB3C4\uC785\uB2C8\uB2E4."],
+    ["registered_actual", "\uB4F1\uAE30 \uC790\uC0B0\uC758 \uB2E8\uC77C \uB9E4\uB9E4 \uCDE8\uB4DD\uBD84\uC774\uBA70 \uC591\uB3C4\xB7\uCDE8\uB4DD \uC2E4\uC9C0\uAC70\uB798\uAC00\uC561\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."],
+    ["nonresidential_only", "\uC2E4\uC81C \uC8FC\uAC70\uC6A9\xB7\uACB8\uC6A9\xB7\uC6A9\uB3C4\uC804\uD658 \uC790\uC0B0\uC774 \uC544\uB2C8\uBA70, \uD1A0\uC9C0\xB7\uAC74\uBB3C \uC77C\uAD04\uAC00\uC561\uC740 \uD544\uC694\uD55C \uAD6C\uBD84\uC744 \uB9C8\uCCE4\uC2B5\uB2C8\uB2E4."],
+    ["business_land_reviewed", "\uD1A0\uC9C0 \uC0AC\uC6A9\uAE30\uAC04\uACFC \uBD80\uC218\uD1A0\uC9C0\uB97C \uAC80\uD1A0\uD588\uACE0 \uBE44\uC0AC\uC5C5\uC6A9 \uD1A0\uC9C0\uC5D0 \uD574\uB2F9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uAC74\uBB3C\uB9CC \uC591\uB3C4\uD558\uBA74 \uD1A0\uC9C0\uAC00 \uD3EC\uD568\uB418\uC9C0 \uC54A\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."],
+    ["depreciation_reviewed", "\uC0AC\uC5C5\uC18C\uB4DD\uC5D0 \uC0B0\uC785\uD588\uAC70\uB098 \uC0B0\uC785\uD560 \uAC10\uAC00\uC0C1\uAC01 \uB204\uACC4\uC561\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4. 0\uC6D0\uB3C4 \uD655\uC778\uD55C \uAC12\uC774\uBA70 \uD1A0\uC9C0\uB294 \uCC28\uAC10\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."],
+    ["local_standard_rate", "\uD574\uB2F9 \uAD00\uD560\uC758 \uC9C0\uBC29\uC18C\uB4DD\uC138 \uD45C\uC900\uC138\uC728 \uC801\uC6A9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4. \uC870\uB840 \uAC00\uAC10\uC138\uC728\xB7\uC9C0\uBC29\uC138 \uBCC4\uB3C4 \uAC10\uBA74\uC774 \uC801\uC6A9\uB418\uBA74 \uC774 \uACBD\uB85C\uB97C \uC0AC\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."],
+    ["facts_confirmed", "\uD604\uC7AC \uC785\uB825\uACFC \uC9C0\uC6D0 \uBC94\uC704 \uBC0F \uC704 \uADFC\uAC70\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."]
+  ].map(([key, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "nonhousing-" + key, type: "checkbox", disabled: busy || readonly, checked: !!((_a2 = w.draft.nonhousing_review) == null ? void 0 : _a2[key]), onChange: (e) => reviewNonhousing(key, e.target.checked) }), label);
+  })), [
+    ["facts_confirmed", nonhousing ? "\uAE08\uC561\xB7\uB0A0\uC9DC\xB7\uC790\uC0B0 \uC6A9\uB3C4\uC640 \uBE44\uC8FC\uD0DD \uAC80\uD1A0 \uC0AC\uC2E4\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4." : "\uAE08\uC561\xB7\uB0A0\uC9DC\xB7\uC138\uB300 \uC8FC\uD0DD \uC218\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC70\uC8FC \uC0AC\uC2E4\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."],
+    mode === "ordinary" ? ["ordinary_sale_confirmed", "\uC120\uD0DD\uD55C \uCDE8\uB4DD \uACBD\uB85C\uC640 \uC9C0\uBD84\uC758 \uC591\uB3C4\uC774\uBA70, \uC785\uB825\uD55C \uC99D\uC5EC\xB7\uBBF8\uB4F1\uAE30 \uAC80\uD1A0 \uC678 \uBCC4\uB3C4 \uD2B9\uB840\xB7\uAC10\uBA74\xB7\uC774\uC6D4\uACFC\uC138\xB7\uC785\uC8FC\uAD8C/\uBD84\uC591\uAD8C \uC801\uC6A9 \uC0AC\uD56D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."] : ["special_facts_confirmed", "\uC120\uD0DD\uD55C \uD2B9\uB840\uC758 \uC0AC\uC2E4\uACFC \uD655\uC778 \uADFC\uAC70\uB97C \uAC80\uD1A0\uD588\uC73C\uBA70, \uC774 \uACBD\uB85C \uC678 \uB2E4\uB978 \uD2B9\uB840\xB7\uAC10\uBA74\xB7\uC218\uC6A9\xB7\uC774\uC6D4\uACFC\uC138\xB7\uC785\uC8FC\uAD8C/\uBD84\uC591\uAD8C\xB7\uBBF8\uB4F1\uAE30 \uC801\uC6A9 \uC0AC\uD56D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."]
+  ].map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key, style: { display: "block", marginTop: 12 } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-" + key, type: "checkbox", disabled: busy || readonly, checked: !!w.draft[key], onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, w.draft), { [key]: e.target.checked }) })) }), label))), /* @__PURE__ */ React.createElement("section", { className: "tc-section" }, /* @__PURE__ */ React.createElement("h2", null, "3. \uC800\uC7A5\xB7\uACC4\uC0B0\xB7\uC7AC\uC5F4\uAE30"), (w.meta.validation.errors || []).map((message, i) => /* @__PURE__ */ React.createElement("p", { key: i }, message)), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(save) }, "\uC785\uB825 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly || pendingSource, onClick: () => act(async () => {
+    const saved = await save();
+    if (!saved.validation.can_run) throw new Error("\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    await mutation(base + "/runs", "POST", { revision_id: saved.revision_id, expected_input_hash: saved.input_hash });
+    await load(saved.case_id);
+  }) }, "\uC800\uC7A5\uD558\uACE0 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uC785\uB825 \uBC84\uC804(\uBE44\uC6B0\uBA74 \uCD5C\uC2E0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "transfer-reopen-revision", type: "number", min: "1", disabled: busy, value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(async () => {
+    if (transferDirty(w) && !window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uB2E4\uC2DC \uC5F4\uAE4C\uC694?")) return;
+    await load(w.meta.case_id, revision);
+    setPreview(null);
+  }) }, "\uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30"), w.run && /* @__PURE__ */ React.createElement("div", { "aria-label": "\uC800\uC7A5\uB41C \uC591\uB3C4 \uACC4\uC0B0 \uACB0\uACFC" }, /* @__PURE__ */ React.createElement("h3", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC \xB7 \uBC84\uC804 ", w.meta.revision), /* @__PURE__ */ React.createElement("p", null, "\uC774 \uACB0\uACFC\uC758 \uC591\uB3C4 \uC9C0\uBD84 ", source == null ? void 0 : source.selection.transfer_share, " \xB7 \uC591\uB3C4\uAC00\uC561 ", w.run.engine_request.transfer_price.toLocaleString(), "\uC6D0", !nonhousing && /* @__PURE__ */ React.createElement(React.Fragment, null, " \xB7 \uC804\uCCB4 \uC8FC\uD0DD \uD310\uC815\uAC00\uC561 ", (w.run.engine_request.whole_house_value || w.run.engine_request.transfer_price).toLocaleString(), "\uC6D0")), transferDirty(w) && /* @__PURE__ */ React.createElement("p", null, "\uD604\uC7AC \uD3B8\uC9D1 \uC785\uB825\uACFC \uB2E4\uB978 \uC800\uC7A5\uBCF8\uC758 \uACB0\uACFC\uC785\uB2C8\uB2E4. \uBCC0\uACBD \uB0B4\uC6A9\uC744 \uC800\uC7A5\uD558\uACE0 \uACC4\uC0B0\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uC18C\uB4DD\uC138(\uAD6D\uC138) ", w.run.response_snapshot.calc.\uC138\uC561.toLocaleString(), "\uC6D0 \xB7 \uC9C0\uBC29\uC18C\uB4DD\uC138 ", w.run.response_snapshot.calc.\uC9C0\uBC29\uC18C\uB4DD\uC138.toLocaleString(), "\uC6D0 \xB7 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 ", w.run.response_snapshot.calc.\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138.toLocaleString(), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uCD1D\uC138\uBD80\uB2F4 ", w.run.response_snapshot.calc.\uCD1D\uC138\uBD80\uB2F4.toLocaleString(), "\uC6D0 \xB7 \uC5D4\uC9C4 ", w.run.response_snapshot.version.engine), /* @__PURE__ */ React.createElement("p", null, "\uBE44\uACFC\uC138 \uD310\uC815: ", w.run.response_snapshot.calc.\uBE44\uACFC\uC138\uC5EC\uBD80 ? w.run.response_snapshot.calc.\uBE44\uACFC\uC138\uC0AC\uC720 : "\uBBF8\uC801\uC6A9", !nonhousing && " \xB7 \uACE0\uAC00\uC8FC\uD0DD\uC740 \uBE44\uACFC\uC138 \uD310\uC815\uC774\uC5B4\uB3C4 \uACFC\uC138\uBD84\uC774 \uC788\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), (w.run.response_snapshot.calc.\uACBD\uACE0\uC0AC\uD56D || []).map((x, i) => /* @__PURE__ */ React.createElement("p", { key: i }, String(x))), /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, "\uACC4\uC0B0 \uB2E8\uACC4\xB7\uC800\uC7A5 \uC785\uB825 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, JSON.stringify({ input: w.run.engine_request, steps: w.run.response_snapshot.calc.\uB2E8\uACC4\uBCC4\uACC4\uC0B0 }, null, 2)))))));
+}
+window.JTTransferCases = JTTransferCases;
+
+
+/* ────────── TransferAnnual.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+function JTTransferAnnual({ clientId, onExit }) {
+  var _a, _b;
+  const blank = () => ({ year: 2026, run_ids: [], resident_confirmed: false, scope_confirmed: false, review_note: "", credits: [], credits_confirmed: false, surcharge_reviews: [] });
+  const [draft, setDraft] = React.useState(blank), [label, setLabel] = React.useState("\uC5F0\uAC04 \uC591\uB3C4 \uD569\uC0B0");
+  const [meta, setMeta] = React.useState(null), [run, setRun] = React.useState(null), [baseline, setBaseline] = React.useState(null);
+  const [items, setItems] = React.useState([]), [cursor, setCursor] = React.useState(null);
+  const [histories, setHistories] = React.useState([]), [historyCursor, setHistoryCursor] = React.useState(null);
+  const [revision, setRevision] = React.useState(""), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const lock = React.useRef(false), alive = React.useRef(true), keys = React.useRef({});
+  const dirty = baseline !== JSON.stringify({ label, draft });
+  const readonly = !!(meta == null ? void 0 : meta.read_only);
+  const api = async (path, options = {}) => {
+    var _a2, _b2;
+    const control = new AbortController(), timer = setTimeout(() => control.abort(), 45e3);
+    try {
+      const response = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + "/v1/transfer-annual" + path,
+        __spreadProps(__spreadValues({}, options), { signal: control.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) jtGiftSession.token = "";
+        throw new Error(response.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uB2E4\uC2DC \uB85C\uADF8\uC778\uD558\uC138\uC694." : response.status === 409 ? "\uC800\uC7A5 \uBC84\uC804\uC774 \uB2EC\uB77C\uC84C\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD558\uC138\uC694." : ((_a2 = data.detail) == null ? void 0 : _a2.code) === "DUPLICATE_SOURCE_CASE" ? "\uD55C \uC0AC\uAC74\uC758 \uC11C\uB85C \uB2E4\uB978 \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC911\uBCF5 \uC120\uD0DD\uD588\uC2B5\uB2C8\uB2E4. \uC774\uC804 \uACB0\uACFC\uB97C \uC120\uD0DD \uD574\uC81C\uD558\uC138\uC694." : ((_b2 = data.detail) == null ? void 0 : _b2.message) || "\uC694\uCCAD\uC744 \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC120\uD0DD\uD55C \uC0AC\uAC74\uACFC \uC800\uC7A5 \uC0C1\uD0DC\uB97C \uD655\uC778\uD558\uC138\uC694.");
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e.name === "AbortError" || e instanceof TypeError ? "\uC5F0\uACB0\uC774 \uB04A\uACBC\uC2B5\uB2C8\uB2E4. \uAC19\uC740 \uBC84\uD2BC\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uC911\uBCF5 \uC800\uC7A5 \uC5C6\uC774 \uC7AC\uC2DC\uB3C4\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const mutate = async (path, method, body, etag) => {
+    var _a2;
+    const key = JSON.stringify({ path, method, body, etag });
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({ "Idempotency-Key": (_a2 = keys.current)[key] || (_a2[key] = window.crypto.randomUUID()) }, etag ? { "If-Match": etag } : {}) });
+  };
+  const list = async (more = false) => {
+    const d = await api("?client_id=" + clientId + (more && historyCursor ? "&cursor=" + historyCursor : ""));
+    if (alive.current) {
+      setHistories((v) => more ? [...v, ...d.items] : d.items);
+      setHistoryCursor(d.next_cursor);
+    }
+  };
+  const candidates = async (more = false) => {
+    const d = await api("/candidates?client_id=" + clientId + "&year=" + draft.year + (more && cursor ? "&cursor=" + cursor : ""));
+    if (alive.current) {
+      setItems((v) => more ? [...v, ...d.items] : d.items);
+      setCursor(d.next_cursor);
+    }
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(async () => {
+      await list();
+      await candidates();
+    });
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  React.useEffect(() => {
+    const guard = (e) => {
+      if (dirty || lock.current) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", guard);
+    return () => window.removeEventListener("beforeunload", guard);
+  }, [dirty]);
+  const discard = () => !dirty || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uD569\uC0B0 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+  const open = async (id, number = "") => {
+    const s = await api("/" + id + (number ? "?revision_number=" + number : ""));
+    const r = s.last_successful_run_id ? await api("/" + id + "/runs/" + s.last_successful_run_id) : null;
+    if (!alive.current) return;
+    setMeta(s);
+    setDraft(s.draft);
+    setLabel(s.label);
+    setRun(r);
+    setRevision(number);
+    setBaseline(JSON.stringify({ label: s.label, draft: s.draft }));
+  };
+  const save = async () => {
+    const s = await mutate(
+      meta ? "/" + meta.annual_id : "",
+      meta ? "PUT" : "POST",
+      __spreadValues({ label, draft }, !meta ? { client_id: clientId } : {}),
+      meta == null ? void 0 : meta.etag
+    );
+    if (!alive.current) return s;
+    setMeta(s);
+    setRun(null);
+    setRevision("");
+    setBaseline(JSON.stringify({ label, draft }));
+    await list();
+    return s;
+  };
+  const change = (key, value) => setDraft((d) => __spreadValues(__spreadValues(__spreadProps(__spreadValues({}, d), {
+    [key]: value
+  }), ["year", "run_ids"].includes(key) ? __spreadProps(__spreadValues({ scope_confirmed: false, credits_confirmed: false }, d.split_review ? { split_review: __spreadProps(__spreadValues({}, d.split_review), { run_ids: (key === "run_ids" ? value : d.run_ids).filter((id) => [...items, ...(meta == null ? void 0 : meta.sources) || []].some((x) => x.run_id === id && x.mapper_version === "transfer-master/11")), annual_scope_rechecked: false, income_before_basic_deduction_confirmed: false, no_duplicate_lots_confirmed: false }) } : {}), { surcharge_reviews: (d.surcharge_reviews || []).map((r) => __spreadProps(__spreadValues({}, r), { housing_count_confirmed: false, no_other_exclusion_confirmed: false, transition_not_applicable: false })) }) : {}), key === "credits" ? { credits_confirmed: false } : {}));
+  const editSplit = (key, value) => change("split_review", __spreadValues(__spreadProps(__spreadValues({}, draft.split_review), { [key]: value }), key === "note" ? { annual_scope_rechecked: false, income_before_basic_deduction_confirmed: false, no_duplicate_lots_confirmed: false } : {}));
+  const editCredit = (index, key, value) => change("credits", (draft.credits || []).map((c, i) => i === index ? __spreadProps(__spreadValues({}, c), { [key]: value }) : c));
+  const editReview = (index, key, value) => change("surcharge_reviews", (draft.surcharge_reviews || []).map((r, i) => i === index ? __spreadValues(__spreadProps(__spreadValues({}, r), { [key]: value }), key === "note" ? { housing_count_confirmed: false, no_other_exclusion_confirmed: false, transition_not_applicable: false } : {}) : r));
+  const selected = ((meta == null ? void 0 : meta.sources) || []).filter((s) => draft.run_ids.includes(s.run_id));
+  const money = (v) => Number(v).toLocaleString("ko-KR") + "\uC6D0";
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container", style: { maxWidth: 1100, padding: "32px 20px" } }, /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (discard()) onExit();
+  } }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uC5F0\uAC04 \uC591\uB3C4 \uD569\uC0B0"), /* @__PURE__ */ React.createElement("p", null, "\uAC80\uD1A0\uB97C \uB9C8\uCE5C 2026-07-01~2026-10-17 \uD1A0\uC9C0\xB7\uC0C1\uAC00\uC758 2\uB144 \uC774\uC0C1 \uBCF4\uC720\xB7\uC591\uC758 \uAE30\uBCF8\uC138\uC728 \uC18C\uB4DD\uB3C4 \uD569\uC0B0\uD569\uB2C8\uB2E4. \uBE44\uC8FC\uD0DD\uB07C\uB9AC \uB610\uB294 \uAE30\uBCF8\uC138\uC728 \uACFC\uC138 \uC8FC\uD0DD\uACFC \uD569\uC0B0\uD558\uBA70 \uC5F0\uAC04 \uAE30\uBCF8\uACF5\uC81C\uB294 \uD55C \uBC88\uB9CC \uC801\uC6A9\uD569\uB2C8\uB2E4. \uB3D9\uC77C \uCDE8\uB4DD\uBD84\xB7\uC815\uD655\uD55C \uC6D0 \uB2E8\uC704 \uC548\uBD84\uC744 \uAC80\uD1A0\uD55C \uC77C\uBD80\uC9C0\uBD84 \uC0AC\uAC74\uB3C4 \uC5F0\uACB0\uD558\uBA70, \uC800\uC7A5\uB41C \uC9C0\uBD84 \uC18C\uB4DD\uC5D0 \uC9C0\uBD84\uC728\uC744 \uB2E4\uC2DC \uACF1\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uAC19\uC740 \uC7AC\uC0B0\uC758 \uBD84\uD560 \uC0AC\uAC74\uC740 \uC911\uBCF5\xB7\uBD84\uD560 \uAC70\uB798 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uC5EC \uC81C\uC678\uD569\uB2C8\uB2E4. \uBE44\uC8FC\uD0DD\uC774 \uD3EC\uD568\uB41C \uB2E8\uAE30\xB7\uC911\uACFC\xB7\uCC28\uC190\xB70\uC6D0 \uC870\uD569\uC740 \uBCF4\uB958\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uAC70\uC8FC\uC790\uC758 \uAE30\uBCF8\uC138\uC728 \uBC0F \uB2E8\uAE30 60%\xB770% \uC8FC\uD0DD \uC0AC\uAC74\uC744 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uB2E8\uAE30\xB7\uCC28\uC190\uC740 \uB9E4\uB9E4 \uCDE8\uB4DD\xB7\uBE44\uC870\uC815\uC9C0\uC5ED\xB72\uC8FC\uD0DD \uC774\uC0C1 \uC77C\uBC18 \uC591\uB3C4\uB97C \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC870\uC815\uC9C0\uC5ED \uB2E4\uC8FC\uD0DD\uC740 \uBCC4\uB3C4 \uAC80\uD1A0 \uD6C4 +20%p\xB7+30%p\uC640 \uB2E8\uAE30 60%\xB770% \uB3D9\uC2DC \uC801\uC6A9\uB3C4 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uB3D9\uC77C\uD55C \uB2E8\uAE30\xB7\uC911\uACFC \uC870\uD569\uC740 \uD1B5\uC0B0\xB7\uACF5\uC81C \uD6C4 \uB450 \uC138\uC561\uC744 \uBE44\uAD50\uD569\uB2C8\uB2E4. \uD6C4\uBCF4 \uC77C\uBD80\uAC00 \uACB9\uCCD0\uB3C4 \uACF5\uD1B5 \uB2E8\uAE30\uC138\uC728\uC774 \uC804\uCCB4 \uAC00\uB2A5\uD55C \uACFC\uD45C \uBC94\uC704\uC5D0\uC11C \uC6B0\uC120\uC774\uBA74 \uAC19\uC740 \uC138\uC728\uB85C \uBB36\uC2B5\uB2C8\uB2E4. \uACF5\uD1B5 \uC911\uACFC \uD6C4\uBCF4\uB9CC \uACB9\uCE58\uB294 \uACBD\uC6B0\uC5D0\uB294 \uAC01 \uC911\uCCA9 \uC0AC\uAC74\uC774 \uC5F0\uAC04 \uCC28\uC190\uACFC \uAE30\uBCF8\uACF5\uC81C\uB97C \uBAA8\uB450 \uBD80\uB2F4\uD574\uB3C4 \uC911\uACFC \uC6B0\uC120\uC774 \uC720\uC9C0\uB420 \uB54C \uAC19\uC740 \uC911\uACFC\uC138\uC728\uB85C \uBB36\uC2B5\uB2C8\uB2E4. 0\uC6D0 \uC0AC\uAC74\uC740 \uC138\uC728 \uADF8\uB8F9\uC744 \uC5F0\uACB0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC911\uCCA9 \uCC28\uC190\uC740 \uACF5\uC81C \uB300\uC0C1 \uADF8\uB8F9\uC774 \uD558\uB098\uC774\uACE0 \uC0AC\uAC74\uBCC4 \uBC30\uBD84\uC774 \uC6D0 \uB2E8\uC704\uAE4C\uC9C0 \uAC19\uAC70\uB098 \uC804\uCCB4 \uC18C\uB4DD\uC744 \uC18C\uC9C4\uD558\uBA74 \uC138\uC728\uC744 \uC784\uC758\uB85C \uC120\uD0DD\uD558\uC9C0 \uC54A\uACE0 \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uADF8 \uBC16\uC5D0 \uC138\uC728 \uC120\uD0DD\uC5D0 \uB530\uB77C \uBC30\uBD84\uC774 \uB2EC\uB77C\uC9C0\uB294 \uCC28\uC190\xB7\uACF5\uD1B5 \uD6C4\uBCF4 \uC5C6\uB294 \uAD50\uCC28 \uC870\uD569\xB7\uBE44\uACFC\uC138\xB7\uAC10\uBA74\xB7\uC774\uC6D4\uACFC\uC138 \uBC0F \uAC19\uC740 \uC7AC\uC0B0\uC758 \uBCF5\uC218 \uC0AC\uAC74\uC740 \uACC4\uC0B0\uC744 \uBCF4\uB958\uD569\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uD55C \uD569\uC0B0 \uC5F4\uAE30"), histories.map((h) => /* @__PURE__ */ React.createElement("button", { key: h.annual_id, disabled: busy, "data-testid": "annual-open-" + h.annual_id, onClick: () => discard() ? act(() => open(h.annual_id)) : void 0 }, h.label || "\uC5F0\uAC04 \uD569\uC0B0", " \xB7 ", h.year, " \xB7 \uBC84\uC804 ", h.revision)), historyCursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => list(true)) }, "\uD569\uC0B0 \uBAA9\uB85D \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (!discard()) return;
+    setMeta(null);
+    setRun(null);
+    setDraft(blank());
+    setLabel("\uC5F0\uAC04 \uC591\uB3C4 \uD569\uC0B0");
+    setBaseline(null);
+    setRevision("");
+    keys.current = {};
+  } }, "\uC0C8 \uD569\uC0B0")), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uD569\uC0B0 \uB300\uC0C1 \uC120\uD0DD"), /* @__PURE__ */ React.createElement("label", null, "\uD569\uC0B0 \uC774\uB984 ", /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-label", value: label, maxLength: 200, onChange: (e) => setLabel(e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uADC0\uC18D \uC5F0\uB3C4 ", /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-year", type: "number", min: "1900", max: "2200", value: draft.year, onChange: (e) => {
+    change("year", Number(e.target.value));
+    change("run_ids", []);
+    setItems([]);
+  } })), /* @__PURE__ */ React.createElement("button", { onClick: () => act(() => candidates()) }, "\uC591\uB3C4 \uC0AC\uAC74 \uC0C8\uB85C\uACE0\uCE68"), /* @__PURE__ */ React.createElement("p", null, "\uD604\uC7AC \uC800\uC7A5 \uBC84\uC804\uC758 \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC120\uD0DD\uD569\uB2C8\uB2E4. \uC7AC\uACC4\uC0B0 \uC804 \uC0AC\uAC74\uC740 \uC120\uD0DD\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uAC1C\uBCC4 \uC0AC\uAC74\uC744 \uC218\uC815\uD574\uB3C4 \uC544\uB798\uC5D0 \uC774\uBBF8 \uC800\uC7A5\uD55C \uACB0\uACFC\uB294 \uC790\uB3D9 \uAD50\uCCB4\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), items.map((s) => /* @__PURE__ */ React.createElement("label", { key: s.id, style: { display: "block", padding: 8 } }, /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "annual-select-" + s.id,
+      type: "checkbox",
+      disabled: !s.run_id,
+      checked: draft.run_ids.includes(s.run_id),
+      onChange: (e) => change("run_ids", e.target.checked ? [...draft.run_ids, s.run_id] : draft.run_ids.filter((id) => id !== s.run_id))
+    }
+  ), s.label || "\uC591\uB3C4 \uC0AC\uAC74", " \xB7 ", s.transfer_date, " \xB7 ", s.taxpayer_name || "\uB0A9\uC138\uC790 \uD655\uC778 \uD544\uC694", " \xB7 \uBC84\uC804 ", s.revision, " ", s.run_id ? "" : "\xB7 \uCD5C\uC2E0 \uC785\uB825 \uACC4\uC0B0 \uD544\uC694")), cursor && /* @__PURE__ */ React.createElement("button", { onClick: () => act(() => candidates(true)) }, "\uC591\uB3C4 \uC0AC\uAC74 \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("h3", null, "\uC120\uD0DD\uD55C \uC800\uC7A5 \uACB0\uACFC ", draft.run_ids.length, "\uAC74"), /* @__PURE__ */ React.createElement("p", null, "\uACF5\uC81C\uB294 \uC591\uB3C4\uC77C \uC21C\uC11C\uB85C \uBC30\uBD84\uD569\uB2C8\uB2E4. \uC591\uB3C4\uC77C\uC774 \uAC19\uC73C\uBA74 \uC544\uB798 \uC120\uD0DD \uC21C\uC11C\uB97C \uC0AC\uC6A9\uD558\uBBC0\uB85C \uC2E4\uC81C \uAC70\uB798 \uC21C\uC11C\uC5D0 \uB9DE\uCDB0 \uC815\uB82C\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("ol", null, draft.run_ids.map((id, index) => {
+    var _a2;
+    const s = selected.find((v) => v.run_id === id), c = items.find((v) => v.run_id === id);
+    return /* @__PURE__ */ React.createElement("li", { key: id }, (s == null ? void 0 : s.label) || (c == null ? void 0 : c.label) || "\uC120\uD0DD \uACB0\uACFC", " \xB7 \uBC84\uC804 ", (s == null ? void 0 : s.revision) || (c == null ? void 0 : c.revision), " \xB7 ", ((_a2 = s == null ? void 0 : s.engine_request) == null ? void 0 : _a2.transfer_date) || (c == null ? void 0 : c.transfer_date), s && !items.some((v) => v.run_id === id) && " \xB7 \uC774\uC804\uC5D0 \uC800\uC7A5\uD55C \uACB0\uACFC \uC720\uC9C0", (s == null ? void 0 : s.mapper_version) === "transfer-master/11" && /* @__PURE__ */ React.createElement("div", { "data-testid": "annual-split-source-" + id }, /* @__PURE__ */ React.createElement("p", null, "\uC7AC\uC0B0 ", s.master_snapshot.property.id, " \xB7 \uB0A9\uC138\uC790 ", s.master_snapshot.ownership.person_id, " \xB7 \uCDE8\uB4DD\uBD84 \uC6D0\uBCF8 \uBC84\uC804 ", s.master_snapshot.original_revision), s.engine_request.rows.map((l) => /* @__PURE__ */ React.createElement("p", { key: l.lot_id }, "\uCDE8\uB4DD\uBD84 ", l.lot_id, " \xB7 \uCDE8\uB4DD\uC77C ", l.acquisition_date, " \xB7 \uC591\uB3C4 \uC9C0\uBD84 ", l.transfer_share, " / \uCDE8\uB4DD \uC9C0\uBD84 ", l.acquired_share))), (s == null ? void 0 : s.share_review) && /* @__PURE__ */ React.createElement("p", { "data-testid": "annual-share-" + id }, "\uC7AC\uC0B0 ", s.master_snapshot.property.id, " \xB7 \uC591\uB3C4 \uC9C0\uBD84 ", s.master_snapshot.selection.transfer_share, " / \uC18C\uC720 \uC9C0\uBD84 ", s.master_snapshot.ownership.share_ratio, " \xB7 \uADC0\uC18D \uC591\uB3C4\uAC00\uC561 ", money(s.engine_request.transfer_price), " \xB7 \uAC80\uD1A0 \uADFC\uAC70: ", s.share_review.note), /* @__PURE__ */ React.createElement("button", { disabled: index === 0, onClick: () => {
+      const v = [...draft.run_ids];
+      [v[index - 1], v[index]] = [v[index], v[index - 1]];
+      change("run_ids", v);
+    } }, "\uC704\uB85C"), /* @__PURE__ */ React.createElement("button", { onClick: () => change("run_ids", draft.run_ids.filter((v) => v !== id)) }, "\uC120\uD0DD \uD574\uC81C"));
+  })), /* @__PURE__ */ React.createElement("section", { "aria-label": "\uBD84\uD560\uCDE8\uB4DD \uC5F0\uAC04 \uBC94\uC704 \uC7AC\uAC80\uD1A0" }, /* @__PURE__ */ React.createElement("h3", null, "\uBD84\uD560\uCDE8\uB4DD \uC800\uC7A5 \uACB0\uACFC \uC5F0\uACB0"), /* @__PURE__ */ React.createElement("p", null, "\uBD84\uD560\uCDE8\uB4DD \uB2E8\uAC74 \uACB0\uACFC\uC758 \u2018\uB2E4\uB978 \uC5F0\uAC04 \uC591\uB3C4 \uC5C6\uC74C\u2019 \uD655\uC778\uC740 \uADF8\uB300\uB85C \uBCF4\uC874\uD569\uB2C8\uB2E4. \uD604\uC7AC \uD569\uC0B0 \uB300\uC0C1\uACFC \uAE30\uBCF8\uACF5\uC81C \uC0AC\uC6A9\uC744 \uC0C8\uB85C \uAC80\uD1A0\uD55C \uB4A4 \uCDE8\uB4DD\uBD84\uBCC4 \uAE30\uBCF8\uACF5\uC81C \uC804 \uC18C\uB4DD\uB9CC \uAC00\uC838\uC635\uB2C8\uB2E4. \uC77C\uBC18 \uBE44\uC8FC\uD0DD\xB7\uC11C\uB85C \uB2E4\uB978 \uC7AC\uC0B0\xB7\uAC01 \uCDE8\uB4DD\uBD84 2\uB144 \uC774\uC0C1\xB7\uC591\uC758 \uAE30\uBCF8\uC138\uC728 \uC18C\uB4DD\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-split-enable", type: "checkbox", checked: !!draft.split_review, onChange: (e) => change("split_review", e.target.checked ? { schema_version: "annual-split-review/1", run_ids: draft.run_ids.filter((id) => [...items, ...(meta == null ? void 0 : meta.sources) || []].some((x) => x.run_id === id && x.mapper_version === "transfer-master/11")), annual_scope_rechecked: false, income_before_basic_deduction_confirmed: false, no_duplicate_lots_confirmed: false, note: "" } : null) }), "\uBD84\uD560\uCDE8\uB4DD \uC5F0\uAC04 \uC7AC\uAC80\uD1A0 \uC0AC\uC6A9"), draft.split_review && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uAC80\uD1A0 \uB300\uC0C1 \uBD84\uD560\uCDE8\uB4DD \uACB0\uACFC ", draft.split_review.run_ids.length, "\uAC74"), /* @__PURE__ */ React.createElement("label", null, "\uC5F0\uAC04 \uB300\uC0C1\xB7\uCDE8\uB4DD\uBD84\xB7\uACF5\uC81C \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "annual-split-note", value: draft.split_review.note, maxLength: 2e3, onChange: (e) => editSplit("note", e.target.value) })), [["annual_scope_rechecked", "\uB2E8\uAC74 \uD655\uC778\uACFC \uBCC4\uB3C4\uB85C \uAC19\uC740 \uB0A9\uC138\uC790\xB7\uACFC\uC138\uC5F0\uB3C4 \uC804\uCCB4 \uC591\uB3C4\uB97C \uC7AC\uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["income_before_basic_deduction_confirmed", "\uAC1C\uBCC4 \uAE30\uBCF8\uACF5\uC81C\xB7\uACFC\uC138\uD45C\uC900\xB7\uC138\uC561\uC740 \uD569\uC0B0\uD558\uC9C0 \uC54A\uACE0 \uAE30\uBCF8\uACF5\uC81C \uC804 \uC18C\uB4DD\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4"], ["no_duplicate_lots_confirmed", "\uC7AC\uC0B0\xB7\uCDE8\uB4DD\uBD84 ID\uC640 \uC591\uB3C4 \uC9C0\uBD84\uC758 \uC911\uBCF5 \uB610\uB294 \uB204\uB77D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"]].map(([k, title]) => /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-split-" + k, type: "checkbox", checked: draft.split_review[k], onChange: (e) => editSplit(k, e.target.checked) }), title)))), /* @__PURE__ */ React.createElement("label", { style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-resident", type: "checkbox", checked: draft.resident_confirmed, onChange: (e) => change("resident_confirmed", e.target.checked) }), "\uD574\uB2F9 \uB0A9\uC138\uC790\uB294 \uAC70\uC8FC\uC790\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", { style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-confirm", type: "checkbox", checked: draft.scope_confirmed, onChange: (e) => change("scope_confirmed", e.target.checked) }), "\uAC19\uC740 \uB0A9\uC138\uC790\uC758 \uD569\uC0B0 \uB300\uC0C1 \uB204\uB77D\xB7\uC911\uBCF5 \uBC0F \uAC19\uC740 \uB0A0 \uAC70\uB798 \uC21C\uC11C\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uD655\uC778 \uB0B4\uC6A9 ", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "annual-note", maxLength: 1e3, value: draft.review_note, onChange: (e) => change("review_note", e.target.value) })), /* @__PURE__ */ React.createElement("h3", null, "\uC870\uC815\uC9C0\uC5ED \uB2E4\uC8FC\uD0DD \uAC80\uD1A0"), /* @__PURE__ */ React.createElement("p", null, "\uBA3C\uC800 \uD569\uC0B0 \uC785\uB825\uC744 \uC800\uC7A5\uD558\uBA74 \uB300\uC0C1\uBCC4 \uAC80\uD1A0\uB97C \uCD94\uAC00\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC8FC\uD0DD \uC218\uB294 \uC911\uACFC \uC81C\uC678 \uC8FC\uD0DD\uC744 \uAC80\uD1A0\uD55C \uC21C\uC218 \uC8FC\uD0DD \uC218\uC774\uBA70 \uBD84\uC591\uAD8C\xB7\uC785\uC8FC\uAD8C \uD63C\uD569\uC740 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. 2\uB144 \uC774\uC0C1 \uBCF4\uC720 \uC8FC\uD0DD\uC758 5\uC6D4 9\uC77C\uAE4C\uC9C0 \uC591\uB3C4 \uC720\uC608\uC640, \uACC4\uC57D\xB7\uD1A0\uC9C0\uAC70\uB798\uD5C8\uAC00\uC5D0 \uB530\uB978 \uD6C4\uC18D \uC720\uC608\uB294 \uAD6C\uBD84\uD569\uB2C8\uB2E4. \uC81C\uC678 \uC0AC\uC720\uAC00 \uC788\uC73C\uBA74 \uD655\uC778\uC744 \uCCB4\uD06C\uD558\uC9C0 \uB9D0\uACE0 \uAC1C\uBCC4 \uC0AC\uAC74\uC744 \uAC80\uD1A0\uD558\uC138\uC694."), selected.filter((s) => s.engine_request.is_regulated_area && s.engine_request.housing_count >= 2).map((s) => /* @__PURE__ */ React.createElement("button", { key: s.run_id, "data-testid": "annual-surcharge-add-" + s.run_id, disabled: (draft.surcharge_reviews || []).some((r) => r.run_id === s.run_id), onClick: () => change("surcharge_reviews", [...draft.surcharge_reviews || [], { run_id: s.run_id, housing_count_confirmed: false, no_other_exclusion_confirmed: false, transition_not_applicable: false, note: "" }]) }, s.label, " \uC911\uACFC \uAC80\uD1A0 \uCD94\uAC00")), (draft.surcharge_reviews || []).map((r, index) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("section", { key: r.run_id, style: { border: "1px solid #ccc", padding: 12 } }, /* @__PURE__ */ React.createElement("p", null, ((_a2 = selected.find((s) => s.run_id === r.run_id)) == null ? void 0 : _a2.label) || "\uC774\uC804 \uC120\uD0DD \uC0AC\uAC74", " \xB7 ", draft.run_ids.includes(r.run_id) ? "\uC120\uD0DD \uACB0\uACFC\uC5D0 \uC5F0\uACB0" : "\uC120\uD0DD\uC5D0\uC11C \uBE60\uC9C4 \uAC80\uD1A0 \u2014 \uC0AD\uC81C \uD544\uC694"), /* @__PURE__ */ React.createElement("label", null, "\uC8FC\uD0DD \uC218\xB7\uC9C0\uC5ED\xB7\uC911\uACFC \uC81C\uC678\xB7\uACC4\uC57D/\uD5C8\uAC00 \uAC80\uD1A0 \uADFC\uAC70 ", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "annual-surcharge-note-" + index, maxLength: 1e3, value: r.note, onChange: (e) => editReview(index, "note", e.target.value) })), [["housing_count_confirmed", "\uC8FC\uD0DD \uC218 \uC0B0\uC785\xB7\uC81C\uC678 \uBC0F \uAD8C\uB9AC \uD63C\uD569 \uC5C6\uC74C \uD655\uC778"], ["no_other_exclusion_confirmed", "\uC784\uB300\xB7\uC800\uAC00\xB7\uD2B9\uB840\xB7\uC870\uC815\uC9C0\uC5ED \uACF5\uACE0 \uC804 \uACC4\uC57D \uB4F1 \uAE30\uD0C0 \uC911\uACFC \uC81C\uC678 \uBE44\uB300\uC0C1 \uD655\uC778"], ["transition_not_applicable", "5\uC6D4 9\uC77C \uC774\uC804 \uACC4\uC57D\xB7\uD5C8\uAC00 \uC2E0\uCCAD\uC5D0 \uB530\uB978 \uD6C4\uC18D \uC720\uC608 \uBE44\uB300\uC0C1 \uD655\uC778 (5\uC6D4 10\uC77C \uC774\uD6C4 \uC591\uB3C4)"]].map(([key, title]) => /* @__PURE__ */ React.createElement("label", { key, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-surcharge-" + key + "-" + index, type: "checkbox", checked: !!r[key], onChange: (e) => editReview(index, key, e.target.checked) }), title)), /* @__PURE__ */ React.createElement("button", { "data-testid": "annual-surcharge-remove-" + index, onClick: () => change("surcharge_reviews", (draft.surcharge_reviews || []).filter((_, i) => i !== index)) }, "\uC911\uACFC \uAC80\uD1A0 \uC0AD\uC81C"));
+  }), /* @__PURE__ */ React.createElement("h3", null, "\uAE30\uC2E0\uACE0 \uC138\uC561\xB7\uAE30\uB0A9\uBD80 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("p", null, "\uACF5\uC81C\uB300\uC0C1\uC740 \uC2E0\uACE0\xB7\uACB0\uC815\uC11C\uC758 \uC138\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uB0A9\uBD80\uC561\uC740 \uBCC4\uB3C4\uB85C \uAE30\uB85D\uD558\uBA70 \uAC1C\uBCC4 \uACC4\uC0B0 \uACB0\uACFC\uB97C \uB0A9\uBD80\uC561\uC73C\uB85C \uC790\uB3D9 \uB300\uC785\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC0AC\uAC74\uB2F9 \uD55C \uD589\uC5D0 \uC815\uC815\xB7\uBD84\uB0A9\xB7\uD658\uAE09\uC744 \uB300\uC870\uD55C \uCD5C\uC885 \uC720\uD6A8 \uBC30\uBD84\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uC5EC\uB7EC \uC0AC\uAC74\uC744 \uBB36\uC5B4 \uC2E0\uACE0\uD588\uB2E4\uBA74 \uB204\uC801 \uC2E0\uACE0 \uCD1D\uC561\uC744 \uAC01 \uD589\uC5D0 \uBC18\uBCF5 \uC785\uB825\uD558\uC9C0 \uB9C8\uC138\uC694."), draft.run_ids.map((id) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("button", { key: id, "data-testid": "annual-credit-add-" + id, disabled: (draft.credits || []).some((c) => c.run_id === id), onClick: () => change("credits", [...draft.credits || [], { run_id: id, kind: "preliminary", record_date: null, reference: "", national_credit: 0, local_credit: 0, national_paid: 0, local_paid: 0 }]) }, ((_a2 = selected.find((s) => s.run_id === id)) == null ? void 0 : _a2.label) || ((_b2 = items.find((s) => s.run_id === id)) == null ? void 0 : _b2.label) || "\uC120\uD0DD \uC0AC\uAC74", " \uAE30\uC2E0\uACE0 \uB0B4\uC5ED \uCD94\uAC00");
+  }), (draft.credits || []).map((c, index) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("section", { key: c.run_id, style: { border: "1px solid #ccc", padding: 12, margin: "12px 0" } }, /* @__PURE__ */ React.createElement("p", null, ((_a2 = selected.find((s) => s.run_id === c.run_id)) == null ? void 0 : _a2.label) || ((_b2 = items.find((s) => s.run_id === c.run_id)) == null ? void 0 : _b2.label) || "\uC774\uC804 \uC120\uD0DD \uC0AC\uAC74", " \xB7 ", draft.run_ids.includes(c.run_id) ? "\uC120\uD0DD \uACB0\uACFC\uC5D0 \uC5F0\uACB0" : "\uC120\uD0DD\uC5D0\uC11C \uBE60\uC9C4 \uB0B4\uC5ED \u2014 \uC0AD\uC81C \uB610\uB294 \uB300\uC0C1 \uC7AC\uC120\uD0DD \uD544\uC694"), /* @__PURE__ */ React.createElement("label", null, "\uC885\uB958 ", /* @__PURE__ */ React.createElement("select", { "data-testid": "annual-credit-kind-" + index, value: c.kind, onChange: (e) => editCredit(index, "kind", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "preliminary" }, "\uC608\uC815\uC2E0\uACE0"), /* @__PURE__ */ React.createElement("option", { value: "assessment" }, "\uACB0\uC815\xB7\uACBD\uC815"), /* @__PURE__ */ React.createElement("option", { value: "interim" }, "\uC218\uC2DC\uBD80\uACFC"))), /* @__PURE__ */ React.createElement("label", null, "\uD655\uC778 \uAE30\uC900\uC77C ", /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-credit-date-" + index, type: "date", value: c.record_date || "", onChange: (e) => editCredit(index, "record_date", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uC2E0\uACE0\xB7\uACB0\uC815\uC11C \uC2DD\uBCC4 \uBC0F \uB0A9\uBD80 \uD655\uC778 \uADFC\uAC70 ", /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-credit-reference-" + index, maxLength: 500, value: c.reference, onChange: (e) => editCredit(index, "reference", e.target.value) })), [["national_credit", "\uACF5\uC81C\uB300\uC0C1 \uAD6D\uC138"], ["local_credit", "\uACF5\uC81C\uB300\uC0C1 \uC9C0\uBC29\uC138"], ["national_paid", "\uC2E4\uC81C \uB0A9\uBD80 \uAD6D\uC138"], ["local_paid", "\uC2E4\uC81C \uB0A9\uBD80 \uC9C0\uBC29\uC138"]].map(([key, title]) => /* @__PURE__ */ React.createElement("label", { key, style: { display: "block" } }, title, " (\uC6D0) ", /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-credit-" + key + "-" + index, type: "number", min: "0", max: "9000000000000", step: "1", value: c[key], onChange: (e) => editCredit(index, key, e.target.value === "" ? "" : Number(e.target.value)) }))), /* @__PURE__ */ React.createElement("button", { "data-testid": "annual-credit-remove-" + index, onClick: () => change("credits", (draft.credits || []).filter((_, i) => i !== index)) }, "\uAE30\uC2E0\uACE0 \uB0B4\uC5ED \uC0AD\uC81C"));
+  }), /* @__PURE__ */ React.createElement("label", { style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-credits-confirm", type: "checkbox", checked: !!draft.credits_confirmed, onChange: (e) => change("credits_confirmed", e.target.checked) }), "\uACF5\uC81C\uB300\uC0C1 \uC138\uC561\xB7\uC2E4\uC81C \uB0A9\uBD80\uC561\xB7\uBBF8\uB0A9 \uBC0F \uC911\uBCF5/\uC815\uC815/\uD658\uAE09 \uC5EC\uBD80\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4 (\uB0B4\uC5ED \uC5C6\uC74C \uD3EC\uD568)."), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { "data-testid": "annual-save", onClick: () => act(save) }, "\uD569\uC0B0 \uC785\uB825 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { "data-testid": "annual-calculate", onClick: () => act(async () => {
+    const s = dirty || !meta ? await save() : meta;
+    if (!s.validation.can_run) throw new Error(s.validation.errors.join(" "));
+    const r = await mutate("/" + s.annual_id + "/runs", "POST", { revision_id: s.revision_id, expected_input_hash: s.input_hash });
+    const detail = await api("/" + s.annual_id + "/runs/" + r.run_id);
+    if (alive.current) setRun(detail);
+  }) }, "\uC800\uC7A5\uD558\uACE0 \uD569\uC0B0 \uACC4\uC0B0"))), meta && /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uBC84\uC804 ", meta.revision, " ", readonly ? "\xB7 \uACFC\uAC70 \uC785\uB825 \uC77D\uAE30 \uC804\uC6A9" : ""), !meta.validation.can_run && /* @__PURE__ */ React.createElement("ul", null, meta.validation.errors.map((e) => /* @__PURE__ */ React.createElement("li", { key: e }, e))), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uBC84\uC804 (\uBE44\uC6CC \uB450\uBA74 \uCD5C\uC2E0) ", /* @__PURE__ */ React.createElement("input", { "data-testid": "annual-revision", type: "number", min: "1", disabled: busy, value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => discard() ? act(() => open(meta.annual_id, revision)) : void 0 }, "\uD569\uC0B0 \uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30")), run && /* @__PURE__ */ React.createElement("section", { "data-testid": "annual-result" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uC5F0\uAC04 \uD569\uC0B0 \uACB0\uACFC"), dirty && /* @__PURE__ */ React.createElement("p", { role: "status" }, "\uD604\uC7AC \uD3B8\uC9D1 \uC785\uB825\uACFC \uB2E4\uB978 \uC800\uC7A5\uBCF8\uC758 \uACB0\uACFC\uC785\uB2C8\uB2E4. \uC800\uC7A5\xB7\uACC4\uC0B0 \uC804 \uACB0\uACFC\uB294 \uBC14\uB00C\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, run.response_snapshot.calc.notice), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0AC\uAC74\xB7\uC785\uB825 \uBC84\uC804"), /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4\uC77C"), /* @__PURE__ */ React.createElement("th", null, "\uC138\uC728"), /* @__PURE__ */ React.createElement("th", null, "\uD1B5\uC0B0 \uC804 \uC18C\uB4DD\xB7\uCC28\uC190"), /* @__PURE__ */ React.createElement("th", null, "\uCC28\uC190 \uACF5\uC81C \uBC30\uBD84"), /* @__PURE__ */ React.createElement("th", null, "\uAE30\uBCF8\uACF5\uC81C \uBC30\uBD84"))), /* @__PURE__ */ React.createElement("tbody", null, run.response_snapshot.calc.allocations.map((a) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("tr", { key: a.run_id }, /* @__PURE__ */ React.createElement("td", null, a.label, " \xB7 ", a.revision, a.transfer_share && /* @__PURE__ */ React.createElement("small", { style: { display: "block" } }, "\uC7AC\uC0B0 ", a.property_id, " \xB7 \uC591\uB3C4 \uC9C0\uBD84 ", a.transfer_share, " \xB7 \uC800\uC7A5\uB41C \uADC0\uC18D \uC18C\uB4DD")), /* @__PURE__ */ React.createElement("td", null, a.transfer_date), /* @__PURE__ */ React.createElement("td", null, a.rate_label || "\uAE30\uBCF8\uC138\uC728 (\uACFC\uAC70 \uBC84\uC804)", ((_a2 = a.original_rate_candidates || a.rate_candidates) == null ? void 0 : _a2.length) > 1 && /* @__PURE__ */ React.createElement("small", { style: { display: "block" } }, "\uC6D0\uB798 \uD6C4\uBCF4: ", (a.original_rate_candidates || a.rate_candidates).map((k) => k.startsWith("short_") ? "\uB2E8\uAE30 " + k.split("_")[1] + "%" : "\uC911\uACFC +" + k.split("_")[1] + "%p").join(" / "), " \xB7 \uAC1C\uBCC4 \uC800\uC7A5: ", a.individual_rate_type || "\uCC28\uC190\xB70 \uCD08\uAE30 \uBC18\uD658", " \xB7 \uC5F0\uAC04 \uC120\uD0DD\uC740 \uC544\uB798 \uBE44\uAD50\uD45C")), /* @__PURE__ */ React.createElement("td", null, money(a.transfer_income)), /* @__PURE__ */ React.createElement("td", null, a.loss_offset === void 0 ? "\uBBF8\uC9C0\uC6D0 \uACFC\uAC70 \uBC84\uC804" : money(a.loss_offset)), /* @__PURE__ */ React.createElement("td", null, money(a.basic_deduction)));
+  }))), run.response_snapshot.calc.rate_groups && /* @__PURE__ */ React.createElement("section", { "data-testid": "annual-rate-groups" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uC728\uBCC4 \uD1B5\uC0B0\xB7\uACF5\uC81C"), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC138\uC728"), /* @__PURE__ */ React.createElement("th", null, "\uC591\uC758 \uC18C\uB4DD"), /* @__PURE__ */ React.createElement("th", null, "\uCC28\uC190"), /* @__PURE__ */ React.createElement("th", null, "\uAC19\uC740 \uC138\uC728 \uACF5\uC81C"), /* @__PURE__ */ React.createElement("th", null, "\uB2E4\uB978 \uC138\uC728 \uCC28\uC190 \uACF5\uC81C"), /* @__PURE__ */ React.createElement("th", null, "\uC138\uC728 \uC120\uD0DD \uBB34\uAD00 \uACF5\uC81C"), /* @__PURE__ */ React.createElement("th", null, "\uAE30\uBCF8\uACF5\uC81C"), /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900"), /* @__PURE__ */ React.createElement("th", null, "\uC911\uACFC \uAC00\uC0B0\uC561"), /* @__PURE__ */ React.createElement("th", null, "\uB2E8\uAE30 \uBE44\uAD50\uC138\uC561"), /* @__PURE__ */ React.createElement("th", null, "\uAE30\uBCF8\uFF0B\uC911\uACFC \uBE44\uAD50\uC138\uC561"), /* @__PURE__ */ React.createElement("th", null, "\uC120\uD0DD \uC138\uC728"), /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"))), /* @__PURE__ */ React.createElement("tbody", null, run.response_snapshot.calc.rate_groups.map((g) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("tr", { key: g.rate_group }, /* @__PURE__ */ React.createElement("td", null, g.label), /* @__PURE__ */ React.createElement("td", null, money(g.positive_income)), /* @__PURE__ */ React.createElement("td", null, money(g.loss_total)), /* @__PURE__ */ React.createElement("td", null, money(g.same_rate_loss_offset)), /* @__PURE__ */ React.createElement("td", null, money(g.cross_rate_loss_offset)), /* @__PURE__ */ React.createElement("td", null, g.invariant_loss_offset === void 0 ? "\u2014" : money(g.invariant_loss_offset)), /* @__PURE__ */ React.createElement("td", null, money(g.basic_deduction)), /* @__PURE__ */ React.createElement("td", null, money(g.tax_base)), /* @__PURE__ */ React.createElement("td", null, money(g.surcharge_amount || 0)), /* @__PURE__ */ React.createElement("td", null, g.short_tax === void 0 ? "\u2014" : money(g.short_tax)), /* @__PURE__ */ React.createElement("td", null, g.surcharged_tax === void 0 ? "\uACFC\uAC70 \uACB0\uACFC" : money(g.surcharged_tax)), /* @__PURE__ */ React.createElement("td", null, ((_a2 = g.selected_rate) == null ? void 0 : _a2.startsWith("short_")) ? "\uB2E8\uAE30 " + g.selected_rate.split("_")[1] + "%" : ((_b2 = g.selected_rate) == null ? void 0 : _b2.startsWith("surcharge_")) ? "\uC911\uACFC +" + g.selected_rate.split("_")[1] + "%p" : g.selected_rate === "basic" ? "\uAE30\uBCF8\uC138\uC728" : g.selected_rate === "unregistered_70" ? "\uBBF8\uB4F1\uAE30 70%" : g.loss_allocation_basis ? "\uC138\uC728 \uBBF8\uC120\uD0DD" : "\uACFC\uAC70 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("td", null, money(g.calculated_tax)));
+  })))), run.response_snapshot.calc.loss_resolution && /* @__PURE__ */ React.createElement("section", { "data-testid": "annual-loss-resolution" }, /* @__PURE__ */ React.createElement("h3", null, "\uCC28\uC190 \uBC30\uBD84 \uACB0\uACFC\uAC00 \uB3D9\uC77C\uD55C \uADFC\uAC70"), /* @__PURE__ */ React.createElement("p", null, run.response_snapshot.calc.loss_resolution.method === "invariant_loss_exhausted" ? "\uC804\uCCB4 \uCC28\uC190\uC774 \uC591\uC758 \uC18C\uB4DD\uC744 \uBAA8\uB450 \uC18C\uC9C4\uD558\uBBC0\uB85C \uC0AC\uAC74\uBCC4 \uC794\uC5EC \uC18C\uB4DD\uC740 0\uC6D0\uC785\uB2C8\uB2E4." : "\uACF5\uC81C\uBC1B\uC744 \uC138\uC728 \uADF8\uB8F9\uC774 \uD558\uB098\uC774\uACE0 \uAC01 \uCC28\uC190\uC758 \uC0AC\uAC74\uBCC4 \uBE44\uB840 \uBC30\uBD84\uC774 \uC6D0 \uB2E8\uC704\uAE4C\uC9C0 \uC815\uD655\uD558\uBBC0\uB85C \uACF5\uC81C \uC21C\uC11C\uC5D0 \uB530\uB77C \uACB0\uACFC\uAC00 \uBC14\uB00C\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uC911\uCCA9 \uCC28\uC190\uC758 \uB2E8\uAE30\xB7\uC911\uACFC \uC138\uC728\uC744 \uC784\uC758\uB85C \uC120\uD0DD\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uAC19\uC740 \uC138\uC728\xB7\uB2E4\uB978 \uC138\uC728 \uACF5\uC81C\uB85C \uB2E8\uC815\uD558\uC9C0 \uC54A\uACE0 \uBCC4\uB3C4 \uC5F4\uC5D0 \uACF5\uC81C\uC561\uC744 \uD45C\uC2DC\uD569\uB2C8\uB2E4.")), !!((_a = run.response_snapshot.calc.zero_income_run_ids) == null ? void 0 : _a.length) && /* @__PURE__ */ React.createElement("p", { "data-testid": "annual-zero-income" }, "0\uC6D0 \uC0AC\uAC74 ", run.response_snapshot.calc.zero_income_run_ids.length, "\uAC74\uC740 \uC6D0\uB798 \uD6C4\uBCF4\uB97C \uBCF4\uC874\uD558\uACE0 \uC138\uC728 \uADF8\uB8F9 \uC5F0\uACB0\xB7\uCC28\uC190\xB7\uAE30\uBCF8\uACF5\uC81C \uBC30\uBD84\uC5D0 \uC601\uD5A5\uC744 \uC8FC\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !!((_b = run.response_snapshot.calc.regrouping) == null ? void 0 : _b.length) && /* @__PURE__ */ React.createElement("section", { "data-testid": "annual-regrouping" }, /* @__PURE__ */ React.createElement("h3", null, "\uACF5\uD1B5 \uC138\uC728\uB85C \uBB36\uC740 \uADFC\uAC70"), run.response_snapshot.calc.regrouping.map((p, i) => p.selected_rate.startsWith("surcharge_") ? /* @__PURE__ */ React.createElement("div", { key: i }, /* @__PURE__ */ React.createElement("p", null, "\uC911\uACFC +", p.selected_rate.split("_")[1], "%p\uB85C ", p.run_ids.length, "\uAC74\uC744 \uD1B5\uC0B0\uD569\uB2C8\uB2E4. \uAC01 \uC911\uCCA9 \uC0AC\uAC74\uC774 \uC5F0\uAC04 \uC804\uCCB4 \uCC28\uC190 ", money(p.annual_loss_budget), "\uACFC \uAE30\uBCF8\uACF5\uC81C ", money(p.basic_deduction_budget), "\uB97C \uBAA8\uB450 \uBD80\uB2F4\uD574\uB3C4 \uC911\uACFC\uC138\uC561\uC774 \uB2E8\uAE30\uC138\uC561 \uC774\uC0C1\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("ul", null, p.assets.map((a) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("li", { key: a.run_id }, ((_a2 = run.response_snapshot.calc.allocations.find((r) => r.run_id === a.run_id)) == null ? void 0 : _a2.label) || "\uC911\uCCA9 \uC0AC\uAC74", ": \uAC80\uC99D \uACFC\uD45C ", money(a.minimum_tax_base), " ~ ", money(a.maximum_tax_base), " \xB7 \uB2E8\uAE30 ", a.short_rate.split("_")[1], "%\uC640 \uBE44\uAD50");
+  })), /* @__PURE__ */ React.createElement("small", null, "\uC774 \uAE08\uC561\uC740 \uC6B0\uC5F4 \uAC80\uC99D\uC6A9 \uBCF4\uC218\uC801 \uBC94\uC704\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uCC28\uC190\xB7\uAE30\uBCF8\uACF5\uC81C \uBC30\uBD84\uC740 \uC704 \uC0AC\uAC74\uBCC4 \uB0B4\uC5ED\uC744 \uB530\uB985\uB2C8\uB2E4.")) : /* @__PURE__ */ React.createElement("p", { key: i }, "\uB2E8\uAE30 ", p.selected_rate.split("_")[1], "%\uB85C ", p.run_ids.length, "\uAC74\uC744 \uD1B5\uC0B0\uD569\uB2C8\uB2E4. \uD1B5\uC0B0 \uC804 \uC591\uC758 \uC18C\uB4DD \uD569\uACC4 ", money(p.gross_positive_upper_bound), " \uC774\uD558 \uBAA8\uB4E0 \uACFC\uD45C \uAD6C\uAC04\uC5D0\uC11C \uB2E8\uAE30\uC138\uC561\uC774 \uC911\uACFC\uC138\uC561 \uC774\uC0C1\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4. \uCC28\uC190\xB7\uAE30\uBCF8\uACF5\uC81C \uD6C4\uC5D0\uB3C4 \uC801\uC6A9 \uC138\uC728\uC774 \uBC14\uB00C\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."))), run.response_snapshot.calc.comparison && /* @__PURE__ */ React.createElement("p", { "data-testid": "annual-rate-comparison" }, "\uC804\uCCB4 \uAE30\uBCF8\uC138\uC728 \uACC4\uC0B0 ", money(run.response_snapshot.calc.comparison.aggregate_basic_tax), " / \uC138\uC728\uBCC4 \uACC4\uC0B0 \uD569\uACC4 ", money(run.response_snapshot.calc.comparison.grouped_tax), " / \uC801\uC6A9: ", run.response_snapshot.calc.comparison.selected === "grouped" ? "\uC138\uC728\uBCC4 \uACC4\uC0B0 \uD569\uACC4" : "\uC804\uCCB4 \uAE30\uBCF8\uC138\uC728 \uACC4\uC0B0"), run.response_snapshot.calc.loss_total !== void 0 && /* @__PURE__ */ React.createElement("p", null, "\uCC28\uC190 ", money(run.response_snapshot.calc.loss_total), " / \uD1B5\uC0B0 ", money(run.response_snapshot.calc.loss_absorbed), " / \uBBF8\uACF5\uC81C \uCC28\uC190 ", money(run.response_snapshot.calc.unabsorbed_loss), " (\uC774\uC6D4 \uC5C6\uC74C)"), run.response_snapshot.calc.allocations.some((a) => a.lots) && /* @__PURE__ */ React.createElement("section", { "data-testid": "annual-split-lots" }, /* @__PURE__ */ React.createElement("h3", null, "\uCDE8\uB4DD\uBD84\uBCC4 \uC800\uC7A5 \uC18C\uB4DD"), run.response_snapshot.calc.allocations.filter((a) => a.lots).map((a) => /* @__PURE__ */ React.createElement("div", { key: a.run_id }, /* @__PURE__ */ React.createElement("p", null, a.label, " \xB7 \uC7AC\uC0B0 ", a.property_id, " \xB7 \uB0A9\uC138\uC790 ", a.taxpayer_id, " \xB7 \uC6D0\uBCF8 ", a.original_revision_id, " \xB7 \uD569\uACC4 \uC591\uB3C4 \uC9C0\uBD84 ", a.transfer_share), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uBD84 ID"), /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC77C"), /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4/\uCDE8\uB4DD \uC9C0\uBD84"), /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4\uC18C\uB4DD\uAE08\uC561"))), /* @__PURE__ */ React.createElement("tbody", null, a.lots.map((l) => /* @__PURE__ */ React.createElement("tr", { key: l.lot_id }, /* @__PURE__ */ React.createElement("td", null, l.lot_id), /* @__PURE__ */ React.createElement("td", null, l.acquisition_date), /* @__PURE__ */ React.createElement("td", null, l.transfer_share, " / ", l.acquired_share), /* @__PURE__ */ React.createElement("td", null, money(l.transfer_income))))))))), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uBCF8\uACF5\uC81C \uD569\uACC4 ", money(run.response_snapshot.calc.basic_deduction), " / \uACFC\uC138\uD45C\uC900 ", money(run.response_snapshot.calc.tax_base)), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uC18C\uB4DD\uC138 ", money(run.response_snapshot.calc.national_tax), " / \uC9C0\uBC29\uC18C\uB4DD\uC138 ", money(run.response_snapshot.calc.local_tax), " / \uD569\uACC4 ", money(run.response_snapshot.calc.total_tax)), run.response_snapshot.calc.settlement ? /* @__PURE__ */ React.createElement("table", { "data-testid": "annual-settlement" }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC138\uBAA9"), /* @__PURE__ */ React.createElement("th", null, "\uAE30\uC2E0\uACE0 \uACF5\uC81C"), /* @__PURE__ */ React.createElement("th", null, "\uC2E4\uC81C \uB0A9\uBD80"), /* @__PURE__ */ React.createElement("th", null, "\uAE30\uC2E0\uACE0 \uBBF8\uB0A9"), /* @__PURE__ */ React.createElement("th", null, "\uCD94\uAC00 \uB0A9\uBD80"), /* @__PURE__ */ React.createElement("th", null, "\uCD08\uACFC\uACF5\uC81C\xB7\uD658\uAE09 \uAC80\uD1A0"))), /* @__PURE__ */ React.createElement("tbody", null, ["national", "local"].map((key) => {
+    const s = run.response_snapshot.calc.settlement[key];
+    return /* @__PURE__ */ React.createElement("tr", { key }, /* @__PURE__ */ React.createElement("td", null, key === "national" ? "\uAD6D\uC138" : "\uC9C0\uBC29\uC138"), /* @__PURE__ */ React.createElement("td", null, money(s.prior_credit)), /* @__PURE__ */ React.createElement("td", null, money(s.actual_paid)), /* @__PURE__ */ React.createElement("td", null, money(s.prior_unpaid)), /* @__PURE__ */ React.createElement("td", null, money(s.additional_due)), /* @__PURE__ */ React.createElement("td", null, money(s.over_credit)));
+  }))) : /* @__PURE__ */ React.createElement("p", null, "\uC774 \uACFC\uAC70 \uACB0\uACFC\uC5D0\uB294 \uCC28\uC190 \uD1B5\uC0B0\xB7\uAE30\uB0A9\uBD80 \uC815\uC0B0\uC774 \uC5C6\uC2B5\uB2C8\uB2E4. \uB0B4\uC5ED \uD655\uC778 \uD6C4 \uC0C8 \uBC84\uC804\uC73C\uB85C \uC800\uC7A5\xB7\uACC4\uC0B0\uD558\uC138\uC694.")));
+}
+window.JTTransferAnnual = JTTransferAnnual;
+
+
+/* ────────── PropertySources.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+function JTPropertySources({ clientId, onExit }) {
+  const blank = () => ({ valuation_type: "\uC608\uC815\uAC00", as_of_date: "", amount: "", source: "", confirmed: false });
+  const [properties, setProperties] = React.useState([]), [propertyCursor, setPropertyCursor] = React.useState(null);
+  const [propertyId, setPropertyId] = React.useState(""), [rows, setRows] = React.useState([]), [cursor, setCursor] = React.useState(null);
+  const [xlsx, setXlsx] = React.useState(null);
+  const [files, setFiles] = React.useState([]), [fileCursor, setFileCursor] = React.useState(null), [opened, setOpened] = React.useState(null);
+  const [batch, setBatch] = React.useState(""), [batchConfirmed, setBatchConfirmed] = React.useState(false);
+  const [form, setForm] = React.useState(blank), [pending, setPending] = React.useState(null);
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState(""), [message, setMessage] = React.useState("");
+  const lock = React.useRef(false), alive = React.useRef(true), dirty = React.useRef(false), identity = React.useRef(jtGiftSession.uid);
+  dirty.current = !!pending || !!batch || JSON.stringify(form) !== JSON.stringify(blank());
+  React.useEffect(() => {
+    alive.current = true;
+    const protect = (e) => {
+      if (lock.current || dirty.current) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => {
+      alive.current = false;
+      window.removeEventListener("beforeunload", protect);
+    };
+  }, []);
+  const api = async (path, options = {}) => {
+    if (identity.current !== jtGiftSession.uid || !jtGiftSession.token) throw new Error("\uC791\uC5C5\uB300\uC5D0\uC11C \uAE30\uC874 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const response = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) jtGiftSession.token = "";
+        const e = new Error(response.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uB9CC\uB8CC\uB410\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uD655\uC778\uD558\uACE0 \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694." : response.status === 404 ? "\uC120\uD0DD\uD55C \uACE0\uAC1D\uC758 \uC7AC\uC0B0\uC744 \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4." : response.status === 422 ? "\uAE08\uC561\xB7\uAE30\uC900\uC77C\xB7\uCD9C\uCC98\xB7\uC804\uCCB4 \uC7AC\uC0B0 \uD655\uC778\uC744 \uC810\uAC80\uD558\uC138\uC694." : response.status === 409 ? "\uC774 \uC800\uC7A5 \uC694\uCCAD\uACFC \uB2E4\uB978 \uB0B4\uC6A9\uC774 \uC774\uBBF8 \uCC98\uB9AC\uB410\uC2B5\uB2C8\uB2E4. \uB4F1\uB85D \uBAA9\uB85D\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uC694\uCCAD \uCC98\uB9AC\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.");
+        e.status = response.status;
+        if (Array.isArray(data.detail)) e.message = data.detail.map((x) => {
+          var _a;
+          const i = (_a = x.loc) == null ? void 0 : _a.indexOf("rows");
+          return (i >= 0 && Number.isInteger(x.loc[i + 1]) ? x.loc[i + 1] + 1 + "\uD589: " : "") + x.msg;
+        }).join(" / ");
+        throw e;
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const base = "/v1/clients/" + clientId + "/properties";
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e.name === "AbortError" || e instanceof TypeError ? "\uC751\uB2F5\uC744 \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB4F1\uB85D \uC7AC\uC2DC\uB3C4\uB85C \uAC19\uC740 \uC694\uCCAD\uC758 \uCC98\uB9AC \uACB0\uACFC\uB97C \uD655\uC778\uD558\uC138\uC694." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const loadProperties = async (more = false) => {
+    const data = await api(base + (more && propertyCursor ? "?cursor=" + propertyCursor : ""));
+    if (alive.current) {
+      setProperties((old) => more ? [...old, ...data.items] : data.items);
+      setPropertyCursor(data.next_cursor);
+    }
+  };
+  const loadRows = async (id = propertyId, more = false) => {
+    const data = await api(base + "/" + id + "/valuations" + (more && cursor ? "?cursor=" + cursor : ""));
+    if (alive.current) {
+      setRows((old) => more ? [...old, ...data.items] : data.items);
+      setCursor(data.next_cursor);
+    }
+  };
+  const loadFiles = async (id = propertyId, more = false) => {
+    const data = await api(base + "/" + id + "/valuation-files" + (more && fileCursor ? "?cursor=" + fileCursor : ""));
+    if (alive.current) {
+      setFiles((old) => more ? [...old, ...data.items] : data.items);
+      setFileCursor(data.next_cursor);
+    }
+  };
+  const openFile = (id) => act(async () => {
+    setOpened(null);
+    const data = await api(base + "/" + propertyId + "/valuation-files/" + id);
+    if (alive.current) setOpened(data);
+  });
+  const download = () => {
+    if (!opened) return;
+    const bytes = window.Uint8Array.from(window.atob(opened.content_base64), (c) => c.charCodeAt(0));
+    const url = URL.createObjectURL(new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = opened.filename;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1e3);
+  };
+  React.useEffect(() => {
+    act(() => loadProperties());
+  }, []);
+  const select = (id) => act(async () => {
+    if (dirty.current && !window.confirm("\uB4F1\uB85D\uD558\uC9C0 \uC54A\uC740 \uD3C9\uAC00 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC7AC\uC0B0\uC744 \uBC14\uAFC0\uAE4C\uC694?")) return;
+    setBatch("");
+    setBatchConfirmed(false);
+    setXlsx(null);
+    setPropertyId(id);
+    setRows([]);
+    setCursor(null);
+    setForm(blank());
+    setPending(null);
+    setMessage("");
+    setFiles([]);
+    setFileCursor(null);
+    setOpened(null);
+    if (id) {
+      await loadRows(id);
+      await loadFiles(id);
+    }
+  });
+  const update = (key, value) => {
+    setForm((old) => __spreadValues(__spreadProps(__spreadValues({}, old), { [key]: value }), key !== "confirmed" ? { confirmed: false } : {}));
+    setMessage("");
+  };
+  const save = () => act(async () => {
+    let request = pending;
+    if (!request) {
+      const amount = Number(form.amount);
+      if (!/^\d+$/.test(form.amount) || !Number.isSafeInteger(amount) || amount < 0 || !/^\d{4}-\d{2}-\d{2}$/.test(form.as_of_date) || !form.source.trim() || !form.confirmed)
+        throw new Error("0\uC6D0 \uC774\uC0C1\uC758 \uC815\uC218 \uAE08\uC561\xB7\uAE30\uC900\uC77C\xB7\uCD9C\uCC98\uB97C \uC785\uB825\uD558\uACE0 \uC804\uCCB4 \uC7AC\uC0B0 \uAE08\uC561\uC784\uC744 \uD655\uC778\uD558\uC138\uC694.");
+      request = { key: window.crypto.randomUUID(), propertyId, body: { valuation_type: form.valuation_type, as_of_date: form.as_of_date, amount, source: form.source.trim(), valuation_basis: "whole_property", whole_property_confirmed: true } };
+      setPending(request);
+    }
+    try {
+      await api(base + "/" + request.propertyId + "/valuations", { method: "POST", headers: { "Idempotency-Key": request.key }, body: JSON.stringify(request.body) });
+    } catch (e) {
+      if ([400, 403, 404, 422].includes(e.status)) setPending(null);
+      throw e;
+    }
+    setPending(null);
+    setForm(blank());
+    setMessage("\uC0C8 \uD3C9\uAC00\uC790\uB8CC\uAC00 \uB4F1\uB85D\uB410\uC2B5\uB2C8\uB2E4. \uC0AC\uAC74\uC5D0\uC11C \uC790\uB8CC\uB97C \uC120\uD0DD\uD558\uACE0 \uCC44\uD0DD\uD574\uC57C \uC785\uB825\uC5D0 \uBC18\uC601\uB429\uB2C8\uB2E4.");
+    await loadRows(request.propertyId);
+  });
+  const previewXlsx = (file) => act(async () => {
+    setXlsx(null);
+    setBatch("");
+    setBatchConfirmed(false);
+    setMessage("");
+    if (!file) return;
+    if (!/\.xlsx$/i.test(file.name) || file.size > 2097152) throw new Error("2 MiB \uC774\uD558 XLSX \uD30C\uC77C\uC744 \uC120\uD0DD\uD558\uC138\uC694.");
+    const bytes = new window.Uint8Array(await file.arrayBuffer());
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+    const result = await api(base + "/" + propertyId + "/valuation-xlsx-preview", { method: "POST", body: JSON.stringify({ content_base64: window.btoa(binary) }) });
+    if (alive.current) {
+      setXlsx(__spreadProps(__spreadValues({}, result), { name: file.name, content_base64: window.btoa(binary) }));
+      setBatch(result.batch.rows.map((r) => [r.as_of_date, r.valuation_type, String(r.amount), r.source].join("	")).join("\n"));
+    }
+  });
+  const saveBatch = () => act(async () => {
+    let request = pending;
+    if (!request) {
+      if (!batchConfirmed) throw new Error("\uC77C\uAD04 \uC790\uB8CC\uC758 \uC804\uCCB4 \uC7AC\uC0B0 \uAE30\uC900\xB7\uB0A0\uC9DC\xB7\uCD9C\uCC98\uB97C \uD655\uC778\uD558\uC138\uC694.");
+      const lines = batch.replace(/\r/g, "").trim().split("\n");
+      if (!batch.trim() || lines.length > 100) throw new Error("1~100\uD589\uC744 \uC785\uB825\uD558\uC138\uC694.");
+      const rows2 = lines.map((line, index) => {
+        const cols = line.split("	");
+        if (cols.length !== 4) throw new Error(index + 1 + "\uD589: \uAE30\uC900\uC77C, \uC885\uB958, \uAE08\uC561, \uCD9C\uCC98 4\uC5F4\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+        const [as_of_date, valuation_type, raw, source] = cols.map((x) => x.trim());
+        if (!/^\d+$/.test(raw) || !Number.isSafeInteger(Number(raw))) throw new Error(index + 1 + "\uD589: \uAE08\uC561\uC740 \uC815\uD655\uD55C 0\uC6D0 \uC774\uC0C1 \uC815\uC218\uC785\uB2C8\uB2E4.");
+        return { property_id: propertyId, as_of_date, valuation_type, amount: Number(raw), source, valuation_basis: "whole_property", whole_property_confirmed: true };
+      });
+      request = { kind: "batch", key: window.crypto.randomUUID(), propertyId, body: __spreadValues({ schema_version: "valuation-batch/1", rows: rows2 }, xlsx ? { source_file: { filename: xlsx.name, content_base64: xlsx.content_base64, expected_sha256: xlsx.file_sha256 } } : {}) };
+      setPending(request);
+    }
+    try {
+      const saved = await api("/v1/clients/" + clientId + "/valuation-batches", { method: "POST", headers: { "Idempotency-Key": request.key }, body: JSON.stringify(request.body) });
+      setPending(null);
+      setBatch("");
+      setBatchConfirmed(false);
+      setXlsx(null);
+      setMessage(saved.count + "\uD589\uC774 \uBAA8\uB450 \uB4F1\uB85D\uB410\uC2B5\uB2C8\uB2E4. \uACFC\uAC70 \uC0AC\uAC74 \uC785\uB825\uACFC \uACB0\uACFC\uB294 \uC720\uC9C0\uB429\uB2C8\uB2E4.");
+      await loadRows(request.propertyId);
+      await loadFiles(request.propertyId);
+    } catch (e) {
+      if ([400, 403, 404, 422].includes(e.status)) setPending(null);
+      throw e;
+    }
+  });
+  const frozen = busy || !!pending;
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.pv-card{background:white;border:1px solid #d9e0d9;border-radius:12px;padding:20px;margin:20px 0}.pv-fields{display:flex;gap:16px;flex-wrap:wrap}.pv-fields label{display:flex;flex-direction:column;gap:6px}.pv-fields input,.pv-fields select{font:inherit;padding:10px;min-height:44px}.pv-table{overflow-x:auto}.pv-table table{width:100%;border-collapse:collapse}.pv-table td,.pv-table th{padding:12px;border-bottom:1px solid #ddd;text-align:left}.pv-card [role=alert]{color:#82391e}.pv-card button{min-height:44px}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (!dirty.current || window.confirm(pending ? "\uB4F1\uB85D \uACB0\uACFC\uAC00 \uBBF8\uD655\uC778\uC785\uB2C8\uB2E4. \uC11C\uBC84\uC5D0 \uC800\uC7A5\uB410\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC08\uAE4C\uC694?" : "\uB4F1\uB85D\uD558\uC9C0 \uC54A\uC740 \uD3C9\uAC00 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC08\uAE4C\uC694?")) onExit();
+  } }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uC7AC\uC0B0 \uD3C9\uAC00\uC790\uB8CC"), /* @__PURE__ */ React.createElement("p", null, "\uACE0\uAC1D\uC758 \uAE30\uC874 \uC7AC\uC0B0\uC5D0 \uD3C9\uAC00\uC790\uB8CC\uB97C \uCD94\uAC00\uD569\uB2C8\uB2E4. \uACFC\uAC70 \uC0AC\uAC74\uACFC \uACC4\uC0B0 \uACB0\uACFC\uB294 \uC720\uC9C0\uB418\uBA70, \uC0AC\uAC74\uB9C8\uB2E4 \uC0AC\uC6A9\uD560 \uC790\uB8CC\uB97C \uC120\uD0DD\uD569\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), message && /* @__PURE__ */ React.createElement("p", { role: "status" }, message), /* @__PURE__ */ React.createElement("section", { className: "pv-card" }, /* @__PURE__ */ React.createElement("div", { className: "pv-fields" }, /* @__PURE__ */ React.createElement("label", null, "\uC7AC\uC0B0", /* @__PURE__ */ React.createElement("select", { "data-testid": "valuation-property", disabled: frozen, value: propertyId, onChange: (e) => select(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC7AC\uC0B0 \uC120\uD0DD"), properties.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id }, p.address || "\uC8FC\uC18C \uC5C6\uB294 \uC7AC\uC0B0", " \xB7 ", p.property_type)))), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadProperties()) }, "\uC7AC\uC0B0 \uC0C8\uB85C\uACE0\uCE68"), propertyCursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadProperties(true)) }, "\uC7AC\uC0B0 \uB354 \uBCF4\uAE30")), !properties.length && !busy && /* @__PURE__ */ React.createElement("p", null, "\uB4F1\uB85D\uB41C \uC7AC\uC0B0\uC774 \uC5C6\uC2B5\uB2C8\uB2E4. \uD604\uC7AC\uB294 \uAE30\uC874 \uC7AC\uC0B0\uC758 \uD3C9\uAC00\uC790\uB8CC \uB4F1\uB85D\uC744 \uC9C0\uC6D0\uD569\uB2C8\uB2E4.")), propertyId && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "pv-card" }, /* @__PURE__ */ React.createElement("h2", null, "\uC0C8 \uD3C9\uAC00 \uB4F1\uB85D"), /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uBD84 \uAE08\uC561\uC774 \uC544\uB2CC \uC804\uCCB4 \uC7AC\uC0B0\uC758 \uAE08\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uC9C0\uBD84 \uBC18\uC601\uC740 \uC0AC\uAC74\uC5D0\uC11C \uCC98\uB9AC\uD569\uB2C8\uB2E4. \uC785\uB825 \uAE08\uC561\uC740 \uC678\uBD80 \uC870\uD68C\uB85C \uAC80\uC99D\uB41C \uAC12\uC774 \uC544\uB2D9\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("fieldset", { disabled: frozen }, /* @__PURE__ */ React.createElement("div", { className: "pv-fields" }, /* @__PURE__ */ React.createElement("label", null, "\uD3C9\uAC00 \uC885\uB958", /* @__PURE__ */ React.createElement("select", { "data-testid": "valuation-type", value: form.valuation_type, onChange: (e) => update("valuation_type", e.target.value) }, ["\uACF5\uC2DC\uAC00\uACA9", "\uC2DC\uAC00_\uC720\uC0AC\uB9E4\uB9E4", "\uC2E4\uC9C0\uAC70\uB798", "\uC608\uC815\uAC00", "\uAC10\uC815\uAC00", "\uAE30\uC900\uC2DC\uAC00"].map((t) => /* @__PURE__ */ React.createElement("option", { key: t }, t)))), /* @__PURE__ */ React.createElement("label", null, "\uAE30\uC900\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "valuation-date", type: "date", value: form.as_of_date, onChange: (e) => update("as_of_date", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC804\uCCB4 \uC7AC\uC0B0 \uAE08\uC561(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "valuation-amount", inputMode: "numeric", value: form.amount, onChange: (e) => update("amount", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC790\uB8CC \uCD9C\uCC98", /* @__PURE__ */ React.createElement("input", { "data-testid": "valuation-source", maxLength: 500, value: form.source, onChange: (e) => update("source", e.target.value) }))), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "valuation-confirm", type: "checkbox", checked: form.confirmed, onChange: (e) => update("confirmed", e.target.checked) }), "\uC804\uCCB4 \uC7AC\uC0B0\uC758 \uAE08\uC561\uACFC \uAE30\uC900\uC77C\xB7\uCD9C\uCC98\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), form.valuation_type === "\uC2DC\uAC00_\uC720\uC0AC\uB9E4\uB9E4" && /* @__PURE__ */ React.createElement("p", null, "\uC720\uC0AC\uB9E4\uB9E4 \uC790\uB8CC\uB294 \uC0AC\uAC74\uC5D0\uC11C \uD648\uD0DD\uC2A4 \uD655\uC778 \uB4F1 \uCC44\uD0DD \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "valuation-save", disabled: busy || (pending == null ? void 0 : pending.kind) === "batch" || !pending && !form.confirmed, onClick: save }, pending ? "\uB4F1\uB85D \uC7AC\uC2DC\uB3C4" : "\uD3C9\uAC00\uC790\uB8CC \uB4F1\uB85D")), /* @__PURE__ */ React.createElement("section", { className: "pv-card" }, /* @__PURE__ */ React.createElement("h2", null, "\uD3C9\uAC00\uC790\uB8CC \uC77C\uAD04 \uB4F1\uB85D"), /* @__PURE__ */ React.createElement("p", null, "\uC120\uD0DD\uD55C \uC7AC\uC0B0\uC758 \uC790\uB8CC\uB97C \uD45C\uC5D0\uC11C \uBCF5\uC0AC\uD574 \uBD99\uC5EC\uB123\uC73C\uC138\uC694. \uBA38\uB9AC\uAE00 \uC5C6\uC774 \uAE30\uC900\uC77C(YYYY-MM-DD) \xB7 \uC885\uB958 \xB7 \uAE08\uC561(\uC6D0, \uC27C\uD45C \uC5C6\uC74C) \xB7 \uCD9C\uCC98 \uC21C\uC11C\uC758 \uD0ED \uAD6C\uBD84 4\uC5F4, \uCD5C\uB300 100\uD589\uC785\uB2C8\uB2E4. \uD558\uB098\uB77C\uB3C4 \uC798\uBABB\uB418\uBA74 \uC804\uCCB4\uB97C \uB4F1\uB85D\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uC6B0\uB9AC XLSX \uD615\uC2DD: \uD45C\uC2DC\uB41C \uC2DC\uD2B8 \uD55C \uAC1C, \uCCAB \uD589\uC740 \uC7AC\uC0B0ID \xB7 \uAE30\uC900\uC77C \xB7 \uC885\uB958 \xB7 \uAE08\uC561(\uC6D0) \xB7 \uCD9C\uCC98 5\uC5F4\uC785\uB2C8\uB2E4. \uBAA8\uB4E0 \uC140\uC744 \uD14D\uC2A4\uD2B8\uB85C \uC785\uB825\uD558\uC138\uC694. \uB0A0\uC9DC\uB294 YYYY-MM-DD, \uAE08\uC561\uC740 \uC27C\uD45C \uC5C6\uB294 \uC815\uC218\uC774\uBA70 \uC218\uC2DD\xB7\uBE48 \uD589\xB7\uC228\uAE34 \uD589\xB7\uBCD1\uD569\xB7\uD544\uD130\uB294 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uC120\uD0DD\uD55C \uC7AC\uC0B0ID: ", /* @__PURE__ */ React.createElement("code", { "data-testid": "xlsx-property-id" }, propertyId)), /* @__PURE__ */ React.createElement("label", null, "XLSX \uC77D\uAE30 (\uCD5C\uB300 2 MiB)", /* @__PURE__ */ React.createElement("input", { "data-testid": "valuation-xlsx", type: "file", accept: ".xlsx", disabled: frozen, onChange: (e) => {
+    var _a;
+    const file = (_a = e.target.files) == null ? void 0 : _a[0];
+    e.target.value = "";
+    previewXlsx(file);
+  } })), xlsx && /* @__PURE__ */ React.createElement("div", { "data-testid": "xlsx-preview" }, /* @__PURE__ */ React.createElement("p", null, xlsx.name, " \xB7 ", xlsx.sheet_name, " \xB7 ", xlsx.batch.rows.length, "\uD589 \u2014 \uC544\uC9C1 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC804\uCCB4 \uD589 \uB4F1\uB85D \uC2DC \uC774 \uC6D0\uBCF8 \uD30C\uC77C\uB3C4 \uD568\uAED8 \uBCF4\uC874\uB429\uB2C8\uB2E4. \uC544\uB798 \uD45C\uB97C \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("div", { className: "pv-table" }, /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAE30\uC900\uC77C"), /* @__PURE__ */ React.createElement("th", null, "\uC885\uB958"), /* @__PURE__ */ React.createElement("th", null, "\uC804\uCCB4 \uAE08\uC561(\uC6D0)"), /* @__PURE__ */ React.createElement("th", null, "\uCD9C\uCC98"))), /* @__PURE__ */ React.createElement("tbody", null, xlsx.batch.rows.map((r, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("td", null, r.as_of_date), /* @__PURE__ */ React.createElement("td", null, r.valuation_type), /* @__PURE__ */ React.createElement("td", null, String(r.amount)), /* @__PURE__ */ React.createElement("td", null, r.source))))))), /* @__PURE__ */ React.createElement("fieldset", { disabled: frozen }, /* @__PURE__ */ React.createElement("textarea", { "data-testid": "valuation-batch", rows: 6, "aria-label": "\uC77C\uAD04 \uD3C9\uAC00\uC790\uB8CC", value: batch, onChange: (e) => {
+    setBatch(e.target.value);
+    setBatchConfirmed(false);
+    setXlsx(null);
+  } }), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "valuation-batch-confirm", type: "checkbox", checked: batchConfirmed, onChange: (e) => setBatchConfirmed(e.target.checked) }), "\uBAA8\uB4E0 \uD589\uC758 \uC804\uCCB4 \uC7AC\uC0B0 \uAE08\uC561\xB7\uC885\uB958\xB7\uAE30\uC900\uC77C\xB7\uCD9C\uCC98\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("button", { "data-testid": "valuation-batch-save", disabled: busy || pending && pending.kind !== "batch" || !pending && !batchConfirmed, onClick: saveBatch }, (pending == null ? void 0 : pending.kind) === "batch" ? "\uC77C\uAD04 \uB4F1\uB85D \uC7AC\uC2DC\uB3C4" : "\uC804\uCCB4 \uD589 \uB4F1\uB85D")), /* @__PURE__ */ React.createElement("section", { className: "pv-card" }, /* @__PURE__ */ React.createElement("h2", null, "\uB4F1\uB85D\uB41C \uD3C9\uAC00\uC790\uB8CC"), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadRows()) }, "\uD3C9\uAC00 \uBAA9\uB85D \uC0C8\uB85C\uACE0\uCE68"), /* @__PURE__ */ React.createElement("div", { className: "pv-table" }, /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAE30\uC900\uC77C"), /* @__PURE__ */ React.createElement("th", null, "\uC885\uB958"), /* @__PURE__ */ React.createElement("th", null, "\uC804\uCCB4 \uC7AC\uC0B0 \uAE08\uC561(\uC6D0)"), /* @__PURE__ */ React.createElement("th", null, "\uCD9C\uCC98"), /* @__PURE__ */ React.createElement("th", null, "\uCC44\uD0DD \uAC80\uD1A0"))), /* @__PURE__ */ React.createElement("tbody", null, [...rows].sort((a, b) => b.as_of_date.localeCompare(a.as_of_date) || a.id.localeCompare(b.id)).map((r) => /* @__PURE__ */ React.createElement("tr", { key: r.id, "data-testid": "valuation-row-" + r.id }, /* @__PURE__ */ React.createElement("td", null, r.as_of_date), /* @__PURE__ */ React.createElement("td", null, r.valuation_type), /* @__PURE__ */ React.createElement("td", null, BigInt(r.amount).toLocaleString("ko-KR")), /* @__PURE__ */ React.createElement("td", null, r.source), /* @__PURE__ */ React.createElement("td", null, r.hometax_confirm_required ? "\uD648\uD0DD\uC2A4 \uD655\uC778 \uD544\uC694" : "\uC0AC\uAC74\uC5D0\uC11C \uD310\uB2E8")))))), !rows.length && /* @__PURE__ */ React.createElement("p", null, "\uD45C\uC2DC\uD560 \uD3C9\uAC00\uC790\uB8CC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."), cursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadRows(propertyId, true)) }, "\uD3C9\uAC00 \uB354 \uBCF4\uAE30")), /* @__PURE__ */ React.createElement("section", { className: "pv-card" }, /* @__PURE__ */ React.createElement("h2", null, "\uBCF4\uC874\uB41C XLSX \uC6D0\uBCF8"), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8 \uD30C\uC77C\uACFC \uB4F1\uB85D \uB2F9\uC2DC \uD3C9\uAC00\uD589\xB7\uC601\uC218\uC99D\uC744 \uD655\uC778\uD569\uB2C8\uB2E4. \uC774\uD6C4 \uC815\uC815\uB41C \uD3C9\uAC00\uC790\uB8CC\uC640 \uACFC\uAC70 \uC0AC\uAC74 \uACB0\uACFC\uB294 \uAC01\uAC01 \uC720\uC9C0\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadFiles()) }, "\uC6D0\uBCF8 \uBAA9\uB85D \uC0C8\uB85C\uACE0\uCE68"), files.map((f) => /* @__PURE__ */ React.createElement("p", { key: f.id }, /* @__PURE__ */ React.createElement("button", { "data-testid": "valuation-file-" + f.id, disabled: busy, onClick: () => openFile(f.id) }, f.metadata.filename, " \uC6D0\uBCF8 \uC5F4\uAE30"), " \xB7 ", f.metadata.byte_size, "\uBC14\uC774\uD2B8")), fileCursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadFiles(propertyId, true)) }, "\uC6D0\uBCF8 \uB354 \uBCF4\uAE30"), !files.length && /* @__PURE__ */ React.createElement("p", null, "\uBCF4\uC874\uB41C \uC6D0\uBCF8\uC774 \uC5C6\uC2B5\uB2C8\uB2E4. \uC774\uC804\uC5D0 \uD589\uB9CC \uB4F1\uB85D\uD55C \uC790\uB8CC\uB294 \uC6D0\uBCF8\uC744 \uBCF5\uC6D0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."), opened && /* @__PURE__ */ React.createElement("div", { "data-testid": "valuation-original" }, /* @__PURE__ */ React.createElement("h3", null, opened.filename), /* @__PURE__ */ React.createElement("p", null, opened.sheet_name, " \xB7 ", opened.byte_size, "\uBC14\uC774\uD2B8"), /* @__PURE__ */ React.createElement("p", null, "SHA-256: ", /* @__PURE__ */ React.createElement("code", null, opened.file_sha256)), /* @__PURE__ */ React.createElement("p", null, "\uB4F1\uB85D \uC601\uC218\uC99D: ", /* @__PURE__ */ React.createElement("code", null, opened.operation, " / ", opened.idempotency_key)), /* @__PURE__ */ React.createElement("button", { "data-testid": "valuation-original-download", onClick: download }, "\uBCF4\uC874 \uC6D0\uBCF8 \uB0B4\uB824\uBC1B\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "pv-table" }, /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uD30C\uC77C \uD589"), /* @__PURE__ */ React.createElement("th", null, "\uD3C9\uAC00\uD589 ID"), /* @__PURE__ */ React.createElement("th", null, "\uAE30\uC900\uC77C"), /* @__PURE__ */ React.createElement("th", null, "\uC885\uB958"), /* @__PURE__ */ React.createElement("th", null, "\uAE08\uC561(\uC6D0)"), /* @__PURE__ */ React.createElement("th", null, "\uCD9C\uCC98"))), /* @__PURE__ */ React.createElement("tbody", null, opened.registration.items.map((r) => /* @__PURE__ */ React.createElement("tr", { key: r.id }, /* @__PURE__ */ React.createElement("td", null, r.row_number + 1), /* @__PURE__ */ React.createElement("td", null, r.id), /* @__PURE__ */ React.createElement("td", null, r.as_of_date), /* @__PURE__ */ React.createElement("td", null, r.valuation_type), /* @__PURE__ */ React.createElement("td", null, r.amount), /* @__PURE__ */ React.createElement("td", null, r.source))))))))));
+}
+window.JTPropertySources = JTPropertySources;
+
+
+/* ────────── PropertyMasters.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+function JTPropertyMasters({ clientId, onExit, onValuations }) {
+  var _a;
+  const acquisitionBlank = () => ({ inheritance_date: "", decedent_acquisition_date: "", gift_received_date: "", donor_acquisition_date: "", donor_acquisition_price: "0", donor_gift_tax_paid: "0", donor_relationship: "" });
+  const blank = () => __spreadProps(__spreadValues({}, acquisitionBlank()), { necessary_expenses_detail: null, property_type: "\uC8FC\uD0DD", acquired_by: "\uB9E4\uB9E4", address: "", exclusive_area: "", acquisition_date: "", acquisition_price: "", necessary_expenses: "", debt_amount: "", rental_deposit: "", is_regulated_area: "", regulated_at_acquisition: "", note: "", facts_confirmed: false, ownerships: [{ person_id: "", share_ratio: "1" }] });
+  const [person, setPerson] = React.useState({ name: "", birth_date: "" }), [form, setForm] = React.useState(blank);
+  const [persons, setPersons] = React.useState([]), [cursor, setCursor] = React.useState(null), [pending, setPending] = React.useState(null);
+  const [personMeta, setPersonMeta] = React.useState(null), [propertyMeta, setPropertyMeta] = React.useState(null);
+  const [personReason, setPersonReason] = React.useState(""), [propertyReason, setPropertyReason] = React.useState(""), [effective, setEffective] = React.useState("");
+  const [properties, setProperties] = React.useState([]), [propertyCursor, setPropertyCursor] = React.useState(null), [audit, setAudit] = React.useState(null);
+  const personBaseline = React.useRef(JSON.stringify({ name: "", birth_date: "" })), propertyBaseline = React.useRef(JSON.stringify(blank()));
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState(""), [message, setMessage] = React.useState("");
+  const lock = React.useRef(false), alive = React.useRef(true), dirty = React.useRef(false), identity = React.useRef(jtGiftSession.uid);
+  dirty.current = !!pending || !!personReason || !!propertyReason || !!effective || JSON.stringify(person) !== personBaseline.current || JSON.stringify(form) !== propertyBaseline.current;
+  React.useEffect(() => {
+    alive.current = true;
+    const protect = (e) => {
+      if (lock.current || dirty.current) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => {
+      alive.current = false;
+      window.removeEventListener("beforeunload", protect);
+    };
+  }, []);
+  const base = "/v1/clients/" + clientId;
+  const api = async (path, options = {}) => {
+    var _a2, _b;
+    if (identity.current !== jtGiftSession.uid || !jtGiftSession.token) throw new Error("\uC791\uC5C5\uB300\uC5D0\uC11C \uAE30\uC874 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const res = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 401) jtGiftSession.token = "";
+        const messages = { EXPENSE_DETAIL_EXPLICIT_REQUIRED: "\uAE30\uC874 \uD544\uC694\uACBD\uBE44 \uBA85\uC138\uB97C \uD3EC\uD568\uD574 \uC800\uC7A5\uD574 \uC8FC\uC138\uC694.", MASTER_CHANGED: "\uB2E4\uB978 \uC0AC\uC6A9\uC790\uAC00 \uC6D0\uBCF8\uC744 \uBCC0\uACBD\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uD655\uC778\uD558\uACE0 \uCD5C\uC2E0 \uC6D0\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uC8FC\uC138\uC694.", NO_MASTER_CHANGES: "\uBCC0\uACBD\uB41C \uAC12\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.", OWNERSHIP_DATE_REQUIRED_OR_OUT_OF_ORDER: "\uC9C0\uBD84\uC774 \uBC14\uB00C\uBA74 \uC18C\uC720 \uBCC0\uB3D9\uC77C\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uCDE8\uB4DD\uC77C\xB7\uAE30\uC874 \uBCC0\uB3D9\uC77C \uC774\uD6C4\uC774\uACE0 \uC624\uB298 \uC774\uD558\uC5EC\uC57C \uD569\uB2C8\uB2E4.", OWNERSHIP_DATE_WITHOUT_CHANGE: "\uC18C\uC720 \uC9C0\uBD84\uC744 \uBC14\uAFB8\uC9C0 \uC54A\uC558\uB2E4\uBA74 \uBCC0\uB3D9\uC77C\uC744 \uBE44\uC6CC \uC8FC\uC138\uC694.", ACQUISITION_AFTER_OWNERSHIP: "\uCDE8\uB4DD\uC77C\uC774 \uAE30\uB85D\uB41C \uC18C\uC720 \uBCC0\uB3D9\uC77C\uBCF4\uB2E4 \uB2A6\uC2B5\uB2C8\uB2E4.", MASTER_EDIT_UNSUPPORTED: "\uC774 \uCDE8\uB4DD \uC720\uD615\uC758 \uC6D0\uBCF8 \uC218\uC815\uC740 \uC544\uC9C1 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4." };
+        const e = new Error(messages[(_a2 = data.detail) == null ? void 0 : _a2.code] || (res.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uB9CC\uB8CC\uB410\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uD655\uC778\uD55C \uB4A4 \uC791\uC5C5\uB300\uC5D0\uC11C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694." : res.status === 404 ? "\uACE0\uAC1D \uB610\uB294 \uC120\uD0DD\uD55C \uC18C\uC720\uC790\uB97C \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4." : res.status === 422 ? "\uC774\uB984\xB7\uB0A0\uC9DC\xB7\uAE08\uC561\xB7\uBA74\uC801\xB7\uC18C\uC720 \uC9C0\uBD84 \uBC0F \uC0AC\uC2E4 \uD655\uC778\uC744 \uC810\uAC80\uD558\uC138\uC694." : res.status === 409 ? "\uAC19\uC740 \uB4F1\uB85D \uC694\uCCAD\uC73C\uB85C \uB2E4\uB978 \uB0B4\uC6A9\uC774 \uCC98\uB9AC\uB410\uC2B5\uB2C8\uB2E4. \uB4F1\uB85D \uBAA9\uB85D\uC744 \uD655\uC778\uD558\uC138\uC694." : "\uB4F1\uB85D\uC744 \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uAC19\uC740 \uC694\uCCAD\uC73C\uB85C \uC7AC\uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694."));
+        e.status = res.status;
+        e.code = (_b = data.detail) == null ? void 0 : _b.code;
+        throw e;
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e.name === "AbortError" || e instanceof TypeError ? "\uC751\uB2F5\uC744 \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB4F1\uB85D \uC7AC\uC2DC\uB3C4\uB85C \uAC19\uC740 \uC694\uCCAD\uC758 \uACB0\uACFC\uB97C \uD655\uC778\uD558\uC138\uC694." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const load = async (more = false) => {
+    const data = await api(base + "/persons" + (more && cursor ? "?cursor=" + cursor : ""));
+    if (alive.current) {
+      setPersons((old) => more ? [...old, ...data.items] : data.items);
+      setCursor(data.next_cursor);
+    }
+  };
+  const loadProperties = async (more = false) => {
+    const data = await api(base + "/properties" + (more && propertyCursor ? "?cursor=" + propertyCursor : ""));
+    if (alive.current) {
+      setProperties((old) => more ? [...old, ...data.items] : data.items);
+      setPropertyCursor(data.next_cursor);
+    }
+  };
+  const loadHistory = async (kind, id, more = false) => {
+    const data = await api(base + "/masters/" + kind + "/" + id + "/history" + (more && (audit == null ? void 0 : audit.next_before) ? "?before=" + audit.next_before : ""));
+    if (alive.current) setAudit((old) => ({ kind, id, items: more ? [...old.items, ...data.items] : data.items, next_before: data.next_before }));
+  };
+  const accept = (kind, data) => {
+    if (kind === "persons") {
+      const value = { name: data.edit.name, birth_date: data.edit.birth_date || "" };
+      setPerson(value);
+      personBaseline.current = JSON.stringify(value);
+      setPersonMeta(data);
+      setPersonReason("");
+    } else {
+      const value = __spreadProps(__spreadValues(__spreadValues(__spreadValues({}, acquisitionBlank()), data.edit), Object.fromEntries(["inheritance_date", "decedent_acquisition_date", "gift_received_date", "donor_acquisition_date"].map((k) => [k, data.edit[k] || ""]))), { acquisition_date: data.edit.acquisition_date || "", is_regulated_area: data.edit.is_regulated_area ? "yes" : "no", regulated_at_acquisition: data.edit.regulated_at_acquisition ? "yes" : "no" });
+      setForm(value);
+      propertyBaseline.current = JSON.stringify(value);
+      setPropertyMeta(data);
+      setPropertyReason("");
+      setEffective("");
+    }
+  };
+  const open = (kind, id) => act(async () => {
+    if (dirty.current && !window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC120\uD0DD\uD55C \uC6D0\uBCF8\uC744 \uC5F4\uAE4C\uC694?")) return;
+    const data = await api(base + "/masters/" + kind + "/" + id);
+    resetForms();
+    accept(kind, data);
+    setAudit(null);
+    setMessage("");
+    await loadHistory(kind, id);
+  });
+  const resetForms = () => {
+    setPerson({ name: "", birth_date: "" });
+    setForm(blank());
+    personBaseline.current = JSON.stringify({ name: "", birth_date: "" });
+    propertyBaseline.current = JSON.stringify(blank());
+    setPersonMeta(null);
+    setPropertyMeta(null);
+    setPersonReason("");
+    setPropertyReason("");
+    setEffective("");
+    setPending(null);
+  };
+  const newForms = () => {
+    if (dirty.current && !window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC0C8 \uB4F1\uB85D\uC744 \uC2DC\uC791\uD560\uAE4C\uC694?")) return;
+    resetForms();
+    setAudit(null);
+    setError("");
+    setMessage("");
+  };
+  React.useEffect(() => {
+    act(async () => {
+      await load();
+      await loadProperties();
+    });
+  }, []);
+  const change = (key, value) => {
+    setForm((old) => __spreadValues(__spreadProps(__spreadValues({}, old), { [key]: value }), key === "facts_confirmed" ? {} : { facts_confirmed: false }));
+    setMessage("");
+  };
+  const changeAcquisition = (value) => {
+    setForm((old) => __spreadProps(__spreadValues(__spreadValues({}, old), acquisitionBlank()), { acquired_by: value, acquisition_date: "", acquisition_price: "", necessary_expenses: "", necessary_expenses_detail: null, regulated_at_acquisition: "", facts_confirmed: false }));
+    setMessage("\uCDE8\uB4DD \uACBD\uB85C\uAC00 \uBC14\uB00C\uC5C8\uC2B5\uB2C8\uB2E4. \uCDE8\uB4DD\uC77C\xB7\uAE08\uC561\xB7\uD544\uC694\uACBD\uBE44\xB7\uCDE8\uB4DD \uB2F9\uC2DC \uC870\uC815\uC9C0\uC5ED\uACFC \uADFC\uAC70\uB97C \uB2E4\uC2DC \uD655\uC778\uD558\uC138\uC694.");
+  };
+  const expenseChange = (detail) => {
+    const rows = (detail == null ? void 0 : detail.rows) || [], sum = rows.filter((x) => x.included).reduce((n, x) => n + BigInt(/^\d+$/.test(x.amount_krw) ? x.amount_krw : "0"), /* @__PURE__ */ BigInt("0"));
+    setForm((old) => __spreadProps(__spreadValues({}, old), { necessary_expenses_detail: detail ? __spreadProps(__spreadValues({}, detail), { reviewed: false }) : null, necessary_expenses: detail ? String(sum) : old.necessary_expenses, facts_confirmed: false }));
+  };
+  const expenseRow = (index, key, value) => expenseChange(__spreadProps(__spreadValues({}, form.necessary_expenses_detail), { rows: form.necessary_expenses_detail.rows.map((r, i) => i === index ? __spreadProps(__spreadValues({}, r), { [key]: value }) : r) }));
+  const save = (kind) => act(async () => {
+    let request = pending;
+    if (!request) {
+      let body;
+      if (kind === "person") {
+        if (!person.name.trim()) throw new Error("\uC774\uB984\uC744 \uC785\uB825\uD558\uC138\uC694.");
+        body = { name: person.name.trim(), birth_date: person.birth_date || null };
+      } else {
+        body = __spreadProps(__spreadValues({}, form), { amount_basis: "whole_property" });
+        for (const key of ["inheritance_date", "decedent_acquisition_date", "gift_received_date", "donor_acquisition_date"]) body[key] = form[key] || null;
+        for (const key of ["acquisition_price", "necessary_expenses", "debt_amount", "rental_deposit", "donor_acquisition_price", "donor_gift_tax_paid"]) {
+          if (!/^\d+$/.test(form[key]) || !Number.isSafeInteger(Number(form[key]))) throw new Error("\uAE08\uC561\uC740 0\uC6D0 \uC774\uC0C1\uC758 \uC815\uC218\uB85C \uC785\uB825\uD558\uC138\uC694. \uC5C6\uB294 \uAE08\uC561\uB3C4 0\uC6D0\uC73C\uB85C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+          body[key] = Number(form[key]);
+        }
+        for (const key of ["is_regulated_area", "regulated_at_acquisition"]) {
+          if (!["yes", "no"].includes(form[key])) throw new Error("\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC5EC\uBD80\uB97C \uD655\uC778\uD574 \uC120\uD0DD\uD558\uC138\uC694.");
+          body[key] = form[key] === "yes";
+        }
+        if (!form.facts_confirmed) throw new Error("\uC804\uCCB4 \uC7AC\uC0B0 \uAE08\uC561\uACFC \uC18C\uC720 \uC0AC\uC2E4\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      }
+      const meta = kind === "person" ? personMeta : propertyMeta;
+      if (meta) {
+        body.reason = kind === "person" ? personReason.trim() : propertyReason.trim();
+        if (!body.reason) throw new Error("\uC218\uC815 \uC0AC\uC720\uB97C \uC785\uB825\uD558\uC138\uC694.");
+        if (kind === "property") body.ownership_effective_date = effective || null;
+      }
+      request = { kind, key: window.crypto.randomUUID(), body, meta: meta ? { id: meta.id, etag: meta.etag } : null };
+      setPending(request);
+    }
+    try {
+      const noun = request.kind === "person" ? "persons" : "properties";
+      const path = base + (request.meta ? "/masters/" + noun + "/" + request.meta.id : "/" + noun);
+      const data = await api(path, { method: request.meta ? "PUT" : "POST", headers: __spreadValues({ "Idempotency-Key": request.key }, request.meta ? { "If-Match": request.meta.etag } : {}), body: JSON.stringify(request.body) });
+      setPending(null);
+      if (request.meta) {
+        accept(noun, data);
+        setMessage("\uC6D0\uBCF8 \uC218\uC815\uACFC \uBCC0\uACBD \uC774\uB825\uC774 \uC800\uC7A5\uB410\uC2B5\uB2C8\uB2E4. \uC0AC\uAC74\uC5D0\uC11C \uBCC0\uACBD \uC790\uB8CC\uB97C \uB2E4\uC2DC \uC120\uD0DD\uD574 \uAC00\uC838\uC640\uC57C \uBC18\uC601\uB429\uB2C8\uB2E4.");
+        await load();
+        await loadProperties();
+        await loadHistory(noun, data.id);
+      } else if (request.kind === "person") {
+        setPerson({ name: "", birth_date: "" });
+        setPersons((old) => [...old.filter((p) => p.id !== data.id), data]);
+        setMessage("\uB2F9\uC0AC\uC790\uAC00 \uB4F1\uB85D\uB410\uC2B5\uB2C8\uB2E4. \uC18C\uC720\uC790\uB098 \uC218\uC99D\uC790\uB85C \uC120\uD0DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.");
+      } else {
+        setForm(blank());
+        propertyBaseline.current = JSON.stringify(blank());
+        await loadProperties();
+        setMessage("\uC7AC\uC0B0\uACFC \uC18C\uC720 \uC9C0\uBD84\uC774 \uD568\uAED8 \uB4F1\uB85D\uB410\uC2B5\uB2C8\uB2E4. \uD3C9\uAC00\uC790\uB8CC\uB97C \uCD94\uAC00\uD55C \uB4A4 \uC0AC\uAC74\uC5D0\uC11C \uAC00\uC838\uC624\uC138\uC694.");
+      }
+    } catch (e) {
+      if ([400, 403, 404, 422].includes(e.status) || e.code === "MASTER_CHANGED") setPending(null);
+      throw e;
+    }
+  });
+  const leave = (fn) => {
+    if (!dirty.current || window.confirm(pending ? "\uB4F1\uB85D \uACB0\uACFC\uAC00 \uBBF8\uD655\uC778\uC785\uB2C8\uB2E4. \uC11C\uBC84\uC5D0 \uC800\uC7A5\uB410\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uBAA9\uB85D\uC744 \uD655\uC778\uD558\uBA70 \uC774\uB3D9\uD560\uAE4C\uC694?" : "\uB4F1\uB85D\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?")) fn();
+  };
+  const frozen = busy || !!pending;
+  const money = [["acquisition_price", "\uCDE8\uB4DD\uAE08\uC561"], ["necessary_expenses", "\uD544\uC694\uACBD\uBE44"], ["debt_amount", "\uCC44\uBB34\uC561"], ["rental_deposit", "\uC784\uB300\uBCF4\uC99D\uAE08"]];
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container", style: { maxWidth: 1040, padding: "32px 20px" } }, /* @__PURE__ */ React.createElement("style", null, `.pm-card{background:white;border:1px solid #d9e0d9;border-radius:12px;padding:20px;margin:20px 0}.pm-fields{display:flex;flex-wrap:wrap;gap:16px}.pm-fields label{display:flex;flex-direction:column;gap:6px}.pm-card input,.pm-card select{padding:10px;font:inherit;min-height:44px;max-width:100%}.pm-card button{min-height:44px}.pm-owner{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}.pm-card fieldset{border:0;padding:0}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => leave(onExit) }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uB2F9\uC0AC\uC790\xB7\uC7AC\uC0B0 \uB4F1\uB85D\uACFC \uC218\uC815"), /* @__PURE__ */ React.createElement("p", null, "\uC8FC\uD0DD\uACFC \uB9E4\uB9E4 \uCDE8\uB4DD \uD1A0\uC9C0\xB7\uC0C1\uAC00\uC758 \uC6D0\uBCF8 \uBC0F \uC18C\uC720 \uBCC0\uB3D9 \uC774\uB825\uC744 \uAD00\uB9AC\uD569\uB2C8\uB2E4. \uBD84\uC591\uAD8C\xB7\uC785\uC8FC\uAD8C \uB4F1\uB85D\uC740 \uC544\uC9C1 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), message && /* @__PURE__ */ React.createElement("p", { role: "status" }, message), /* @__PURE__ */ React.createElement("section", { className: "pm-card" }, /* @__PURE__ */ React.createElement("h2", null, "\uAE30\uC874 \uC6D0\uBCF8 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement("button", { disabled: frozen, onClick: newForms }, "\uC0C8 \uB4F1\uB85D\uC73C\uB85C \uC804\uD658"), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadProperties()) }, "\uC7AC\uC0B0 \uBAA9\uB85D \uC0C8\uB85C\uACE0\uCE68"), /* @__PURE__ */ React.createElement("ul", null, properties.map((p) => /* @__PURE__ */ React.createElement("li", { key: p.id }, p.address || "\uC8FC\uC18C \uC5C6\uB294 \uC7AC\uC0B0", " ", /* @__PURE__ */ React.createElement("button", { "data-testid": "master-edit-property-" + p.id, disabled: frozen, onClick: () => open("properties", p.id) }, "\uC7AC\uC0B0 \uC218\uC815\xB7\uC774\uB825")))), propertyCursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadProperties(true)) }, "\uC7AC\uC0B0 \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("p", null, "\uC18C\uC720 \uBCC0\uB3D9\uC740 \uCDE8\uB4DD \uC6D0\uC778\uACFC \uAE08\uC561\uC744 \uC790\uB3D9\uC73C\uB85C \uACB0\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC0C8 \uC18C\uC720\uC790\uC758 \uCDE8\uB4DD \uC0AC\uC2E4\uC740 \uC0AC\uAC74\uC5D0\uC11C \uB2E4\uC2DC \uD655\uC778\uD558\uC138\uC694. \uACFC\uAC70 \uC0AC\uAC74\uC740 \uC800\uC7A5 \uB2F9\uC2DC \uC785\uB825\uACFC \uACB0\uACFC\uB97C \uC720\uC9C0\uD569\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("section", { className: "pm-card" }, /* @__PURE__ */ React.createElement("h2", null, "1. \uB2F9\uC0AC\uC790 \uB4F1\uB85D"), /* @__PURE__ */ React.createElement("p", null, "\uC18C\uC720\uC790\uC640 \uC218\uC99D\uC790\uB97C \uAC01\uAC01 \uB4F1\uB85D\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC138\uBC95\uC0C1 \uAD00\uACC4\uB294 \uC0AC\uAC74\uC5D0\uC11C \uD655\uC778\uD558\uBA70, \uC5EC\uAE30\uC11C \uCD94\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("fieldset", { disabled: frozen }, /* @__PURE__ */ React.createElement("div", { className: "pm-fields" }, /* @__PURE__ */ React.createElement("label", null, "\uC774\uB984", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-person-name", maxLength: 200, value: person.name, onChange: (e) => setPerson((old) => __spreadProps(__spreadValues({}, old), { name: e.target.value })) })), /* @__PURE__ */ React.createElement("label", null, "\uC0DD\uB144\uC6D4\uC77C(\uC120\uD0DD)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-person-birth", type: "date", value: person.birth_date, onChange: (e) => setPerson((old) => __spreadProps(__spreadValues({}, old), { birth_date: e.target.value })) })))), personMeta && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC218\uC815 \uC911 \xB7 \uBCC0\uACBD ", personMeta.revision, "\uD68C"), /* @__PURE__ */ React.createElement("label", null, "\uC218\uC815 \uC0AC\uC720", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-person-reason", value: personReason, maxLength: 1e3, disabled: frozen, onChange: (e) => setPersonReason(e.target.value) })), /* @__PURE__ */ React.createElement("button", { disabled: frozen, onClick: () => open("persons", personMeta.id) }, "\uB2F9\uC0AC\uC790 \uCD5C\uC2E0 \uC6D0\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30")), /* @__PURE__ */ React.createElement("button", { "data-testid": "master-person-save", disabled: busy || pending && pending.kind !== "person" || !pending && !person.name.trim(), onClick: () => save("person") }, (pending == null ? void 0 : pending.kind) === "person" ? pending.meta ? "\uB2F9\uC0AC\uC790 \uC218\uC815 \uC7AC\uC2DC\uB3C4" : "\uB2F9\uC0AC\uC790 \uB4F1\uB85D \uC7AC\uC2DC\uB3C4" : personMeta ? "\uB2F9\uC0AC\uC790 \uC218\uC815 \uC800\uC7A5" : "\uB2F9\uC0AC\uC790 \uB4F1\uB85D"), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => load()) }, "\uB2F9\uC0AC\uC790 \uC0C8\uB85C\uACE0\uCE68"), cursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => load(true)) }, "\uB2F9\uC0AC\uC790 \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("ul", null, persons.map((p) => /* @__PURE__ */ React.createElement("li", { key: p.id }, p.name, " \xB7 ", p.birth_date || "\uC0DD\uB144\uC6D4\uC77C \uBBF8\uB4F1\uB85D", " ", /* @__PURE__ */ React.createElement("button", { "data-testid": "master-edit-person-" + p.id, disabled: frozen, onClick: () => open("persons", p.id) }, "\uB2F9\uC0AC\uC790 \uC218\uC815\xB7\uC774\uB825"))))), /* @__PURE__ */ React.createElement("section", { className: "pm-card" }, /* @__PURE__ */ React.createElement("h2", null, "2. \uC7AC\uC0B0\uACFC \uC18C\uC720 \uC9C0\uBD84 \uB4F1\uB85D"), /* @__PURE__ */ React.createElement("p", null, "\uAE08\uC561\uC740 \uC804\uCCB4 \uC7AC\uC0B0 \uAE30\uC900\uC785\uB2C8\uB2E4. \uC5C6\uB294 \uCC44\uBB34\xB7\uBCF4\uC99D\uAE08\uB3C4 0\uC6D0\uC73C\uB85C \uC785\uB825\uD558\uC138\uC694. \uB4F1\uB85D \uC9C0\uBD84 \uD569\uACC4\uB294 1 \uC774\uD558\uC5EC\uC57C \uD558\uBA70, \uBBF8\uB4F1\uB85D \uC9C0\uBD84\uC740 \uC790\uB3D9\uC73C\uB85C \uCD94\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("fieldset", { disabled: frozen || propertyMeta && !propertyMeta.editable }, /* @__PURE__ */ React.createElement("div", { className: "pm-fields" }, /* @__PURE__ */ React.createElement("label", null, "\uC790\uC0B0 \uC720\uD615", /* @__PURE__ */ React.createElement("select", { "data-testid": "master-property_type", value: form.property_type, onChange: (e) => {
+    const property_type = e.target.value;
+    setForm((old) => __spreadProps(__spreadValues(__spreadValues({}, old), acquisitionBlank()), { property_type, acquired_by: "\uB9E4\uB9E4", is_regulated_area: property_type === "\uC8FC\uD0DD" ? "" : "no", regulated_at_acquisition: property_type === "\uC8FC\uD0DD" ? "" : "no", facts_confirmed: false }));
+  } }, /* @__PURE__ */ React.createElement("option", null, "\uC8FC\uD0DD"), /* @__PURE__ */ React.createElement("option", null, "\uD1A0\uC9C0"), /* @__PURE__ */ React.createElement("option", null, "\uC0C1\uAC00"))), /* @__PURE__ */ React.createElement("label", null, "\uC18C\uC7AC\uC9C0", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-address", maxLength: 500, value: form.address, onChange: (e) => change("address", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, form.property_type === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0\uBA74\uC801(\u33A1)" : "\uC804\uC6A9\uBA74\uC801(\u33A1)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-exclusive_area", inputMode: "decimal", value: form.exclusive_area, onChange: (e) => change("exclusive_area", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD \uACBD\uB85C", /* @__PURE__ */ React.createElement("select", { "data-testid": "master-acquired_by", value: form.acquired_by, onChange: (e) => changeAcquisition(e.target.value) }, /* @__PURE__ */ React.createElement("option", null, "\uB9E4\uB9E4"), form.property_type === "\uC8FC\uD0DD" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("option", null, "\uC0C1\uC18D"), /* @__PURE__ */ React.createElement("option", null, "\uC99D\uC5EC")))), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-acquisition_date", type: "date", value: form.acquisition_date, onChange: (e) => change("acquisition_date", e.target.value) })), money.map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k }, label, "(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-" + k, inputMode: "numeric", disabled: k === "necessary_expenses" && !!form.necessary_expenses_detail, value: form[k], onChange: (e) => change(k, e.target.value) }))), form.property_type === "\uC8FC\uD0DD" && [["is_regulated_area", "\uD604\uC7AC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED"], ["regulated_at_acquisition", "\uCDE8\uB4DD \uB2F9\uC2DC \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED"]].map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k }, label, /* @__PURE__ */ React.createElement("select", { "data-testid": "master-" + k, value: form[k], onChange: (e) => change(k, e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD655\uC778 \uD6C4 \uC120\uD0DD"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uD574\uB2F9"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uD574\uB2F9 \uC5C6\uC74C")))), /* @__PURE__ */ React.createElement("label", null, "\uC790\uB8CC \uCD9C\uCC98\xB7\uAC80\uD1A0 \uBA54\uBAA8", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-note", maxLength: 1e3, value: form.note, onChange: (e) => change("note", e.target.value) }))), form.acquired_by === "\uC0C1\uC18D" && /* @__PURE__ */ React.createElement("div", { className: "pm-fields" }, /* @__PURE__ */ React.createElement("label", null, "\uC0C1\uC18D\uAC1C\uC2DC\uC77C(\uCDE8\uB4DD\uC77C\uACFC \uC77C\uCE58)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-inheritance_date", type: "date", value: form.inheritance_date, onChange: (e) => change("inheritance_date", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uD53C\uC0C1\uC18D\uC778 \uCDE8\uB4DD\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-decedent_acquisition_date", type: "date", value: form.decedent_acquisition_date, onChange: (e) => change("decedent_acquisition_date", e.target.value) }))), form.acquired_by === "\uC99D\uC5EC" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "pm-fields" }, /* @__PURE__ */ React.createElement("label", null, "\uC99D\uC5EC\uBC1B\uC740 \uB0A0(\uCDE8\uB4DD\uC77C\uACFC \uC77C\uCE58)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-gift_received_date", type: "date", value: form.gift_received_date, onChange: (e) => change("gift_received_date", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC99D\uC5EC\uC790 \uAD00\uACC4", /* @__PURE__ */ React.createElement("select", { "data-testid": "master-donor_relationship", value: form.donor_relationship, onChange: (e) => change("donor_relationship", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD655\uC778 \uD6C4 \uC120\uD0DD"), ["\uBC30\uC6B0\uC790", "\uC9C1\uACC4\uC874\uBE44\uC18D", "\uC9C1\uACC4\uC874\uC18D", "\uC9C1\uACC4\uBE44\uC18D", "\uAE30\uD0C0"].map((x) => /* @__PURE__ */ React.createElement("option", { key: x }, x)))), /* @__PURE__ */ React.createElement("label", null, "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uC77C(\uD655\uC778\uB41C \uACBD\uC6B0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-donor_acquisition_date", type: "date", value: form.donor_acquisition_date, onChange: (e) => change("donor_acquisition_date", e.target.value) })), [["donor_acquisition_price", "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uAE08\uC561"], ["donor_gift_tax_paid", "\uC774 \uC7AC\uC0B0\uC5D0 \uB300\uC751\uD558\uB294 \uC99D\uC5EC\uC138 \uC0B0\uCD9C\uC138\uC561"]].map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k }, label, "(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-" + k, inputMode: "numeric", disabled: k === "necessary_expenses" && !!form.necessary_expenses_detail, value: form[k], onChange: (e) => change(k, e.target.value) })))), /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uAE08\uC561\xB7\uC99D\uC5EC\uC138 \uC0B0\uCD9C\uC138\uC561\uC740 \uC804\uCCB4 \uC7AC\uC0B0\uC5D0 \uB300\uC751\uD558\uB294 \uAE08\uC561\uC785\uB2C8\uB2E4. \uBBF8\uD655\uC778 \uC2DC 0\uC73C\uB85C \uBCF4\uAD00\uD558\uACE0 \uC0AC\uAC74\uC5D0\uC11C \uBCF4\uC644\uD558\uC138\uC694. \uC2E4\uC81C \uB0A9\uBD80\uC561\uACFC \uAD6C\uBD84\uD558\uBA70, \uC774\uC6D4\uACFC\uC138 \uC801\uC6A9 \uC5EC\uBD80\uC640 \uC77C\uBD80 \uC9C0\uBD84\uC758 \uBC30\uBD84\uC561\uC740 \uC591\uB3C4 \uC0AC\uAC74\uC5D0\uC11C \uB530\uB85C \uD655\uC778\uD569\uB2C8\uB2E4.")), form.acquired_by !== "\uB9E4\uB9E4" && /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uAE08\uC561\uC5D0\uB294 \uD574\uB2F9 \uCDE8\uB4DD \uB2F9\uC2DC \uD655\uC778\uD55C \uD3C9\uAC00\uC561\uC744 \uC785\uB825\uD558\uACE0, \uC790\uB8CC \uCD9C\uCC98\xB7\uAC80\uD1A0 \uBA54\uBAA8\uC5D0 \uADFC\uAC70\uB97C \uB0A8\uAE30\uC138\uC694. \uC6D0\uBCF8 \uB4F1\uB85D\uB9CC\uC73C\uB85C \uD2B9\uB840\uAC00 \uC801\uC6A9\uB418\uC9C0\uB294 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("h3", null, "\uD544\uC694\uACBD\uBE44 \uBA85\uC138"), /* @__PURE__ */ React.createElement("p", null, "\uC7AC\uC0B0 \uC804\uCCB4 \uAE30\uC900\uC73C\uB85C \uAC80\uD1A0\uD55C \uAE08\uC561\uC785\uB2C8\uB2E4. \uD56D\uBAA9\uBA85\uB9CC\uC73C\uB85C \uC0B0\uC785\uC744 \uD310\uC815\uD558\uC9C0 \uC54A\uC73C\uBA70 \uCDE8\uB4DD\uAC00\uC561\uC5D0 \uC774\uBBF8 \uD3EC\uD568\uD55C \uAE08\uC561\uC744 \uC911\uBCF5 \uC0B0\uC785\uD558\uC9C0 \uB9C8\uC138\uC694."), /* @__PURE__ */ React.createElement("label", null, "\uC785\uB825 \uBC29\uC2DD", /* @__PURE__ */ React.createElement("select", { "data-testid": "expense-mode", value: form.necessary_expenses_detail ? "detail" : "total", onChange: (e) => {
+    if (e.target.value === "total") {
+      if (window.confirm("\uD604\uC7AC \uBA85\uC138\uB97C \uBE44\uC6B0\uACE0 \uD569\uACC4 \uC785\uB825\uC73C\uB85C \uC804\uD658\uD560\uAE4C\uC694? \uC800\uC7A5\uB41C \uACFC\uAC70 \uC774\uB825\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4.")) expenseChange(null);
+    } else expenseChange({ schema_version: "property-expenses/1", reviewed: false, review_note: "", rows: [{ local_id: window.crypto.randomUUID(), description: "", amount_krw: form.necessary_expenses || "0", included: false, source: "" }] });
+  } }, /* @__PURE__ */ React.createElement("option", { value: "total" }, "\uD569\uACC4 \uC785\uB825"), /* @__PURE__ */ React.createElement("option", { value: "detail" }, "\uBA85\uC138 \uD569\uACC4 \uC0AC\uC6A9"))), ((_a = form.necessary_expenses_detail) == null ? void 0 : _a.schema_version) === "property-expenses/1" && (!propertyMeta || propertyMeta.editable) && /* @__PURE__ */ React.createElement(React.Fragment, null, form.necessary_expenses_detail.rows.map((r, i) => /* @__PURE__ */ React.createElement("div", { className: "pm-owner", key: r.local_id }, /* @__PURE__ */ React.createElement("label", null, "\uD56D\uBAA9\uBA85", /* @__PURE__ */ React.createElement("input", { "data-testid": "expense-description-" + i, value: r.description, maxLength: 200, onChange: (e) => expenseRow(i, "description", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uAE08\uC561(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "expense-amount-" + i, value: r.amount_krw, inputMode: "numeric", onChange: (e) => expenseRow(i, "amount_krw", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC99D\uBE59 \uCD9C\uCC98\xB7\uC81C\uC678 \uC0AC\uC720", /* @__PURE__ */ React.createElement("input", { "data-testid": "expense-source-" + i, value: r.source, maxLength: 500, onChange: (e) => expenseRow(i, "source", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "expense-included-" + i, type: "checkbox", checked: r.included, onChange: (e) => expenseRow(i, "included", e.target.checked) }), "\uAC80\uD1A0 \uD6C4 \uC0B0\uC785"), /* @__PURE__ */ React.createElement("button", { "data-testid": "expense-remove-" + i, disabled: form.necessary_expenses_detail.rows.length === 1, onClick: () => expenseChange(__spreadProps(__spreadValues({}, form.necessary_expenses_detail), { rows: form.necessary_expenses_detail.rows.filter((_, j) => i !== j) })) }, "\uD56D\uBAA9 \uC0AD\uC81C"))), /* @__PURE__ */ React.createElement("button", { "data-testid": "expense-add", disabled: form.necessary_expenses_detail.rows.length >= 100, onClick: () => expenseChange(__spreadProps(__spreadValues({}, form.necessary_expenses_detail), { rows: [...form.necessary_expenses_detail.rows, { local_id: window.crypto.randomUUID(), description: "", amount_krw: "0", included: false, source: "" }] })) }, "\uD544\uC694\uACBD\uBE44 \uD56D\uBAA9 \uCD94\uAC00"), /* @__PURE__ */ React.createElement("p", { "data-testid": "expense-total" }, "\uC0B0\uC785 \uD569\uACC4 ", form.necessary_expenses, "\uC6D0"), /* @__PURE__ */ React.createElement("label", null, "\uC0B0\uC785\xB7\uC81C\uC678 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "expense-review-note", value: form.necessary_expenses_detail.review_note, maxLength: 1e3, onChange: (e) => expenseChange(__spreadProps(__spreadValues({}, form.necessary_expenses_detail), { review_note: e.target.value })) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "expense-reviewed", type: "checkbox", checked: form.necessary_expenses_detail.reviewed, onChange: (e) => change("necessary_expenses_detail", __spreadProps(__spreadValues({}, form.necessary_expenses_detail), { reviewed: e.target.checked })) }), "\uAE08\uC561\xB7\uC99D\uBE59\xB7\uC0B0\uC785 \uBC94\uC704\uC640 \uCDE8\uB4DD\uAC00\uC561 \uC911\uBCF5 \uC5EC\uBD80\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("h3", null, "\uC18C\uC720\uC790\uC640 \uC804\uCCB4 \uC7AC\uC0B0 \uB300\uBE44 \uC9C0\uBD84"), form.ownerships.map((o, i) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("div", { className: "pm-owner", key: i }, /* @__PURE__ */ React.createElement("label", null, "\uC18C\uC720\uC790", /* @__PURE__ */ React.createElement("select", { "data-testid": "master-owner-" + i, value: o.person_id, onChange: (e) => change("ownerships", form.ownerships.map((x, j) => i === j ? __spreadProps(__spreadValues({}, x), { person_id: e.target.value }) : x)) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC18C\uC720\uC790 \uC120\uD0DD"), o.person_id && !persons.some((p) => p.id === o.person_id) && /* @__PURE__ */ React.createElement("option", { value: o.person_id }, ((_a2 = propertyMeta == null ? void 0 : propertyMeta.snapshot.ownerships.find((x) => x.person_id === o.person_id)) == null ? void 0 : _a2.name) || "\uC120\uD0DD\uB41C \uC18C\uC720\uC790", " \xB7 \uAE30\uC874 \uC120\uD0DD"), persons.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id }, p.name, " \xB7 ", p.birth_date || "\uC0DD\uB144\uC6D4\uC77C \uBBF8\uB4F1\uB85D", " \xB7 ", p.id.slice(0, 8))))), /* @__PURE__ */ React.createElement("label", null, "\uC9C0\uBD84(1=\uC804\uCCB4, 0.5=\uC808\uBC18)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-share-" + i, inputMode: "decimal", value: o.share_ratio, onChange: (e) => change("ownerships", form.ownerships.map((x, j) => i === j ? __spreadProps(__spreadValues({}, x), { share_ratio: e.target.value }) : x)) })), /* @__PURE__ */ React.createElement("button", { disabled: form.ownerships.length === 1, onClick: () => change("ownerships", form.ownerships.filter((_, j) => i !== j)) }, "\uC18C\uC720\uC790 \uC81C\uC678"));
+  }), /* @__PURE__ */ React.createElement("button", { "data-testid": "master-owner-add", disabled: form.ownerships.length >= 20, onClick: () => change("ownerships", [...form.ownerships, { person_id: "", share_ratio: "" }]) }, "\uC18C\uC720\uC790 \uCD94\uAC00"), propertyMeta && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC218\uC815 \uC911 \xB7 \uBCC0\uACBD ", propertyMeta.revision, "\uD68C \xB7 \uCD5C\uADFC \uC18C\uC720 \uBCC0\uB3D9\uC77C ", propertyMeta.snapshot.record.ownership_effective_date || "\uAE30\uB85D \uC5C6\uC74C"), /* @__PURE__ */ React.createElement("label", null, "\uC218\uC815 \uC0AC\uC720", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-property-reason", maxLength: 1e3, value: propertyReason, onChange: (e) => {
+    setPropertyReason(e.target.value);
+    change("facts_confirmed", false);
+  } })), /* @__PURE__ */ React.createElement("label", null, "\uC18C\uC720 \uBCC0\uB3D9\uC77C(\uC9C0\uBD84\xB7\uC18C\uC720\uC790 \uBCC0\uACBD \uC2DC \uD544\uC218)", /* @__PURE__ */ React.createElement("input", { "data-testid": "master-effective", type: "date", value: effective, onChange: (e) => {
+    setEffective(e.target.value);
+    change("facts_confirmed", false);
+  } }))), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "master-confirm", type: "checkbox", checked: form.facts_confirmed, onChange: (e) => change("facts_confirmed", e.target.checked) }), "\uC804\uCCB4 \uC7AC\uC0B0\uC758 \uAE08\uC561\xB7\uCDE8\uB4DD \uC0AC\uC2E4\xB7\uAE30\uC7AC\uD55C \uC18C\uC720 \uC9C0\uBD84\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("button", { "data-testid": "master-property-save", disabled: busy || propertyMeta && !propertyMeta.editable || pending && pending.kind !== "property" || !pending && !form.facts_confirmed, onClick: () => save("property") }, (pending == null ? void 0 : pending.kind) === "property" ? pending.meta ? "\uC7AC\uC0B0 \uC218\uC815 \uC7AC\uC2DC\uB3C4" : "\uC7AC\uC0B0 \uB4F1\uB85D \uC7AC\uC2DC\uB3C4" : propertyMeta ? "\uC7AC\uC0B0\xB7\uC18C\uC720 \uC218\uC815 \uC800\uC7A5" : "\uC7AC\uC0B0\xB7\uC18C\uC720 \uB4F1\uB85D")), propertyMeta && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { disabled: frozen, onClick: () => open("properties", propertyMeta.id) }, "\uC7AC\uC0B0 \uCD5C\uC2E0 \uC6D0\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30"), !propertyMeta.editable && /* @__PURE__ */ React.createElement("p", { role: "alert" }, "\uC774 \uCDE8\uB4DD \uC720\uD615 \uB610\uB294 \uBCF4\uAD00\uB41C \uD544\uC694\uACBD\uBE44 \uD615\uC2DD\uC740 \uD604\uC7AC \uC77D\uAE30\uC640 \uC774\uB825 \uC870\uD68C\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.")), audit && /* @__PURE__ */ React.createElement("section", { className: "pm-card", "data-testid": "master-history" }, /* @__PURE__ */ React.createElement("h2", null, "\uC6D0\uBCF8 \uBCC0\uACBD \uC774\uB825"), /* @__PURE__ */ React.createElement("p", null, "\uBCC0\uACBD \uC804\uD6C4 \uC790\uB8CC\uC640 \uAE30\uB85D \uC2DC\uC810\uC785\uB2C8\uB2E4. \uACFC\uAC70 \uC0AC\uAC74\uC744 \uC790\uB3D9\uC73C\uB85C \uACE0\uCE58\uAC70\uB098 \uC774 \uC774\uB825\uC73C\uB85C \uACFC\uAC70 \uC9C0\uBD84\uC744 \uC790\uB3D9 \uCC44\uD0DD\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !audit.items.length && /* @__PURE__ */ React.createElement("p", null, "\uAE30\uB85D\uB41C \uC218\uC815\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."), audit.items.map((h) => /* @__PURE__ */ React.createElement("details", { key: h.id }, /* @__PURE__ */ React.createElement("summary", null, "\uBCC0\uACBD ", h.revision, " \xB7 ", h.reason, " \xB7 ", h.ownership_effective_date ? "\uC18C\uC720 \uBCC0\uB3D9\uC77C " + h.ownership_effective_date : "\uC815\uBCF4 \uC815\uC815"), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uB85D ", h.recorded_at, " \xB7 \uC218\uC815\uC790 ", h.actor_id), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uD56D\uBAA9"), /* @__PURE__ */ React.createElement("th", null, "\uBCC0\uACBD \uC804"), /* @__PURE__ */ React.createElement("th", null, "\uBCC0\uACBD \uD6C4"))), /* @__PURE__ */ React.createElement("tbody", null, Object.entries({ name: "\uC774\uB984", birth_date: "\uC0DD\uB144\uC6D4\uC77C", address: "\uC18C\uC7AC\uC9C0", acquired_by: "\uCDE8\uB4DD \uACBD\uB85C", inheritance_date: "\uC0C1\uC18D\uAC1C\uC2DC\uC77C", decedent_acquisition_date: "\uD53C\uC0C1\uC18D\uC778 \uCDE8\uB4DD\uC77C", gift_received_date: "\uC99D\uC5EC\uBC1B\uC740 \uB0A0", donor_acquisition_date: "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uC77C", donor_acquisition_price: "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uAE08\uC561", donor_gift_tax_paid: "\uC99D\uC5EC\uC138 \uC0B0\uCD9C\uC138\uC561", donor_relationship: "\uC99D\uC5EC\uC790 \uAD00\uACC4", exclusive_area: "\uBA74\uC801", acquisition_date: "\uCDE8\uB4DD\uC77C", acquisition_price: "\uCDE8\uB4DD\uAE08\uC561", necessary_expenses: "\uD544\uC694\uACBD\uBE44", necessary_expenses_detail: "\uD544\uC694\uACBD\uBE44 \uBA85\uC138", debt_amount: "\uCC44\uBB34", rental_deposit: "\uBCF4\uC99D\uAE08", is_regulated_area: "\uD604\uC7AC \uC870\uC815\uC9C0\uC5ED", regulated_at_acquisition: "\uCDE8\uB4DD \uB2F9\uC2DC \uC870\uC815\uC9C0\uC5ED", note: "\uCD9C\uCC98 \uBA54\uBAA8", ownership_effective_date: "\uC18C\uC720 \uBCC0\uB3D9\uC77C" }).filter(([k]) => h.before_snapshot.record[k] !== h.after_snapshot.record[k]).map(([k, label]) => {
+    var _a2, _b;
+    return /* @__PURE__ */ React.createElement("tr", { key: k }, /* @__PURE__ */ React.createElement("th", null, label), /* @__PURE__ */ React.createElement("td", null, k === "necessary_expenses_detail" ? JSON.stringify(h.before_snapshot.record[k]) : String((_a2 = h.before_snapshot.record[k]) != null ? _a2 : "\uBBF8\uB4F1\uB85D")), /* @__PURE__ */ React.createElement("td", null, k === "necessary_expenses_detail" ? JSON.stringify(h.after_snapshot.record[k]) : String((_b = h.after_snapshot.record[k]) != null ? _b : "\uBBF8\uB4F1\uB85D")));
+  }))), h.before_snapshot.ownerships && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uBCC0\uACBD \uC804 \uC18C\uC720: ", h.before_snapshot.ownerships.map((x) => x.name + " " + x.share_ratio).join(" / ")), /* @__PURE__ */ React.createElement("p", null, "\uBCC0\uACBD \uD6C4 \uC18C\uC720: ", h.after_snapshot.ownerships.map((x) => x.name + " " + x.share_ratio).join(" / "))))), audit.next_before && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadHistory(audit.kind, audit.id, true)) }, "\uC774\uB825 \uB354 \uBCF4\uAE30")), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => leave(onValuations) }, "\uD3C9\uAC00\uC790\uB8CC \uB4F1\uB85D\uC73C\uB85C \uC774\uB3D9"));
+}
+window.JTPropertyMasters = JTPropertyMasters;
+
+
+/* ────────── InheritanceCases.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+let jtInheritanceSession = null;
+function inheritanceDirty(w = jtInheritanceSession) {
+  return !!w && JSON.stringify({ label: w.label, draft: w.draft }) !== w.baseline;
+}
+function JTInheritanceCases({ clientId, caseId, onExit }) {
+  var _a, _b, _c, _d, _e, _f;
+  const [w, setW] = React.useState(jtInheritanceSession);
+  const [opened, setOpened] = React.useState(false);
+  const ref = React.useRef(w), lock = React.useRef(false), alive = React.useRef(true);
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState("");
+  const [revision, setRevision] = React.useState("");
+  const [equityTarget, setEquityTarget] = React.useState("new");
+  const [persons, setPersons] = React.useState([]);
+  const keys = React.useRef({});
+  const remember = (value) => {
+    ref.current = value;
+    jtInheritanceSession = value;
+    if (alive.current) setW(value);
+  };
+  const api = async (path, options = {}) => {
+    var _a2, _b2;
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const r = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        if (r.status === 401) jtGiftSession.token = "";
+        const messages = { REVISION_CONFLICT: "\uB2E4\uB978 \uC800\uC7A5\uBCF8\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", SNAPSHOT_MIGRATION_REQUIRED: "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC800\uC7A5 \uBC84\uC804\uC785\uB2C8\uB2E4.", PARTY_OUTSIDE_CLIENT: "\uC120\uD0DD\uD55C \uB2F9\uC0AC\uC790\uAC00 \uC774 \uACE0\uAC1D\uC758 \uC790\uB8CC\uAC00 \uC544\uB2D9\uB2C8\uB2E4.", INVALID_CASE_INPUT: "\uAE08\uC561\uACFC \uC911\uBCF5 \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", DRAFT_NOT_RUNNABLE: "\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", ENGINE_CALCULATION_ERROR: "\uACC4\uC0B0 \uC785\uB825\uC744 \uCD94\uAC00 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uACB0\uACFC\uB294 \uC800\uC7A5\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4." };
+        throw new Error(r.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uAC19\uC740 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD558\uC138\uC694." : { SOURCE_CHANGED: "\uBBF8\uB9AC\uBCF4\uAE30 \uC774\uD6C4 \uC6D0\uBCF8\uC774 \uBCC0\uACBD\uB410\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uBBF8\uB9AC\uBCF4\uAE30 \uD6C4 \uAC00\uC838\uC624\uC138\uC694.", SOURCE_CASE_CONTEXT_MISMATCH: "\uC0C1\uC18D\uAC1C\uC2DC\uC77C\uACFC \uB4F1\uB85D \uD53C\uC0C1\uC18D\uC778\uC744 \uB2E4\uC2DC \uD655\uC778\uD558\uC138\uC694.", SOURCE_DECEDENT_MISMATCH: "\uC120\uD0DD\uD55C \uC18C\uC720\uC790\uAC00 \uD53C\uC0C1\uC18D\uC778\uACFC \uB2E4\uB985\uB2C8\uB2E4.", SOURCE_VALUATION_DATE_MISMATCH: "\uC0C1\uC18D\uAC1C\uC2DC\uC77C\uACFC \uAC19\uC740 \uD3C9\uAC00\uAE30\uC900\uC77C\uC758 \uC790\uB8CC\uB97C \uC120\uD0DD\uD558\uC138\uC694.", SOURCE_PROPERTY_DUPLICATE: "\uAC19\uC740 \uC7AC\uC0B0\uC774 \uC774\uBBF8 \uC5F0\uACB0\uB3FC \uC788\uC2B5\uB2C8\uB2E4. \uD574\uB2F9 \uD589\uC744 \uAD50\uCCB4\uD558\uC138\uC694.", SOURCE_FRACTIONAL_WON_UNSUPPORTED: "\uC9C0\uBD84 \uC801\uC6A9 \uACB0\uACFC\uAC00 \uC6D0 \uBBF8\uB9CC\uC785\uB2C8\uB2E4. \uD604\uC7AC \uAC00\uC838\uC624\uAE30 \uBC94\uC704\uC5D0\uC11C \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4." }[(_a2 = data.detail) == null ? void 0 : _a2.code] || messages[(_b2 = data.detail) == null ? void 0 : _b2.code] || (r.status === 422 ? "\uC785\uB825 \uD615\uC2DD\uACFC \uB0A0\uC9DC\xB7\uAE08\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uC790\uB8CC\uB97C \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uD655\uC778\uD558\uACE0 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694."));
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const mutation = (path, method, body, etag) => {
+    var _a2;
+    const signature = JSON.stringify({ path, method, body, etag });
+    const memory = path === "/v1/inheritance-cases" ? keys.current : ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current;
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({ "Idempotency-Key": memory[signature] || (memory[signature] = window.crypto.randomUUID()) }, etag ? { "If-Match": etag } : {}) });
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e instanceof TypeError || e.name === "AbortError" ? "\uC751\uB2F5\uC744 \uBC1B\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uAC19\uC740 \uC791\uC5C5\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uC800\uC7A5 \uC5EC\uBD80\uB97C \uD655\uC778\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const load = async (id, number = "") => {
+    var _a2;
+    const saved = await api("/v1/inheritance-cases/" + id + (number ? "?revision=" + number : ""));
+    if (saved.client_id !== clientId) throw new Error("\uC120\uD0DD\uD55C \uACE0\uAC1D\uC758 \uC0AC\uAC74\uC774 \uC544\uB2D9\uB2C8\uB2E4.");
+    const run = saved.last_successful_run_id ? await api("/v1/inheritance-cases/" + id + "/runs/" + saved.last_successful_run_id) : null;
+    remember({
+      uid: jtGiftSession.uid,
+      meta: saved,
+      label: saved.label,
+      draft: saved.draft,
+      run,
+      keys: ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current,
+      baseline: JSON.stringify({ label: saved.label, draft: saved.draft })
+    });
+    if (alive.current) setOpened(true);
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(async () => {
+      var _a2, _b2;
+      if (caseId === "resume" && ((_b2 = (_a2 = ref.current) == null ? void 0 : _a2.meta) == null ? void 0 : _b2.client_id) === clientId) {
+        if (ref.current.uid !== jtGiftSession.uid) throw new Error("\uD3B8\uC9D1\uD558\uB358 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+        setPersons((await api("/v1/gift-cases/context?client_id=" + clientId)).persons);
+        setOpened(true);
+        return;
+      }
+      setPersons((await api("/v1/gift-cases/context?client_id=" + clientId)).persons);
+      if (caseId) await load(caseId);
+      else {
+        const made = await mutation("/v1/inheritance-cases", "POST", { client_id: clientId, label: "\uC0C8 \uC0C1\uC18D \uC0AC\uAC74", draft: {} });
+        await load(made.case_id);
+      }
+    });
+    const protect = (e) => {
+      if (lock.current || inheritanceDirty(ref.current)) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => {
+      alive.current = false;
+      window.removeEventListener("beforeunload", protect);
+    };
+  }, []);
+  const current = opened && ((_a = w == null ? void 0 : w.meta) == null ? void 0 : _a.client_id) === clientId && (caseId === "resume" || !caseId || w.meta.case_id === caseId);
+  const readonly = !current || w.meta.read_only || w.meta.revision !== w.meta.current_revision;
+  const base = current ? "/v1/inheritance-cases/" + w.meta.case_id : "";
+  if (current && w.meta.read_only) return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { onClick: onExit }, "\uC791\uC5C5\uB300\uB85C"), /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC785\uB825 \uBC84\uC804\uC785\uB2C8\uB2E4. \uC77D\uAE30 \uC804\uC6A9 \uC6D0\uBCF8\uC744 \uBCF4\uC874\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(w.meta.case_input, null, 2)));
+  const change = (key, value, confirmation = false) => {
+    const draft = __spreadProps(__spreadValues(__spreadValues({}, ref.current.draft), confirmation ? {} : { facts_confirmed: false, ordinary_scope_confirmed: false, spouse_partition_confirmed: false }), { [key]: value });
+    if (!confirmation && draft.allocation) draft.allocation = __spreadProps(__spreadValues({}, draft.allocation), { confirmed: false });
+    if (!confirmation && draft.insurance) draft.insurance = __spreadProps(__spreadValues({}, draft.insurance), { no_double_count_confirmed: false, financial_scope_confirmed: false, rows: draft.insurance.rows.map((r) => r.partial_funding ? __spreadProps(__spreadValues({}, r), { partial_funding: __spreadProps(__spreadValues({}, r.partial_funding), { complete_by_death_confirmed: false, beneficiary_own_funds_confirmed: false }) }) : r) });
+    remember(__spreadProps(__spreadValues({}, ref.current), { draft }));
+  };
+  const fundingEdit = (index, key, value, confirmation = false) => change("insurance", __spreadProps(__spreadValues({}, ref.current.draft.insurance), { rows: ref.current.draft.insurance.rows.map((r, n) => n === index ? __spreadProps(__spreadValues({}, r), { partial_funding: __spreadProps(__spreadValues({}, r.partial_funding), { [key]: value }) }) : r) }), confirmation);
+  const save = async () => {
+    if (!inheritanceDirty(ref.current)) return ref.current.meta;
+    const saved = await mutation(base, "PUT", { label: ref.current.label, draft: ref.current.draft }, ref.current.meta.etag);
+    await load(saved.case_id);
+    return ref.current.meta;
+  };
+  const d = current ? w.draft : null;
+  const total = (d == null ? void 0 : d.assets.every((a) => a.value_krw != null && /^[0-9]+$/.test(String(a.value_krw)))) ? d.assets.reduce((sum, a) => sum + BigInt(a.value_krw), /* @__PURE__ */ BigInt("0")).toLocaleString("ko-KR") + "\uC6D0" : "\uAE08\uC561 \uC785\uB825 \uD544\uC694";
+  const rowEdit = (group, index, key, value) => change(group, d[group].map((r, i) => i === index ? __spreadProps(__spreadValues({}, r), { [key]: value }) : r));
+  const money = (value) => {
+    if (value === "") return null;
+    const n = Number(value);
+    if (!/^[0-9]+$/.test(value) || !Number.isSafeInteger(n)) throw new Error("0 \uC774\uC0C1\uC758 \uC815\uD655\uD55C \uC6D0 \uB2E8\uC704 \uC815\uC218\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return n;
+  };
+  const adjustments = [["debts", "\uCC44\uBB34"], ["public_charges", "\uACF5\uACFC\uAE08"], ["funeral_expenses", "\uC77C\uBC18 \uC7A5\uB840\uBE44"], ["burial_facility_expenses", "\uBD09\uC548\xB7\uC790\uC5F0\uC7A5 \uBE44\uC6A9"], ["net_financial_assets", "\uC21C\uAE08\uC735\uC7AC\uC0B0"], ["appraisal_fee", "\uAC10\uC815\uD3C9\uAC00 \uC218\uC218\uB8CC"]];
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.ic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.ic-grid label{display:flex;flex-direction:column;gap:6px}.ic-grid input,.ic-grid select,.ic-grid textarea{font:inherit;padding:10px;min-height:44px}.ic-section{border:1px solid #ccd8cd;padding:20px;margin:20px 0;border-radius:10px}.ic-section button{margin:8px;min-height:44px}.ic-section p{line-height:1.6}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: onExit }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uC0C1\uC18D \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5"), /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uAC70\uC8FC\uC790 \uC77C\uBC18 \uC0C1\uC18D\uC758 \uC131\uB144 \uBC30\uC6B0\uC790\xB7\uC790\uB140\uC640 \uD604\uAE08\xB7\uC608\uAE08\xB7\uBD80\uB3D9\uC0B0\uACFC \uC800\uC7A5 \uD3C9\uAC00\uB97C \uC120\uD0DD\uD55C \uC77C\uBC18 \uBE44\uC0C1\uC7A5\uC8FC\uC2DD\uC744 \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uC7AC\uC0B0\uC740 \uD53C\uC0C1\uC18D\uC778 \uC18C\uC720 \uC9C0\uBD84\uC758 \uC0C1\uC18D\uAC1C\uC2DC\uC77C \uD3C9\uAC00\uC561\uC73C\uB85C \uC785\uB825\uD558\uC138\uC694. \uC0AC\uC804\uC99D\uC5EC\xB7\uB4F1\uB85D \uBC94\uC704 \uBC16 \uBCF4\uD5D8/\uD1F4\uC9C1\uAE08\xB7\uCD94\uC815\uC0C1\uC18D\xB7\uC720\uC99D/\uD3EC\uAE30\xB7\uBBF8\uC131\uB144\xB7\uC7A5\uC560\xB7\uAE30\uD0C0 \uC0C1\uC18D\uC778\xB7\uD2B9\uB840\uB294 \uC544\uC9C1 \uC774 \uC800\uC7A5 \uACBD\uB85C\uC5D0 \uC5F0\uACB0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), !current && !busy && /* @__PURE__ */ React.createElement("button", { onClick: () => act(async () => {
+    if (caseId && caseId !== "resume") await load(caseId);
+    else {
+      const made = await mutation("/v1/inheritance-cases", "POST", { client_id: clientId, label: "\uC0C8 \uC0C1\uC18D \uC0AC\uAC74", draft: {} });
+      await load(made.case_id);
+    }
+  }) }, "\uC0AC\uAC74 \uC5F4\uAE30 \uB2E4\uC2DC \uC2DC\uB3C4"), current && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uBC84\uC804 ", w.meta.revision, " / \uCD5C\uC2E0 ", w.meta.current_revision, readonly ? " \xB7 \uC77D\uAE30 \uC804\uC6A9 \uC800\uC7A5\uBCF8" : "", inheritanceDirty(w) ? " \xB7 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD \uC788\uC74C" : ""), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uC0C1\uC18D \uC0AC\uC2E4\uACFC \uC7AC\uC0B0\xB7\uC0C1\uC18D\uC778"), /* @__PURE__ */ React.createElement("div", { className: "ic-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74\uBA85", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-label", value: w.label, onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { label: e.target.value })) })), /* @__PURE__ */ React.createElement("label", null, "\uC0C1\uC18D\uAC1C\uC2DC\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-death_date", type: "date", value: d.death_date || "", onChange: (e) => change("death_date", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uB4F1\uB85D \uD53C\uC0C1\uC18D\uC778 (\uC120\uD0DD)", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-decedent_person_id", value: d.decedent_person_id || "", onChange: (e) => {
+    const p = persons.find((p2) => p2.id === e.target.value);
+    remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, d), { decedent_person_id: (p == null ? void 0 : p.id) || null, decedent_name: (p == null ? void 0 : p.name) || "", allocation: d.allocation ? __spreadProps(__spreadValues({}, d.allocation), { confirmed: false }) : null, facts_confirmed: false, ordinary_scope_confirmed: false, spouse_partition_confirmed: false }) }));
+  } }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC9C1\uC811 \uC785\uB825"), persons.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id }, p.name)))), /* @__PURE__ */ React.createElement("label", null, "\uD53C\uC0C1\uC18D\uC778 \uC774\uB984", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-decedent_name", value: d.decedent_name, onChange: (e) => change("decedent_name", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uD53C\uC0C1\uC18D\uC778 \uAC70\uC8FC\uC790 \uC5EC\uBD80", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-resident", value: d.resident, onChange: (e) => change("resident", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uAC70\uC8FC\uC790"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uBE44\uAC70\uC8FC\uC790")))), typeof JTEquityPicker !== "undefined" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uD3C9\uAC00 \uBC18\uC601 \uC704\uCE58", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-equity-target", value: equityTarget, onChange: (e) => setEquityTarget(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "new" }, "\uC8FC\uC2DD \uC7AC\uC0B0 \uCD94\uAC00"), d.assets.filter((x) => x.kind === "stock").map((x) => /* @__PURE__ */ React.createElement("option", { key: x.local_id, value: x.local_id }, "\uAE30\uC874 \uC8FC\uC2DD ", x.description, " \uAD50\uCCB4")))), /* @__PURE__ */ React.createElement(JTEquityPicker, { api, clientId, eventDate: d.death_date, purpose: "\uC0C1\uC18D", disabled: busy || readonly, onAdopt: (x) => {
+    const row = { local_id: window.crypto.randomUUID(), kind: "stock", description: x.company_name, value_krw: String(x.total_value), value_source: "\uD3C9\uAC00 \uACB0\uACFC " + x.run_id, valuation_as_of: x.eval_date, equity_ref: x.reference, financial_eligible: false, financial_source: "" };
+    change("assets", equityTarget === "new" ? [...d.assets, row] : d.assets.map((a) => a.local_id === equityTarget ? __spreadProps(__spreadValues({}, row), { local_id: a.local_id }) : a));
+  } })), !readonly && d.death_date && d.decedent_person_id && /* @__PURE__ */ React.createElement(JTInheritanceSources, { key: base + ":" + w.meta.revision + ":" + d.death_date + ":" + d.decedent_person_id, api, clientId, base, busy, act, draft: d, onImport: async (selection, preview, target) => {
+    const saved = await mutation(base + "/source-imports", "POST", { label: ref.current.label, draft: ref.current.draft, selection, expected_source_hash: preview.source_hash, target_local_id: target || null }, ref.current.meta.etag);
+    await load(saved.case_id);
+  } }), /* @__PURE__ */ React.createElement("section", { className: "ic-section" }, /* @__PURE__ */ React.createElement("h2", null, "1. \uC0C1\uC18D\uC7AC\uC0B0 \uBA85\uC138"), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8 \uAC00\uC838\uC624\uAE30\uB294 \uC0C1\uC18D\uAC1C\uC2DC\uC77C\uACFC \uB4F1\uB85D \uD53C\uC0C1\uC18D\uC778\uC744 \uC120\uD0DD\uD558\uBA74 \uD45C\uC2DC\uB429\uB2C8\uB2E4. \uAE30\uC874 \uD589 \uAD50\uCCB4 \uB610\uB294 \uC0C8 \uC7AC\uC0B0 \uCD94\uAC00\uB97C \uC120\uD0DD\uD558\uACE0, \uAC00\uC838\uC628 \uB4A4 \uBD84\uD560\uC561\xB7\uCC44\uBB34\xB7\uACF5\uC81C\uB294 \uB2E4\uC2DC \uD655\uC778\uD558\uC138\uC694."), d.assets.map((r, i) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("div", { key: r.local_id, className: "ic-section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC7AC\uC0B0 ", i + 1), /* @__PURE__ */ React.createElement("div", { className: "ic-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC885\uB958", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-asset-" + i + "-kind", disabled: r.kind === "stock", value: r.kind, onChange: (e) => rowEdit("assets", i, "kind", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "stock" }, "\uBE44\uC0C1\uC7A5\uC8FC\uC2DD"), /* @__PURE__ */ React.createElement("option", { value: "cash" }, "\uD604\uAE08"), /* @__PURE__ */ React.createElement("option", { value: "deposit" }, "\uC608\uAE08 \uB4F1 \uAE08\uC735\uC7AC\uC0B0 (\uC8FC\uC2DD \uC81C\uC678)"), /* @__PURE__ */ React.createElement("option", { value: "realestate" }, "\uBD80\uB3D9\uC0B0"))), [["description", "\uC7AC\uC0B0 \uC2DD\uBCC4\xB7\uC8FC\uC18C"], ["value_krw", "\uC0C1\uC18D \uC9C0\uBD84 \uD3C9\uAC00\uC561 (\uC6D0)"], ["value_source", "\uC0C1\uC18D\uAC1C\uC2DC\uC77C \uD3C9\uAC00 \uADFC\uAC70\xB7\uCD9C\uCC98"]].map(([k, title]) => {
+      var _a3;
+      return /* @__PURE__ */ React.createElement("label", { key: k }, title, /* @__PURE__ */ React.createElement("input", { readOnly: r.kind === "stock", "data-testid": "inheritance-asset-" + i + "-" + k, value: (_a3 = r[k]) != null ? _a3 : "", onChange: (e) => rowEdit("assets", i, k, e.target.value) }));
+    })), r.kind === "stock" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, r.valuation_as_of, " \xB7 ", (_a2 = r.equity_ref) == null ? void 0 : _a2.shares, "\uC8FC \xB7 \uACB0\uACFC ", (_b2 = r.equity_ref) == null ? void 0 : _b2.run_id), /* @__PURE__ */ React.createElement("label", null, "\uAE08\uC735\uC7AC\uC0B0 \uACF5\uC81C \uC694\uAC74 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-stock-" + i + "-source", value: r.financial_source || "", onChange: (e) => change("assets", d.assets.map((a, n) => n === i ? __spreadProps(__spreadValues({}, a), { financial_source: e.target.value, financial_eligible: false }) : a)) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-stock-" + i + "-eligible", type: "checkbox", checked: !!r.financial_eligible, onChange: (e) => rowEdit("assets", i, "financial_eligible", e.target.checked) }), "\uAE08\uC735\uC7AC\uC0B0 \uD574\uB2F9\xB7\uCD5C\uB300\uC8FC\uC8FC\uB4F1 \uC81C\uC678\xB7\uC2E4\uBA85 \uBC0F \uC2E0\uACE0 \uC694\uAC74\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-asset-" + i + "-remove", onClick: () => change("assets", d.assets.filter((_, n) => n !== i)) }, "\uC7AC\uC0B0 \uC81C\uAC70"));
+  }), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-add-asset", onClick: () => change("assets", [...d.assets, { local_id: window.crypto.randomUUID(), kind: "cash", description: "", value_krw: null, value_source: "" }]) }, "\uC7AC\uC0B0 \uCD94\uAC00"), /* @__PURE__ */ React.createElement("p", null, "\uB4F1\uB85D \uC7AC\uC0B0 \uD569\uACC4: ", /* @__PURE__ */ React.createElement("output", { "data-testid": "inheritance-total" }, total)), Object.entries(((_b = w.meta.case_input) == null ? void 0 : _b.property_sources) || {}).map(([id, source]) => /* @__PURE__ */ React.createElement("p", { key: id, "data-testid": "inheritance-source-status-" + id }, "\uC800\uC7A5\uB41C \uC6D0\uBCF8: ", source.property.address, " \xB7 \uD3C9\uAC00\uC77C ", source.valuation.as_of_date, " \xB7 \uC804\uCCB4 ", Number(source.valuation.amount).toLocaleString("ko-KR"), "\uC6D0 \xD7 \uC9C0\uBD84 ", source.ownership.share_ratio, " \xB7 ", { matched: "\uCC44\uD0DD \uC785\uB825 \uC77C\uCE58", manually_modified: "\uCC44\uD0DD \uD6C4 \uC9C1\uC811 \uC218\uC815", context_mismatch: "\uC0AC\uAC74 \uAE30\uC900 \uBCC0\uACBD\u2014\uC7AC\uCC44\uD0DD \uD544\uC694" }[w.meta.case_input.property_source_status[id]], " \xB7 ", source.source_hash, inheritanceDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC800\uC7A5\uBCF8 \uAE30\uC900" : ""))), /* @__PURE__ */ React.createElement("section", { className: "ic-section" }, /* @__PURE__ */ React.createElement("h2", null, "2. \uC0C1\uC18D\uC778 \uBA85\uC138"), /* @__PURE__ */ React.createElement("p", null, "\uB098\uC774\uB294 \uC0C1\uC18D\uAC1C\uC2DC\uC77C \uAE30\uC900 \uB9CC \uB098\uC774\uC785\uB2C8\uB2E4. \uC774\uB984\xB7\uAD00\uACC4\xB7\uB098\uC774\uC640 \uC2E4\uC81C \uC0C1\uC18D\uC561\uC744 \uC9C1\uC811 \uD655\uC778\uD558\uBA70 0\uC6D0\uB3C4 \uBA85\uC2DC\uD558\uC138\uC694. \uB4F1\uB85D \uC6D0\uBCF8\uC744 \uC120\uD0DD\uD558\uBA74 \uC774\uB984\uB9CC \uCC44\uD0DD\uD558\uACE0 \uAD00\uACC4\xB7\uB098\uC774\xB7\uBD84\uD560\uAE08\uC561\uC740 \uB530\uB85C \uC785\uB825\uD569\uB2C8\uB2E4."), d.heirs.map((r, i) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("div", { key: r.local_id, className: "ic-section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC0C1\uC18D\uC778 ", i + 1), /* @__PURE__ */ React.createElement("div", { className: "ic-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uB4F1\uB85D \uB2F9\uC0AC\uC790 (\uC120\uD0DD)", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-heir-" + i + "-person_id", value: r.person_id || "", onChange: (e) => {
+      const p = persons.find((p2) => p2.id === e.target.value);
+      change("heirs", d.heirs.map((h, n) => n === i ? __spreadProps(__spreadValues({}, h), { person_id: (p == null ? void 0 : p.id) || null, name: (p == null ? void 0 : p.name) || "", age: null, actual_inheritance: null }) : h));
+    } }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC9C1\uC811 \uC785\uB825"), persons.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id }, p.name)))), /* @__PURE__ */ React.createElement("label", null, "\uC774\uB984", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-heir-" + i + "-name", value: r.name, onChange: (e) => rowEdit("heirs", i, "name", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uD53C\uC0C1\uC18D\uC778\uACFC\uC758 \uAD00\uACC4", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-heir-" + i + "-relationship", value: r.relationship, onChange: (e) => rowEdit("heirs", i, "relationship", e.target.value) }, /* @__PURE__ */ React.createElement("option", null, "\uC790\uB140"), /* @__PURE__ */ React.createElement("option", null, "\uBC30\uC6B0\uC790"))), /* @__PURE__ */ React.createElement("label", null, "\uC0C1\uC18D\uAC1C\uC2DC\uC77C \uB9CC \uB098\uC774", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-heir-" + i + "-age", inputMode: "numeric", value: (_a2 = r.age) != null ? _a2 : "", onChange: (e) => {
+      const v = e.target.value;
+      if (v === "" || /^[0-9]+$/.test(v)) rowEdit("heirs", i, "age", v === "" ? null : Number(v));
+    } })), /* @__PURE__ */ React.createElement("label", null, d.allocation ? "\uBC30\uBD84 \uBA85\uC138\uC5D0\uC11C \uC0B0\uC815 (\uC9C1\uC811 \uC785\uB825 \uBE44\uD65C\uC131)" : d.insurance ? "\uC77C\uBC18 \uC7AC\uC0B0 + \uBCF4\uD5D8\uAE08 \uC218\uB839 \uD569\uACC4 (\uC6D0)" : "\uC2E4\uC81C \uC0C1\uC18D\uC561 (\uC6D0)", /* @__PURE__ */ React.createElement("input", { disabled: !!d.allocation, "data-testid": "inheritance-heir-" + i + "-actual_inheritance", value: (_b2 = r.actual_inheritance) != null ? _b2 : "", onChange: (e) => rowEdit("heirs", i, "actual_inheritance", e.target.value) }))), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-heir-" + i + "-remove", onClick: () => change("heirs", d.heirs.filter((_, n) => n !== i)) }, "\uC0C1\uC18D\uC778 \uC81C\uAC70"));
+  }), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-add-heir", onClick: () => change("heirs", [...d.heirs, { local_id: window.crypto.randomUUID(), person_id: null, name: "", relationship: "\uC790\uB140", age: null, actual_inheritance: null }]) }, "\uC0C1\uC18D\uC778 \uCD94\uAC00")), /* @__PURE__ */ React.createElement("section", { className: "ic-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uC0C1\uC18D\uC778\uBCC4 \uC7AC\uC0B0\xB7\uCC44\uBB34 \uBC30\uBD84"), /* @__PURE__ */ React.createElement("p", null, "2026-03-20~2026-10-17 \uC77C\uBC18 \uC0C1\uC18D\uC758 \uD655\uC778\uB41C \uBD84\uD560\uC744 \uC785\uB825\uD569\uB2C8\uB2E4. \uC7AC\uC0B0 \uBC30\uBD84 \uD569\uACC4\uC640 \uCC44\uBB34\xB7\uACF5\uACFC\uAE08 \uCD1D\uC561\uC744 \uB9DE\uCD94\uBA74 \uC21C\uC561\uC744 \uC2E4\uC81C \uC0C1\uC18D\uC561\uC73C\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uBE44\uACFC\uC138\xB7\uBD88\uC0B0\uC785 \uC7AC\uC0B0\uACFC \uD2B9\uB840\uB294 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC774 \uBA85\uC138\uB294 \uC0C1\uC18D\uC778\uBCC4 \uB0A9\uBD80\uC138\uC561\uC774 \uC544\uB2D9\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "inheritance-allocation-enable", checked: !!d.allocation, onChange: (e) => {
+    if (!window.confirm("\uC785\uB825 \uBC29\uC2DD\uC744 \uBC14\uAFB8\uBA74 \uC2E4\uC81C \uC0C1\uC18D\uC561 \uC9C1\uC811 \uC785\uB825\uACFC \uAE30\uC874 \uBC30\uBD84 \uBA85\uC138\uB97C \uBE44\uC6C1\uB2C8\uB2E4. \uACC4\uC18D\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?")) return;
+    remember(__spreadProps(__spreadValues({}, w), { draft: __spreadProps(__spreadValues({}, d), { heirs: d.heirs.map((h) => __spreadProps(__spreadValues({}, h), { actual_inheritance: null })), allocation: e.target.checked ? { assets: [], liabilities: [], basis: "", confirmed: false } : null, facts_confirmed: false, ordinary_scope_confirmed: false, spouse_partition_confirmed: false }) }));
+  } }), "\uC7AC\uC0B0\xB7\uCC44\uBB34 \uBA85\uC138\uB85C \uC2E4\uC81C \uC0C1\uC18D\uC561 \uC0B0\uC815"), d.allocation && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uAC01 \uC7AC\uC0B0\uC744 \uC0C1\uC18D\uC778\uC5D0\uAC8C \uBC30\uBD84\uD558\uC138\uC694. \uC0C1\uC18D\uBC1B\uC9C0 \uC54A\uB294 \uAE08\uC561\uB3C4 0\uC6D0\uC73C\uB85C \uC785\uB825\uD558\uC138\uC694. \uC7AC\uC0B0\uC774\uB098 \uC0C1\uC18D\uC778\uC744 \uC0AD\uC81C\uD55C \uB4A4 \uB0A8\uC740 \uBC30\uBD84\uD589\uC740 \uC544\uB798\uC5D0\uC11C \uC81C\uAC70\uD569\uB2C8\uB2E4."), d.assets.map((a, ai) => /* @__PURE__ */ React.createElement("div", { className: "ic-section", key: a.local_id }, /* @__PURE__ */ React.createElement("h3", null, a.description || "\uC7AC\uC0B0 " + (ai + 1)), /* @__PURE__ */ React.createElement("div", { className: "ic-grid" }, d.heirs.map((h, hi) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("label", { key: h.local_id }, h.name || "\uC0C1\uC18D\uC778 " + (hi + 1), " \uBC30\uBD84\uC561 (\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-allocation-" + ai + "-" + hi, value: (_b2 = (_a2 = d.allocation.assets.find((x) => x.asset_id === a.local_id && x.heir_id === h.local_id)) == null ? void 0 : _a2.amount) != null ? _b2 : "", onChange: (e) => change("allocation", __spreadProps(__spreadValues({}, d.allocation), { assets: [...d.allocation.assets.filter((x) => !(x.asset_id === a.local_id && x.heir_id === h.local_id)), { asset_id: a.local_id, heir_id: h.local_id, amount: e.target.value }] })) }));
+  })))), d.allocation.assets.filter((x) => !d.assets.some((a) => a.local_id === x.asset_id) || !d.heirs.some((h) => h.local_id === x.heir_id)).map((x, i) => /* @__PURE__ */ React.createElement("p", { key: i }, "\uC0AD\uC81C\uB41C \uC7AC\uC0B0\xB7\uC0C1\uC18D\uC778 \uBC30\uBD84 ", x.amount, "\uC6D0 ", /* @__PURE__ */ React.createElement("button", { onClick: () => change("allocation", __spreadProps(__spreadValues({}, d.allocation), { assets: d.allocation.assets.filter((y) => y !== x) })) }, "\uB0A8\uC740 \uBC30\uBD84\uD589 \uC81C\uAC70"))), d.allocation.liabilities.map((r, i) => /* @__PURE__ */ React.createElement("div", { className: "ic-section", key: r.local_id }, /* @__PURE__ */ React.createElement("div", { className: "ic-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC2B9\uACC4 \uC0C1\uC18D\uC778", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-liability-" + i + "-heir_id", value: r.heir_id, onChange: (e) => change("allocation", __spreadProps(__spreadValues({}, d.allocation), { liabilities: d.allocation.liabilities.map((x, n) => n === i ? __spreadProps(__spreadValues({}, x), { heir_id: e.target.value }) : x) })) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), d.heirs.map((h) => /* @__PURE__ */ React.createElement("option", { key: h.local_id, value: h.local_id }, h.name)))), /* @__PURE__ */ React.createElement("label", null, "\uAD6C\uBD84", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-liability-" + i + "-kind", value: r.kind, onChange: (e) => change("allocation", __spreadProps(__spreadValues({}, d.allocation), { liabilities: d.allocation.liabilities.map((x, n) => n === i ? __spreadProps(__spreadValues({}, x), { kind: e.target.value }) : x) })) }, /* @__PURE__ */ React.createElement("option", { value: "debts" }, "\uCC44\uBB34"), /* @__PURE__ */ React.createElement("option", { value: "public_charges" }, "\uACF5\uACFC\uAE08"))), [["amount", "\uC2B9\uACC4 \uAE08\uC561 (\uC6D0)"], ["description", "\uCC44\uAD8C\uC790\xB7\uCC44\uBB34/\uACF5\uACFC\uAE08 \uC2DD\uBCC4"], ["source", "\uACF5\uC81C \uC801\uACA9\xB7\uC2B9\uACC4 \uADFC\uAC70"]].map(([key, title]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, title, /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-liability-" + i + "-" + key, value: (_a2 = r[key]) != null ? _a2 : "", onChange: (e) => change("allocation", __spreadProps(__spreadValues({}, d.allocation), { liabilities: d.allocation.liabilities.map((x, n) => n === i ? __spreadProps(__spreadValues({}, x), { [key]: e.target.value }) : x) })) }));
+  })), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-liability-" + i + "-remove", onClick: () => change("allocation", __spreadProps(__spreadValues({}, d.allocation), { liabilities: d.allocation.liabilities.filter((_, n) => n !== i) })) }, "\uC2B9\uACC4\uD589 \uC81C\uAC70"))), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-add-liability", onClick: () => {
+    var _a2;
+    return change("allocation", __spreadProps(__spreadValues({}, d.allocation), { liabilities: [...d.allocation.liabilities, { local_id: window.crypto.randomUUID(), heir_id: ((_a2 = d.heirs[0]) == null ? void 0 : _a2.local_id) || "unselected", kind: "debts", amount: null, description: "", source: "" }] }));
+  } }, "\uCC44\uBB34\xB7\uACF5\uACFC\uAE08 \uC2B9\uACC4\uD589 \uCD94\uAC00"), /* @__PURE__ */ React.createElement("label", null, "\uD611\uC758\uBD84\uD560\xB7\uC2B9\uACC4 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "inheritance-allocation-basis", value: d.allocation.basis, onChange: (e) => change("allocation", __spreadProps(__spreadValues({}, d.allocation), { basis: e.target.value })) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-allocation-confirmed", type: "checkbox", checked: d.allocation.confirmed, onChange: (e) => change("allocation", __spreadProps(__spreadValues({}, d.allocation), { confirmed: e.target.checked }), true) }), "\uBC30\uBD84\uACFC \uC2B9\uACC4, \uCC44\uBB34 \uC911\uBCF5 \uC5C6\uC74C \uBC0F \uBE44\uACFC\uC138\xB7\uBD88\uC0B0\uC785 \uC7AC\uC0B0 \uC5C6\uB294 \uC77C\uBC18 \uBD84\uD560\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), ((_c = w.meta.case_input) == null ? void 0 : _c.allocation_summary) && /* @__PURE__ */ React.createElement("div", { "data-testid": "inheritance-allocation-summary" }, /* @__PURE__ */ React.createElement("h3", null, "\uC800\uC7A5\uB41C \uBC30\uBD84 \uD569\uACC4", inheritanceDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), Object.entries(w.meta.case_input.allocation_summary.heirs).map(([id, x]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("p", { key: id }, ((_a2 = w.meta.draft.heirs.find((h) => h.local_id === id)) == null ? void 0 : _a2.name) || id, ": \uC7AC\uC0B0 ", x.gross.toLocaleString("ko-KR"), "\uC6D0 \u2212 \uCC44\uBB34 ", x.debts.toLocaleString("ko-KR"), "\uC6D0 \u2212 \uACF5\uACFC\uAE08 ", x.public_charges.toLocaleString("ko-KR"), "\uC6D0 = \uC21C\uC561 ", x.net.toLocaleString("ko-KR"), "\uC6D0");
+  }), /* @__PURE__ */ React.createElement("p", null, "\uBC30\uC6B0\uC790 \uC21C\uC561\uC740 \uC0AC\uAC74 \uC804\uCCB4\uC758 \uBC30\uC6B0\uC790 \uACF5\uC81C \uACC4\uC0B0\uC5D0 \uC804\uB2EC\uB429\uB2C8\uB2E4. \uAC1C\uC778\uBCC4 \uC138\uC561\uC740 \uC0B0\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("section", { className: "ic-section", "aria-label": "\uAC80\uD1A0\uD55C \uC0C1\uC18D \uBCF4\uD5D8\uAE08" }, /* @__PURE__ */ React.createElement("h2", null, "\uBCF4\uD5D8\uAE08 \uBA85\uC138"), /* @__PURE__ */ React.createElement("p", null, "2026-10-01~10-17 \uAC1C\uC2DC, \uB4F1\uB85D \uD53C\uC0C1\uC18D\uC778 \uC804\uC561 \uBD80\uB2F4 \uB610\uB294 \uD53C\uC0C1\uC18D\uC778\uACFC \uC218\uC775\uC790\uAC00 \uBD84\uB2F4\uD55C \uC0AC\uB9DD\uBCF4\uD5D8\uAE08\uC744 \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uB2E8\uB3C5 \uC131\uB144 \uC790\uB140 \uC218\uC775\uC790, \uACC4\uC57D\uC790\uB294 \uD53C\uC0C1\uC18D\uC778 \uB610\uB294 \uC218\uC775\uC790\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC81C3\uC790 \uBD80\uB2F4\xB7\uC99D\uC5EC\uBC1B\uC740 \uBCF4\uD5D8\uB8CC\xB7\uC8FC\uC2DD\xB7\uBC30\uBD84 \uBA85\uC138\xB7\uCC44\uBB34\xB7\uACF5\uACFC\uAE08\uC740 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-insurance-enable", type: "checkbox", checked: !!d.insurance, onChange: (e) => change("insurance", e.target.checked ? { rows: [], no_double_count_confirmed: false, financial_scope_confirmed: false } : null) }), "\uAC80\uD1A0\uD55C \uBCF4\uD5D8\uAE08 \uC5F0\uACB0"), d.insurance && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC77C\uBC18 \uC7AC\uC0B0\uC5D0 \uBCF4\uD5D8\uAE08\uC744 \uB2E4\uC2DC \uD3EC\uD568\uD558\uC9C0 \uB9C8\uC138\uC694. \uC0AC\uB9DD \uC2DC\uAE4C\uC9C0 \uB0A9\uC785\uD55C \uBCF4\uD5D8\uB8CC\uC5D0\uB294 \uBCF4\uD5D8\uB8CC\uC5D0 \uCDA9\uB2F9\uD55C \uBC30\uB2F9\uAE08\uB3C4 \uD3EC\uD568\uD558\uC5EC \uBD80\uB2F4\uC790\uB97C \uD655\uC778\uD569\uB2C8\uB2E4. \uB2E8\uB3C5 \uC790\uB140 \uC218\uB839\uC561\uC740 \uC77C\uBC18 \uC7AC\uC0B0\uACFC \uBCF4\uD5D8\uAE08 \uD569\uACC4, \uC21C\uAE08\uC735\uC7AC\uC0B0\uC740 \uC801\uACA9 \uC608\uAE08\uACFC \uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD3EC\uD568\uB418\uB294 \uBCF4\uD5D8\uAE08\uB9CC \uD569\uC0B0\uD558\uC138\uC694. \uC77C\uBD80 \uBD80\uB2F4\uC758 \uD3EC\uD568\uC561\uC740 \uBCF4\uD5D8\uAE08 \xD7 \uD53C\uC0C1\uC18D\uC778 \uBD80\uB2F4 \uBCF4\uD5D8\uB8CC \xF7 \uC804\uCCB4 \uBCF4\uD5D8\uB8CC\uC785\uB2C8\uB2E4. \uC6D0 \uBBF8\uB9CC \uC548\uBD84\uC740 \uBCF4\uB958\uD569\uB2C8\uB2E4. \uBBFC\uBC95\uC0C1 \uC0C1\uC18D\uC7AC\uC0B0\xB7\uBD84\uD560\uC561\uC744 \uC790\uB3D9 \uD310\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), d.insurance.rows.map((r, i) => /* @__PURE__ */ React.createElement("div", { key: r.local_id, className: "ic-section" }, /* @__PURE__ */ React.createElement("h3", null, "\uBCF4\uD5D8\uAE08 ", i + 1), /* @__PURE__ */ React.createElement("div", { className: "ic-grid" }, [["insurer", "\uAD6D\uB0B4 \uAE08\uC735\uD68C\uC0AC\uBA85"], ["policy_ref", "\uBCF4\uD5D8 \uACC4\uC57D \uC2DD\uBCC4"], ["as_of", "\uBCF4\uD5D8\uAE08 \uAE30\uC900\uC77C (YYYY-MM-DD)"], ["benefit", "\uC0AC\uB9DD\uBCF4\uD5D8\uAE08 (\uC6D0)"], ["total_premiums", "\uC0AC\uB9DD \uC2DC\uAE4C\uC9C0 \uB0A9\uC785 \uBCF4\uD5D8\uB8CC \uCD1D\uC561 (\uC6D0)"], ["decedent_premiums", "\uD53C\uC0C1\uC18D\uC778 \uC2E4\uC81C \uBD80\uB2F4 \uBCF4\uD5D8\uB8CC (\uC6D0)"], ["source", "\uACC4\uC57D\xB7\uC9C0\uAE09\xB7\uB0A9\uC785/\uBC30\uB2F9\uAE08\xB7\uAE08\uC735\uC7AC\uC0B0 \uC801\uACA9 \uAC80\uD1A0 \uCD9C\uCC98"]].map(([k, title]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key: k }, title, /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-insurance-" + i + "-" + k, value: (_a2 = r[k]) != null ? _a2 : "", onChange: (e) => change("insurance", __spreadProps(__spreadValues({}, d.insurance), { rows: d.insurance.rows.map((x, n) => n === i ? __spreadProps(__spreadValues({}, x), { [k]: e.target.value }) : x) })) }));
+  }), /* @__PURE__ */ React.createElement("label", null, "\uBCF4\uD5D8 \uC885\uB958", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-insurance-" + i + "-kind", value: r.kind, onChange: (e) => change("insurance", __spreadProps(__spreadValues({}, d.insurance), { rows: d.insurance.rows.map((x, n) => n === i ? __spreadProps(__spreadValues({}, x), { kind: e.target.value }) : x) })) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "life" }, "\uC0DD\uBA85\uBCF4\uD5D8 \uC0AC\uB9DD\uBCF4\uD5D8\uAE08"), /* @__PURE__ */ React.createElement("option", { value: "nonlife" }, "\uC190\uD574\uBCF4\uD5D8 \uC0AC\uB9DD\uBCF4\uD5D8\uAE08"))), /* @__PURE__ */ React.createElement("label", null, "\uC218\uC775\uC790", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-insurance-" + i + "-beneficiary_heir_id", value: r.beneficiary_heir_id, onChange: (e) => change("insurance", __spreadProps(__spreadValues({}, d.insurance), { rows: d.insurance.rows.map((x, n) => n === i ? __spreadProps(__spreadValues({}, x), { beneficiary_heir_id: e.target.value }) : x) })) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), d.heirs.map((h) => /* @__PURE__ */ React.createElement("option", { key: h.local_id, value: h.local_id }, h.name || h.local_id))))), [["death_triggered", "\uD53C\uC0C1\uC18D\uC778 \uC0AC\uB9DD\uC73C\uB85C \uC9C0\uAE09\uB418\uB294 \uBCF4\uD5D8\uAE08\uC785\uB2C8\uB2E4"], ["policyholder_is_decedent", "\uBCF4\uD5D8\uACC4\uC57D\uC790\uB294 \uB4F1\uB85D \uD53C\uC0C1\uC18D\uC778\uC785\uB2C8\uB2E4"], ["financial_eligible", "\uAD6D\uB0B4 \uAE08\uC735\uD68C\uC0AC \uCDE8\uAE09 \uC801\uACA9 \uBCF4\uD5D8\uAE08\uC774\uBA70 \uC81C\uC678\xB7\uBE44\uACFC\uC138 \uD2B9\uB840\uAC00 \uC5C6\uC74C\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"]].map(([k, title]) => /* @__PURE__ */ React.createElement("p", { key: k }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "inheritance-insurance-" + i + "-" + k, checked: r[k], onChange: (e) => change("insurance", __spreadProps(__spreadValues({}, d.insurance), { rows: d.insurance.rows.map((x, n) => n === i ? __spreadProps(__spreadValues({}, x), { [k]: e.target.checked }) : x) })) }), title))), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "inheritance-insurance-" + i + "-partial", checked: !!r.partial_funding, onChange: (e) => change("insurance", __spreadProps(__spreadValues({}, d.insurance), { rows: d.insurance.rows.map((x, n) => n === i ? __spreadProps(__spreadValues({}, x), { partial_funding: e.target.checked ? { schema_version: "insurance-funding/1", policyholder_person_id: null, payments: [], complete_by_death_confirmed: false, beneficiary_own_funds_confirmed: false } : null }) : x) })) }), "\uD53C\uC0C1\uC18D\uC778\xB7\uC218\uC775\uC790 \uC77C\uBD80 \uBD80\uB2F4 \uBA85\uC138"), r.partial_funding && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uBCF4\uD5D8\uB8CC \uBD80\uB2F4 \uC6D0\uBCF8\uD589" }, /* @__PURE__ */ React.createElement("label", null, "\uACC4\uC57D\uC790", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-funding-" + i + "-policyholder", value: r.partial_funding.policyholder_person_id || "", onChange: (e) => fundingEdit(i, "policyholder_person_id", e.target.value || null) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), persons.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id }, p.name)))), /* @__PURE__ */ React.createElement("p", null, "\uC0AC\uB9DD\uC77C\uAE4C\uC9C0\uC758 \uB0A9\uC785\uBA85\uC138\uB97C \uBD80\uB2F4\uC790\uBCC4\uB85C \uC785\uB825\uD569\uB2C8\uB2E4. \uD589 \uAE08\uC561\uC5D0 \uBC30\uB2F9\uAE08 \uCDA9\uB2F9\uC561\uC744 \uC774\uBBF8 \uD3EC\uD568\uD558\uBA70, \uBC30\uB2F9\uAE08\uC740 \uB2E4\uC2DC \uB354\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uAC19\uC740 \uBD80\uB2F4\uC790\uC758 \uAE30\uAC04\uC774 \uACB9\uCE58\uBA74 \uD569\uCCD0 \uC785\uB825\uD558\uC138\uC694."), r.partial_funding.payments.map((p, j) => /* @__PURE__ */ React.createElement("div", { key: p.local_id, className: "ic-section" }, /* @__PURE__ */ React.createElement("p", null, "\uB0A9\uC785\uD589 ID ", p.local_id), /* @__PURE__ */ React.createElement("label", null, "\uC2E4\uC81C \uBD80\uB2F4\uC790", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-payment-" + i + "-" + j + "-payer_person_id", value: p.payer_person_id || "", onChange: (e) => fundingEdit(i, "payments", r.partial_funding.payments.map((x, n) => n === j ? __spreadProps(__spreadValues({}, x), { payer_person_id: e.target.value || null }) : x)) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), persons.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.name)))), [["period_from", "\uB0A9\uC785 \uC2DC\uC791\uC77C"], ["period_to", "\uB0A9\uC785 \uC885\uB8CC\uC77C"], ["amount", "\uBC30\uB2F9\uAE08 \uD3EC\uD568 \uB0A9\uC785\uC561 (\uC6D0)"], ["dividend_included", "\uB0A9\uC785\uC561 \uC911 \uBC30\uB2F9\uAE08 (\uC6D0, \uC5C6\uC73C\uBA74 0)"], ["source", "\uB0A9\uC785\xB7\uC790\uAE08 \uCD9C\uCC98 \uADFC\uAC70"]].map(([k, title]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key: k }, title, /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-payment-" + i + "-" + j + "-" + k, value: (_a2 = p[k]) != null ? _a2 : "", onChange: (e) => fundingEdit(i, "payments", r.partial_funding.payments.map((x, n) => n === j ? __spreadProps(__spreadValues({}, x), { [k]: e.target.value }) : x)) }));
+  }), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-payment-" + i + "-" + j + "-remove", onClick: () => fundingEdit(i, "payments", r.partial_funding.payments.filter((_, n) => n !== j)) }, "\uB0A9\uC785\uD589 \uC81C\uAC70"))), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-payment-" + i + "-add", onClick: () => fundingEdit(i, "payments", [...r.partial_funding.payments, { local_id: window.crypto.randomUUID(), payer_person_id: null, period_from: null, period_to: d.death_date, amount: null, dividend_included: null, source: "" }]) }, "\uB0A9\uC785\uD589 \uCD94\uAC00"), [["complete_by_death_confirmed", "\uC0AC\uB9DD\uC77C\uAE4C\uC9C0 \uC804\uCCB4 \uB0A9\uC785\xB7\uBC30\uB2F9\uAE08 \uB0B4\uC5ED\uACFC \uBD80\uB2F4\uC790\uBCC4 \uD569\uACC4\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["beneficiary_own_funds_confirmed", "\uC218\uC775\uC790 \uBD80\uB2F4\uBD84\uC740 \uACE0\uC720\uC790\uAE08\uC774\uBA70 \uC81C3\uC790 \uBD80\uB2F4\xB7\uC99D\uC5EC\uBC1B\uC740 \uBCF4\uD5D8\uB8CC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"]].map(([k, title]) => /* @__PURE__ */ React.createElement("p", { key: k }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "inheritance-funding-" + i + "-" + k, checked: r.partial_funding[k], onChange: (e) => fundingEdit(i, k, e.target.checked, true) }), title)))), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-insurance-" + i + "-remove", onClick: () => change("insurance", __spreadProps(__spreadValues({}, d.insurance), { rows: d.insurance.rows.filter((_, n) => n !== i) })) }, "\uBCF4\uD5D8\uAE08 \uC81C\uAC70"))), /* @__PURE__ */ React.createElement("button", { "data-testid": "inheritance-insurance-add", onClick: () => change("insurance", __spreadProps(__spreadValues({}, d.insurance), { rows: [...d.insurance.rows, { local_id: window.crypto.randomUUID(), insurer: "", policy_ref: "", kind: "unknown", beneficiary_heir_id: "", as_of: d.death_date, benefit: null, total_premiums: null, decedent_premiums: null, source: "", death_triggered: false, policyholder_is_decedent: false, financial_eligible: false }] })) }, "\uBCF4\uD5D8\uAE08 \uCD94\uAC00"), [["no_double_count_confirmed", "\uBCF4\uD5D8\uAE08\uC740 \uC77C\uBC18 \uC7AC\uC0B0\xB7\uC608\uAE08\xB7\uB2E4\uB978 \uBCF4\uD5D8\uD589\uC5D0 \uC911\uBCF5 \uACC4\uC0C1\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4"], ["financial_scope_confirmed", "\uC608\uAE08\xB7\uBCF4\uD5D8\uAE08\uC758 \uAE08\uC735\uC7AC\uC0B0 \uC801\uACA9\xB7\uC2E4\uBA85/\uC2E0\uACE0 \uC694\uAC74\uACFC \uAE08\uC735\uCC44\uBB34 \uC5C6\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]].map(([k, title]) => /* @__PURE__ */ React.createElement("p", { key: k }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "inheritance-insurance-" + k, checked: d.insurance[k], onChange: (e) => change("insurance", __spreadProps(__spreadValues({}, d.insurance), { [k]: e.target.checked }), true) }), title)))), ((_d = w.meta.case_input) == null ? void 0 : _d.insurance_summary) && /* @__PURE__ */ React.createElement("p", { "data-testid": "inheritance-insurance-summary" }, "\uC800\uC7A5 \uAE30\uC900 \uBCF4\uD5D8\uAE08 ", Number(w.meta.case_input.insurance_summary.insurance_total_krw).toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC77C\uBC18 \uC7AC\uC0B0 \uD3EC\uD568 \uCD1D\uC561 ", Number(w.meta.case_input.insurance_summary.gross_estate_krw).toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC801\uACA9 \uAE08\uC735\uC7AC\uC0B0 ", Number(w.meta.case_input.insurance_summary.eligible_financial_krw).toLocaleString("ko-KR"), "\uC6D0", inheritanceDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), ((_f = (_e = w.meta.case_input) == null ? void 0 : _e.insurance_summary) == null ? void 0 : _f.received_insurance_krw) != null && /* @__PURE__ */ React.createElement("div", { "data-testid": "inheritance-partial-summary" }, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uAE30\uC900 \uC804\uCCB4 \uBCF4\uD5D8\uAE08 \uC218\uB839\uC561 ", w.meta.case_input.insurance_summary.received_insurance_krw.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC0C1\uC18D\uC7AC\uC0B0 \uD3EC\uD568\uC561 ", w.meta.case_input.insurance_summary.insurance_total_krw.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC218\uC775\uC790 \uACE0\uC720\uC790\uAE08 \uB300\uC751 \uC81C\uC678\uC561 ", w.meta.case_input.insurance_summary.excluded_own_funds_krw.toLocaleString("ko-KR"), "\uC6D0", inheritanceDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), w.meta.case_input.insurance_summary.rows.filter((x) => x.attribution).map((x) => /* @__PURE__ */ React.createElement("p", { key: x.local_id }, "\uBCF4\uD5D8\uD589 ", x.local_id, ": ", x.attribution.included_krw == null ? "\uC785\uB825 \uAC80\uD1A0 \uD544\uC694" : x.attribution.included_krw.toLocaleString("ko-KR") + "\uC6D0 \uD3EC\uD568")))), /* @__PURE__ */ React.createElement("section", { className: "ic-section" }, /* @__PURE__ */ React.createElement("h2", null, "3. \uBE44\uC6A9\xB7\uACF5\uC81C \uC0AC\uC2E4 \uD655\uC778"), /* @__PURE__ */ React.createElement("div", { className: "ic-grid" }, adjustments.map(([k, title]) => /* @__PURE__ */ React.createElement("label", { key: k }, title, " (\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-" + k, value: d.adjustments[k], onChange: (e) => {
+    var _a2;
+    try {
+      change("adjustments", __spreadProps(__spreadValues({}, d.adjustments), { [k]: (_a2 = money(e.target.value)) != null ? _a2 : 0 }));
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
+  } })))), /* @__PURE__ */ React.createElement("label", null, "\uCC44\uBB34 \uC785\uC99D\xB7\uBE44\uC6A9 \uBC94\uC704\xB7\uC21C\uAE08\uC735\uC7AC\uC0B0\xB7\uC7AC\uC0B0\uBD84\uD560\xB7\uD3C9\uAC00 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "inheritance-review_note", value: d.review_note, maxLength: 2e3, onChange: (e) => change("review_note", e.target.value) })), /* @__PURE__ */ React.createElement("p", null, "\uC21C\uAE08\uC735\uC7AC\uC0B0\uC740 \uC801\uACA9 \uC8FC\uC2DD\xB7\uC608\uAE08 \uB4F1 \uAE08\uC735\uC7AC\uC0B0\uC5D0\uC11C \uAD00\uB828 \uAE08\uC735\uCC44\uBB34\uB97C \uCC28\uAC10\uD55C \uD655\uC778 \uAE08\uC561\uC785\uB2C8\uB2E4. \uB2E8\uC21C \uD604\uAE08\uC740 \uAE08\uC735\uC7AC\uC0B0\uC73C\uB85C \uC790\uB3D9 \uCC98\uB9AC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), [["spouse_partition_confirmed", "\uBC30\uC6B0\uC790 \uC2E4\uC81C \uC0C1\uC18D\uC561\uC758 \uBD84\uD560\xB7\uB4F1\uAE30 \uBC0F \uC2E0\uACE0 \uAE30\uD55C \uC694\uAC74\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4 (\uD574\uB2F9 \uC2DC)"], ["ordinary_scope_confirmed", "\uC0AC\uC804\uC99D\uC5EC\xB7\uB4F1\uB85D \uBC94\uC704 \uBC16 \uBCF4\uD5D8/\uD1F4\uC9C1\uAE08\xB7\uCD94\uC815\uC0C1\uC18D\xB7\uC720\uC99D/\uD3EC\uAE30\xB7\uC7A5\uC560/\uBCC4\uB3C4 \uB3D9\uAC70\uAC00\uC871\xB7\uAD6D\uC678\uC7AC\uC0B0\xB7\uADF8 \uBC16\uC758 \uD2B9\uB840\uAC00 \uC5C6\uB294 \uC77C\uBC18 \uC0AC\uAC74\uC785\uB2C8\uB2E4"], ["facts_confirmed", "\uC7AC\uC0B0 \uC911\uBCF5 \uC5C6\uC74C\xB7\uD3C9\uAC00\uC561\xB7\uC0C1\uC18D\uC778 \uAD00\uACC4/\uB098\uC774/\uBD84\uD560\xB7\uBE44\uC6A9 \uBC0F \uD45C\uC2DC\uB41C 0\uC6D0\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]].map(([k, title]) => /* @__PURE__ */ React.createElement("p", { key: k }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-" + k, type: "checkbox", checked: d[k], onChange: (e) => change(k, e.target.checked, true) }), title))))), (w.meta.validation.errors || []).length > 0 && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uACC4\uC0B0 \uC804 \uD655\uC778" }, /* @__PURE__ */ React.createElement("p", null, "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900 \uD655\uC778 \uD56D\uBAA9"), /* @__PURE__ */ React.createElement("ul", null, w.meta.validation.errors.map((e, i) => /* @__PURE__ */ React.createElement("li", { key: i }, e)))), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(save) }, "\uC785\uB825 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(async () => {
+    const saved = await save();
+    if (!saved.validation.can_run) throw new Error("\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    await mutation(base + "/runs", "POST", { revision_id: saved.revision_id, expected_input_hash: saved.input_hash });
+    await load(saved.case_id);
+  }) }, "\uC800\uC7A5\uD558\uACE0 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uC785\uB825 \uBC84\uC804", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-reopen-revision", value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (!inheritanceDirty(w) || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC800\uC7A5\uBCF8\uC744 \uC5EC\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?")) act(() => load(w.meta.case_id, revision));
+  } }, "\uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30"), w.run && /* @__PURE__ */ React.createElement("section", { className: "ic-section", "aria-label": "\uC800\uC7A5\uB41C \uC0C1\uC18D \uACC4\uC0B0 \uACB0\uACFC" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC", inheritanceDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("p", null, "\uC77C\uBC18 \uC7AC\uC0B0\uAC00\uC561 ", Number(w.run.engine_request.estate_value).toLocaleString("ko-KR"), "\uC6D0"), w.run.engine_request.insurance_amount > 0 && /* @__PURE__ */ React.createElement("p", null, "\uBCC4\uB3C4 \uAC04\uC8FC \uBCF4\uD5D8\uAE08 ", Number(w.run.engine_request.insurance_amount).toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("output", { "data-testid": "inheritance-saved-tax" }, Number(w.run.response_snapshot.calc["\uC138\uC561"]).toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uACB0\uACFC ID ", w.run.run_id, " \xB7 \uC785\uB825 ID ", w.run.revision_id), /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uB2E8\uACC4"), /* @__PURE__ */ React.createElement("ul", null, w.run.response_snapshot.calc["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"].map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, r["\uD56D\uBAA9"], " \xB7 ", r["\uAE08\uC561"], " \xB7 ", r["\uBE44\uACE0"])))), /* @__PURE__ */ React.createElement("ul", { "aria-label": "\uC5D4\uC9C4 \uACBD\uACE0" }, (w.run.response_snapshot.calc["\uACBD\uACE0\uC0AC\uD56D"] || []).map((v, i) => /* @__PURE__ */ React.createElement("li", { key: i }, typeof v === "string" ? v : JSON.stringify(v)))))));
+}
+window.JTInheritanceCases = JTInheritanceCases;
+function JTInheritanceSources({ api, clientId, base, busy, act, draft, onImport }) {
+  const [catalog, setCatalog] = React.useState(null), [options, setOptions] = React.useState(null);
+  const [pid, setPid] = React.useState(""), [period, setPeriod] = React.useState(""), [valuation, setValuation] = React.useState(""), [target, setTarget] = React.useState("");
+  const [facts, setFacts] = React.useState(null), [reason, setReason] = React.useState(""), [confirmed, setConfirmed] = React.useState(false), [preview, setPreview] = React.useState(null);
+  const selected = options == null ? void 0 : options.ownership.items.find((x) => x.version === period), owner = selected == null ? void 0 : selected.ownerships.find((x) => x.person_id === draft.decedent_person_id);
+  const change = (fn) => {
+    setPreview(null);
+    setConfirmed(false);
+    fn();
+  };
+  const selection = () => ({
+    property_id: pid,
+    ownership_id: owner == null ? void 0 : owner.id,
+    ownership_version: period,
+    ownership_history_confirmed: confirmed,
+    fact_selection: facts,
+    valuation_id: valuation,
+    death_date: draft.death_date,
+    decedent_person_id: draft.decedent_person_id,
+    valuation_basis: "whole_property",
+    values_confirmed: confirmed,
+    reason
+  });
+  return /* @__PURE__ */ React.createElement("section", { className: "ic-section", "aria-label": "\uC0C1\uC18D \uC7AC\uC0B0 \uC6D0\uBCF8 \uAC00\uC838\uC624\uAE30" }, /* @__PURE__ */ React.createElement("h2", null, "\uC7AC\uC0B0\xB7\uD3C9\uAC00 \uC6D0\uBCF8 \uAC00\uC838\uC624\uAE30"), /* @__PURE__ */ React.createElement("p", null, "\uB4F1\uB85D\uB41C \uC8FC\uD0DD\xB7\uD1A0\uC9C0\xB7\uC0C1\uAC00\xB7\uC624\uD53C\uC2A4\uD154\uC758 \uC0C1\uC18D\uAC1C\uC2DC\uC77C\uACFC \uAC19\uC740 \uD3C9\uAC00\uAE30\uC900\uC77C \uC790\uB8CC\uB97C \uC120\uD0DD\uD569\uB2C8\uB2E4. \uC804\uCCB4 \uC7AC\uC0B0 \uD3C9\uAC00\uC561\uC5D0 \uD53C\uC0C1\uC18D\uC778\uC758 \uB2F9\uC2DC \uC9C0\uBD84\uC744 \uC801\uC6A9\uD569\uB2C8\uB2E4. \uC790\uB8CC\uC758 \uBC95\uC801 \uD3C9\uAC00 \uC801\uACA9\uC131\uACFC \uC18C\uC720 \uBCC0\uB3D9 \uB2F9\uC77C \uC120\uD6C4\uB294 \uC9C1\uC811 \uD655\uC778\uD558\uC138\uC694. \uCC44\uBB34\xB7\uBD84\uD560\uC561\xB7\uACF5\uC81C\uB294 \uC790\uB3D9 \uBCC0\uACBD\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { disabled: busy, "data-testid": "inheritance-source-list", onClick: () => act(async () => {
+    setCatalog(await api(base + "/sources"));
+    setPreview(null);
+  }) }, "\uC0C1\uC18D \uC7AC\uC0B0 \uC6D0\uBCF8 \uC870\uD68C"), catalog && /* @__PURE__ */ React.createElement("fieldset", { disabled: busy }, /* @__PURE__ */ React.createElement("legend", null, "\uC7AC\uC0B0\xB7\uD3C9\uAC00 \uC120\uD0DD"), /* @__PURE__ */ React.createElement("label", null, "\uBC18\uC601 \uC704\uCE58", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-source-target", value: target, onChange: (e) => change(() => setTarget(e.target.value)) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC0C8 \uC7AC\uC0B0 \uCD94\uAC00 / \uAC19\uC740 \uC6D0\uBCF8 \uC7AC\uCC44\uD0DD"), draft.assets.filter((a) => a.kind === "realestate").map((a) => /* @__PURE__ */ React.createElement("option", { key: a.local_id, value: a.local_id }, a.description || a.local_id, " \uAD50\uCCB4")))), /* @__PURE__ */ React.createElement("label", null, "\uC7AC\uC0B0", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-source-property", value: pid, onChange: (e) => {
+    const id = e.target.value;
+    change(() => {
+      setPid(id);
+      setOptions(null);
+      setPeriod("");
+      setValuation("");
+      setFacts(null);
+    });
+    if (id) act(async () => setOptions(await api(base + "/source-options?property_id=" + id + "&death_date=" + draft.death_date)));
+  } }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), catalog.properties.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.address, " \xB7 ", x.property_type)))), options && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uC0C1\uC18D\uAC1C\uC2DC\uC77C \uC18C\uC720 \uC774\uB825", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-source-ownership", value: period, onChange: (e) => change(() => {
+    setPeriod(e.target.value);
+    setFacts(null);
+  }) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), options.ownership.items.filter((x) => x.eligible && x.ownerships.some((o) => o.person_id === draft.decedent_person_id)).map((x) => /* @__PURE__ */ React.createElement("option", { key: x.version, value: x.version }, x.valid_from, "~", x.valid_until || "\uD604\uC7AC", " \xB7 \uD53C\uC0C1\uC18D\uC778 \uC9C0\uBD84 ", x.ownerships.find((o) => o.person_id === draft.decedent_person_id).share_ratio, x.boundary_review_required ? " \xB7 \uBCC0\uB3D9 \uB2F9\uC77C \uC120\uD6C4 \uD655\uC778 \uD544\uC694" : "")))), /* @__PURE__ */ React.createElement("label", null, "\uC0C1\uC18D\uAC1C\uC2DC\uC77C \uD3C9\uAC00\uC790\uB8CC", /* @__PURE__ */ React.createElement("select", { "data-testid": "inheritance-source-valuation", value: valuation, onChange: (e) => change(() => setValuation(e.target.value)) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), options.valuations.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.as_of_date, " \xB7 ", x.valuation_type, " \xB7 ", Number(x.amount).toLocaleString("ko-KR"), "\uC6D0 \xB7 ", x.source)))), !options.valuations.length && /* @__PURE__ */ React.createElement("p", null, "\uAC19\uC740 \uD3C9\uAC00\uAE30\uC900\uC77C\uC758 \uB4F1\uB85D \uC790\uB8CC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4. \uC6D0\uBCF8 \uC790\uB8CC\uC5D0\uC11C \uD655\uC778\uD55C \uD3C9\uAC00\uC561\uC744 \uB4F1\uB85D\uD574\uC57C \uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement(JTFactVersionPicker, { api, clientId, propertyId: pid, ownerId: owner == null ? void 0 : owner.person_id, eventDate: draft.death_date, valuationId: valuation, selection: facts, onChange: (v) => {
+    setFacts(v);
+    setPreview(null);
+    setConfirmed(false);
+  }, disabled: busy }), /* @__PURE__ */ React.createElement("label", null, "\uD3C9\uAC00\uC561\xB7\uC9C0\uBD84 \uCC44\uD0DD \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "inheritance-source-reason", value: reason, maxLength: 1e3, onChange: (e) => change(() => setReason(e.target.value)) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "inheritance-source-confirm", checked: confirmed, onChange: (e) => {
+    setConfirmed(e.target.checked);
+    setPreview(null);
+  } }), "\uD53C\uC0C1\uC18D\uC778 \uC18C\uC720\xB7\uBCC0\uB3D9 \uB2F9\uC77C \uC120\uD6C4\xB7\uC804\uCCB4 \uC7AC\uC0B0 \uD3C9\uAC00\uC561\xB7\uC0C1\uC18D\uAC1C\uC2DC\uC77C \uD3C9\uAC00 \uC801\uACA9\uC131\xB7\uB2E4\uB978 \uD589\uACFC \uC911\uBCF5 \uC5C6\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { disabled: busy || !owner || !valuation || !(facts == null ? void 0 : facts.confirmed) || !confirmed || !reason.trim(), "data-testid": "inheritance-source-preview", onClick: () => act(async () => setPreview(await api(base + "/source-preview", { method: "POST", body: JSON.stringify(selection()) }))) }, "\uCC44\uD0DD \uBBF8\uB9AC\uBCF4\uAE30"), preview && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { "data-testid": "inheritance-source-value" }, "\uC0C1\uC18D \uC9C0\uBD84 \uAC00\uC561 ", Number(preview.adopted_amount).toLocaleString("ko-KR"), "\uC6D0 \xB7 \uD53C\uC0C1\uC18D\uC778 ", preview.decedent.name), /* @__PURE__ */ React.createElement("button", { disabled: busy, "data-testid": "inheritance-source-import", onClick: () => act(() => onImport(selection(), preview, target)) }, "\uC6D0\uBCF8 \uCC44\uD0DD\xB7\uC0C8 \uBC84\uC804 \uC800\uC7A5")))));
+}
+
+
+/* ────────── HoldingCollections.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+function JTHoldingCollections({ clientId, onExit }) {
+  const blank = () => ({ year: 2026, run_ids: [], scope_confirmed: false, review_note: "" });
+  const [draft, setDraft] = React.useState(blank), [label, setLabel] = React.useState("\uC8FC\uD0DD\uBCC4 \uC7AC\uC0B0\uC138 \uBB36\uC74C");
+  const [meta, setMeta] = React.useState(null), [run, setRun] = React.useState(null), [baseline, setBaseline] = React.useState(() => JSON.stringify({ label: "\uC8FC\uD0DD\uBCC4 \uC7AC\uC0B0\uC138 \uBB36\uC74C", draft: blank() }));
+  const [items, setItems] = React.useState([]), [cursor, setCursor] = React.useState(null);
+  const [histories, setHistories] = React.useState([]), [historyCursor, setHistoryCursor] = React.useState(null);
+  const [revision, setRevision] = React.useState(""), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const lock = React.useRef(false), alive = React.useRef(true), keys = React.useRef({});
+  const dirty = baseline !== JSON.stringify({ label, draft });
+  const readonly = !!(meta == null ? void 0 : meta.read_only);
+  const api = async (path, options = {}) => {
+    var _a, _b;
+    const control = new AbortController(), timer = setTimeout(() => control.abort(), 45e3);
+    try {
+      const response = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + "/v1/holding-collections" + path,
+        __spreadProps(__spreadValues({}, options), { signal: control.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) jtGiftSession.token = "";
+        throw new Error(response.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uB2E4\uC2DC \uB85C\uADF8\uC778\uD558\uC138\uC694." : response.status === 409 ? "\uC800\uC7A5 \uBC84\uC804\uC774 \uB2EC\uB77C\uC84C\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD558\uC138\uC694." : ((_a = data.detail) == null ? void 0 : _a.code) === "DUPLICATE_SOURCE_CASE" ? "\uD55C \uC0AC\uAC74\uC758 \uC11C\uB85C \uB2E4\uB978 \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC911\uBCF5 \uC120\uD0DD\uD588\uC2B5\uB2C8\uB2E4. \uC774\uC804 \uACB0\uACFC\uB97C \uC120\uD0DD \uD574\uC81C\uD558\uC138\uC694." : ((_b = data.detail) == null ? void 0 : _b.message) || "\uC694\uCCAD\uC744 \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC120\uD0DD\uD55C \uC0AC\uAC74\uACFC \uC800\uC7A5 \uC0C1\uD0DC\uB97C \uD655\uC778\uD558\uC138\uC694.");
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e.name === "AbortError" || e instanceof TypeError ? "\uC5F0\uACB0\uC774 \uB04A\uACBC\uC2B5\uB2C8\uB2E4. \uAC19\uC740 \uBC84\uD2BC\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uC911\uBCF5 \uC800\uC7A5 \uC5C6\uC774 \uC7AC\uC2DC\uB3C4\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const mutate = async (path, method, body, etag) => {
+    var _a;
+    const key = JSON.stringify({ path, method, body, etag });
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({ "Idempotency-Key": (_a = keys.current)[key] || (_a[key] = window.crypto.randomUUID()) }, etag ? { "If-Match": etag } : {}) });
+  };
+  const list = async (more = false) => {
+    const d = await api("?client_id=" + clientId + (more && historyCursor ? "&cursor=" + historyCursor : ""));
+    if (alive.current) {
+      setHistories((v) => more ? [...v, ...d.items] : d.items);
+      setHistoryCursor(d.next_cursor);
+    }
+  };
+  const candidates = async (more = false) => {
+    const d = await api("/candidates?client_id=" + clientId + "&year=" + draft.year + (more && cursor ? "&cursor=" + cursor : ""));
+    if (alive.current) {
+      setItems((v) => more ? [...v, ...d.items] : d.items);
+      setCursor(d.next_cursor);
+    }
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(async () => {
+      await list();
+      await candidates();
+    });
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  React.useEffect(() => {
+    const guard = (e) => {
+      if (dirty || lock.current) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", guard);
+    return () => window.removeEventListener("beforeunload", guard);
+  }, [dirty]);
+  const discard = () => !dirty || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBB36\uC74C \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+  const open = async (id, number = "") => {
+    const s = await api("/" + id + (number ? "?revision_number=" + number : ""));
+    const r = s.last_successful_run_id ? await api("/" + id + "/runs/" + s.last_successful_run_id) : null;
+    if (!alive.current) return;
+    setMeta(s);
+    setDraft(s.draft);
+    setLabel(s.label);
+    setRun(r);
+    setRevision(number);
+    setBaseline(JSON.stringify({ label: s.label, draft: s.draft }));
+  };
+  const save = async () => {
+    const s = await mutate(
+      meta ? "/" + meta.collection_id : "",
+      meta ? "PUT" : "POST",
+      __spreadValues({ label, draft }, !meta ? { client_id: clientId } : {}),
+      meta == null ? void 0 : meta.etag
+    );
+    if (!alive.current) return s;
+    setMeta(s);
+    setRun(null);
+    setRevision("");
+    setBaseline(JSON.stringify({ label, draft }));
+    await list();
+    return s;
+  };
+  const change = (key, value) => setDraft((d) => __spreadValues(__spreadProps(__spreadValues({}, d), { [key]: value }), ["run_ids", "review_note"].includes(key) ? { scope_confirmed: false } : {}));
+  const money = (v) => Number(v).toLocaleString("ko-KR") + "\uC6D0";
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container", style: { maxWidth: 1100, padding: "32px 20px" } }, /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (discard()) onExit();
+  } }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uC8FC\uD0DD\uBCC4 \uC7AC\uC0B0\uC138 \uBB36\uC74C"), /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uB3D9\uC77C \uC18C\uC720\uC790\uC758 \uC6D0\uBCF8 \uC5F0\uACB0\uB41C \uC77C\uBC18 \uC8FC\uD0DD \uACB0\uACFC\uB97C \uBAA8\uC74D\uB2C8\uB2E4. \uAC01 \uC8FC\uD0DD\uC758 \uACFC\uC138\uD45C\uC900\xB7\uC138\uC728\xB7\uC0C1\uD55C\uC740 \uADF8\uB300\uB85C \uC720\uC9C0\uD558\uACE0 \uC800\uC7A5\uB41C \uC138\uC561\uB9CC \uB354\uD569\uB2C8\uB2E4. \uC885\uBD80\uC138\xB7\uD1A0\uC9C0\xB7\uACF5\uB3D9\uC18C\uC720\xB71\uC138\uB3001\uC8FC\uD0DD \uD2B9\uB840\xB7\uC9C0\uC5ED\uC790\uC6D0\uC2DC\uC124\uC138\xB7\uACE0\uC9C0/\uB0A9\uBD80 \uB0B4\uC5ED\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uD55C \uBB36\uC74C \uC5F4\uAE30"), histories.map((h) => /* @__PURE__ */ React.createElement("button", { key: h.collection_id, disabled: busy, "data-testid": "holding-collection-open-" + h.collection_id, onClick: () => discard() ? act(() => open(h.collection_id)) : void 0 }, h.label || "\uC8FC\uD0DD\uBCC4 \uBB36\uC74C", " \xB7 ", h.year, " \xB7 \uBC84\uC804 ", h.revision)), historyCursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => list(true)) }, "\uBB36\uC74C \uBAA9\uB85D \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (!discard()) return;
+    setMeta(null);
+    setRun(null);
+    setDraft(blank());
+    setLabel("\uC8FC\uD0DD\uBCC4 \uC7AC\uC0B0\uC138 \uBB36\uC74C");
+    setBaseline(JSON.stringify({ label: "\uC8FC\uD0DD\uBCC4 \uC7AC\uC0B0\uC138 \uBB36\uC74C", draft: blank() }));
+    setRevision("");
+    keys.current = {};
+  } }, "\uC0C8 \uBB36\uC74C")), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uC8FC\uD0DD\uBCC4 \uC800\uC7A5 \uACB0\uACFC \uC120\uD0DD \xB7 2026\uB144"), /* @__PURE__ */ React.createElement("label", null, "\uBB36\uC74C \uC774\uB984", /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-collection-label", maxLength: 200, value: label, onChange: (e) => setLabel(e.target.value) })), /* @__PURE__ */ React.createElement("button", { onClick: () => act(() => candidates()) }, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uC0C8\uB85C\uACE0\uCE68"), /* @__PURE__ */ React.createElement("p", null, "\uCD5C\uC2E0 \uC785\uB825\uC758 \uACC4\uC0B0\uC774 \uB05D\uB09C \uC0AC\uAC74\uC744 \uC120\uD0DD\uD569\uB2C8\uB2E4. \uC774\uBBF8 \uC800\uC7A5\uD55C \uBB36\uC74C\uC740 \uAC1C\uBCC4 \uC0AC\uAC74\uC744 \uC218\uC815\uD558\uAC70\uB098 \uC0C8\uB85C \uACC4\uC0B0\uD574\uB3C4 \uC790\uB3D9\uC73C\uB85C \uBC14\uB00C\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), items.map((s) => /* @__PURE__ */ React.createElement("label", { key: s.id, style: { display: "block", padding: 8 } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-collection-select-" + s.id, type: "checkbox", disabled: !s.run_id, checked: draft.run_ids.includes(s.run_id), onChange: (e) => change("run_ids", e.target.checked ? [...draft.run_ids, s.run_id] : draft.run_ids.filter((id) => id !== s.run_id)) }), s.label || "\uBCF4\uC720\uC138 \uC0AC\uAC74", " \xB7 ", s.assessment_date, " \xB7 ", s.taxpayer_name || "\uC6D0\uBCF8 \uC18C\uC720\uC790 \uD655\uC778 \uD544\uC694", " \xB7 \uBC84\uC804 ", s.revision, " ", s.run_id ? "" : "\xB7 \uCD5C\uC2E0 \uC785\uB825 \uACC4\uC0B0 \uD544\uC694")), cursor && /* @__PURE__ */ React.createElement("button", { onClick: () => act(() => candidates(true)) }, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("h3", null, "\uC120\uD0DD\uD55C \uACB0\uACFC ", draft.run_ids.length, "\uAC74"), /* @__PURE__ */ React.createElement("ul", null, draft.run_ids.map((id) => {
+    const s = ((meta == null ? void 0 : meta.sources) || []).find((s2) => s2.run_id === id), candidate = items.find((s2) => s2.run_id === id);
+    return /* @__PURE__ */ React.createElement("li", { key: id }, (s == null ? void 0 : s.label) || (candidate == null ? void 0 : candidate.label) || "\uC120\uD0DD\uD55C \uC800\uC7A5 \uACB0\uACFC", " \xB7 \uBC84\uC804 ", (s == null ? void 0 : s.revision) || (candidate == null ? void 0 : candidate.revision), s && !candidate && " \xB7 \uC774\uC804 \uC800\uC7A5 \uACB0\uACFC \uC720\uC9C0", /* @__PURE__ */ React.createElement("button", { "data-testid": "holding-collection-remove-" + id, onClick: () => change("run_ids", draft.run_ids.filter((v) => v !== id)) }, "\uC120\uD0DD \uD574\uC81C"));
+  })), /* @__PURE__ */ React.createElement("label", null, "\uACFC\uC138\uB2E8\uC704\xB7\uC911\uBCF5\xB7\uB204\uB77D \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "holding-collection-note", maxLength: 1e3, value: draft.review_note, onChange: (e) => change("review_note", e.target.value) })), /* @__PURE__ */ React.createElement("label", { style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-collection-confirm", type: "checkbox", checked: draft.scope_confirmed, onChange: (e) => change("scope_confirmed", e.target.checked) }), "\uAC19\uC740 \uC18C\uC720\uC790\uC758 \uC11C\uB85C \uB2E4\uB978 \uC77C\uBC18 \uC8FC\uD0DD\uC774\uBA70 \uACFC\uC138\uB2E8\uC704\xB7\uC911\uBCF5\xB7\uB204\uB77D\uACFC 1\uC138\uB3001\uC8FC\uD0DD \uD2B9\uB840 \uBE44\uB300\uC0C1\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "holding-collection-save", onClick: () => act(save) }, "\uBB36\uC74C \uC785\uB825 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { "data-testid": "holding-collection-calculate", onClick: () => act(async () => {
+    const s = dirty || !meta ? await save() : meta;
+    if (!s.validation.can_run) throw new Error(s.validation.errors.join(" "));
+    const r = await mutate("/" + s.collection_id + "/runs", "POST", { revision_id: s.revision_id, expected_input_hash: s.input_hash });
+    const detail = await api("/" + s.collection_id + "/runs/" + r.run_id);
+    if (alive.current) setRun(detail);
+  }) }, "\uC800\uC7A5\uD558\uACE0 \uC18C\uACC4 \uACC4\uC0B0")), meta && /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uBC84\uC804 ", meta.revision, " ", readonly ? "\xB7 \uACFC\uAC70 \uC785\uB825 \uC77D\uAE30 \uC804\uC6A9" : ""), !meta.validation.can_run && /* @__PURE__ */ React.createElement("ul", null, meta.validation.errors.map((e) => /* @__PURE__ */ React.createElement("li", { key: e }, e))), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uBC84\uC804(\uBE44\uC6B0\uBA74 \uCD5C\uC2E0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-collection-revision", type: "number", min: "1", disabled: busy, value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { "data-testid": "holding-collection-reopen", disabled: busy, onClick: () => discard() ? act(() => open(meta.collection_id, revision)) : void 0 }, "\uBB36\uC74C \uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30")), run && /* @__PURE__ */ React.createElement("section", { "data-testid": "holding-collection-result" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uC8FC\uD0DD\uBCC4 \uC7AC\uC0B0\uC138 \uC18C\uACC4"), dirty && /* @__PURE__ */ React.createElement("p", { role: "status" }, "\uD604\uC7AC \uD3B8\uC9D1 \uC785\uB825\uACFC \uB2E4\uB978 \uC800\uC7A5\uBCF8\uC758 \uACB0\uACFC\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, run.response_snapshot.calc.notice), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC8FC\uD0DD\xB7\uBC84\uC804"), /* @__PURE__ */ React.createElement("th", null, "\uD574\uB2F9 \uC8FC\uD0DD \uACFC\uC138\uD45C\uC900"), /* @__PURE__ */ React.createElement("th", null, "\uBCF8\uC138"), /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138"), /* @__PURE__ */ React.createElement("th", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84"), /* @__PURE__ */ React.createElement("th", null, "\uC18C\uACC4"))), /* @__PURE__ */ React.createElement("tbody", null, run.response_snapshot.calc.rows.map((r) => /* @__PURE__ */ React.createElement("tr", { key: r.run_id }, /* @__PURE__ */ React.createElement("td", null, r.address, " \xB7 \uBC84\uC804 ", r.revision), /* @__PURE__ */ React.createElement("td", null, money(r.tax_base)), /* @__PURE__ */ React.createElement("td", null, money(r.property_tax)), /* @__PURE__ */ React.createElement("td", null, money(r.local_education_tax)), /* @__PURE__ */ React.createElement("td", null, money(r.urban_tax)), /* @__PURE__ */ React.createElement("td", null, money(r.total_tax)))))), /* @__PURE__ */ React.createElement("p", { "data-testid": "holding-collection-total" }, "\uBCF8\uC138 ", money(run.response_snapshot.calc.totals.property_tax), " \xB7 \uC9C0\uBC29\uAD50\uC721\uC138 ", money(run.response_snapshot.calc.totals.local_education_tax), " \xB7 \uB3C4\uC2DC\uC9C0\uC5ED\uBD84 ", money(run.response_snapshot.calc.totals.urban_tax), " \xB7 \uD569\uACC4 ", money(run.response_snapshot.calc.totals.total_tax))));
+}
+window.JTHoldingCollections = JTHoldingCollections;
+
+
+/* ────────── HoldingCases.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+let jtHoldingSession = null;
+function holdingDirty(w = jtHoldingSession) {
+  return !!w && JSON.stringify({ label: w.label, draft: w.draft }) !== w.baseline;
+}
+function JTHoldingCases({ clientId, caseId, onExit }) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
+  const [w, setW] = React.useState(jtHoldingSession);
+  const [opened, setOpened] = React.useState(false);
+  const ref = React.useRef(w), lock = React.useRef(false), alive = React.useRef(true);
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState("");
+  const [revision, setRevision] = React.useState("");
+  const keys = React.useRef({});
+  const remember = (value) => {
+    ref.current = value;
+    jtHoldingSession = value;
+    if (alive.current) setW(value);
+  };
+  const api = async (path, options = {}) => {
+    var _a2;
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const r = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        if (r.status === 401) jtGiftSession.token = "";
+        const messages = { SOURCE_TAX_SCOPE_UNSUPPORTED: "\uC774 \uC7AC\uC0B0\uC138 \uC800\uC7A5 \uACB0\uACFC\uB294 \uD604\uC7AC \uC6D0\uBCF8 \uC5F0\uACB0 \uBC94\uC704 \uBC16\uC785\uB2C8\uB2E4. \uB450 \uC5F0\uB3C4 \uACF5\uC2DC\uAC00\uACA9\xB7\uACFC\uC138 \uC774\uB825\xB7\uB2E8\uB3C5 \uC18C\uC720\uC640 \uC6D0\uBCF8 \uC5F0\uACB0\uC744 \uD655\uC778\uD558\uC138\uC694.", SOURCE_PRIOR_VALUE_CONFLICT: "\uB4F1\uB85D\uB41C \uC804\uB144 \uACF5\uC2DC\uAC00\uACA9\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uBD80\uC874\uC7AC \uD655\uC778\uACFC \uCDA9\uB3CC\uD558\uBBC0\uB85C \uC6D0\uBCF8\uC744 \uAC80\uD1A0\uD558\uACE0 \uC804\uB144 \uC790\uB8CC\uB97C \uC120\uD0DD\uD558\uC138\uC694.", SOURCE_CHANGED: "\uBBF8\uB9AC\uBCF4\uAE30 \uC774\uD6C4 \uC6D0\uBCF8\uC774 \uBC14\uB00C\uC5C8\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694.", SOURCE_PUBLIC_VALUE_PERIOD_MISMATCH: "\uC62C\uD574\xB7\uC804\uB144\uC758 \uACF5\uC2DC\uAC00\uACA9\uACFC \uAE30\uC900\uC77C\uC744 \uAD6C\uBD84\uD574 \uC8FC\uC138\uC694.", SOURCE_SOLE_OWNER_REQUIRED: "\uC120\uD0DD\uD55C \uC18C\uC720 \uC774\uB825\uC740 \uB2E8\uB3C5 \uC18C\uC720\uAC00 \uC544\uB2D9\uB2C8\uB2E4.", REVISION_CONFLICT: "\uB2E4\uB978 \uC800\uC7A5\uBCF8\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", SNAPSHOT_MIGRATION_REQUIRED: "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC800\uC7A5 \uBC84\uC804\uC785\uB2C8\uB2E4.", PARTY_OUTSIDE_CLIENT: "\uC120\uD0DD\uD55C \uB2F9\uC0AC\uC790\uAC00 \uC774 \uACE0\uAC1D\uC758 \uC790\uB8CC\uAC00 \uC544\uB2D9\uB2C8\uB2E4.", INVALID_CASE_INPUT: "\uAE08\uC561\uACFC \uC911\uBCF5 \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", DRAFT_NOT_RUNNABLE: "\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", ENGINE_CALCULATION_ERROR: "\uACC4\uC0B0 \uC785\uB825\uC744 \uCD94\uAC00 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uACB0\uACFC\uB294 \uC800\uC7A5\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4." };
+        throw new Error(r.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uAC19\uC740 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD558\uC138\uC694." : messages[(_a2 = data.detail) == null ? void 0 : _a2.code] || (r.status === 422 ? "\uC785\uB825 \uD615\uC2DD\uACFC \uB0A0\uC9DC\xB7\uAE08\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uC790\uB8CC\uB97C \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uD655\uC778\uD558\uACE0 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694."));
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const mutation = (path, method, body, etag) => {
+    var _a2;
+    const signature = JSON.stringify({ path, method, body, etag });
+    const memory = path === "/v1/holding-cases" ? keys.current : ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current;
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({ "Idempotency-Key": memory[signature] || (memory[signature] = window.crypto.randomUUID()) }, etag ? { "If-Match": etag } : {}) });
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e instanceof TypeError || e.name === "AbortError" ? "\uC751\uB2F5\uC744 \uBC1B\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uAC19\uC740 \uC791\uC5C5\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uC800\uC7A5 \uC5EC\uBD80\uB97C \uD655\uC778\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const load = async (id, number = "") => {
+    var _a2;
+    const saved = await api("/v1/holding-cases/" + id + (number ? "?revision=" + number : ""));
+    if (saved.client_id !== clientId) throw new Error("\uC120\uD0DD\uD55C \uACE0\uAC1D\uC758 \uC0AC\uAC74\uC774 \uC544\uB2D9\uB2C8\uB2E4.");
+    const run = saved.last_successful_run_id ? await api("/v1/holding-cases/" + id + "/runs/" + saved.last_successful_run_id) : null;
+    remember({
+      uid: jtGiftSession.uid,
+      meta: saved,
+      label: saved.label,
+      draft: saved.draft,
+      run,
+      keys: ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current,
+      baseline: JSON.stringify({ label: saved.label, draft: saved.draft })
+    });
+    if (alive.current) setOpened(true);
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(async () => {
+      var _a2, _b2;
+      if (caseId === "resume" && ((_b2 = (_a2 = ref.current) == null ? void 0 : _a2.meta) == null ? void 0 : _b2.client_id) === clientId) {
+        if (ref.current.uid !== jtGiftSession.uid) throw new Error("\uD3B8\uC9D1\uD558\uB358 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+        setOpened(true);
+        return;
+      }
+      if (caseId) await load(caseId);
+      else {
+        const made = await mutation("/v1/holding-cases", "POST", { client_id: clientId, label: "\uC0C8 \uBCF4\uC720\uC138 \uC0AC\uAC74", draft: {} });
+        await load(made.case_id);
+      }
+    });
+    const protect = (e) => {
+      if (lock.current || holdingDirty(ref.current)) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => {
+      alive.current = false;
+      window.removeEventListener("beforeunload", protect);
+    };
+  }, []);
+  const current = opened && ((_a = w == null ? void 0 : w.meta) == null ? void 0 : _a.client_id) === clientId && (caseId === "resume" || !caseId || w.meta.case_id === caseId);
+  const readonly = !current || w.meta.read_only || w.meta.revision !== w.meta.current_revision;
+  const base = current ? "/v1/holding-cases/" + w.meta.case_id : "";
+  if (current && w.meta.read_only) return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { onClick: onExit }, "\uC791\uC5C5\uB300\uB85C"), /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC785\uB825 \uBC84\uC804\uC785\uB2C8\uB2E4. \uC77D\uAE30 \uC804\uC6A9 \uC6D0\uBCF8\uC744 \uBCF4\uC874\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(w.meta.case_input, null, 2)));
+  const capEmpty = { one_house: "unknown", pre2024_taxed: "unknown", prior_value_state: "unknown", prior_standard_value: null, prior_value_source: "", transition_source: "", prior_urban_tax: null, prior_urban_source: "" };
+  const change = (key, value, confirmation = false) => {
+    const extra = key === "prior_value_state" ? { prior_standard_value: null, prior_value_source: "" } : key === "urban_area" ? { prior_urban_tax: null, prior_urban_source: "" } : key === "pre2024_taxed" || key === "one_house" ? { prior_equivalent_tax: null, prior_source: "", prior_urban_tax: null, prior_urban_source: "", transition_source: "" } : {};
+    remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues(__spreadValues(__spreadValues({}, ref.current.draft), confirmation ? {} : { facts_confirmed: false, ordinary_scope_confirmed: false }), extra), { [key]: value }) }));
+  };
+  const save = async () => {
+    if (!holdingDirty(ref.current)) return ref.current.meta;
+    const saved = await mutation(base, "PUT", { label: ref.current.label, draft: ref.current.draft }, ref.current.meta.etag);
+    await load(saved.case_id);
+    return ref.current.meta;
+  };
+  const d = current ? w.draft : null;
+  const switchPath = (key, value) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues(__spreadProps(__spreadValues({}, capEmpty), { schema_version: "holding-case/1", tax_year: d.tax_year, tax_kind: d.tax_kind, category: d.category, [key]: value }), key === "tax_kind" && value === "comprehensive" ? { category: "house" } : {}), { description: "", standard_value: null, prior_equivalent_tax: null, urban_area: "unknown", value_source: "", prior_source: "", review_note: "", facts_confirmed: false, ordinary_scope_confirmed: false }) }));
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.ic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.ic-grid label{display:flex;flex-direction:column;gap:6px}.ic-grid input,.ic-grid select,.ic-grid textarea{font:inherit;padding:10px;min-height:44px}.ic-section{border:1px solid #ccd8cd;padding:20px;margin:20px 0;border-radius:10px}.ic-section button{margin:8px;min-height:44px}.ic-section p{line-height:1.6}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: onExit }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5"), /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uAC1C\uC778 \uB2E8\uB3C5 \uC18C\uC720 \uC77C\uBC18 \uC8FC\uD0DD\xB7\uAC74\uCD95\uBB3C \uD55C \uACFC\uC138\uB2E8\uC704\uB97C \uC785\uB825\uD569\uB2C8\uB2E4. \uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561, 2024\uB144 \uC774\uC804 \uC8FC\uD0DD \uACFC\uC138 \uC774\uB825, \uBCF8\uC138\xB7\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 \uC0C1\uB2F9\uC561\uC744 \uAD6C\uBD84\uD569\uB2C8\uB2E4. \uD1A0\uC9C0\xB7\uC9C0\uC5ED\uC790\uC6D0\uC2DC\uC124\uC138\xB7\uACF5\uC720\xB7\uAC10\uBA74\xB7\uC870\uB840 \uAC00\uAC10 \uBC0F \uBCF8\uC138 4\uCC9C\uC6D0 \uBBF8\uB9CC\uC758 \uC18C\uC561 \uACE0\uC9C0\uB294 \uBCC4\uB3C4 \uAC80\uD1A0 \uB300\uC0C1\uC785\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), !current && !busy && /* @__PURE__ */ React.createElement("button", { onClick: () => act(async () => {
+    if (caseId && caseId !== "resume") await load(caseId);
+    else {
+      const made = await mutation("/v1/holding-cases", "POST", { client_id: clientId, label: "\uC0C8 \uBCF4\uC720\uC138 \uC0AC\uAC74", draft: {} });
+      await load(made.case_id);
+    }
+  }) }, "\uC0AC\uAC74 \uC5F4\uAE30 \uB2E4\uC2DC \uC2DC\uB3C4"), current && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uBC84\uC804 ", w.meta.revision, " / \uCD5C\uC2E0 ", w.meta.current_revision, readonly ? " \xB7 \uC77D\uAE30 \uC804\uC6A9 \uC800\uC7A5\uBCF8" : "", holdingDirty(w) ? " \xB7 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD \uC788\uC74C" : ""), !readonly && d.tax_year === 2026 && d.category === "house" && /* @__PURE__ */ React.createElement(JTHoldingSources, { comprehensive: d.tax_kind === "comprehensive", key: base + ":" + w.meta.revision + ":" + d.tax_kind, api, clientId, base, busy, act, onImport: async (selection, preview) => {
+    if (!window.confirm("\uD604\uC7AC \uC785\uB825\uC744 \uC120\uD0DD\uD55C \uC8FC\uD0DD\uC758 \uACF5\uC2DC\uAC00\uACA9 \uC790\uB8CC\uB85C \uAD50\uCCB4\uD558\uACE0 \uC0C8 \uBC84\uC804\uC744 \uC800\uC7A5\uD569\uB2C8\uB2E4. \uC804\uB144 \uC138\uC561\uACFC \uD2B9\uB840\uB294 \uB2E4\uC2DC \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4.")) return;
+    const saved = await mutation(base + "/source-imports", "POST", { label: ref.current.label, draft: ref.current.draft, selection, expected_source_hash: preview.source_hash }, ref.current.meta.etag);
+    await load(saved.case_id);
+  } }), ((_b = w.meta.case_input) == null ? void 0 : _b.master_snapshot) && /* @__PURE__ */ React.createElement("p", { "data-testid": "holding-source-status" }, "\uCC44\uD0DD \uC6D0\uBCF8: ", w.meta.case_input.master_snapshot.property.address, " \xB7 ", w.meta.case_input.source_status === "matched" ? "\uCC44\uD0DD\uD55C \uACF5\uC2DC\uAC00\uACA9\uACFC \uC77C\uCE58" : "\uCC44\uD0DD \uD6C4 \uC9C1\uC811 \uC218\uC815\uD55C \uC785\uB825", " \xB7 ", w.meta.case_input.master_snapshot.schema_version === "comprehensive-master-source/1" ? "\uC885\uBD80\uC138\uC6A9 \uC62C\uD574 \uACF5\uC2DC\uAC00\uACA9\xB7\uC0AC\uC2E4 \uC6D0\uBCF8" : w.meta.case_input.master_snapshot.prior_value_absence ? "\uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561 \uBD80\uC874\uC7AC \uD655\uC778: " + w.meta.case_input.master_snapshot.prior_value_absence.reason : "\uC804\uB144 \uACF5\uC2DC\uAC00\uACA9 \uC6D0\uBCF8 \uC120\uD0DD", " \xB7 \uC6D0\uBCF8 \uCD94\uAC00 \uBCC0\uACBD\uC740 \uC774 \uC800\uC7A5\uBCF8\uC5D0 \uC790\uB3D9 \uBC18\uC601\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !readonly && /* @__PURE__ */ React.createElement(JTHoldingTaxSources, { key: base + ":tax:" + w.meta.revision, api, base, busy, act, onImport: async (selection, preview) => {
+    if (!window.confirm("\uC120\uD0DD\uD55C \uC7AC\uC0B0\uC138 \uACB0\uACFC\uC640 \uC6D0\uBCF8\uC73C\uB85C \uC885\uBD80\uC138 \uC0C8 \uBC84\uC804\uC744 \uC800\uC7A5\uD569\uB2C8\uB2E4. \uB450 \uC5F0\uB3C4 1\uC8FC\uD0DD \uC694\uAC74\uC744 \uB2E4\uC2DC \uD655\uC778\uD558\uC138\uC694.")) return;
+    const saved = await mutation(base + "/tax-source-imports", "POST", { label: ref.current.label, selection, expected_source_hash: preview.source_hash }, ref.current.meta.etag);
+    await load(saved.case_id);
+  } }), ((_d = (_c = w.meta.case_input) == null ? void 0 : _c.master_snapshot) == null ? void 0 : _d.worksheet) && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uC804\uB144 \uC0C1\uB2F9\uC138\uC561 \uC6D0\uBCF8 \uC0B0\uC815\uD45C", "data-testid": "holding-prior-worksheet" }, /* @__PURE__ */ React.createElement("h3", null, "\uC800\uC7A5\uB41C \uC6D0\uBCF8 \uC0B0\uC815\uD45C"), /* @__PURE__ */ React.createElement("p", null, "\uC7AC\uC0B0\uC138 \uACB0\uACFC ID ", w.meta.case_input.master_snapshot.property_result.run_id, " \xB7 \uC6D0\uBCF8 \uD574\uC2DC ", w.meta.case_input.master_snapshot.source_hash), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("tbody", null, [["current_uncapped_base", "\uC62C\uD574 \uC0C1\uD55C \uC804 \uACFC\uD45C"], ["current_property_tax_base", "\uC62C\uD574 \uC0C1\uD55C \uC801\uC6A9 \uACFC\uD45C"], ["current_property_tax", "\uC62C\uD574 \uC7AC\uC0B0\uC138 \uBCF8\uC138"], ["prior_public_value", "2025\uB144 \uACF5\uC2DC\uAC00\uACA9"], ["prior_property_base", "\uC804\uB144 \uC0C1\uD55C \uC81C\uC678 \uACFC\uD45C"], ["prior_property_tax", "\uC804\uB144 \uC7AC\uC0B0\uC138 \uC0C1\uB2F9\uC561"], ["prior_gross_tax", "\uC804\uB144 \uC885\uBD80\uC138 \uC0B0\uCD9C\uC138\uC561"], ["prior_property_credit", "\uC804\uB144 \uC7AC\uC0B0\uC138 \uACF5\uC81C"], ["prior_age_holding_credit", "\uC804\uB144 \uC5F0\uB839\xB7\uBCF4\uC720\uAE30\uAC04 \uACF5\uC81C"], ["prior_comprehensive_tax", "\uC804\uB144 \uC885\uBD80\uC138 \uC0C1\uB2F9\uC561"]].map(([key, label]) => /* @__PURE__ */ React.createElement("tr", { key }, /* @__PURE__ */ React.createElement("th", null, label), /* @__PURE__ */ React.createElement("td", null, Number(w.meta.case_input.master_snapshot.worksheet[key]).toLocaleString("ko-KR"), "\uC6D0"))))), /* @__PURE__ */ React.createElement("p", null, "\uC804\uB144 \uC0C1\uB2F9\uC561\uC740 \uC0C1\uD55C\xB7\uBD80\uAC00\uC138\uBAA9\uC744 \uC81C\uC678\uD55C \uBC95\uC815 \uC0B0\uC815\uC561\uC785\uB2C8\uB2E4. \uC6D0\uBCF8 \uBCC0\uACBD \uC2DC \uAE30\uC874 \uACB0\uACFC\uB294 \uC720\uC9C0\uB418\uBA70 \uC0C8 \uC7AC\uC0B0\uC138 \uACB0\uACFC\uB97C \uC120\uD0DD\uD574\uC57C \uBCC0\uACBD\uBD84\uC774 \uBC18\uC601\uB429\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uACFC\uC138\uC5F0\uB3C4\xB7\uC138\uBAA9\xB7\uACFC\uC138\uB2E8\uC704"), /* @__PURE__ */ React.createElement("div", { className: "ic-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74\uBA85", /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-label", value: w.label, onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { label: e.target.value })) })), /* @__PURE__ */ React.createElement("label", null, "\uACFC\uC138\uC5F0\uB3C4", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-tax_year", value: d.tax_year, onChange: (e) => switchPath("tax_year", Number(e.target.value)) }, [2025, 2026, 2027].map((y) => /* @__PURE__ */ React.createElement("option", { key: y, value: y }, y, y === 2026 ? "" : " (\uCD08\uC548\uB9CC)")))), /* @__PURE__ */ React.createElement("label", null, "\uC138\uBAA9", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-tax_kind", value: d.tax_kind, onChange: (e) => switchPath("tax_kind", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "property" }, "\uC7AC\uC0B0\uC138"), /* @__PURE__ */ React.createElement("option", { value: "comprehensive" }, "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 (\uC77C\uBC18 \uB2E8\uB3C5 1\uC8FC\uD0DD)"))), /* @__PURE__ */ React.createElement("label", null, "\uACFC\uC138\uB300\uC0C1", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-category", value: d.category, onChange: (e) => switchPath("category", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "building", disabled: d.tax_kind === "comprehensive" }, "\uC77C\uBC18 \uAC74\uCD95\uBB3C"), /* @__PURE__ */ React.createElement("option", { value: "house" }, "\uC8FC\uD0DD"), /* @__PURE__ */ React.createElement("option", { value: "land", disabled: d.tax_kind === "comprehensive" }, "\uD1A0\uC9C0 (\uCD08\uC548\uB9CC)"))), d.tax_kind === "property" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 \uACFC\uC138", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-urban_area", value: d.urban_area, onChange: (e) => change("urban_area", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uC544\uB2C8\uC624"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uC608 (\uD45C\uC900\uC138\uC728 0.14%)"))), [["description", "\uACFC\uC138\uB2E8\uC704 \uC8FC\uC18C\xB7\uC2DD\uBCC4 \uB0B4\uC6A9"], ["standard_value", "\uC62C\uD574 \uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0)"], ["value_source", "\uC2DC\uAC00\uD45C\uC900\uC561 \uADFC\uAC70"], ["prior_equivalent_tax", "\uC9C1\uC804 \uC5F0\uB3C4 \uC7AC\uC0B0\uC138 \uBCF8\uC138 \uC0C1\uB2F9\uC561 (\uC6D0)"], ["prior_source", "\uC804\uB144 \uBCF8\uC138 \uC0C1\uB2F9\uC561 \uC0B0\uC815 \uADFC\uAC70"]].map(([key, title]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, title, /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-" + key, value: (_a2 = d[key]) != null ? _a2 : "", onChange: (e) => change(key, e.target.value) }));
+  }), d.category === "house" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "1\uC138\uB300 1\uC8FC\uD0DD \uD2B9\uB840 \uC694\uAC74", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-one_house", value: (_e = d.one_house) != null ? _e : "unknown", onChange: (e) => change("one_house", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uD574\uB2F9"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uBE44\uD574\uB2F9"))), /* @__PURE__ */ React.createElement("label", null, "2024\uB144 \uC774\uC804 \uC774 \uC8FC\uD0DD\uC5D0 \uC7AC\uC0B0\uC138 \uACFC\uC138 \uC774\uB825", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-pre2024_taxed", value: (_f = d.pre2024_taxed) != null ? _f : "unknown", onChange: (e) => change("pre2024_taxed", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uC788\uC74C (2028\uB144\uAE4C\uC9C0 \uACBD\uACFC\uC870\uCE58)"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uC5C6\uC74C"))), /* @__PURE__ */ React.createElement("label", null, "\uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561 \uC874\uC7AC", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-prior_value_state", value: (_g = d.prior_value_state) != null ? _g : "unknown", onChange: (e) => change("prior_value_state", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("option", { value: "exists" }, "\uC788\uC74C"), /* @__PURE__ */ React.createElement("option", { value: "absent" }, "\uC5C6\uC74C \uD655\uC778 (\uC62C\uD574 \uAE08\uC561 \uB300\uCCB4)"))), d.prior_value_state === "exists" && /* @__PURE__ */ React.createElement("label", null, "\uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-prior_standard_value", value: (_h = d.prior_standard_value) != null ? _h : "", onChange: (e) => change("prior_standard_value", e.target.value) })), [["prior_value_source", "\uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561 \uB610\uB294 \uBD80\uC874\uC7AC \uD655\uC778 \uADFC\uAC70"], ["transition_source", "2024\uB144 \uC774\uC804 \uACFC\uC138 \uC774\uB825 \uD655\uC778 \uADFC\uAC70"]].map(([k, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key: k }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-" + k, value: (_a2 = d[k]) != null ? _a2 : "", onChange: (e) => change(k, e.target.value) }));
+  })), d.urban_area === "yes" && (d.category === "building" || d.pre2024_taxed === "yes") && [["prior_urban_tax", "\uC804\uB144 \uB3C4\uC2DC\uC9C0\uC5ED\uBD84 \uC0C1\uB2F9\uC561 (\uC6D0)"], ["prior_urban_source", "\uC804\uB144 \uB3C4\uC2DC\uC9C0\uC5ED\uBD84 \uC0C1\uB2F9\uC561 \uADFC\uAC70"]].map(([k, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key: k }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-" + k, value: (_a2 = d[k]) != null ? _a2 : "", onChange: (e) => change(k, e.target.value) }));
+  })), d.tax_kind === "comprehensive" && /* @__PURE__ */ React.createElement(JTComprehensiveFacts, { draft: d, change, derived: (_i = w.meta.case_input) == null ? void 0 : _i.derived_facts, worksheet: (_k = (_j = w.meta.case_input) == null ? void 0 : _j.master_snapshot) == null ? void 0 : _k.worksheet })), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uC900\uC77C ", d.tax_year, "-06-01 \xB7 \uC5F0\uB3C4\xB7\uC138\uBAA9\xB7\uACFC\uC138\uB300\uC0C1\uC744 \uBC14\uAFB8\uBA74 \uAE08\uC561\xB7\uADFC\uAC70\xB7\uD655\uC778\uC774 \uCD08\uAE30\uD654\uB429\uB2C8\uB2E4."), d.tax_kind === "property" && /* @__PURE__ */ React.createElement("p", null, "\uC804\uB144 \uAE08\uC561\uC740 \uAD50\uC721\uC138\xB7\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC744 \uD569\uCE5C \uB0A9\uBD80\uCD1D\uC561\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uBC95\uB839\uC0C1 \uC0B0\uC815\uD55C \uBCF8\uC138 \uC0C1\uB2F9\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uC0C1\uD55C \uB300\uC0C1\uC758 \uC804\uB144 \uC0C1\uB2F9\uC561 0\uC6D0\uC740 \uBCC4\uB3C4 \uAC80\uD1A0 \uB300\uC0C1\uC73C\uB85C \uCC28\uB2E8\uD569\uB2C8\uB2E4. \uACBD\uACFC\uC870\uCE58 \uBE44\uB300\uC0C1 \uC8FC\uD0DD\uC740 \uC804\uB144 \uBCF8\uC138 \uC0C1\uB2F9\uC561/\uADFC\uAC70\uB97C \uBE44\uC6B0\uC138\uC694. \uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561 \uBBF8\uC785\uB825\uACFC \uBD80\uC874\uC7AC\uB294 \uB2E4\uB985\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uC18C\uC720\xB7\uACFC\uC138\uB2E8\uC704\xB7\uC0C1\uB2F9\uC561 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "holding-review_note", value: d.review_note, onChange: (e) => change("review_note", e.target.value) })), (d.tax_kind === "comprehensive" ? [["ordinary_scope_confirmed", "\uAC1C\uC778 \uAC70\uC8FC\uC790 \uB2E8\uB3C5 \uC18C\uC720 \uC77C\uBC18 \uB9E4\uB9E4 1\uC8FC\uD0DD\uC73C\uB85C \uACF5\uC720\xB7\uD569\uC0B0\uBC30\uC81C\xB7\uAC10\uBA74\xB7\uC2E0\uD0C1\xB7\uC8FC\uD0DD\uC218 \uD2B9\uB840\xB7\uC870\uB840 \uAC00\uAC10\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["facts_confirmed", "6\uC6D4 1\uC77C \uC6D0\uBCF8\xB7\uC8FC\uD0DD\uC218\xB7\uAC80\uD1A0 \uACBD\uB85C\uC640 \uADFC\uAC70\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4 (\uACF5\uC81C \uCD08\uACFC \uC2DC \uBCF8\uC138\xB7\uACFC\uD45C\xB7\uC804\uB144 \uC0C1\uB2F9\uC561 \uD3EC\uD568)"]] : [["ordinary_scope_confirmed", "\uAC1C\uC778 \uB2E8\uB3C5 \uC18C\uC720 \uC77C\uBC18 \uC8FC\uD0DD\xB7\uAC74\uCD95\uBB3C\xB7\uD45C\uC900\uC138\uC728(\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 \uD3EC\uD568)\uC774\uBA70 \uACF5\uC7A5/\uACE0\uAE09\uC624\uB77D\uC7A5/\uACE8\uD504\uC7A5\xB7\uAC10\uBA74\xB7\uC870\uB840 \uC138\uC728 \uBCC0\uACBD\uC774 \uC5C6\uACE0, \uC9C0\uC5ED\uC790\uC6D0\uC2DC\uC124\uC138\uB294 \uBCC4\uB3C4 \uAC80\uD1A0\uD569\uB2C8\uB2E4"], ["facts_confirmed", "6\uC6D4 1\uC77C \uC18C\uC720\xB7\uACFC\uC138\uB2E8\uC704\xB7\uC2DC\uAC00\uD45C\uC900\uC561\xB7\uC804\uB144 \uBCF8\uC138 \uC0C1\uB2F9\uC561\uACFC \uADFC\uAC70\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]]).map(([k, title]) => /* @__PURE__ */ React.createElement("p", { key: k }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "holding-" + k, checked: d[k], onChange: (e) => change(k, e.target.checked, true) }), title)))), (w.meta.validation.errors || []).length > 0 && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uACC4\uC0B0 \uC804 \uD655\uC778" }, /* @__PURE__ */ React.createElement("p", null, "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900 \uD655\uC778 \uD56D\uBAA9"), /* @__PURE__ */ React.createElement("ul", null, w.meta.validation.errors.map((e, i) => /* @__PURE__ */ React.createElement("li", { key: i }, e)))), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(save) }, "\uC785\uB825 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(async () => {
+    const saved = await save();
+    if (!saved.validation.can_run) throw new Error("\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    await mutation(base + "/runs", "POST", { revision_id: saved.revision_id, expected_input_hash: saved.input_hash });
+    await load(saved.case_id);
+  }) }, "\uC800\uC7A5\uD558\uACE0 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uC785\uB825 \uBC84\uC804", /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-reopen-revision", value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (!holdingDirty(w) || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC800\uC7A5\uBCF8\uC744 \uC5EC\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?")) act(() => load(w.meta.case_id, revision));
+  } }, "\uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30"), w.run && /* @__PURE__ */ React.createElement("section", { className: "ic-section", "aria-label": "\uC800\uC7A5\uB41C \uBCF4\uC720\uC138 \uACC4\uC0B0 \uACB0\uACFC" }, /* @__PURE__ */ React.createElement("p", null, w.run.response_snapshot.result_scope), /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC", holdingDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("p", null, "\uC2DC\uAC00\uD45C\uC900\uC561 ", Number((_m = w.run.engine_request.standard_value) != null ? _m : (_l = w.run.engine_request.engine) == null ? void 0 : _l.housing_values[0]).toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("output", { "data-testid": "holding-saved-tax" }, Number(w.run.response_snapshot.calc["\uC138\uC561"]).toLocaleString("ko-KR"), "\uC6D0"), w.run.response_snapshot.calc["\uC138\uBAA9"] === "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138" ? /* @__PURE__ */ React.createElement("p", null, "\uC885\uBD80\uC138 ", w.run.response_snapshot.calc["\uC885\uBD80\uC138\uD569\uACC4"].toLocaleString("ko-KR"), "\uC6D0 \xB7 \uB18D\uD2B9\uC138 ", w.run.response_snapshot.calc["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"].toLocaleString("ko-KR"), "\uC6D0", w.run.response_snapshot.calc["\uACFC\uD45C0\uC6D0\uADFC\uAC70"] ? " \xB7 \uAE30\uBCF8\uACF5\uC81C \uC774\uD558\uB85C \uACFC\uD45C0\uC6D0 \uD655\uC778" : " \xB7 \uC0C1\uD55C \uCC28\uAC10 " + w.run.response_snapshot.calc["\uC138\uBD80\uB2F4\uC0C1\uD55C"]["\uCC28\uAC10\uC561"].toLocaleString("ko-KR") + "\uC6D0") : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC0C1\uD55C\uC804 \uACFC\uC138\uD45C\uC900 ", Number((_n = w.run.response_snapshot.calc["\uC0C1\uD55C\uC804\uACFC\uC138\uD45C\uC900"]) != null ? _n : w.run.response_snapshot.calc["\uACFC\uC138\uD45C\uC900"]).toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC801\uC6A9 \uACFC\uC138\uD45C\uC900 ", Number(w.run.response_snapshot.calc["\uACFC\uC138\uD45C\uC900"]).toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uC8FC\uD0DD \uACBD\uACFC\uC870\uCE58 ", w.run.response_snapshot.calc["\uC8FC\uD0DD\uACBD\uACFC\uC870\uCE58\uC801\uC6A9"] ? "\uD574\uB2F9" : "\uBE44\uD574\uB2F9 \uB610\uB294 \uACFC\uAC70 \uC800\uC7A5\uBCF8", " \xB7 \uBCF8\uC138 \uC0C1\uD55C ", w.run.response_snapshot.calc["\uC138\uBD80\uB2F4\uC0C1\uD55C\uC801\uC6A9"] ? "\uC801\uC6A9" : "\uBBF8\uC801\uC6A9", " \xB7 \uB3C4\uC2DC\uC9C0\uC5ED\uBD84 \uC0C1\uD55C ", w.run.response_snapshot.calc["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC0C1\uD55C\uC801\uC6A9"] ? "\uC801\uC6A9" : "\uBBF8\uC801\uC6A9")), /* @__PURE__ */ React.createElement("p", null, "\uACB0\uACFC ID ", w.run.run_id, " \xB7 \uC785\uB825 ID ", w.run.revision_id), /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uB2E8\uACC4"), /* @__PURE__ */ React.createElement("ul", null, w.run.response_snapshot.calc["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"].map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, r["\uD56D\uBAA9"], " \xB7 ", r["\uAE08\uC561"], " \xB7 ", r["\uBE44\uACE0"])))), /* @__PURE__ */ React.createElement("ul", { "aria-label": "\uC5D4\uC9C4 \uACBD\uACE0" }, (w.run.response_snapshot.calc["\uACBD\uACE0\uC0AC\uD56D"] || []).map((v, i) => /* @__PURE__ */ React.createElement("li", { key: i }, typeof v === "string" ? v : JSON.stringify(v)))))));
+}
+window.JTHoldingCases = JTHoldingCases;
+function JTHoldingSources({ api, clientId, base, busy, act, onImport, comprehensive = false }) {
+  const [catalog, setCatalog] = React.useState(null), [options, setOptions] = React.useState(null);
+  const [pid, setPid] = React.useState(""), [period, setPeriod] = React.useState(""), [current, setCurrent] = React.useState(""), [prior, setPrior] = React.useState("");
+  const [facts, setFacts] = React.useState(null), [reason, setReason] = React.useState(""), [confirmed, setConfirmed] = React.useState(false), [preview, setPreview] = React.useState(null);
+  const [priorState, setPriorState] = React.useState("exists"), [absenceReason, setAbsenceReason] = React.useState("");
+  const selected = options == null ? void 0 : options.ownership.items.find((x) => x.version === period), owner = selected == null ? void 0 : selected.ownerships[0];
+  const change = (fn) => {
+    setPreview(null);
+    setConfirmed(false);
+    fn();
+  };
+  const selection = () => __spreadProps(__spreadValues({
+    property_id: pid,
+    ownership_id: owner == null ? void 0 : owner.id,
+    ownership_version: period,
+    ownership_history_confirmed: confirmed,
+    fact_selection: facts,
+    current_valuation_id: current
+  }, comprehensive ? { purpose: "comprehensive" } : __spreadValues({
+    prior_valuation_id: priorState === "absent" ? null : prior
+  }, priorState === "absent" ? { prior_value_state: "absent", prior_absence_reason: absenceReason } : {})), {
+    tax_year: 2026,
+    values_confirmed: confirmed,
+    reason
+  });
+  return /* @__PURE__ */ React.createElement("section", { className: "ic-section", "aria-label": "\uC8FC\uD0DD \uACF5\uC2DC\uAC00\uACA9 \uC6D0\uBCF8 \uCC44\uD0DD" }, /* @__PURE__ */ React.createElement("h2", null, "\uC7AC\uC0B0\xB7\uACF5\uC2DC\uAC00\uACA9 \uAC00\uC838\uC624\uAE30"), comprehensive ? /* @__PURE__ */ React.createElement("p", null, "2026\uB144 6\uC6D4 1\uC77C \uB2E8\uB3C5 \uC18C\uC720 \uC8FC\uD0DD\uC758 \uC62C\uD574 \uACF5\uC2DC\uAC00\uACA9\xB7\uCDE8\uB4DD\uC77C\xB7\uC18C\uC720\uC790 \uC0DD\uB144\uC6D4\uC77C\uC744 \uCC44\uD0DD\uD569\uB2C8\uB2E4. 1\uC8FC\uD0DD \uC694\uAC74\xB7\uC804\uB144 \uBC95\uC815 \uC0C1\uB2F9\uC561\uC740 \uBCC4\uB3C4\uB85C \uAC80\uD1A0\uD569\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement("p", null, "2026\uB144 6\uC6D4 1\uC77C \uB2E8\uB3C5 \uC18C\uC720 \uC8FC\uD0DD\uC758 \uC62C\uD574\xB7\uC804\uB144 \uACF5\uC2DC\uAC00\uACA9\uC744 \uC120\uD0DD\uD558\uAC70\uB098 \uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561 \uBD80\uC874\uC7AC\uB97C \uADFC\uAC70\uC640 \uD568\uAED8 \uD655\uC778\uD569\uB2C8\uB2E4. \uC870\uD68C \uACB0\uACFC\uAC00 \uC5C6\uB2E4\uB294 \uC774\uC720\uB9CC\uC73C\uB85C \uBD80\uC874\uC7AC\uB97C \uC120\uD0DD\uD558\uBA74 \uC548 \uB429\uB2C8\uB2E4. \uC2DC\uAC00\xB7\uAC10\uC815\uAC00\uB97C \uACF5\uC2DC\uAC00\uACA9\uC73C\uB85C \uB300\uCCB4\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC120\uD0DD \uD6C4 \uC804\uB144 \uC138\uC561\xB7\uD2B9\uB840\xB7\uD655\uC778\uC740 \uB2E4\uC2DC \uC785\uB825\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { disabled: busy, "data-testid": "holding-source-list", onClick: () => act(async () => {
+    setCatalog(await api(base + "/sources"));
+    setPreview(null);
+  }) }, "\uC8FC\uD0DD \uC6D0\uBCF8 \uC870\uD68C"), catalog && /* @__PURE__ */ React.createElement("fieldset", { disabled: busy }, /* @__PURE__ */ React.createElement("legend", null, "\uC6D0\uBCF8 \uC120\uD0DD"), /* @__PURE__ */ React.createElement("label", null, "\uC8FC\uD0DD", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-source-property", value: pid, onChange: (e) => {
+    const id = e.target.value;
+    change(() => {
+      setPid(id);
+      setOptions(null);
+      setPeriod("");
+      setCurrent("");
+      setPrior("");
+      setPriorState("exists");
+      setAbsenceReason("");
+      setFacts(null);
+    });
+    if (id) act(async () => setOptions(await api(base + "/source-options?property_id=" + id)));
+  } }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), catalog.properties.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.address)))), options && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "6\uC6D4 1\uC77C \uC18C\uC720 \uC774\uB825", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-source-ownership", value: period, onChange: (e) => change(() => {
+    setPeriod(e.target.value);
+    setFacts(null);
+  }) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), options.ownership.items.filter((x) => x.eligible && x.ownerships.length === 1 && Number(x.ownerships[0].share_ratio) === 1).map((x) => /* @__PURE__ */ React.createElement("option", { key: x.version, value: x.version }, x.ownerships[0].name, " \xB7 ", x.valid_from, "~", x.valid_until || "\uD604\uC7AC", x.boundary_review_required ? " \xB7 \uBCC0\uB3D9 \uB2F9\uC77C \uC120\uD6C4 \uD655\uC778 \uD544\uC694" : "")))), !comprehensive && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uC804\uB144 \uACF5\uC2DC\uAC00\uACA9 \uD655\uC778", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-source-prior-state", value: priorState, onChange: (e) => change(() => {
+    setPriorState(e.target.value);
+    setPrior("");
+    setAbsenceReason("");
+  }) }, /* @__PURE__ */ React.createElement("option", { value: "exists" }, "\uC804\uB144 \uC790\uB8CC \uC120\uD0DD"), /* @__PURE__ */ React.createElement("option", { value: "absent" }, "\uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561 \uBD80\uC874\uC7AC \uD655\uC778"))), priorState === "absent" && /* @__PURE__ */ React.createElement("label", null, "\uBD80\uC874\uC7AC\uB97C \uD655\uC778\uD55C \uBB38\uC11C\xB7\uC870\uD68C\uC77C\xB7\uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-source-absence-reason", maxLength: 1e3, value: absenceReason, onChange: (e) => change(() => setAbsenceReason(e.target.value)) }))), [["current", "\uC62C\uD574", current, setCurrent, 2026], ["prior", "\uC804\uB144", prior, setPrior, 2025]].filter(([key]) => key !== "prior" || !comprehensive && priorState === "exists").map(([key, label, value, setValue, year]) => /* @__PURE__ */ React.createElement("label", { key }, label, " \uACF5\uC2DC\uAC00\uACA9", /* @__PURE__ */ React.createElement("select", { "data-testid": "holding-source-" + key, value, onChange: (e) => change(() => setValue(e.target.value)) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), options.valuations.filter((x) => x.as_of_date.startsWith(String(year))).map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.as_of_date, " \xB7 ", Number(x.amount).toLocaleString("ko-KR"), "\uC6D0 \xB7 ", x.source))))), /* @__PURE__ */ React.createElement(JTFactVersionPicker, { key: current + ":" + prior, api, clientId, propertyId: pid, ownerId: owner == null ? void 0 : owner.person_id, eventDate: "2026-06-01", valuationId: current, selection: facts, onChange: (v) => {
+    setFacts(v);
+    setPreview(null);
+    setConfirmed(false);
+  }, disabled: busy }), /* @__PURE__ */ React.createElement("label", null, "\uACF5\uC2DC\uAC00\uACA9\xB7\uACFC\uC138\uB2E8\uC704 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-source-reason", value: reason, maxLength: 1e3, onChange: (e) => change(() => setReason(e.target.value)) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "holding-source-confirm", checked: confirmed, onChange: (e) => {
+    setConfirmed(e.target.checked);
+    setPreview(null);
+  } }), "\uC120\uD0DD\uD55C \uC18C\uC720 \uC774\uB825\uC758 \uC801\uC6A9\uC77C\xB7\uBCC0\uB3D9 \uB2F9\uC77C \uC120\uD6C4, \uC804\uCCB4 \uC8FC\uD0DD \uACF5\uC2DC\uAC00\uACA9\uACFC \uAC01\uAC01\uC758 \uC5F0\uB3C4\xB7\uC815\uC815 \uC5EC\uBD80\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { disabled: busy || !owner || !current || !comprehensive && (priorState === "exists" ? !prior : !absenceReason.trim()) || !(facts == null ? void 0 : facts.confirmed) || !confirmed || !reason.trim(), "data-testid": "holding-source-preview", onClick: () => act(async () => setPreview(await api(base + "/source-preview", { method: "POST", body: JSON.stringify(selection()) }))) }, "\uCC44\uD0DD \uBBF8\uB9AC\uBCF4\uAE30"), preview && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { "data-testid": "holding-source-values" }, "\uC62C\uD574 ", Number(preview.valuations.current.amount).toLocaleString("ko-KR"), "\uC6D0", !comprehensive && /* @__PURE__ */ React.createElement(React.Fragment, null, " \xB7 \uC804\uB144 ", preview.prior_value_absence ? "\uBD80\uC874\uC7AC \uD655\uC778: " + preview.prior_value_absence.reason : Number(preview.valuations.prior.amount).toLocaleString("ko-KR") + "\uC6D0")), /* @__PURE__ */ React.createElement("button", { disabled: busy, "data-testid": "holding-source-import", onClick: () => act(() => onImport(selection(), preview)) }, "\uC6D0\uBCF8 \uCC44\uD0DD\xB7\uC0C8 \uBC84\uC804 \uC800\uC7A5")))));
+}
+function JTComprehensiveFacts({ draft: d, change, derived, worksheet }) {
+  var _a, _b;
+  const r = d.comprehensive_review || {}, zero = !!r.zero_base_reviewed;
+  const edit = (key, value) => change("comprehensive_review", __spreadProps(__spreadValues({}, r), { [key]: value }));
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "comprehensive-zero_base_reviewed", disabled: !!worksheet, checked: zero, onChange: (e) => change("comprehensive_review", e.target.checked ? { zero_base_reviewed: true } : {}) }), "\uC77C\uBC18 1\uC138\uB3001\uC8FC\uD0DD \uACF5\uC2DC\uAC00\uACA9\uC774 \uAE30\uBCF8\uACF5\uC81C 12\uC5B5\uC6D0 \uC774\uD558\uC784\uC744 \uD655\uC778\uD569\uB2C8\uB2E4 (\uC804\uD658 \uC2DC \uAC80\uD1A0 \uC785\uB825 \uCD08\uAE30\uD654)"), worksheet ? /* @__PURE__ */ React.createElement("p", null, "\uC7AC\uC0B0\uC138 \uC800\uC7A5 \uACB0\uACFC\uC758 \uC0C1\uD55C \uC801\uC6A9 \uACFC\uD45C\xB7\uBCF8\uC138\uC640 2025\uB144 \uBC95\uC815 \uC0C1\uB2F9\uC561\uC744 \uC5F0\uACB0\uD588\uC2B5\uB2C8\uB2E4. \uB450 \uC5F0\uB3C4 \uACF5\uC2DC\uAC00\uACA9 12\uC5B5\uC6D0 \uCD08\uACFC~1,000\uC5B5\uC6D0, 1\uCC9C\uC6D0 \uB2E8\uC704, 2023\uB144 6\uC6D4 \uC774\uC804 \uC77C\uBC18 \uB9E4\uB9E4 \uACC4\uC18D \uBCF4\uC720 \uBC94\uC704\uC785\uB2C8\uB2E4.") : zero ? /* @__PURE__ */ React.createElement("p", { "data-testid": "comprehensive-zero-guidance" }, "6\uC6D41\uC77C \uC6D0\uBCF8\xB7\uAC70\uC8FC\uC790\xB7\uC138\uB300 \uC804\uCCB4 1\uC8FC\uD0DD\xB7\uACF5\uC81C \uC694\uAC74 \uD655\uC778 \uD6C4 \uACFC\uD45C0\uC6D0\uC744 \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uC62C\uD574/\uC804\uB144 \uC7AC\uC0B0\uC138\xB7\uC885\uBD80\uC138 \uC0C1\uB2F9\uC561\uACFC \uC0C1\uD55C \uAC80\uD1A0\uB294 \uC785\uB825\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC7AC\uC0B0\uC138 \uACE0\uC9C0\uC561\uAE4C\uC9C0 0\uC6D0\uC774\uB77C\uB294 \uB73B\uC740 \uC544\uB2D9\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement("p", null, "\uACF5\uC2DC\uAC00\uACA9 12\uC5B5\uC6D0 \uCD08\uACFC 1,000\uC5B5\uC6D0 \uC774\uD558, \uC7AC\uC0B0\uC138 1\uC8FC\uD0DD \uBE44\uC728 45%\xB7\uACFC\uD45C\uC0C1\uD55C \uBBF8\uAC10\uC561 \uBC94\uC704\uC785\uB2C8\uB2E4. \uC804\uB144 \uC0C1\uB2F9\uC561\uC740 \uC62C\uD574 \uC8FC\uD0DD\uC744 \uC804\uB144\uC5D0 \uC18C\uC720\uD55C \uAC83\uC73C\uB85C \uACC4\uC0B0\uD55C \uBC95\uC815 \uAE08\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uB0A9\uBD80\uCD1D\uC561\uC744 \uBCF5\uC0AC\uD558\uC9C0 \uB9C8\uC138\uC694."), worksheet && /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "comprehensive-prior_scope_reviewed", checked: !!r.prior_scope_reviewed, onChange: (e) => edit("prior_scope_reviewed", e.target.checked) }), "\uC62C\uD574 \uC800\uC7A5 \uBCF8\uC138\uAC00 \uBD80\uACFC\uC790\uB8CC\uC640 \uC77C\uCE58\uD558\uACE0 2025\xB72026\uB144 \uB3D9\uC77C \uC8FC\uD0DD\xB7\uAD6D\uB0B4 \uAC70\uC8FC\xB7\uC138\uB300 \uC804\uCCB4 1\uC8FC\uD0DD\xB7\uACC4\uC18D \uB2E8\uB3C5 \uC18C\uC720\uC774\uBA70 \uC99D\uCD95\xB7\uBA78\uC2E4\xB7\uD569\uC0B0\uBC30\uC81C\xB7\uAC10\uBA74\xB7\uC870\uB840 \uAC00\uAC10\uC774 \uC5C6\uACE0, \uC804\uB144 \uC0B0\uC815\uD45C\uC5D0\uC11C \uACFC\uD45C\uC0C1\uD55C\xB7\uC7AC\uC0B0\uC138 \uBC0F \uC885\uBD80\uC138 \uC138\uBD80\uB2F4\uC0C1\uD55C\uC744 \uC81C\uC678\uD588\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { "data-testid": "comprehensive-derived" }, "\uCC44\uD0DD \uACF5\uC2DC\uAC00\uACA9 ", Number(d.standard_value || 0).toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC800\uC7A5 \uC6D0\uBCF8 \uAE30\uC900 \uB9CC ", (_a = derived == null ? void 0 : derived.owner_age) != null ? _a : "\uD655\uC778 \uD544\uC694", "\uC138 \xB7 \uBCF4\uC720 ", (_b = derived == null ? void 0 : derived.holding_years) != null ? _b : "\uD655\uC778 \uD544\uC694", "\uB144"), !zero && [["property_tax_paid", "\uC62C\uD574 \uBD80\uACFC \uC7AC\uC0B0\uC138 \uBCF8\uC138 (\uAD50\uC721\uC138\xB7\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 \uC81C\uC678)"], ["property_tax_base", worksheet ? "\uC62C\uD574 \uC7AC\uC0B0\uC138 \uACFC\uC138\uD45C\uC900 (\uC800\uC7A5 \uACB0\uACFC\uC758 \uC0C1\uD55C \uC801\uC6A9 \uD6C4)" : "\uC62C\uD574 \uC7AC\uC0B0\uC138 \uACFC\uC138\uD45C\uC900 (\uACF5\uC2DC\uAC00\uACA9 \xD7 45%)"], ["prior_property_tax", "\uC804\uB144 \uBC95\uC815 \uC7AC\uC0B0\uC138 \uC0C1\uB2F9\uC561"], ["prior_comprehensive_tax", "\uC804\uB144 \uBC95\uC815 \uC885\uBD80\uC138 \uC0C1\uB2F9\uC561 (\uC5C6\uC73C\uBA74 0)"], ["current_tax_source", "\uC62C\uD574 \uBCF8\uC138\xB7\uACFC\uD45C \uD655\uC778 \uBB38\uC11C\uC640 \uADFC\uAC70"], ["prior_tax_source", "\uC804\uB144 \uC0C1\uB2F9\uC561 \uC0B0\uC815 \uB0B4\uC5ED\xB7\uACBD\uACFC\uC870\uCE58 \uAC80\uD1A0 \uADFC\uAC70"]].map(([k, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key: k }, label, /* @__PURE__ */ React.createElement("input", { readOnly: !!worksheet, "data-testid": "comprehensive-" + k, value: (_a2 = r[k]) != null ? _a2 : "", onChange: (e) => edit(k, e.target.value) }));
+  }), [["sole_house_resident", "\uAD6D\uB0B4 \uAC70\uC8FC\uC790\uC774\uBA70 \uC138\uB300 \uC804\uCCB4\uC5D0\uC11C \uC774 \uC8FC\uD0DD 1\uCC44\uB9CC \uBCF4\uC720\uD569\uB2C8\uB2E4"], ["property_one_house", worksheet ? "\uC7AC\uC0B0\uC138\uB3C4 1\uC138\uB300 1\uC8FC\uD0DD\uC774\uBA70 \uC800\uC7A5 \uACB0\uACFC\uC758 \uC0C1\uD55C \uC801\uC6A9 \uACFC\uD45C\xB7\uBCF8\uC138\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4" : "\uC7AC\uC0B0\uC138\uB3C4 1\uC138\uB300 1\uC8FC\uD0DD\uC5D0 \uD574\uB2F9\uD558\uACE0 \uACFC\uD45C\uC0C1\uD55C\uC73C\uB85C \uACFC\uD45C\uAC00 \uC904\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4"], ["ordinary_purchase_continuous", "\uC6D0\uBCF8 \uCDE8\uB4DD\uC77C\uBD80\uD130 \uB9E4\uB9E4 \uCDE8\uB4DD \uC8FC\uD0DD\uC744 \uACC4\uC18D \uB2E8\uB3C5 \uC18C\uC720\uD588\uACE0 \uC7AC\uAC74\uCD95\xB7\uD1B5\uC0B0 \uB4F1\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["credits_reviewed", "\uC6D0\uBCF8 \uC0DD\uB144\uC6D4\uC77C\xB7\uCDE8\uB4DD\uC77C\uC5D0 \uB530\uB978 \uB9CC \uB098\uC774\uC640 \uBCF4\uC720 \uC5F0\uC218\xB7\uC138\uC561\uACF5\uC81C\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["cap_equivalents_reviewed", "\uC804\uB144 \uC0C1\uB2F9\uC561\uC740 \uC2E4\uC81C \uACE0\uC9C0\uC561\uC774 \uC544\uB2CC \uBC95\uC815 \uC0B0\uC815\uC561\uC774\uBA70 2028\uB144\uAE4C\uC9C0 \uACBD\uACFC\uC870\uCE58\uB3C4 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"]].filter(([k]) => !zero || ["sole_house_resident", "ordinary_purchase_continuous"].includes(k)).map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "comprehensive-" + k, checked: !!r[k], onChange: (e) => edit(k, e.target.checked) }), label)));
+}
+function JTHoldingTaxSources({ api, base, busy, act, onImport }) {
+  const [items, setItems] = React.useState(null), [run, setRun] = React.useState(""), [reason, setReason] = React.useState(""), [confirmed, setConfirmed] = React.useState(false), [preview, setPreview] = React.useState(null);
+  const change = (fn) => {
+    setPreview(null);
+    setConfirmed(false);
+    fn();
+  };
+  const selection = () => ({ run_id: run, confirmed, reason });
+  return /* @__PURE__ */ React.createElement("section", { className: "ic-section", "aria-label": "\uC7AC\uC0B0\uC138 \uACB0\uACFC\uC5D0\uC11C \uC885\uBD80\uC138 \uC5F0\uACB0" }, /* @__PURE__ */ React.createElement("h2", null, "\uC7AC\uC0B0\uC138 \uC800\uC7A5 \uACB0\uACFC \u2192 \uC885\uBD80\uC138 \uC6D0\uBCF8 \uC5F0\uACB0"), /* @__PURE__ */ React.createElement("p", null, "\uAC10\uC561 \uACFC\uC138\uD45C\uC900\xB7\uBCF8\uC138\uC640 \uC62C\uD574/\uC804\uB144 \uACF5\uC2DC\uAC00\uACA9\uC744 \uD568\uAED8 \uCC44\uD0DD\uD569\uB2C8\uB2E4. \uC804\uB144 \uC2E4\uC81C \uB0A9\uBD80\uC561\uC744 \uBCF5\uC0AC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "holding-tax-list", disabled: busy, onClick: () => act(async () => {
+    setItems((await api(base + "/tax-sources")).items);
+    setPreview(null);
+  }) }, "\uC7AC\uC0B0\uC138 \uC800\uC7A5 \uACB0\uACFC \uC870\uD68C"), items && /* @__PURE__ */ React.createElement("fieldset", { disabled: busy }, /* @__PURE__ */ React.createElement("legend", null, "\uC7AC\uC0B0\uC138 \uC6D0\uBCF8 \uACB0\uACFC \uC120\uD0DD"), /* @__PURE__ */ React.createElement("select", { "aria-label": "\uC7AC\uC0B0\uC138 \uC800\uC7A5 \uACB0\uACFC", "data-testid": "holding-tax-run", value: run, onChange: (e) => change(() => setRun(e.target.value)) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), items.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.run_id, value: x.run_id }, x.label, " \xB7 \uBC84\uC804", x.revision, " \xB7 ", x.computed_at, " \xB7 ", x.run_id))), /* @__PURE__ */ React.createElement("label", null, "\uC6D0\uBCF8 \uC120\uD0DD\xB7\uB450 \uC5F0\uB3C4 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "holding-tax-reason", value: reason, maxLength: 2e3, onChange: (e) => change(() => setReason(e.target.value)) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "holding-tax-confirm", checked: confirmed, onChange: (e) => {
+    setConfirmed(e.target.checked);
+    setPreview(null);
+  } }), "\uC120\uD0DD\uD55C \uACB0\uACFC\uC758 \uC8FC\uD0DD\xB7\uC18C\uC720\uC790\xB7\uC9C0\uBD84\xB7\uACF5\uC2DC\uAC00\uACA9 \uC5F0\uB3C4\xB7\uBCF8\uC138 \uBC94\uC704\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "holding-tax-preview", disabled: busy || !run || !reason.trim() || !confirmed, onClick: () => act(async () => setPreview(await api(base + "/tax-source-preview", { method: "POST", body: JSON.stringify(selection()) }))) }, "\uC885\uBD80\uC138 \uC5F0\uACB0 \uBBF8\uB9AC\uBCF4\uAE30"), preview && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { "data-testid": "holding-tax-values" }, preview.property.address, " \xB7 ", preview.owner.name, " \xB7 2026-06-01 \xB7 \uC9C0\uBD841 \xB7 \uC801\uC6A9 \uACFC\uD45C ", Number(preview.worksheet.current_property_tax_base).toLocaleString("ko-KR"), "\uC6D0 \xB7 \uBCF8\uC138 ", Number(preview.worksheet.current_property_tax).toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC804\uB144 \uC7AC\uC0B0\uC138 \uC0C1\uB2F9\uC561 ", Number(preview.worksheet.prior_property_tax).toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC804\uB144 \uC885\uBD80\uC138 \uC0C1\uB2F9\uC561 ", Number(preview.worksheet.prior_comprehensive_tax).toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("button", { "data-testid": "holding-tax-import", disabled: busy, onClick: () => act(() => onImport(selection(), preview)) }, "\uC7AC\uC0B0\uC138 \uC6D0\uBCF8 \uCC44\uD0DD\xB7\uC885\uBD80\uC138 \uC0C8 \uBC84\uC804 \uC800\uC7A5"))));
+}
+
+
+/* ────────── AcquisitionCases.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+let jtAcquisitionSession = null;
+function acquisitionDirty(w = jtAcquisitionSession) {
+  return !!w && JSON.stringify({ label: w.label, draft: w.draft }) !== w.baseline;
+}
+const acquisitionMissingLabels = {
+  "parties.acquirer.name": "\uCDE8\uB4DD\uC790 \uC774\uB984",
+  "case_info.acquisition_date": "\uCDE8\uB4DD\uC77C",
+  "case_info.filing_type": "\uC2E0\uACE0 \uAD6C\uBD84",
+  "relationship.category": "\uB2F9\uC0AC\uC790 \uAD00\uACC4",
+  "relationship.as_of_date": "\uAD00\uACC4 \uAE30\uC900\uC77C",
+  "relationship.evidence": "\uAD00\uACC4 \uD655\uC778 \uADFC\uAC70",
+  "relationship.review_state": "\uAD00\uACC4 \uD655\uC778 \uC0C1\uD0DC",
+  "calculation.housing_count": "\uCDE8\uB4DD \uD6C4 \uC8FC\uD0DD \uC218",
+  "calculation.regulated_area": "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC5EC\uBD80",
+  "calculation.location_scope": "\uC18C\uC7AC\uC9C0 \uBC94\uC704",
+  "calculation.transaction_price_confirmed": "\uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9\xB7\uBD80\uB300\uBE44\uC6A9 \uD655\uC778",
+  "calculation.ordinary_scope_confirmed": "\uC77C\uBC18 \uC8FC\uD0DD \uB9E4\uB9E4 \uBC94\uC704 \uD655\uC778",
+  "calculation.facts_confirmed": "\uACC4\uC0B0 \uC0AC\uC2E4 \uD655\uC778",
+  "calculation.review_note": "\uACC4\uC0B0 \uAE08\uC561\xB7\uBA74\uC801 \uC218\uC815 \uADFC\uAC70"
+};
+function acquisitionNewDraft() {
+  return {
+    schema_version: "acquisition-case/1",
+    case_info: { acquisition_date: null, registration_date: null, filing_type: "unknown", reference: "", memo: "" },
+    parties: [
+      { party_ref: window.crypto.randomUUID(), role: "acquirer", name: "", birth_date: null },
+      { party_ref: window.crypto.randomUUID(), role: "previous_owner", name: "", birth_date: null }
+    ],
+    relationship: { category: "unknown", as_of_date: null, evidence: "", review_state: "unknown" }
+  };
+}
+function acquisitionNewFiling() {
+  return {
+    schema_version: "acquisition-filing-input/1",
+    mode: "unknown",
+    filer: { party_ref: null, name: "", address: "", postal_code: "", phone: "", email: "" },
+    agent: { name: "", office: "", address: "", phone: "", email: "" },
+    authorization: { state: "unknown", grantor_ref: null, signed_on: null, scope: "", document_reference: "" },
+    jurisdiction: { name: "", code: "", department: "", evidence: "" },
+    filing_date: null,
+    review_state: "unknown",
+    reviewed_on: null,
+    review_note: ""
+  };
+}
+function JTAcquisitionCases({ clientId, caseId, onExit }) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P, _Q, _R;
+  const [w, setW] = React.useState(jtAcquisitionSession);
+  const [opened, setOpened] = React.useState(false);
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState("");
+  const [revision, setRevision] = React.useState("");
+  const ref = React.useRef(w), lock = React.useRef(false), alive = React.useRef(true);
+  const keys = React.useRef({}), createdId = React.useRef(null), createBody = React.useRef(null);
+  const remember = (value) => {
+    ref.current = value;
+    jtAcquisitionSession = value;
+    if (alive.current) setW(value);
+  };
+  const api = async (path, options = {}) => {
+    var _a2;
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const response = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) jtGiftSession.token = "";
+        const messages = {
+          REVISION_CONFLICT: "\uB2E4\uB978 \uC800\uC7A5\uBCF8\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uD604\uC7AC \uC785\uB825\uC744 \uBCF4\uC874\uD55C \uCC44 \uCD5C\uC2E0 \uC800\uC7A5\uBCF8\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          SNAPSHOT_MIGRATION_REQUIRED: "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC800\uC7A5 \uBC84\uC804\uC785\uB2C8\uB2E4. \uC77D\uAE30 \uC804\uC6A9\uC73C\uB85C \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          INVALID_CASE_INPUT: "\uC785\uB825 \uD615\uC2DD\uACFC \uB0A0\uC9DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          FILING_TAX_INPUT_CHANGED: "\uD604\uC7AC \uACC4\uC0B0 \uC785\uB825\uC774 \uC800\uC7A5\uB41C \uACB0\uACFC\uC758 \uC785\uB825\uACFC \uB2E4\uB985\uB2C8\uB2E4. \uD574\uB2F9 \uC785\uB825\uC758 \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.",
+          SHARE_ASSET_REVIEW_REQUIRED: "\uAC19\uC740 \uACF5\uD1B5 \uC6D0\uBCF8\uC758 \uC77C\uBC18 \uC8FC\uD0DD \uB9E4\uB9E4 \uBB3C\uAC74\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC804\uCCB4\uAC00\uC561\xB7\uCDE8\uB4DD\uBD84 \uAC00\uC561\uC758 \uC815\uD655\uD55C \uC9C0\uBD84 \uBC30\uBD84, \uC8FC\uD0DD \uC804\uCCB4 \uC804\uC6A9\uBA74\uC801\uACFC \uBB3C\uAC74 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4.",
+          FILING_TAX_ASSET_MISMATCH: "\uC5F0\uACB0 \uBB3C\uAC74\uC758 \uC6D0\uBCF8\xB7\uC804\uCCB4 \uC9C0\uBD84\xB7\uAC70\uB798\uAC00\uC561\xB7\uC804\uC6A9\uBA74\uC801\uACFC \uAC80\uD1A0 \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          FILING_TAX_RESULT_INVALID: "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC\uC758 \uD615\uC2DD\xB7\uCD9C\uCC98\xB7\uC138\uC561 \uD569\uACC4\uB97C \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.",
+          FILING_ASSETS_REQUIRED: "\uC800\uC7A5\uB41C \uBB3C\uAC74\uBCC4 \uC2E0\uACE0\uC815\uBCF4\uAC00 \uB204\uB77D\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uCD5C\uC2E0 \uC800\uC7A5\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uC8FC\uC138\uC694.",
+          FILING_ASSET_SOURCE_REQUIRED: "\uBB3C\uAC74\uC758 \uCC44\uD0DD \uC6D0\uBCF8\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uC8FC\uC138\uC694.",
+          FILING_ASSET_DUPLICATE_OR_LIMIT: "\uC774\uBBF8 \uCD94\uAC00\uD55C \uC7AC\uC0B0\uC774\uAC70\uB098 \uBB3C\uAC74 \uC218 \uD55C\uB3C4(100\uAC1C)\uB97C \uCD08\uACFC\uD588\uC2B5\uB2C8\uB2E4.",
+          FILING_SUPPLEMENT_REQUIRED: "\uC800\uC7A5\uB41C \uC2E0\uACE0 \uBCF4\uC644\uC815\uBCF4\uAC00 \uB204\uB77D\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uCD5C\uC2E0 \uC800\uC7A5\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uC8FC\uC138\uC694.",
+          SOURCE_CHANGED: "\uBBF8\uB9AC\uBCF4\uAE30 \uC774\uD6C4 \uACF5\uD1B5 \uC6D0\uBCF8\uC774 \uBC14\uB00C\uC5C8\uC2B5\uB2C8\uB2E4. \uC6D0\uBCF8 \uBC84\uC804\uACFC \uD3C9\uAC00\uC790\uB8CC\uB97C \uB2E4\uC2DC \uC870\uD68C\uD574 \uC8FC\uC138\uC694.",
+          SOURCE_EVENT_DATE_MISMATCH: "\uCDE8\uB4DD\uC77C\uC774 \uBBF8\uB9AC\uBCF4\uAE30\uC640 \uB2E4\uB985\uB2C8\uB2E4. \uD604\uC7AC \uCDE8\uB4DD\uC77C\uB85C \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          SOURCE_FACT_DATE_INVALID: "\uC120\uD0DD\uD55C \uACFC\uAC70 \uC6D0\uBCF8\uC758 \uB0A0\uC9DC\uAC00 \uCDE8\uB4DD\uC77C\uBCF4\uB2E4 \uB2A6\uC2B5\uB2C8\uB2E4. \uB2E4\uB978 \uBC84\uC804\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.",
+          DRAFT_NOT_RUNNABLE: "\uACC4\uC0B0\uC5D0 \uD544\uC694\uD55C \uC785\uB825\uACFC \uD655\uC778 \uD56D\uBAA9\uC744 \uB9C8\uCE5C \uB4A4 \uC800\uC7A5\uD574 \uC8FC\uC138\uC694.",
+          INPUT_HASH_MISMATCH: "\uACC4\uC0B0 \uC785\uB825\uC774 \uBC14\uB00C\uC5C8\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          MIXED_ASSET_REVIEW_REQUIRED: "\uD63C\uD569\uC6A9\uB3C4 \uC5F0\uACB0 \uC804\uC5D0 \uACF5\uD1B5 \uC6D0\uBCF8\uACFC \uBB3C\uAC74\uBCC4 \uC77C\uBC18 \uB9E4\uB9E4 \uAC00\uC561\xB7\uD1A0\uC9C0\xB7\uAC74\uCD95\uBA74\uC801\uC744 \uC800\uC7A5\uD558\uACE0 \uD655\uC778\uD574 \uC8FC\uC138\uC694.",
+          RUN_NOT_FOUND: "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC\uB97C \uCC3E\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4."
+        };
+        throw new Error(response.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC785\uB825\uC744 \uC720\uC9C0\uD558\uACE0 \uAC19\uC740 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694." : messages[(_a2 = data.detail) == null ? void 0 : _a2.code] || (response.status === 422 ? "\uC785\uB825 \uD615\uC2DD\uACFC \uB0A0\uC9DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uC790\uB8CC\uB97C \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694."));
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const mutation = (path, method, body, etag) => {
+    var _a2;
+    const signature = JSON.stringify({ path, method, body, etag });
+    const memory = ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current;
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({
+      "Idempotency-Key": memory[signature] || (memory[signature] = window.crypto.randomUUID())
+    }, etag ? { "If-Match": etag } : {}) });
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e instanceof TypeError || e.name === "AbortError" ? "\uC751\uB2F5\uC744 \uBC1B\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uAC19\uC740 \uC791\uC5C5\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uAC19\uC740 \uC694\uCCAD\uC73C\uB85C \uC800\uC7A5 \uC5EC\uBD80\uB97C \uD655\uC778\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const load = async (id, number = "") => {
+    var _a2;
+    const saved = await api("/v1/acquisition-cases/" + encodeURIComponent(id) + (number ? "?revision=" + encodeURIComponent(number) : ""));
+    if (saved.client_id !== clientId) throw new Error("\uC120\uD0DD\uD55C \uACE0\uAC1D\uC758 \uC0AC\uAC74\uC774 \uC544\uB2D9\uB2C8\uB2E4.");
+    const run = saved.last_successful_run_id ? await api("/v1/acquisition-cases/" + encodeURIComponent(id) + "/runs/" + encodeURIComponent(saved.last_successful_run_id)) : null;
+    remember({
+      uid: jtGiftSession.uid,
+      meta: saved,
+      label: saved.label,
+      draft: saved.draft,
+      run,
+      keys: ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current,
+      baseline: JSON.stringify({ label: saved.label, draft: saved.draft })
+    });
+    if (alive.current) setOpened(true);
+  };
+  const open = async () => {
+    var _a2, _b2;
+    if (caseId === "resume" && ((_b2 = (_a2 = ref.current) == null ? void 0 : _a2.meta) == null ? void 0 : _b2.client_id) === clientId) {
+      if (ref.current.uid !== jtGiftSession.uid) throw new Error("\uD3B8\uC9D1\uD558\uB358 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+      if (alive.current) setOpened(true);
+    } else if (caseId && caseId !== "resume") {
+      await load(caseId);
+    } else {
+      if (!createdId.current) {
+        createBody.current || (createBody.current = { client_id: clientId, label: "\uC0C8 \uCDE8\uB4DD\uC138 \uC0AC\uAC74", draft: acquisitionNewDraft() });
+        const made = await mutation("/v1/acquisition-cases", "POST", createBody.current);
+        createdId.current = made.case_id;
+      }
+      await load(createdId.current);
+    }
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(open);
+    const protect = (e) => {
+      if (lock.current || acquisitionDirty(ref.current)) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => {
+      alive.current = false;
+      window.removeEventListener("beforeunload", protect);
+    };
+  }, []);
+  const current = opened && ((_a = w == null ? void 0 : w.meta) == null ? void 0 : _a.client_id) === clientId && (caseId === "resume" || !caseId || w.meta.case_id === caseId);
+  const readonly = !current || w.meta.read_only || w.meta.revision !== w.meta.current_revision;
+  const base = current ? "/v1/acquisition-cases/" + encodeURIComponent(w.meta.case_id) : "";
+  const exit = () => {
+    if (lock.current) return;
+    if (!acquisitionDirty(ref.current) || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uCDE8\uB4DD\uC138 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uBA54\uBAA8\uB9AC\uC5D0 \uC720\uC9C0\uD558\uACE0 \uC791\uC5C5\uB300\uB85C \uC774\uB3D9\uD560\uAE4C\uC694?")) onExit();
+  };
+  const resetFacts = (draft) => draft.calculation ? __spreadProps(__spreadValues({}, draft), { calculation: __spreadProps(__spreadValues({}, draft.calculation), { facts_confirmed: false }) }) : draft;
+  const change = (group, key, value) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: resetFacts(__spreadProps(__spreadValues({}, ref.current.draft), {
+    [group]: __spreadProps(__spreadValues({}, ref.current.draft[group]), { [key]: value })
+  })) }));
+  const changeParty = (role, key, value) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: resetFacts(__spreadProps(__spreadValues({}, ref.current.draft), {
+    parties: ref.current.draft.parties.map((p) => p.role === role ? __spreadProps(__spreadValues({}, p), { [key]: value }) : p)
+  })) }));
+  const addParty = (role) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: resetFacts(__spreadProps(__spreadValues({}, ref.current.draft), {
+    parties: [...ref.current.draft.parties, { party_ref: window.crypto.randomUUID(), role, name: "", birth_date: null }]
+  })) }));
+  const removeParty = (role) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: resetFacts(__spreadProps(__spreadValues({}, ref.current.draft), {
+    parties: ref.current.draft.parties.filter((p) => p.role !== role)
+  })) }));
+  const changeCalculation = (key, value) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), {
+    calculation: __spreadProps(__spreadValues({}, ref.current.draft.calculation), {
+      [key]: value,
+      facts_confirmed: key === "facts_confirmed" ? value : false
+    })
+  }) }));
+  const changeFiling = (group, key, value) => {
+    const prior = ref.current.draft.filing_supplement || acquisitionNewFiling();
+    const supplement = group ? __spreadProps(__spreadValues({}, prior), { [group]: __spreadProps(__spreadValues({}, prior[group]), { [key]: value }), review_state: "unknown" }) : __spreadProps(__spreadValues({}, prior), { [key]: value, review_state: key === "review_state" ? value : "unknown" });
+    remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), { filing_supplement: supplement }) }));
+  };
+  const linkFiler = () => {
+    const party = ref.current.draft.parties.find((p) => p.role === "acquirer");
+    if (!party) return;
+    const prior = ref.current.draft.filing_supplement || acquisitionNewFiling();
+    remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), { filing_supplement: __spreadProps(__spreadValues({}, prior), {
+      filer: __spreadProps(__spreadValues({}, prior.filer), { party_ref: party.party_ref, name: party.name }),
+      authorization: __spreadProps(__spreadValues({}, prior.authorization), { grantor_ref: party.party_ref, state: "unknown" }),
+      review_state: "unknown"
+    }) }) }));
+  };
+  const save = async () => {
+    if (!acquisitionDirty(ref.current)) return ref.current.meta;
+    const saved = await mutation(base, "PUT", { label: ref.current.label, draft: ref.current.draft }, ref.current.meta.etag);
+    await load(saved.case_id);
+    return ref.current.meta;
+  };
+  const d = current ? w.draft : null;
+  const editableSchema = ["acquisition-case/1", "acquisition-case/2", "acquisition-case/3", "acquisition-case/4", "acquisition-case/5", "acquisition-case/6"].includes(d == null ? void 0 : d.schema_version) && !!d.case_info && Array.isArray(d.parties) && !!d.relationship && (d.schema_version === "acquisition-case/1" || !!d.calculation) && (!d.filing_supplement || d.filing_supplement.schema_version === "acquisition-filing-input/1") && (!d.filing_assets || d.filing_assets.schema_version === "acquisition-filing-assets/1");
+  const f = d == null ? void 0 : d.filing_supplement;
+  const filingText = (group, key, label, maxLength, type = "text") => /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      "data-testid": "acquisition-filing-" + group + "-" + key,
+      type,
+      maxLength,
+      value: f[group][key] || "",
+      onChange: (e) => changeFiling(group, key, type === "date" ? e.target.value || null : e.target.value)
+    }
+  ));
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.acq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.acq-grid label,.acq-field{display:flex;flex-direction:column;gap:6px}.acq-grid input,.acq-grid select,.acq-field input,.acq-field textarea{font:inherit;padding:10px;min-height:44px}.acq-section{border:1px solid #ccd8cd;padding:20px;margin:20px 0;border-radius:10px}.acq-section p{line-height:1.6}.acq-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:16px 0}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: exit }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uCDE8\uB4DD\uC138 \uC0AC\uAC74"), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uBCF8\uC815\uBCF4\uC640 \uACF5\uD1B5 \uC6D0\uBCF8\uC744 \uC800\uC7A5\uD569\uB2C8\uB2E4. \uD655\uC778\uD55C \uC77C\uBC18 \uC8FC\uD0DD\xB7\uBE44\uC8FC\uD0DD \uB9E4\uB9E4 \uC0AC\uAC74\uC740 \uACC4\uC0B0 \uC785\uB825\uC744 \uC5F0\uACB0\uD55C \uB4A4, \uACC4\uC0B0 \uBC84\uD2BC\uC744 \uB20C\uB7EC \uBCC4\uB3C4 \uC2E4\uD589\uD569\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), !current && busy && /* @__PURE__ */ React.createElement("p", null, "\uC0AC\uAC74\uC744 \uC5EC\uB294 \uC911\uC785\uB2C8\uB2E4."), !current && !busy && /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-open-retry", onClick: () => act(open) }, "\uC0AC\uAC74 \uC5F4\uAE30 \uB2E4\uC2DC \uC2DC\uB3C4"), current && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { "data-testid": "acquisition-status" }, "\uC800\uC7A5 \uBC84\uC804 ", w.meta.revision, " / \uCD5C\uC2E0 ", w.meta.current_revision, readonly ? " \xB7 \uC77D\uAE30 \uC804\uC6A9 \uC800\uC7A5\uBCF8" : "", acquisitionDirty(w) ? " \xB7 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD \uC788\uC74C" : ""), !editableSchema ? /* @__PURE__ */ React.createElement("section", { className: "acq-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC785\uB825 \uBC84\uC804"), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8\uC744 \uC77D\uAE30 \uC804\uC6A9\uC73C\uB85C \uBCF4\uC874\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(d, null, 2))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uC0AC\uAC74 \uAE30\uBCF8\uC815\uBCF4 \uCD08\uC548"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74\uBA85", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-label", value: w.label, maxLength: 200, onChange: (e) => remember(__spreadProps(__spreadValues({}, ref.current), { label: e.target.value })) })), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-acquisition_date", type: "date", value: d.case_info.acquisition_date || "", onChange: (e) => change("case_info", "acquisition_date", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uB4F1\uAE30\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-registration_date", type: "date", value: d.case_info.registration_date || "", onChange: (e) => change("case_info", "registration_date", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uC2E0\uACE0 \uAD6C\uBD84", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-filing_type", value: d.case_info.filing_type, onChange: (e) => change("case_info", "filing_type", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uC815"), /* @__PURE__ */ React.createElement("option", { value: "regular" }, "\uC815\uAE30"), /* @__PURE__ */ React.createElement("option", { value: "late" }, "\uAE30\uD55C \uD6C4"), /* @__PURE__ */ React.createElement("option", { value: "amended" }, "\uC218\uC815"))), /* @__PURE__ */ React.createElement("label", null, "\uCC38\uC870\uBC88\uD638\xB7\uC2DD\uBCC4 \uBA54\uBAA8", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-reference", value: d.case_info.reference, onChange: (e) => change("case_info", "reference", e.target.value) }))), /* @__PURE__ */ React.createElement("label", { className: "acq-field" }, "\uC0AC\uAC74 \uBA54\uBAA8", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-memo", rows: "5", value: d.case_info.memo, onChange: (e) => change("case_info", "memo", e.target.value) })), [["acquirer", "\uCDE8\uB4DD\uC790"], ["previous_owner", "\uC804\uC18C\uC720\uC790"]].map(([role, title]) => {
+    const party = d.parties.find((p) => p.role === role);
+    return /* @__PURE__ */ React.createElement("section", { className: "acq-section", key: role }, /* @__PURE__ */ React.createElement("h2", null, title), party ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC774\uB984", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-" + role + "-name", value: party.name, onChange: (e) => changeParty(role, "name", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC0DD\uB144\uC6D4\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-" + role + "-birth_date", type: "date", value: party.birth_date || "", onChange: (e) => changeParty(role, "birth_date", e.target.value || null) }))), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "acquisition-" + role + "-remove", onClick: () => removeParty(role) }, title, " \uC81C\uAC70")) : /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "acquisition-" + role + "-add", disabled: d.parties.length >= 2, onClick: () => addParty(role) }, title, " \uCD94\uAC00"));
+  }), /* @__PURE__ */ React.createElement("section", { className: "acq-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uB2F9\uC0AC\uC790 \uAD00\uACC4"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uAD00\uACC4 \uAD6C\uBD84", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-relationship-category", value: d.relationship.category, onChange: (e) => change("relationship", "category", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "spouse" }, "\uBC30\uC6B0\uC790"), /* @__PURE__ */ React.createElement("option", { value: "lineal" }, "\uC9C1\uACC4\uC874\uBE44\uC18D"), /* @__PURE__ */ React.createElement("option", { value: "other_relative" }, "\uAE30\uD0C0 \uCE5C\uC871"), /* @__PURE__ */ React.createElement("option", { value: "unrelated" }, "\uD2B9\uC218\uAD00\uACC4 \uC5C6\uC74C"), /* @__PURE__ */ React.createElement("option", { value: "not_applicable" }, "\uD574\uB2F9 \uC5C6\uC74C"))), /* @__PURE__ */ React.createElement("label", null, "\uAD00\uACC4 \uAE30\uC900\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-relationship-as_of_date", type: "date", value: d.relationship.as_of_date || "", onChange: (e) => change("relationship", "as_of_date", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uD655\uC778 \uC0C1\uD0DC", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-relationship-review_state", value: d.relationship.review_state, onChange: (e) => change("relationship", "review_state", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "confirmed" }, "\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "not_applicable" }, "\uD574\uB2F9 \uC5C6\uC74C")))), /* @__PURE__ */ React.createElement("label", { className: "acq-field" }, "\uAD00\uACC4 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-relationship-evidence", rows: "3", value: d.relationship.evidence, onChange: (e) => change("relationship", "evidence", e.target.value) }))), /* @__PURE__ */ React.createElement("section", { className: "acq-section", "aria-label": "\uC2E0\uACE0 \uBCF4\uC644\uC815\uBCF4" }, /* @__PURE__ */ React.createElement("h2", null, "\uC2E0\uACE0 \uBCF4\uC644\uC815\uBCF4"), /* @__PURE__ */ React.createElement("p", null, "\uC77C\uBC18 \uC815\uAE30 \uC2E0\uACE0\uC758 \uC2E0\uACE0\uC778\xB7\uB300\uB9AC\uC778\xB7\uC704\uC784\xB7\uAD00\uD560 \uC815\uBCF4\uB97C \uBCF4\uAD00\uD569\uB2C8\uB2E4. \uC774 \uC785\uB825\uC758 \uD655\uC778 \uC0C1\uD0DC\uB294 \uC2E0\uACE0\uC11C \uC644\uC131\uC774\uB098 \uC811\uC218 \uC644\uB8CC\uB97C \uB73B\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !f ? /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "acquisition-filing-enable", onClick: () => remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), { filing_supplement: acquisitionNewFiling() }) })) }, "\uC2E0\uACE0 \uBCF4\uC644\uC815\uBCF4 \uC785\uB825 \uC2DC\uC791") : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC2E0\uACE0 \uBC29\uC2DD", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-filing-mode", value: f.mode, onChange: (e) => changeFiling(null, "mode", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "self" }, "\uBCF8\uC778 \uC2E0\uACE0"), /* @__PURE__ */ React.createElement("option", { value: "agent" }, "\uB300\uB9AC \uC2E0\uACE0"))), /* @__PURE__ */ React.createElement("label", null, "\uC2E0\uACE0 \uC608\uC815\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-filing-date", type: "date", value: f.filing_date || "", onChange: (e) => changeFiling(null, "filing_date", e.target.value || null) }))), /* @__PURE__ */ React.createElement("h3", null, "\uC2E0\uACE0\uC778"), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      type: "button",
+      "data-testid": "acquisition-filing-link",
+      disabled: !d.parties.some((p) => p.role === "acquirer"),
+      onClick: linkFiler
+    },
+    "\uD604\uC7AC \uCDE8\uB4DD\uC790\uB97C \uC2E0\uACE0\uC778\xB7\uC704\uC784\uC778\uC73C\uB85C \uC5F0\uACB0"
+  ), /* @__PURE__ */ React.createElement("p", null, "\uC8FC\uBBFC\uB4F1\uB85D\uBC88\uD638 \uC6D0\uBB38\uC740 \uC785\uB825\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uCDE8\uB4DD\uC790 \uC774\uB984\uC774 \uBC14\uB00C\uBA74 \uC5F0\uACB0\uC744 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, [["name", "\uC2E0\uACE0\uC778 \uC774\uB984", 200], ["address", "\uC2E0\uACE0\uC778 \uC8FC\uC18C", 500], ["postal_code", "\uC6B0\uD3B8\uBC88\uD638", 5], ["phone", "\uC2E0\uACE0\uC778 \uC5F0\uB77D\uCC98", 50], ["email", "\uC2E0\uACE0\uC778 \uC804\uC790\uC6B0\uD3B8", 200]].map((x) => filingText("filer", ...x))), f.mode === "agent" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h3", null, "\uB300\uB9AC\uC778"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, [["name", "\uB300\uB9AC\uC778 \uC774\uB984", 200], ["office", "\uB300\uB9AC\uC778 \uC18C\uC18D", 200], ["address", "\uB300\uB9AC\uC778 \uC8FC\uC18C", 500], ["phone", "\uB300\uB9AC\uC778 \uC5F0\uB77D\uCC98", 50], ["email", "\uB300\uB9AC\uC778 \uC804\uC790\uC6B0\uD3B8", 200]].map((x) => filingText("agent", ...x))), /* @__PURE__ */ React.createElement("h3", null, "\uC704\uC784 \uD655\uC778"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC704\uC784 \uC0C1\uD0DC", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-filing-authorization-state", value: f.authorization.state, onChange: (e) => changeFiling("authorization", "state", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "confirmed" }, "\uC704\uC784\uC7A5 \uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "not_authorized" }, "\uC704\uC784 \uC5C6\uC74C"))), filingText("authorization", "signed_on", "\uC704\uC784\uC77C", 10, "date"), filingText("authorization", "document_reference", "\uC704\uC784\uC7A5 \uBB38\uC11C \uCC38\uC870", 500)), /* @__PURE__ */ React.createElement("label", { className: "acq-field" }, "\uC704\uC784 \uC5C5\uBB34 \uBC94\uC704", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-filing-authorization-scope", maxLength: 2e3, value: f.authorization.scope, onChange: (e) => changeFiling("authorization", "scope", e.target.value) }))), f.mode === "self" && /* @__PURE__ */ React.createElement("p", null, "\uBCF8\uC778 \uC2E0\uACE0\uC5D0\uC11C\uB294 \uB300\uB9AC\uC778\xB7\uC704\uC784 \uB0B4\uC6A9\uC744 \uC0AC\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC774\uC804\uC5D0 \uC785\uB825\uD55C \uB0B4\uC6A9\uC740 \uBCF4\uAD00\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("h3", null, "\uAD00\uD560"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, [["name", "\uAD00\uD560 \uAE30\uAD00\uBA85", 200], ["code", "\uAD00\uD560 \uAE30\uAD00\uCF54\uB4DC(\uD655\uC778\uD55C \uACBD\uC6B0)", 50], ["department", "\uB2F4\uB2F9 \uBD80\uC11C", 200]].map((x) => filingText("jurisdiction", ...x))), /* @__PURE__ */ React.createElement("label", { className: "acq-field" }, "\uAD00\uD560 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-filing-jurisdiction-evidence", maxLength: 2e3, value: f.jurisdiction.evidence, onChange: (e) => changeFiling("jurisdiction", "evidence", e.target.value) })), /* @__PURE__ */ React.createElement("h3", null, "\uBCF4\uC644\uC815\uBCF4 \uAC80\uD1A0"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uAC80\uD1A0\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-filing-reviewed-on", type: "date", value: f.reviewed_on || "", onChange: (e) => changeFiling(null, "reviewed_on", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uAC80\uD1A0 \uC0C1\uD0DC", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-filing-review-state", value: f.review_state, onChange: (e) => changeFiling(null, "review_state", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "confirmed" }, "\uC785\uB825\xB7\uADFC\uAC70 \uD655\uC778")))), /* @__PURE__ */ React.createElement("label", { className: "acq-field" }, "\uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-filing-review-note", maxLength: 2e3, value: f.review_note, onChange: (e) => changeFiling(null, "review_note", e.target.value) })), /* @__PURE__ */ React.createElement("p", { "data-testid": "acquisition-filing-status" }, acquisitionDirty(w) ? "\uC800\uC7A5\uD558\uBA74 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uB2E4\uC2DC \uD655\uC778\uD569\uB2C8\uB2E4." : ((_b = w.meta.validation.filing_supplement) == null ? void 0 : _b.complete_for_review) ? "\uBCF4\uC644 \uC785\uB825 \uAC80\uD1A0 \uD56D\uBAA9 \uCDA9\uC871 \xB7 \uC2E0\uACE0 \uC900\uBE44 \uC5EC\uBD80\uB294 \uBCC4\uB3C4 \uD655\uC778" : "\uBCF4\uC644 \uC785\uB825 \uD655\uC778 \uD544\uC694"), !acquisitionDirty(w) && /* @__PURE__ */ React.createElement("ul", null, (((_c = w.meta.validation.filing_supplement) == null ? void 0 : _c.missing_fields) || []).map((x) => /* @__PURE__ */ React.createElement("li", { key: x }, x)))))), w.meta.master_snapshot && /* @__PURE__ */ React.createElement("section", { className: "acq-section", "aria-label": "\uCC44\uD0DD\uD55C \uACF5\uD1B5 \uC6D0\uBCF8" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uACF5\uD1B5 \uC6D0\uBCF8"), /* @__PURE__ */ React.createElement("p", { "data-testid": "acquisition-source-status" }, w.meta.master_snapshot.property.address, " \xB7 ", w.meta.source_status === "matched" ? "\uAC00\uC838\uC628 \uC790\uB8CC\uC640 \uC785\uB825 \uC77C\uCE58" : "\uAC00\uC838\uC628 \uB4A4 \uB2F9\uC0AC\uC790\xB7\uCDE8\uB4DD\uC77C \uC9C1\uC811 \uC218\uC815", " \xB7 \uD3C9\uAC00 \uAE30\uC900\uC77C ", w.meta.master_snapshot.valuation.as_of_date, " \xB7 \uC6D0\uBCF8 \uAE08\uC561 ", w.meta.master_snapshot.valuation.amount, "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8\uC740 \uC800\uC7A5 \uB2F9\uC2DC \uC0C1\uD0DC\uB85C \uBCF4\uAD00\uB418\uBA70 \uCD5C\uC2E0 \uACF5\uD1B5 \uC6D0\uBCF8\uACFC \uC790\uB3D9 \uB3D9\uAE30\uD654\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uD3C9\uAC00\uAE08\uC561\uC740 \uC800\uC7A5 \uB2F9\uC2DC\uC758 \uC6D0\uBCF8\uC785\uB2C8\uB2E4. \uACC4\uC0B0 \uC785\uB825\uC744 \uC5F0\uACB0\uD55C \uB4A4 \uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9\uACFC \uAC80\uD1A0 \uADFC\uAC70\uB97C \uD655\uC778\uD569\uB2C8\uB2E4.")), ((_e = (_d = w.meta.master_snapshot) == null ? void 0 : _d.property) == null ? void 0 : _e.property_type) === "\uC8FC\uD0DD" && d.schema_version === "acquisition-case/1" && !readonly && /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      "data-testid": "acquisition-connect-calculation",
+      disabled: busy || acquisitionDirty(w),
+      onClick: () => act(async () => {
+        const saved = await mutation(
+          base + "/calculation-inputs",
+          "POST",
+          { label: ref.current.label, draft: ref.current.draft },
+          ref.current.meta.etag
+        );
+        await load(saved.case_id);
+      })
+    },
+    "\uACC4\uC0B0 \uC785\uB825 \uC5F0\uACB0"
+  ), ((_g = (_f = w.meta.master_snapshot) == null ? void 0 : _f.property) == null ? void 0 : _g.property_type) === "\uC8FC\uD0DD" && !readonly && (((_h = d.filing_assets) == null ? void 0 : _h.assets) || []).map((asset, index) => /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      key: asset.line_id,
+      "data-testid": "acquisition-share-connect-" + index,
+      disabled: busy || acquisitionDirty(w),
+      onClick: () => act(async () => {
+        const saved = await mutation(
+          base + "/share-calculation-inputs",
+          "POST",
+          { label: ref.current.label, draft: ref.current.draft, asset_line_id: asset.line_id },
+          ref.current.meta.etag
+        );
+        await load(saved.case_id);
+      })
+    },
+    "\uBB3C\uAC74 ",
+    index + 1,
+    " \uC9C0\uBD84 \uACC4\uC0B0 \uC785\uB825 \uC5F0\uACB0"
+  )), ["\uD1A0\uC9C0", "\uC0C1\uAC00"].includes((_j = (_i = w.meta.master_snapshot) == null ? void 0 : _i.property) == null ? void 0 : _j.property_type) && !readonly && (((_k = d.filing_assets) == null ? void 0 : _k.assets) || []).map((asset, index) => /* @__PURE__ */ React.createElement("div", { key: asset.line_id }, (w.meta.master_snapshot.property.property_type === "\uD1A0\uC9C0" ? [["land", "\uD1A0\uC9C0"]] : [["building", "\uAC74\uBB3C"], ["land_building", "\uD1A0\uC9C0+\uAC74\uBB3C"]]).map(([kind, label]) => /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      key: kind,
+      "data-testid": "acquisition-nonhousing-connect-" + kind + "-" + index,
+      disabled: busy || acquisitionDirty(w),
+      onClick: () => act(async () => {
+        const saved = await mutation(
+          base + "/nonhousing-calculation-inputs",
+          "POST",
+          { label: ref.current.label, draft: ref.current.draft, asset_line_id: asset.line_id, component_kind: kind },
+          ref.current.meta.etag
+        );
+        await load(saved.case_id);
+      })
+    },
+    "\uBB3C\uAC74 ",
+    index + 1,
+    " ",
+    label,
+    " \uACC4\uC0B0 \uC785\uB825 \uC5F0\uACB0"
+  )))), ["\uC8FC\uD0DD", "\uC0C1\uAC00"].includes((_m = (_l = w.meta.master_snapshot) == null ? void 0 : _l.property) == null ? void 0 : _m.property_type) && !readonly && (((_n = d.filing_assets) == null ? void 0 : _n.assets) || []).map((asset, index) => /* @__PURE__ */ React.createElement("button", { key: asset.line_id, "data-testid": "acquisition-mixed-connect-" + index, disabled: busy || acquisitionDirty(w), onClick: () => act(async () => {
+    const saved = await mutation(base + "/mixed-calculation-inputs", "POST", { label: ref.current.label, draft: ref.current.draft, asset_line_id: asset.line_id }, ref.current.meta.etag);
+    await load(saved.case_id);
+  }) }, "\uBB3C\uAC74 ", index + 1, " \uC8FC\uD0DD\xB7\uBE44\uC8FC\uD0DD \uD63C\uD569\uC6A9\uB3C4 \uC5F0\uACB0")), ["acquisition-case/5", "acquisition-case/6"].includes(d.schema_version) && d.calculation && /* @__PURE__ */ React.createElement("section", { className: "acq-section", "aria-label": "\uD63C\uD569\uC6A9\uB3C4 \uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uC785\uB825" }, /* @__PURE__ */ React.createElement("h2", null, "\uC8FC\uD0DD\xB7\uBE44\uC8FC\uD0DD \uD63C\uD569\uC6A9\uB3C4 \uC77C\uBC18 \uB9E4\uB9E4"), /* @__PURE__ */ React.createElement("p", null, "2026-10-01~2026-10-17 \uC790\uC5F0\uC778\uC758 \uC804\uCCB4 \uC9C0\uBD84 \uB610\uB294 \uBAA8\uB4E0 \uC6A9\uB3C4\xB7\uD1A0\uC9C0\xB7\uAC74\uBB3C\uC5D0 \uB3D9\uC77C\uD55C \uC77C\uBD80 \uC9C0\uBD84 \uCDE8\uB4DD\uC744 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC8FC\uD0DD \uD55C \uD638(\uCDE8\uB4DD \uD6C4 1\uC8FC\uD0DD)\uC640 \uBE44\uB18D\uC9C0 \uBE44\uC8FC\uD0DD\uC758 \uC77C\uBC18 \uB9E4\uB9E4 \uBCF8\uC138 \uBC94\uC704\uC774\uBA70, \uC77C\uBD80 \uC9C0\uBD84\uC740 \uC804\uCCB4\xB7\uCDE8\uB4DD\uBD84 \uAC00\uC561\uC774 \uC6D0 \uB2E8\uC704\uAE4C\uC9C0 \uC815\uD655\uD55C \uBE44\uB840 \uBC30\uBD84\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4. \uBC95\uC778\xB7\uAC10\uBA74\xB7\uC911\uACFC\xB7\uD2B9\uB840\uB294 \uC785\uB825 \uC800\uC7A5\uB9CC \uAC00\uB2A5\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uC6A9\uB3C4\uBCC4 \uBA74\uC801\xB7\uC2DC\uAC00\uD45C\uC900\uC561 \uD655\uC778"), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uBD84 \uD569\uACC4(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-mixed-total", readOnly: true, value: (_o = d.calculation.property_value) != null ? _o : "" })), /* @__PURE__ */ React.createElement("p", null, "\uC6A9\uB3C4\uBCC4 \uBA74\uC801\xB7\uC2DC\uAC00\uD45C\uC900\uC561 \uB124 \uAC00\uC9C0\uB294 \uC804\uCCB4 \uC9C0\uBD84 \uAE30\uC900\uC73C\uB85C \uC785\uB825\uD569\uB2C8\uB2E4. \uC6A9\uB3C4\uBCC4 \uAC74\uCD95\uBA74\uC801\uC758 \uD569\uACC4\uB294 \uBB3C\uAC74\uBCC4 \uC804\uCCB4 \uAC74\uCD95\uBA74\uC801\uACFC \uAC19\uC544\uC57C \uD569\uB2C8\uB2E4. \uC8FC\uD0DD \uC2E4\uC81C \uC804\uC6A9\uBA74\uC801\uC740 \uBCC4\uB3C4\uB85C \uC785\uB825\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, [["housing_building_area", "\uC8FC\uD0DD \uC6A9\uB3C4 \uAC74\uCD95\uBA74\uC801"], ["nonhousing_building_area", "\uBE44\uC8FC\uD0DD \uC6A9\uB3C4 \uAC74\uCD95\uBA74\uC801"], ["exclusive_area", "\uC8FC\uD0DD \uD55C \uD638\uC758 \uC2E4\uC81C \uC804\uC6A9\uBA74\uC801"], ["housing_land_area", "\uC9C1\uC811 \uD655\uC778 \uC8FC\uD0DD \uBD80\uC18D\uD1A0\uC9C0 \uBA74\uC801"], ["nonhousing_land_area", "\uC9C1\uC811 \uD655\uC778 \uBE44\uC8FC\uD0DD \uBD80\uC18D\uD1A0\uC9C0 \uBA74\uC801"]].map(([key, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, label, "(\u33A1)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-mixed-" + key, inputMode: "decimal", value: (_a2 = d.calculation[key]) != null ? _a2 : "", onChange: (e) => changeCalculation(key, e.target.value || null) }));
+  })), /* @__PURE__ */ React.createElement("label", null, "\uBD80\uC18D\uD1A0\uC9C0 \uBA74\uC801 \uC801\uC6A9", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-mixed-land_area_mode", value: d.calculation.land_area_mode, onChange: (e) => changeCalculation("land_area_mode", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "building_ratio" }, "\uAC74\uCD95\uBA74\uC801 \uBE44\uC728 \uD6C4\uBCF4\uB97C \uAC80\uD1A0 \uD6C4 \uC0AC\uC6A9"), /* @__PURE__ */ React.createElement("option", { value: "manual" }, "\uC9C1\uC811 \uD655\uC778\uD55C \uAD6C\uBD84 \uBA74\uC801 \uC0AC\uC6A9"))), /* @__PURE__ */ React.createElement("p", null, "\uC790\uB3D9 \uD6C4\uBCF4\uB294 \uC8FC\uD0DD \uD1A0\uC9C0\uBA74\uC801 \uC18C\uC218 \uB137\uC9F8 \uC790\uB9AC\uAE4C\uC9C0 \uBC84\uB9BC \uD6C4 \uC794\uC561\uC744 \uBE44\uC8FC\uD0DD\uC5D0 \uBC30\uBD84\uD569\uB2C8\uB2E4. \uC9C1\uC811 \uBA74\uC801\uC744 \uC120\uD0DD\uD574\uB3C4 \uD6C4\uBCF4\uC640 \uC774\uC804 \uC785\uB825\uC744 \uBCF4\uAD00\uD569\uB2C8\uB2E4. \uC774 \uBA74\uC801\uBE44\uC728\uC744 \uAC00\uC561 \uC548\uBD84\uC5D0 \uC801\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, [["housing_land_standard", "\uC8FC\uD0DD \uBD80\uC18D\uD1A0\uC9C0 \uC2DC\uAC00\uD45C\uC900\uC561"], ["housing_building_standard", "\uC8FC\uD0DD \uBD80\uBD84 \uAC74\uCD95\uBB3C \uC2DC\uAC00\uD45C\uC900\uC561"], ["nonhousing_land_standard", "\uBE44\uC8FC\uD0DD \uBD80\uC18D\uD1A0\uC9C0 \uC2DC\uAC00\uD45C\uC900\uC561"], ["nonhousing_building_standard", "\uBE44\uC8FC\uD0DD \uBD80\uBD84 \uAC74\uCD95\uBB3C \uC2DC\uAC00\uD45C\uC900\uC561"]].map(([key, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, label, "(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-mixed-" + key, inputMode: "numeric", value: (_a2 = d.calculation[key]) != null ? _a2 : "", onChange: (e) => changeCalculation(key, e.target.value || null) }));
+  })), /* @__PURE__ */ React.createElement("p", null, "\uAC00\uC561\uC740 \uAC01 \uC6A9\uB3C4\uC758 \uAC74\uCD95\uBB3C+\uD1A0\uC9C0 \uC2DC\uAC00\uD45C\uC900\uC561\uC744 \uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561\uC73C\uB85C \uB098\uB208 \uBE44\uC728\uB85C \uC548\uBD84\uD569\uB2C8\uB2E4. \uC8FC\uD0DD \uACF5\uC2DC\uAC00\uACA9\uC744 \uAC74\uCD95\uBB3C \uC2DC\uAC00\uD45C\uC900\uC561 \uB300\uC2E0 \uC785\uB825\uD558\uC9C0 \uB9C8\uC138\uC694. \uBE44\uC8FC\uD0DD \uC6D0 \uBBF8\uB9CC\uC744 \uBC84\uB9AC\uACE0 \uC794\uC561\uC744 \uC8FC\uD0DD\uC5D0 \uBC30\uBD84\uD569\uB2C8\uB2E4."), d.schema_version === "acquisition-case/6" && /* @__PURE__ */ React.createElement("div", { "data-testid": "acquisition-mixed-share-inputs" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uD0DD \uC77C\uBD80 \uC9C0\uBD84\uC758 \uC804\uCCB4\uAC00\uC561 \uD658\uC0B0"), /* @__PURE__ */ React.createElement("p", null, "\uC8FC\uD0DD \uC804\uCCB4\uAC00\uC561\uC73C\uB85C \uC138\uC728\uC744 \uD310\uC815\uD558\uACE0 \uCDE8\uB4DD\uBD84 \uAC00\uC561\uC5D0 \uC801\uC6A9\uD569\uB2C8\uB2E4. \uC544\uB798 \uC8FC\uD0DD \uC2DC\uAC00\uD45C\uC900\uC561\uC740 \uC704\uC758 \uC6A9\uB3C4\uBCC4 \uC548\uBD84\uC6A9 \uB124 \uAC00\uC9C0 \uAE08\uC561\uACFC \uAD6C\uBD84\uD569\uB2C8\uB2E4. \uC2E4\uC81C \uC804\uC6A9\uBA74\uC801\uC5D0\uB294 \uC9C0\uBD84\uC744 \uACF1\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), [["whole_standard_value", "\uC8FC\uD0DD \uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561"], ["acquired_standard_value", "\uC8FC\uD0DD \uCDE8\uB4DD\uC9C0\uBD84 \uC2DC\uAC00\uD45C\uC900\uC561"]].map(([key, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, label, "(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-mixed-" + key, inputMode: "numeric", value: (_a2 = d.calculation[key]) != null ? _a2 : "", onChange: (e) => changeCalculation(key, e.target.value || null) }));
+  }), /* @__PURE__ */ React.createElement("label", null, "\uC8FC\uD0DD \uC2DC\uAC00\uD45C\uC900\uC561\xB7\uB3D9\uC77C \uC9C0\uBD84 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-mixed-standard_value_evidence", maxLength: 2e3, value: d.calculation.standard_value_evidence, onChange: (e) => changeCalculation("standard_value_evidence", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "acquisition-mixed-share_basis_confirmed", checked: d.calculation.share_basis_confirmed, onChange: (e) => changeCalculation("share_basis_confirmed", e.target.checked) }), "\uC8FC\uD0DD\xB7\uBE44\uC8FC\uD0DD \uBC0F \uD1A0\uC9C0\xB7\uAC74\uBB3C \uBAA8\uB450 \uB3D9\uC77C \uC9C0\uBD84\uC774\uBA70 \uAC00\uC561\uACFC \uC8FC\uD0DD \uC2DC\uAC00\uD45C\uC900\uC561\uB3C4 \uAC19\uC740 \uBE44\uC728\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD \uD6C4 \uC138\uB300 \uC8FC\uD0DD \uC218", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-mixed-housing_count", type: "number", min: "0", value: (_p = d.calculation.housing_count) != null ? _p : "", onChange: (e) => changeCalculation("housing_count", e.target.value === "" ? null : Number(e.target.value)) })), /* @__PURE__ */ React.createElement("label", null, "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-mixed-regulated_area", value: d.calculation.regulated_area, onChange: (e) => changeCalculation("regulated_area", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uD574\uB2F9"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uBE44\uD574\uB2F9"))), /* @__PURE__ */ React.createElement("label", null, "\uC18C\uC7AC\uC9C0", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-mixed-location_scope", value: d.calculation.location_scope, onChange: (e) => changeCalculation("location_scope", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "city" }, "\uB3C4\uC2DC\uC9C0\uC5ED(\uC74D\xB7\uBA74 100\u33A1 \uD2B9\uB840 \uC5C6\uC74C)"), /* @__PURE__ */ React.createElement("option", { value: "other" }, "\uADF8 \uC678"))), [["area_evidence", "\uC6A9\uB3C4\uBCC4 \uBA74\uC801\xB7\uBD80\uC18D\uD1A0\uC9C0 \uAD6C\uBD84 \uADFC\uAC70"], ["allocation_evidence", "\uC6A9\uB3C4\uBCC4 \uAC74\uCD95\uBB3C\xB7\uD1A0\uC9C0 \uC2DC\uAC00\uD45C\uC900\uC561 \uADFC\uAC70"], ["review_note", "\uAC70\uB798 \uBC0F \uC801\uC6A9 \uBC94\uC704 \uAC80\uD1A0 \uADFC\uAC70"]].map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-mixed-" + key, maxLength: 2e3, value: d.calculation[key], onChange: (e) => changeCalculation(key, e.target.value) }))), [["transaction_price_confirmed", "\uBD80\uAC00\uC138 \uC81C\uC678\xB7\uBD80\uB300\uBE44\uC6A9 \uD3EC\uD568 \uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."], ["ordinary_scope_confirmed", "\uC790\uC5F0\uC778\xB7\uC8FC\uD0DD \uD55C \uD638\uC640 \uBE44\uB18D\uC9C0 \uBE44\uC8FC\uD0DD \uC77C\uBC18 \uB9E4\uB9E4, \uAC10\uBA74\xB7\uC911\uACFC\xB7\uD2B9\uB840\xB7\uC2E0\uD0C1 \uC5C6\uC74C, \uC8FC\uD0DD \uBD80\uC18D\uD1A0\uC9C0 \uBC95\uC815 \uBA74\uC801 \uD55C\uB3C4 \uC774\uB0B4\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."], ["no_local_variation_confirmed", "\uCDE8\uB4DD\uC138\xB7\uC9C0\uBC29\uAD50\uC721\uC138 \uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."], ["facts_confirmed", "\uC6A9\uB3C4\uBCC4 \uC804\uCCB4 \uBA74\uC801\uACFC \uC2DC\uAC00\uD45C\uC900\uC561, \uCDE8\uB4DD \uC9C0\uBD84, \uC6D0\uBCF8 \uBC0F \uCDE8\uB4DD\uC77C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."]].map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "acquisition-mixed-" + key, checked: d.calculation[key], onChange: (e) => changeCalculation(key, e.target.checked) }), label))), /* @__PURE__ */ React.createElement("p", null, acquisitionDirty(w) ? "\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC544\uB798 \uC548\uBD84\uC740 \uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900\uC785\uB2C8\uB2E4." : "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900 \uC548\uBD84"), d.schema_version === "acquisition-case/6" && ((_r = (_q = w.meta.case_input) == null ? void 0 : _q.mixed_allocation) == null ? void 0 : _r.whole) && /* @__PURE__ */ React.createElement("table", { "data-testid": "acquisition-mixed-share-summary" }, /* @__PURE__ */ React.createElement("caption", null, "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900 \uC804\uCCB4 / \uCDE8\uB4DD\uBD84 \uC5F0\uACB0"), /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAD6C\uBD84"), /* @__PURE__ */ React.createElement("th", null, "\uC804\uCCB4 \uAC00\uC561(\uC6D0)"), /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uBD84 \uAC00\uC561(\uC6D0)"), /* @__PURE__ */ React.createElement("th", null, "\uC804\uCCB4 \uD1A0\uC9C0 / \uAC74\uCD95\uBA74\uC801(\u33A1)"), /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uBD84 \uD1A0\uC9C0 / \uAC74\uCD95\uBA74\uC801(\u33A1)"))), /* @__PURE__ */ React.createElement("tbody", null, ["housing", "nonhousing"].map((kind) => {
+    const a = w.meta.case_input.mixed_allocation;
+    return /* @__PURE__ */ React.createElement("tr", { key: kind }, /* @__PURE__ */ React.createElement("th", null, kind === "housing" ? "\uC8FC\uD0DD" : "\uBE44\uC8FC\uD0DD"), /* @__PURE__ */ React.createElement("td", null, a.whole.selected[kind]), /* @__PURE__ */ React.createElement("td", null, a.selected[kind]), /* @__PURE__ */ React.createElement("td", null, a.whole.areas.land.selected[kind], " / ", a.whole.areas.building[kind]), /* @__PURE__ */ React.createElement("td", null, a.acquired_areas.land[kind], " / ", a.acquired_areas.building[kind]));
+  }))), /* @__PURE__ */ React.createElement("pre", { "data-testid": "acquisition-mixed-allocation" }, JSON.stringify((_t = (_s = w.meta.case_input) == null ? void 0 : _s.mixed_allocation) != null ? _t : null, null, 2)), !readonly && /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-run", disabled: busy, onClick: () => act(async () => {
+    var _a2;
+    const saved = await save();
+    if (!((_a2 = saved.validation) == null ? void 0 : _a2.can_run)) throw new Error("\uACC4\uC0B0\uC5D0 \uD544\uC694\uD55C \uC785\uB825\uACFC \uD655\uC778 \uD56D\uBAA9\uC744 \uB9C8\uCE5C \uB4A4 \uC800\uC7A5\uD574 \uC8FC\uC138\uC694.");
+    const result = await mutation(base + "/runs", "POST", { revision_id: saved.revision_id, expected_input_hash: saved.input_hash });
+    if (result.status !== "succeeded") throw new Error("\uACC4\uC0B0\uC774 \uC644\uB8CC\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    await load(saved.case_id);
+  }) }, "\uC785\uB825 \uC800\uC7A5 \uD6C4 \uACC4\uC0B0")), d.schema_version === "acquisition-case/4" && d.calculation && /* @__PURE__ */ React.createElement("section", { className: "acq-section", "aria-label": "\uBE44\uC8FC\uD0DD \uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uC785\uB825" }, /* @__PURE__ */ React.createElement("h2", null, "\uBE44\uC8FC\uD0DD \uC77C\uBC18 \uB9E4\uB9E4 \xB7 ", { land: "\uD1A0\uC9C0", building: "\uAC74\uBB3C", land_building: "\uD1A0\uC9C0+\uAC74\uBB3C" }[d.calculation.component_kind]), /* @__PURE__ */ React.createElement("p", null, "2026-10-01~2026-10-17 \uC790\uC5F0\uC778\uC758 \uBE44\uB18D\uC9C0\xB7\uC21C\uC218 \uBE44\uC8FC\uD0DD \uC815\uAE30 \uC2E0\uACE0, \uAC10\uBA74\xB7\uC911\uACFC\xB7\uD2B9\uB840\xB7\uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uB294 \uACBD\uC6B0\uB97C \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC8FC\uD0DD \uD63C\uD569\xB7\uBC95\uC778\xB7\uB18D\uC9C0\xB7\uC2E0\uD0C1\xB7\uC18C\uC561\uCDE8\uB4DD\uC740 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uBB3C\uAC74\uBCC4 \uCDE8\uB4DD\uC815\uBCF4\uC758 \uCDE8\uB4DD\uBD84 \uAC00\uC561\uC744 \uC0AC\uC6A9\uD558\uBA70 \uC9C0\uBD84\uC744 \uB2E4\uC2DC \uACF1\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uBCC0\uACBD\uD558\uB824\uBA74 \uBB3C\uAC74\uBCC4 \uC785\uB825\uC744 \uC800\uC7A5\uD558\uACE0 \uB2E4\uC2DC \uC5F0\uACB0\uD574 \uC8FC\uC138\uC694. \uAC01 \uAD6C\uC131\uC758 \uCDE8\uB4DD\uAC00\uC561\uC740 50\uB9CC\uC6D0\uC744 \uCD08\uACFC\uD574\uC57C \uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uAC00\uC561 \uAD6C\uBD84 \uBC0F \uC548\uBD84 \uADFC\uAC70"), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uBD84 \uD569\uACC4(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-nonhousing-total", readOnly: true, value: d.calculation.property_value })), d.calculation.component_kind === "land_building" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", null, "\uAC00\uC561 \uC801\uC6A9 \uBC29\uBC95", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-nonhousing-mode", value: d.calculation.allocation_mode, onChange: (e) => changeCalculation("allocation_mode", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "separate_prices" }, "\uAD6C\uBD84\uB41C \uD1A0\uC9C0\xB7\uAC74\uBB3C \uCDE8\uB4DD\uAC00\uC561"), /* @__PURE__ */ React.createElement("option", { value: "standard_ratio" }, "\uAD6C\uBD84 \uBD88\uAC00 \xB7 \uC2DC\uAC00\uD45C\uC900\uC561 \uBE44\uC728"))), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, [["land_price", "\uAD6C\uBD84\uB41C \uD1A0\uC9C0 \uCDE8\uB4DD\uAC00\uC561"], ["building_price", "\uAD6C\uBD84\uB41C \uAC74\uBB3C \uCDE8\uB4DD\uAC00\uC561"], ["land_standard_value", "\uCDE8\uB4DD\uB300\uC0C1 \uD1A0\uC9C0 \uC2DC\uAC00\uD45C\uC900\uC561"], ["building_standard_value", "\uCDE8\uB4DD\uB300\uC0C1 \uAC74\uBB3C \uC2DC\uAC00\uD45C\uC900\uC561"]].map(([key, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, label, "(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-nonhousing-" + key, inputMode: "numeric", value: (_a2 = d.calculation[key]) != null ? _a2 : "", onChange: (e) => changeCalculation(key, e.target.value || null) }));
+  })), /* @__PURE__ */ React.createElement("p", null, "\uAD6C\uBD84\uAC00\uC561\uC740 \uD569\uACC4\uAC00 \uCDE8\uB4DD\uBD84 \uAC00\uC561\uACFC \uAC19\uC544\uC57C \uD569\uB2C8\uB2E4. \uC2DC\uAC00\uD45C\uC900\uC561 \uBE44\uC728 \uC120\uD0DD \uC2DC \uD1A0\uC9C0 \uC6D0 \uBBF8\uB9CC\uC740 \uBC84\uB9AC\uACE0 \uB098\uBA38\uC9C0\uB97C \uAC74\uBB3C\uC5D0 \uBC30\uBD84\uD569\uB2C8\uB2E4. \uC120\uD0DD\uD558\uC9C0 \uC54A\uC740 \uBC29\uBC95\uC758 \uC785\uB825\uB3C4 \uBCF4\uAD00\uD569\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("label", null, "\uAD6C\uBD84\uAC00\uC561\xB7\uC2DC\uAC00\uD45C\uC900\uC561 \uBC0F \uC548\uBD84 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-nonhousing-evidence", maxLength: 2e3, value: d.calculation.allocation_evidence, onChange: (e) => changeCalculation("allocation_evidence", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uAC70\uB798 \uBC0F \uC801\uC6A9 \uBC94\uC704 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-nonhousing-review", maxLength: 2e3, value: d.calculation.review_note, onChange: (e) => changeCalculation("review_note", e.target.value) })), [["transaction_price_confirmed", "\uBD80\uAC00\uC138\uB97C \uC81C\uC678\uD55C \uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9\uACFC \uBD80\uB300\uBE44\uC6A9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."], ["ordinary_scope_confirmed", "\uC790\uC5F0\uC778\xB7\uD2B9\uC218\uAD00\uACC4 \uC5C6\uC74C\xB7\uBE44\uB18D\uC9C0\xB7\uC21C\uC218 \uBE44\uC8FC\uD0DD \uC77C\uBC18 \uB9E4\uB9E4\uC774\uBA70 \uAC10\uBA74\xB7\uC911\uACFC\xB7\uD2B9\uB840\xB7\uC2E0\uD0C1\uC774 \uC5C6\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."], ["no_local_variation_confirmed", "\uCDE8\uB4DD\uC9C0\uC758 \uC870\uB840\uC5D0 \uB530\uB978 \uCDE8\uB4DD\uC138\xB7\uC9C0\uBC29\uAD50\uC721\uC138 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."], ["facts_confirmed", "\uC6D0\uBCF8\xB7\uCDE8\uB4DD\uC77C\xB7\uC9C0\uBD84\xB7\uBA74\uC801\xB7\uAC00\uC561 \uAD6C\uBD84\uACFC \uC2DC\uAC00\uD45C\uC900\uC561 \uC801\uC6A9 \uADFC\uAC70\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."]].map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key, className: "acq-field" }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "acquisition-nonhousing-" + key, checked: d.calculation[key], onChange: (e) => changeCalculation(key, e.target.checked) }), label))), /* @__PURE__ */ React.createElement("p", null, acquisitionDirty(w) ? "\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC544\uB798 \uC548\uBD84\uC740 \uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900\uC785\uB2C8\uB2E4." : "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900 \uC548\uBD84"), /* @__PURE__ */ React.createElement("pre", { "data-testid": "acquisition-nonhousing-allocation" }, JSON.stringify((_v = (_u = w.meta.case_input) == null ? void 0 : _u.nonhousing_allocation) != null ? _v : null, null, 2)), !readonly && /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-run", disabled: busy, onClick: () => act(async () => {
+    var _a2;
+    const saved = await save();
+    if (!((_a2 = saved.validation) == null ? void 0 : _a2.can_run)) throw new Error("\uACC4\uC0B0\uC5D0 \uD544\uC694\uD55C \uC785\uB825\uACFC \uD655\uC778 \uD56D\uBAA9\uC744 \uB9C8\uCE5C \uB4A4 \uC800\uC7A5\uD574 \uC8FC\uC138\uC694.");
+    const result = await mutation(base + "/runs", "POST", { revision_id: saved.revision_id, expected_input_hash: saved.input_hash });
+    if (result.status !== "succeeded") throw new Error("\uACC4\uC0B0\uC774 \uC644\uB8CC\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    await load(saved.case_id);
+  }) }, "\uC785\uB825 \uC800\uC7A5 \uD6C4 \uACC4\uC0B0")), ["acquisition-case/2", "acquisition-case/3"].includes(d.schema_version) && d.calculation && /* @__PURE__ */ React.createElement("section", { className: "acq-section", "aria-label": "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uC785\uB825" }, /* @__PURE__ */ React.createElement("h2", null, "\uACC4\uC0B0 \uC785\uB825"), d.schema_version === "acquisition-case/3" ? /* @__PURE__ */ React.createElement("p", null, "2026-07-01~2026-10-17 \uC790\uC5F0\uC778 \uC77C\uBC18 \uC8FC\uD0DD \uB9E4\uB9E4\uC758 \uC77C\uBD80\uC9C0\uBD84, \uCDE8\uB4DD \uD6C4 1\uC8FC\uD0DD, \uD2B9\uC218\uAD00\uACC4\xB7\uAC10\uBA74\xB7\uC911\uACFC \uC5C6\uC74C, \uB3C4\uC2DC\uC9C0\uC5ED, \uBD80\uC18D\uD1A0\uC9C0 \uBC95\uC815 \uBA74\uC801 \uD55C\uB3C4 \uC774\uB0B4 \uBC94\uC704\uC785\uB2C8\uB2E4. \uCDE8\uB4DD\uAC00\uC561\uACFC \uC2DC\uAC00\uD45C\uC900\uC561\uC774 \uB3D9\uC77C\uD55C \uC9C0\uBD84 \uBE44\uC728\uC778 \uACBD\uC6B0\uB97C \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uBB3C\uAC74\uBCC4 \uCDE8\uB4DD\uC815\uBCF4\uB97C \uBA3C\uC800 \uC800\uC7A5\xB7\uAC80\uD1A0\uD55C \uB4A4 \uC5F0\uACB0\uD574 \uC8FC\uC138\uC694.") : /* @__PURE__ */ React.createElement("p", null, "2026-01-01\uBD80\uD130 2026-10-17\uAE4C\uC9C0 \uCDE8\uB4DD\uD55C \uC790\uC5F0\uC778 \uC77C\uBC18 \uC8FC\uD0DD \uB9E4\uB9E4\uC758 \uC804\uCCB4 \uC9C0\uBD84, \uCDE8\uB4DD \uD6C4 1\uC8FC\uD0DD, \uD2B9\uC218\uAD00\uACC4 \uC5C6\uC74C, \uAC10\uBA74\xB7\uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uC5C6\uC74C, \uACE0\uAE09\uC8FC\uD0DD \uB4F1 \uC911\uACFC \uC5C6\uC74C, \uBD80\uC18D\uD1A0\uC9C0 \uBC95\uC815 \uBA74\uC801 \uD55C\uB3C4 \uC774\uB0B4 \uBC94\uC704\uC785\uB2C8\uB2E4. \uBC95\uB839 \uD655\uC778 \uAE30\uC900\uC77C\uC740 2026-10-17\uC785\uB2C8\uB2E4. \uC18C\uC7AC\uC9C0\uC758 \u2018\uB3C4\uC2DC\uC9C0\uC5ED\u2019\uC740 \uC74D\xB7\uBA74 100\u33A1 \uC608\uC678\uAC00 \uC5C6\uB294 \uACBD\uC6B0\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5\uB41C \uC6D0\uBCF8 \uD3C9\uAC00\uAE08\uC561 ", ((_x = (_w = w.meta.master_snapshot) == null ? void 0 : _w.valuation) == null ? void 0 : _x.amount) || "\uC5C6\uC74C", "\uC6D0 \xB7 \uC6D0\uBCF8 \uC804\uC6A9\uBA74\uC801 ", (_A = (_z = (_y = w.meta.master_snapshot) == null ? void 0 : _y.property) == null ? void 0 : _z.exclusive_area) != null ? _A : "\uC5C6\uC74C", "\u33A1. \uC544\uB798 \uAE08\uC561\xB7\uBA74\uC801\uACFC \uC77C\uBC18 \uB9E4\uB9E4 \uC801\uC6A9 \uADFC\uAC70\uB97C \uAE30\uB85D\uD574\uC57C \uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uACC4\uC0B0 \uC0AC\uC2E4\uACFC \uD655\uC778"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-calc-value", readOnly: d.schema_version === "acquisition-case/3", inputMode: "numeric", value: (_B = d.calculation.property_value) != null ? _B : "", onChange: (e) => changeCalculation("property_value", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC804\uC6A9\uBA74\uC801(\u33A1)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-calc-area", readOnly: d.schema_version === "acquisition-case/3", inputMode: "decimal", value: (_C = d.calculation.exclusive_area) != null ? _C : "", onChange: (e) => changeCalculation("exclusive_area", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD \uD6C4 \uC8FC\uD0DD \uC218", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-calc-housing-count", type: "number", min: "0", step: "1", value: (_D = d.calculation.housing_count) != null ? _D : "", onChange: (e) => changeCalculation("housing_count", e.target.value === "" ? null : Number(e.target.value)) })), /* @__PURE__ */ React.createElement("label", null, "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED \uC5EC\uBD80", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-calc-regulated-area", value: d.calculation.regulated_area, onChange: (e) => changeCalculation("regulated_area", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uC544\uB2C8\uC624"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uC608"))), /* @__PURE__ */ React.createElement("label", null, "\uC18C\uC7AC\uC9C0 \uBC94\uC704", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-calc-location-scope", value: d.calculation.location_scope, onChange: (e) => changeCalculation("location_scope", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "city" }, "\uB3C4\uC2DC\uC9C0\uC5ED(\uC74D\xB7\uBA74 100\u33A1 \uC608\uC678 \uC5C6\uC74C)"), /* @__PURE__ */ React.createElement("option", { value: "other" }, "\uADF8 \uC678")))), d.schema_version === "acquisition-case/3" && /* @__PURE__ */ React.createElement("div", { "data-testid": "acquisition-share-fields" }, /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uBD84 \uAC00\uC561\uACFC \uC8FC\uD0DD \uC804\uCCB4 \uC804\uC6A9\uBA74\uC801\uC740 \uC5F0\uACB0\uD55C \uBB3C\uAC74\uC5D0\uC11C \uAC00\uC838\uC635\uB2C8\uB2E4. \uC218\uC815\uD558\uB824\uBA74 \uBB3C\uAC74\uBCC4 \uCDE8\uB4DD\uC815\uBCF4\uB97C \uC800\uC7A5\uD558\uACE0 \uB2E4\uC2DC \uC5F0\uACB0\uD574 \uC8FC\uC138\uC694. \uC804\uC6A9\uBA74\uC801\uC744 \uC9C0\uBD84 \uBE44\uC728\uB85C \uB098\uB204\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC8FC\uD0DD \uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-share-whole-standard", inputMode: "numeric", value: (_E = d.calculation.whole_standard_value) != null ? _E : "", onChange: (e) => changeCalculation("whole_standard_value", e.target.value || null) })), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uC9C0\uBD84 \uC2DC\uAC00\uD45C\uC900\uC561(\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-share-acquired-standard", inputMode: "numeric", value: (_F = d.calculation.acquired_standard_value) != null ? _F : "", onChange: (e) => changeCalculation("acquired_standard_value", e.target.value || null) }))), /* @__PURE__ */ React.createElement("label", { className: "acq-field" }, "\uC2DC\uAC00\uD45C\uC900\uC561 \uD655\uC778 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-share-evidence", value: d.calculation.standard_value_evidence, maxLength: 2e3, onChange: (e) => changeCalculation("standard_value_evidence", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-share-confirm", type: "checkbox", checked: d.calculation.share_basis_confirmed, onChange: (e) => changeCalculation("share_basis_confirmed", e.target.checked) }), "\uC2DC\uAC00\uD45C\uC900\uC561 \uC99D\uBE59\uACFC \uCDE8\uB4DD\uAC00\uC561\xB7\uC2DC\uAC00\uD45C\uC900\uC561\uC758 \uB3D9\uC77C \uC9C0\uBD84 \uBE44\uC728\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("label", { className: "acq-field" }, "\uAE08\uC561\xB7\uBA74\uC801 \uBC0F \uACC4\uC0B0 \uC0AC\uC2E4 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "acquisition-calc-review-note", rows: "3", value: (_G = d.calculation.review_note) != null ? _G : "", onChange: (e) => changeCalculation("review_note", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-calc-price-confirm", type: "checkbox", checked: !!d.calculation.transaction_price_confirmed, onChange: (e) => changeCalculation("transaction_price_confirmed", e.target.checked) }), "\uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9\uACFC \uBD80\uB300\uBE44\uC6A9 \uBC18\uC601 \uC5EC\uBD80\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-calc-scope-confirm", type: "checkbox", checked: !!d.calculation.ordinary_scope_confirmed, onChange: (e) => changeCalculation("ordinary_scope_confirmed", e.target.checked) }), d.schema_version === "acquisition-case/3" ? "2026-07-01~2026-10-17 \uC77C\uBD80\uC9C0\uBD84 \uCDE8\uB4DD" : "2026-01-01~2026-10-17 \uC804\uCCB4 \uC9C0\uBD84 \uCDE8\uB4DD", ", \uC790\uC5F0\uC778 \uC77C\uBC18 \uC8FC\uD0DD \uB9E4\uB9E4, \uCDE8\uB4DD \uD6C4 1\uC8FC\uD0DD, \uD2B9\uC218\uAD00\uACC4 \uC5C6\uC74C, \uAC10\uBA74\xB7\uC77C\uC2DC\uC801 2\uC8FC\uD0DD \uC5C6\uC74C, \uACE0\uAE09\uC8FC\uD0DD \uB4F1 \uC911\uACFC \uC5C6\uC74C, \uBD80\uC18D\uD1A0\uC9C0 \uBC95\uC815 \uBA74\uC801 \uD55C\uB3C4 \uC774\uB0B4\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-calc-facts-confirm", type: "checkbox", checked: !!d.calculation.facts_confirmed, onChange: (e) => changeCalculation("facts_confirmed", e.target.checked) }), "\uC6D0\uBCF8 \uC790\uB8CC, \uCDE8\uB4DD\uC77C, \uB2F9\uC0AC\uC790 \uAD00\uACC4\uC640 \uC704 \uACC4\uC0B0 \uC0AC\uC2E4\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("p", null, "\uAE08\uC561\uC740 \uC6D0 \uB2E8\uC704 \uC815\uC218(\uCD5C\uB300 9,007,199,254,740,991\uC6D0), \uBA74\uC801\uC740 \uC591\uC218\xB7\uC18C\uC218 \uB458\uC9F8 \uC790\uB9AC\uAE4C\uC9C0 \uC785\uB825\uD569\uB2C8\uB2E4. \uACC4\uC0B0 \uAC00\uB2A5 \uC5EC\uBD80\uB294 \uC800\uC7A5 \uD6C4 \uD45C\uC2DC\uB429\uB2C8\uB2E4."), !readonly && /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-run", disabled: busy, onClick: () => act(async () => {
+    var _a2;
+    const saved = await save();
+    if (!((_a2 = saved.validation) == null ? void 0 : _a2.can_run)) throw new Error("\uACC4\uC0B0\uC5D0 \uD544\uC694\uD55C \uC785\uB825\uACFC \uD655\uC778 \uD56D\uBAA9\uC744 \uB9C8\uCE5C \uB4A4 \uC800\uC7A5\uD574 \uC8FC\uC138\uC694.");
+    const result = await mutation(
+      base + "/runs",
+      "POST",
+      { revision_id: saved.revision_id, expected_input_hash: saved.input_hash }
+    );
+    if (result.status !== "succeeded") throw new Error("\uACC4\uC0B0\uC774 \uC644\uB8CC\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    await load(saved.case_id);
+  }) }, "\uC785\uB825 \uC800\uC7A5 \uD6C4 \uACC4\uC0B0")), ((_H = w.run) == null ? void 0 : _H.response_snapshot) && /* @__PURE__ */ React.createElement("section", { className: "acq-section", "aria-label": "\uC800\uC7A5\uB41C \uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC"), acquisitionDirty(w) && /* @__PURE__ */ React.createElement("p", null, "\uD604\uC7AC \uD654\uBA74\uC5D0 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC544\uB798 \uACB0\uACFC\uB294 \uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uBC84\uC804\uC758 \uACB0\uACFC\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { "data-testid": "acquisition-result-total" }, "\uCD1D\uC138\uC561 ", (_J = (_I = w.run.response_snapshot.calc) == null ? void 0 : _I.\uC138\uC561) != null ? _J : "\u2014", "\uC6D0"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, ["\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uACFC\uC138\uD45C\uC900", "\uC801\uC6A9\uC138\uC728"].map((key) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("p", { key }, key, ": ", (_b2 = (_a2 = w.run.response_snapshot.calc) == null ? void 0 : _a2[key]) != null ? _b2 : "\u2014");
+  })), ((_K = w.run.response_snapshot.calc) == null ? void 0 : _K.\uAD6C\uC131\uBCC4\uCDE8\uB4DD\uAC00\uC561) && /* @__PURE__ */ React.createElement("div", { "data-testid": "acquisition-component-results" }, w.run.response_snapshot.calc.\uAD6C\uC131\uBCC4\uCDE8\uB4DD\uAC00\uC561.map((r) => /* @__PURE__ */ React.createElement("p", { key: r.component }, r.component === "land" ? "\uD1A0\uC9C0" : "\uAC74\uBB3C", " \uCDE8\uB4DD\uAC00\uC561: ", r.amount, "\uC6D0")), /* @__PURE__ */ React.createElement("p", null, "\uB3D9\uC77C \uC138\uC728 \uCDE8\uB4DD\uAC00\uC561 \uD569\uACC4\uB85C \uACC4\uC0B0\uD55C \uC138\uC561\uC785\uB2C8\uB2E4.")), ((_L = w.run.response_snapshot.calc) == null ? void 0 : _L.\uC6A9\uB3C4\uBCC4\uACC4\uC0B0) && /* @__PURE__ */ React.createElement("div", { "data-testid": "acquisition-mixed-results" }, w.run.response_snapshot.calc.\uC6A9\uB3C4\uBCC4\uACC4\uC0B0.map((r) => /* @__PURE__ */ React.createElement("div", { key: r.component }, /* @__PURE__ */ React.createElement("h3", null, r.component === "housing" ? "\uC8FC\uD0DD\uBD84" : "\uBE44\uC8FC\uD0DD\uBD84"), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(r.calc, null, 2)))), /* @__PURE__ */ React.createElement("p", null, "\uC6A9\uB3C4\uBCC4 \uBCF8\uC138 \uD569\uACC4\uC774\uBA70 \uCD5C\uC885 \uC2E0\uACE0 \uB0A9\uBD80\uC138\uC561\uC740 \uC544\uB2D9\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB2E8\uACC4"), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify((_N = (_M = w.run.response_snapshot.calc) == null ? void 0 : _M.\uB2E8\uACC4\uBCC4\uACC4\uC0B0) != null ? _N : [], null, 2)), /* @__PURE__ */ React.createElement("h3", null, "\uACBD\uACE0\xB7\uC801\uC6A9 \uBC94\uC704"), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify({ \uACBD\uACE0\uC0AC\uD56D: (_P = (_O = w.run.response_snapshot.calc) == null ? void 0 : _O.\uACBD\uACE0\uC0AC\uD56D) != null ? _P : [], result_scope: w.run.response_snapshot.result_scope }, null, 2))), /* @__PURE__ */ React.createElement(
+    JTAcquisitionFilingTaxes,
+    {
+      key: base + ":tax:" + w.meta.revision,
+      saved: w.meta.case_input,
+      draft: d,
+      busy,
+      readonly,
+      dirty: acquisitionDirty(w),
+      api,
+      act,
+      base,
+      onConnect: async (selection) => {
+        const saved = await mutation(base + "/filing-tax-connections", "POST", selection, ref.current.meta.etag);
+        await load(saved.case_id);
+      }
+    }
+  ), /* @__PURE__ */ React.createElement(
+    JTAcquisitionFilingAssets,
+    {
+      draft: d,
+      saved: w.meta.case_input,
+      disabled: busy || readonly,
+      dirty: acquisitionDirty(w),
+      onChange: (filing_assets) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues({}, ref.current.draft), { filing_assets }) }))
+    }
+  ), !readonly && /* @__PURE__ */ React.createElement(
+    JTAcquisitionSources,
+    {
+      key: base + ":" + w.meta.revision + ":" + (d.case_info.acquisition_date || ""),
+      api,
+      act,
+      base,
+      draft: d,
+      busy,
+      onAssetImport: async (selection, snapshot) => {
+        const saved = await mutation(base + "/filing-asset-imports", "POST", {
+          label: ref.current.label,
+          draft: ref.current.draft,
+          selection,
+          expected_source_hash: snapshot.source_hash
+        }, ref.current.meta.etag);
+        await load(saved.case_id);
+      },
+      onImport: async (selection, snapshot) => {
+        const saved = await mutation(base + "/source-imports", "POST", {
+          label: ref.current.label,
+          draft: ref.current.draft,
+          selection,
+          expected_source_hash: snapshot.source_hash
+        }, ref.current.meta.etag);
+        await load(saved.case_id);
+      }
+    }
+  ), (((_Q = w.meta.validation) == null ? void 0 : _Q.missing_fields) || []).length > 0 && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uCD08\uC548 \uBCF4\uC644 \uD56D\uBAA9" }, /* @__PURE__ */ React.createElement("p", null, "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900 \uBCF4\uC644 \uD56D\uBAA9"), /* @__PURE__ */ React.createElement("ul", null, w.meta.validation.missing_fields.map((x, i) => /* @__PURE__ */ React.createElement("li", { key: i }, acquisitionMissingLabels[x] || x)))), (((_R = w.meta.validation) == null ? void 0 : _R.errors) || []).length > 0 && /* @__PURE__ */ React.createElement("section", { role: "alert" }, /* @__PURE__ */ React.createElement("p", null, "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900 \uC624\uB958"), /* @__PURE__ */ React.createElement("ul", null, w.meta.validation.errors.map((x, i) => /* @__PURE__ */ React.createElement("li", { key: i }, x)))), /* @__PURE__ */ React.createElement("div", { className: "acq-actions" }, /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-save", disabled: busy || readonly, onClick: () => act(save) }, "\uC785\uB825 \uC800\uC7A5"))), /* @__PURE__ */ React.createElement("div", { className: "acq-actions" }, /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uC785\uB825 \uBC84\uC804", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-reopen-revision", inputMode: "numeric", value: revision, onChange: (e) => setRevision(e.target.value.replace(/[^0-9]/g, "")) })), /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-reopen", disabled: busy, onClick: () => {
+    if (!acquisitionDirty(ref.current) || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC800\uC7A5\uBCF8\uC744 \uC5EC\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?")) act(() => load(w.meta.case_id, revision));
+  } }, "\uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30"))));
+}
+function JTAcquisitionSources({ api, act, base, draft, busy, onImport, onAssetImport }) {
+  var _a, _b, _c;
+  const eventDate = draft.case_info.acquisition_date || "";
+  const [catalog, setCatalog] = React.useState(null), [options, setOptions] = React.useState(null);
+  const [choice, setChoice] = React.useState({
+    property_id: "",
+    acquirer_person_id: "",
+    previous_owner_person_id: "",
+    property_version: "current",
+    acquirer_version: "current",
+    previous_owner_version: "current",
+    valuation_id: "",
+    applicable_from: eventDate,
+    applicable_until: eventDate,
+    reason: "",
+    confirmed: false
+  });
+  const [preview, setPreview] = React.useState(null);
+  const generation = React.useRef(0), alive = React.useRef(true);
+  React.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      generation.current++;
+    };
+  }, []);
+  const choose = (key, value) => {
+    generation.current++;
+    setPreview(null);
+    const sourceChanged = ["property_id", "acquirer_person_id", "previous_owner_person_id"].includes(key);
+    if (sourceChanged) setOptions(null);
+    setChoice((old) => __spreadValues(__spreadValues(__spreadProps(__spreadValues({}, old), {
+      [key]: value,
+      confirmed: key === "confirmed" ? value : false
+    }), sourceChanged ? { property_version: "current", acquirer_version: "current", previous_owner_version: "current", valuation_id: "" } : {}), key === "acquirer_person_id" && value === old.previous_owner_person_id ? { previous_owner_person_id: "" } : {}));
+  };
+  const selection = () => __spreadProps(__spreadValues({
+    property_id: choice.property_id || null,
+    acquirer_person_id: choice.acquirer_person_id || null,
+    previous_owner_person_id: choice.previous_owner_person_id || null,
+    valuation_id: choice.valuation_id || null,
+    property_version: choice.property_version,
+    acquirer_version: choice.acquirer_version
+  }, choice.previous_owner_person_id ? { previous_owner_version: choice.previous_owner_version } : {}), {
+    event_date: eventDate,
+    applicable_from: choice.applicable_from,
+    applicable_until: choice.applicable_until,
+    confirmed: choice.confirmed,
+    reason: choice.reason
+  });
+  const versionOptions = (items, kind) => /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("option", { value: "current" }, "\uD604\uC7AC \uC6D0\uBCF8"), (items || []).filter((x) => String(x.version) !== "current").map((x) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("option", { key: String(x.version), value: String(x.version) }, x.label || "\uAE30\uB85D \uBC84\uC804 " + x.version, " \xB7 ", kind === "property" ? (_a2 = x.record) == null ? void 0 : _a2.address : (_b2 = x.record) == null ? void 0 : _b2.name);
+  }));
+  const property = (_a = catalog == null ? void 0 : catalog.properties) == null ? void 0 : _a.find((x) => x.id === choice.property_id);
+  const acquirer = (_b = catalog == null ? void 0 : catalog.persons) == null ? void 0 : _b.find((x) => x.id === choice.acquirer_person_id);
+  const previous = (_c = catalog == null ? void 0 : catalog.persons) == null ? void 0 : _c.find((x) => x.id === choice.previous_owner_person_id);
+  const validPreview = preview && preview.signature === JSON.stringify(selection());
+  return /* @__PURE__ */ React.createElement("fieldset", { disabled: busy, className: "acq-section", "aria-label": "\uACF5\uD1B5 \uB2F9\uC0AC\uC790\xB7\uC7AC\uC0B0\xB7\uD3C9\uAC00 \uCC44\uD0DD" }, /* @__PURE__ */ React.createElement("legend", null, "\uACF5\uD1B5 \uB2F9\uC0AC\uC790\xB7\uC7AC\uC0B0\xB7\uD3C9\uAC00 \uC6D0\uBCF8"), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8\uACFC \uAE30\uB85D\uB41C \uACFC\uAC70 \uBC84\uC804\uC744 \uBA85\uC2DC\uC801\uC73C\uB85C \uC120\uD0DD\uD569\uB2C8\uB2E4. \uD3C9\uAC00\uAE08\uC561\uC740 \uCD9C\uCC98 \uD655\uC778\uC6A9\uC73C\uB85C \uBCF4\uAD00\uD558\uBA70 \uC5EC\uAE30\uC11C \uC138\uC561\uC744 \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !eventDate && /* @__PURE__ */ React.createElement("p", { role: "alert" }, "\uC6D0\uBCF8\uC744 \uCC44\uD0DD\uD558\uB824\uBA74 \uBA3C\uC800 \uCDE8\uB4DD\uC77C\uC744 \uC785\uB825\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-source-load", onClick: () => act(async () => {
+    setCatalog(await api(base + "/sources"));
+    setOptions(null);
+    setPreview(null);
+  }) }, "\uACF5\uD1B5 \uC6D0\uBCF8 \uC870\uD68C"), catalog && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC7AC\uC0B0", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-source-property", value: choice.property_id, onChange: (e) => choose("property_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), catalog.properties.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.address, " \xB7 ", x.property_type)))), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uC790 \uC6D0\uBCF8", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-source-acquirer", value: choice.acquirer_person_id, onChange: (e) => choose("acquirer_person_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), catalog.persons.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.name, " \xB7 ", x.birth_date || "\uC0DD\uB144\uC6D4\uC77C \uBBF8\uC0C1")))), /* @__PURE__ */ React.createElement("label", null, "\uC804\uC18C\uC720\uC790 \uC6D0\uBCF8 (\uC120\uD0DD)", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-source-previous_owner", value: choice.previous_owner_person_id, onChange: (e) => choose("previous_owner_person_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD558\uC9C0 \uC54A\uC74C"), catalog.persons.filter((x) => x.id !== choice.acquirer_person_id).map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.name, " \xB7 ", x.birth_date || "\uC0DD\uB144\uC6D4\uC77C \uBBF8\uC0C1"))))), /* @__PURE__ */ React.createElement("p", null, "\uC120\uD0DD: ", (property == null ? void 0 : property.address) || "\uC7AC\uC0B0 \uBBF8\uC120\uD0DD", " \xB7 ", (acquirer == null ? void 0 : acquirer.name) || "\uCDE8\uB4DD\uC790 \uBBF8\uC120\uD0DD", " \xB7 ", (previous == null ? void 0 : previous.name) || "\uC804\uC18C\uC720\uC790 \uBBF8\uC120\uD0DD"), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      "data-testid": "acquisition-source-options",
+      disabled: !eventDate || !choice.property_id || !choice.acquirer_person_id,
+      onClick: () => act(async () => {
+        const id = ++generation.current;
+        const q = new URLSearchParams({ property_id: choice.property_id, acquirer_person_id: choice.acquirer_person_id });
+        if (choice.previous_owner_person_id) q.set("previous_owner_person_id", choice.previous_owner_person_id);
+        const data = await api(base + "/source-options?" + q.toString());
+        if (alive.current && id === generation.current) setOptions(data);
+      })
+    },
+    "\uC6D0\uBCF8 \uBC84\uC804\xB7\uD3C9\uAC00\uC790\uB8CC \uC870\uD68C"
+  )), options && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC7AC\uC0B0 \uC0AC\uC2E4 \uBC84\uC804", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-source-property-version", value: choice.property_version, onChange: (e) => choose("property_version", e.target.value) }, versionOptions(options.property_versions, "property"))), /* @__PURE__ */ React.createElement("label", null, "\uCDE8\uB4DD\uC790 \uC0AC\uC2E4 \uBC84\uC804", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-source-acquirer-version", value: choice.acquirer_version, onChange: (e) => choose("acquirer_version", e.target.value) }, versionOptions(options.acquirer_versions, "person"))), choice.previous_owner_person_id && /* @__PURE__ */ React.createElement("label", null, "\uC804\uC18C\uC720\uC790 \uC0AC\uC2E4 \uBC84\uC804", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-source-previous_owner-version", value: choice.previous_owner_version, onChange: (e) => choose("previous_owner_version", e.target.value) }, versionOptions(options.previous_owner_versions, "person"))), /* @__PURE__ */ React.createElement("label", null, "\uD3C9\uAC00\uC790\uB8CC", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-source-valuation", value: choice.valuation_id, onChange: (e) => choose("valuation_id", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), options.valuations.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.as_of_date, " \xB7 ", x.valuation_type, " \xB7 ", x.amount, "\uC6D0 \xB7 ", x.source)))), /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uC2E4 \uC801\uC6A9 \uC2DC\uC791\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-source-from", type: "date", value: choice.applicable_from, onChange: (e) => choose("applicable_from", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uC2E4 \uC801\uC6A9 \uC885\uB8CC\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-source-until", type: "date", value: choice.applicable_until, onChange: (e) => choose("applicable_until", e.target.value) }))), /* @__PURE__ */ React.createElement("label", { className: "acq-field" }, "\uC120\uD0DD \uC6D0\uBCF8\uC744 \uC774\uBC88 \uCDE8\uB4DD\uC77C\uC5D0 \uC801\uC6A9\uD558\uB294 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-source-reason", maxLength: 1e3, value: choice.reason, onChange: (e) => choose("reason", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-source-confirm", type: "checkbox", checked: choice.confirmed, onChange: (e) => choose("confirmed", e.target.checked) }), "\uC120\uD0DD\uD55C \uC6D0\uBCF8 \uBC84\uC804, \uD3C9\uAC00 \uAE30\uC900\uC77C\xB7\uAE08\uC561, \uC801\uC6A9\uAE30\uAC04\uACFC \uB2F9\uC0AC\uC790\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "acq-actions" }, /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      "data-testid": "acquisition-source-preview",
+      disabled: !choice.valuation_id || !choice.confirmed || !choice.reason.trim() || !choice.applicable_from || !choice.applicable_until,
+      onClick: () => act(async () => {
+        const selected = selection(), signature = JSON.stringify(selected), id = ++generation.current;
+        const snapshot = await api(base + "/source-preview", { method: "POST", body: JSON.stringify(selected) });
+        if (alive.current && id === generation.current) setPreview({ snapshot, signature });
+      })
+    },
+    "\uC120\uD0DD \uC6D0\uBCF8 \uBBF8\uB9AC\uBCF4\uAE30"
+  )), validPreview && /* @__PURE__ */ React.createElement("section", { className: "acq-section", "aria-label": "\uC120\uD0DD \uC6D0\uBCF8 \uBBF8\uB9AC\uBCF4\uAE30" }, /* @__PURE__ */ React.createElement("h3", null, "\uCC44\uD0DD\uD560 \uC6D0\uBCF8"), /* @__PURE__ */ React.createElement("p", { "data-testid": "acquisition-source-preview-details" }, "\uC7AC\uC0B0 ", preview.snapshot.property.address, " \xB7 \uCDE8\uB4DD\uC790 ", preview.snapshot.parties.acquirer.name, preview.snapshot.parties.previous_owner && " \xB7 \uC804\uC18C\uC720\uC790 " + preview.snapshot.parties.previous_owner.name), /* @__PURE__ */ React.createElement("p", null, "\uD3C9\uAC00 \uAE30\uC900\uC77C ", preview.snapshot.valuation.as_of_date, " \xB7 ", preview.snapshot.valuation.valuation_type, " \xB7 \uC6D0\uBCF8 \uAE08\uC561 ", preview.snapshot.valuation.amount, "\uC6D0 \xB7 ", preview.snapshot.valuation.source), /* @__PURE__ */ React.createElement("p", null, "\uC120\uD0DD \uC0AC\uC2E4 \uBC84\uC804: \uC7AC\uC0B0 ", choice.property_version, " \xB7 \uCDE8\uB4DD\uC790 ", choice.acquirer_version, choice.previous_owner_person_id && " \xB7 \uC804\uC18C\uC720\uC790 " + choice.previous_owner_version), /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-source-import", onClick: () => act(async () => {
+    var _a2;
+    if (preview.signature !== JSON.stringify(selection())) throw new Error("\uC6D0\uBCF8 \uC120\uD0DD\uC774\uB098 \uCDE8\uB4DD\uC77C\uC774 \uBC14\uB00C\uC5C8\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uBBF8\uB9AC\uBCF4\uC138\uC694.");
+    if (!window.confirm("\uC120\uD0DD\uD55C \uB2F9\uC0AC\uC790\xB7\uC7AC\uC0B0\xB7\uD3C9\uAC00 \uC6D0\uBCF8\uC744 \uC0C8 \uC800\uC7A5 \uBC84\uC804\uC73C\uB85C \uCC44\uD0DD\uD569\uB2C8\uB2E4. \uB2F9\uC0AC\uC790 \uAD00\uACC4 \uD655\uC778\uC740 \uB2E4\uC2DC \uC785\uB825\uD574\uC57C \uD569\uB2C8\uB2E4.")) return;
+    try {
+      await onImport(selection(), preview.snapshot);
+      if (alive.current) setPreview(null);
+    } catch (e) {
+      if (((_a2 = e.message) == null ? void 0 : _a2.includes("\uBBF8\uB9AC\uBCF4\uAE30 \uC774\uD6C4 \uACF5\uD1B5 \uC6D0\uBCF8\uC774 \uBC14\uB00C\uC5C8\uC2B5\uB2C8\uB2E4")) && alive.current) {
+        setPreview(null);
+        setOptions(null);
+      }
+      throw e;
+    }
+  }) }, "\uC6D0\uBCF8 \uCC44\uD0DD\xB7\uC0C8 \uBC84\uC804 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { "data-testid": "acquisition-asset-import", onClick: () => act(async () => {
+    if (preview.signature !== JSON.stringify(selection())) throw new Error("\uC6D0\uBCF8 \uC120\uD0DD\uC774\uB098 \uCDE8\uB4DD\uC77C\uC774 \uBC14\uB00C\uC5C8\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uBBF8\uB9AC\uBCF4\uC138\uC694.");
+    await onAssetImport(selection(), preview.snapshot);
+    if (alive.current) setPreview(null);
+  }) }, "\uBB3C\uAC74\uBCC4 \uC2E0\uACE0\uC815\uBCF4\uC5D0 \uCD94\uAC00\xB7\uC800\uC7A5"))));
+}
+function JTAcquisitionFilingAssets({ draft, saved, disabled, dirty, onChange }) {
+  const envelope = draft.filing_assets;
+  const update = (id, patch) => onChange(__spreadProps(__spreadValues({}, envelope), { assets: envelope.assets.map((a) => a.line_id === id ? __spreadProps(__spreadValues(__spreadValues({}, a), patch), { review_state: Object.hasOwn(patch, "review_state") ? patch.review_state : "unknown" }) : a) }));
+  return /* @__PURE__ */ React.createElement("fieldset", { disabled, className: "acq-section", "aria-label": "\uBB3C\uAC74\uBCC4 \uC2E0\uACE0\uC815\uBCF4" }, /* @__PURE__ */ React.createElement("legend", null, "\uBB3C\uAC74\uBCC4 \uC2E0\uACE0\uC815\uBCF4"), /* @__PURE__ */ React.createElement("p", null, "\uC544\uB798 \uACF5\uD1B5 \uC6D0\uBCF8 \uC120\uD0DD\uC5D0\uC11C \uBB3C\uAC74\uBCC4 \uC2E0\uACE0\uC815\uBCF4\uC5D0 \uCD94\uAC00\uD558\uC138\uC694. \uD3C9\uAC00\uAE08\uC561\uC758 \uBC94\uC704\xB7\uC6A9\uB3C4\uB97C \uD655\uC778\uD55C \uB4A4 \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uC9C0\uBD84\uC740 \uC9C1\uC811 \uD655\uC778\uD558\uBA70, \uC804\uC6A9\uBA74\uC801\uC740 \uC9C0\uBD84\uC73C\uB85C \uC904\uC774\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uC790\uB3D9 \uD6C4\uBCF4\uB294 \uC804\uCCB4 \uAC12 \xD7 \uCDE8\uB4DD \uC9C0\uBD84\uC785\uB2C8\uB2E4. \uAE08\uC561\uC740 \uC6D0 \uBBF8\uB9CC, \uBA74\uC801\uC740 \uC18C\uC218 \uB137\uC9F8 \uC790\uB9AC \uC544\uB798\uB97C \uBC84\uB9BD\uB2C8\uB2E4. \uC9C1\uC811\uC218\uC815\uC744 \uC120\uD0DD\uD558\uBA74 \uADFC\uAC70\uC640 \uD568\uAED8 \uC800\uC7A5\uD558\uBA70, \uC790\uB3D9 \uD6C4\uBCF4\uB3C4 \uBCF4\uAD00\uD569\uB2C8\uB2E4."), ((envelope == null ? void 0 : envelope.assets) || []).map((a, i) => {
+    var _a, _b;
+    const src = (_a = saved == null ? void 0 : saved.filing_asset_sources) == null ? void 0 : _a[a.line_id];
+    const projection = (_b = saved == null ? void 0 : saved.filing_data) == null ? void 0 : _b.assets.find((x) => x.line_id === a.line_id);
+    const field = (key, label, type = "text") => {
+      var _a2;
+      return /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          "data-testid": "acquisition-asset-" + i + "-" + key,
+          type,
+          value: (_a2 = a[key]) != null ? _a2 : "",
+          onChange: (e) => update(a.line_id, { [key]: e.target.value || (type === "date" || ["whole_value", "land_whole", "building_whole", "physical_exclusive", "share_numerator", "share_denominator"].includes(key) ? null : "") })
+        }
+      ));
+    };
+    return /* @__PURE__ */ React.createElement("section", { key: a.line_id, className: "acq-section" }, /* @__PURE__ */ React.createElement("h3", null, "\uBB3C\uAC74 ", i + 1, " \xB7 ", (src == null ? void 0 : src.property.address) || "\uCC44\uD0DD \uC6D0\uBCF8"), /* @__PURE__ */ React.createElement("p", null, "\uACF5\uD1B5 \uC7AC\uC0B0 \uC885\uB958: ", src == null ? void 0 : src.property.property_type, " \xB7 \uD3C9\uAC00 ", src == null ? void 0 : src.valuation.valuation_type, " \xB7 ", src == null ? void 0 : src.valuation.as_of_date, " \xB7 ", src == null ? void 0 : src.valuation.amount, "\uC6D0 \xB7 ", src == null ? void 0 : src.valuation.source), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, [["acquisition_cause", "\uCDE8\uB4DD\uC6D0\uC778"], ["asset_code", "\uD655\uC778\uD55C \uBB3C\uAC74 \uCF54\uB4DC\xB7\uAD6C\uBD84"], ["property_use", "\uBB3C\uAC74 \uC6A9\uB3C4"], ["acquisition_date", "\uBB3C\uAC74 \uCDE8\uB4DD\uC77C", "date"], ["share_numerator", "\uCDE8\uB4DD \uC9C0\uBD84 \uBD84\uC790"], ["share_denominator", "\uCDE8\uB4DD \uC9C0\uBD84 \uBD84\uBAA8"]].map((x) => field(...x)), /* @__PURE__ */ React.createElement("label", null, "\uD3C9\uAC00 \uC6D0\uBCF8\uC758 \uAE08\uC561 \uBC94\uC704", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-asset-" + i + "-valuation_scope", value: a.valuation_scope, onChange: (e) => update(a.line_id, { valuation_scope: e.target.value }) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "whole" }, "\uC804\uCCB4 \uAC00\uC561"), /* @__PURE__ */ React.createElement("option", { value: "acquired" }, "\uCDE8\uB4DD\uBD84 \uAC00\uC561"), /* @__PURE__ */ React.createElement("option", { value: "component" }, "\uAD6C\uC131\uC694\uC18C \uAC00\uC561"))), /* @__PURE__ */ React.createElement("label", null, "\uAC00\uC561 \uC6A9\uB3C4", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-asset-" + i + "-value_purpose", value: a.value_purpose, onChange: (e) => update(a.line_id, { value_purpose: e.target.value }) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "transaction" }, "\uAC70\uB798 \uAC00\uC561"), /* @__PURE__ */ React.createElement("option", { value: "standard" }, "\uC2DC\uAC00\uD45C\uC900\uC561"), /* @__PURE__ */ React.createElement("option", { value: "other" }, "\uAE30\uD0C0 \uD3C9\uAC00 \uAC00\uC561")))), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "acquisition-asset-" + i + "-copy-value", disabled: !src || !["whole", "acquired"].includes(a.valuation_scope), onClick: () => {
+      if (!window.confirm("\uC120\uD0DD\uD55C \uBC94\uC704\uC758 \uAC00\uC561 \uC785\uB825\uC744 \uCC44\uD0DD \uD3C9\uAC00\uAE08\uC561\uC73C\uB85C \uBC14\uAFC0\uAE4C\uC694?")) return;
+      update(a.line_id, a.valuation_scope === "whole" ? { whole_value: src.valuation.amount } : { acquired_value: __spreadProps(__spreadValues({}, a.acquired_value), { mode: "manual", manual: src.valuation.amount, reason: "\uCC44\uD0DD \uD3C9\uAC00\uC790\uB8CC\uC758 \uCDE8\uB4DD\uBD84 \uAE08\uC561" }) });
+    } }, "\uD655\uC778\uD55C \uBC94\uC704\uC5D0 \uD3C9\uAC00\uAE08\uC561 \uC5F0\uACB0"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, [["whole_value", "\uC804\uCCB4 \uAC00\uC561(\uC6D0)"], ["land_whole", "\uC804\uCCB4 \uD1A0\uC9C0\uBA74\uC801(\u33A1)"], ["building_whole", "\uC804\uCCB4 \uAC74\uBB3C\uBA74\uC801(\u33A1)"], ["physical_exclusive", "\uBB3C\uB9AC\uC801 \uC804\uC6A9\uBA74\uC801(\u33A1)"]].map((x) => field(...x))), [["acquired_value", "\uCDE8\uB4DD\uBD84 \uAC00\uC561(\uC6D0)"], ["land_acquired", "\uCDE8\uB4DD \uD1A0\uC9C0\uBA74\uC801(\u33A1)"], ["building_acquired", "\uCDE8\uB4DD \uAC74\uBB3C\uBA74\uC801(\u33A1)"]].map(([key, label]) => {
+      var _a2, _b2, _c;
+      return /* @__PURE__ */ React.createElement("div", { key, className: "acq-section" }, /* @__PURE__ */ React.createElement("h4", null, label), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uC6A9\uD560 \uAC12", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-asset-" + i + "-" + key + "-mode", value: a[key].mode, onChange: (e) => update(a.line_id, { [key]: __spreadProps(__spreadValues({}, a[key]), { mode: e.target.value }) }) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "proportional" }, "\uC804\uCCB4 \xD7 \uC9C0\uBD84 \uC790\uB3D9 \uD6C4\uBCF4"), /* @__PURE__ */ React.createElement("option", { value: "manual" }, "\uC9C1\uC811\uC218\uC815"))), /* @__PURE__ */ React.createElement("label", null, "\uC9C1\uC811\uC218\uC815 \uAC12", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-asset-" + i + "-" + key + "-manual", value: (_a2 = a[key].manual) != null ? _a2 : "", onChange: (e) => update(a.line_id, { [key]: __spreadProps(__spreadValues({}, a[key]), { manual: e.target.value || null }) }) })), /* @__PURE__ */ React.createElement("label", null, "\uC9C1\uC811\uC218\uC815 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "acquisition-asset-" + i + "-" + key + "-reason", maxLength: 2e3, value: a[key].reason, onChange: (e) => update(a.line_id, { [key]: __spreadProps(__spreadValues({}, a[key]), { reason: e.target.value }) }) }))), !dirty && projection && /* @__PURE__ */ React.createElement("p", { "data-testid": "acquisition-asset-" + i + "-" + key + "-resolved" }, "\uC800\uC7A5\uB41C \uC790\uB3D9 \uD6C4\uBCF4: ", (_b2 = projection.values[key].automatic_candidate) != null ? _b2 : "\uBBF8\uD655\uC778", " \xB7 \uC120\uD0DD \uAC12: ", (_c = projection.values[key].selected) != null ? _c : "\uBBF8\uD655\uC778"));
+    }), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, field("review_note", "\uBB3C\uAC74\uBCC4 \uD655\uC778 \uADFC\uAC70"), /* @__PURE__ */ React.createElement("label", null, "\uBB3C\uAC74\uBCC4 \uAC80\uD1A0", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-asset-" + i + "-review_state", value: a.review_state, onChange: (e) => update(a.line_id, { review_state: e.target.value }) }, /* @__PURE__ */ React.createElement("option", { value: "unknown" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "confirmed" }, "\uD655\uC778")))), !dirty && projection && /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uAE30\uC900 \uBCF4\uC644: ", projection.missing_fields.join(" \xB7 ") || "\uC785\uB825 \uAC80\uD1A0 \uC644\uB8CC (\uC2E0\uACE0 \uC644\uC131 \uC544\uB2D8)"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "acquisition-asset-" + i + "-remove", onClick: () => {
+      if (window.confirm("\uD604\uC7AC \uCD08\uC548\uC5D0\uC11C \uC774 \uBB3C\uAC74 \uD589\uC744 \uC81C\uAC70\uD560\uAE4C\uC694? \uC774\uC804 \uC800\uC7A5\uBCF8\uC5D0\uB294 \uBCF4\uC874\uB429\uB2C8\uB2E4.")) onChange(__spreadProps(__spreadValues({}, envelope), { assets: envelope.assets.filter((x) => x.line_id !== a.line_id) }));
+    } }, "\uBB3C\uAC74 \uD589 \uC81C\uAC70"));
+  }), dirty && /* @__PURE__ */ React.createElement("p", null, "\uBCC0\uACBD\uD55C \uAC12\uC758 \uC790\uB3D9 \uD6C4\uBCF4\uC640 \uC2E0\uACE0 \uB370\uC774\uD130\uB294 \uC785\uB825 \uC800\uC7A5 \uD6C4 \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."));
+}
+function JTAcquisitionFilingTaxes({ saved, draft, busy, readonly, dirty, api, act, base, onConnect }) {
+  var _a, _b, _c;
+  const [results, setResults] = React.useState([]), [runId, setRunId] = React.useState(""), [lineId, setLineId] = React.useState("");
+  const snapshot = saved == null ? void 0 : saved.filing_tax_snapshot, status = saved == null ? void 0 : saved.filing_tax_status;
+  const chosen = results.find((r) => r.run_id === runId);
+  return /* @__PURE__ */ React.createElement("section", { className: "acq-section", "aria-label": "\uC2E0\uACE0 \uC138\uC561\uD589" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC \u2192 \uC2E0\uACE0 \uC138\uC561\uD589"), /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uC6D0 \uBC94\uC704 \uB0B4 \uC77C\uBC18 \uC8FC\uD0DD\xB7\uBE44\uC8FC\uD0DD \uB9E4\uB9E4 \uACC4\uC0B0 \uACB0\uACFC\uC758 \uCDE8\uB4DD\uC138\xB7\uC9C0\uBC29\uAD50\uC721\uC138\xB7\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 \uBCF8\uC138\uB97C \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uC5F0\uACB0\uC740 \uC0C8 \uC800\uC7A5 \uBC84\uC804\uC744 \uB9CC\uB4E4\uBA70 \uC138\uAE08\uC744 \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), snapshot && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { "data-testid": "acquisition-tax-status" }, dirty ? "\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD \uC788\uC74C \xB7 \uC544\uB798\uB294 \uC800\uC7A5\uBCF8 \uAE30\uC900" : (status == null ? void 0 : status.state) === "linked" ? "\uC800\uC7A5\uB41C \uACB0\uACFC \uC5F0\uACB0\uB428" : "\uC7AC\uC5F0\uACB0 \uD544\uC694", " \xB7 \uACC4\uC0B0 \uC785\uB825 \uBC84\uC804 ", snapshot.source.revision), (status == null ? void 0 : status.reason) && /* @__PURE__ */ React.createElement("p", { role: "alert" }, status.reason), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC138\uBAA9"), /* @__PURE__ */ React.createElement("th", null, "\uBCF8\uC138(\uC6D0)"), /* @__PURE__ */ React.createElement("th", null, "\uAD6C\uBD84"))), /* @__PURE__ */ React.createElement("tbody", null, snapshot.tax_lines.map((x) => /* @__PURE__ */ React.createElement("tr", { key: x.tax_type }, /* @__PURE__ */ React.createElement("td", null, x.label), /* @__PURE__ */ React.createElement("td", { "data-testid": "acquisition-tax-" + x.tax_type }, x.amount), /* @__PURE__ */ React.createElement("td", null, "\uC800\uC7A5\uB41C \uBCF8\uC138"))))), /* @__PURE__ */ React.createElement("p", { "data-testid": "acquisition-tax-total" }, "\uBCF8\uC138 \uD569\uACC4 ", snapshot.principal_total, "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uAC10\uBA74\xB7\uAC00\uC0B0\uC138\xB7\uAE30\uB0A9\uBD80\xB7\uCC28\uAC10\uB0A9\uBD80\uC561\uC740 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uC2E0\uACE0\uC11C \uC644\uC131 \uC0C1\uD0DC\uAC00 \uC544\uB2D9\uB2C8\uB2E4."), !((_b = (_a = saved.filing_data) == null ? void 0 : _a.tax_summary) == null ? void 0 : _b.coverage_complete) && /* @__PURE__ */ React.createElement("p", null, "\uC138\uC561 \uC5F0\uACB0\uC774 \uD544\uC694\uD55C \uBB3C\uAC74 \uB610\uB294 \uBCC0\uACBD\uB41C \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, "\uACC4\uC0B0 \uCD9C\uCC98"), /* @__PURE__ */ React.createElement("p", null, "\uC2E4\uD589 ", snapshot.source.run_id, " \xB7 \uC785\uB825 ", snapshot.source.revision_id), /* @__PURE__ */ React.createElement("p", null, "\uC5D4\uC9C4 ", snapshot.source.version.engine, " \xB7 \uC138\uC728 \uC790\uB8CC ", snapshot.source.version.tax_rates_version), /* @__PURE__ */ React.createElement("p", null, snapshot.source.result_scope))), !readonly && /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || dirty }, /* @__PURE__ */ React.createElement("legend", null, "\uACC4\uC0B0 \uACB0\uACFC\uC640 \uBB3C\uAC74 \uC120\uD0DD"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "acquisition-tax-load", onClick: () => act(async () => {
+    const data = await api(base + "/filing-tax-results");
+    setResults(data.results);
+    setRunId("");
+  }) }, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC \uC870\uD68C"), /* @__PURE__ */ React.createElement("div", { className: "acq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC800\uC7A5\uB41C \uACC4\uC0B0 \uACB0\uACFC", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-tax-run", value: runId, onChange: (e) => setRunId(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), results.map((r) => /* @__PURE__ */ React.createElement("option", { key: r.run_id, value: r.run_id }, "\uC785\uB825 \uBC84\uC804 ", r.revision, " \xB7 ", r.computed_at, " \xB7 \uBCF8\uC138 ", r.principal_total, "\uC6D0")))), /* @__PURE__ */ React.createElement("label", null, "\uC2E0\uACE0 \uBB3C\uAC74", /* @__PURE__ */ React.createElement("select", { "data-testid": "acquisition-tax-asset", value: lineId, onChange: (e) => setLineId(e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD"), (((_c = draft.filing_assets) == null ? void 0 : _c.assets) || []).map((a, i) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement("option", { key: a.line_id, value: a.line_id }, "\uBB3C\uAC74 ", i + 1, " \xB7 ", ((_b2 = (_a2 = saved == null ? void 0 : saved.filing_asset_sources) == null ? void 0 : _a2[a.line_id]) == null ? void 0 : _b2.property.address) || a.property_use);
+  })))), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "acquisition-tax-connect", disabled: busy || dirty || !chosen || !lineId, onClick: () => act(() => onConnect({ run_id: chosen.run_id, asset_line_id: lineId, expected_run_input_hash: chosen.input_hash })) }, "\uC138\uC561\uD589 \uC5F0\uACB0\xB7\uC0C8 \uBC84\uC804 \uC800\uC7A5")), dirty && /* @__PURE__ */ React.createElement("p", null, "\uC785\uB825 \uC800\uC7A5 \uD6C4 \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC5F0\uACB0\uD574 \uC8FC\uC138\uC694."));
+}
+window.JTAcquisitionCases = JTAcquisitionCases;
+
+
+/* ────────── EquityCases.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+let jtEquitySession = null;
+function equityDirty(w = jtEquitySession) {
+  return !!w && JSON.stringify({ label: w.label, draft: w.draft }) !== w.baseline;
+}
+function JTEquityCases({ clientId, caseId, onExit }) {
+  var _a, _b, _c, _d;
+  const [w, setW] = React.useState(jtEquitySession);
+  const [opened, setOpened] = React.useState(false);
+  const ref = React.useRef(w), lock = React.useRef(false), alive = React.useRef(true);
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState("");
+  const [revision, setRevision] = React.useState("");
+  const keys = React.useRef({});
+  const remember = (value) => {
+    ref.current = value;
+    jtEquitySession = value;
+    if (alive.current) setW(value);
+  };
+  const api = async (path, options = {}) => {
+    var _a2;
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const r = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        if (r.status === 401) jtGiftSession.token = "";
+        const messages = { REVISION_CONFLICT: "\uB2E4\uB978 \uC800\uC7A5\uBCF8\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", SNAPSHOT_MIGRATION_REQUIRED: "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC800\uC7A5 \uBC84\uC804\uC785\uB2C8\uB2E4.", PARTY_OUTSIDE_CLIENT: "\uC120\uD0DD\uD55C \uB2F9\uC0AC\uC790\uAC00 \uC774 \uACE0\uAC1D\uC758 \uC790\uB8CC\uAC00 \uC544\uB2D9\uB2C8\uB2E4.", INVALID_CASE_INPUT: "\uAE08\uC561\uACFC \uC911\uBCF5 \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", DRAFT_NOT_RUNNABLE: "\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", ENGINE_CALCULATION_ERROR: "\uACC4\uC0B0 \uC785\uB825\uC744 \uCD94\uAC00 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uACB0\uACFC\uB294 \uC800\uC7A5\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4." };
+        throw new Error(r.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uAC19\uC740 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD558\uC138\uC694." : messages[(_a2 = data.detail) == null ? void 0 : _a2.code] || (r.status === 422 ? "\uC785\uB825 \uD615\uC2DD\uACFC \uB0A0\uC9DC\xB7\uAE08\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uC790\uB8CC\uB97C \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uD655\uC778\uD558\uACE0 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694."));
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const mutation = (path, method, body, etag) => {
+    var _a2;
+    const signature = JSON.stringify({ path, method, body, etag });
+    const memory = path === "/v1/equity-cases" ? keys.current : ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current;
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({ "Idempotency-Key": memory[signature] || (memory[signature] = window.crypto.randomUUID()) }, etag ? { "If-Match": etag } : {}) });
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e instanceof TypeError || e.name === "AbortError" ? "\uC751\uB2F5\uC744 \uBC1B\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uAC19\uC740 \uC791\uC5C5\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uC800\uC7A5 \uC5EC\uBD80\uB97C \uD655\uC778\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const load = async (id, number = "") => {
+    var _a2;
+    const saved = await api("/v1/equity-cases/" + id + (number ? "?revision=" + number : ""));
+    if (saved.client_id !== clientId) throw new Error("\uC120\uD0DD\uD55C \uACE0\uAC1D\uC758 \uC0AC\uAC74\uC774 \uC544\uB2D9\uB2C8\uB2E4.");
+    const run = saved.last_successful_run_id ? await api("/v1/equity-cases/" + id + "/runs/" + saved.last_successful_run_id) : null;
+    remember({
+      uid: jtGiftSession.uid,
+      meta: saved,
+      label: saved.label,
+      draft: saved.draft,
+      run,
+      keys: ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current,
+      baseline: JSON.stringify({ label: saved.label, draft: saved.draft })
+    });
+    if (alive.current) setOpened(true);
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(async () => {
+      var _a2, _b2;
+      if (caseId === "resume" && ((_b2 = (_a2 = ref.current) == null ? void 0 : _a2.meta) == null ? void 0 : _b2.client_id) === clientId) {
+        if (ref.current.uid !== jtGiftSession.uid) throw new Error("\uD3B8\uC9D1\uD558\uB358 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+        setOpened(true);
+        return;
+      }
+      if (caseId) await load(caseId);
+      else {
+        const made = await mutation("/v1/equity-cases", "POST", { client_id: clientId, label: "\uC0C8 \uC8FC\uC2DD\uD3C9\uAC00 \uC0AC\uAC74", draft: {} });
+        await load(made.case_id);
+      }
+    });
+    const protect = (e) => {
+      if (lock.current || equityDirty(ref.current)) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => {
+      alive.current = false;
+      window.removeEventListener("beforeunload", protect);
+    };
+  }, []);
+  const current = opened && ((_a = w == null ? void 0 : w.meta) == null ? void 0 : _a.client_id) === clientId && (caseId === "resume" || !caseId || w.meta.case_id === caseId);
+  const readonly = !current || w.meta.read_only || w.meta.revision !== w.meta.current_revision;
+  const base = current ? "/v1/equity-cases/" + w.meta.case_id : "";
+  if (current && w.meta.read_only) return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { onClick: onExit }, "\uC791\uC5C5\uB300\uB85C"), /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC785\uB825 \uBC84\uC804\uC785\uB2C8\uB2E4. \uC77D\uAE30 \uC804\uC6A9 \uC6D0\uBCF8\uC744 \uBCF4\uC874\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(w.meta.case_input, null, 2)));
+  const change = (key, value, confirmation = false) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues(__spreadValues({}, ref.current.draft), confirmation ? {} : __spreadValues({ ordinary_scope_confirmed: false, no_market_price_confirmed: false, unchanged_shares_confirmed: false, not_largest_group_confirmed: false, adjusted_amounts_confirmed: false }, ref.current.draft.goodwill ? { goodwill: __spreadProps(__spreadValues({}, ref.current.draft.goodwill), { ordinary_five_years_confirmed: false, no_duplicates_confirmed: false }) } : {})), { [key]: value }) }));
+  const save = async () => {
+    if (!equityDirty(ref.current)) return ref.current.meta;
+    const saved = await mutation(base, "PUT", { label: ref.current.label, draft: ref.current.draft }, ref.current.meta.etag);
+    await load(saved.case_id);
+    return ref.current.meta;
+  };
+  const d = current ? w.draft : null;
+  const confirmations = [
+    ["ordinary_scope_confirmed", "12\uC6D4 \uB9D0 \uACB0\uC0B0\xB7\uC0AC\uC5C5 3\uB144 \uC774\uC0C1 \uC77C\uBC18 \uBC95\uC778\uC785\uB2C8\uB2E4. \uBD80\uB3D9\uC0B0\uACFC\uB2E4\xB7\uC8FC\uC2DD\uACFC\uB2E4\xB7\uD734\uD3D0\uC5C5/\uCCAD\uC0B0\xB7\uC874\uC18D\uAE30\uD55C 3\uB144 \uC774\uB0B4\xB7\uC0C1\uC7A5 \uCD94\uC9C4\xB7\uD2B9\uB840 \uD3C9\uAC00\xB7\uC790\uAE30\uC8FC\uC2DD\uC740 \uC5C6\uC2B5\uB2C8\uB2E4."],
+    ["no_market_price_confirmed", "\uC2DC\uAC00 \uC6B0\uC120 \uC801\uC6A9 \uC5EC\uBD80\uB97C \uAC80\uD1A0\uD588\uACE0 \uC2DC\uAC00 \uC0B0\uC815\uC774 \uC5B4\uB824\uC6CC \uBCF4\uCDA9\uC801 \uD3C9\uAC00\uB97C \uC801\uC6A9\uD569\uB2C8\uB2E4."],
+    ["unchanged_shares_confirmed", "\uCD5C\uADFC 3\uAC1C \uC0AC\uC5C5\uC5F0\uB3C4\uC640 \uD3C9\uAC00\uC77C\uAE4C\uC9C0 \uC99D\uAC10\uC790\xB7\uD569\uBCD1\xB7\uBD84\uD560\xB7\uC8FC\uC2DD\uC218 \uBCC0\uB3D9\uC774 \uC5C6\uC73C\uBA70 \uC5F0\uB3C4\uB9D0 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218\uAC00 \uBAA8\uB450 \uAC19\uC2B5\uB2C8\uB2E4."],
+    ["not_largest_group_confirmed", "\uD3C9\uAC00 \uC8FC\uC2DD\uC740 \uCD5C\uB300\uC8FC\uC8FC\uB4F1 \uBC0F \uADF8 \uD2B9\uC218\uAD00\uACC4\uC778 \uBCF4\uC720 \uC8FC\uC2DD\uC5D0 \uD574\uB2F9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."],
+    ["adjusted_amounts_confirmed", "\uC21C\uC190\uC775\uC740 \uC138\uBC95\uC0C1 \uAC00\uAC10 \uC870\uC815 \uD6C4 \uAE08\uC561\uC774\uBA70 \uC790\uC0B0\xB7\uBD80\uCC44\uB294 \uC790\uC0B0\uBCC4 \uD3C9\uAC00\uC640 \uC601\uC5C5\uAD8C\xB7\uAC01\uC885 \uC870\uC815\uAE4C\uC9C0 \uC644\uB8CC\uD55C \uAE08\uC561\uC785\uB2C8\uB2E4."]
+  ];
+  const field = (key, label, type = "text") => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-" + key, type, value: (_a2 = d[key]) != null ? _a2 : "", onChange: (e) => change(key, e.target.value || null) }));
+  };
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.eq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}.eq-grid label{display:flex;flex-direction:column;gap:6px}.eq-grid input,.eq-grid textarea,.eq-grid select{font:inherit;padding:10px;min-height:44px}.eq-section{padding:20px;border:1px solid #ccd8cd;margin:20px 0;border-radius:10px}.eq-section p{line-height:1.7}.eq-section button{min-height:44px}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: onExit }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uBE44\uC0C1\uC7A5\uC8FC\uC2DD \uD3C9\uAC00 \uC0AC\uAC74"), /* @__PURE__ */ React.createElement("p", null, "\uAC80\uD1A0 \uC644\uB8CC\uD55C \uC21C\uC190\uC775\xB7\uC790\uC0B0\xB7\uBD80\uCC44\uB97C \uAE30\uC874 \uD3C9\uAC00 \uC5D4\uC9C4\uC5D0 \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uD3C9\uAC00\uAE30\uC900\uC77C\uC740 2026-10-01~10-17, \uAC01 \uAE08\uC561\uC740 0 \uC774\uC0C1 1\uC870 \uC774\uD558\uC758 \uC6D0 \uB2E8\uC704\uC785\uB2C8\uB2E4. \uACB0\uC190 \uC5F0\uB3C4\xB7\uC8FC\uB2F9 \uC21C\uC190\uC775/\uAC00\uC911\uD3C9\uADE0 \uC18C\uC218\uC810 \uC870\uD569\uACFC \uC544\uB798 \uC870\uAC74 \uBC16\uC758 \uC0AC\uAC74\uC740 \uACC4\uC0B0\uC744 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uAC80\uD1A0 \uC644\uB8CC \uCD1D\uC561 \uB610\uB294 \uC790\uC0B0\xB7\uBD80\uCC44\uBCC4 \uC870\uC815 \uC644\uB8CC \uBA85\uC138\uB97C \uC785\uB825\uD569\uB2C8\uB2E4. \uC138\uBB34\uC870\uC815\uC758 \uC778\uC815 \uC5EC\uBD80\uB294 \uC9C1\uC811 \uAC80\uD1A0\uD569\uB2C8\uB2E4. \uC601\uC5C5\uAD8C\uC740 \uAC80\uD1A0 \uC644\uB8CC \uAE08\uC561 \uB610\uB294 \uC6D0\uBCF8 \uC5F0\uACB0 \uACC4\uC0B0 \uC911 \uD558\uB098\uB97C \uC120\uD0DD\uD569\uB2C8\uB2E4. \uC800\uC7A5\uD55C \uD3C9\uAC00\uB294 \uC99D\uC5EC\xB7\uC0C1\uC18D \uC0AC\uAC74\uC5D0\uC11C \uAC19\uC740 \uACE0\uAC1D\xB7\uB0A0\uC9DC\xB7\uBAA9\uC801\uC73C\uB85C \uAC00\uC838\uC62C \uC218 \uC788\uC2B5\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), !current && !busy && /* @__PURE__ */ React.createElement("button", { onClick: () => act(async () => {
+    if (caseId && caseId !== "resume") await load(caseId);
+    else {
+      const made = await mutation("/v1/equity-cases", "POST", { client_id: clientId, label: "\uC0C8 \uC8FC\uC2DD\uD3C9\uAC00 \uC0AC\uAC74", draft: {} });
+      await load(made.case_id);
+    }
+  }) }, "\uC0AC\uAC74 \uC5F4\uAE30 \uB2E4\uC2DC \uC2DC\uB3C4"), current && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uBC84\uC804 ", w.meta.revision, " / \uCD5C\uC2E0 ", w.meta.current_revision, readonly ? " \xB7 \uC77D\uAE30 \uC804\uC6A9 \uC800\uC7A5\uBCF8" : "", equityDirty(w) ? " \xB7 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD \uC788\uC74C" : ""), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uD3C9\uAC00 \uC0AC\uC2E4\xB7\uAC80\uD1A0 \uC790\uB8CC"), /* @__PURE__ */ React.createElement("div", { className: "eq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74\uBA85", /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-label", value: w.label, onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { label: e.target.value })) })), field("company_name", "\uD68C\uC0AC\uBA85"), field("eval_date", "\uD3C9\uAC00\uAE30\uC900\uC77C", "date"), /* @__PURE__ */ React.createElement("label", null, "\uD3C9\uAC00 \uBAA9\uC801", /* @__PURE__ */ React.createElement("select", { "data-testid": "equity-eval_purpose", value: d.eval_purpose, onChange: (e) => change("eval_purpose", e.target.value) }, /* @__PURE__ */ React.createElement("option", null, "\uC99D\uC5EC"), /* @__PURE__ */ React.createElement("option", null, "\uC0C1\uC18D"))), field("total_shares", "\uD3C9\uAC00\uAE30\uC900\uC77C \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218 (\uC8FC)"), field("shares_evaluated", "\uD3C9\uAC00 \uB300\uC0C1 \uC8FC\uC2DD\uC218 (\uC8FC)")), /* @__PURE__ */ React.createElement("section", { className: "eq-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uC21C\uC190\uC775 \uC870\uC815 \uC644\uB8CC \uC790\uB8CC"), /* @__PURE__ */ React.createElement("p", null, "\uD68C\uACC4\uC0C1 \uB2F9\uAE30\uC21C\uC774\uC775\uC744 \uADF8\uB300\uB85C \uB123\uC9C0 \uB9C8\uC138\uC694. \uBC95\uC778\uC138 \uB4F1 \uCC28\uAC10\xB7\uAC00\uC0B0 \uC870\uC815\uC744 \uBAA8\uB450 \uAC80\uD1A0\uD55C \uC21C\uC190\uC775\uC561\uACFC \uADFC\uAC70\uB97C \uC785\uB825\uD558\uC138\uC694."), [2025, 2024, 2023].map((year) => {
+    var _a2, _b2;
+    const row = d.profits.find((p) => p.year === year) || { year, net_profit: null, source: "" };
+    const update = (next) => change("profits", [2025, 2024, 2023].map((y) => y === year ? next : d.profits.find((p) => p.year === y) || { year: y, net_profit: null, source: "" }));
+    const set = (k, v) => update(__spreadProps(__spreadValues(__spreadValues({}, row), row.detail ? { detail: __spreadProps(__spreadValues({}, row.detail), { review_complete: false }) } : {}), { [k]: v }));
+    const setDetail = (patch) => update(__spreadProps(__spreadValues({}, row), { detail: __spreadValues(__spreadProps(__spreadValues({}, row.detail), { review_complete: false }), patch) }));
+    return /* @__PURE__ */ React.createElement("section", { className: "eq-section", key: year }, /* @__PURE__ */ React.createElement("h3", null, year, "\uB144 \uC21C\uC190\uC775"), /* @__PURE__ */ React.createElement("label", null, "\uC785\uB825 \uBC29\uC2DD", /* @__PURE__ */ React.createElement("select", { "data-testid": "equity-profit-mode-" + year, value: row.detail ? "details" : "totals", onChange: (e) => {
+      if (!window.confirm("\uC774 \uC5F0\uB3C4\uC758 \uC21C\uC190\uC775 \uCD1D\uC561\xB7\uBA85\uC138\xB7\uADFC\uAC70\uB97C \uBE44\uC6C1\uB2C8\uB2E4. \uACFC\uAC70 \uC800\uC7A5\uBCF8\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4.")) return;
+      update(__spreadValues({ year, net_profit: null, source: "" }, e.target.value === "details" ? { detail: { income_base: null, base_source: "", adjustments: [], review_complete: false } } : {}));
+    } }, /* @__PURE__ */ React.createElement("option", { value: "totals" }, "\uAC80\uD1A0 \uC644\uB8CC \uC21C\uC190\uC775 \uCD1D\uC561"), /* @__PURE__ */ React.createElement("option", { value: "details" }, "\uAC01 \uC0AC\uC5C5\uC5F0\uB3C4\uC18C\uB4DD\uACFC \uAC80\uD1A0\uB41C \uAC00\uAC10 \uBA85\uC138"))), row.detail ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uD68C\uACC4\uC0C1 \uB2F9\uAE30\uC21C\uC774\uC775\uC774 \uC544\uB2CC \uBC95\uC778\uC138 \uAC01 \uC0AC\uC5C5\uC5F0\uB3C4\uC18C\uB4DD\uC5D0\uC11C \uC2DC\uC791\uD569\uB2C8\uB2E4. \uC801\uC6A9\uD560 \uAC00\uC0B0\xB7\uCC28\uAC10 \uAE08\uC561\uACFC \uC5F0\uB3C4 \uADC0\uC18D\uC744 \uAC80\uD1A0\uD55C \uB4A4 \uC785\uB825\uD558\uC138\uC694. \uBC95\uC801 \uC778\uC815\xB7\uD658\uC785 \uC548\uBD84\xB7\uAC10\uAC00\uC0C1\uAC01 \uC870\uC815\uC744 \uC790\uB3D9 \uD310\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "eq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uAC01 \uC0AC\uC5C5\uC5F0\uB3C4\uC18C\uB4DD (\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-profit-base-" + year, value: (_a2 = row.detail.income_base) != null ? _a2 : "", onChange: (e) => setDetail({ income_base: e.target.value }) })), /* @__PURE__ */ React.createElement("label", null, "\uAE30\uCD08 \uC18C\uB4DD\uC758 \uC2E0\uACE0\xB7\uC870\uC815 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-profit-base-source-" + year, value: row.detail.base_source, onChange: (e) => setDetail({ base_source: e.target.value }) }))), row.detail.adjustments.map((line, i) => {
+      const lineSet = (k, v) => setDetail({ adjustments: row.detail.adjustments.map((x) => x.local_id === line.local_id ? __spreadProps(__spreadValues({}, x), { [k]: v }) : x) });
+      return /* @__PURE__ */ React.createElement("div", { className: "eq-section", key: line.local_id }, /* @__PURE__ */ React.createElement("div", { className: "eq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uAC00\uAC10 \uAD6C\uBD84", /* @__PURE__ */ React.createElement("select", { "data-testid": "equity-profit-direction-" + year + "-" + i, value: line.direction, onChange: (e) => lineSet("direction", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "add" }, "\uAC00\uC0B0"), /* @__PURE__ */ React.createElement("option", { value: "subtract" }, "\uCC28\uAC10"))), [["account", "\uC870\uC815 \uD56D\uBAA9\uBA85"], ["amount", "\uAC80\uD1A0 \uC644\uB8CC \uAE08\uC561 (\uC6D0)"], ["source", "\uC2E0\uACE0\xB7\uC870\uC815 \uC790\uB8CC \uADFC\uAC70"], ["reason", "\uAC00\uAC10 \uBC0F \uC5F0\uB3C4 \uADC0\uC18D \uAC80\uD1A0 \uC0AC\uC720"]].map(([k, label]) => {
+        var _a3;
+        return /* @__PURE__ */ React.createElement("label", { key: k }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-profit-" + k + "-" + year + "-" + i, value: (_a3 = line[k]) != null ? _a3 : "", onChange: (e) => lineSet(k, e.target.value) }));
+      })), /* @__PURE__ */ React.createElement("button", { "data-testid": "equity-profit-remove-" + year + "-" + i, onClick: () => setDetail({ adjustments: row.detail.adjustments.filter((x) => x.local_id !== line.local_id) }) }, "\uC870\uC815 \uD56D\uBAA9 \uC0AD\uC81C"));
+    }), /* @__PURE__ */ React.createElement("button", { "data-testid": "equity-profit-add-" + year, disabled: row.detail.adjustments.length >= 100, onClick: () => setDetail({ adjustments: [...row.detail.adjustments, { local_id: window.crypto.randomUUID(), direction: "add", account: "", amount: null, source: "", reason: "" }] }) }, "\uAC00\uAC10 \uD56D\uBAA9 \uCD94\uAC00"), /* @__PURE__ */ React.createElement("label", { style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-profit-reviewed-" + year, type: "checkbox", checked: row.detail.review_complete, onChange: (e) => setDetail({ review_complete: e.target.checked }) }), "\uAC00\uC0B0\xB7\uCC28\uAC10\uC758 \uB204\uB77D\xB7\uC911\uBCF5\xB7\uC5F0\uB3C4 \uADC0\uC18D\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4(\uD56D\uBAA9\uC774 \uC5C6\uC73C\uBA74 \uC870\uC815 \uC5C6\uC74C \uD655\uC778)."), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uCD08 \uC18C\uB4DD + \uAC00\uC0B0 \uD569\uACC4 \u2212 \uCC28\uAC10 \uD569\uACC4\uB294 \uC800\uC7A5 \uC2DC \uC11C\uBC84\uAC00 \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uAE30\uCD08\xB7\uD56D\uBAA9\xB7\uAC00\uC0B0/\uCC28\uAC10 \uD569\uACC4\xB7\uCD5C\uC885 \uC21C\uC190\uC775\uC740 \uAC01\uAC01 0~1\uC870 \uC6D0 \uBC94\uC704\uC785\uB2C8\uB2E4.")) : /* @__PURE__ */ React.createElement("label", null, "\uC870\uC815 \uC644\uB8CC \uC21C\uC190\uC775 (\uC6D0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-profit-" + year, value: (_b2 = row.net_profit) != null ? _b2 : "", onChange: (e) => set("net_profit", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, year, "\uB144 \uC804\uCCB4 \uC21C\uC190\uC775 \uC870\uC815 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-source-" + year, value: row.source, onChange: (e) => set("source", e.target.value) })));
+  })), /* @__PURE__ */ React.createElement("section", { className: "eq-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uC21C\uC790\uC0B0 \uC870\uC815 \uC644\uB8CC \uC790\uB8CC"), /* @__PURE__ */ React.createElement("label", null, "\uC785\uB825 \uBC29\uC2DD", /* @__PURE__ */ React.createElement("select", { "data-testid": "equity-asset_input_mode", value: d.asset_input_mode || "totals", onChange: (e) => {
+    if (!window.confirm("\uC785\uB825 \uBC29\uC2DD\uC744 \uBC14\uAFB8\uBA74 \uD604\uC7AC \uBA85\uC138\xB7\uCD1D\uC561\xB7\uC870\uC815 \uADFC\uAC70\uB97C \uBE44\uC6C1\uB2C8\uB2E4. \uC800\uC7A5\uB41C \uACFC\uAC70 \uBC84\uC804\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4.")) return;
+    const next = __spreadProps(__spreadValues({}, ref.current.draft), { asset_input_mode: e.target.value, goodwill: null, net_asset_lines: [], adjusted_assets: null, adjusted_liabilities: null, asset_source: "", ordinary_scope_confirmed: false, no_market_price_confirmed: false, unchanged_shares_confirmed: false, not_largest_group_confirmed: false, adjusted_amounts_confirmed: false });
+    remember(__spreadProps(__spreadValues({}, ref.current), { draft: next }));
+  } }, /* @__PURE__ */ React.createElement("option", { value: "totals" }, "\uAC80\uD1A0 \uC644\uB8CC \uCD1D\uC561"), /* @__PURE__ */ React.createElement("option", { value: "details" }, "\uC790\uC0B0\xB7\uBD80\uCC44\uBCC4 \uBA85\uC138 \uD569\uC0B0"))), d.asset_input_mode === "details" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uAC01 \uD56D\uBAA9\uC758 \uC7A5\uBD80\uAE08\uC561\uACFC \uC138\uBC95 \uAC80\uD1A0\xB7\uC870\uC815\uC774 \uB05D\uB09C \uCD5C\uC885 \uAE08\uC561\uC744 \uC785\uB825\uD569\uB2C8\uB2E4. \uCC28\uC774\uAC00 \uC788\uC73C\uBA74 \uCC44\uD0DD \uC0AC\uC720\uB97C \uB0A8\uAE41\uB2C8\uB2E4. \uC790\uC0B0 \uD589\uC5D0\uB294 \uC601\uC5C5\uAD8C\uC744 \uD3EC\uD568\uD558\uC9C0 \uC54A\uACE0 \uBCC4\uB3C4 \uC601\uC5C5\uAD8C \uD589 \uD558\uB098\uC5D0 \uC785\uB825\uD569\uB2C8\uB2E4. \uC601\uC5C5\uAD8C\xB7\uBD80\uCC44\uAC00 \uC5C6\uC73C\uBA74 0\uC6D0\uACFC \uAC80\uD1A0 \uADFC\uAC70\uB97C \uBA85\uC2DC\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("label", null, "\uC601\uC5C5\uAD8C \uC785\uB825 \uBC29\uC2DD", /* @__PURE__ */ React.createElement("select", { "data-testid": "equity-goodwill-mode", value: d.goodwill ? "sources" : "reviewed", onChange: (e) => {
+    if (!window.confirm("\uD604\uC7AC \uC601\uC5C5\uAD8C \uC785\uB825\uACFC \uC601\uC5C5\uAD8C \uD589\uC744 \uBE44\uC6C1\uB2C8\uB2E4. \uC800\uC7A5\uB41C \uACFC\uAC70 \uBC84\uC804\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4.")) return;
+    const next = __spreadProps(__spreadValues({}, d), { net_asset_lines: (d.net_asset_lines || []).filter((x) => x.kind !== "goodwill"), goodwill: e.target.value === "sources" ? { treatment: "unconfirmed", equity_capital: null, capital_source: "", purchased_intangibles: null, purchased_source: "", review_source: "", ordinary_five_years_confirmed: false, no_duplicates_confirmed: false } : null, ordinary_scope_confirmed: false, no_market_price_confirmed: false, unchanged_shares_confirmed: false, not_largest_group_confirmed: false, adjusted_amounts_confirmed: false });
+    remember(__spreadProps(__spreadValues({}, ref.current), { draft: next }));
+  } }, /* @__PURE__ */ React.createElement("option", { value: "reviewed" }, "\uAC80\uD1A0 \uC644\uB8CC \uC601\uC5C5\uAD8C \uD589"), /* @__PURE__ */ React.createElement("option", { value: "sources" }, "\uC21C\uC190\uC775\xB7\uC790\uAE30\uC790\uBCF8 \uC6D0\uBCF8 \uC5F0\uACB0 \uACC4\uC0B0"))), d.goodwill && /* @__PURE__ */ React.createElement("section", { className: "eq-section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC601\uC5C5\uAD8C \uC6D0\uBCF8 \uC5F0\uACB0"), /* @__PURE__ */ React.createElement("p", null, "\uC704 3\uAC1C\uB144 \uC21C\uC190\uC775\uACFC \uC544\uB798 \uC99D\uBE59 \uC790\uAE30\uC790\uBCF8\uC73C\uB85C \uCD08\uACFC\uC774\uC775\uC744 \uC0B0\uC815\uD558\uACE0 \uC6D0\uCE59\uC801 5\uB144\xB7\uC5F0 10%\uB85C \uD658\uC0B0\uD569\uB2C8\uB2E4. \uC601\uC5C5\uAD8C\uC5D0 \uD3EC\uD568\uB418\uB294 \uB9E4\uC785 \uBB34\uCCB4\uC7AC\uC0B0\uAD8C\uC758 \uD3C9\uAC00\uC561\uC774 \uB354 \uD06C\uBA74 \uADF8 \uAE08\uC561\uC744 \uCC44\uD0DD\uD569\uB2C8\uB2E4. \uD574\uB2F9 \uBB34\uCCB4\uC7AC\uC0B0\uAD8C\uACFC \uC601\uC5C5\uAD8C\uC740 \uB2E4\uB978 \uC790\uC0B0 \uD589\uC5D0 \uB123\uC9C0 \uB9C8\uC138\uC694. \uCCAD\uC0B0\xB7\uD734\uD3D0\uC5C5\xB73\uB144 \uBBF8\uB9CC\xB7\uACC4\uC18D \uACB0\uC190 \uB4F1 \uBC95\uC815 \uC81C\uC678 \uC0AC\uAC74\uACFC \uC790\uAE30\uC790\uBCF8 \uCD94\uC815\xB7\uC608\uC678 \uC9C0\uC18D\uC5F0\uC218\uB294 \uD604\uC7AC \uC790\uB3D9 \uC5F0\uACB0 \uBC94\uC704 \uBC16\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uD569\uC0B0 \uD310\uB2E8", /* @__PURE__ */ React.createElement("select", { "data-testid": "equity-goodwill-treatment", value: d.goodwill.treatment, onChange: (e) => change("goodwill", __spreadProps(__spreadValues({}, d.goodwill), { treatment: e.target.value, ordinary_five_years_confirmed: false, no_duplicates_confirmed: false })) }, /* @__PURE__ */ React.createElement("option", { value: "unconfirmed" }, "\uBBF8\uD655\uC778"), /* @__PURE__ */ React.createElement("option", { value: "include" }, "\uC77C\uBC18\uBC95\uC778 \uD569\uC0B0 \uB300\uC0C1"), /* @__PURE__ */ React.createElement("option", { value: "statutory_excluded" }, "\uBC95\uC815 \uD569\uC0B0 \uC81C\uC678 (\uC790\uB3D9 \uACC4\uC0B0 \uBBF8\uC9C0\uC6D0)"))), /* @__PURE__ */ React.createElement("div", { className: "eq-grid" }, [["equity_capital", "\uD3C9\uAC00\uAE30\uC900\uC77C \uC99D\uBE59 \uC790\uAE30\uC790\uBCF8 (\uC6D0)"], ["capital_source", "\uC790\uAE30\uC790\uBCF8 \uC99D\uBE59\xB7\uD655\uC815 \uADFC\uAC70"], ["purchased_intangibles", "\uC601\uC5C5\uAD8C \uD3EC\uD568 \uB9E4\uC785 \uBB34\uCCB4\uC7AC\uC0B0\uAD8C \uD3C9\uAC00\uC561 (\uC5C6\uC73C\uBA74 0\uC6D0)"], ["purchased_source", "\uB9E4\uC785 \uBB34\uCCB4\uC7AC\uC0B0\uAD8C \uD3C9\uAC00\xB7\uADC0\uC18D \uADFC\uAC70 (\uC5C6\uC73C\uBA74 \uC5C6\uC74C \uD655\uC778)"], ["review_source", "\uD569\uC0B0 \uB300\uC0C1\xB75\uB144 \uC9C0\uC18D\uC5F0\uC218\xB7\uC790\uC0B0 \uC911\uBCF5 \uAC80\uD1A0 \uADFC\uAC70"]].map(([k, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key: k }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-goodwill-" + k, value: (_a2 = d.goodwill[k]) != null ? _a2 : "", onChange: (e) => change("goodwill", __spreadProps(__spreadValues({}, d.goodwill), { [k]: e.target.value, ordinary_five_years_confirmed: false, no_duplicates_confirmed: false })) }));
+  })), [["ordinary_five_years_confirmed", "\uBC95\uC815 \uD569\uC0B0 \uC81C\uC678\uC5D0 \uD574\uB2F9\uD558\uC9C0 \uC54A\uACE0 \uC601\uC5C5\uAD8C \uC9C0\uC18D\uC5F0\uC218 5\uB144\uC744 \uC801\uC6A9\uD568\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4."], ["no_duplicates_confirmed", "\uC601\uC5C5\uAD8C\uACFC \uC774\uC5D0 \uD3EC\uD568\uB418\uB294 \uB9E4\uC785 \uBB34\uCCB4\uC7AC\uC0B0\uAD8C\uC774 \uB2E4\uB978 \uC790\uC0B0 \uD589\uC5D0 \uB4E4\uC5B4 \uC788\uC9C0 \uC54A\uC73C\uBA70 \uB204\uB77D\xB7\uC911\uBCF5\uC774 \uC5C6\uC74C\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4."]].map(([k, label]) => /* @__PURE__ */ React.createElement("p", { key: k }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-goodwill-" + k, type: "checkbox", checked: d.goodwill[k], onChange: (e) => change("goodwill", __spreadProps(__spreadValues({}, d.goodwill), { [k]: e.target.checked })) }), label)))), (d.net_asset_lines || []).map((row, i) => {
+    const set = (k, v) => change("net_asset_lines", d.net_asset_lines.map((x) => x.local_id === row.local_id ? __spreadProps(__spreadValues({}, x), { [k]: v }) : x));
+    return /* @__PURE__ */ React.createElement("section", { className: "eq-section", key: row.local_id }, /* @__PURE__ */ React.createElement("div", { className: "eq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uAD6C\uBD84", /* @__PURE__ */ React.createElement("select", { "data-testid": "equity-line-kind-" + i, value: row.kind, onChange: (e) => set("kind", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "asset" }, "\uC601\uC5C5\uAD8C \uC678 \uC790\uC0B0"), /* @__PURE__ */ React.createElement("option", { value: "liability" }, "\uBD80\uCC44"), !d.goodwill && /* @__PURE__ */ React.createElement("option", { value: "goodwill" }, "\uC601\uC5C5\uAD8C"))), [["account", "\uACC4\uC815\uBA85"], ["book_amount", "\uC7A5\uBD80\uAE08\uC561 (\uC6D0)"], ["reviewed_amount", "\uC870\uC815 \uC644\uB8CC \uAE08\uC561 (\uC6D0)"], ["source", "\uD3C9\uAC00\xB7\uC870\uC815 \uADFC\uAC70"], ["adjustment_reason", "\uCC28\uC561 \uCC44\uD0DD \uC0AC\uC720"]].map(([key, label]) => {
+      var _a2;
+      return /* @__PURE__ */ React.createElement("label", { key }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-line-" + key + "-" + i, value: (_a2 = row[key]) != null ? _a2 : "", onChange: (e) => set(key, e.target.value) }));
+    })), /* @__PURE__ */ React.createElement("button", { onClick: () => change("net_asset_lines", d.net_asset_lines.filter((x) => x.local_id !== row.local_id)) }, "\uBA85\uC138 ", i + 1, " \uC0AD\uC81C"));
+  }), /* @__PURE__ */ React.createElement("button", { disabled: (d.net_asset_lines || []).length >= 100, onClick: () => change("net_asset_lines", [...d.net_asset_lines || [], { local_id: window.crypto.randomUUID(), kind: "asset", account: "", book_amount: null, reviewed_amount: null, source: "", adjustment_reason: "" }]) }, "\uBA85\uC138 \uD56D\uBAA9 \uCD94\uAC00"), /* @__PURE__ */ React.createElement("p", null, "\uD569\uACC4\uC640 \uCC28\uC561\uC740 \uC800\uC7A5\uD560 \uB54C \uC11C\uBC84\uC5D0\uC11C \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uC544\uB798 \uC800\uC7A5\uB41C \uBA85\uC138 \uC694\uC57D\uC740 \uB9C8\uC9C0\uB9C9 \uC800\uC7A5\uBCF8 \uAE30\uC900\uC785\uB2C8\uB2E4.")) : /* @__PURE__ */ React.createElement("div", { className: "eq-grid" }, field("adjusted_assets", "\uC601\uC5C5\uAD8C \uD3EC\uD568 \uC870\uC815 \uD6C4 \uC790\uC0B0 \uD569\uACC4 (\uC6D0)"), field("adjusted_liabilities", "\uC870\uC815 \uD6C4 \uBD80\uCC44 \uD569\uACC4 (\uC6D0)")), /* @__PURE__ */ React.createElement("div", { className: "eq-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC790\uC0B0\uBCC4 \uD3C9\uAC00\xB7\uC601\uC5C5\uAD8C\xB7\uBD80\uCC44 \uC870\uC815 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "equity-asset_source", value: d.asset_source, onChange: (e) => change("asset_source", e.target.value) })), /* @__PURE__ */ React.createElement("label", null, "\uC801\uC6A9 \uBC94\uC704 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "equity-review_note", value: d.review_note, onChange: (e) => change("review_note", e.target.value) })))), confirmations.map(([key, label]) => /* @__PURE__ */ React.createElement("p", { key }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-" + key, type: "checkbox", checked: d[key], onChange: (e) => change(key, e.target.checked, true) }), label)))), ((_b = w.meta.case_input) == null ? void 0 : _b.asset_worksheet) && /* @__PURE__ */ React.createElement("section", { className: "eq-section", "aria-label": "\uC800\uC7A5\uB41C \uBA85\uC138 \uC694\uC57D" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uBA85\uC138 \uC694\uC57D", equityDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("p", { "data-testid": "equity-worksheet-total" }, "\uC790\uC0B0 ", w.meta.case_input.asset_worksheet.adjusted_assets.toLocaleString("ko-KR"), "\uC6D0 / \uBD80\uCC44 ", w.meta.case_input.asset_worksheet.adjusted_liabilities.toLocaleString("ko-KR"), "\uC6D0 / \uC21C\uC790\uC0B0 ", w.meta.case_input.asset_worksheet.net_assets.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("ul", null, w.meta.case_input.asset_worksheet.lines.map((row) => {
+    var _a2, _b2, _c2, _d2;
+    return /* @__PURE__ */ React.createElement("li", { key: row.local_id }, row.account, ": \uC870\uC815 \uC644\uB8CC ", (_b2 = (_a2 = row.reviewed_amount) == null ? void 0 : _a2.toLocaleString("ko-KR")) != null ? _b2 : "\uBBF8\uC785\uB825", "\uC6D0 \xB7 \uC7A5\uBD80 \uB300\uBE44 \uCC28\uC561 ", (_d2 = (_c2 = row.difference) == null ? void 0 : _c2.toLocaleString("ko-KR")) != null ? _d2 : "\uBBF8\uD655\uC815", "\uC6D0");
+  }))), ((_c = w.meta.case_input) == null ? void 0 : _c.goodwill_worksheet) && /* @__PURE__ */ React.createElement("section", { className: "eq-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uC601\uC5C5\uAD8C \uC0B0\uC815\uD45C", equityDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("p", { "data-testid": "equity-goodwill-total" }, "\uC601\uC5C5\uAD8C ", w.meta.case_input.goodwill_worksheet.goodwill.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uCD08\uACFC\uC774\uC775 ", w.meta.case_input.goodwill_worksheet.excess_income.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uD658\uC0B0\uC561 ", w.meta.case_input.goodwill_worksheet.converted_goodwill.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uCC44\uD0DD \uC0AC\uC720: ", { positive_excess: "\uCD08\uACFC\uC774\uC775 \uD658\uC0B0\uC561", purchased_floor: "\uC601\uC5C5\uAD8C \uD3EC\uD568 \uB9E4\uC785 \uBB34\uCCB4\uC7AC\uC0B0\uAD8C \uD3C9\uAC00\uC561", zero_excess: "\uC591\uC758 \uCD08\uACFC\uC774\uC775 \uBC0F \uB9E4\uC785 \uBB34\uCCB4\uC7AC\uC0B0\uAD8C \uD3C9\uAC00\uC561 \uC5C6\uC74C" }[w.meta.case_input.goodwill_worksheet.outcome]), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8 \uD574\uC2DC ", w.meta.case_input.goodwill_worksheet.source_hash)), ((_d = w.meta.case_input) == null ? void 0 : _d.profit_worksheet) && /* @__PURE__ */ React.createElement("section", { className: "eq-section", "aria-label": "\uC800\uC7A5\uB41C \uC21C\uC190\uC775 \uBA85\uC138" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uC21C\uC190\uC775 \uBA85\uC138", equityDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), w.meta.case_input.profit_worksheet.map((p) => {
+    var _a2, _b2, _c2, _d2;
+    return /* @__PURE__ */ React.createElement("div", { key: p.year }, /* @__PURE__ */ React.createElement("p", { "data-testid": "equity-profit-total-" + p.year }, p.year, "\uB144: ", (_b2 = (_a2 = p.income_base) == null ? void 0 : _a2.toLocaleString("ko-KR")) != null ? _b2 : "\uBBF8\uC785\uB825", " + ", p.additions.toLocaleString("ko-KR"), " \u2212 ", p.deductions.toLocaleString("ko-KR"), " = ", (_d2 = (_c2 = p.net_profit) == null ? void 0 : _c2.toLocaleString("ko-KR")) != null ? _d2 : "\uBBF8\uD655\uC815", "\uC6D0"), /* @__PURE__ */ React.createElement("ul", null, p.adjustments.map((a) => {
+      var _a3, _b3;
+      return /* @__PURE__ */ React.createElement("li", { key: a.local_id }, a.direction === "add" ? "\uAC00\uC0B0" : "\uCC28\uAC10", " \xB7 ", a.account, ": ", (_b3 = (_a3 = a.amount) == null ? void 0 : _a3.toLocaleString("ko-KR")) != null ? _b3 : "\uBBF8\uC785\uB825", "\uC6D0 \xB7 ", a.reason);
+    })));
+  })), (w.meta.validation.errors || []).length > 0 && /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement("p", null, "\uB9C8\uC9C0\uB9C9 \uC800\uC7A5 \uAE30\uC900 \uD655\uC778 \uD56D\uBAA9"), /* @__PURE__ */ React.createElement("ul", null, w.meta.validation.errors.map((e, i) => /* @__PURE__ */ React.createElement("li", { key: i }, e)))), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(save) }, "\uC785\uB825 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(async () => {
+    const saved = await save();
+    if (!saved.validation.can_run) throw new Error("\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    await mutation(base + "/runs", "POST", { revision_id: saved.revision_id, expected_input_hash: saved.input_hash });
+    await load(saved.case_id);
+  }) }, "\uC800\uC7A5\uD558\uACE0 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uC785\uB825 \uBC84\uC804", /* @__PURE__ */ React.createElement("input", { "data-testid": "equity-reopen-revision", value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (!equityDirty(w) || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC800\uC7A5\uBCF8\uC744 \uC5EC\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?")) act(() => load(w.meta.case_id, revision));
+  } }, "\uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30"), w.run && /* @__PURE__ */ React.createElement("section", { className: "eq-section", "aria-label": "\uC800\uC7A5\uB41C \uD3C9\uAC00 \uACB0\uACFC" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uD3C9\uAC00 \uACB0\uACFC", equityDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("p", null, "1\uC8FC\uB2F9 \uAC00\uC561 ", w.run.response_snapshot.calc["\uCD5C\uC885_1\uC8FC\uB2F9\uAC00\uC561"].toLocaleString("ko-KR"), "\uC6D0 \xD7 ", w.run.engine_request.shares_evaluated.toLocaleString("ko-KR"), "\uC8FC"), /* @__PURE__ */ React.createElement("output", { "data-testid": "equity-total" }, w.run.response_snapshot.calc["\uCD1D\uD3C9\uAC00\uC561"].toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uACB0\uACFC ID ", w.run.run_id, " \xB7 \uC785\uB825 ID ", w.run.revision_id), /* @__PURE__ */ React.createElement("p", null, "\uC785\uB825\uD55C \uC790\uC0B0\xB7\uBD80\uCC44\uB294 \uC870\uC815 \uC644\uB8CC \uCD1D\uC561\uC785\uB2C8\uB2E4. \uC5D4\uC9C4 \uB2E8\uACC4\uC5D0 \uD45C\uC2DC\uB418\uB294 \uC7A5\uBD80\uAC00\xB7\uC870\uC815 \uC804 \uC790\uC0B0 \uBA85\uCE6D\uC740 \uC774 \uC0AC\uAC74\uC5D0\uC11C\uB294 \uCC44\uD0DD\uD55C \uCD1D\uC561\uC744 \uB73B\uD558\uBA70 \uC601\uC5C5\uAD8C\uC744 \uB2E4\uC2DC \uB354\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, "\uACC4\uC0B0 \uB2E8\uACC4"), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(w.run.response_snapshot.calc["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"], null, 2))))));
+}
+window.JTEquityCases = JTEquityCases;
+
+
+/* ────────── CaseComparisons.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+function JTCaseComparisons({ clientId, onExit }) {
+  var _a, _b;
+  const blank = () => ({ year: 2026, run_ids: [], scope_confirmed: false, review_note: "" });
+  const [draft, setDraft] = React.useState(blank), [label, setLabel] = React.useState("\uC0AC\uAC74 \uAC04 \uBE44\uAD50");
+  const [meta, setMeta] = React.useState(null), [run, setRun] = React.useState(null), [baseline, setBaseline] = React.useState(() => JSON.stringify({ label: "\uC0AC\uAC74 \uAC04 \uBE44\uAD50", draft: blank() }));
+  const [items, setItems] = React.useState([]), [cursor, setCursor] = React.useState(null);
+  const [histories, setHistories] = React.useState([]), [historyCursor, setHistoryCursor] = React.useState(null);
+  const [revision, setRevision] = React.useState(""), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const lock = React.useRef(false), alive = React.useRef(true), keys = React.useRef({});
+  const dirty = baseline !== JSON.stringify({ label, draft });
+  const readonly = !!(meta == null ? void 0 : meta.read_only);
+  const api = async (path, options = {}) => {
+    var _a2, _b2;
+    const control = new AbortController(), timer = setTimeout(() => control.abort(), 45e3);
+    try {
+      const response = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + "/v1/case-comparisons" + path,
+        __spreadProps(__spreadValues({}, options), { signal: control.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) jtGiftSession.token = "";
+        throw new Error(response.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uB2E4\uC2DC \uB85C\uADF8\uC778\uD558\uC138\uC694." : response.status === 409 ? "\uC800\uC7A5 \uBC84\uC804\uC774 \uB2EC\uB77C\uC84C\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD558\uC138\uC694." : ((_a2 = data.detail) == null ? void 0 : _a2.code) === "DUPLICATE_SOURCE_CASE" ? "\uD55C \uC0AC\uAC74\uC758 \uC11C\uB85C \uB2E4\uB978 \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC911\uBCF5 \uC120\uD0DD\uD588\uC2B5\uB2C8\uB2E4. \uC774\uC804 \uACB0\uACFC\uB97C \uC120\uD0DD \uD574\uC81C\uD558\uC138\uC694." : ((_b2 = data.detail) == null ? void 0 : _b2.message) || "\uC694\uCCAD\uC744 \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC120\uD0DD\uD55C \uC0AC\uAC74\uACFC \uC800\uC7A5 \uC0C1\uD0DC\uB97C \uD655\uC778\uD558\uC138\uC694.");
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e.name === "AbortError" || e instanceof TypeError ? "\uC5F0\uACB0\uC774 \uB04A\uACBC\uC2B5\uB2C8\uB2E4. \uAC19\uC740 \uBC84\uD2BC\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uC911\uBCF5 \uC800\uC7A5 \uC5C6\uC774 \uC7AC\uC2DC\uB3C4\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const mutate = async (path, method, body, etag) => {
+    var _a2;
+    const key = JSON.stringify({ path, method, body, etag });
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({ "Idempotency-Key": (_a2 = keys.current)[key] || (_a2[key] = window.crypto.randomUUID()) }, etag ? { "If-Match": etag } : {}) });
+  };
+  const list = async (more = false) => {
+    const d = await api("?client_id=" + clientId + (more && historyCursor ? "&cursor=" + historyCursor : ""));
+    if (alive.current) {
+      setHistories((v) => more ? [...v, ...d.items] : d.items);
+      setHistoryCursor(d.next_cursor);
+    }
+  };
+  const candidates = async (more = false) => {
+    const d = await api("/candidates?client_id=" + clientId + "&year=" + draft.year + (more && cursor ? "&cursor=" + cursor : ""));
+    if (alive.current) {
+      setItems((v) => more ? [...v, ...d.items] : d.items);
+      setCursor(d.next_cursor);
+    }
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(async () => {
+      await list();
+      await candidates();
+    });
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  React.useEffect(() => {
+    const guard = (e) => {
+      if (dirty || lock.current) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", guard);
+    return () => window.removeEventListener("beforeunload", guard);
+  }, [dirty]);
+  const discard = () => !dirty || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBE44\uAD50 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+  const open = async (id, number = "") => {
+    const s = await api("/" + id + (number ? "?revision_number=" + number : ""));
+    const r = s.last_successful_run_id ? await api("/" + id + "/runs/" + s.last_successful_run_id) : null;
+    if (!alive.current) return;
+    setMeta(s);
+    setDraft(s.draft);
+    setLabel(s.label);
+    setRun(r);
+    setRevision(number);
+    setBaseline(JSON.stringify({ label: s.label, draft: s.draft }));
+  };
+  const save = async () => {
+    const s = await mutate(
+      meta ? "/" + meta.comparison_id : "",
+      meta ? "PUT" : "POST",
+      __spreadValues({ label, draft }, !meta ? { client_id: clientId } : {}),
+      meta == null ? void 0 : meta.etag
+    );
+    if (!alive.current) return s;
+    setMeta(s);
+    setRun(null);
+    setRevision("");
+    setBaseline(JSON.stringify({ label, draft }));
+    await list();
+    return s;
+  };
+  const change = (key, value) => setDraft((d) => __spreadValues(__spreadProps(__spreadValues({}, d), { [key]: value }), ["run_ids", "review_note"].includes(key) ? { scope_confirmed: false } : {}));
+  const fieldName = (k) => ({ "value": "\uC99D\uC5EC\uAC00\uC561", "appraisal_fee": "\uAC10\uC815\uD3C9\uAC00\uC218\uC218\uB8CC", "non_taxable": "\uBE44\uACFC\uC138 \uAE08\uC561", "foreign_tax_paid": "\uC678\uAD6D\uB0A9\uBD80\uC138\uC561", "standard_value": "\uC2DC\uAC00\uD45C\uC900\uC561", "prior_year_tax": "\uC804\uB144 \uBCF8\uC138 \uC0C1\uB2F9\uC561", "prior_standard_value": "\uC804\uB144 \uC2DC\uAC00\uD45C\uC900\uC561", "engine.housing_values": "\uC8FC\uD0DD \uACF5\uC2DC\uAC00\uACA9", "engine.property_tax_paid": "\uC7AC\uC0B0\uC138 \uBCF8\uC138", "engine.property_tax_base": "\uC7AC\uC0B0\uC138 \uACFC\uD45C", "cap.prior_property_tax": "\uC804\uB144 \uC7AC\uC0B0\uC138 \uC0C1\uB2F9\uC561", "cap.prior_comprehensive_tax": "\uC804\uB144 \uC885\uBD80\uC138 \uC0C1\uB2F9\uC561" })[k] || k;
+  const money = (v) => Number(v).toLocaleString("ko-KR") + "\uC6D0";
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container", style: { maxWidth: 1100, padding: "32px 20px" } }, /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (discard()) onExit();
+  } }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uC0AC\uAC74 \uAC04 \uBE44\uAD50"), /* @__PURE__ */ React.createElement("p", null, "\uC6D0\uBCF8\uC774 \uC5F0\uACB0\uB41C \uC77C\uBC18 \uC8FC\uD0DD \uC99D\uC5EC(\uB2E8\uC77C\xB7\uB2E4\uC7AC\uC0B0)\uB07C\uB9AC \uB610\uB294 \uAC19\uC740 \uC138\uBAA9\uC758 \uB2E8\uB3C5 \uC8FC\uD0DD \uBCF4\uC720\uC138\uB07C\uB9AC \uBE44\uAD50\uD569\uB2C8\uB2E4. \uAC19\uC740 \uC7AC\uC0B0\xB7\uC9C0\uBD84\xB7\uB2F9\uC0AC\uC790\xB7\uC0AC\uAC74\uC77C\xB7\uD3C9\uAC00\uAE30\uC900\uC77C\xB7\uC138\uC561 \uBC94\uC704\uC640 \uACC4\uC0B0 \uBC84\uC804\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uCCAB \uC120\uD0DD\uC774 \uAE30\uC900 \uC0AC\uAC74\uC785\uB2C8\uB2E4. \uC591\uB3C4\xB7\uC0C1\uC18D\xB7\uC11C\uB85C \uB2E4\uB978 \uC138\uBAA9\uC758 \uCD1D\uC138\uBD80\uB2F4 \uBE44\uAD50\uB294 \uC544\uC9C1 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uD55C \uBE44\uAD50 \uC5F4\uAE30"), histories.map((h) => /* @__PURE__ */ React.createElement("button", { key: h.comparison_id, disabled: busy, "data-testid": "case-comparison-open-" + h.comparison_id, onClick: () => discard() ? act(() => open(h.comparison_id)) : void 0 }, h.label || "\uC8FC\uD0DD\uBCC4 \uBE44\uAD50", " \xB7 ", h.year, " \xB7 \uBC84\uC804 ", h.revision)), historyCursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => list(true)) }, "\uBE44\uAD50 \uBAA9\uB85D \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (!discard()) return;
+    setMeta(null);
+    setRun(null);
+    setDraft(blank());
+    setLabel("\uC0AC\uAC74 \uAC04 \uBE44\uAD50");
+    setBaseline(JSON.stringify({ label: "\uC0AC\uAC74 \uAC04 \uBE44\uAD50", draft: blank() }));
+    setRevision("");
+    keys.current = {};
+  } }, "\uC0C8 \uBE44\uAD50")), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uBE44\uAD50\uD560 \uC800\uC7A5 \uACB0\uACFC \uC120\uD0DD \xB7 2026\uB144"), /* @__PURE__ */ React.createElement("label", null, "\uBE44\uAD50 \uC774\uB984", /* @__PURE__ */ React.createElement("input", { "data-testid": "case-comparison-label", maxLength: 200, value: label, onChange: (e) => setLabel(e.target.value) })), /* @__PURE__ */ React.createElement("button", { onClick: () => act(() => candidates()) }, "\uC0AC\uAC74 \uC0C8\uB85C\uACE0\uCE68"), /* @__PURE__ */ React.createElement("p", null, "\uCD5C\uC2E0 \uC785\uB825\uC758 \uACC4\uC0B0\uC774 \uB05D\uB09C \uC0AC\uAC74\uC744 \uC120\uD0DD\uD569\uB2C8\uB2E4. \uC774\uBBF8 \uC800\uC7A5\uD55C \uBE44\uAD50\uB294 \uAC1C\uBCC4 \uC0AC\uAC74\uC744 \uC218\uC815\uD558\uAC70\uB098 \uC0C8\uB85C \uACC4\uC0B0\uD574\uB3C4 \uC790\uB3D9\uC73C\uB85C \uBC14\uB00C\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), items.map((s) => /* @__PURE__ */ React.createElement("label", { key: s.id, style: { display: "block", padding: 8 } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "case-comparison-select-" + s.id, type: "checkbox", disabled: !s.run_id, checked: draft.run_ids.includes(s.run_id), onChange: (e) => change("run_ids", e.target.checked ? [...draft.run_ids, s.run_id] : draft.run_ids.filter((id) => id !== s.run_id)) }), s.label || "\uC0AC\uAC74", " \xB7 ", s.scenario_type, " \xB7 ", s.assessment_date, " \xB7 ", s.taxpayer_name || "\uC6D0\uBCF8 \uC18C\uC720\uC790 \uD655\uC778 \uD544\uC694", " \xB7 \uBC84\uC804 ", s.revision, " ", s.run_id ? "" : "\xB7 \uCD5C\uC2E0 \uC785\uB825 \uACC4\uC0B0 \uD544\uC694")), cursor && /* @__PURE__ */ React.createElement("button", { onClick: () => act(() => candidates(true)) }, "\uC0AC\uAC74 \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("h3", null, "\uC120\uD0DD\uD55C \uACB0\uACFC ", draft.run_ids.length, "\uAC74"), /* @__PURE__ */ React.createElement("ul", null, draft.run_ids.map((id) => {
+    const s = ((meta == null ? void 0 : meta.sources) || []).find((s2) => s2.run_id === id), candidate = items.find((s2) => s2.run_id === id);
+    return /* @__PURE__ */ React.createElement("li", { key: id }, (s == null ? void 0 : s.label) || (candidate == null ? void 0 : candidate.label) || "\uC120\uD0DD\uD55C \uC800\uC7A5 \uACB0\uACFC", " \xB7 \uBC84\uC804 ", (s == null ? void 0 : s.revision) || (candidate == null ? void 0 : candidate.revision), s && !candidate && " \xB7 \uC774\uC804 \uC800\uC7A5 \uACB0\uACFC \uC720\uC9C0", /* @__PURE__ */ React.createElement("button", { "data-testid": "case-comparison-remove-" + id, onClick: () => change("run_ids", draft.run_ids.filter((v) => v !== id)) }, "\uC120\uD0DD \uD574\uC81C"));
+  })), /* @__PURE__ */ React.createElement("label", null, "\uBE44\uAD50 \uBAA9\uC801\xB7\uC785\uB825 \uAC00\uC815 \uCC28\uC774\uC640 \uAC80\uD1A0 \uADFC\uAC70", /* @__PURE__ */ React.createElement("textarea", { "data-testid": "case-comparison-note", maxLength: 1e3, value: draft.review_note, onChange: (e) => change("review_note", e.target.value) })), /* @__PURE__ */ React.createElement("label", { style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "case-comparison-confirm", type: "checkbox", checked: draft.scope_confirmed, onChange: (e) => change("scope_confirmed", e.target.checked) }), "\uAC19\uC740 \uC7AC\uC0B0\xB7\uC9C0\uBD84\xB7\uB2F9\uC0AC\uC790\xB7\uC0AC\uAC74\uC77C\xB7\uD3C9\uAC00\uAE30\uC900\uC77C\xB7\uC138\uC561 \uBC94\uC704\uC774\uBA70 \uB2E4\uB978 \uC785\uB825 \uAC00\uC815\uACFC \uC6D0\uBCF8 \uACBD\uACE0\uB97C \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { "data-testid": "case-comparison-save", onClick: () => act(save) }, "\uBE44\uAD50 \uC785\uB825 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { "data-testid": "case-comparison-calculate", onClick: () => act(async () => {
+    const s = dirty || !meta ? await save() : meta;
+    if (!s.validation.can_run) throw new Error(s.validation.errors.join(" "));
+    const r = await mutate("/" + s.comparison_id + "/runs", "POST", { revision_id: s.revision_id, expected_input_hash: s.input_hash });
+    const detail = await api("/" + s.comparison_id + "/runs/" + r.run_id);
+    if (alive.current) setRun(detail);
+  }) }, "\uC800\uC7A5\uD558\uACE0 \uBE44\uAD50")), meta && /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uBC84\uC804 ", meta.revision, " ", readonly ? "\xB7 \uACFC\uAC70 \uC785\uB825 \uC77D\uAE30 \uC804\uC6A9" : ""), !meta.validation.can_run && /* @__PURE__ */ React.createElement("ul", null, meta.validation.errors.map((e) => /* @__PURE__ */ React.createElement("li", { key: e }, e))), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uBC84\uC804(\uBE44\uC6B0\uBA74 \uCD5C\uC2E0)", /* @__PURE__ */ React.createElement("input", { "data-testid": "case-comparison-revision", type: "number", min: "1", disabled: busy, value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { "data-testid": "case-comparison-reopen", disabled: busy, onClick: () => discard() ? act(() => open(meta.comparison_id, revision)) : void 0 }, "\uBE44\uAD50 \uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30")), ((_b = (_a = meta == null ? void 0 : meta.validation) == null ? void 0 : _a.checked_contracts) == null ? void 0 : _b.length) > 0 && /* @__PURE__ */ React.createElement("section", { "aria-label": "\uC800\uC7A5\uB41C \uBE44\uAD50 \uAE30\uC900" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uBE44\uAD50 \uAE30\uC900"), meta.validation.checked_contracts.map((c, i) => /* @__PURE__ */ React.createElement("p", { key: i }, i + 1, ". ", c.assets ? c.assets.length + "\uAC1C \uC7AC\uC0B0" : c.address, " ", c.assets ? "" : "\xB7 \uC9C0\uBD84 " + c.identity.share, " \xB7 ", Object.entries(c.party_names).map(([k, v]) => ({ donor: "\uC99D\uC5EC\uC790", donee: "\uC218\uC99D\uC790", owner: "\uC18C\uC720\uC790" }[k] || k) + ": " + v).join(" / "), " \xB7 \uC0AC\uAC74\uC77C ", c.identity.event_date, " ", c.identity.valuation_date ? "\xB7 \uD3C9\uAC00\uC77C " + c.identity.valuation_date : "", " \xB7 ", c.identity.tax_scope)), meta.validation.checked_contracts.map((c, i) => c.assets && /* @__PURE__ */ React.createElement("div", { key: i, "data-testid": "comparison-assets-" + i }, /* @__PURE__ */ React.createElement("h3", null, i + 1, "\uBC88 \uC0AC\uAC74 \uC7AC\uC0B0\uBCC4 \uBC94\uC704"), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7AC\uC0B0ID\xB7\uC8FC\uC18C"), /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC/\uC18C\uC720 \uC9C0\uBD84"), /* @__PURE__ */ React.createElement("th", null, "\uD3C9\uAC00 \uAE30\uC900\xB7\uCD9C\uCC98"), /* @__PURE__ */ React.createElement("th", null, "\uCC44\uD0DD \uAC00\uC561"))), /* @__PURE__ */ React.createElement("tbody", null, c.assets.map((a) => /* @__PURE__ */ React.createElement("tr", { key: a.property_id }, /* @__PURE__ */ React.createElement("td", null, a.property_id, /* @__PURE__ */ React.createElement("br", null), a.address), /* @__PURE__ */ React.createElement("td", null, a.share, " / ", a.owner_share), /* @__PURE__ */ React.createElement("td", null, a.valuation_date, " \xB7 ", a.valuation_type, /* @__PURE__ */ React.createElement("br", null), a.valuation_source), /* @__PURE__ */ React.createElement("td", null, money(a.value))))))))), run && /* @__PURE__ */ React.createElement("section", { "data-testid": "case-comparison-result" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uC0AC\uAC74 \uBE44\uAD50"), dirty && /* @__PURE__ */ React.createElement("p", { role: "status" }, "\uD604\uC7AC \uD3B8\uC9D1 \uC785\uB825\uACFC \uB2E4\uB978 \uC800\uC7A5\uBCF8\uC758 \uACB0\uACFC\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, run.response_snapshot.calc.notice), run.response_snapshot.calc.identity.assets && /* @__PURE__ */ React.createElement("p", null, "\uC99D\uC5EC\uC138\uB294 \uC0AC\uAC74 \uC804\uCCB4\uC5D0 \uB300\uD55C \uACC4\uC0B0\uC561\uC785\uB2C8\uB2E4. \uC7AC\uC0B0\uBCC4 \uAC00\uC561 \uCC28\uC774\uB97C \uC7AC\uC0B0\uBCC4 \uC138\uC561\uC73C\uB85C \uBC30\uBD84\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, run.response_snapshot.calc.identity.tax_scope), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0AC\uAC74\xB7\uBC84\uC804"), /* @__PURE__ */ React.createElement("th", null, "\uCC44\uD0DD \uAC00\uC561"), /* @__PURE__ */ React.createElement("th", null, "\uC138\uC561 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("th", null, "\uACC4\uC0B0\uC561"), /* @__PURE__ */ React.createElement("th", null, "\uCCAB \uC0AC\uAC74 \uB300\uBE44 \uCC28\uC774"), /* @__PURE__ */ React.createElement("th", null, "\uC785\uB825 \uCC28\uC774\xB7\uACBD\uACE0"))), /* @__PURE__ */ React.createElement("tbody", null, run.response_snapshot.calc.rows.map((r) => /* @__PURE__ */ React.createElement("tr", { key: r.run_id }, /* @__PURE__ */ React.createElement("td", null, r.label, " \xB7 \uBC84\uC804 ", r.revision), /* @__PURE__ */ React.createElement("td", null, money(r.value), r.asset_value_differences && /* @__PURE__ */ React.createElement("ul", null, r.asset_value_differences.map((a) => /* @__PURE__ */ React.createElement("li", { key: a.property_id }, a.property_id, ": ", money(a.alternative), " \xB7 \uAC00\uC561 \uCC28\uC774 ", money(a.delta))))), /* @__PURE__ */ React.createElement("td", null, Object.entries(r.components).map(([k, v]) => /* @__PURE__ */ React.createElement("p", { key: k }, k, " ", money(v)))), /* @__PURE__ */ React.createElement("td", null, money(r.total)), /* @__PURE__ */ React.createElement("td", null, money(r.delta)), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("ul", null, r.input_differences.map((x) => /* @__PURE__ */ React.createElement("li", { key: x.field }, fieldName(x.field), ": ", JSON.stringify(x.baseline), " \u2192 ", JSON.stringify(x.alternative)))), /* @__PURE__ */ React.createElement("ul", null, r.source_warnings.map((v, i) => /* @__PURE__ */ React.createElement("li", { key: i }, typeof v === "string" ? v : JSON.stringify(v)))))))))));
+}
+window.JTCaseComparisons = JTCaseComparisons;
+
+
+/* ────────── VatCases.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+let jtVatSession = null;
+function vatDirty(w = jtVatSession) {
+  return !!w && JSON.stringify({ label: w.label, draft: w.draft }) !== w.baseline;
+}
+function JTVatCases({ clientId, caseId, onExit }) {
+  var _a, _b, _c, _d, _e, _f;
+  const [w, setW] = React.useState(jtVatSession);
+  const [opened, setOpened] = React.useState(false);
+  const ref = React.useRef(w), lock = React.useRef(false), alive = React.useRef(true);
+  const [busy, setBusy] = React.useState(false), [error, setError] = React.useState("");
+  const [revision, setRevision] = React.useState("");
+  const [people, setPeople] = React.useState([]), [personCursor, setPersonCursor] = React.useState(null);
+  const keys = React.useRef({});
+  const remember = (value) => {
+    ref.current = value;
+    jtVatSession = value;
+    if (alive.current) setW(value);
+  };
+  const api = async (path, options = {}) => {
+    var _a2;
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const r = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues({ "Content-Type": "application/json", Authorization: "Bearer " + jtGiftSession.token }, options.headers) })
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        if (r.status === 401) jtGiftSession.token = "";
+        const messages = { REVISION_CONFLICT: "\uB2E4\uB978 \uC800\uC7A5\uBCF8\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC5F4\uC5B4 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", SNAPSHOT_MIGRATION_REQUIRED: "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC800\uC7A5 \uBC84\uC804\uC785\uB2C8\uB2E4.", PARTY_OUTSIDE_CLIENT: "\uC120\uD0DD\uD55C \uB2F9\uC0AC\uC790\uAC00 \uC774 \uACE0\uAC1D\uC758 \uC790\uB8CC\uAC00 \uC544\uB2D9\uB2C8\uB2E4.", INVALID_CASE_INPUT: "\uAE08\uC561\uACFC \uC911\uBCF5 \uC785\uB825\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", DRAFT_NOT_RUNNABLE: "\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.", ENGINE_CALCULATION_ERROR: "\uACC4\uC0B0 \uC785\uB825\uC744 \uCD94\uAC00 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uACB0\uACFC\uB294 \uC800\uC7A5\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4." };
+        throw new Error(r.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC791\uC5C5\uB300\uB85C \uB3CC\uC544\uAC00 \uAC19\uC740 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD558\uC138\uC694." : messages[(_a2 = data.detail) == null ? void 0 : _a2.code] || (r.status === 422 ? "\uC785\uB825 \uD615\uC2DD\uACFC \uB0A0\uC9DC\xB7\uAE08\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694." : "\uC790\uB8CC\uB97C \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uBCF8\uC744 \uD655\uC778\uD558\uACE0 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694."));
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const mutation = (path, method, body, etag) => {
+    var _a2;
+    const signature = JSON.stringify({ path, method, body, etag });
+    const memory = path === "/v1/vat-cases" ? keys.current : ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current;
+    return api(path, { method, body: JSON.stringify(body), headers: __spreadValues({ "Idempotency-Key": memory[signature] || (memory[signature] = window.crypto.randomUUID()) }, etag ? { "If-Match": etag } : {}) });
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e instanceof TypeError || e.name === "AbortError" ? "\uC751\uB2F5\uC744 \uBC1B\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uC720\uC9C0\uB429\uB2C8\uB2E4. \uAC19\uC740 \uC791\uC5C5\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uC800\uC7A5 \uC5EC\uBD80\uB97C \uD655\uC778\uD569\uB2C8\uB2E4." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const load = async (id, number = "") => {
+    var _a2;
+    const saved = await api("/v1/vat-cases/" + id + (number ? "?revision=" + number : ""));
+    if (saved.client_id !== clientId) throw new Error("\uC120\uD0DD\uD55C \uACE0\uAC1D\uC758 \uC0AC\uAC74\uC774 \uC544\uB2D9\uB2C8\uB2E4.");
+    const run = saved.last_successful_run_id ? await api("/v1/vat-cases/" + id + "/runs/" + saved.last_successful_run_id) : null;
+    remember({
+      uid: jtGiftSession.uid,
+      meta: saved,
+      label: saved.label,
+      draft: saved.draft,
+      run,
+      keys: ((_a2 = ref.current) == null ? void 0 : _a2.keys) || keys.current,
+      baseline: JSON.stringify({ label: saved.label, draft: saved.draft })
+    });
+    if (alive.current) setOpened(true);
+  };
+  const persons = async (more = false) => {
+    const p = await api("/v1/clients/" + clientId + "/persons" + (more && personCursor ? "?cursor=" + personCursor : ""));
+    if (alive.current) {
+      setPeople((v) => more ? [...v, ...p.items] : p.items);
+      setPersonCursor(p.next_cursor);
+    }
+  };
+  React.useEffect(() => {
+    alive.current = true;
+    act(async () => {
+      var _a2, _b2;
+      await persons();
+      if (caseId === "resume" && ((_b2 = (_a2 = ref.current) == null ? void 0 : _a2.meta) == null ? void 0 : _b2.client_id) === clientId) {
+        if (ref.current.uid !== jtGiftSession.uid) throw new Error("\uD3B8\uC9D1\uD558\uB358 \uACC4\uC815\uC73C\uB85C \uB2E4\uC2DC \uB85C\uADF8\uC778\uD574 \uC8FC\uC138\uC694.");
+        setOpened(true);
+        return;
+      }
+      if (caseId) await load(caseId);
+      else {
+        const made = await mutation("/v1/vat-cases", "POST", { client_id: clientId, label: "\uC0C8 \uBD80\uAC00\uC138 \uC0AC\uAC74", draft: {} });
+        await load(made.case_id);
+      }
+    });
+    const protect = (e) => {
+      if (lock.current || vatDirty(ref.current)) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => {
+      alive.current = false;
+      window.removeEventListener("beforeunload", protect);
+    };
+  }, []);
+  const current = opened && ((_a = w == null ? void 0 : w.meta) == null ? void 0 : _a.client_id) === clientId && (caseId === "resume" || !caseId || w.meta.case_id === caseId);
+  const readonly = !current || w.meta.read_only || w.meta.revision !== w.meta.current_revision;
+  const base = current ? "/v1/vat-cases/" + w.meta.case_id : "";
+  if (current && w.meta.read_only) return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { onClick: onExit }, "\uC791\uC5C5\uB300\uB85C"), /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uC6D0\uD558\uC9C0 \uC54A\uB294 \uC785\uB825 \uBC84\uC804\uC785\uB2C8\uB2E4. \uC77D\uAE30 \uC804\uC6A9 \uC6D0\uBCF8\uC744 \uBCF4\uC874\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(w.meta.case_input, null, 2)));
+  const change = (key, value, confirmation = false) => remember(__spreadProps(__spreadValues({}, ref.current), { draft: __spreadProps(__spreadValues(__spreadValues({}, ref.current.draft), confirmation ? {} : { ordinary_scope_confirmed: false, invoices_reviewed: false, no_other_adjustments_confirmed: false }), { [key]: value }) }));
+  const save = async () => {
+    if (!vatDirty(ref.current)) return ref.current.meta;
+    const saved = await mutation(base, "PUT", { label: ref.current.label, draft: ref.current.draft }, ref.current.meta.etag);
+    await load(saved.case_id);
+    return ref.current.meta;
+  };
+  const d = current ? w.draft : null;
+  const checks = [
+    ["ordinary_scope_confirmed", "2026\uB1441\uAE30 \uC804\uCCB4\uAE30\uAC04 \uACC4\uC18D\uC0AC\uC5C5 \uC77C\uBC18 \uAC1C\uC778 \uB2E8\uC77C\uC0AC\uC5C5\uC7A5\uC774\uBA70 \uAD6D\uB0B410% \uACFC\uC138 \uAC70\uB798\uB9CC \uC788\uC2B5\uB2C8\uB2E4. \uC2E0\uADDC\xB7\uD3D0\uC5C5\xB7\uC804\uD658\xB7\uBC95\uC778\xB7\uC601\uC138/\uBA74\uC138\xB7\uC218\uC785\xB7\uC608\uC815\uC2E0\uACE0\xB7\uC870\uAE30\uD658\uAE09\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."],
+    ["invoices_reviewed", "\uACF5\uAE09\uC2DC\uAE30\xB7\uC99D\uBE59\uC758 \uACF5\uAE09\uAC00\uC561/\uC138\uC561\uACFC \uB9E4\uC785 \uACF5\uC81C \uC5EC\uBD80\xB7\uC911\uBCF5\xB7\uB204\uB77D\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4."],
+    ["no_other_adjustments_confirmed", "\uAE30\uD55C\uB0B4 \uC2E0\uACE0 \uAE30\uC900\uC758 \uC7AC\uD604\uC774\uBA70 \uAE30\uD55C\uD6C4/\uC218\uC815\uC2E0\uACE0\uAC00 \uC544\uB2D9\uB2C8\uB2E4. \uACF5\uD1B5\uB9E4\uC785 \uC548\uBD84\xB7\uB300\uC190\xB7\uC758\uC81C\uB9E4\uC785\xB7\uCE74\uB4DC/\uC804\uC790\uBC1C\uAE09 \uB4F1 \uACF5\uC81C\xB7\uAE30\uD0C0 \uAE30\uB0A9\uBD80\xB7\uAC00\uC0B0\uC138\xB7\uD2B9\uB840 \uC870\uC815\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."]
+  ];
+  const field = (k, label) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", null, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "vat-" + k, value: (_a2 = d[k]) != null ? _a2 : "", onChange: (e) => change(k, e.target.value) }));
+  };
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.vat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.vat-grid label{display:flex;flex-direction:column;gap:6px}.vat-grid input,.vat-grid select{font:inherit;padding:10px}.vat-section{padding:18px;border:1px solid #ccd8cd;margin:18px 0;border-radius:8px}`), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: onExit }, "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("h1", null, "\uC77C\uBC18\uACFC\uC138 \uBD80\uAC00\uC138 \uC0AC\uAC74"), /* @__PURE__ */ React.createElement("p", null, "2026-01-01~06-30 \uC77C\uBC18 \uAC1C\uC778\uC0AC\uC5C5\uC790\uC758 \uAE30\uD55C\uB0B4 \uC2E0\uACE0 \uAE30\uC900 \uACC4\uC0B0\uC785\uB2C8\uB2E4. \uB0A9\uBD80\uC561\uACFC \uD658\uAE09\uC561\uC744 \uAD6C\uBD84\uD558\uBA70 \uD604\uC7AC \uC2E0\uACE0\uC11C \uC81C\uCD9C\xB7\uAC00\uC0B0\uC138 \uACC4\uC0B0\uC744 \uB300\uC2E0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), !current && !busy && /* @__PURE__ */ React.createElement("button", { onClick: () => act(async () => {
+    if (caseId && caseId !== "resume") await load(caseId);
+    else {
+      const made = await mutation("/v1/vat-cases", "POST", { client_id: clientId, label: "\uC0C8 \uBD80\uAC00\uC138 \uC0AC\uAC74", draft: {} });
+      await load(made.case_id);
+    }
+  }) }, "\uC0AC\uAC74 \uC5F4\uAE30 \uB2E4\uC2DC \uC2DC\uB3C4"), current && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5 \uBC84\uC804 ", w.meta.revision, " / \uCD5C\uC2E0 ", w.meta.current_revision, readonly ? " \xB7 \uC77D\uAE30 \uC804\uC6A9 \uC800\uC7A5\uBCF8" : "", vatDirty(w) ? " \xB7 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCC0\uACBD \uC788\uC74C" : ""), /* @__PURE__ */ React.createElement("fieldset", { disabled: busy || readonly }, /* @__PURE__ */ React.createElement("legend", null, "\uC0AC\uC5C5\uC7A5\xB7\uAC70\uB798 \uC0AC\uC2E4"), /* @__PURE__ */ React.createElement("div", { className: "vat-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uC0AC\uAC74\uBA85", /* @__PURE__ */ React.createElement("input", { "data-testid": "vat-label", value: w.label, onChange: (e) => remember(__spreadProps(__spreadValues({}, w), { label: e.target.value })) })), /* @__PURE__ */ React.createElement("label", null, "\uAC1C\uC778 \uC0AC\uC5C5\uC790", /* @__PURE__ */ React.createElement("select", { "data-testid": "vat-taxpayer", value: d.taxpayer_person_id || "", onChange: (e) => change("taxpayer_person_id", e.target.value || null) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uACE0\uAC1D\uC758 \uB2F9\uC0AC\uC790 \uC120\uD0DD"), d.taxpayer_person_id && !people.some((p) => p.id === d.taxpayer_person_id) && /* @__PURE__ */ React.createElement("option", { value: d.taxpayer_person_id }, ((_c = (_b = w.meta.case_input) == null ? void 0 : _b.taxpayer_snapshot) == null ? void 0 : _c.name) || "\uC800\uC7A5\uB41C \uC0AC\uC5C5\uC790"), people.map((p) => /* @__PURE__ */ React.createElement("option", { key: p.id, value: p.id }, p.name)))), field("business_name", "\uC0AC\uC5C5\uC7A5\uBA85"), field("business_ref", "\uC0AC\uC5C5\uC7A5 \uAD6C\uBD84 \uADFC\uAC70(\uB0B4\uBD80 \uCF54\uB4DC \uB4F1)")), personCursor && /* @__PURE__ */ React.createElement("button", { onClick: () => act(() => persons(true)) }, "\uB2F9\uC0AC\uC790 \uB354 \uBCF4\uAE30"), /* @__PURE__ */ React.createElement("p", null, "\uB4F1\uB85D\uD560 \uB2F9\uC0AC\uC790\uAC00 \uC5C6\uC73C\uBA74 \uC791\uC5C5\uB300\uC758 \uB2F9\uC0AC\uC790\xB7\uC7AC\uC0B0 \uB4F1\uB85D\uC5D0\uC11C \uBA3C\uC800 \uB4F1\uB85D\uD558\uC138\uC694. \uC120\uD0DD\uD55C \uC0AC\uC5C5\uC790 \uC815\uBCF4\uB294 \uC800\uC7A5 \uBC84\uC804\uBCC4\uB85C \uBCF4\uC874\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("h2", null, "\uB9E4\uCD9C\xB7\uB9E4\uC785 \uBA85\uC138"), /* @__PURE__ */ React.createElement("p", null, "\uBD80\uAC00\uC138 \uBCC4\uB3C4 \uACF5\uAE09\uAC00\uC561\uACFC \uC99D\uBE59\uC0C1 \uC138\uC561\uC744 \uC785\uB825\uD569\uB2C8\uB2E4. \uD604\uC7AC\uB294 \uACF5\uAE09\uAC00\uC56110\uC6D0 \uB2E8\uC704\xB7\uC815\uD655\uD55C10% \uC138\uC561\uB9CC \uC5F0\uACB0\uD569\uB2C8\uB2E4."), d.transactions.map((r, i) => {
+    const set = (k, v) => change("transactions", d.transactions.map((x) => x.local_id === r.local_id ? __spreadProps(__spreadValues({}, x), { [k]: v }) : x));
+    return /* @__PURE__ */ React.createElement("section", { className: "vat-section", key: r.local_id }, /* @__PURE__ */ React.createElement("div", { className: "vat-grid" }, /* @__PURE__ */ React.createElement("label", null, "\uAD6C\uBD84", /* @__PURE__ */ React.createElement("select", { "data-testid": "vat-kind-" + i, value: r.kind, onChange: (e) => change("transactions", d.transactions.map((x) => x.local_id === r.local_id ? __spreadProps(__spreadValues({}, x), { kind: e.target.value, deductible_vat: null }) : x)) }, /* @__PURE__ */ React.createElement("option", { value: "sale" }, "\uB9E4\uCD9C"), /* @__PURE__ */ React.createElement("option", { value: "purchase" }, "\uB9E4\uC785"))), /* @__PURE__ */ React.createElement("label", null, "\uACF5\uAE09\uC77C", /* @__PURE__ */ React.createElement("input", { "data-testid": "vat-date-" + i, type: "date", value: r.supplied_on || "", onChange: (e) => set("supplied_on", e.target.value || null) })), [["supply_amount", "\uACF5\uAE09\uAC00\uC561 (\uC6D0)"], ["vat_amount", "\uC99D\uBE59\uC0C1 \uC138\uC561 (\uC6D0)"], ...r.kind === "purchase" ? [["deductible_vat", "\uAC80\uD1A0\uD55C \uACF5\uC81C \uAC00\uB2A5 \uB9E4\uC785\uC138\uC561 (0\uC6D0\uB3C4 \uBA85\uC2DC)"]] : [], ["source_ref", "\uC99D\uBE59 \uCC38\uC870\uBC88\uD638"], ["review_note", "\uACF5\uAE09\uC2DC\uAE30\xB7\uACF5\uC81C \uAC80\uD1A0 \uADFC\uAC70"]].map(([k, label]) => {
+      var _a2;
+      return /* @__PURE__ */ React.createElement("label", { key: k }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "vat-" + k + "-" + i, value: (_a2 = r[k]) != null ? _a2 : "", onChange: (e) => set(k, e.target.value) }));
+    })), /* @__PURE__ */ React.createElement("button", { "data-testid": "vat-remove-" + i, onClick: () => change("transactions", d.transactions.filter((x) => x.local_id !== r.local_id)) }, "\uAC70\uB798 \uC0AD\uC81C"));
+  }), /* @__PURE__ */ React.createElement("button", { "data-testid": "vat-add", disabled: d.transactions.length >= 200, onClick: () => {
+    change("transactions", [...d.transactions, { local_id: window.crypto.randomUUID(), kind: "sale", supplied_on: null, supply_amount: null, vat_amount: null, deductible_vat: null, source_ref: "", review_note: "" }]);
+  } }, "\uAC70\uB798 \uCD94\uAC00"), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "vat-no-transactions", type: "checkbox", checked: d.no_transactions_confirmed, onChange: (e) => change("no_transactions_confirmed", e.target.checked) }), "\uAC70\uB798\uAC00 \uC5C6\uB294 \uBB34\uC2E4\uC801 \uAE30\uAC04\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "vat-grid" }, field("prior_notice_tax", "\uC608\uC815\uACE0\uC9C0 \uCC28\uAC10\uC561 (\uC5C6\uC73C\uBA740\uC6D0)"), field("prior_notice_source", "\uC608\uC815\uACE0\uC9C0\xB7\uB0A9\uBD80 \uD655\uC778 \uADFC\uAC70"), field("review_note", "\uC804\uCCB4 \uAE30\uAC04\xB7\uC9C0\uC6D0 \uBC94\uC704 \uAC80\uD1A0 \uADFC\uAC70")), checks.map(([k, label]) => /* @__PURE__ */ React.createElement("p", { key: k }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { "data-testid": "vat-" + k, type: "checkbox", checked: d[k], onChange: (e) => change(k, e.target.checked, true) }), label)))), /* @__PURE__ */ React.createElement("p", null, "\uC800\uC7A5\uB41C \uC0AC\uC5C5\uC790: ", ((_e = (_d = w.meta.case_input) == null ? void 0 : _d.taxpayer_snapshot) == null ? void 0 : _e.name) || "\uBBF8\uC120\uD0DD", " \xB7 \uBA85\uC138 \uD569\uACC4\uB294 \uC800\uC7A5\uD560 \uB54C \uACC4\uC0B0\uD569\uB2C8\uB2E4."), ((_f = w.meta.case_input) == null ? void 0 : _f.worksheet) && /* @__PURE__ */ React.createElement("section", { className: "vat-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uC9D1\uACC4", vatDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("dl", null, [["sales", "\uB9E4\uCD9C \uACF5\uAE09\uAC00\uC561"], ["purchases", "\uB9E4\uC785 \uACF5\uAE09\uAC00\uC561"], ["output_tax", "\uB9E4\uCD9C\uC138\uC561"], ["input_tax", "\uC99D\uBE59 \uB9E4\uC785\uC138\uC561"], ["deductible_input", "\uACF5\uC81C \uAC00\uB2A5 \uB9E4\uC785\uC138\uC561"], ["non_deductible_input", "\uBD88\uACF5\uC81C \uB9E4\uC785\uC138\uC561"], ["prior_notice_tax", "\uC608\uC815\uACE0\uC9C0 \uCC28\uAC10\uC561"]].map(([k, label]) => {
+    var _a2, _b2;
+    return /* @__PURE__ */ React.createElement(React.Fragment, { key: k }, /* @__PURE__ */ React.createElement("dt", null, label), /* @__PURE__ */ React.createElement("dd", null, (_b2 = (_a2 = w.meta.case_input.worksheet[k]) == null ? void 0 : _a2.toLocaleString("ko-KR")) != null ? _b2 : "\uBBF8\uC785\uB825", "\uC6D0"));
+  }))), (w.meta.validation.errors || []).length > 0 && /* @__PURE__ */ React.createElement("ul", null, w.meta.validation.errors.map((x, i) => /* @__PURE__ */ React.createElement("li", { key: i }, x))), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(save) }, "\uC785\uB825 \uC800\uC7A5"), /* @__PURE__ */ React.createElement("button", { disabled: busy || readonly, onClick: () => act(async () => {
+    const s = await save();
+    if (!s.validation.can_run) throw new Error("\uC800\uC7A5\uBCF8\uC758 \uBCF4\uC644 \uD56D\uBAA9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    await mutation(base + "/runs", "POST", { revision_id: s.revision_id, expected_input_hash: s.input_hash });
+    await load(s.case_id);
+  }) }, "\uC800\uC7A5\uD558\uACE0 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("label", null, "\uB2E4\uC2DC \uC5F4 \uC785\uB825 \uBC84\uC804", /* @__PURE__ */ React.createElement("input", { "data-testid": "vat-reopen-revision", value: revision, onChange: (e) => setRevision(e.target.value) })), /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    if (!vatDirty(w) || window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC800\uC7A5\uBCF8\uC744 \uC5EC\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?")) act(() => load(w.meta.case_id, revision));
+  } }, "\uC800\uC7A5\uBCF8 \uB2E4\uC2DC \uC5F4\uAE30"), w.run && /* @__PURE__ */ React.createElement("section", { className: "vat-section" }, /* @__PURE__ */ React.createElement("h2", null, "\uC800\uC7A5\uB41C \uBD80\uAC00\uC138 \uACB0\uACFC", vatDirty(w) ? " \xB7 \uC218\uC815 \uC804 \uC785\uB825 \uAE30\uC900" : ""), /* @__PURE__ */ React.createElement("p", { "data-testid": "vat-payable" }, "\uB0A9\uBD80\uC561 ", w.run.response_snapshot.calc["\uB0A9\uBD80\uC138\uC561"].toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", { "data-testid": "vat-refund" }, "\uD658\uAE09\uC561 ", w.run.response_snapshot.calc["\uD658\uAE09\uC138\uC561"].toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uD55C\uB0B4 \uC2E0\uACE0 \uAE30\uC900 \uAE30\uD55C: ", w.run.response_snapshot.calc["\uC2E0\uACE0\uAE30\uD55C"]), /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("pre", null, JSON.stringify(w.run.response_snapshot.calc["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"], null, 2))))));
+}
+window.JTVatCases = JTVatCases;
+
+
+/* ────────── CaseWorkspace.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+function JTCaseWorkspace({ onBack }) {
+  var _a;
+  const [token, setToken] = React.useState(jtGiftSession.token);
+  const [email, setEmail] = React.useState(""), [password, setPassword] = React.useState("");
+  const [clients, setClients] = React.useState([]), [clientCursor, setClientCursor] = React.useState(null);
+  const [clientId, setClientId] = React.useState(((_a = jtGiftSession.workspace) == null ? void 0 : _a.clientId) || "");
+  const [name, setName] = React.useState("");
+  const [cases, setCases] = React.useState([]), [cursor, setCursor] = React.useState(null);
+  const [editor, setEditor] = React.useState(false), [busy, setBusy] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const lock = React.useRef(false), generation = React.useRef(0), alive = React.useRef(true);
+  const createKeys = React.useRef({});
+  const createdCases = React.useRef({});
+  React.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      generation.current++;
+    };
+  }, []);
+  const api = async (path, options = {}, credential = token) => {
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 45e3);
+    try {
+      const response = await fetch(
+        (window.JT_ENGINE_BASE || "http://127.0.0.1:8000").replace(/\/$/, "") + path,
+        __spreadProps(__spreadValues({}, options), { signal: controller.signal, headers: __spreadValues(__spreadValues({
+          "Content-Type": "application/json"
+        }, credential ? { Authorization: "Bearer " + credential } : {}), options.headers) })
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) {
+          jtGiftSession.token = "";
+          if (alive.current) setToken("");
+        }
+        throw new Error(response.status === 401 ? "\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uD3B8\uC9D1 \uB0B4\uC6A9\uC740 \uBA54\uBAA8\uB9AC\uC5D0 \uC720\uC9C0\uB429\uB2C8\uB2E4." : response.status === 404 ? "\uACE0\uAC1D \uB610\uB294 \uC0AC\uAC74\uC744 \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4." : "\uC694\uCCAD\uC744 \uCC98\uB9AC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uBAA9\uB85D\uC744 \uD655\uC778\uD55C \uB4A4 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.");
+      }
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const act = async (fn) => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      await fn();
+    } catch (e) {
+      if (alive.current) setError(e.name === "AbortError" || e instanceof TypeError ? "\uC5F0\uACB0\uC774 \uB04A\uACBC\uC2B5\uB2C8\uB2E4. \uC11C\uBC84\uC5D0 \uC800\uC7A5\uB410\uC744 \uC218 \uC788\uC73C\uBBC0\uB85C \uBAA9\uB85D\uC744 \uC0C8\uB85C\uACE0\uCE68\uD574 \uD655\uC778\uD558\uC138\uC694." : e.message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  };
+  const loadClients = async (more = false) => {
+    const data = await api("/v1/clients" + (more && clientCursor ? "?cursor=" + clientCursor : ""));
+    if (alive.current) {
+      setClients((old) => more ? [...old, ...data.items] : data.items);
+      setClientCursor(data.next_cursor);
+    }
+  };
+  const loadCases = async (more = false) => {
+    const version = ++generation.current;
+    const data = await api("/v1/clients/" + clientId + "/cases" + (more && cursor ? "?cursor=" + cursor : ""));
+    if (alive.current && version === generation.current) {
+      setCases((old) => more ? [...old, ...data.items] : data.items);
+      setCursor(data.next_cursor);
+    }
+  };
+  React.useEffect(() => {
+    if (!token || editor) return;
+    let active = true;
+    api("/v1/clients").then((data) => {
+      if (active) {
+        setClients(data.items);
+        setClientCursor(data.next_cursor);
+      }
+    }).catch((e) => {
+      if (active) setError(e.message);
+    });
+    return () => {
+      active = false;
+    };
+  }, [token, editor]);
+  React.useEffect(() => {
+    setCases([]);
+    setCursor(null);
+    const version = ++generation.current;
+    if (token && clientId && !editor) {
+      api("/v1/clients/" + clientId + "/cases").then((data) => {
+        if (alive.current && version === generation.current) {
+          setCases(data.items);
+          setCursor(data.next_cursor);
+        }
+      }).catch((e) => {
+        if (alive.current && version === generation.current) setError(e.message);
+      });
+    }
+    return () => {
+      generation.current++;
+    };
+  }, [token, clientId, editor]);
+  const canReplaceDraft = (ask = true) => {
+    var _a2, _b;
+    if (typeof vatDirty === "function" && vatDirty()) return ask && window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBD80\uAC00\uC138 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uBA54\uBAA8\uB9AC\uC5D0 \uC720\uC9C0\uD558\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+    if (typeof equityDirty === "function" && equityDirty()) return ask && window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC8FC\uC2DD\uD3C9\uAC00 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uBA54\uBAA8\uB9AC\uC5D0 \uC720\uC9C0\uD558\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+    if (typeof holdingDirty === "function" && holdingDirty()) return ask && window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uBCF4\uC720\uC138 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uBA54\uBAA8\uB9AC\uC5D0 \uC720\uC9C0\uD558\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+    if (typeof inheritanceDirty === "function" && inheritanceDirty()) return ask && window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC0C1\uC18D \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uBA54\uBAA8\uB9AC\uC5D0 \uC720\uC9C0\uD558\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+    if (typeof acquisitionDirty === "function" && acquisitionDirty()) return ask && window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uCDE8\uB4DD\uC138 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC740 \uBA54\uBAA8\uB9AC\uC5D0 \uC720\uC9C0\uD558\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+    const w = jtGiftSession.workspace;
+    if (typeof transferDirty === "function" && transferDirty()) return ask && window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC591\uB3C4 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uC591\uB3C4 \uC785\uB825\uC740 \uBA54\uBAA8\uB9AC\uC5D0 \uBCF4\uAD00\uD558\uACE0 \uC774\uB3D9\uD560\uAE4C\uC694?");
+    if (!w) return true;
+    const dirty = w.baseline == null ? w.touched : JSON.stringify({ clientId: w.clientId, label: w.label, draft: w.draft }) !== w.baseline;
+    const f = (_b = jtGiftSession.filings) == null ? void 0 : _b[(_a2 = w.run) == null ? void 0 : _a2.run_id];
+    const filingDirty = f && (f.baseline == null ? f.touched : JSON.stringify(f.form) !== f.baseline);
+    return !dirty && !filingDirty || ask && window.confirm("\uC800\uC7A5\uD558\uC9C0 \uC54A\uC740 \uC785\uB825\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uD604\uC7AC \uC785\uB825\uC744 \uBC84\uB9AC\uACE0 \uC0AC\uAC74\uC744 \uC5F4\uAE4C\uC694?");
+  };
+  React.useEffect(() => {
+    const protect = (e) => {
+      if (lock.current || !canReplaceDraft(false)) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => window.removeEventListener("beforeunload", protect);
+  }, []);
+  const enter = async (caseId = null) => {
+    var _a2, _b, _c;
+    if (!canReplaceDraft()) return;
+    const data = caseId ? await api("/v1/gift-cases/" + caseId) : await api("/v1/gift-cases", {
+      method: "POST",
+      headers: { "Idempotency-Key": (_a2 = createKeys.current)[clientId] || (_a2[clientId] = window.crypto.randomUUID()) },
+      body: JSON.stringify({ client_id: clientId, label: "\uC0C8 \uC99D\uC5EC \uC0AC\uAC74", draft: giftNewDraft() })
+    });
+    if (!caseId) createdCases.current[clientId] = data.case_id;
+    const saved = caseId ? data : await api("/v1/gift-cases/" + data.case_id);
+    if (saved.client_id !== clientId) throw new Error("\uC120\uD0DD\uD55C \uACE0\uAC1D\uC758 \uC0AC\uAC74\uC774 \uC544\uB2D9\uB2C8\uB2E4.");
+    const run = saved.last_successful_run_id ? await api("/v1/gift-cases/" + saved.case_id + "/runs/" + saved.last_successful_run_id) : null;
+    if (!alive.current) return;
+    const w = {
+      clientId: saved.client_id,
+      label: saved.label,
+      draft: saved.draft,
+      meta: saved,
+      touched: false,
+      request: null,
+      run,
+      operationKeys: {}
+    };
+    w.baseline = JSON.stringify({ clientId: w.clientId, label: w.label, draft: w.draft });
+    const oldRunId = (_c = (_b = jtGiftSession.workspace) == null ? void 0 : _b.run) == null ? void 0 : _c.run_id;
+    if (oldRunId && jtGiftSession.filings) delete jtGiftSession.filings[oldRunId];
+    jtGiftSession.workspace = w;
+    if (!caseId || createdCases.current[clientId] === caseId) {
+      delete createKeys.current[clientId];
+      delete createdCases.current[clientId];
+    }
+    setEditor(true);
+  };
+  const login = (e) => {
+    e.preventDefault();
+    return act(async () => {
+      const data = await api("/v1/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }, "");
+      if (!data.access_token || !data.uid) throw new Error("\uB85C\uADF8\uC778 \uC751\uB2F5\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+      if (typeof jtEquitySession !== "undefined" && (jtEquitySession == null ? void 0 : jtEquitySession.uid) && jtEquitySession.uid !== data.uid || jtGiftSession.uid && jtGiftSession.uid !== data.uid && jtGiftSession.workspace || (jtTransferSession == null ? void 0 : jtTransferSession.uid) && jtTransferSession.uid !== data.uid || typeof jtInheritanceSession !== "undefined" && (jtInheritanceSession == null ? void 0 : jtInheritanceSession.uid) && jtInheritanceSession.uid !== data.uid || typeof jtHoldingSession !== "undefined" && (jtHoldingSession == null ? void 0 : jtHoldingSession.uid) && jtHoldingSession.uid !== data.uid || typeof jtAcquisitionSession !== "undefined" && (jtAcquisitionSession == null ? void 0 : jtAcquisitionSession.uid) && jtAcquisitionSession.uid !== data.uid)
+        throw new Error("\uD3B8\uC9D1 \uB0B4\uC6A9\uC774 \uB0A8\uC544 \uC788\uC2B5\uB2C8\uB2E4. \uAE30\uC874 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD558\uAC70\uB098 \uB85C\uADF8\uC544\uC6C3\uC73C\uB85C \uB0B4\uC6A9\uC744 \uBE44\uC6CC \uC8FC\uC138\uC694.");
+      jtGiftSession.token = data.access_token;
+      jtGiftSession.uid = data.uid;
+      setToken(data.access_token);
+      setPassword("");
+    });
+  };
+  const states = {
+    calculated: "\uCD5C\uC2E0 \uC785\uB825 \uACC4\uC0B0 \uC644\uB8CC",
+    ready: "\uC800\uC7A5 \uC644\uB8CC \xB7 \uACC4\uC0B0 \uC804",
+    draft: "\uCD08\uC548 \xB7 \uC785\uB825 \uBCF4\uC644 \uD544\uC694",
+    read_only: "\uC77D\uAE30 \uC804\uC6A9 \xB7 \uBC84\uC804 \uD655\uC778 \uD544\uC694",
+    connection_pending: "\uAE30\uC874 \uC0AC\uAC74 \xB7 \uD3B8\uC9D1 \uC5F0\uACB0 \uC900\uBE44 \uC911"
+  };
+  if (editor == null ? void 0 : editor.vat) return /* @__PURE__ */ React.createElement(JTVatCases, { clientId, caseId: editor.caseId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor == null ? void 0 : editor.equity) return /* @__PURE__ */ React.createElement(JTEquityCases, { clientId, caseId: editor.caseId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor == null ? void 0 : editor.caseComparison) return /* @__PURE__ */ React.createElement(JTCaseComparisons, { clientId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor == null ? void 0 : editor.holdingCollection) return /* @__PURE__ */ React.createElement(JTHoldingCollections, { clientId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor == null ? void 0 : editor.holding) return /* @__PURE__ */ React.createElement(JTHoldingCases, { clientId, caseId: editor.caseId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor == null ? void 0 : editor.inheritance) return /* @__PURE__ */ React.createElement(JTInheritanceCases, { clientId, caseId: editor.caseId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor == null ? void 0 : editor.acquisition) return /* @__PURE__ */ React.createElement(JTAcquisitionCases, { clientId, caseId: editor.caseId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor == null ? void 0 : editor.masters) return /* @__PURE__ */ React.createElement(JTPropertyMasters, { clientId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  }, onValuations: () => setEditor({ sources: true }) });
+  if (editor == null ? void 0 : editor.sources) return /* @__PURE__ */ React.createElement(JTPropertySources, { clientId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor == null ? void 0 : editor.annual) return /* @__PURE__ */ React.createElement(JTTransferAnnual, { clientId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor && typeof editor === "object") return /* @__PURE__ */ React.createElement(JTTransferCases, { clientId, caseId: editor.caseId, onExit: () => {
+    setEditor(false);
+    setToken(jtGiftSession.token);
+  } });
+  if (editor) return /* @__PURE__ */ React.createElement(
+    JTGiftCases,
+    {
+      initialAnswers: {},
+      onAnswers: () => {
+      },
+      exitLabel: "\u2190 \uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300",
+      onExit: () => {
+        setEditor(false);
+        setToken(jtGiftSession.token);
+      }
+    }
+  );
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container cw-workspace" }, /* @__PURE__ */ React.createElement("style", null, `.cw-workspace{max-width:1040px;padding:32px 20px 64px}.cw-card{border:1px solid #d9e0d9;background:white;border-radius:12px;padding:24px;margin:20px 0}.cw-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:end}.cw-workspace label{display:flex;flex-direction:column;gap:6px}.cw-workspace input,.cw-workspace select{font:inherit;padding:10px;min-height:44px;border:1px solid #9ba99c;border-radius:6px}.cw-workspace p{line-height:1.6}.cw-workspace button{min-height:44px}.cw-workspace table{width:100%;border-collapse:collapse}.cw-workspace td,.cw-workspace th{text-align:left;padding:12px;border-bottom:1px solid #ddd}.cw-workspace :focus-visible{outline:3px solid #3d7855}.cw-workspace [role=alert]{color:#82391e;background:#fff1e9;padding:12px}.cw-table{overflow-x:auto}`), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy, onClick: onBack }, "\u2190 \uACC4\uC0B0\uAE30 \uBAA9\uB85D"), /* @__PURE__ */ React.createElement("h1", null, "\uACE0\uAC1D\xB7\uC0AC\uAC74 \uC791\uC5C5\uB300"), /* @__PURE__ */ React.createElement("p", null, "\uACE0\uAC1D\uC744 \uC120\uD0DD\uD558\uACE0 \uC0AC\uAC74\uBCC4 \uC785\uB825\uACFC \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC774\uC5B4\uC11C \uAD00\uB9AC\uD569\uB2C8\uB2E4."), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), !token ? /* @__PURE__ */ React.createElement("form", { className: "cw-card", onSubmit: login }, /* @__PURE__ */ React.createElement("h2", null, "\uC0AC\uAC74 \uC800\uC7A5\uC6A9 \uB85C\uADF8\uC778"), /* @__PURE__ */ React.createElement("div", { className: "cw-actions" }, /* @__PURE__ */ React.createElement("label", null, "\uC774\uBA54\uC77C", /* @__PURE__ */ React.createElement("input", { type: "email", autoComplete: "username", value: email, onChange: (e) => setEmail(e.target.value), required: true })), /* @__PURE__ */ React.createElement("label", null, "\uBE44\uBC00\uBC88\uD638", /* @__PURE__ */ React.createElement("input", { type: "password", autoComplete: "current-password", value: password, onChange: (e) => setPassword(e.target.value), required: true })), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: busy }, "\uB85C\uADF8\uC778"))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "cw-card" }, /* @__PURE__ */ React.createElement("h2", null, "1. \uACE0\uAC1D \uC120\uD0DD"), /* @__PURE__ */ React.createElement("div", { className: "cw-actions" }, /* @__PURE__ */ React.createElement("label", null, "\uACE0\uAC1D", /* @__PURE__ */ React.createElement("select", { "data-testid": "workspace-client", value: clientId, disabled: busy, onChange: (e) => {
+    generation.current++;
+    setClientId(e.target.value);
+    setError("");
+  } }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uACE0\uAC1D \uC120\uD0DD"), clientId && !clients.some((c) => c.id === clientId) && /* @__PURE__ */ React.createElement("option", { value: clientId }, "\uC120\uD0DD\uD55C \uACE0\uAC1D"), clients.map((c) => /* @__PURE__ */ React.createElement("option", { key: c.id, value: c.id }, c.name)))), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy, onClick: () => act(() => loadClients()) }, "\uACE0\uAC1D \uC0C8\uB85C\uACE0\uCE68"), clientCursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadClients(true)) }, "\uACE0\uAC1D \uB354 \uBCF4\uAE30")), /* @__PURE__ */ React.createElement("form", { className: "cw-actions", style: { marginTop: 16 }, onSubmit: (e) => {
+    e.preventDefault();
+    return act(async () => {
+      if (!name.trim()) return;
+      const data = await api("/v1/clients", { method: "POST", body: JSON.stringify({ name: name.trim() }) });
+      setClients((old) => [...old, { id: data.client_id, name: name.trim() }]);
+      setClientId(data.client_id);
+      setName("");
+    });
+  } }, /* @__PURE__ */ React.createElement("label", null, "\uC0C8 \uACE0\uAC1D \uC774\uB984", /* @__PURE__ */ React.createElement("input", { "data-testid": "workspace-client-name", value: name, maxLength: 200, required: true, onChange: (e) => setName(e.target.value) })), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy || !name.trim() }, "\uACE0\uAC1D \uB4F1\uB85D"))), /* @__PURE__ */ React.createElement("section", { className: "cw-card" }, /* @__PURE__ */ React.createElement("h2", null, "2. \uC0AC\uAC74 \uC0DD\uC131\xB7\uC7AC\uC5F4\uAE30"), /* @__PURE__ */ React.createElement("p", null, "\uC99D\uC5EC: \uC77C\uBC18 \uAC70\uC8FC\uC790 \uB2E8\uC77C \uC7AC\uC0B0\uACFC \uAC19\uC740 \uB2F9\uC0AC\uC790\xB72026\uB144 \uC99D\uC5EC\uC77C\uC758 \uC77C\uBC18 \uB2E4\uC790\uC0B0 \uC785\uB825\xB7\uC800\uC7A5\xB7\uACC4\uC0B0\xB7\uC7AC\uC5F4\uAE30\uB97C \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uBD80\uB2F4\uBD80\xB7\uBE44\uAC70\uC8FC\uC790\uB294 \uCD08\uC548 \uC800\uC7A5\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4: \uC8FC\uD0DD \uC804\uCCB4\xB7\uC77C\uBD80 \uC9C0\uBD84\uC758 \uB9E4\uB9E4\xB7\uC0C1\uC18D\xB7\uC99D\uC5EC \uCDE8\uB4DD \uC0AC\uC2E4\uACFC \uC77C\uBC18 \uC591\uB3C4\xB7\uC77C\uC2DC\uC801 2\uC8FC\uD0DD\xB7\uB2E4\uB978 \uC0C1\uC18D\uC8FC\uD0DD \uBCF4\uC720\xB7\uD63C\uC778\xB7\uBD09\uC591 \uD569\uAC00 \uC0AC\uC2E4\uC744 \uC785\uB825\uD558\uACE0 \uC800\uC7A5\xB7\uACC4\uC0B0\xB7\uC7AC\uC5F4\uAE30\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uBCF4\uC720\uC138\uB294 2026\uB144 \uAC1C\uC778 \uB2E8\uB3C5 \uC18C\uC720 \uC77C\uBC18 \uC8FC\uD0DD\xB7\uAC74\uCD95\uBB3C\uC758 \uC804\uB144 \uAC00\uC561/\uBCF8\uC138/\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 \uC790\uB8CC\uC640 \uC0C1\uD55C\uC744 \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uD1A0\uC9C0\xB7\uC885\uBD80\uC138\uB294 \uCD08\uC548\uB9CC \uC800\uC7A5\uD569\uB2C8\uB2E4. \uC0C1\uC18D\uC740 2026\uB144 \uAC70\uC8FC\uC790 \uC77C\uBC18 \uC0AC\uAC74\uC758 \uC131\uB144 \uBC30\uC6B0\uC790\xB7\uC790\uB140, \uC7AC\uC0B0\xB7\uBE44\uC6A9 \uC785\uB825\uACFC \uC800\uC7A5\xB7\uACC4\uC0B0\xB7\uC7AC\uC5F4\uAE30\uB97C \uC9C0\uC6D0\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "cw-actions" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: !clientId || busy, onClick: () => act(() => enter()) }, "\uC99D\uC5EC \uC0AC\uAC74 \uB9CC\uB4E4\uAE30"), /* @__PURE__ */ React.createElement("button", { disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ caseId: null });
+  } }, "\uC591\uB3C4 \uC0AC\uAC74 \uB9CC\uB4E4\uAE30"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-holding-collection", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ holdingCollection: true });
+  } }, "\uC8FC\uD0DD\uBCC4 \uC7AC\uC0B0\uC138 \uBB36\uC74C"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-holding", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ holding: true, caseId: null });
+  } }, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uB9CC\uB4E4\uAE30"), typeof jtHoldingSession !== "undefined" && jtHoldingSession && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    setClientId(jtHoldingSession.meta.client_id);
+    setEditor({ holding: true, caseId: "resume" });
+  } }, "\uD3B8\uC9D1\uD558\uB358 \uBCF4\uC720\uC138 \uC0AC\uAC74 \uC774\uC5B4\uC11C"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-inheritance", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ inheritance: true, caseId: null });
+  } }, "\uC0C1\uC18D \uC0AC\uAC74 \uB9CC\uB4E4\uAE30"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-vat", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ vat: true, caseId: null });
+  } }, "\uC77C\uBC18\uACFC\uC138 \uBD80\uAC00\uC138 \uC0AC\uAC74 \uB9CC\uB4E4\uAE30"), typeof jtVatSession !== "undefined" && jtVatSession && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    setClientId(jtVatSession.meta.client_id);
+    setEditor({ vat: true, caseId: "resume" });
+  } }, "\uD3B8\uC9D1\uD558\uB358 \uBD80\uAC00\uC138 \uC774\uC5B4\uC11C"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-equity", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ equity: true, caseId: null });
+  } }, "\uC8FC\uC2DD\uD3C9\uAC00 \uC0AC\uAC74 \uB9CC\uB4E4\uAE30"), typeof jtEquitySession !== "undefined" && jtEquitySession && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    setClientId(jtEquitySession.meta.client_id);
+    setEditor({ equity: true, caseId: "resume" });
+  } }, "\uD3B8\uC9D1\uD558\uB358 \uC8FC\uC2DD\uD3C9\uAC00 \uC774\uC5B4\uC11C"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-acquisition", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ acquisition: true, caseId: null });
+  } }, "\uCDE8\uB4DD\uC138 \uAE30\uBCF8\uC815\uBCF4 \uCD08\uC548 \uB9CC\uB4E4\uAE30"), typeof jtAcquisitionSession !== "undefined" && jtAcquisitionSession && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    setClientId(jtAcquisitionSession.meta.client_id);
+    setEditor({ acquisition: true, caseId: "resume" });
+  } }, "\uD3B8\uC9D1\uD558\uB358 \uCDE8\uB4DD\uC138 \uC0AC\uAC74 \uC774\uC5B4\uC11C"), typeof jtInheritanceSession !== "undefined" && jtInheritanceSession && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    setClientId(jtInheritanceSession.meta.client_id);
+    setEditor({ inheritance: true, caseId: "resume" });
+  } }, "\uD3B8\uC9D1\uD558\uB358 \uC0C1\uC18D \uC0AC\uAC74 \uC774\uC5B4\uC11C"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-masters", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ masters: true });
+  } }, "\uB2F9\uC0AC\uC790\xB7\uC7AC\uC0B0 \uB4F1\uB85D"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-sources", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ sources: true });
+  } }, "\uC7AC\uC0B0 \uD3C9\uAC00\uC790\uB8CC"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-comparison", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ caseComparison: true });
+  } }, "\uC0AC\uAC74 \uAC04 \uBE44\uAD50"), /* @__PURE__ */ React.createElement("button", { "data-testid": "workspace-annual", disabled: !clientId || busy, onClick: () => {
+    if (canReplaceDraft()) setEditor({ annual: true });
+  } }, "\uC5F0\uAC04 \uC591\uB3C4 \uD569\uC0B0"), jtTransferSession && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => {
+    setClientId(jtTransferSession.meta.client_id);
+    setEditor({ caseId: "resume" });
+  } }, "\uD3B8\uC9D1\uD558\uB358 \uC591\uB3C4 \uC0AC\uAC74 \uC774\uC5B4\uC11C"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: !clientId || busy, onClick: () => act(() => loadCases()) }, "\uC0AC\uAC74 \uC0C8\uB85C\uACE0\uCE68"), jtGiftSession.workspace && /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy, onClick: () => {
+    setClientId(jtGiftSession.workspace.clientId);
+    setEditor(true);
+  } }, "\uD3B8\uC9D1\uD558\uB358 \uC99D\uC5EC \uC0AC\uAC74 \uC774\uC5B4\uC11C")), clientId && cases.length === 0 && /* @__PURE__ */ React.createElement("p", null, "\uD604\uC7AC \uD45C\uC2DC\uD560 \uC0AC\uAC74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4. \uBAA9\uB85D\uC744 \uC0C8\uB85C\uACE0\uCE68\uD558\uAC70\uB098 \uC0C8 \uC0AC\uAC74\uC744 \uB9CC\uB4DC\uC138\uC694."), cases.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "cw-table" }, /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0AC\uAC74"), /* @__PURE__ */ React.createElement("th", null, "\uC138\uBAA9"), /* @__PURE__ */ React.createElement("th", null, "\uC800\uC7A5 \uC0C1\uD0DC"), /* @__PURE__ */ React.createElement("th", null, "\uC5F4\uAE30"))), /* @__PURE__ */ React.createElement("tbody", null, cases.map((item) => /* @__PURE__ */ React.createElement("tr", { key: item.case_id }, /* @__PURE__ */ React.createElement("td", null, item.label || "\uC81C\uBAA9 \uC5C6\uB294 \uC0AC\uAC74"), /* @__PURE__ */ React.createElement("td", null, item.scenario_type, item.holding_period && /* @__PURE__ */ React.createElement("small", null, " \xB7 ", item.holding_period.tax_year, " \xB7 ", item.holding_period.tax_kind === "property" ? "\uC7AC\uC0B0\uC138" : "\uC885\uBD80\uC138", " \xB7 ", item.holding_period.category === "building" ? "\uAC74\uCD95\uBB3C" : item.holding_period.category === "house" ? "\uC8FC\uD0DD" : "\uD1A0\uC9C0")), /* @__PURE__ */ React.createElement("td", null, states[item.state] || "\uC9C0\uC6D0 \uD655\uC778 \uD544\uC694", item.current_revision > 0 && ` \xB7 \uBC84\uC804 ${item.current_revision}`), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", "data-testid": "workspace-open-" + item.case_id, disabled: busy || !["gift", "transfer", "inheritance", "holding", "acquisition", "equity", "vat"].includes(item.editor), onClick: () => item.editor === "vat" ? canReplaceDraft() && setEditor({ vat: true, caseId: item.case_id }) : item.editor === "equity" ? canReplaceDraft() && setEditor({ equity: true, caseId: item.case_id }) : item.editor === "holding" ? canReplaceDraft() && setEditor({ holding: true, caseId: item.case_id }) : item.editor === "inheritance" ? canReplaceDraft() && setEditor({ inheritance: true, caseId: item.case_id }) : item.editor === "acquisition" ? canReplaceDraft() && setEditor({ acquisition: true, caseId: item.case_id }) : item.editor === "transfer" ? canReplaceDraft() && setEditor({ caseId: item.case_id }) : act(() => enter(item.case_id)) }, "\uC0AC\uAC74 \uC5F4\uAE30"))))))), cursor && /* @__PURE__ */ React.createElement("button", { disabled: busy, onClick: () => act(() => loadCases(true)) }, "\uC0AC\uAC74 \uB354 \uBCF4\uAE30"))), (token || jtGiftSession.workspace) && /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", disabled: busy, onClick: () => {
+    if (!canReplaceDraft()) return;
+    generation.current++;
+    if (typeof jtEquitySession !== "undefined") jtEquitySession = null;
+    if (typeof jtHoldingSession !== "undefined") jtHoldingSession = null;
+    if (typeof jtInheritanceSession !== "undefined") jtInheritanceSession = null;
+    if (typeof jtAcquisitionSession !== "undefined") jtAcquisitionSession = null;
+    jtTransferSession = null;
+    jtGiftSession = { token: "", uid: "", workspace: null };
+    setToken("");
+    setClients([]);
+    setCases([]);
+    setClientId("");
+    setError("");
+  } }, "\uB85C\uADF8\uC544\uC6C3\xB7\uBA54\uBAA8\uB9AC \uBE44\uC6B0\uAE30"));
+}
+window.JTCaseWorkspace = JTCaseWorkspace;
+
+
 /* ────────── ReportGift.jsx ────────── */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -6832,6 +11384,8 @@ function buildGiftKakao(answers, calc) {
   return L.join("\n");
 }
 function JTReportGift({ setRoute, onBack }) {
+  const [caseMode, setCaseMode] = useGiftState(false);
+  const [caseValuation, setCaseValuation] = useGiftState(null);
   const [step, setStep] = useGiftState(0);
   const [answers, setAnswers] = useGiftState({});
   const [loading, setLoading] = useGiftState(false);
@@ -7011,6 +11565,11 @@ function JTReportGift({ setRoute, onBack }) {
     }
     onBack();
   };
+  if (caseMode) return /* @__PURE__ */ React.createElement(JTGiftCases, { initialAnswers: answers, initialValuation: caseValuation, onAnswers: (next) => {
+    setAnswers(next);
+    setReport(null);
+    setQuickReport(null);
+  }, onExit: () => setCaseMode(false) });
   if (loading) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
@@ -7031,7 +11590,7 @@ function JTReportGift({ setRoute, onBack }) {
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: isBurdened ? "\uBD80\uB2F4\uBD80\uC99D\uC5EC (\uC99D\uC5EC\uC138+\uC591\uB3C4\uC138+\uCDE8\uB4DD\uC138)" : "\uC99D\uC5EC\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, nonResident && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "#fff4e5", borderLeft: "4px solid #d08b00", padding: "14px 18px", marginBottom: 16 } }, "\u26A0\uFE0F \uBE44\uAC70\uC8FC\uC790 \uC99D\uC5EC\uB294 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uBC30\uC81C \uB4F1 \uACC4\uC0B0\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC544\uB798\uB294 \uAC70\uC8FC\uC790 \uAE30\uC900 \uCC38\uACE0\uCE58\uC774\uBA70, \uC815\uD655\uD55C \uACC4\uC0B0\uC740 \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4."), giftBlocked && /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: giftGaps, onRetry: runAnalysis }), !giftBlocked && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC138\uBD80\uB2F4" : "\uCD1D \uC138\uBD80\uB2F4 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax)), !isBurdened && Array.isArray(calc.engineWarnings) && calc.engineWarnings.filter((w) => typeof w === "string" && w).map((w, i) => /* @__PURE__ */ React.createElement("p", { key: `ew${i}`, style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F ", w))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC(\uD569\uC0B0) \xB7 \uBD80\uB2F4\uBD80(\uBE5A\uB3C4 \uD568\uAED8 \uB118\uAE40) \xB7 \uC138\uB300\uC0DD\uB7B5(\uC190\uC8FC \uC99D\uC5EC) \xB7 \uD63C\uC778\xB7\uCD9C\uC0B0 \uACF5\uC81C."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), isBurdened ? /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131 (\uBD80\uB2F4\uBD80\uC99D\uC5EC)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC138 (\uBC1B\uB294 \uBD84 \xB7 \xA747)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.giftTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4\uC138 (\uC99D\uC5EC\uC790 \xB7 \uCC44\uBB34\uC778\uC218\uBD84)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.transferTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC138 (\uBC1B\uB294 \uBD84)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.acqTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uBD80\uB2F4")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCC44\uBB34 \uC778\uC218 \uBE44\uC728"), /* @__PURE__ */ React.createElement("td", null, Math.round((calc.debtRatio || 0) * 100), "%")))), calc.debtRecognized === false && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdecea", borderLeft: "4px solid #d14e3a", padding: "12px 16px", marginTop: 12 } }, "\u26A0\uFE0F \uAC00\uC871 \uAC04 \uCC44\uBB34\uB85C \uAC1D\uAD00\uC801 \uC785\uC99D\uC774 \uC5B4\uB824\uC6CC ", /* @__PURE__ */ React.createElement("strong", null, "\uCC44\uBB34\uAC00 \uC778\uC815\uB418\uC9C0 \uC54A\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4"), "(\xA747\u2462). \uC774 \uACBD\uC6B0 \uC804\uC561 \uC99D\uC5EC\uB85C \uACFC\uC138\uB418\uB2C8, \uCC44\uBB34\uBD80\uB2F4\uACC4\uC57D\uC11C\xB7\uC774\uC790\uC9C0\uAE09\uB0B4\uC5ED\xB7\uAE08\uC735\uAE30\uAD00 \uB300\uCD9C \uC99D\uBE59\uC744 \uC900\uBE44\uD558\uC138\uC694.")) : giftBlocked ? null : /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.giftValue))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.taxBase)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.calcTax))), calc.genSkipSurcharge > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC138\uB300\uC0DD\uB7B5 \uD560\uC99D (\xA757)"), /* @__PURE__ */ React.createElement("td", null, "+ ", formatWon(calc.genSkipSurcharge))), calc.giftCredit > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB0A9\uBD80\uC138\uC561\uACF5\uC81C (\uC0AC\uC804\uC99D\uC5EC \xA758)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.giftCredit))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC2E0\uACE0\uC138\uC561\uACF5\uC81C (\xA769, 3%)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.filingCredit))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 10 } }, calc.nonTaxableMsg), priorDedEstimated && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8, fontSize: 13, lineHeight: 1.6 } }, "\u203B \uC0AC\uC804\uC99D\uC5EC \uB2F9\uC2DC \uACF5\uC81C\uC561\uC744 \uC785\uB825\uD558\uC9C0 \uC54A\uC544 ", /* @__PURE__ */ React.createElement("strong", null, "\uAD00\uACC4\uBCC4 \uAE30\uBCF8\uACF5\uC81C(\uC9C1\uACC4\uC874\uC18D 5\uCC9C\uB9CC \uB4F1)\uB85C \uCD94\uC815"), "\uD574 \uB0A9\uBD80\uC138\uC561\uACF5\uC81C(\xA758)\uB97C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uB2F9\uC2DC \uACF5\uC81C\uC561\uC774 \uC774\uC640 \uB2E4\uB974\uBA74(\uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C\uB85C \uB354 \uCEF8\uB358 \uACBD\uC6B0 \uB4F1) \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uB2C8, \uC815\uD655\uD55C \uAC12\uC744 \uC785\uB825\uD558\uAC70\uB098 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694."), answers.marriageDed === "yes" && answers.childbirthDed === "yes" && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.85, marginTop: 8 } }, "\u203B \uD63C\uC778\xB7\uCD9C\uC0B0 \uC99D\uC5EC\uACF5\uC81C\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uD569\uCCD0\uC11C 1\uC5B5\uC6D0\uC774 \uD55C\uB3C4"), "\uC785\uB2C8\uB2E4(\xA753\uC7582\u2462).")), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${s["\uC870\uBB38"]}` : ""), /* @__PURE__ */ React.createElement("td", null, formatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uC0AC\uC2E4\uAD00\uACC4\xB7\uD3C9\uAC00\uC561\xB7\uC138\uBC95 \uAC1C\uC815\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC99D\uC5EC\uC77C\uC774 \uC18D\uD55C \uB2EC\uC758 \uB9D0\uC77C\uBD80\uD130 3\uAC1C\uC6D4\uC785\uB2C8\uB2E4(\uC2E0\uACE0\uC138\uC561\uACF5\uC81C 3%). \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), !giftBlocked && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: isBurdened ? "\uBD80\uB2F4\uBD80\uC99D\uC5EC (\uC99D\uC5EC\uC138+\uC591\uB3C4\uC138+\uCDE8\uB4DD\uC138)" : "\uC99D\uC5EC\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setCaseMode(true) }, "\uC0AC\uAC74 \uC800\uC7A5\xB7\uBD88\uB7EC\uC624\uAE30"), nonResident && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "#fff4e5", borderLeft: "4px solid #d08b00", padding: "14px 18px", marginBottom: 16 } }, "\u26A0\uFE0F \uBE44\uAC70\uC8FC\uC790 \uC99D\uC5EC\uB294 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uBC30\uC81C \uB4F1 \uACC4\uC0B0\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC544\uB798\uB294 \uAC70\uC8FC\uC790 \uAE30\uC900 \uCC38\uACE0\uCE58\uC774\uBA70, \uC815\uD655\uD55C \uACC4\uC0B0\uC740 \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4."), giftBlocked && /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: giftGaps, onRetry: runAnalysis }), !giftBlocked && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC138\uBD80\uB2F4" : "\uCD1D \uC138\uBD80\uB2F4 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax)), !isBurdened && Array.isArray(calc.engineWarnings) && calc.engineWarnings.filter((w) => typeof w === "string" && w).map((w, i) => /* @__PURE__ */ React.createElement("p", { key: `ew${i}`, style: { marginTop: 12, fontWeight: 500, color: "var(--color-text-warning, #854F0B)" } }, "\u26A0\uFE0F ", w))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC(\uD569\uC0B0) \xB7 \uBD80\uB2F4\uBD80(\uBE5A\uB3C4 \uD568\uAED8 \uB118\uAE40) \xB7 \uC138\uB300\uC0DD\uB7B5(\uC190\uC8FC \uC99D\uC5EC) \xB7 \uD63C\uC778\xB7\uCD9C\uC0B0 \uACF5\uC81C."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), isBurdened ? /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131 (\uBD80\uB2F4\uBD80\uC99D\uC5EC)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC138 (\uBC1B\uB294 \uBD84 \xB7 \xA747)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.giftTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4\uC138 (\uC99D\uC5EC\uC790 \xB7 \uCC44\uBB34\uC778\uC218\uBD84)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.transferTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC138 (\uBC1B\uB294 \uBD84)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.acqTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uBD80\uB2F4")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCC44\uBB34 \uC778\uC218 \uBE44\uC728"), /* @__PURE__ */ React.createElement("td", null, Math.round((calc.debtRatio || 0) * 100), "%")))), calc.debtRecognized === false && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdecea", borderLeft: "4px solid #d14e3a", padding: "12px 16px", marginTop: 12 } }, "\u26A0\uFE0F \uAC00\uC871 \uAC04 \uCC44\uBB34\uB85C \uAC1D\uAD00\uC801 \uC785\uC99D\uC774 \uC5B4\uB824\uC6CC ", /* @__PURE__ */ React.createElement("strong", null, "\uCC44\uBB34\uAC00 \uC778\uC815\uB418\uC9C0 \uC54A\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4"), "(\xA747\u2462). \uC774 \uACBD\uC6B0 \uC804\uC561 \uC99D\uC5EC\uB85C \uACFC\uC138\uB418\uB2C8, \uCC44\uBB34\uBD80\uB2F4\uACC4\uC57D\uC11C\xB7\uC774\uC790\uC9C0\uAE09\uB0B4\uC5ED\xB7\uAE08\uC735\uAE30\uAD00 \uB300\uCD9C \uC99D\uBE59\uC744 \uC900\uBE44\uD558\uC138\uC694.")) : giftBlocked ? null : /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.giftValue))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.taxBase)))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.calcTax))), calc.genSkipSurcharge > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC138\uB300\uC0DD\uB7B5 \uD560\uC99D (\xA757)"), /* @__PURE__ */ React.createElement("td", null, "+ ", formatWon(calc.genSkipSurcharge))), calc.giftCredit > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB0A9\uBD80\uC138\uC561\uACF5\uC81C (\uC0AC\uC804\uC99D\uC5EC \xA758)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.giftCredit))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC2E0\uACE0\uC138\uC561\uACF5\uC81C (\xA769, 3%)"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.filingCredit))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.nonTaxableMsg && /* @__PURE__ */ React.createElement("p", { style: { marginTop: 10 } }, calc.nonTaxableMsg), priorDedEstimated && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8, fontSize: 13, lineHeight: 1.6 } }, "\u203B \uC0AC\uC804\uC99D\uC5EC \uB2F9\uC2DC \uACF5\uC81C\uC561\uC744 \uC785\uB825\uD558\uC9C0 \uC54A\uC544 ", /* @__PURE__ */ React.createElement("strong", null, "\uAD00\uACC4\uBCC4 \uAE30\uBCF8\uACF5\uC81C(\uC9C1\uACC4\uC874\uC18D 5\uCC9C\uB9CC \uB4F1)\uB85C \uCD94\uC815"), "\uD574 \uB0A9\uBD80\uC138\uC561\uACF5\uC81C(\xA758)\uB97C \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uB2F9\uC2DC \uACF5\uC81C\uC561\uC774 \uC774\uC640 \uB2E4\uB974\uBA74(\uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C\uB85C \uB354 \uCEF8\uB358 \uACBD\uC6B0 \uB4F1) \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uB2C8, \uC815\uD655\uD55C \uAC12\uC744 \uC785\uB825\uD558\uAC70\uB098 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694."), answers.marriageDed === "yes" && answers.childbirthDed === "yes" && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.85, marginTop: 8 } }, "\u203B \uD63C\uC778\xB7\uCD9C\uC0B0 \uC99D\uC5EC\uACF5\uC81C\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uD569\uCCD0\uC11C 1\uC5B5\uC6D0\uC774 \uD55C\uB3C4"), "\uC785\uB2C8\uB2E4(\xA753\uC7582\u2462).")), calc.precise && calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${s["\uC870\uBB38"]}` : ""), /* @__PURE__ */ React.createElement("td", null, formatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uC0AC\uC2E4\uAD00\uACC4\xB7\uD3C9\uAC00\uC561\xB7\uC138\uBC95 \uAC1C\uC815\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC99D\uC5EC\uC77C\uC774 \uC18D\uD55C \uB2EC\uC758 \uB9D0\uC77C\uBD80\uD130 3\uAC1C\uC6D4\uC785\uB2C8\uB2E4(\uC2E0\uACE0\uC138\uC561\uACF5\uC81C 3%). \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), !giftBlocked && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         setRoute,
@@ -7048,7 +11607,7 @@ function JTReportGift({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC99D\uC5EC\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uC0AC\uC804\uC99D\uC5EC\xB7\uBD80\uB2F4\uBD80 \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && cur.id !== "reAddress" && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC99D\uC5EC\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uC0AC\uC804\uC99D\uC5EC\xB7\uBD80\uB2F4\uBD80 \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", style: { marginBottom: 16 }, onClick: () => setCaseMode(true) }, "\uC0AC\uAC74 \uC800\uC7A5\xB7\uBD88\uB7EC\uC624\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && cur.id !== "reAddress" && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -9842,7 +14401,7 @@ function JTReportProperty({ setRoute, onBack }) {
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC7AC\uC0B0\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC7AC\uC0B0\uC138(\uC5F0\uAC04 \uCD1D\uC561)" : "\uC5F0\uAC04 \uCD1D \uB0A9\uBD80\uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.appliedRate && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, opacity: 0.8 } }, answers.propertyKind, " \xB7 \uACF5\uC2DC\uAC00\uACA9 ", formatWon(Number(answers.standardValue) || 0), " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", calc.appliedRate, "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uB354 \uC815\uD655\uD788 \uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694. ", /* @__PURE__ */ React.createElement("strong", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84(0.14%)\uC740 \u300C\uB3C4\uC2DC\uC9C0\uC5ED\u300D\uC73C\uB85C \uAC00\uC815\uD574 \uC774\uBBF8 \uD3EC\uD568"), "\uD588\uC73C\uB2C8, \uBE44\uB3C4\uC2DC\uC9C0\uC5ED\uC774\uBA74 \uADF8\uB9CC\uD07C \uC904\uC5B4\uB4ED\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("br", null), answers.propertyKind === "\uC8FC\uD0DD" ? "\uC5EC\uB7EC \uCC44 \uD569\uC0B0 \uB4F1. 1\uC138\uB3001\uC8FC\uD0DD\uC774\uBA74 \uB0AE\uC740 \uACF5\uC815\uBE44\uC728(43~45%)\uC774 \uBC18\uC601\uB410\uC5B4\uC694 \u2014 \uACF5\uC2DC 9\uC5B5 \uC774\uD558\uBA74 \uC138\uC728 \uD2B9\uB840\uAE4C\uC9C0, 9\uC5B5 \uCD08\uACFC\uBA74 \uACF5\uC815\uBE44\uC728\uB9CC \uC801\uC6A9\uB429\uB2C8\uB2E4." : answers.propertyKind === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0 \uC885\uB958(\uC885\uD569/\uBCC4\uB3C4/\uBD84\uB9AC)\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)." : "\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900 (\uACF5\uC2DC\uAC00\uACA9 \xD7 \uACF5\uC815\uBE44\uC728 ", calc.fairRatio, ")"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728"), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7AC\uC0B0\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.mainTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138 (\uBCF8\uC138\uC758 20%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.urbanTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] ? "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uC138\uBD80\uB2F4 \uC0C1\uD55C \uC801\uC6A9 \uD6C4)" : "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uACFC\uD45C \xD7 0.14%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.urbanTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uC5F0\uAC04 \uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), (calc.firstHalf > 0 || calc.secondHalf > 0) && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uB0A9\uBD80 \uC2DC\uAE30:"), " ", calc.firstHalf > 0 && calc.secondHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} + 9\uC6D4 ${formatWon(calc.secondHalf)} (\uC808\uBC18\uC529 \uB098\uB220 \uB0A9\uBD80)` : calc.firstHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} (\uC804\uC561)` : `9\uC6D4 ${formatWon(calc.secondHalf)} (\uC804\uC561)`, " ", /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, "(\uC9C0\uBC29\uC138\uBC95 \xA7115)")), calc.baseCap && calc.baseCap["\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900\uC0C1\uD55C\uC561 \uC801\uC6A9(\xA7110\u2462):"), " \uACF5\uC2DC\uAC00\uACA9 \xD7 \uBE44\uC728 ", formatWon(calc.baseCap["\uC0C1\uD55C\uC804\uACFC\uC138\uD45C\uC900"]), " \u2192 \uC0C1\uD55C ", formatWon(calc.baseCap["\uC0C1\uD55C\uC561"])), calc.burdenApplied && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC138\uBD80\uB2F4 \uC0C1\uD55C\uC774 \uC801\uC6A9\uB418\uC5B4, \uC804\uB144 \uB300\uBE44 \uC77C\uC815 \uD55C\uB3C4\uAE4C\uC9C0\uB9CC \uC62C\uB790\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7122).", calc.burden && typeof calc.burden["\uADFC\uAC70"] === "string" && calc.burden["\uADFC\uAC70"] && /* @__PURE__ */ React.createElement("div", null, "\uADFC\uAC70: ", calc.burden["\uADFC\uAC70"], typeof calc.burden["\uC0C1\uD55C\uC728"] === "string" && calc.burden["\uC0C1\uD55C\uC728"] ? ` \xB7 \uC0C1\uD55C\uC728 ${calc.burden["\uC0C1\uD55C\uC728"]}` : ""), calc.burden && calc.burden["\uBCF8\uC138\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uBCF8\uC138 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uBCF8\uC138"]), " \u2192 ", formatWon(calc.mainTax)), calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uB3C4\uC2DC\uC9C0\uC5ED\uBD84"]), " \u2192 ", formatWon(calc.urbanTax))), calc.smallExempt && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, "2\uCC9C\uC6D0 \uBBF8\uB9CC\uC774\uB77C \uC9D5\uC218\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\xA7119)")), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${propFmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, propFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 } }, "\uC7AC\uC0B0\uC138\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uB9E4\uB144 6\uC6D4 1\uC77C \uAE30\uC900 \uC18C\uC720\uC790"), "\uC5D0\uAC8C \uADF8 \uD574 \uC804\uC561 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7114). 6\uC6D4 1\uC77C \uC9C1\uC804 \uB9E4\uB3C4\xB7\uC9C1\uD6C4 \uB9E4\uC218\uAC00 \uADF8 \uD574 \uC7AC\uC0B0\uC138 \uBD80\uB2F4 \uBA74\uC5D0\uC11C \uC720\uB9AC\uD569\uB2C8\uB2E4. \uACF5\uC2DC\uAC00\uACA9\uC740 \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), commentary && commentary.headline && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC790\uB3D9 \uBD84\uC11D"), /* @__PURE__ */ React.createElement("p", { style: { fontWeight: 600 } }, commentary.headline), (commentary.cautions || []).map((c, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { marginBottom: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\xB7 ", c.title), " \u2014 ", c.detail))), typeof JTReportConvert === "function" && !propBlocked && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC7AC\uC0B0\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC7AC\uC0B0\uC138(\uC5F0\uAC04 \uCD1D\uC561)" : "\uC7AC\uC0B0\uC138\xB7\uBD80\uAC00\uC138\uBAA9 \uACC4\uC0B0 \uC18C\uACC4 (\uC9C0\uC6D0 \uBC94\uC704 \uD655\uC778 \uD544\uC694)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.appliedRate && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, opacity: 0.8 } }, answers.propertyKind, " \xB7 \uACF5\uC2DC\uAC00\uACA9 ", formatWon(Number(answers.standardValue) || 0), " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", calc.appliedRate, "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uB354 \uC815\uD655\uD788 \uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694. ", /* @__PURE__ */ React.createElement("strong", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84(0.14%)\uC740 \u300C\uB3C4\uC2DC\uC9C0\uC5ED\u300D\uC73C\uB85C \uAC00\uC815\uD574 \uC774\uBBF8 \uD3EC\uD568"), "\uD588\uC73C\uB2C8, \uBE44\uB3C4\uC2DC\uC9C0\uC5ED\uC774\uBA74 \uADF8\uB9CC\uD07C \uC904\uC5B4\uB4ED\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("br", null), answers.propertyKind === "\uC8FC\uD0DD" ? "\uC5EC\uB7EC \uCC44 \uD569\uC0B0 \uB4F1. 1\uC138\uB3001\uC8FC\uD0DD\uC774\uBA74 \uB0AE\uC740 \uACF5\uC815\uBE44\uC728(43~45%)\uC774 \uBC18\uC601\uB410\uC5B4\uC694 \u2014 \uACF5\uC2DC 9\uC5B5 \uC774\uD558\uBA74 \uC138\uC728 \uD2B9\uB840\uAE4C\uC9C0, 9\uC5B5 \uCD08\uACFC\uBA74 \uACF5\uC815\uBE44\uC728\uB9CC \uC801\uC6A9\uB429\uB2C8\uB2E4." : answers.propertyKind === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0 \uC885\uB958(\uC885\uD569/\uBCC4\uB3C4/\uBD84\uB9AC)\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)." : "\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900 (\uACF5\uC2DC\uAC00\uACA9 \xD7 \uACF5\uC815\uBE44\uC728 ", calc.fairRatio, ")"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728"), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7AC\uC0B0\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.mainTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138 (\uBCF8\uC138\uC758 20%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.urbanTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] ? "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uC138\uBD80\uB2F4 \uC0C1\uD55C \uC801\uC6A9 \uD6C4)" : "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uACFC\uD45C \xD7 0.14%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.urbanTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uC5F0\uAC04 \uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), (calc.firstHalf > 0 || calc.secondHalf > 0) && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uB0A9\uBD80 \uC2DC\uAE30:"), " ", calc.firstHalf > 0 && calc.secondHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} + 9\uC6D4 ${formatWon(calc.secondHalf)} (\uC808\uBC18\uC529 \uB098\uB220 \uB0A9\uBD80)` : calc.firstHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} (\uC804\uC561)` : `9\uC6D4 ${formatWon(calc.secondHalf)} (\uC804\uC561)`, " ", /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, "(\uC9C0\uBC29\uC138\uBC95 \xA7115)")), calc.baseCap && calc.baseCap["\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900\uC0C1\uD55C\uC561 \uC801\uC6A9(\xA7110\u2462):"), " \uACF5\uC2DC\uAC00\uACA9 \xD7 \uBE44\uC728 ", formatWon(calc.baseCap["\uC0C1\uD55C\uC804\uACFC\uC138\uD45C\uC900"]), " \u2192 \uC0C1\uD55C ", formatWon(calc.baseCap["\uC0C1\uD55C\uC561"])), calc.burdenApplied && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC138\uBD80\uB2F4 \uC0C1\uD55C\uC774 \uC801\uC6A9\uB418\uC5B4, \uC804\uB144 \uB300\uBE44 \uC77C\uC815 \uD55C\uB3C4\uAE4C\uC9C0\uB9CC \uC62C\uB790\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7122).", calc.burden && typeof calc.burden["\uADFC\uAC70"] === "string" && calc.burden["\uADFC\uAC70"] && /* @__PURE__ */ React.createElement("div", null, "\uADFC\uAC70: ", calc.burden["\uADFC\uAC70"], typeof calc.burden["\uC0C1\uD55C\uC728"] === "string" && calc.burden["\uC0C1\uD55C\uC728"] ? ` \xB7 \uC0C1\uD55C\uC728 ${calc.burden["\uC0C1\uD55C\uC728"]}` : ""), calc.burden && calc.burden["\uBCF8\uC138\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uBCF8\uC138 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uBCF8\uC138"]), " \u2192 ", formatWon(calc.mainTax)), calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uB3C4\uC2DC\uC9C0\uC5ED\uBD84"]), " \u2192 ", formatWon(calc.urbanTax))), calc.smallExempt && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, "2\uCC9C\uC6D0 \uBBF8\uB9CC\uC774\uB77C \uC9D5\uC218\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\xA7119)")), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${propFmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, propFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 } }, "\uC7AC\uC0B0\uC138\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uB9E4\uB144 6\uC6D4 1\uC77C \uAE30\uC900 \uC18C\uC720\uC790"), "\uC5D0\uAC8C \uADF8 \uD574 \uC804\uC561 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7114). 6\uC6D4 1\uC77C \uC9C1\uC804 \uB9E4\uB3C4\xB7\uC9C1\uD6C4 \uB9E4\uC218\uAC00 \uADF8 \uD574 \uC7AC\uC0B0\uC138 \uBD80\uB2F4 \uBA74\uC5D0\uC11C \uC720\uB9AC\uD569\uB2C8\uB2E4. \uACF5\uC2DC\uAC00\uACA9\uC740 \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), commentary && commentary.headline && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC790\uB3D9 \uBD84\uC11D"), /* @__PURE__ */ React.createElement("p", { style: { fontWeight: 600 } }, commentary.headline), (commentary.cautions || []).map((c, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { marginBottom: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\xB7 ", c.title), " \u2014 ", c.detail))), typeof JTReportConvert === "function" && !propBlocked && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         calcId: "property",
@@ -9866,7 +14425,9 @@ function JTReportProperty({ setRoute, onBack }) {
     onBack();
     return null;
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTVWorldAttributes, { propertyKind: answers.propertyKind, onApplyValue: (value) => setAnswers((prior) => __spreadProps(__spreadValues({}, prior), { standardValue: String(value) })) }), err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+    window.location.hash = "/report/workspace";
+  } }, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5 \uC791\uC5C5\uB300 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTVWorldAttributes, { propertyKind: answers.propertyKind, onApplyValue: (value) => setAnswers((prior) => __spreadProps(__spreadValues({}, prior), { standardValue: String(value) })) }), err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
     if (cur.amountId) priorAutoRef.current = propPriorAutoUser(priorAutoRef.current, "option");
     setAns(cur.id, o[0]);
   } }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.amountId && answers[cur.id] === cur.amountWhen && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 12 } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontSize: 13, marginBottom: 4 } }, "\uC791\uB144 \uACF5\uC2DC\uAC00\uACA9 (\uC6D0)"), /* @__PURE__ */ React.createElement(

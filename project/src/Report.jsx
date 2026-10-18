@@ -524,6 +524,7 @@ function JTReportHub({ setRoute, setSubRoute }) {
             양도·상속·증여·취득·재산·종부의 부동산 세금부터 <strong>종합소득세·실수령·법인 전환·청년창업 감면 진단까지</strong> — 검증된 계산 엔진으로 바로 계산합니다.<br/>
             세법을 가르치는 세무사가 직접 설계했습니다.
           </p>
+          <button className="jt-btn jt-btn--primary" onClick={() => setSubRoute("workspace")}>고객·사건 작업대 열기</button>
           <div className="jt-report-hero__meta reveal">
             <span>● 로그인 불필요</span>
             <span>● 입력값을 계정에 저장하지 않습니다</span>
@@ -712,7 +713,7 @@ window.JTReportHub = JTReportHub;
 // ============ 라우터 (허브 ↔ 각 진단) ============
 /* ★ 새 계산기를 추가하면 «반드시» 이 배열에도 키를 넣을 것.
    빠뜨리면 딥링크가 조용히 허브로 리다이렉트되고 에러도 안 난다(260804 실측). */
-const JT_KNOWN_SUBS = ['hub', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'acq-check', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup', 'reform-cgt', 'reform-cre', 'crypto'];
+const JT_KNOWN_SUBS = ['hub', 'workspace', 'appeal', 'cgt', 'income', 'vat', 'gift', 'inheritance', 'acquisition', 'acq-check', 'property', 'comprehensive', 'corporate', 'insurance', 'compare', 'burden', 'youthstartup', 'reform-cgt', 'reform-cre', 'crypto'];
 const jtNormSub = (s) => (JT_KNOWN_SUBS.indexOf(s) >= 0 ? s : 'hub'); // 모르는 계산기 키 → 허브 (깨진 공유링크 방어)
 
 function JTReportPage({ setRoute }) {
@@ -770,6 +771,7 @@ function JTReportPage({ setRoute }) {
 
   return (
     <div className="jt-report">
+      {subRoute === 'workspace' && <JTCaseWorkspace onBack={back} />}
       {subRoute === 'hub' && <JTReportHub setRoute={setRoute} setSubRoute={setSubRoute} />}
       {subRoute === 'reform-cgt' && <JTReportReformCGT setRoute={setRoute} setSubRoute={setSubRoute} onBack={back} />}
       {subRoute === 'reform-cre' && <JTReportReformCRE setRoute={setRoute} setSubRoute={setSubRoute} onBack={back} />}
@@ -778,6 +780,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'cgt' && <JTReportCGT setRoute={setRoute} onBack={back} />}
       {subRoute === 'income' && <JTReportIncome setRoute={setRoute} onBack={back} />}
       {subRoute === 'gift' && <JTReportGift setRoute={setRoute} onBack={back} />}
+      {subRoute === 'inheritance' && <div className="jt-container"><button className="jt-btn jt-btn--ghost" onClick={() => setSubRoute('workspace')}>상속 사건 입력·저장 작업대 열기</button><p>사건 작업대에서는 고객별 재산·상속인 사실을 확인하고 저장·계산·과거 결과를 관리합니다. 아래 빠른 계산 답안은 자동 이전되지 않습니다.</p></div>}
       {subRoute === 'inheritance' && <JTReportInheritance setRoute={setRoute} onBack={back} />}
       {subRoute === 'acquisition' && <JTReportAcquisition setRoute={setRoute} onBack={back} />}
       {subRoute === 'acq-check' && <JTReportAcqCheck setRoute={setRoute} onBack={back} />}
