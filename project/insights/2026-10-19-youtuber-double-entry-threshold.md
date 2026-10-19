@@ -91,6 +91,8 @@ heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건�
 
 자료 전달 방법은 [유튜버 기장 시작 전 자료 나누기](https://www.jttax.co.kr/insights/youtuber-bookkeeping-handover.html), 지원 업무는 [기장 업무 안내](https://www.jttax.co.kr/services/bookkeeping.html)에서 확인할 수 있습니다.
 
+같은 주제를 질문 중심으로 읽으려면 [네이버 블로그의 유튜버 복식부기 기준 안내](https://blog.naver.com/jt_tax/224446476508)를 참고하세요.
+
 ## 근거와 적용 범위
 
 - [소득세법 제160조](https://www.law.go.kr/법령/소득세법/제160조): 장부 기록과 복식부기의무자 구분.
