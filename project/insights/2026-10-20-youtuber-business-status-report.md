@@ -94,6 +94,8 @@ C씨가 입금된 금액만 엑셀에 적었다고 가정합니다. 애드센스
 
 직접 신고한 자료를 이어서 맡기는 과정은 [유튜버 기장 시작 자료](https://www.jttax.co.kr/insights/youtuber-bookkeeping-handover.html)에서, 장부 작성 대상과 신고 방식의 차이는 [간편장부와 경비율 안내](https://www.jttax.co.kr/insights/simple-bookkeeping-vs-expense-rate.html)에서 확인할 수 있습니다.
 
+기본 질문부터 읽고 싶다면 [블로그: 사업장현황신고, 면세 유튜버도 해야 하나요?](https://blog.naver.com/jt_tax/224447477401)를 함께 보세요.
+
 ## 근거와 적용 범위
 
 - [소득세법 제78조](https://www.law.go.kr/법령/소득세법/제78조): 사업장현황신고의 원칙, 신고기한, 부가가치세 신고와의 관계 및 예외
