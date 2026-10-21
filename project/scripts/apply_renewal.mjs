@@ -23,9 +23,9 @@ for(const f of files){let html=await fs.readFile(f,'utf8');const rel=path.relati
   const match=html.match(/<header\b[\s\S]*?<\/header>/i);
   if(!match || match.index>html.search(/<(main|article)\b/i) || /<h1\b/i.test(match[0]))throw new Error('Unexpected shell; refuse header replacement: '+rel);
   html=html.replace(match[0],header);
-  html=html.replace(/<script src="\/project\/src\/renewal-static\.js[^>]*><\/script>/g,'').replace('</body>','<script src="/project/src/renewal-static.js?v=1" defer></script>\n</body>');
+  html=html.replace(/\s*<script src="\/project\/src\/renewal-static\.js[^>]*><\/script>/g,'').replace('</body>','<script src="/project/src/renewal-static.js?v=1" defer></script>\n</body>');
   html=html.replace(/<body\b[^>]*>/i,'<body class="jt-renewal-static">');
-  html=html.replace(/<nav class="jt-renewal-mobile-cta"[\s\S]*?<\/nav>/g,'').replace('</body>',mobile+'\n</body>');
+  html=html.replace(/\s*<nav class="jt-renewal-mobile-cta"[\s\S]*?<\/nav>/g,'').replace('</body>',mobile+'\n</body>');
   html=html.replace(/<footer\b([^>]*)>([\s\S]*?)<\/footer>/i,(_all,attrs,body)=>{
    body=body.replace(/<nav class="jt-renewal-footer-links"[\s\S]*?<\/nav>/g,'');
    return `<footer class="jt-renewal-footer">${body}<nav class="jt-renewal-footer-links" aria-label="이용 안내">${links}<a href="/#/privacy">개인정보처리방침</a><a href="/#/terms">이용약관</a></nav></footer>`;
