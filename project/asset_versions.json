@@ -1,15 +1,15 @@
 {
   "project/dist/app.js": {
-    "v": "82",
-    "sha256": "98c422f8d4b1936f6f33a39599d7cb9f47e49ce9d1ec19b3f64bc9ab9d02fab6"
+    "v": "90",
+    "sha256": "517719bbca038d64361d32fd21341e6dbc64932369161fa97c9c3fc8f2ef223c"
   },
   "project/src/styles.css": {
-    "v": "30",
-    "sha256": "7633c8e04fffe22fa8aff9c63d91722b241a98760249a425f7ad255d135d6b88"
+    "v": "31",
+    "sha256": "d3d5d99107199a4032f0dfccf94f70da93d1f41422cacbc39dfe541dedaa3d83"
   },
   "project/src/redesign.css": {
-    "v": "53",
-    "sha256": "969d4000630e1cd79eb9550b4170f3dffa446940f0625f9cfc2b17c3832acb15"
+    "v": "54",
+    "sha256": "deea2b11f70364be2c8de359dbea2fa694ca9c453203b3298310d15e29bc9f62"
   },
   "project/src/colors_and_type.css": {
     "v": "3",

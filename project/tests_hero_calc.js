@@ -311,7 +311,7 @@ console.log('\n════ ⑥ 히어로 배치 — 첫 화면에서 보여야 
   const iHome = order.indexOf("'Home.jsx'");
   eq('HeroCalc 가 Home 보다 «먼저» (번들 ORDER — window.JTHeroCalc 선행)', iHero >= 0 && iHero < iHome, true);
   const app = fs.readFileSync(SRC('App.jsx'), 'utf8');
-  eq('JTBrandMoment 호출부가 setRoute 를 넘김', /<JTBrandMoment setRoute=\{setRoute\} \/>/.test(app), true);
+  eq('활성 개편 홈이 setRoute 를 넘김', /<JTRebuildHome setRoute=\{setRoute\} \/>/.test(app), true);
 }
 
 console.log('\n════════════════════');
@@ -349,7 +349,7 @@ console.log('\n════ ⑦ 12열 장부형 홈 — 구조·동선 계약 �
     const formSlugs = [...mapSrc.matchAll(/([a-z]+): '([^']*)'/g)].map((m) => [m[1], m[2]]);
     const formKeys = [...pages2.matchAll(/\{ k: '([^']+)', d: /g)].map((m) => m[1]);
     const norm = (a) => JSON.stringify(a.slice().sort());
-    eq('상황 색인 slug 6개가 예약 폼 허용 목록과 같음', homeSlugs.length === 6 && norm(homeSlugs) === norm(formSlugs), true);
+    eq('기존6분야와 취득세·크리에이터를 포함한 예약8분야 계약', homeSlugs.length === 6 && formSlugs.length === 8 && norm([...homeSlugs, ['acquisition','취득세'], ['creators','크리에이터 세금']]) === norm(formSlugs), true);
     eq('slug 가 가리키는 분야가 예약 폼 선택지에 실재', formSlugs.every(([, t]) => t === '' || formKeys.includes(t)), true);
     eq('상황 링크가 slug 를 주소에 담음', /href=\{'\/#\/booking\/' \+ s\.slug\}/.test(home), true);
     eq('일반 상담은 저장된 분야를 지움', /else sessionStorage\.removeItem\('jt_preferred_topic'\)/.test(home), true);
@@ -360,7 +360,7 @@ console.log('\n════ ⑦ 12열 장부형 홈 — 구조·동선 계약 �
     try { resolve = new Function(mapDecl + '\n' + fnDecl + '\nreturn jtResolveBookingTopic;')(); } catch (e) {}
     eq('해석 함수를 소스에서 꺼내 실행할 수 있음', typeof resolve, 'function');
     if (resolve) {
-      eq('slug 6개가 각자의 분야로 해석됨', homeSlugs.every(([slug, topic]) => resolve(slug, '') === topic), true);
+      eq('slug 8개가 각자의 분야로 해석됨', formSlugs.every(([slug, topic]) => resolve(slug, '') === topic), true);
       eq('주소의 slug 가 오래된 저장값보다 우선', resolve('audit', '경정청구'), '세무조사 대응');
       eq('일반 상담 slug 는 오래된 저장값을 무시하고 빈 선택', resolve('general', '경정청구'), '');
       eq('slug 가 없으면 저장값을 사용', resolve('', '경정청구'), '경정청구');

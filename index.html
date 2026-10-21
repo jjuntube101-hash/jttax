@@ -136,8 +136,8 @@
   <!-- 세액계산 엔진(검증된 jt-tax-engine) 주소 — JT 리포트 계산기가 호출 -->
   <script>window.JT_ENGINE_BASE = 'https://jt-tax-engine.fly.dev';</script>
 
-  <link rel="stylesheet" href="project/src/styles.css?v=30">
-  <link rel="stylesheet" href="project/src/redesign.css?v=53">
+  <link rel="stylesheet" href="project/src/styles.css?v=31">
+  <link rel="stylesheet" href="project/src/redesign.css?v=54">
 
   <!-- 부팅 폴백의 «지연 노출» 규칙 (아래 #root 주석 참조).
        ⛔ head 에 둔다 — style 은 metadata content 라 body 안은 표준 위치가 아니고,
@@ -167,6 +167,10 @@
       .jt-boot__late{ animation:none; }
     }
   </style>
+<link rel="stylesheet" href="/project/src/renewal.css?v=6">
+<link rel="stylesheet" href="/project/src/renewal-pages.css?v=6">
+<link rel="stylesheet" href="/project/src/renewal-flow.css?v=6">
+<link rel="stylesheet" href="/project/src/renewal-motion.css?v=6">
 </head>
 <body>
   <!-- ⚠️ #root 안의 이 블록은 «부팅 폴백»이다 — 지우지 말 것 (260808 Codex P2a P0).
@@ -228,6 +232,8 @@
        ⛔ 소스는 project/src/*.jsx 다. 이 파일을 손으로 고치지 말 것 —
           node project/scripts/build_bundle.mjs 로 다시 만든다(순서는 그 스크립트의 ORDER).
        ⛔ 소스를 고쳤으면 «번들도 함께 커밋»해야 한다 — tests_build_fresh.js 가 막는다. -->
-  <script src="project/dist/app.js?v=82"></script>
+  <script src="project/dist/insight-meta.js?v=1"></script>
+  <script src="project/dist/app.js?v=90"></script>
 </body>
 </html>
+

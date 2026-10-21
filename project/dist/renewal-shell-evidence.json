@@ -1,0 +1,587 @@
+[
+  {
+    "path": "about/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "services/asset-transfer.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "services/bookkeeping.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "services/consulting.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "services/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "services/tax-audit.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "services/tax-refund.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "experts/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "experts/kim-gahwan.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "experts/kim-minseok.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "experts/lee-hyunjun.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-acquisition-date-dispute.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-acquisition-date-overpaid.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-acquisition-date.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-basics.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-childbirth-one-house-dispute.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-childbirth-reduction-missed.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-childbirth-reduction.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-correction-claim-deadline.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-correction-claim-rejected.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-costs.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-first-home-inherited-share.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-first-home-no-house-dispute.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-first-home-no-house-test.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-first-home-recapture.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-first-home-reduction.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-house-count-dispute.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-house-count-inherited-share.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-house-count.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-household-dispute.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-household-overpaid.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-household-separate-family.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-newlywed-reduction-ended.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-newlywed-reduction-past.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-notice.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-rate-guide.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-reduction-missed-claim.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-temporary-two-houses-dispute.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-temporary-two-houses-overpaid.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/acquisition-tax-temporary-two-houses.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/adsense-reconciliation.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/adsense-zero-rate-evidence.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/bookkeeping-contract-scope.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/burdened-gift.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/business-card-vat-deduction.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/capital-gains-tax-traps.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/comprehensive-income-tax-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/comprehensive-real-estate-tax-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/corporate-conversion.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-bookkeeping-software-checks.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-business-loss-salary.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-editor-withholding.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-equipment.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-income-statement-review.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-merch-common-input-vat.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-pre-registration-vat.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-record-retention.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-sponsored-product-value.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/creator-workspace-address-change.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/family-business-succession.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/gift-tax-exemption-limit.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/gift-tax-saving.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/gift-vs-inheritance-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/honest-filing-confirmation-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/housing-rental-income.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/inheritance-tax-basics.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/inheritance-tax-exemption-limit.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/multi-house-cgt-surcharge-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/net-salary-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/one-house-cgt-exemption.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/property-holding-tax-june1.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/property-tax-2026-calculation.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/retirement-income-tax-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/side-job-income-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/simple-bookkeeping-vs-expense-rate.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/spouse-gift-carryover-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/tax-appeal-refund-correction.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/tax-audit-first-72h.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/tax-reform-2026-real-estate.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/vat-basics.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/vat-final-filing-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/vat-interim-decline.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/virtual-asset-tax-2027.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/youth-startup-tax-reduction-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/youtube-coupang-business-registration.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/youtube-youth-startup-tax-relief.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/youtuber-bookkeeping-handover.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/youtuber-business-status-report.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/youtuber-double-entry-threshold.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/youtuber-income-calculator-inputs.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/youtuber-tax-guide.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/2026-tax-reform-capital-gains.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/2026-tax-reform-property-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/acquisition-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/burdened-gift-simulator.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/capital-gains-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/comprehensive-real-estate-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/crypto-tax-2027.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/disposal-comparison.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/gift-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/income-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/incorporation-simulator.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/inheritance-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/net-salary.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/property-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/value-added-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "calculators/youthstartup.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "acquisition-tax/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "desk/broker.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "desk/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "desk/scrivener.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "desk/thanks.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "consult.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "creators.html",
+    "h1": 1,
+    "mainPreserved": true
+  }
+]

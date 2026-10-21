@@ -298,11 +298,75 @@ function useCountUp(target, ms = 1600) {
 }
 window.useCountUp = useCountUp;
 
+// One live position/velocity survives every retarget; exact critically damped integration.
+function useJTMenuMotion(open, onOpenChange) {
+  const panel = React.useRef(null), clip = React.useRef(null), trigger = React.useRef(null);
+  const api = React.useRef(null), change = React.useRef(onOpenChange);
+  change.current = onOpenChange;
+  React.useLayoutEffect(() => {
+    const el=panel.current, box=clip.current, media=window.matchMedia('(prefers-reduced-motion: reduce)');
+    let height=el.offsetHeight, x=-height, v=0, target=-height, frame=0, last=0, drag=null, wanted=false, dragged=false;
+    const paint=()=>{ el.style.transform=`translate3d(0,${x}px,0)`; box.style.height=`${Math.max(0,height+x)}px`; };
+    const tick=time=>{
+      const dt=Math.min((time-last)/1000,0.04); last=time;
+      const omega=22, y=x-target, c=v+omega*y, decay=Math.exp(-omega*dt);
+      x=target+(y+c*dt)*decay; v=(v-omega*c*dt)*decay;
+      if(Math.abs(x-target)<0.1 && Math.abs(v)<1){ x=target;v=0;frame=0;paint();return; }
+      paint();frame=requestAnimationFrame(tick);
+    };
+    const start=()=>{ if(!frame){last=performance.now();frame=requestAnimationFrame(tick);} };
+    const set=open=>{
+      wanted=open; target=open?0:-height;
+      el.querySelectorAll('a, button:not(.jt-menu-grip)').forEach(item=>item.inert=!open);
+      handle.tabIndex=open?0:-1;
+      if(!open && el.contains(document.activeElement)) trigger.current?.focus();
+      if(media.matches){window.cancelAnimationFrame(frame);frame=0;x=target;v=0;paint();}else start();
+    };
+    const down=e=>{
+      if(e.button!==0 || !e.isPrimary)return;
+      window.cancelAnimationFrame(frame);frame=0;
+      dragged=false;
+      drag={id:e.pointerId,y:e.clientY,x,history:[{y:e.clientY,t:e.timeStamp}]};
+      e.currentTarget.setPointerCapture(e.pointerId);
+    };
+    const move=e=>{
+      if(!drag||e.pointerId!==drag.id)return;
+      if(Math.abs(e.clientY-drag.y)>8)dragged=true;
+      const raw=drag.x+e.clientY-drag.y;
+      x=Math.max(-height,Math.min(0,raw));
+      drag.history.push({y:e.clientY,t:e.timeStamp});drag.history=drag.history.filter(p=>e.timeStamp-p.t<90);
+      paint();
+    };
+    const end=e=>{
+      if(!drag||e.pointerId!==drag.id)return;
+      const h=drag.history, a=h[0], z=h[h.length-1];
+      v=e.type==='pointercancel'||e.timeStamp-z.t>90?0:(z.y-a.y)/Math.max(1,z.t-a.t)*1000;
+      if((x>=0&&v>0)||(x<=-height&&v<0))v=0;
+      const next=e.type==='pointercancel'?wanted:x+v*0.18>-height/2;
+      drag=null;set(next);change.current(next);
+    };
+    const handle=el.querySelector('.jt-menu-grip');
+    const click=e=>{if(dragged){e.preventDefault();e.stopPropagation();dragged=false;}};
+    handle.addEventListener('click',click,true);
+    handle.addEventListener('pointerdown',down);handle.addEventListener('pointermove',move);
+    handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
+    const resize=new window.ResizeObserver(()=>{const next=el.offsetHeight;if(next!==height){const delta=next-height;height=next;if(!wanted){x-=delta;target=-height;}paint();}});resize.observe(el);
+    const reduce=()=>set(wanted);media.addEventListener('change',reduce);
+    const desktop=window.matchMedia('(min-width: 1025px)'), closeDesktop=()=>{if(desktop.matches){set(false);change.current(false);}};
+    desktop.addEventListener('change',closeDesktop);
+    api.current={set};set(false);
+    return ()=>{window.cancelAnimationFrame(frame);resize.disconnect();media.removeEventListener('change',reduce);desktop.removeEventListener('change',closeDesktop);handle.removeEventListener('click',click,true);handle.removeEventListener('pointerdown',down);handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',end);handle.removeEventListener('pointercancel',end);};
+  }, []);
+  React.useLayoutEffect(()=>api.current?.set(open),[open]);
+  return {panel,clip,trigger};
+}
+
 // ============ Nav ============
 function JTNav({ route, setRoute }) {
   const [scrolled, setScrolled] = useState(false);
   const [svcOpen, setSvcOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const motion = useJTMenuMotion(menuOpen, setMenuOpen);
   const closeTimer = React.useRef(null);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -319,17 +383,17 @@ function JTNav({ route, setRoute }) {
   };
   const services = (window.JT_DATA && window.JT_DATA.services) || [];
   return (
-    <header className={`jt-nav ${scrolled ? 'jt-nav--scrolled' : ''} ${menuOpen ? 'jt-nav--menu-open' : ''}`}>
-      <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} className="jt-nav__brand" onClick={() => setRoute('home')} aria-label="제이티 세무법인 홈">
+    <header className={`jt-nav ${scrolled ? 'jt-nav--scrolled' : ''} ${menuOpen ? 'jt-nav--menu-open' : ''}`} onKeyDown={e => { if(e.key === 'Escape'){ const target=e.currentTarget.querySelector(menuOpen ? '.jt-nav__burger' : '.jt-nav__dd-trigger'); setMenuOpen(false); setSvcOpen(false); target?.focus(); } }}>
+      <a href="/#/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className="jt-nav__brand" onClick={jtNavGo(() => setRoute('home'))} aria-label="제이티 세무법인 홈">
         <img src="project/assets/logo_symbol.png" alt="" style={{ height: 26 }} />
         <span style={{ fontWeight: 700, letterSpacing: '-0.01em', marginLeft: 8 }}>제이티 세무법인</span>
       </a>
       {/* 크롤러용 실링크 + 사용자는 SPA (260830 상업 랜딩 — 계산기 CTA와 같은 «실링크+JS 우선» 패턴).
           jtGo(href 보존 조건: 보조키·중클릭)는 아래 jtNavGo 헬퍼로 통일한다. */}
       <nav className="jt-nav__links">
-        <a href="/about/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'about' ? 'active' : ''} onClick={jtNavGo(() => setRoute('about'))}>회사소개</a>
-        <div className="jt-nav__dd-wrap" onMouseEnter={openSvc} onMouseLeave={closeSvc}>
-          <a href="/services/" tabIndex={0} role="link" onKeyDown={jtKeyActivate}
+        <a href="/about/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'about' ? 'active' : ''} onClick={jtNavGo(() => setRoute('about'))}>제이티 소개</a>
+        <div className="jt-nav__dd-wrap" onMouseEnter={openSvc} onMouseLeave={closeSvc} onBlur={e => { if(!e.currentTarget.contains(e.relatedTarget)) setSvcOpen(false); }}>
+          <a href="/services/" tabIndex={0} role="link" onKeyDown={e => { if(e.key === 'ArrowDown'){ e.preventDefault(); openSvc(); requestAnimationFrame(() => document.querySelector('.jt-nav__dd-item')?.focus()); } else jtKeyActivate(e); }}
             className={`jt-nav__dd-trigger ${route === 'services' ? 'active' : ''}`}
             onClick={jtNavGo(() => setRoute('services'))}
             aria-haspopup="true"
@@ -340,7 +404,7 @@ function JTNav({ route, setRoute }) {
           {svcOpen && (
             <div className="jt-nav__dd" onMouseEnter={openSvc} onMouseLeave={closeSvc}>
               {services.map((s) => (
-                <a href={s.href || (s.slug ? `/services/${s.slug}.html` : '/services/')} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={s.num} className="jt-nav__dd-item" onClick={s.href ? undefined : jtNavGo(() => goService(s.kr))}>
+                <a href={s.href || (s.slug ? `/services/${s.slug}.html` : '/#/services')} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={s.num} className="jt-nav__dd-item" onClick={() => setSvcOpen(false)}>
                   <span className="jt-nav__dd-num">{s.num}</span>
                   <span className="jt-nav__dd-label">
                     <span className="jt-nav__dd-kr">{s.kr}</span>
@@ -356,26 +420,27 @@ function JTNav({ route, setRoute }) {
             </div>
           )}
         </div>
-        <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'report' ? 'active' : ''} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
+        <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'report' ? 'active' : ''} onClick={jtNavGo(() => setRoute('report'))}>세무도구</a>
         {/* 260921: 인사이트 정적 허브(/insights/)가 생겨 실 href 를 붙였다 —
             종전엔 href 가 없어 크롤러가 따라갈 수 없었고 보조키·중클릭도 안 먹었다 */}
         <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'insights' ? 'active' : ''} onClick={jtNavGo(() => setRoute('insights'))}>인사이트</a>
         {/* 261003: 법무사·중개사 면은 정적 면(/desk/)이라 SPA 라우트가 없다 — 핸들러 없는 실링크 */}
         <a href="/desk/">법무사·중개사</a>
-        <a href="/consult.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'contact' ? 'active' : ''} onClick={jtNavGo(() => setRoute('contact'))}>오시는 길</a>
+        <a href="/#/contact" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'contact' ? 'active' : ''} onClick={jtNavGo(() => setRoute('contact'))}>상담 안내</a>
       </nav>
       <div className="jt-nav__cta">
         <span className="jt-nav__phone">T. {window.JT_DATA.firm.phone}</span>
         <button className="jt-btn jt-btn--primary jt-btn--sm jt-nav__book" onClick={() => { window.jtTrackCta('booking', 'nav'); setRoute('booking'); }}>
-          상담 예약 <span className="jt-arrow">→</span>
+          상담 신청 <span className="jt-arrow">→</span>
         </button>
-        <button className="jt-nav__burger" aria-label="메뉴" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+        <button ref={motion.trigger} className="jt-nav__burger" aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'} aria-expanded={menuOpen} aria-controls="jt-mobile-menu" onClick={() => setMenuOpen(value => !value)}>
           <span></span><span></span><span></span>
         </button>
       </div>
-      {menuOpen && (
-        <div className="jt-navmenu">
-          {[['about', '회사소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '인사이트', '/insights/'], [null, '법무사·중개사', '/desk/'], ['contact', '오시는 길', '/consult.html']].map(([r, l, h]) => (
+      <div ref={motion.clip} className="jt-menu-clip">
+        <nav ref={motion.panel} aria-label="모바일 주 메뉴" aria-hidden={!menuOpen} className="jt-navmenu jt-menu-panel" id="jt-mobile-menu">
+          <button type="button" className="jt-menu-grip" aria-label="메뉴 닫기. 위로 밀어서 닫을 수도 있습니다" onClick={() => setMenuOpen(false)}><span aria-hidden="true" /><small>위로 밀어 닫기</small></button>
+          {[['about', '제이티 소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세무도구', '/calculators/'], ['insights', '인사이트', '/insights/'], [null, '법무사·중개사', '/desk/'], ['contact', '상담 안내', '/#/contact']].map(([r, l, h]) => (
             !r
               ? <a href={h} key={h}>{l}</a>
               : h
@@ -383,9 +448,9 @@ function JTNav({ route, setRoute }) {
               : <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={() => { setRoute(r); setMenuOpen(false); }}>{l}</a>
           ))}
           <a className="jt-navmenu__phone" href={`tel:${window.JT_DATA.firm.phone}`} onClick={() => window.jtTrackCta('call', 'nav')}>T. {window.JT_DATA.firm.phone}</a>
-          <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'nav'); setRoute('booking'); setMenuOpen(false); }}>상담 예약 <span className="jt-arrow">→</span></button>
-        </div>
-      )}
+          <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta('booking', 'nav'); setRoute('booking'); setMenuOpen(false); }}>상담 신청 <span className="jt-arrow">→</span></button>
+        </nav>
+      </div>
     </header>
   );
 }
@@ -411,7 +476,7 @@ function JTMobileCta({ setRoute, route }) {
         <span>카톡</span>
       </a>
       <button className="jt-mcta__btn jt-mcta__btn--primary" onClick={() => { window.jtEvent('mcta_booking'); window.jtTrackCta('booking', 'sticky'); setRoute('booking'); }}>
-        <span>상담 예약 →</span>
+        <span>상담 신청 →</span>
       </button>
     </div>
   );
@@ -497,7 +562,7 @@ function JTFooter({ setRoute }) {
         <div>
           <div className="jt-footer__brand">
             <img src="project/assets/logo_symbol_white.png" alt="" style={{ height: 36 }} />
-            <div style={{ marginTop: 8, fontWeight: 700 }}>제이티 세무법인 <span style={{ opacity: .6, fontWeight: 400 }}>· JT TAX CORP.</span></div>
+            <div style={{ marginTop: 8, fontWeight: 700 }}>제이티 세무법인 <span style={{ opacity: .85, fontWeight: 400 }}>· JT TAX CORP.</span></div>
           </div>
           <div className="jt-footer__addr">
             {D.address}<br />
@@ -516,43 +581,43 @@ function JTFooter({ setRoute }) {
           </div>
         </div>
         <div className="jt-footer__col">
-          <h4>Company</h4>
-          <a href="/about/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about'))}>회사소개</a>
-          <a href="/experts/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about', 'team'))}>전문가</a>
-          <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
+          <h4>제이티</h4>
+          <a href="/about/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about'))}>제이티 소개</a>
+          <a href="/experts/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about', 'team'))}>대표세무사 소개</a>
+          <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('report'))}>세무도구</a>
           {/* 260921: 내비와 같은 이유로 푸터의 인사이트에도 실 href 를 붙였다 (정적 허브 신설) */}
           <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('insights'))}>인사이트</a>
           <a href="/desk/">법무사·중개사</a>
         </div>
         <div className="jt-footer__col">
-          <h4>Services</h4>
-          <a href="/services/asset-transfer.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>양도·상속·증여</a>
-          <a href="/services/tax-audit.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>세무조사 대응</a>
-          <a href="/services/bookkeeping.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>기장·세금 신고</a>
-          <a href="/services/consulting.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>세금 종합 컨설팅</a>
-          <a href="/services/tax-refund.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('services'))}>경정청구</a>
+          <h4>업무분야</h4>
+          <a href="/services/asset-transfer.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>양도·상속·증여</a>
+          <a href="/services/tax-audit.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>세무조사 대응</a>
+          <a href="/services/bookkeeping.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>기장·세금 신고</a>
+          <a href="/services/consulting.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>세금 종합 컨설팅</a>
+          <a href="/services/tax-refund.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>경정청구</a>
           {/* 260922: 취득세·크리에이터 — 정적 허브로 바로(SPA 라우트 없음) */}
           <a href="/acquisition-tax/">취득세</a>
           <a href="/creators.html">크리에이터 세금</a>
         </div>
         <div className="jt-footer__col">
-          <h4>Contact</h4>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => { window.jtTrackCta('booking', 'footer'); setRoute('booking'); }}>상담 예약</a>
-          <a href="/consult.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('contact'))}>오시는 길</a>
+          <h4>상담 안내</h4>
+          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => { window.jtTrackCta('booking', 'footer'); setRoute('booking'); }}>상담 신청</a>
+          <a href="/#/contact" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('contact'))}>상담 안내</a>
           <a href={`tel:${D.phone}`} onClick={() => window.jtTrackCta('call', 'footer')}>전화 문의</a>
           {/* 260922: 카카오톡 채널 — 오너 제공 QR(pf.kakao.com/_CcxlJG) */}
           <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" onClick={() => window.jtTrackCta('kakao', 'footer')}>카카오톡 채널</a>
           <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" className="jt-footer__kqr" onClick={() => window.jtTrackCta('kakao', 'footer_qr')} style={{ display: 'inline-block', marginTop: 6 }}>
-            <img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무회계 QR 코드" width="72" height="72" loading="lazy" style={{ width: 72, height: 72, borderRadius: 6, background: '#fff' }} />
+            <img src="/project/assets/kakao-qr.png" alt="제이티 세무법인 카카오톡 채널 QR 코드" width="72" height="72" loading="lazy" style={{ width: 72, height: 72, borderRadius: 6, background: '#fff' }} />
           </a>
         </div>
       </div>
       <div className="jt-footer__bar">
         <span>© 2026 JT TAX CORP. — {D.domain}</span>
         <span>
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('privacy')} style={{cursor: 'pointer'}}>개인정보처리방침</a>
+          <a href="/#/privacy" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('privacy'))} style={{cursor: 'pointer'}}>개인정보처리방침</a>
           {' · '}
-          <a tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={() => setRoute('terms')} style={{cursor: 'pointer'}}>이용약관</a>
+          <a href="/#/terms" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('terms'))} style={{cursor: 'pointer'}}>이용약관</a>
         </span>
       </div>
     </footer>

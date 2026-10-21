@@ -61,7 +61,7 @@ function App() {
   const [aboutTab, setAboutTab] = useAppState(() => {
     try {
       const h = (window.location.hash || '').replace('#', '');
-      if (h === 'team') return 'team';
+      if (h === 'team' || h === '/about/team') return 'team';
     } catch (e) {}
     return 'company';
   });
@@ -73,14 +73,14 @@ function App() {
     if (name === 'team') {
       setAboutTab('team');
       setRouteRaw('about');
-      JTRouter.set('about');
+      JTRouter.set('about', 'team');
       return;
     }
     if (name === 'about') {
       setAboutTab(tab === 'team' ? 'team' : 'company');
     }
     setRouteRaw(name);
-    JTRouter.set(name);
+    JTRouter.set(name, name === 'about' && tab === 'team' ? 'team' : '');
   }, []);
 
   useAppEffect(() => {
@@ -92,7 +92,7 @@ function App() {
   useAppEffect(() => {
     const onHash = () => {
       const r = JTRouter.parse();
-      if (r.router && r.route) setRouteRaw(jtNormRoute(r.route));
+      if (r.router && r.route) { setRouteRaw(jtNormRoute(r.route)); if(r.route === 'about') setAboutTab(r.sub === 'team' ? 'team' : 'company'); }
     };
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
@@ -150,22 +150,10 @@ function App() {
 
   return (
     <div className={pageClass}>
+      <a className="jt-renewal-skip" href="#jt-main" onClick={e => { e.preventDefault(); const main=document.getElementById('jt-main'); main?.focus(); main?.scrollIntoView(); }}>본문으로 바로가기</a>
       <JTNav route={route} setRoute={setRoute} />
-      <main className="jt-main">
-        {route === 'home' && (
-          <div className="jt-home-ledger">
-            <JTBrandMoment setRoute={setRoute} />
-            <JTCreds setRoute={setRoute} />
-            <JTHero setRoute={setRoute} />
-            <JTMethod />
-            {tweaks.showQuote && <JTQuote />}
-            {tweaks.showProof !== false && <JTProof setRoute={setRoute} />}
-            <JTInsightsPreview setRoute={setRoute} limit={3} />
-            <JTFaq setRoute={setRoute} />
-            <JTCta setRoute={setRoute} />
-            <JTChannels setRoute={setRoute} />
-          </div>
-        )}
+      <main id="jt-main" className="jt-main" tabIndex={-1}>
+        {route === 'home' && <JTRebuildHome setRoute={setRoute} />}
         {route === 'services' && <div><JTServicesPage setRoute={setRoute} /></div>}
         {route === 'team' && <div><JTAbout setRoute={setRoute} initialTab="team" /></div>}
         {route === 'about' && <div><JTAbout setRoute={setRoute} initialTab={aboutTab} /></div>}
@@ -272,7 +260,7 @@ class JTErrorBoundary extends React.Component {
               이 화면은 «연락 수단만은 남긴다»가 존재 이유다. 위 D 가 상수로 보장한다 */}
           <a href={`tel:${D.phone}`} style={{ padding: '13px 22px', background: '#0B0B0F', color: '#fff', textDecoration: 'none', fontSize: 14 }}>전화 {D.phone}</a>
           <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" style={{ padding: '13px 22px', border: '1px solid rgba(0,0,0,.2)', color: '#0B0B0F', textDecoration: 'none', fontSize: 14 }}>카카오톡 상담 <span style={{ fontSize: 11, color: '#888' }}>(새 창)</span></a>
-          <a href="/calculators/" style={{ padding: '13px 22px', border: '1px solid rgba(0,0,0,.2)', color: '#0B0B0F', textDecoration: 'none', fontSize: 14 }}>세금 계산기</a>
+          <a href="/calculators/" style={{ padding: '13px 22px', border: '1px solid rgba(0,0,0,.2)', color: '#0B0B0F', textDecoration: 'none', fontSize: 14 }}>세무도구</a>
         </div>
         {/* 세무사법 시행령 §33① 표시의무 — 화면이 깨져도 사무소명·세무사 성명은 남긴다 */}
         <p style={{ fontSize: 12, color: '#888', marginTop: 32 }}>

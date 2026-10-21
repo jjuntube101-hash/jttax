@@ -28,7 +28,7 @@
 .jt-pullquote__by{ display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--fg-2); }
 .jt-pullquote__by b{ color: var(--fg-1); font-weight: 700; }
 .jt-pullquote__avatar{ width: 46px; height: 46px; border: 1px solid var(--border-2); display: grid; place-items: center; font-family: var(--font-display-en); font-weight: 900; font-size: 14px; color: var(--fg-2); }
-.jt-cta{ background: var(--jt-espresso) !important; }
+.jt-cta{ background: var(--jt-espresso); }
 .jt-cta h2, .jt-cta__inner h2{ color: var(--jt-espresso-fg) !important; }
 .jt-cta__body{ color: var(--jt-espresso-fg2) !important; }
 .jt-cta .jt-kicker{ color: rgba(250,250,248,.6) !important; }
@@ -229,10 +229,6 @@
 
 /* ═════════ 모바일 반응형 보정 (내부 페이지 그리드) ═════════ */
 @media (max-width: 760px) {
-.jt-service-detail{ grid-template-columns: 1fr; gap: 16px; padding: 40px 0; }
-.jt-service-detail__num{ font-size: 40px; }
-.jt-service-detail__body h3{ font-size: 24px; }
-.jt-service-detail__body p{ font-size: 15px; max-width: none; }
 .jt-services{ grid-template-columns: 1fr; }
 .jt-philosophy{ grid-template-columns: 1fr; }
 .jt-proof__grid{ grid-template-columns: 1fr; }
@@ -264,10 +260,10 @@
 .jt-navmenu{
     display: flex; flex-direction: column;
     position: absolute; left: 0; right: 0; top: 100%;
-    background: var(--bg-1); border-bottom: 1px solid var(--border-1);
+     border-bottom: 1px solid var(--border-1);
     padding: 6px 20px 22px; box-shadow: 0 18px 36px -18px rgba(0,0,0,.28);
   }
-.jt-navmenu a{ padding: 16px 2px; font-size: 17px; font-weight: 500; color: var(--fg-1); text-decoration: none; border-bottom: 1px solid var(--border-1); cursor: pointer; }
+.jt-navmenu a{ padding: 16px 2px;  font-weight: 500; color: var(--fg-1); text-decoration: none; border-bottom: 1px solid var(--border-1); cursor: pointer; }
 .jt-navmenu a.is-active{ color: var(--jt-amber); }
 .jt-navmenu__phone{ font-family: var(--font-sans-en); color: var(--fg-2); }
 .jt-navmenu .jt-btn{ margin-top: 18px; justify-content: center; }
@@ -289,11 +285,6 @@
 
 /* ═════════ 모바일 강제 스택 — 그리드 미접힘/세로글자 원천 차단 ═════════ */
 @media (max-width: 1024px) {
-.jt-service-detail{ display: block !important; padding: 36px 0 !important; }
-.jt-service-detail__num{ margin-bottom: 10px; font-size: 40px !important; }
-.jt-service-detail__body, .jt-service-detail__side{ width: 100% !important; max-width: 100% !important; }
-.jt-service-detail__body{ margin: 8px 0 20px; }
-.jt-service-detail__body p{ max-width: 100% !important; }
 .jt-services{ grid-template-columns: 1fr !important; }
 }
 :where(h1,h2,h3,h4, .jt-h1, .jt-h2, .jt-h3, .jt-display-h2,p,li,dt,dd,blockquote){ word-break: keep-all; }
@@ -371,7 +362,7 @@
 }
 .jt-nav__brand img{ height: 44px !important; width: auto; }
 @media (max-width: 600px){
-.jt-nav__brand img{ height: 38px !important; } }
+ }
 .jt-app::before{ background-image: none !important; }
 .jt-app::after{ opacity: .3 !important; }
 .jt-footer__brand img{ filter: none !important; height: 78px !important; width: auto; opacity: 1 !important; }
@@ -417,10 +408,8 @@
 }
 .jt-icard:hover{ border-color: #000; transform: translateY(-5px); box-shadow: 0 24px 48px -26px rgba(0,0,0,.42); }
 .jt-icard:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
-.jt-icard__top{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
 .jt-icard__cat{ font-family: var(--font-sans-en); font-size: 10.5px; letter-spacing: .14em; font-weight: 700; color: #000; border: 1px solid var(--border-2); padding: 4px 10px; text-transform: uppercase; white-space: nowrap; }
 .jt-icard__date{ font-family: var(--font-sans-en); font-size: 12px; color: var(--fg-3); letter-spacing: .04em; white-space: nowrap; }
-.jt-icard__title{ font-size: 19px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.4; margin: 0 0 12px; color: var(--fg-1); }
 .jt-icard__excerpt{ font-size: 14px; color: var(--fg-2); line-height: 1.7; margin: 0 0 22px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .jt-icard__go{ margin-top: auto; font-size: 13px; font-weight: 700; color: #000; display: inline-flex; align-items: center; gap: 8px; }
 .jt-icard{ position: relative; }
@@ -496,7 +485,7 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
   fill: #808080; opacity: .6;   /* 투명 SVG·은은한 회색 — 라이트/다크 양쪽서 보임, 박스 없음 */
 }
 @media (max-width: 820px){
-.jt-logomark-fix{ display: none; } }
+.jt-logomark-fix{  } }
 .jt-teaser{
   padding: clamp(64px, 9vw, 116px) 24px;
   border-top: 1px solid var(--border-1);
@@ -580,8 +569,6 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
    홈 내부에 한정한다. 계산 필드의 동작과 데이터는 HeroCalc에 그대로 둔다. */
 .jt-page-home::after { content: none; }
 .jt-page-home .jt-logomark-fix { display: none; }
-.jt-home-ledger { --ledger-gutter: 48px; --ledger-gap: 24px; background: var(--bg-1); }
-.jt-home-ledger section { scroll-margin-top: 100px; }
 .jt-ledger-label { display: flex; align-items: center; gap: 18px; color: var(--fg-2); font: 500 11px/1.6 var(--font-sans-en); letter-spacing: .12em; }
 .jt-ledger-label > span:first-child { font-family: var(--font-mono); color: var(--fg-3); }
 .jt-ledger-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; min-height: 44px; color: var(--fg-1); text-decoration: none; font-size: 14px; font-weight: 600; }
@@ -589,7 +576,6 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
 .jt-ledger-link:hover { text-decoration: underline; text-underline-offset: 5px; }
 .jt-ledger-button { display: inline-flex; align-items: center; justify-content: space-between; gap: 52px; min-height: 52px; padding: 13px 22px; border: 1px solid var(--border-strong); color: var(--fg-1); font-size: 14px; font-weight: 600; text-decoration: none; transition: background .18s, color .18s; }
 .jt-ledger-button:hover { background: var(--jt-black); color: var(--fg-inverse); }
-.jt-home-ledger a:focus-visible, .jt-home-ledger button:focus-visible { outline: 2px solid var(--fg-1); outline-offset: 4px; }
 
 /* 첫면: 8열 표제 / 4열 계산표. 검정 면 대신 세로 괘선으로 구분한다. */
 .jt-brandmoment { padding: 48px var(--ledger-gutter) 0; border-bottom: 1px solid var(--border-strong); background: var(--bg-1); color: var(--fg-1); }
@@ -697,42 +683,10 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
 .jt-method--text .jt-method__steps { grid-column: 6 / 13; grid-row: 1; margin-top: 0; padding-left: 0; }
 .jt-method--text .jt-method__link { grid-column: 6 / 13; grid-row: 2; margin-left: 0; }
 
-/* 읽을거리와 질문도 같은 장부 안에서 조판한다. */
-.jt-home-ledger .jt-home-insights, .jt-home-ledger .jt-home-faq { max-width: calc(var(--container-max) + var(--ledger-gutter) * 2); padding: 0 var(--ledger-gutter) 78px; }
-.jt-home-ledger .jt-home-insights .jt-section__head { border-top: 2px solid var(--border-strong); padding-top: 24px; margin-bottom: 28px; }
-.jt-home-ledger .jt-home-insights .jt-h2 { margin-top: 22px; font-size: clamp(32px, 3.4vw, 46px); line-height: 1.2; }
-.jt-home-ledger .jt-home-insights .jt-icards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--border-strong); border-bottom: 1px solid var(--border-strong); }
-.jt-home-ledger .jt-home-insights .jt-icard { min-height: 220px; padding: 24px 28px 18px; border: 0; border-right: 1px solid var(--border-2); transition: background .18s; }
-.jt-home-ledger .jt-home-insights .jt-icard:first-child { padding-left: 0; }
-.jt-home-ledger .jt-home-insights .jt-icard:last-child { padding-right: 0; border-right: 0; }
-.jt-home-ledger .jt-home-insights .jt-icard:hover { transform: none; box-shadow: none; background: var(--bg-2); }
-.jt-home-ledger .jt-home-insights .jt-icard__cat { padding: 0; border: 0; font-size: 11px; color: var(--fg-2); letter-spacing: .02em; }
-.jt-home-ledger .jt-home-insights .jt-icard__date { font-size: 11px; }
-.jt-home-ledger .jt-home-insights .jt-icard__title { font-size: 21px; line-height: 1.5; font-weight: 600; letter-spacing: -.035em; margin-bottom: 26px; }
-.jt-home-ledger .jt-home-insights .jt-icard__go { justify-content: space-between; min-height: 44px; font-size: 12px; }
-.jt-home-ledger .jt-home-faq { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 var(--ledger-gap); }
-.jt-home-ledger .jt-home-faq > .jt-section__head { grid-column: 1 / 4; grid-row: 1 / 3; margin: 0; }
-.jt-home-ledger .jt-home-faq .jt-h2 { margin-top: 24px; font-size: clamp(30px, 2.9vw, 40px); line-height: 1.2; }
-.jt-home-ledger .jt-home-faq > div:not(.jt-section__head) { grid-column: 4 / 13; min-width: 0; }
-.jt-home-ledger .jt-home-faq > div:last-child { padding-top: 2px; }
-.jt-home-ledger .jt-cta { padding: 64px var(--ledger-gutter); }
-.jt-home-ledger .jt-cta::before { content: none; }
-.jt-home-ledger .jt-cta__inner { grid-template-columns: 1fr 1fr; gap: 48px; }
-.jt-home-ledger .jt-cta h2 { font-size: clamp(38px, 4.3vw, 60px); line-height: 1.12; margin-top: 22px; }
-.jt-home-ledger .jt-cta a:focus-visible, .jt-home-ledger .jt-cta button:focus-visible { outline-color: var(--fg-inverse); }
-.jt-home-ledger .jt-channels__inner { max-width: calc(var(--container-max) + var(--ledger-gutter) * 2); padding: 36px var(--ledger-gutter) 40px; }
-.jt-home-ledger .jt-channels__grid { margin-top: 18px; border-left: 0; border-right: 0; background: transparent; }
-.jt-home-ledger .jt-channels__card { padding: 22px 26px; min-width: 0; }
-.jt-home-ledger .jt-channels__card:first-child { padding-left: 0; }
-.jt-home-ledger .jt-channels__card:last-child { padding-right: 0; }
-.jt-home-ledger .jt-channels__big { font-size: clamp(20px, 2vw, 26px); }
-.jt-home-ledger .jt-channels__sub { display: flex; justify-content: space-between; gap: 16px; margin-top: 2px; font-size: 12px; }
-.jt-home-ledger .jt-channels__label { font-size: 12px; letter-spacing: .02em; }
-
 /* 260919 디벨롭 — 장부 문법 안에서의 다듬기. 첫면(슬로건·계산표·상담 링크)에는 모션을 걸지 않는다.
    이중 괘선: 굵은 선 4px 아래에 가는 선 하나. 주요 구분부(01 인물·03 업무 방식·04 읽을거리)에만 둔다. */
-.jt-ident__head, .jt-method__inner, .jt-home-ledger .jt-home-insights .jt-section__head { position: relative; }
-.jt-ident__head::before, .jt-method__inner::before, .jt-home-ledger .jt-home-insights .jt-section__head::before { content: ''; position: absolute; left: 0; right: 0; top: 4px; border-top: 1px solid var(--border-strong); pointer-events: none; }
+.jt-ident__head, .jt-method__inner{ position: relative; }
+.jt-ident__head::before, .jt-method__inner::before{ content: ''; position: absolute; left: 0; right: 0; top: 4px; border-top: 1px solid var(--border-strong); pointer-events: none; }
 /* 첫면 계산표는 등장 효과 없이 바로 보인다 — HeroCalc 가 자체로 갖는 reveal 을 홈 첫면에서만 무력화(컴포넌트는 불변). */
 .jt-brandmoment__tool .jt-herocalc.reveal { opacity: 1; transform: none; }
 /* 번호는 같은 폭의 숫자로 맞춘다. 대표 번호는 한 단계만 키운다(이름보다 앞서지 않게). */
@@ -776,7 +730,6 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
 .jt-team-card__role { margin-top: 18px; }
 
 @media (min-width: 641px) and (max-width: 1024px) {
-  .jt-home-ledger { --ledger-gutter: 32px; --ledger-gap: 20px; }
   .jt-brandmoment { padding-top: 38px; }
   .jt-brandmoment__copy { grid-column: 1 / 8; padding-right: 20px; }
   .jt-brandmoment__tool { grid-column: 8 / 13; }
@@ -810,15 +763,8 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
   .jt-method__head h2 { font-size: 36px; }
   .jt-method__head p br { display: none; }
   .jt-method__link { margin-left: 0; }
-  .jt-home-ledger .jt-home-insights .jt-icard { padding-left: 18px; padding-right: 18px; }
-  .jt-home-ledger .jt-home-insights .jt-icard__top { flex-wrap: wrap; gap: 5px 12px; }
-  .jt-home-ledger .jt-home-insights .jt-icard__title { font-size: 18px; }
-  .jt-home-ledger .jt-cta__inner { gap: 32px; }
-  .jt-home-ledger .jt-channels__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .jt-home-ledger .jt-channels__card { padding-left: 18px; padding-right: 18px; border-bottom: 0; }
 }
 @media (max-width: 640px) {
-  .jt-home-ledger { --ledger-gutter: 20px; --ledger-gap: 16px; }
   .jt-ledger-label { font-size: 10px; gap: 14px; }
   .jt-brandmoment { padding-top: 28px; }
   .jt-brandmoment__inner { display: flex; flex-direction: column; }
@@ -883,24 +829,4 @@ a.jt-icard__go:focus-visible{ outline: 2px solid #000; outline-offset: 3px; }
   .jt-faq__q { padding: 20px 2px; }
   .jt-faq__t { font-size: 17px; }
   .jt-faq__a { padding: 0 2px 24px 40px; font-size: 15px; }
-  .jt-home-ledger .jt-home-insights, .jt-home-ledger .jt-home-faq { padding-bottom: 48px; }
-  .jt-home-ledger .jt-home-insights .jt-section__head { align-items: start; gap: 10px; flex-direction: column; margin-bottom: 16px; padding-top: 18px; }
-  .jt-home-ledger .jt-home-insights .jt-h2 { margin-top: 20px; font-size: 32px; }
-  .jt-home-ledger .jt-home-insights .jt-icards { grid-template-columns: minmax(0, 1fr); }
-  .jt-home-ledger .jt-home-insights .jt-icard, .jt-home-ledger .jt-home-insights .jt-icard:first-child, .jt-home-ledger .jt-home-insights .jt-icard:last-child { padding: 22px 0 12px; min-height: 0; border: 0; border-bottom: 1px solid var(--border-2); }
-  .jt-home-ledger .jt-home-insights .jt-icard:last-child { border-bottom: 0; }
-  .jt-home-ledger .jt-home-insights .jt-icard__top { margin-bottom: 12px; }
-  .jt-home-ledger .jt-home-insights .jt-icard__title { font-size: 20px; margin-bottom: 10px; }
-  .jt-home-ledger .jt-home-faq { display: block; }
-  .jt-home-ledger .jt-home-faq > .jt-section__head { margin-bottom: 26px; }
-  .jt-home-ledger .jt-home-faq .jt-h2 { font-size: 32px; margin-top: 20px; }
-  .jt-home-ledger .jt-home-faq .jt-h2 br { display: none; }
-  .jt-home-ledger .jt-cta { padding-top: 44px; padding-bottom: 44px; }
-  .jt-home-ledger .jt-cta__inner { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .jt-home-ledger .jt-cta h2 { font-size: 38px; }
-  .jt-home-ledger .jt-cta__body { font-size: 14px; line-height: 1.8; margin-bottom: 22px; }
-  .jt-home-ledger .jt-channels__inner { padding-top: 28px; padding-bottom: 28px; }
-  .jt-home-ledger .jt-channels__grid { grid-template-columns: minmax(0, 1fr); }
-  .jt-home-ledger .jt-channels__card, .jt-home-ledger .jt-channels__card:first-child, .jt-home-ledger .jt-channels__card:last-child { padding: 20px 0; }
-  .jt-home-ledger .jt-channels__big { font-size: 25px; }
 }

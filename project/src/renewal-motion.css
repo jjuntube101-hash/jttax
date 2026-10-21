@@ -1,0 +1,23 @@
+/* Gesture input belongs only to the grip; links retain native scrolling. */
+.jt-menu-clip{position:absolute;top:100%;left:0;right:0;height:0;overflow:hidden;pointer-events:none}
+.jt-navmenu.jt-menu-panel{position:relative;top:auto;left:auto;right:auto;display:flex;flex-direction:column;gap:0;padding:.5rem 1.25rem 1.25rem;max-height:calc(100dvh - 5rem);overflow-y:auto;overscroll-behavior:contain;pointer-events:auto;background:rgba(246,243,235,.98);border-bottom:1px solid #c5d3ca;box-shadow:0 12px 24px #183f3514;transform:translate3d(0,-110%,0);will-change:transform;transition:none;animation:none}
+.jt-menu-panel[inert]{pointer-events:none}
+.jt-menu-panel a{font-size:1.0625rem;line-height:1.5;padding:.75rem .25rem;min-height:44px;overflow-wrap:anywhere}
+.jt-menu-panel .jt-btn{margin-top:.75rem;flex-shrink:0}
+.jt-menu-grip{display:flex;align-items:center;justify-content:center;min-height:44px;width:100%;flex-shrink:0;border:0;background:transparent;touch-action:none;cursor:grab;color:var(--brand)}
+.jt-menu-grip span{width:2.5rem;height:4px;border-radius:3px;background:#6e8d82}
+.jt-menu-grip:active{cursor:grabbing}
+.jt-nav__burger:active,.jt-btn:active{filter:brightness(.93);scale:.98}
+.jt-nav__burger,.jt-btn{touch-action:manipulation}
+@media(min-width:1025px){.jt-menu-clip{display:none}}
+@media(prefers-reduced-motion:reduce){.jt-nav__burger:active,.jt-btn:active{scale:1}.jt-nav__burger span{transition:none}}
+@media(prefers-reduced-transparency:reduce){.jt-navmenu.jt-menu-panel{background:#f6f3eb}}
+@media(prefers-contrast:more){.jt-navmenu.jt-menu-panel{background:#f6f3eb;border-bottom:2px solid #234d49}}
+
+.jt-menu-grip{flex-direction:column;gap:.35rem}.jt-menu-grip small{font:500 .8125rem/1.4 var(--font-sans-kr);color:#47675e}
+
+/* Reading content arrives together; controls respond without a queued entrance. */
+.jt-page-hero__crumb,.jt-page-hero h1,.jt-page-hero__sub{animation:jt-reading-enter 220ms cubic-bezier(.2,.7,.3,1) both}
+@keyframes jt-reading-enter{from{opacity:.8;transform:translateY(4px)}to{opacity:1;transform:none}}
+.rn-button:active,.jt-renew-filter button:active,.rn-choice:active,.rn-about-tabs button:active{filter:brightness(.94)}
+@media(prefers-reduced-motion:reduce){.jt-page-hero__crumb,.jt-page-hero h1,.jt-page-hero__sub{animation:none}}

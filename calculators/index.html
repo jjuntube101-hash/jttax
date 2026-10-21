@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>세금 계산기 — 양도·증여·상속·취득·재산세·종부세·종소세 | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="양도소득세·증여세·상속세·취득세·재산세·종합부동산세·종합소득세·법인전환·4대보험 실수령까지, 검증된 계산 엔진으로 5분 만에 계산하는 세금 계산기 모음.">
+  <meta name="description" content="양도·증여·상속 등 세금과 4대보험 계산 도구입니다. 입력 조건에 따른 참고 결과와 필요한 확인 사항을 살펴보세요.">
   <meta name="keywords" content="세금 계산기, 양도소득세 계산기, 증여세 계산기, 상속세 계산기, 취득세 계산기, 재산세 계산기, 종합부동산세 계산기, 종합소득세 계산기, 실수령액 계산기">
   <link rel="canonical" href="https://www.jttax.co.kr/calculators/">
   <meta property="og:type" content="website">
@@ -23,7 +23,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/project/assets/favicon32.png?v=21">
   <link rel="icon" type="image/png" sizes="16x16" href="/project/assets/favicon16.png?v=21">
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
-  <link rel="stylesheet" href="/project/src/styles.css?v=30">
+  <link rel="stylesheet" href="/project/src/styles.css?v=31">
   <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
   <script>
     // 운영 도메인 외 로컬·미리보기는 수집하지 않는다. 기존 방문자 수집 거부도 유지한다.
@@ -59,18 +59,18 @@
     .jt-ci-card p{font-size:13.5px;color:#666;line-height:1.55;margin:0 0 12px;}
     .jt-ci-go{font-size:13px;color:#1a1a1a;font-weight:600;}
   </style>
+<link rel="stylesheet" href="/project/src/renewal.css?v=6">
+<link rel="stylesheet" href="/project/src/renewal-pages.css?v=6">
+<link rel="stylesheet" href="/project/src/renewal-flow.css?v=6">
+<link rel="stylesheet" href="/project/src/renewal-motion.css?v=6">
+<link rel="stylesheet" href="/project/src/renewal-static.css?v=6">
 </head>
-<body style="background:#fff;">
-  <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
-    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
-      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무법인"/> 제이티 세무법인
-    </a>
-    <span style="margin-left:auto;font-size:13px;"><a href="/" style="color:#666;text-decoration:none;">홈 →</a></span>
-  </header>
+<body class="jt-renewal-static">
+  <header class="jt-renewal-header"><a class="jt-renewal-skip" href="#content">본문으로 바로가기</a><a class="jt-renewal-brand" href="/#/" aria-label="제이티 세무법인 홈"><img src="/project/assets/logo_symbol.png" width="46" height="32" alt=""><span>제이티 세무법인</span></a><nav class="jt-renewal-desktop" aria-label="주 메뉴"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세무도구</a><a href="/insights/">인사이트</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a></nav><a class="jt-renewal-book" href="/#/booking" onclick="jtTrackCta('booking','nav')">상담 신청</a><details class="jt-renewal-menu"><summary aria-label="주 메뉴 열기">메뉴</summary><nav aria-label="모바일 주 메뉴"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세무도구</a><a href="/insights/">인사이트</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a><a href="/#/booking">상담 신청</a></nav></details></header>
   <main class="jt-ci-wrap">
     <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 세금 계산기</nav>
-    <h1>세금 계산기</h1>
-    <p class="jt-ci-lede">양도·증여·상속·취득·재산세·종합부동산세 + 종합소득세·법인전환·4대보험 실수령까지. 검증된 계산 엔진으로 로그인 없이 5분 만에 계산하고, 바로 담당 세무사 상담으로 이어집니다.</p>
+    <h1>세무도구</h1>
+    <p class="jt-ci-lede">세금과 4대보험 등 궁금한 항목을 골라 입력 조건에 따른 참고 결과를 확인해 보세요. 개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p>
     <div class="jt-ci-grid">
       <a class="jt-ci-card" href="/calculators/disposal-comparison.html">
         <h2>증여·매매·상속 세금 비교 계산기</h2>
@@ -167,10 +167,12 @@
       <a href="/#/booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_index')">세무사 상담</a>
     </div>
   </main>
-  <footer style="margin-top:80px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;line-height:1.9;">
+  <footer class="jt-renewal-footer">
     <!-- jt-shell v1 -->
     <div>제이티 세무법인 · 광고책임세무사 이현준 대표세무사</div>
     <div>© 2026 JT TAX CORP. — www.jttax.co.kr</div>
-  </footer>
+  <nav class="jt-renewal-footer-links" aria-label="이용 안내"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세무도구</a><a href="/insights/">인사이트</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a><a href="/#/privacy">개인정보처리방침</a><a href="/#/terms">이용약관</a></nav></footer>
+<script src="/project/src/renewal-static.js?v=1" defer></script>
+<nav class="jt-renewal-mobile-cta" aria-label="빠른 상담"><a href="tel:02-554-6405" onclick="jtTrackCta('call','sticky')">전화</a><a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','sticky')">카카오톡</a><a href="/#/booking" onclick="jtTrackCta('booking','sticky')">상담 신청 →</a></nav>
 </body>
 </html>

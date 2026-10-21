@@ -133,8 +133,8 @@
 
 /* — CTA band (was pure black) — warm dark, raised contrast — */
 .jt-cta {
-  background: var(--jt-darkbg) !important;
-  color: var(--fg-inverse) !important;
+  background: var(--jt-darkbg);
+  color: var(--fg-inverse);
 }
 .jt-cta__inner h2,
 .jt-cta__body { color: var(--fg-inverse) !important; }
@@ -166,20 +166,20 @@
 
 /* — FOOTER — CI 다크 앵커(검정면 + 흰 로고/흰 글씨). 프리미엄 마감 + 시각 리듬 — */
 .jt-footer {
-  background: var(--jt-darkbg) !important;   /* #000 */
-  color: var(--fg-inverse) !important;
+  background: var(--jt-darkbg);   /* #000 */
+  color: var(--fg-inverse);
   border-top: 1px solid rgba(255,255,255,.12);
 }
 /* Phase G에서 logo_symbol_white.png로 교체 예정 — 현재는 검정 심볼을 흰색 반전 */
 .jt-footer__brand img { filter: invert(1) !important; opacity: 1; }
 .jt-footer__brand span { color: var(--fg-inverse) !important; }
 .jt-footer__addr {
-  color: rgba(255,255,255,.72) !important;
+  color: rgba(255,255,255,.72);
   font-size: 14px !important;
 }
 .jt-footer__addr a { color: rgba(255,255,255,.72) !important; }
 .jt-footer__addr a:hover { color: #fff !important; }
-.jt-footer__col h4 { color: rgba(255,255,255,.5) !important; }
+.jt-footer__col h4 { color: rgba(255,255,255,.5); }
 .jt-footer__col a { color: rgba(255,255,255,.85) !important; }
 .jt-footer__col a:hover { color: #fff !important; opacity: 1; }
 .jt-footer__bar {
@@ -189,15 +189,15 @@
 
 /* — PAGE HERO (was pure black) — */
 .jt-page-hero {
-  background: var(--bg-2) !important;
-  color: var(--fg-1) !important;
+  background: var(--bg-2);
+  color: var(--fg-1);
   border-bottom: 1px solid var(--border-1);
 }
-.jt-page-hero h1 { color: var(--fg-1) !important; }
+.jt-page-hero h1 { color: var(--fg-1); }
 .jt-page-hero__mark img { filter: none !important; opacity: 1; }
 .jt-page-hero__mark { opacity: 0.05 !important; }
-.jt-page-hero__sub { color: var(--fg-2) !important; }
-.jt-page-hero__crumb { color: var(--fg-3) !important; }
+.jt-page-hero__sub { color: var(--fg-2); }
+.jt-page-hero__crumb { color: var(--fg-3); }
 
 /* — Service card "dark" variant — keep visual rhythm but warm */
 .jt-service--dark {
@@ -252,12 +252,6 @@
   color: var(--fg-inverse) !important;
   border-color: rgba(255,255,255,.45) !important;
 }
-
-/* — Stat numbers / borders (#000 → ink-800) — */
-
-/* — Service detail nums and section heads — */
-.jt-service-detail__num { color: var(--fg-1) !important; }
-.jt-timeline time { color: var(--fg-1) !important; }
 .jt-proof__delta { color: var(--fg-1) !important; }
 .jt-proof__grid { border-top-color: var(--jt-ink-800) !important; }
 .jt-team-row { border-top-color: var(--jt-ink-800) !important; }
@@ -893,26 +887,6 @@ button { font-family: inherit; }
 .jt-tick { color: var(--fg-3); }
 .jt-service--dark .jt-tick { color: rgba(255,255,255,.5); }
 
-/* Full service detail cards (services page) */
-.jt-service-detail {
-  padding: 56px 0;
-  border-bottom: 1px solid var(--border-1);
-  display: grid;
-  grid-template-columns: 180px 1fr 1fr;
-  gap: 48px;
-  align-items: start;
-}
-.jt-service-detail:last-child { border-bottom: 0; }
-.jt-service-detail__num { font-family: var(--font-display-en); font-weight: 900; font-size: 56px; line-height: 0.9; letter-spacing: -0.04em; color: #000; }
-.jt-service-detail__num small { display: block; font-family: var(--font-sans-en); font-size: 11px; letter-spacing: var(--tr-widest); text-transform: uppercase; color: var(--fg-3); font-weight: 500; margin-top: 14px; }
-.jt-service-detail__body h3 { font-size: 32px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.2; margin: 0 0 18px; }
-.jt-service-detail__body p { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin: 0; max-width: 480px; }
-.jt-service-detail__side ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
-.jt-service-detail__side li { display: grid; grid-template-columns: 20px 1fr; gap: 12px; font-size: 14px; line-height: 1.55; color: var(--fg-1); padding-bottom: 14px; border-bottom: 1px solid var(--border-1); }
-.jt-service-detail__side li:last-child { border-bottom: 0; padding-bottom: 0; }
-.jt-service-detail__side li b { font-weight: 700; }
-.jt-service-detail__side li span { color: var(--fg-2); font-size: 13px; display: block; margin-top: 2px; }
-
 /* ========== Insights list ========== */
 .jt-insights { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border-1); }
 .jt-insights__row {
@@ -1284,13 +1258,6 @@ button { font-family: inherit; }
   border-top: 2px solid #000;
   border-bottom: 1px solid var(--border-1);
 }
-.jt-team-card {
-  padding: 40px 32px 44px;
-  border-right: 1px solid var(--border-1);
-  display: flex;
-  flex-direction: column;
-}
-.jt-team-card:last-child { border-right: 0; }
 .jt-team-card__head {
   display: flex;
   align-items: center;
@@ -1318,20 +1285,6 @@ button { font-family: inherit; }
   text-transform: uppercase;
   color: var(--fg-2);
   line-height: 1.5;
-}
-.jt-team-card__name {
-  font-family: var(--font-display-kr);
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  margin: 0 0 8px;
-}
-.jt-team-card__name small {
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--fg-2);
-  margin-left: 4px;
 }
 .jt-team-card__title-kr {
   font-size: 14px;
@@ -1399,8 +1352,6 @@ button { font-family: inherit; }
 /* 전문가 카드 반응형 */
 @media (max-width: 1100px) {
   .jt-team-row { grid-template-columns: 1fr; border-bottom: 0; }
-  .jt-team-card { border-right: 0; border-bottom: 1px solid var(--border-1); }
-  .jt-team-card:last-child { border-bottom: 0; }
 }
 @media (max-width: 720px) {
   .jt-team-feature { padding: 32px 24px; }
@@ -1409,22 +1360,7 @@ button { font-family: inherit; }
   .jt-team-feature__name { font-size: 40px; }
   .jt-team-feature__grid { grid-template-columns: 1fr; gap: 28px; }
   .jt-team-feature__bio li { grid-template-columns: 90px 1fr; gap: 12px; }
-  .jt-team-card { padding: 32px 24px; }
-  .jt-team-card__name { font-size: 28px; }
 }
-
-/* ========== Timeline (about) ========== */
-.jt-timeline { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--border-1); }
-.jt-timeline li {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 40px;
-  padding: 28px 0;
-  border-bottom: 1px solid var(--border-1);
-  align-items: baseline;
-}
-.jt-timeline time { font-family: var(--font-display-en); font-weight: 900; font-size: 28px; letter-spacing: -0.03em; color: #000; }
-.jt-timeline p { margin: 0; font-size: 17px; line-height: 1.5; letter-spacing: -0.01em; }
 
 /* ========== Map section ========== */
 .jt-map {
@@ -1527,42 +1463,6 @@ button { font-family: inherit; }
   display: flex;
   gap: 10px;
 }
-
-/* ========== About tabs (회사소개 / 전문가) ========== */
-.jt-about-tabs {
-  position: sticky;
-  top: 64px;
-  z-index: 20;
-  background: #fff;
-  border-bottom: 1px solid var(--border-1);
-}
-.jt-about-tabs__inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 var(--gutter, 48px);
-  display: flex;
-  gap: 0;
-}
-.jt-about-tabs__btn {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  padding: 22px 32px 20px;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 12px;
-  font-family: inherit;
-  color: var(--fg-3);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: color .18s ease, border-color .18s ease;
-}
-.jt-about-tabs__btn:hover { color: var(--fg-1); }
-.jt-about-tabs__btn.is-active {
-  color: #000;
-  border-bottom-color: #000;
-}
 .jt-about-tabs__num {
   font-family: var(--font-display-en);
   font-weight: 900;
@@ -1570,18 +1470,7 @@ button { font-family: inherit; }
   letter-spacing: var(--tr-wide);
   color: var(--fg-3);
 }
-.jt-about-tabs__btn.is-active .jt-about-tabs__num { color: #000; }
-.jt-about-tabs__label {
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
 @media (max-width: 720px) {
-  .jt-about-tabs { top: 56px; }
-  .jt-about-tabs__inner { padding: 0 24px; }
-  .jt-about-tabs__btn { padding: 16px 18px; }
-  .jt-about-tabs__label { font-size: 15px; }
 }
 
 /* ========== Philosophy (about) ========== */
@@ -1987,7 +1876,6 @@ button { font-family: inherit; }
   .jt-services { grid-template-columns: 1fr 1fr; }
   .jt-creds__grid { grid-template-columns: 1fr; }
   .jt-creds__item { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.15); }
-  .jt-service-detail { grid-template-columns: 1fr; gap: 24px; }
   .jt-team { grid-template-columns: 1fr; }
   .jt-team__card:nth-child(odd), .jt-team__card:nth-child(even) { padding: 40px 0; border-right: 0; }
   .jt-map { grid-template-columns: 1fr; }
@@ -2012,7 +1900,6 @@ button { font-family: inherit; }
   .jt-stepper { flex-direction: column; }
   .jt-stepper__step { border-right: 0; border-bottom: 1px solid var(--border-1); }
   .jt-stepper__step:last-child { border-bottom: 0; }
-  .jt-timeline li { grid-template-columns: 1fr; gap: 8px; }
   .jt-hero__meta { flex-wrap: wrap; gap: 14px; }
   .jt-hero__tagrow { flex-direction: column; align-items: flex-start; gap: 16px; }
   .jt-team__card--featured { padding: 40px 24px; grid-template-columns: 1fr; }
@@ -2025,46 +1912,6 @@ button { font-family: inherit; }
 
 /* 리포트 내부는 reveal 애니메이션을 끕니다 (내부 라우팅 시 타이밍 이슈 회피) */
 .jt-report .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
-
-/* ---------- 히어로 ---------- */
-.jt-report-hero {
-  background: #000;
-  color: #fff;
-  padding: 140px 0 100px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  position: relative;
-  overflow: hidden;
-}
-.jt-report-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
-  background-size: 96px 96px;
-  opacity: .5;
-  pointer-events: none;
-}
-.jt-report-hero .jt-eyebrow { color: rgba(255,255,255,.55); position: relative; z-index: 1; }
-.jt-report-hero__title {
-  position: relative; z-index: 1;
-  color: #fff;
-  font-family: var(--font-sans-kr);
-  font-size: clamp(44px, 6vw, 88px);
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1.08;
-  margin: 24px 0 40px;
-  text-wrap: pretty;
-}
-.jt-report-hero__title span { color: #fff; }
-.jt-report-hero__title .is-accent {
-  display: inline-block;
-  opacity: .5;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-}
 .jt-report-hero__sub {
   position: relative; z-index: 1;
   font-size: 20px;
@@ -2714,7 +2561,6 @@ button { font-family: inherit; }
   .jt-report-grid__cards { grid-template-columns: 1fr; }
   .jt-report-how__steps { grid-template-columns: repeat(2, 1fr); }
   .jt-report-result__grid { grid-template-columns: 1fr; gap: 0; }
-  .jt-report-hero { padding: 100px 0 80px; }
   .jt-report-shell { margin: 48px auto 80px; padding: 0 24px; }
   .jt-report-result { padding: 0 24px; }
   .jt-report-result__grade { padding: 40px 28px; }
@@ -2723,7 +2569,6 @@ button { font-family: inherit; }
 }
 @media (max-width: 640px) {
   .jt-report-how__steps { grid-template-columns: 1fr; }
-  .jt-report-hero__title { font-size: 40px; }
   .jt-report-shell__title h1 { font-size: 28px; }
   .jt-report-q h2 { font-size: 20px; }
   .jt-report-calc { font-size: 13px; }
@@ -2816,7 +2661,7 @@ button { font-family: inherit; }
   .jt-nav { padding-left: 12px; padding-right: 12px; }
   /* 261003: 메뉴에 「법무사·중개사」가 들어가 항목이 6개가 됐다. 14px 로는 화면 폭 761px 에서
      2px 넘치고 768px 에서 상담 버튼과 맞닿았다(실측). 8px 로 줄이면 761px 에서 28px 남는다. */
-  .jt-nav__links { gap: 8px; }
+  .jt-nav__links {  }
   .jt-nav__cta { gap: 8px; }
   .jt-nav__phone { display: none; }   /* 전화번호는 히어로·푸터·상담 버튼에 이미 있다 */
 }

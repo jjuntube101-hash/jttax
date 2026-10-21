@@ -264,7 +264,7 @@ function renderIndexPage() {
   <meta charset="utf-8">
   <title>세금 계산기 — 양도·증여·상속·취득·재산세·종부세·종소세 | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="양도소득세·증여세·상속세·취득세·재산세·종합부동산세·종합소득세·법인전환·4대보험 실수령까지, 검증된 계산 엔진으로 5분 만에 계산하는 세금 계산기 모음.">
+  <meta name="description" content="양도·증여·상속 등 세금과 4대보험 계산 도구입니다. 입력 조건에 따른 참고 결과와 필요한 확인 사항을 살펴보세요.">
   <meta name="keywords" content="세금 계산기, 양도소득세 계산기, 증여세 계산기, 상속세 계산기, 취득세 계산기, 재산세 계산기, 종합부동산세 계산기, 종합소득세 계산기, 실수령액 계산기">
   <link rel="canonical" href="${url}">
   <meta property="og:type" content="website">
@@ -302,8 +302,8 @@ ${GA_HEAD_SNIPPET}
   </header>
   <main class="jt-ci-wrap">
     <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 세금 계산기</nav>
-    <h1>세금 계산기</h1>
-    <p class="jt-ci-lede">양도·증여·상속·취득·재산세·종합부동산세 + 종합소득세·법인전환·4대보험 실수령까지. 검증된 계산 엔진으로 로그인 없이 5분 만에 계산하고, 바로 담당 세무사 상담으로 이어집니다.</p>
+    <h1>세무도구</h1>
+    <p class="jt-ci-lede">세금과 4대보험 등 궁금한 항목을 골라 입력 조건에 따른 참고 결과를 확인해 보세요. 개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p>
     <div class="jt-ci-grid">
 ${cards}
     </div>

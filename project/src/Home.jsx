@@ -226,8 +226,8 @@ function JTCreds() {
           <p className="jt-ident__lead">담당할 사람을 먼저 알아보세요.<br />세 대표세무사의 실무와 경력을 소개합니다.</p>
         </div>
         {JT_TEAM_IMAGES_APPROVED && <figure className="jt-team-editorial">
-          <img src="/project/assets/people/team-editorial-260919.png" alt="제이티 세무법인 세 대표세무사의 단체 초상 — AI 연출 이미지" width="1672" height="941" loading="lazy" decoding="async" />
-          <figcaption><span>김민석 · 이현준 · 김가환 대표세무사</span><span>대표 사진 기반 AI 연출 이미지</span></figcaption>
+          <img src="/project/assets/people/team-editorial-260919.png" alt="제이티 세무법인 세 대표세무사의 단체 초상" width="1672" height="941" loading="lazy" decoding="async" />
+          <figcaption><span>김민석 · 이현준 · 김가환 대표세무사</span></figcaption>
         </figure>}
         <div className="jt-ident__grid">
           {window.JT_DATA.team.partners.map((p, i) => (
@@ -256,8 +256,8 @@ function JTMethod() {
           <p>계산에 담기지 않는 사실까지 살핍니다.<br />자료를 확인하고, 필요한 판단과 절차를 함께 정리합니다.</p>
         </div>
         {JT_TEAM_IMAGES_APPROVED && <figure className="jt-method__figure">
-          <img src="/project/assets/people/team-discussion-260919.png" alt="자료를 함께 살피며 논의하는 세 대표세무사 — AI 연출 이미지" width="1536" height="1024" loading="lazy" decoding="async" />
-          <figcaption>대표 사진 기반 AI 연출 이미지</figcaption>
+          <img src="/project/assets/people/team-discussion-260919.png" alt="자료를 함께 살피며 논의하는 세 대표세무사" width="1536" height="1024" loading="lazy" decoding="async" />
+          
         </figure>}
         <ol className="jt-method__steps">
           <li><span>01</span><div><h3>먼저, 사실을 확인합니다.</h3><p>현재 상황과 일정, 보유한 자료에서 검토할 내용을 찾습니다.</p></div></li>
@@ -290,24 +290,29 @@ window.JTQuote = JTQuote;
 
 // ============ Insights list (home preview) ============
 // 인사이트 카드 (홈·목록 공용)
-function JTInsightCard({ a, i }) {
-  const cat = String(a.tag || '인사이트').split('·').pop().trim();
-  // 카드의 유일한 상호작용 요소는 내부 <a> 하나 — CSS 스트레치 링크(a.jt-icard__go::after)가
-  // 히트 영역을 카드 전체로 늘려 «카드 아무 데나 클릭»을 유지한다. article 에 onClick 을 두면
-  // 중첩 상호작용(Codex R2-F1) 또는 키보드 게이트(jsx 스모크) 중 하나를 깬다 (260830)
-  return (
-    <article className="jt-icard reveal" data-delay={Math.min(i, 5)}>
-      <div className="jt-icard__top">
-        <span className="jt-icard__cat">{cat}</span>
-        <span className="jt-icard__date">{a.date}</span>
-      </div>
-      <h3 className="jt-icard__title">{a.title}</h3>
-      {/* 크롤러·키보드·마우스 공용 실링크 (260830 SEO 파일럿 확정 #1) */}
-      {a.slug
-        ? <a className="jt-icard__go" href={'/insights/' + a.slug + '.html'} style={{ textDecoration: 'none' }}>읽기 <span className="jt-arrow">→</span></a>
-        : <span className="jt-icard__go">읽기 <span className="jt-arrow">→</span></span>}
-    </article>);
-
+function jtInsightCategory(article) {
+  const text = typeof article === 'string' ? article : [article.tag, article.slug, article.title].join(' ');
+  if (/크리에이터|유튜|creator|youtube/i.test(text)) return '크리에이터';
+  if (/취득|acquisition/i.test(text)) return '취득세';
+  if (/상속|증여|inherit|gift|succession/i.test(text)) return '상속·증여';
+  if (/양도|보유|부동산|주택|capital-gains|property|real-estate/i.test(text)) return '부동산 세금';
+  if (/조사|불복|경정|audit|appeal/i.test(text)) return '조사·신고 검토';
+  if (/가상자산|crypto|virtual-asset/i.test(text)) return '가상자산';
+  return '사업·신고';
+}
+window.jtInsightCategory = jtInsightCategory;
+function JTInsightCard({ a, i, label }) {
+  const meta = (window.JT_INSIGHT_META || {})[a.slug] || {};
+  const cover = a.image || (a.hero && a.hero.src) || meta.hero;
+  const updated = a.updated || meta.updated;
+  return <article className={cover ? "rn-insight rn-insight--image" : "rn-insight"}>
+    {cover && <img src={cover} alt={a.imageAlt || (a.hero && a.hero.alt) || meta.heroAlt || ''} loading="lazy" decoding="async" />}
+    <div className="rn-insight-meta"><span>{label || jtInsightCategory(a)}</span><time>{a.date}</time></div>
+    <h3><a href={'/insights/' + a.slug + '.html'}>{a.title}</a></h3>
+    {a.excerpt && <p>{a.excerpt}</p>}
+    {updated && updated.replace(/-/g,'.') !== a.date && <small>수정 {updated.replace(/-/g,'.')}</small>}
+    <a className="rn-link" href={'/insights/' + a.slug + '.html'}>글 읽기 <span aria-hidden="true">→</span></a>
+  </article>;
 }
 window.JTInsightCard = JTInsightCard;
 
@@ -427,3 +432,53 @@ function JTFaq({ setRoute }) {
     </section>);
 }
 window.JTFaq = JTFaq;
+
+
+// 고객 상황을 출발점으로 하는 새 홈. 최신 데이터와 기존 계산·예약 계약은 유지한다.
+const JT_RENEWAL_GROUPS = [
+  { id: 'property', name: '재산과 자산 이전', question: '재산을 사고, 팔거나 물려주려 합니다', description: '거래와 이전을 앞두고 세금과 준비할 사항을 살펴봅니다.', indices: [0, 5], prepare: ['거래할 재산과 예정 시점', '계약서 또는 보유 내역', '이미 신고한 경우 신고서·납부 내역'] },
+  { id: 'business', name: '사업 운영과 신고', question: '사업의 장부와 세금 신고가 필요합니다', description: '매월의 장부부터 신고, 사업 구조의 변화까지 연결합니다.', indices: [2, 3, 6], prepare: ['사업 종류와 운영 형태', '최근 신고 내역', '매출·비용 또는 플랫폼 정산자료'] },
+  { id: 'review', name: '조사와 지난 신고 검토', question: '통지를 받았거나, 낸 세금을 확인하려 합니다', description: '통지 내용과 일정을 먼저 확인하고 대응할 자료를 정리합니다.', indices: [1, 4], prepare: ['받은 통지와 수령일', '해당 기간의 신고 내역', '거래 내용과 보유 증빙'] }
+];
+window.JT_RENEWAL_GROUPS = JT_RENEWAL_GROUPS;
+const JT_RENEWAL_PEOPLE = { '김민석': 'kim-minseok', '이현준': 'lee-hyunjun', '김가환': 'kim-gahwan' };
+window.JT_RENEWAL_PEOPLE = JT_RENEWAL_PEOPLE;
+function JTRenewalLink({ href, route, setRoute, children, className = 'rn-link', origin }) {
+  return <a href={href} className={className} onClick={e => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (!route || !setRoute) return;
+    e.preventDefault();
+    if (origin === 'hero') window.jtTrackCta('booking', 'hero');
+    if (origin === 'faq') window.jtTrackCta('booking', 'faq');
+    setRoute(route);
+  }}>{children}</a>;
+}
+window.JTRenewalLink = JTRenewalLink;
+function JTRebuildHome({ setRoute }) {
+  const D = window.JT_DATA;
+  const latest = D.insights[0];
+  const picks = latest ? [latest] : [];
+  const categories = new Set(picks.map(jtInsightCategory));
+  for (const article of D.insights.slice(1)) {
+    const category = jtInsightCategory(article);
+    if (!categories.has(category)) { picks.push(article); categories.add(category); }
+    if (picks.length === 3) break;
+  }
+  return <div className="rn-page rn-home">
+    <section className="rn-hero rn-shell">
+      <div className="rn-hero-copy"><h1>근거 위에서,<br/>끝까지.</h1>
+        <p className="rn-lead">사업의 장부와 신고부터 재산의 이전까지.<br className="rn-desktop-break"/> 세 대표세무사가 사실을 살피고, 필요한 절차를 설명합니다.</p>
+        <div className="rn-actions"><button className="rn-button" onClick={() => document.getElementById('rn-home-start')?.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}>내 상황에 맞는 업무 찾기 <span aria-hidden="true">↓</span></button><JTRenewalLink href="/#/booking" route="booking" setRoute={setRoute} origin="hero">상담 신청 →</JTRenewalLink></div>
+      </div>
+      <div className="rn-hero-people" aria-label="제이티 세 대표세무사">{D.team.partners.map(p => <figure key={p.name}><img src={p.photo} alt={p.name + ' 대표세무사'} width="750" height="1000" fetchPriority="high" decoding="async"/><figcaption><a href={'/experts/' + JT_RENEWAL_PEOPLE[p.name] + '.html'}>{p.name}<span>대표세무사</span></a></figcaption></figure>)}</div>
+    </section>
+    <section className="rn-shell rn-section" id="rn-home-start"><div className="rn-section-heading"><h2>어떤 일을 앞두고 계신가요?</h2><p>세목을 몰라도 괜찮습니다. 지금 상황에서 시작하세요.</p></div>
+      <div className="rn-situation-list">{JT_RENEWAL_GROUPS.map(g => <a key={g.id} className="rn-situation" href={'/#/services/' + g.id}><span>{g.name}</span><h3>{g.question}</h3><span aria-hidden="true">→</span></a>)}</div>
+    </section>
+    <section className="rn-method-band"><div className="rn-shell rn-method-layout"><figure><img src="/project/assets/people/renewal/team-review.jpg" alt="세 대표가 자료를 함께 살피는 모습" width="1536" height="1024" loading="lazy" decoding="async"/></figure><div><h2>먼저 듣고,<br/>근거를 확인합니다.</h2><p className="rn-lead">궁금한 점을 분명히 하고, 판단에 필요한 자료와 다음 절차를 함께 정리합니다.</p><ol className="rn-method-list"><li><h3>상황과 일정 확인</h3><p>어떤 일이 있었는지, 언제까지 무엇을 결정해야 하는지 듣습니다.</p></li><li><h3>자료와 쟁점 검토</h3><p>거래 내역과 신고 자료를 확인하고 검토할 사항을 설명합니다.</p></li><li><h3>진행할 업무 안내</h3><p>필요한 신고·자문·대응의 범위와 준비 사항을 정리합니다.</p></li></ol><a className="rn-link" href="/#/about">제이티의 사람과 업무 방식 →</a></div></div></section>
+    <section className="rn-shell rn-section rn-tools-teaser"><div><h2>계산부터 시작하고 싶다면.</h2><p>입력 조건에 따른 참고 결과를 확인해 보세요.<br/>개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p></div><div className="rn-tool-shortcuts"><a href="/#/report/cgt">양도소득세 <span aria-hidden="true">→</span></a><a href="/#/report/acquisition">취득세 <span aria-hidden="true">→</span></a><a href="/#/report/income">종합소득세 <span aria-hidden="true">→</span></a><a href="/#/report">모든 세무도구 찾기 <span aria-hidden="true">→</span></a></div></section>
+    <section className="rn-insights-band"><div className="rn-shell rn-section"><div className="rn-section-heading rn-heading-row"><div><h2>지금 확인할 세금 이야기.</h2><p>최신 글 한 편과 다른 분야의 실무 글을 함께 소개합니다.</p></div><a className="rn-link" href="/#/insights">전체 {D.insights.length}개 글 →</a></div><div className="rn-insight-grid rn-home-editorial">{picks.map((a,i)=><JTInsightCard key={a.slug} a={a} i={i} label={i === 0 ? '최신 글' : '분야별 추천 · ' + jtInsightCategory(a)}/>)}</div></div></section>
+    <section className="rn-shell rn-section rn-home-bottom"><div><h2>상담 전에 궁금한 점.</h2><p>자료가 모두 준비되지 않아도 문의하실 수 있습니다.</p><JTRenewalLink href="/#/booking" route="booking" setRoute={setRoute} className="rn-button" origin="faq">상담 준비·신청하기 →</JTRenewalLink></div><div className="rn-faq">{D.faq.slice(0,3).map(item=><details key={item.q}><summary>{item.q}</summary><p>{item.a}</p></details>)}<a className="rn-link" href="/#/contact">연락 방법과 상담 절차 →</a></div></section>
+  </div>;
+}
+window.JTRebuildHome = JTRebuildHome;
