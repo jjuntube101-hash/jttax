@@ -694,9 +694,18 @@ function JTReportGift({ setRoute, onBack }) {
     const unit = { dong: answers.reDong, ho: answers.reHo, year: answers.reYear || (answers.giftDate || '').slice(0, 4) || new Date().getFullYear() };
     setLookupState({ loading: true, result: null, err: null });
     try {
-      const r = answers.reType === '공동주택'
+      let r = answers.reType === '공동주택'
         ? await lookupValuation(answers.reAddress, '증여', answers.giftDate, unit)
         : await window.jtLookupPublicPrice(answers.reAddress, answers.reType, unit);
+      /* 261021: 정부 전산망이 해외 접속을 막아 엔진(도쿄)은 실거래가를 국내 NAS 수집기로 받아온다.
+         «수집 중»(pending)이면 안내를 보이고 잠시 뒤 자동으로 다시 묻는다(최대 9회). */
+      for (let tries = 0; r && r.status === 'pending' && answers.reType === '공동주택' && tries < 9; tries++) {
+        if (stale()) return;
+        setLookupState({ loading: true, result: r, err: null });
+        await new Promise(done => setTimeout(done, Math.min(30, Math.max(5, Number(r.retry_after) || 10)) * 1000));
+        if (stale()) return;
+        r = await lookupValuation(answers.reAddress, '증여', answers.giftDate, unit);
+      }
       if (stale()) return;
       setLookupState({ loading: false, result: r, err: null });
     } catch (e) {
@@ -1080,7 +1089,9 @@ function JTReportGift({ setRoute, onBack }) {
             return (
             <div style={{ marginTop: 12, padding: '12px 14px', background: 'var(--bg-1,#f7f5f0)', borderRadius: 8 }}>
               <button className="jt-btn jt-btn--ghost" disabled={!answers.reAddress || lookupState.loading}
-                onClick={doLookup}>{lookupState.loading ? '조회 중… (최초 10~30초 소요)' : '주소로 시가·공시가격 조회'}</button>
+                onClick={doLookup}>{lookupState.loading
+                  ? (R && R.status === 'pending' ? '국내 자료 수집 중… 잠시 뒤 자동으로 다시 조회합니다' : '조회 중… (최초 10~30초 소요)')
+                  : '주소로 시가·공시가격 조회'}</button>
 
               {/* 성공: ① 기준값 + ② 실거래 범위 + ③ 공시하한 */}
               {R && R.success && (
@@ -1118,9 +1129,9 @@ function JTReportGift({ setRoute, onBack }) {
               {R && !R.success && !(R.valuations && R.valuations.length) && (
                 <div style={{ marginTop: 10, fontSize: 13 }}>
                   <p style={{ color: '#b97d2a', margin: 0 }}>{R.error || R.note || '조회 결과를 확인하지 못했습니다. 평가액을 직접 입력해 주세요.'}</p>
-                  <p style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}>
+                  {R.status !== 'pending' && <p style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}>
                     공시자료 조회 실패만으로 시가가 없다고 판단할 수 없습니다. 유사매매·감정가 등 적용 가능한 자료와 평가기준일을 담당 세무사가 확인해야 합니다. 유사매매 후보는 홈택스 조회 결과와도 대조해 주세요.
-                  </p>
+                  </p>}
                 </div>
               )}
               {R && R.valuations && R.valuations.map((v, i) => <p key={i}>{v.valuation_type} ({v.as_of_year}년): {formatWon(v.amount)}{answers.reType === '토지' ? ' / ㎡' : ''}</p>)}
