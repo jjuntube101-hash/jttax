@@ -91,6 +91,8 @@ B씨는 올해 중간부터 장부를 정리했다고 가정하겠습니다. 현
 
 <div><a class="jt-simple-cta" href="https://pf.kakao.com/_CcxlJG">소득금액 확인과 기장 상담</a></div>
 
+기본 질문부터 읽고 싶다면 [블로그: 종합소득세 계산기, 유튜버는 매출을 넣나요?](https://blog.naver.com/jt_tax/224449841672)를 함께 보세요.
+
 ## 근거와 관련 업무
 
 [소득세법 제19조](https://www.law.go.kr/법령/소득세법/제19조)·[제20조](https://www.law.go.kr/법령/소득세법/제20조)·[제27조](https://www.law.go.kr/법령/소득세법/제27조)·[제33조](https://www.law.go.kr/법령/소득세법/제33조)·[제160조](https://www.law.go.kr/법령/소득세법/제160조)는 사업소득금액·필요경비·장부 기록의 기본 근거입니다. [제14조](https://www.law.go.kr/법령/소득세법/제14조)와 [제76조](https://www.law.go.kr/법령/소득세법/제76조)는 합산 구조와 확정신고 시 이미 낸 세금의 정산에 관한 근거입니다.
