@@ -237,7 +237,7 @@ function JTReportInsurance({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="4대보험·실수령 계산기" subtitle="계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="BOOKKEEPING">
+        <JTReportShell title="월급 실수령액 계산기" subtitle="계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="BOOKKEEPING">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />4대보험과 세금을 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -248,7 +248,7 @@ function JTReportInsurance({ setRoute, onBack }) {
     const { calc } = report;
     return (
       <div className="jt-container">
-        <JTReportShell title="4대보험·실수령 계산 결과" subtitle="월 급여에서 4대보험·세금을 뺀 실수령액" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
+        <JTReportShell title="월급 실수령액 계산 결과" subtitle="월 급여에서 4대보험·세금을 뺀 실수령액" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">예상 월 실수령액(추정)</div>
             <div className="jt-report-result__grade-val">{wonExact(calc.net)}</div>
@@ -337,7 +337,7 @@ function JTReportInsurance({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="4대보험·실수령 계산기" subtitle={phase === 'quick' ? '월 급여만 넣으면 4대보험·세금 떼고 실수령액을 바로 계산해요.' : '부양가족·자녀까지 반영해 세금을 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
+      <JTReportShell title="월급 실수령액 계산기" subtitle={phase === 'quick' ? '월 급여만 넣으면 4대보험·세금 떼고 실수령액을 바로 계산해요.' : '부양가족·자녀까지 반영해 세금을 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>

@@ -12,7 +12,7 @@ function JTAbout({ setRoute, initialTab }) {
     document.getElementById('rn-about-tab-'+next)?.focus();
   };
   return <div className="rn-page rn-about">
-    <JTRenewalPageIntro title={tab === 'company' ? <>사업과 재산의 세금,<br/>실무 경험으로 살핍니다.</> : <>담당할 사람의<br/>경력을 확인하세요.</>} text={tab === 'company' ? '사무소 운영, 기업 회계, 재산 세무와 교육·자문의 경험을 모았습니다. 고객의 상황에 맞는 업무와 진행 방법을 설명합니다.' : '세 대표세무사의 주요 실무와 경력을 소개합니다. 특정 분야를 정하지 못하셨다면 상담 과정에서 필요한 업무를 함께 확인합니다.'}/>
+    <JTRenewalPageIntro title={tab === 'company' ? <>사업과 재산의 세금,<br/>실무 경험으로 살핍니다.</> : <>대표세무사 소개</>} text={tab === 'company' ? '사무소 운영, 기업 회계, 재산 세무와 교육·자문의 경험을 모았습니다. 고객의 상황에 맞는 업무와 진행 방법을 설명합니다.' : '세 대표세무사의 주요 실무와 경력을 소개합니다. 특정 분야를 정하지 못하셨다면 상담 과정에서 필요한 업무를 함께 확인합니다.'}/>
     <div className="rn-shell rn-about-tabs" role="tablist" aria-label="제이티 소개"><button id="rn-about-tab-company" role="tab" aria-selected={tab==='company'} aria-controls="rn-about-panel" tabIndex={tab==='company'?0:-1} onKeyDown={keyTab} onClick={()=>select('company')}>제이티 소개</button><button id="rn-about-tab-team" role="tab" aria-selected={tab==='team'} aria-controls="rn-about-panel" tabIndex={tab==='team'?0:-1} onKeyDown={keyTab} onClick={()=>select('team')}>대표세무사 소개</button></div>
     <div role="tabpanel" id="rn-about-panel" aria-labelledby={'rn-about-tab-'+tab}>{tab==='company'?<JTAboutCompany D={window.JT_DATA} setRoute={setRoute} onSeeTeam={()=>select('team')}/>:<JTAboutTeam D={window.JT_DATA.team} setRoute={setRoute}/>}</div>
   </div>;
@@ -41,11 +41,11 @@ window.JTTeam=JTTeam;
 const JT_RENEWAL_SERVICE_COPY = {
   'asset-transfer': { title:'양도·상속·증여', text:'재산을 팔거나 물려주기 전에 거래 구조와 신고할 사항을 함께 살펴봅니다.', booking:'asset'},
   'tax-audit': { title:'세무조사 대응', text:'통지 내용과 일정을 확인하고, 설명에 필요한 장부와 증빙을 정리합니다.', booking:'audit'},
-  'bookkeeping': {title:'기장·세금 신고',text:'매월의 거래를 장부로 정리하고 결산과 신고에 필요한 사항을 확인합니다.',booking:'bookkeeping'},
+  'bookkeeping': {title:'세무기장·세금 신고',text:'매월의 거래를 장부로 정리하고 결산과 신고에 필요한 사항을 확인합니다.',booking:'bookkeeping'},
   'consulting': {title:'세무 자문·사업 구조 검토',text:'법인 전환이나 사업 구조 변경을 앞두고 선택에 따른 세무 사항을 검토합니다.',booking:'consulting'},
   'tax-refund': {title:'지난 신고·경정청구 검토',text:'이미 신고한 내용과 증빙을 확인해 다시 검토할 쟁점과 절차를 안내합니다.',booking:'refund'},
   '취득세': {title:'취득세',text:'취득 전 확인할 세금과 준비사항, 이미 낸 취득세의 재검토를 안내합니다.',booking:'acquisition'},
-  '크리에이터 세금': {title:'크리에이터 세금',text:'첫 정산부터 겸업·팀 운영까지, 플랫폼 수익에 맞는 장부와 신고를 준비합니다.',booking:'creators'}
+  '유튜버·크리에이터 세무': {title:'유튜버·크리에이터 세무',text:'첫 정산부터 겸업·팀 운영까지, 플랫폼 수익에 맞는 장부와 신고를 준비합니다.',booking:'creators'}
 };
 function JTServicesPage({setRoute}) {
   const groups=window.JT_RENEWAL_GROUPS;
@@ -67,7 +67,7 @@ function JTInsightsPage({setRoute}) {
   const [category,setCategory]=React.useState('전체');const [query,setQuery]=React.useState('');const [limit,setLimit]=React.useState(12);
   const cats=[...new Set(items.map(window.jtInsightCategory))];
   const filtered=items.filter(a=>(category==='전체'||window.jtInsightCategory(a)===category)&&[a.title,a.excerpt,a.tag].join(' ').toLowerCase().includes(query.trim().toLowerCase()));
-  return <div className="rn-page rn-insights"><JTRenewalPageIntro title={<>결정 전에 읽는<br/>세금 실무 안내.</>} text="현재 상황과 관련된 글을 찾아보세요. 발행일과 수정 내용을 확인하고, 개별 판단이 필요한 부분은 상담으로 이어가실 수 있습니다."/>
+  return <div className="rn-page rn-insights"><JTRenewalPageIntro title={<>세금 가이드</>} text="현재 상황과 관련된 글을 찾아보세요. 발행일과 수정 내용을 확인하고, 개별 판단이 필요한 부분은 상담으로 이어가실 수 있습니다."/>
     <section className="rn-shell rn-section"><div className="rn-insight-controls"><div><label htmlFor="rn-insight-query">궁금한 내용을 검색하세요</label><input id="rn-insight-query" type="search" placeholder="예: 유튜버, 상속, 취득세" value={query} onChange={e=>{setQuery(e.target.value);setLimit(12);}}/></div><div><label htmlFor="rn-insight-category">분야</label><select id="rn-insight-category" value={category} onChange={e=>{setCategory(e.target.value);setLimit(12);}}><option>전체</option>{cats.map(c=><option key={c}>{c}</option>)}</select></div></div>
       <div className="rn-result-summary"><p role="status">{filtered.length}개 글 · {Math.min(limit,filtered.length)}개 표시</p><span>발행일 최신순</span></div>
       <div className="rn-insight-grid">{filtered.slice(0,limit).map((a,i)=><window.JTInsightCard a={a} i={i} key={a.slug}/>)}</div>

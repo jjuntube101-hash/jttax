@@ -35,7 +35,7 @@ window.JTIcon = JTSitIcon;
 const JT_SITUATIONS = [
 // slug 는 새 탭·주소 복사에서도 분야가 전달되게 하는 링크 키 — 예약 폼(Pages2 JT_BOOKING_SLUGS)의 허용 목록과 같아야 한다.
 { ico: 'home', num: '01', sit: '재산을 팔거나 물려줄 때', t: '양도·상속·증여', d: '거래와 이전에 따른 세금, 신고에 필요한 사항을 검토합니다.', topic: '양도·상속·증여', slug: 'asset' },
-{ ico: 'corp', num: '02', sit: '사업의 매월과 연말을 준비할 때', t: '기장·세금 신고', d: '법인과 개인사업자의 장부, 결산과 세금 신고를 다룹니다.', topic: '기장·세금 신고', slug: 'bookkeeping' },
+{ ico: 'corp', num: '02', sit: '사업의 매월과 연말을 준비할 때', t: '세무기장·세금 신고', d: '법인과 개인사업자의 장부, 결산과 세금 신고를 다룹니다.', topic: '세무기장·세금 신고', slug: 'bookkeeping' },
 { ico: 'audit', num: '03', sit: '세무서에서 통지를 받았을 때', t: '세무조사 대응', d: '통지 내용과 자료를 확인하고 대응할 쟁점을 정리합니다.', topic: '세무조사 대응', slug: 'audit' },
 { ico: 'refund', num: '04', sit: '지난 신고를 다시 살펴볼 때', t: '경정청구', d: '신고 내용과 증빙을 바탕으로 정정 가능성을 검토합니다.', topic: '경정청구', slug: 'refund' },
 { ico: 'consult', num: '05', sit: '사업의 중요한 결정을 앞두고', t: '기업 자문·세무 컨설팅', d: '법인 전환과 사업 구조 변경에 따른 세무 사항을 살핍니다.', topic: '세금 종합 컨설팅', slug: 'consulting' },
@@ -467,7 +467,7 @@ function JTRebuildHome({ setRoute }) {
   return <div className="rn-page rn-home">
     <section className="rn-hero rn-shell">
       <div className="rn-hero-copy"><h1>근거 위에서,<br/>끝까지.</h1>
-        <p className="rn-lead">사업의 장부와 신고부터 재산의 이전까지.<br className="rn-desktop-break"/> 세 대표세무사가 사실을 살피고, 필요한 절차를 설명합니다.</p>
+        <p className="rn-lead">서울 강남에 위치한 제이티 세무법인입니다. 세무기장·세금 신고부터 양도·상속·증여, 기업 자문과 세무조사 대응까지 함께 살핍니다.</p>
         <div className="rn-actions"><button className="rn-button" onClick={() => document.getElementById('rn-home-start')?.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}>내 상황에 맞는 업무 찾기 <span aria-hidden="true">↓</span></button><JTRenewalLink href="/#/booking" route="booking" setRoute={setRoute} origin="hero">상담 신청 →</JTRenewalLink></div>
       </div>
       <div className="rn-hero-people" aria-label="제이티 세 대표세무사">{D.team.partners.map(p => <figure key={p.name}><img src={p.photo} alt={p.name + ' 대표세무사'} width="750" height="1000" fetchPriority="high" decoding="async"/><figcaption><a href={'/experts/' + JT_RENEWAL_PEOPLE[p.name] + '.html'}>{p.name}<span>대표세무사</span></a></figcaption></figure>)}</div>
@@ -476,7 +476,7 @@ function JTRebuildHome({ setRoute }) {
       <div className="rn-situation-list">{JT_RENEWAL_GROUPS.map(g => <a key={g.id} className="rn-situation" href={'/#/services/' + g.id}><span>{g.name}</span><h3>{g.question}</h3><span aria-hidden="true">→</span></a>)}</div>
     </section>
     <section className="rn-method-band"><div className="rn-shell rn-method-layout"><figure><img src="/project/assets/people/renewal/team-review.jpg" alt="세 대표가 자료를 함께 살피는 모습" width="1536" height="1024" loading="lazy" decoding="async"/></figure><div><h2>먼저 듣고,<br/>근거를 확인합니다.</h2><p className="rn-lead">궁금한 점을 분명히 하고, 판단에 필요한 자료와 다음 절차를 함께 정리합니다.</p><ol className="rn-method-list"><li><h3>상황과 일정 확인</h3><p>어떤 일이 있었는지, 언제까지 무엇을 결정해야 하는지 듣습니다.</p></li><li><h3>자료와 쟁점 검토</h3><p>거래 내역과 신고 자료를 확인하고 검토할 사항을 설명합니다.</p></li><li><h3>진행할 업무 안내</h3><p>필요한 신고·자문·대응의 범위와 준비 사항을 정리합니다.</p></li></ol><a className="rn-link" href="/#/about">제이티의 사람과 업무 방식 →</a></div></div></section>
-    <section className="rn-shell rn-section rn-tools-teaser"><div><h2>계산부터 시작하고 싶다면.</h2><p>입력 조건에 따른 참고 결과를 확인해 보세요.<br/>개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p></div><div className="rn-tool-shortcuts"><a href="/#/report/cgt">양도소득세 <span aria-hidden="true">→</span></a><a href="/#/report/acquisition">취득세 <span aria-hidden="true">→</span></a><a href="/#/report/income">종합소득세 <span aria-hidden="true">→</span></a><a href="/#/report">모든 세무도구 찾기 <span aria-hidden="true">→</span></a></div></section>
+    <section className="rn-shell rn-section rn-tools-teaser"><div><h2>계산부터 시작하고 싶다면.</h2><p>입력 조건에 따른 참고 결과를 확인해 보세요.<br/>개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p></div><div className="rn-tool-shortcuts"><a href="/#/report/cgt">양도소득세 <span aria-hidden="true">→</span></a><a href="/#/report/acquisition">취득세 <span aria-hidden="true">→</span></a><a href="/#/report/income">종합소득세 <span aria-hidden="true">→</span></a><a href="/#/report">세금 계산기 전체 보기 <span aria-hidden="true">→</span></a></div></section>
     <section className="rn-insights-band"><div className="rn-shell rn-section"><div className="rn-section-heading rn-heading-row"><div><h2>지금 확인할 세금 이야기.</h2><p>최신 글 한 편과 다른 분야의 실무 글을 함께 소개합니다.</p></div><a className="rn-link" href="/#/insights">전체 {D.insights.length}개 글 →</a></div><div className="rn-insight-grid rn-home-editorial">{picks.map((a,i)=><JTInsightCard key={a.slug} a={a} i={i} label={i === 0 ? '최신 글' : '분야별 추천 · ' + jtInsightCategory(a)}/>)}</div></div></section>
     <section className="rn-shell rn-section rn-home-bottom"><div><h2>상담 전에 궁금한 점.</h2><p>자료가 모두 준비되지 않아도 문의하실 수 있습니다.</p><JTRenewalLink href="/#/booking" route="booking" setRoute={setRoute} className="rn-button" origin="faq">상담 준비·신청하기 →</JTRenewalLink></div><div className="rn-faq">{D.faq.slice(0,3).map(item=><details key={item.q}><summary>{item.q}</summary><p>{item.a}</p></details>)}<a className="rn-link" href="/#/contact">연락 방법과 상담 절차 →</a></div></section>
   </div>;

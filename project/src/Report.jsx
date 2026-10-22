@@ -446,7 +446,7 @@ function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, 
   return (
     <div className="jt-report-shell">
       <div className="jt-report-shell__head">
-        <button className="jt-report-shell__back" onClick={onBack}>← 세무도구</button>
+        <button className="jt-report-shell__back" onClick={onBack}>← 세금 계산기 목록</button>
         <div className="jt-report-shell__meta">
           <span className="jt-tag">{tag}</span>
           <span>Step {_stepNo} / {_tot}</span>
@@ -493,11 +493,11 @@ function JTReportHub({ setRoute, setSubRoute }) {
     { sub: 'property', name: '재산세', group: '재산', text: '주택·건물·토지의 보유 내역으로 재산세를 살펴봅니다.' },
     { sub: 'comprehensive', name: '종합부동산세', group: '재산', text: '보유 주택의 공시가격과 공제 조건을 함께 확인합니다.' },
     { sub: 'income', name: '종합소득세', group: '사업·소득', text: '사업·근로 등 소득과 공제 내역을 모아 예상 세액을 살펴봅니다.' },
-    { sub: 'vat', name: '부가가치세', group: '사업·소득', text: '과세 유형과 매출·매입 내역으로 신고할 세금을 살펴봅니다.' },
-    { sub: 'insurance', name: '4대보험·실수령액', group: '사업·소득', text: '월 급여를 기준으로 보험료와 공제 후 금액을 확인합니다.' },
-    { sub: 'corporate', name: '법인 전환 비교', group: '비교·진단', text: '사업 이익과 대표 급여를 기준으로 개인·법인의 부담을 비교합니다.' },
-    { sub: 'compare', name: '매매·증여·상속 비교', group: '비교·진단', text: '같은 재산의 이전 방법에 따라 달라지는 세금을 비교합니다.' },
-    { sub: 'burden', name: '부담부증여 시뮬레이션', group: '비교·진단', text: '채무를 함께 넘기는 증여에서 세금이 어떻게 달라지는지 살펴봅니다.' },
+    { sub: 'vat', name: '부가세 계산기', group: '사업·소득', text: '과세 유형과 매출·매입 내역으로 신고할 세금을 살펴봅니다.' },
+    { sub: 'insurance', name: '월급 실수령액 계산기', group: '사업·소득', text: '월 급여를 기준으로 보험료와 공제 후 금액을 확인합니다.' },
+    { sub: 'corporate', name: '개인사업자·법인 세금 비교', group: '비교·진단', text: '사업 이익과 대표 급여를 기준으로 개인·법인의 부담을 비교합니다.' },
+    { sub: 'compare', name: '증여·매매·상속 세금 비교', group: '비교·진단', text: '같은 재산의 이전 방법에 따라 달라지는 세금을 비교합니다.' },
+    { sub: 'burden', name: '부담부증여 계산기', group: '비교·진단', text: '채무를 함께 넘기는 증여에서 세금이 어떻게 달라지는지 살펴봅니다.' },
     { sub: 'youthstartup', name: '청년창업 감면 진단', group: '비교·진단', text: '창업 시점·업종·지역 등 감면 검토에 필요한 조건을 확인합니다.' },
     { sub: 'acq-check', name: '취득세 신고 점검', group: '비교·진단', text: '취득세 신고에서 다시 확인할 항목을 차례로 점검합니다.' },
     { sub: 'appeal', name: '경정청구 검토', group: '비교·진단', text: '이미 신고한 세금에서 검토할 쟁점과 자료를 정리합니다.' },
@@ -515,14 +515,14 @@ function JTReportHub({ setRoute, setSubRoute }) {
     <div className="jt-renew-tools">
       <section className="jt-renew-flow-intro">
         <div className="jt-renew-flow-wrap">
-          <h1>필요한 세무도구를<br />바로 찾아보세요.</h1>
-          <p>예상 세금과 선택지를 확인하는 첫걸음입니다.<br />계산 결과와 적용 조건을 함께 살펴보세요.</p>
+          <h1>세금 계산기</h1>
+          <p>내 상황에 맞는 계산과 비교·진단을 찾아보세요.</p>
           <div className="jt-renew-tool-search"><label htmlFor="jt-tool-query">어떤 세금이 궁금하신가요?</label><input id="jt-tool-query" type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="예: 증여, 취득, 실수령액" autoComplete="off" /></div>
           <div className="jt-renew-filter" role="group" aria-label="도구 분야">{groups.map(g => <button type="button" key={g} aria-pressed={group === g} onClick={() => setGroup(g)}>{g}</button>)}</div>
         </div>
       </section>
       <section className="jt-renew-flow-wrap jt-renew-tool-results" aria-labelledby="jt-tool-list-title">
-        <div className="jt-renew-result-head"><h2 id="jt-tool-list-title">{group === '전체' ? '세무도구 전체' : group + ' 도구'}</h2><p role="status">{matches.length}개 도구</p></div>
+        <div className="jt-renew-result-head"><h2 id="jt-tool-list-title">{group === '전체' ? '세금 계산기·비교·진단' : group + ' 도구'}</h2><p role="status">{matches.length}개 도구</p></div>
         {matches.length > 0 ? <div className="jt-renew-tool-list">{matches.map(t => <a key={t.sub} className="jt-renew-tool" href={'/#/report/' + t.sub} onClick={e => openTool(e, t.sub)}><div><span className="jt-renew-tool-category">{t.group}{t.note ? ' · ' + t.note : ''}</span><h3>{t.name}</h3><p>{t.text}</p></div><span className="jt-renew-tool-open">{t.group === '비교·진단' ? '살펴보기' : '계산하기'} <span aria-hidden="true">→</span></span></a>)}</div> : <div className="jt-renew-empty"><h3>일치하는 도구가 없습니다.</h3><p>세금 이름을 짧게 입력하거나 전체 분야에서 찾아보세요.</p><button type="button" className="jt-btn jt-btn--outline" onClick={() => {setQuery('');setGroup('전체');}}>전체 도구 보기</button></div>}
         <details className="jt-renew-coming"><summary>준비 중인 도구</summary><p>AI 세무 길잡이와 세무조사 위험도 진단은 준비 중입니다. 지금 필요한 사안은 상담으로 문의해 주세요.</p></details>
       </section>

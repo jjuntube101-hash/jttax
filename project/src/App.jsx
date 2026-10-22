@@ -19,7 +19,7 @@ const { useState: useAppState, useEffect: useAppEffect } = React;
 
 // ============ 해시 라우터 (#/route/sub) — 계산기 딥링크·공유·뒤로가기 ============
 // 형식: '#/' 홈 · '#/report' 허브 · '#/report/cgt' 양도세 계산기 · '#/services' 등
-// '#/' 로 시작하는 해시만 라우터로 인식 → 회사소개 탭(#team)·인사이트 등 레거시 해시와 충돌 없음.
+// '#/' 로 시작하는 해시만 라우터로 인식 → 회사소개 탭(#team)·세금 가이드 등 레거시 해시와 충돌 없음.
 const JTRouter = {
   parse() {
     try {
@@ -203,7 +203,7 @@ function App() {
             <div className="jt-tweaks__group">
               <label>바로가기 (페이지 이동)</label>
               <div className="jt-tweaks__opts">
-                {[['home','홈'],['about','회사소개'],['services','업무분야'],['report','세금 계산기'],['insights','인사이트'],['contact','오시는 길'],['booking','상담 예약']].map(([v, l]) => (
+                {[['home','홈'],['about','회사소개'],['services','업무분야'],['report','세금 계산기'],['insights','세금 가이드'],['contact','오시는 길'],['booking','상담 예약']].map(([v, l]) => (
                   <button key={v} className={`jt-tweaks__opt ${route === v ? 'is-active' : ''}`} onClick={() => setRoute(v)}>{l}</button>
                 ))}
               </div>
@@ -260,7 +260,7 @@ class JTErrorBoundary extends React.Component {
               이 화면은 «연락 수단만은 남긴다»가 존재 이유다. 위 D 가 상수로 보장한다 */}
           <a href={`tel:${D.phone}`} style={{ padding: '13px 22px', background: '#0B0B0F', color: '#fff', textDecoration: 'none', fontSize: 14 }}>전화 {D.phone}</a>
           <a href={D.kakaoChannelUrl} target="_blank" rel="noopener" style={{ padding: '13px 22px', border: '1px solid rgba(0,0,0,.2)', color: '#0B0B0F', textDecoration: 'none', fontSize: 14 }}>카카오톡 상담 <span style={{ fontSize: 11, color: '#888' }}>(새 창)</span></a>
-          <a href="/calculators/" style={{ padding: '13px 22px', border: '1px solid rgba(0,0,0,.2)', color: '#0B0B0F', textDecoration: 'none', fontSize: 14 }}>세무도구</a>
+          <a href="/calculators/" style={{ padding: '13px 22px', border: '1px solid rgba(0,0,0,.2)', color: '#0B0B0F', textDecoration: 'none', fontSize: 14 }}>세금 계산기</a>
         </div>
         {/* 세무사법 시행령 §33① 표시의무 — 화면이 깨져도 사무소명·세무사 성명은 남긴다 */}
         <p style={{ fontSize: 12, color: '#888', marginTop: 32 }}>

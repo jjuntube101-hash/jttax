@@ -5,11 +5,11 @@ const { useState: useStatePg2, useEffect: useEffectPg2 } = React;
 const JT_PREPARATION = {
   '양도·상속·증여': ['검토할 재산과 거래·이전 예정 시점', '취득·양도 계약서 또는 재산 목록의 보유 여부', '함께 검토할 가족관계와 이전 신고 내역'],
   '세무조사 대응': ['받은 안내문·통지서의 종류와 수령일', '대상 기간과 회신·제출 기한', '기존 신고 자료와 소명 자료의 보유 여부'],
-  '기장·세금 신고': ['사업 형태와 시작 시점', '최근 신고 내역과 장부 정리 범위', '매출·매입·급여 자료를 관리하는 방식'],
+  '세무기장·세금 신고': ['사업 형태와 시작 시점', '최근 신고 내역과 장부 정리 범위', '매출·매입·급여 자료를 관리하는 방식'],
   '세금 종합 컨설팅': ['검토할 거래나 의사결정', '예상 일정과 비교할 대안', '현재까지 정리한 자료의 종류'],
   '경정청구': ['다시 검토할 세금과 신고 연도', '신고서·납부 내역의 보유 여부', '수정이 필요하다고 생각한 이유'],
   '취득세': ['취득 원인과 예정일 또는 취득일', '취득할 재산과 보유 주택 현황', '계약·신고·납부 자료의 보유 여부'],
-  '크리에이터 세금': ['수익을 받는 플랫폼과 사업자등록 여부', '플랫폼별 정산 자료의 보유 여부', '기장·신고 중 필요한 업무와 대상 기간'],
+  '유튜버·크리에이터 세무': ['수익을 받는 플랫폼과 사업자등록 여부', '플랫폼별 정산 자료의 보유 여부', '기장·신고 중 필요한 업무와 대상 기간'],
   '기타 / 분야 모름': ['궁금한 내용을 한두 문장으로 정리', '정해진 일정이나 받은 문서의 유무', '현재 어떤 도움이 필요한지'],
 };
 function JTRenewPreparation({ topic }) {
@@ -37,10 +37,13 @@ window.JTContact = JTContact;
 
 // ============ Booking form (multi-step) ============
 // 홈 상황 색인(Home.jsx JT_SITUATIONS.slug)과 같은 폐집합. 값은 아래 topics 의 k 와 글자까지 같아야 한다.
-const JT_BOOKING_SLUGS = { asset: '양도·상속·증여', bookkeeping: '기장·세금 신고', audit: '세무조사 대응', refund: '경정청구', consulting: '세금 종합 컨설팅', acquisition: '취득세', creators: '크리에이터 세금', general: '' };
+const JT_BOOKING_SLUGS = { asset: '양도·상속·증여', bookkeeping: '세무기장·세금 신고', audit: '세무조사 대응', refund: '경정청구', consulting: '세금 종합 컨설팅', acquisition: '취득세', creators: '유튜버·크리에이터 세무', general: '' };
 // 주소의 slug 가 허용 목록에 있으면 그것이 우선, 없으면 저장소 값. 순수 함수 — tests_hero_calc 가 꺼내 실행한다.
 function jtResolveBookingTopic(sub, stored) {
   if (Object.prototype.hasOwnProperty.call(JT_BOOKING_SLUGS, sub)) return JT_BOOKING_SLUGS[sub];
+  // 명칭 변경 전 탭에서 저장한 상담 분야도 새 선택지로 이어 준다.
+  if (stored === '기장·세금 신고') return '세무기장·세금 신고';
+  if (stored === '크리에이터 세금') return '유튜버·크리에이터 세무';
   return stored || '';
 }
 function jtBookingSlugFromHash() {
@@ -91,11 +94,11 @@ function JTBooking({ setRoute }) {
   const topics = [
     { k: '양도·상속·증여', d: '재산을 팔거나 물려줄 때의 세금' },
     { k: '세무조사 대응', d: '조사 통지·현장·불복' },
-    { k: '기장·세금 신고', d: '법인·개인의 월간 운영' },
+    { k: '세무기장·세금 신고', d: '법인·개인의 월간 운영' },
     { k: '세금 종합 컨설팅', d: '거래 전에 세금과 선택지 검토' },
     { k: '경정청구', d: '이미 신고한 세금의 재검토' },
     { k: '취득세', d: '재산 취득 전후의 신고·검토' },
-    { k: '크리에이터 세금', d: '플랫폼 수익의 장부·신고' },
+    { k: '유튜버·크리에이터 세무', d: '플랫폼 수익의 장부·신고' },
     { k: '기타 / 분야 모름', d: '어디에 속하는지 알 수 없는 경우' },
   ];
 

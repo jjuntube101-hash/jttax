@@ -292,7 +292,7 @@ function JTReportVat({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="부가가치세 계산기" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="BOOKKEEPING">
+        <JTReportShell title="부가가치세(부가세) 계산기" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="BOOKKEEPING">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />매출세액에서 매입세액·공제를 빼 부가가치세를 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -417,7 +417,7 @@ function JTReportVat({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="부가가치세 계산기" subtitle="사업자 유형과 매출·매입만 넣으면 낼 부가세를 바로 계산해요." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
+      <JTReportShell title="부가가치세(부가세) 계산기" subtitle="사업자 유형과 매출·매입만 넣으면 낼 부가세를 바로 계산해요." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>

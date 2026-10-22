@@ -69,9 +69,9 @@ export const SERVICES = [
   },
   {
     slug: 'bookkeeping',
-    kr: '기장·세금 신고',
-    h1: '기장·세금 신고',
-    metaTitle: '기장·세금 신고 — 법인·개인의 월간 세무 운영',
+    kr: '세무기장·세금 신고',
+    h1: '세무기장·세금 신고',
+    metaTitle: '세무기장·세금 신고 — 개인사업자·법인',
     metaDesc: '매월의 기장이 연말의 세금을 만듭니다. 법인·개인사업자의 월 기장부터 부가세·원천세, 결산·신고까지 안내합니다.',
     keywords: '강남 기장 세무사, 법인 기장, 개인사업자 기장, 크리에이터 세무, 부가세 신고, 결산',
     lede: '장부는 숫자가 아니라 의사결정의 근거입니다. 매월 기장을 바탕으로 결산·부가세·원천세·법인세 등 필요한 신고 업무를 확인하고 관리합니다.',
@@ -239,7 +239,7 @@ export const EXPERTS = [
 
 /* ── 대표 소개 — 경력의 차이를 전담 구분으로 사용하지 않음 ─────── */
 export const TEAM_MODEL = {
-  title: '세 명의 대표세무사를 소개합니다.',
+  title: '대표세무사 소개',
   lede: '김민석·이현준·김가환 대표세무사 모두 사업과 재산의 세금 문제를 폭넓게 다룹니다. 아래에는 각자의 실무 경력과 활동을 소개합니다.',
   views: [
     { name: '김민석', slug: 'kim-minseok', view: '대표세무사', d: '수석세무회계 운영과 재산세제·소득·법인세 검토, 조세불복 실무 경력.' },
@@ -279,7 +279,7 @@ export const ABOUT = {
    G-3: 유튜브 영상 보류(해커스 §22① 미확인) — 영상 관련 문안·링크 금지.
    G-4: «여러 크리에이터·플랫폼 사업자의 기장 운영» 표현은 수치 없이 1문장만. */
 export const CREATORS = {
-  h1: '크리에이터 세금, 지금 어느 단계인가요?',
+  h1: '유튜버·크리에이터 세무',
   metaTitle: '크리에이터·유튜버 세금 — 첫 정산부터 팀 운영까지 경로별 안내',
   metaDesc: '유튜버·인플루언서·플랫폼 사업자의 세금은 단계마다 쟁점이 다릅니다. 첫 정산, 직장 겸업, 팀·MCN 운영 — 세 경로로 나눠 지금 확인할 것과 계산 도구를 안내합니다.',
   keywords: '유튜버 세금, 크리에이터 세무, 인플루언서 세금 신고, 애드센스 세금, 유튜버 사업자등록, 크리에이터 기장',
@@ -455,8 +455,8 @@ export const SERVICE_EXTRA = [
   },
   {
     slug: 'creators', out: 'creators.html', href: '/creators.html',
-    num: '07', en: 'CREATORS', kr: '크리에이터 세금',
-    h1: '크리에이터·유튜버 세무',
+    num: '07', en: 'CREATORS', kr: '유튜버·크리에이터 세무',
+    h1: '유튜버·크리에이터 세무',
     metaTitle: CREATORS.metaTitle,
     metaDesc: CREATORS.metaDesc,
     keywords: CREATORS.keywords,

@@ -420,10 +420,10 @@ function JTNav({ route, setRoute }) {
             </div>
           )}
         </div>
-        <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'report' ? 'active' : ''} onClick={jtNavGo(() => setRoute('report'))}>세무도구</a>
+        <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'report' ? 'active' : ''} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
         {/* 260921: 인사이트 정적 허브(/insights/)가 생겨 실 href 를 붙였다 —
             종전엔 href 가 없어 크롤러가 따라갈 수 없었고 보조키·중클릭도 안 먹었다 */}
-        <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'insights' ? 'active' : ''} onClick={jtNavGo(() => setRoute('insights'))}>인사이트</a>
+        <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'insights' ? 'active' : ''} onClick={jtNavGo(() => setRoute('insights'))}>세금 가이드</a>
         {/* 261003: 법무사·중개사 면은 정적 면(/desk/)이라 SPA 라우트가 없다 — 핸들러 없는 실링크 */}
         <a href="/desk/">법무사·중개사</a>
         <a href="/#/contact" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'contact' ? 'active' : ''} onClick={jtNavGo(() => setRoute('contact'))}>상담 안내</a>
@@ -440,7 +440,7 @@ function JTNav({ route, setRoute }) {
       <div ref={motion.clip} className="jt-menu-clip">
         <nav ref={motion.panel} aria-label="모바일 주 메뉴" aria-hidden={!menuOpen} className="jt-navmenu jt-menu-panel" id="jt-mobile-menu">
           <button type="button" className="jt-menu-grip" aria-label="메뉴 닫기. 위로 밀어서 닫을 수도 있습니다" onClick={() => setMenuOpen(false)}><span aria-hidden="true" /><small>위로 밀어 닫기</small></button>
-          {[['about', '제이티 소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세무도구', '/calculators/'], ['insights', '인사이트', '/insights/'], [null, '법무사·중개사', '/desk/'], ['contact', '상담 안내', '/#/contact']].map(([r, l, h]) => (
+          {[['about', '제이티 소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '세금 가이드', '/insights/'], [null, '법무사·중개사', '/desk/'], ['contact', '상담 안내', '/#/contact']].map(([r, l, h]) => (
             !r
               ? <a href={h} key={h}>{l}</a>
               : h
@@ -496,9 +496,10 @@ function useSeoMeta(route) {
         if (r && r.router && r.route) { key = r.route; sub = r.sub; }
       } catch (e) {}
       let metaKey = key;
+      if (key === 'about' && sub === 'team') metaKey = 'team';
       if (key === 'report' && sub && sub !== 'hub') metaKey = 'report:' + sub;
       const meta = (seo.pageMeta && (seo.pageMeta[metaKey] || seo.pageMeta[key])) || {};
-      const title = meta.title ? `${meta.title} | ${window.JT_DATA.firm.nameKr}` : seo.titleDefault;
+      const title = meta.titleFull || (meta.title ? `${meta.title} | ${window.JT_DATA.firm.nameKr}` : seo.titleDefault);
       const desc = meta.desc || seo.description;
       document.title = title;
       const setMeta = (name, content, attr = 'name') => {
@@ -584,21 +585,21 @@ function JTFooter({ setRoute }) {
           <h4>제이티</h4>
           <a href="/about/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about'))}>제이티 소개</a>
           <a href="/experts/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('about', 'team'))}>대표세무사 소개</a>
-          <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('report'))}>세무도구</a>
+          <a href="/calculators/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('report'))}>세금 계산기</a>
           {/* 260921: 내비와 같은 이유로 푸터의 인사이트에도 실 href 를 붙였다 (정적 허브 신설) */}
-          <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('insights'))}>인사이트</a>
+          <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('insights'))}>세금 가이드</a>
           <a href="/desk/">법무사·중개사</a>
         </div>
         <div className="jt-footer__col">
           <h4>업무분야</h4>
           <a href="/services/asset-transfer.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>양도·상속·증여</a>
           <a href="/services/tax-audit.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>세무조사 대응</a>
-          <a href="/services/bookkeeping.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>기장·세금 신고</a>
+          <a href="/services/bookkeeping.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>세무기장·세금 신고</a>
           <a href="/services/consulting.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>세금 종합 컨설팅</a>
           <a href="/services/tax-refund.html" tabIndex={0} role="link" onKeyDown={jtKeyActivate}>경정청구</a>
           {/* 260922: 취득세·크리에이터 — 정적 허브로 바로(SPA 라우트 없음) */}
           <a href="/acquisition-tax/">취득세</a>
-          <a href="/creators.html">크리에이터 세금</a>
+          <a href="/creators.html">유튜버·크리에이터 세무</a>
         </div>
         <div className="jt-footer__col">
           <h4>상담 안내</h4>

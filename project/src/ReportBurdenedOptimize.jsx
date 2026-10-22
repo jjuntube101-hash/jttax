@@ -460,7 +460,7 @@ function JTReportBurden({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="부담부증여 최적화" subtitle="채무를 넘기는 정도에 따른 세금을 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
+        <JTReportShell title="부담부증여 계산기" subtitle="채무를 넘기는 정도에 따른 세금을 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />채무 0원부터 입력하신 채무 금액까지의 총세금(증여세+양도세+취득세)을 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 시간이 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -480,7 +480,7 @@ function JTReportBurden({ setRoute, onBack }) {
     const baseMax = Math.max(1, ...teaser.map(p => p['총세부담']));
     return (
       <div className="jt-container">
-        <JTReportShell title="부담부증여 최적화 결과" subtitle="딸린 채무를 함께 넘길 때 총세금 (세액 기준)" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell title="부담부증여 계산 결과" subtitle="딸린 채무를 함께 넘길 때 총세금 (세액 기준)" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           {calc.blocked ? (
             <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               <strong>{calc.engineState === 'needs_input' ? '입력 확인이 필요합니다.' : '세무사 확인이 필요한 조건입니다.'}</strong> 입력하신 조건으로는 금액을 확정할 수 없어, 잘못된 세액을 안내하지 않기 위해 금액을 표시하지 않았어요. 입력을 다시 확인하시거나 상담을 권합니다.
@@ -613,7 +613,7 @@ function JTReportBurden({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="부담부증여 최적화" subtitle="자녀·배우자에게 부동산을 증여할 때, 딸린 채무를 함께 넘기면 세금이 얼마나 달라지는지 계산합니다." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+      <JTReportShell title="부담부증여 계산기" subtitle="자녀·배우자에게 부동산을 증여할 때, 딸린 채무를 함께 넘기면 세금이 얼마나 달라지는지 계산합니다." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>

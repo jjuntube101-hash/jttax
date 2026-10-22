@@ -358,7 +358,7 @@ ${[calcsHtml, deepLink].filter(Boolean).join('\n')}
     </section>` : ''}
 
 ${(insightsHtml || groupsHtml) ? `    <section class="jt-cc-sec">
-      <h2>관련 인사이트</h2>
+      <h2>관련 세금 가이드</h2>
 ${[insightsHtml ? `      <ul class="jt-cc-links">\n${insightsHtml}\n      </ul>` : '', groupsHtml].filter(Boolean).join('\n')}
     </section>` : ''}
 
@@ -396,7 +396,7 @@ function renderServicesIndex() {
     .map(s => card(serviceHref(s), s.kr, s.cardLede || s.lede)).join('\n');
   return headHtml({
     title: `업무분야 — 양도상속증여·세무조사·기장·컨설팅·경정청구·취득세·크리에이터 | ${FIRM}`,
-    desc: '기장·세금 신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구, 취득세, 크리에이터 세금까지 사업과 재산의 세무 업무를 안내합니다.',
+    desc: '세무기장·세금 신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구, 취득세, 크리에이터 세금까지 사업과 재산의 세무 업무를 안내합니다.',
     keywords: '강남 세무법인, 세무법인 업무, 상속 세무, 세무조사 대응, 기장 대행, 경정청구, 취득세 세무사, 크리에이터 세무', url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['업무분야', url]])],
   }) + `
@@ -489,7 +489,7 @@ function renderExpertsIndex() {
   const listLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `전문가 — ${FIRM}`,
+    name: `대표세무사 소개 — ${FIRM}`,
     image: ogImageHref(),
     url,
     mainEntity: {
@@ -507,7 +507,7 @@ function renderExpertsIndex() {
         <p style="margin-top:10px;font-weight:600;font-size:13px;">프로필 보기 →</p>
       </a>`).join('\n');
   return headHtml({
-    title: `전문가 — 세 명의 대표세무사 | ${FIRM}`,
+    title: `대표세무사 소개 | ${FIRM}`,
     desc: '김민석·이현준·김가환 대표세무사의 실무 경력과 활동을 소개합니다. 세 대표 모두 사업과 재산의 세금 문제를 폭넓게 다룹니다.',
     keywords: '강남 세무사, 제이티 세무법인 세무사, 대표세무사, 김민석 세무사, 이현준 세무사, 김가환 세무사', url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['전문가', url]])],
