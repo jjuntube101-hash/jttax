@@ -51,6 +51,7 @@ function jtBookingSlugFromHash() {
 }
 function JTBooking({ setRoute }) {
   const [step, setStep] = useStatePg2(1);
+  const contentMotion = useJTContentMotion(step);
   const preferredSlot = (() => { try { return sessionStorage.getItem('jt_preferred_slot') || ''; } catch(_){ return ''; } })();
   // 진입 시 한 번만 정한다. 저장소 접근이 막혀도(예외) 주소의 slug 해석은 독립적으로 수행한다.
   const [preferredTopic, setPreferredTopic] = useStatePg2(() => {
@@ -252,7 +253,7 @@ function JTBooking({ setRoute }) {
         </div>
 
         {step === 1 && (
-          <div>
+          <div ref={contentMotion}>
             <div className="jt-kicker">1단계 · 어떤 사안인가요?</div>
             <h2 className="jt-h2 jt-booking-step-heading" ref={stepHeadingRef} tabIndex={-1} style={{marginBottom: (preferredTopic && form.topic === preferredTopic) ? 24 : 40}}>상담 분야를 선택해 주세요.</h2>
             {/* 안내는 실제 제출될 form.topic 과 같을 때만 — 사용자가 다른 분야로 바꾸면 사라진다 */}
@@ -300,7 +301,7 @@ function JTBooking({ setRoute }) {
         )}
 
         {step === 2 && (
-          <div>
+          <div ref={contentMotion}>
             <div className="jt-kicker">2단계 · 어디로 연락드릴까요?</div>
             <h2 className="jt-h2 jt-booking-step-heading" ref={stepHeadingRef} tabIndex={-1} style={{marginBottom: 40}}>연락처를 남겨주세요.</h2>
             <form className="jt-form" onSubmit={(e) => { e.preventDefault(); if (canNext2) setStep(3); }}>
@@ -348,7 +349,7 @@ function JTBooking({ setRoute }) {
         )}
 
         {step === 3 && (
-          <div>
+          <div ref={contentMotion}>
             <div className="jt-kicker">3단계 · 접수 전 확인</div>
             <h2 className="jt-h2 jt-booking-step-heading" ref={stepHeadingRef} tabIndex={-1} style={{marginBottom: 40}}>내용을 한 번만 확인해 주세요.</h2>
             <div className="jt-booking-summary">

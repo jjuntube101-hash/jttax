@@ -17,7 +17,7 @@ for(const f of files){let html=await fs.readFile(f,'utf8');const rel=path.relati
  html=html.replace(/project\/src\/styles\.css\?v=\d+/g,'project/src/styles.css?v='+sharedStyleVersion);
  const beforeMain=html.match(/<(main|article)\b[\s\S]*?<\/\1>/i)?.[0]; const beforeH1=(html.match(/<h1\b/gi)||[]).length;
  html=html.replace(/\s*<link\b[^>]*href="[^"]*\/renewal(?:-pages|-flow|-motion|-static)?\.css[^>]*>/g,'');
- html=html.replace('</head>',styles.filter(n=>!home||n!=='renewal-static.css').map(n=>`<link rel="stylesheet" href="/project/src/${n}?v=6">`).join('\n')+'\n</head>');
+ html=html.replace('</head>',styles.filter(n=>!home||n!=='renewal-static.css').map(n=>`<link rel="stylesheet" href="/project/src/${n}?v=7">`).join('\n')+'\n</head>');
  if(!home){
   // The first generated header must be navigation outside main; fail closed otherwise.
   const match=html.match(/<header\b[\s\S]*?<\/header>/i);

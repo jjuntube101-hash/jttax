@@ -146,13 +146,14 @@ function App() {
   }, [route]);
 
   const pageClass = `jt-app jt-page-${route}`;
+  const contentMotion = useJTContentMotion(route);
   window.useSeoMeta(route);
 
   return (
     <div className={pageClass}>
       <a className="jt-renewal-skip" href="#jt-main" onClick={e => { e.preventDefault(); const main=document.getElementById('jt-main'); main?.focus(); main?.scrollIntoView(); }}>본문으로 바로가기</a>
       <JTNav route={route} setRoute={setRoute} />
-      <main id="jt-main" className="jt-main" tabIndex={-1}>
+      <main ref={contentMotion} id="jt-main" className="jt-main" tabIndex={-1}>
         {route === 'home' && <JTRebuildHome setRoute={setRoute} />}
         {route === 'services' && <div><JTServicesPage setRoute={setRoute} /></div>}
         {route === 'team' && <div><JTAbout setRoute={setRoute} initialTab="team" /></div>}

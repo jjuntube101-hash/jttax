@@ -5,6 +5,7 @@ function JTRenewalPageIntro({ title, text }) {
 function JTAbout({ setRoute, initialTab }) {
   const [tab,setTab] = React.useState(initialTab === 'team' ? 'team' : 'company');
   React.useEffect(()=>{setTab(initialTab === 'team' ? 'team' : 'company');},[initialTab]);
+  const contentMotion = useJTContentMotion(tab);
   const select = next => {setTab(next); setRoute('about', next);};
   const keyTab = e => {
     if (!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
@@ -14,7 +15,7 @@ function JTAbout({ setRoute, initialTab }) {
   return <div className="rn-page rn-about">
     <JTRenewalPageIntro title={tab === 'company' ? <>사업과 재산의 세금,<br/>실무 경험으로 살핍니다.</> : <>대표세무사 소개</>} text={tab === 'company' ? '사무소 운영, 기업 회계, 재산 세무와 교육·자문의 경험을 모았습니다. 고객의 상황에 맞는 업무와 진행 방법을 설명합니다.' : '세 대표세무사의 주요 실무와 경력을 소개합니다. 특정 분야를 정하지 못하셨다면 상담 과정에서 필요한 업무를 함께 확인합니다.'}/>
     <div className="rn-shell rn-about-tabs" role="tablist" aria-label="제이티 소개"><button id="rn-about-tab-company" role="tab" aria-selected={tab==='company'} aria-controls="rn-about-panel" tabIndex={tab==='company'?0:-1} onKeyDown={keyTab} onClick={()=>select('company')}>제이티 소개</button><button id="rn-about-tab-team" role="tab" aria-selected={tab==='team'} aria-controls="rn-about-panel" tabIndex={tab==='team'?0:-1} onKeyDown={keyTab} onClick={()=>select('team')}>대표세무사 소개</button></div>
-    <div role="tabpanel" id="rn-about-panel" aria-labelledby={'rn-about-tab-'+tab}>{tab==='company'?<JTAboutCompany D={window.JT_DATA} setRoute={setRoute} onSeeTeam={()=>select('team')}/>:<JTAboutTeam D={window.JT_DATA.team} setRoute={setRoute}/>}</div>
+    <div ref={contentMotion} role="tabpanel" id="rn-about-panel" aria-labelledby={'rn-about-tab-'+tab}>{tab==='company'?<JTAboutCompany D={window.JT_DATA} setRoute={setRoute} onSeeTeam={()=>select('team')}/>:<JTAboutTeam D={window.JT_DATA.team} setRoute={setRoute}/>}</div>
   </div>;
 }
 window.JTAbout=JTAbout;

@@ -299,6 +299,15 @@ function useCountUp(target, ms = 1600) {
 window.useCountUp = useCountUp;
 
 // One live position/velocity survives every retarget; exact critically damped integration.
+function jtListenMedia(media, listener) {
+  if (media.addEventListener) {
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }
+  media.addListener(listener);
+  return () => media.removeListener(listener);
+}
+
 function useJTMenuMotion(open, onOpenChange) {
   const panel = React.useRef(null), clip = React.useRef(null), trigger = React.useRef(null);
   const api = React.useRef(null), change = React.useRef(onOpenChange);
@@ -350,12 +359,14 @@ function useJTMenuMotion(open, onOpenChange) {
     handle.addEventListener('click',click,true);
     handle.addEventListener('pointerdown',down);handle.addEventListener('pointermove',move);
     handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
-    const resize=new window.ResizeObserver(()=>{const next=el.offsetHeight;if(next!==height){const delta=next-height;height=next;if(!wanted){x-=delta;target=-height;}paint();}});resize.observe(el);
-    const reduce=()=>set(wanted);media.addEventListener('change',reduce);
+    const measure=()=>{const next=el.offsetHeight;if(next!==height){const delta=next-height;height=next;if(!wanted){x-=delta;target=-height;}paint();}};
+    const resize=window.ResizeObserver?new window.ResizeObserver(measure):null;
+    if(resize)resize.observe(el);else window.addEventListener('resize',measure);
+    const reduce=()=>set(wanted), stopReduce=jtListenMedia(media,reduce);
     const desktop=window.matchMedia('(min-width: 1025px)'), closeDesktop=()=>{if(desktop.matches){set(false);change.current(false);}};
-    desktop.addEventListener('change',closeDesktop);
+    const stopDesktop=jtListenMedia(desktop,closeDesktop);
     api.current={set};set(false);
-    return ()=>{window.cancelAnimationFrame(frame);resize.disconnect();media.removeEventListener('change',reduce);desktop.removeEventListener('change',closeDesktop);handle.removeEventListener('click',click,true);handle.removeEventListener('pointerdown',down);handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',end);handle.removeEventListener('pointercancel',end);};
+    return ()=>{window.cancelAnimationFrame(frame);if(resize)resize.disconnect();else window.removeEventListener('resize',measure);stopReduce();stopDesktop();handle.removeEventListener('click',click,true);handle.removeEventListener('pointerdown',down);handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',end);handle.removeEventListener('pointercancel',end);};
   }, []);
   React.useLayoutEffect(()=>api.current?.set(open),[open]);
   return {panel,clip,trigger};
@@ -457,6 +468,31 @@ function JTNav({ route, setRoute }) {
 window.JTNav = JTNav;
 
 // ============ Mobile Sticky CTA Bar (전화·카톡·예약) ============
+// Animate the existing content node, never remount forms to produce a transition.
+function useJTContentMotion(identity) {
+  const ref = React.useRef(null);
+  React.useLayoutEffect(() => {
+    const node = ref.current;
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!node || !node.animate || media.matches) return;
+    node.dataset.jtContentMotion = '';
+    // Child layout effects run first. Let the outer page own initial entry;
+    // later child-only tab/step updates still animate independently.
+    node.querySelectorAll('[data-jt-content-motion]').forEach(child => {
+      if(child.getAnimations)child.getAnimations().forEach(animation => animation.cancel());
+    });
+    const animation = node.animate([
+      { opacity: .72, transform: 'translateY(10px)' },
+      { opacity: 1, transform: 'translateY(0)' }
+    ], { duration: 360, easing: 'cubic-bezier(.16,1,.3,1)' });
+    const stop = () => { if (media.matches) animation.cancel(); };
+    const stopMedia = jtListenMedia(media, stop);
+    return () => { animation.cancel(); stopMedia(); };
+  }, [identity]);
+  return ref;
+}
+window.useJTContentMotion = useJTContentMotion;
+
 function JTMobileCta({ setRoute, route }) {
   const D = window.JT_DATA.firm;
   const Icon = window.JTSitIcon;

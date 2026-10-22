@@ -439,6 +439,7 @@ const JT_PRIVACY_NOTE = window.JT_PRIVACY_NOTE = {
 };
 
 function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag, dataFlow }) {
+  const contentMotion = useJTContentMotion(title + ':' + stepIdx);
   // P2-2: 로딩·결과 화면은 stepIdx=stepTotal을 넘겨 진행률 100% 초과·"Step N+1/N"이 되던 것 클램프(0~100%)
   const _tot = Math.max(1, stepTotal || 0);
   const _stepNo = Math.max(0, Math.min(stepIdx + 1, _tot));
@@ -463,7 +464,7 @@ function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, 
           {JT_PRIVACY_NOTE[dataFlow] || JT_PRIVACY_NOTE.engine}
         </p>
       </div>
-      <div className="jt-report-shell__body">
+      <div ref={contentMotion} className="jt-report-shell__body">
         {children}
       </div>
     </div>
