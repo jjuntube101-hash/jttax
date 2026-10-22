@@ -30,7 +30,6 @@
 @media(max-width:640px){.rn-insights .rn-insight{display:grid;grid-template-columns:1fr;gap:0;align-items:start}.rn-insights .rn-insight--image{grid-template-columns:88px minmax(0,1fr);column-gap:16px}.rn-insights .rn-insight--image>img{grid-column:1;grid-row:1/5;aspect-ratio:1;object-fit:cover;margin:0}.rn-insights .rn-insight--image>*:not(img){grid-column:2}.rn-insights .rn-insight-meta{font-size:13px;gap:4px 8px;margin-bottom:10px}.rn-insights .rn-insight h3{font-size:19px;line-height:1.55}.rn-insights .rn-insight p{font-size:14px;line-height:1.75;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}.rn-insights .rn-insight .rn-link{font-size:14px;min-height:40px}.rn-insights .rn-insight-grid{row-gap:24px}}
 
 /* Brief selection feedback; controls remain usable throughout the transition. */
-.rn-choice,
 .rn-service-results{animation:rn-results-enter 180ms ease-out both}
 @keyframes rn-results-enter{from{opacity:.72;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
