@@ -314,7 +314,7 @@ export const CREATORS = {
       title: '팀·MCN으로 커지고 있어요',
       desc: '편집자·매니저를 두거나 정산 구조가 복잡해진 단계. 인건비 처리, 법인 전환 시점과 감면 요건을 실행 전에 검토합니다.',
       links: [
-        { href: '/calculators/incorporation-simulator.html', label: '법인 전환 시뮬레이터' },
+        { href: '/calculators/incorporation-simulator.html', label: '개인사업자·법인 세금 비교' },
         { href: '/calculators/youthstartup.html', label: '청년창업 세액감면 계산기' },
         { href: '/insights/corporate-conversion.html', label: '법인전환 개인사업자 세금 비교' },
       ],
@@ -444,7 +444,7 @@ export const SERVICE_EXTRA = [
     extraSections: [
       { h2: '계산할 수 있는 범위와, 자료를 봐야 하는 범위',
         body: '계산기는 입력하신 사실관계를 검증된 계산 엔진에 그대로 넘겨 금액을 냅니다. 다만 감면 요건(나이·소득·주택 가액·기존 주택 처분 여부 등)과 시·도 조례에 따른 추가 경감은 계산에 넣지 않습니다. 결과 화면이 「이 계산에 넣지 않은 것」으로 그 목록을 함께 보여 드리며, 그 부분은 자료를 봐야 판단할 수 있습니다.',
-        chips: [{ href: '/calculators/acquisition-tax.html', label: '취득세 계산기' }, { href: '/calculators/', label: '다른 세금 계산기' }, { href: '/insights/', label: '인사이트 전체' }] },
+        chips: [{ href: '/calculators/acquisition-tax.html', label: '취득세 계산기' }, { href: '/calculators/', label: '다른 세금 계산기' }, { href: '/insights/', label: '세금 가이드 전체' }] },
       { h2: '소재지 시·도 감면 조례 원문 찾기',
         body: '시·도마다 「도세(시세) 감면 조례」가 따로 있습니다. 계산기에서 물건이 있는 시·도를 고르면 그 조례의 원문 위치를 안내해 드립니다. 조례 내용은 세액 계산에 넣지 않습니다.' },
       { h2: '중개사·법무사께',

@@ -549,7 +549,7 @@ console.log('\n════ ⑤ 취득세 허브·인사이트 허브로 들어�
   } };
   walk(ROOT);
   eq('카카오 링크가 채널 홈이다 (/chat·/friend 잔존 0)', kakaoBad.join(',') || '-', '-');
-  eq('전역 내비의 인사이트 링크에 실 href 가 있다', /href="\/insights\/"[^>]*인사이트|인사이트/.test(chrome) && chrome.includes('href="/insights/"'), true);
+  eq('전역 내비의 세금 가이드 링크에 실 href 가 있다', /<a href="\/insights\/"[^\n]*>세금 가이드<\/a>/.test(chrome), true);
   /* FAQPage 는 노출 전략에서 제외했다 (리치 결과 2026-05-07 종료) */
   eq('취득세 허브에 FAQPage 구조화 데이터가 없다',
      fs.readFileSync(path.join(ROOT, 'acquisition-tax', 'index.html'), 'utf8').includes('FAQPage'), false);
