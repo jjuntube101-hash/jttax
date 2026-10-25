@@ -285,6 +285,11 @@ const INHERITANCE_QS = [
       ['yes', '네, 미성년이었습니다', '증여공제 2천만'],
     ],
   },
+  {"id": "appraisalFee", "section": "추가 계산 입력", "q": "공제 대상 감정평가 수수료 (원)", "sub": "감정평가액으로 신고하는 등 공제 요건을 확인한 수수료만 입력하세요.", "numeric": true, "money": true, "optional": true, showIf: (a) => true},
+  {"id": "foreignTaxPaid", "section": "추가 계산 입력", "q": "외국에서 부과된 상속세 (원)", "sub": "외국 과세표준과 함께 입력해야 공제 한도를 계산합니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => true},
+  {"id": "foreignTaxBase", "section": "추가 계산 입력", "q": "해당 재산의 외국 법령상 과세표준 (원)", "sub": "국내 평가액이 아닌 외국에서 실제 적용한 과세표준입니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => true && Number(a.foreignTaxPaid)>0},
+  {"id": "bequestNonHeirs", "section": "추가 계산 입력", "q": "상속인 아닌 수유자에게 유증한 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
+  {"id": "renouncedNext", "section": "추가 계산 입력", "q": "선순위 상속 포기로 다음 순위가 받은 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
   {
     id: 'context',
     section: '추가 사항',
@@ -354,6 +359,17 @@ function mapAnswersToInheritance(a) {
     }
     body.gift_history = [item];
   }
+  for (const [key,field] of [["appraisalFee", "appraisal_fee"], ["foreignTaxPaid", "foreign_tax_paid"], ["bequestNonHeirs", "bequest_to_non_heirs"], ["renouncedNext", "renounced_to_next_rank"]]) {
+    if(a[key]==null || String(a[key]).trim()==='') continue;
+    const n=Number(a[key]); if(!Number.isSafeInteger(n)||n<0) throw new Error('추가 금액은 0 이상의 정수로 입력해 주세요.');
+    body[field]=n;
+  }
+  if(body.foreign_tax_paid>0) {
+    const n=Number(a.foreignTaxBase);
+    if(a.foreignTaxBase==null || String(a.foreignTaxBase).trim()==='' || !Number.isSafeInteger(n)||n<=0) throw new Error('외국납부세액 공제를 위해 외국 과세표준을 입력해 주세요.');
+    body.foreign_tax_base=n;
+  }
+
   return body;
 }
 
@@ -724,6 +740,7 @@ function JTReportInheritance({ setRoute, onBack }) {
                 <tr><th><strong>과세표준</strong></th><td><strong>{formatWon(calc.taxBase)}</strong></td></tr>
                 <tr><th>산출세액</th><td>{formatWon(calc.calcTax)}</td></tr>
                 {ddNum('증여세액공제') > 0 && <tr><th>증여세액공제 (사전증여 §28)</th><td>− {formatWon(ddNum('증여세액공제'))}</td></tr>}
+                {ddNum('외국납부세액공제') > 0 && <tr><th>외국납부세액공제</th><td>− {formatWon(ddNum('외국납부세액공제'))}</td></tr>}
                 <tr><th><strong>총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
               </tbody>
             </table>

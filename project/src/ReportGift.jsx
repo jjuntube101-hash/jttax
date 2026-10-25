@@ -280,6 +280,11 @@ const GIFT_QS = [
     sub: '모르시면 「모름」을 고르세요 — 어느 쪽으로도 짐작해 계산하지 않고, 지정 여부를 확인하라는 안내가 나옵니다. 정확한 지정 여부는 국토부 고시·관할 시군구로 확인하세요.',
     opts: [['yes', '네, 조정대상지역', '다주택 중과 가능'], ['no', '아니오', '기본 세율'], ['unknown', '모름', '확인 전에는 금액을 확정하지 않음']],
   },
+  {"id": "appraisalFee", "section": "추가 계산 입력", "q": "공제 대상 감정평가 수수료 (원)", "sub": "감정평가액으로 신고하는 등 공제 요건을 확인한 수수료만 입력하세요.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.isBurdened!=='yes'},
+  {"id": "foreignTaxPaid", "section": "추가 계산 입력", "q": "외국에서 부과된 증여세 (원)", "sub": "외국 과세표준과 함께 입력해야 공제 한도를 계산합니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.isBurdened!=='yes'},
+  {"id": "foreignTaxBase", "section": "추가 계산 입력", "q": "해당 재산의 외국 법령상 과세표준 (원)", "sub": "국내 평가액이 아닌 외국에서 실제 적용한 과세표준입니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.isBurdened!=='yes' && Number(a.foreignTaxPaid)>0},
+  {"id": "nonTaxable", "section": "추가 계산 입력", "q": "증여재산 중 확인된 비과세 재산가액 (원)", "sub": "앞에서 입력한 총재산에 포함된 비과세 금액만 입력하세요. 증여재산공제와 다릅니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.isBurdened!=='yes'},
+  {"id": "priorMarriageChildUsed", "section": "추가 계산 입력", "q": "이미 사용한 혼인·출산 증여재산공제 합계 (원)", "sub": "이번 증여 이전의 사용액입니다. 사전증여 기본공제와 구분해 입력하세요.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.isBurdened!=='yes' && a.relationship==='직계존속' && (a.marriageDed==='yes'||a.childbirthDed==='yes')},
   {
     id: 'context',
     section: '추가 정보',
@@ -418,6 +423,21 @@ function mapAnswersToGift(a) {
     item.donor_child_deceased = skipAnswer === 'yes' && a.childDeceased === 'yes';
     body.gift_history = [item];
   }
+  for (const [key,field] of [["appraisalFee", "appraisal_fee"], ["foreignTaxPaid", "foreign_tax_paid"], ["nonTaxable", "non_taxable"]]) {
+    if(a[key]==null || String(a[key]).trim()==='') continue;
+    const n=Number(a[key]); if(!Number.isSafeInteger(n)||n<0) throw new Error('추가 금액은 0 이상의 정수로 입력해 주세요.');
+    body[field]=n;
+  }
+  if(body.foreign_tax_paid>0) {
+    const n=Number(a.foreignTaxBase);
+    if(a.foreignTaxBase==null || String(a.foreignTaxBase).trim()==='' || !Number.isSafeInteger(n)||n<=0) throw new Error('외국납부세액 공제를 위해 외국 과세표준을 입력해 주세요.');
+    body.foreign_tax_base=n;
+  }
+  if(lineal && (body.marriage_deduction || body.childbirth_deduction) && a.priorMarriageChildUsed!=null && String(a.priorMarriageChildUsed).trim()!=='') {
+    const n=Number(a.priorMarriageChildUsed); if(!Number.isSafeInteger(n)||n<0||n>100000000) throw new Error('기사용 혼인·출산공제를 0~1억원 사이로 입력해 주세요.');
+    body.prior_marriage_child_deduction_used=n;
+  }
+
   return body;
 }
 
@@ -544,6 +564,7 @@ function giftCalcFromEngine(ej, inputValue) {
     totalTax: c['세액'],
     giftValue: mj['증여재산가액'] != null ? mj['증여재산가액'] : inputValue,
     giftCredit: mj['납부세액공제'] || 0,
+    ...(mj['외국납부세액공제'] > 0 ? {foreignCredit: mj['외국납부세액공제']} : {}),
     nonTaxableMsg: c['비과세여부'] ? '증여재산공제 범위 내로 납부할 증여세가 없습니다(과세최저한).' : null,
     steps: c['단계별계산'] || [],
     engineWarnings: c['경고사항'] || [],   // 엔진이 알리는 가정·경고([확인 필요] 등) — 결과 화면에 그대로 보인다
@@ -603,6 +624,7 @@ function buildGiftDetail(answers, calc, commentary) {
     L.push('  · 산출세액: ' + formatWon(calc.calcTax));
     if (calc.genSkipSurcharge) L.push('  · 세대생략 할증: ' + formatWon(calc.genSkipSurcharge));
     if (calc.giftCredit) L.push('  · 납부세액공제(사전증여): ' + formatWon(calc.giftCredit));
+    if(calc.foreignCredit) L.push('  · 외국납부세액공제: ' + formatWon(calc.foreignCredit));
     L.push('  · 신고세액공제: ' + formatWon(calc.filingCredit));
     L.push('  · 총 세액: ' + formatWon(calc.totalTax));
   }
@@ -935,6 +957,7 @@ function JTReportGift({ setRoute, onBack }) {
                   <tr><th>산출세액</th><td>{formatWon(calc.calcTax)}</td></tr>
                   {calc.genSkipSurcharge > 0 && <tr><th>세대생략 할증 (§57)</th><td>+ {formatWon(calc.genSkipSurcharge)}</td></tr>}
                   {calc.giftCredit > 0 && <tr><th>납부세액공제 (사전증여 §58)</th><td>− {formatWon(calc.giftCredit)}</td></tr>}
+                  {calc.foreignCredit > 0 && <tr><th>외국납부세액공제</th><td>− {formatWon(calc.foreignCredit)}</td></tr>}
                   <tr><th>신고세액공제 (§69, 3%)</th><td>− {formatWon(calc.filingCredit)}</td></tr>
                   <tr><th><strong>총 세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
                 </tbody>

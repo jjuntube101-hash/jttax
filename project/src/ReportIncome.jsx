@@ -80,7 +80,7 @@ const INC_QS = [
     opts: [
       ['domestic', 'Gross-up 대상 국내 배당만', '원천징수영수증으로 대상 여부 확인'],
       ['domestic_other', 'Gross-up 비대상 국내 배당만', '일반 공모펀드·ETF 등 — 대상 여부 확인'],
-      ['mixed_grossup', '국내 대상·비대상 배당이 섞여 있음', '금액 분리 필요 — 상담'],
+      ['mixed_grossup', '국내 대상·비대상 배당이 섞여 있음', '대상 금액 직접 입력'],
       ['foreign', '외국 법인 배당만 (해외주식·해외 ETF)', '외국납부세액공제 — 상담'],
       ['mixed', '국내·외국이 섞여 있음', '금액 분리 필요 — 상담'],
       ['unsure', '모르겠어요', '상담 안내'],
@@ -110,6 +110,12 @@ const INC_QS = [
     numeric: true, money: true, optional: true,
     placeholder: '예: 3,000,000 (없으면 0)',
   },
+  {"id": "pensionIncome", "section": "추가 계산 입력", "q": "종합과세 대상 공적연금 총연금액 (원)", "sub": "비과세분을 제외한 과세 대상 총연금액입니다. 사적연금 분리과세 선택은 이 입력으로 계산하지 않습니다.", "numeric": true, "money": true, "optional": true, "tier": "quick"},
+  {"id": "grossupEligible", "section": "추가 계산 입력", "q": "국내 배당 중 배당가산 대상 금액 (원)", "sub": "대상·비대상 합계가 아닌 대상 금액만 입력하세요. 원천징수영수증으로 확인한 0원도 입력할 수 있습니다.", "numeric": true, "money": true, "optional": true, "tier": "quick", showIf: (a) => Number(a.dividendIncome)>0 && a.dividendType==='mixed_grossup'},
+  {"id": "dividendPaidYear", "section": "추가 계산 입력", "q": "배당 지급연도", "sub": "배당가산 대상 배당의 실제 지급연도를 입력하세요. 연도별 배당이 섞이면 따로 검토해야 합니다.", "numeric": true, "money": false, "optional": true, "tier": "quick", showIf: (a) => Number(a.dividendIncome)>0 && ['domestic','mixed_grossup'].includes(a.dividendType)},
+  {"id": "elderlyDependents", "section": "추가 계산 입력", "q": "기본공제 대상 중 경로우대 대상 인원", "sub": "본인을 제외하고 위에서 입력한 배우자·부양가족 중 해당 인원만 입력하세요.", "numeric": true, "money": false, "optional": true},
+  {"id": "disabledDependents", "section": "추가 계산 입력", "q": "기본공제 대상 중 장애인 인원", "sub": "본인을 제외하고 위에서 입력한 배우자·부양가족 중 해당 인원만 입력하세요.", "numeric": true, "money": false, "optional": true},
+  {"id": "healthInsurance", "section": "추가 계산 입력", "q": "소득공제 대상 건강보험료 납입액 (원)", "sub": "필요경비에 이미 반영한 금액은 중복 입력하지 마세요. 소득공제 대상 여부를 확인한 금액만 입력하세요.", "numeric": true, "money": true, "optional": true},
   {
     id: 'context',
     section: '추가 사항',
@@ -126,8 +132,8 @@ const INC_QS = [
 function incFallbackGaps(answers, calc) {
   const dividend = Number(answers.dividendIncome) || 0;
   return window.jtFallbackGaps([
-    { when: dividend > 0 && answers.dividendType === 'mixed_grossup',
-      why: '배당가산 대상·비대상 국내 배당의 금액을 나눠야 합니다. 원천징수영수증을 확인해 상담에서 반영해 드립니다.' },
+    { when: dividend > 0 && answers.dividendType === 'mixed_grossup' && (answers.grossupEligible == null || String(answers.grossupEligible).trim() === '' || !Number.isSafeInteger(Number(answers.grossupEligible)) || Number(answers.grossupEligible) < 0 || Number(answers.grossupEligible) > dividend),
+      why: '배당가산 대상·비대상 국내 배당의 금액을 나눠야 합니다. 원천징수영수증을 확인하고 배당가산 대상 금액을 입력해 주세요.' },
     /* ★ foreign 도 막는다 — 260806 엔진 실측: foreign_tax_paid·foreign_tax_credit 어느 이름으로
        보내도 결과가 128,190,000 으로 «동일»했다. 즉 엔진이 외국납부세액공제(§57)를 받지 않는다.
        외국 배당은 현지 원천세가 이미 떼여 있는데 그게 공제되지 않아 세금이 «많게» 나온다.
@@ -139,6 +145,31 @@ function incFallbackGaps(answers, calc) {
     { when: dividend > 0 && (answers.dividendType === 'unsure' || !answers.dividendType),
       why: '배당을 어디에서 받았는지 확인되지 않았습니다 — 국내 법인 배당인지에 따라 Gross-up·배당세액공제가 갈립니다(실측 최대 1,160만원 차이).' },
   ]);
+}
+
+function incomeExtraInputs(a) {
+  const out = {};
+  const read = (key, label) => {
+    if (a[key] == null || String(a[key]).trim() === '') return undefined;
+    const n = Number(a[key]);
+    if (!Number.isSafeInteger(n) || n < 0) throw new Error(label + '은 0 이상의 정수로 입력해 주세요.');
+    return n;
+  };
+  for (const [key, field, label] of [['pensionIncome','pension_income','총연금액'],['elderlyDependents','elderly_dependents','경로우대 인원'],['disabledDependents','disabled_dependents','장애인 인원'],['healthInsurance','health_insurance','건강보험료']]) {
+    const n=read(key,label); if(n!==undefined) out[field]=n;
+  }
+  const count=(Number(a.dependents)||0)+(a.spouse==='yes'?1:0);
+  if ((out.elderly_dependents||0)>count || (out.disabled_dependents||0)>count) throw new Error('추가공제 인원은 기본공제 대상 배우자·부양가족 수를 넘을 수 없습니다.');
+  if (Number(a.dividendIncome)>0 && ['domestic','mixed_grossup'].includes(a.dividendType)) {
+    const y=read('dividendPaidYear','배당 지급연도');
+    if (y!==undefined) { if(y<2000 || y>2026) throw new Error('배당 지급연도를 확인해 주세요(2000~2026).'); out.dividend_paid_year=y; }
+    if(a.dividendType==='mixed_grossup') {
+      const n=read('grossupEligible','배당가산 대상 금액');
+      if(n===undefined || n>Number(a.dividendIncome)) throw new Error('배당가산 대상 금액을 전체 배당 이내로 입력해 주세요.');
+      out.grossup_eligible_dividend=n;
+    }
+  }
+  return out;
 }
 
 async function callIncomeEng(body) {
@@ -220,7 +251,7 @@ function JTReportIncome({ setRoute, onBack }) {
     if (base) { fetch(base + '/health', { method: 'GET' }).catch(function () {}); }
   }, []);
 
-  const visibleQs = phase === 'quick' ? INC_QS.filter(q => q.tier === 'quick') : INC_QS.filter(q => q.tier !== 'quick');
+  const visibleQs = phase === 'quick' ? INC_QS.filter(q => q.tier === 'quick' && (!q.showIf || q.showIf(answers))) : INC_QS.filter(q => q.tier !== 'quick' && (!q.showIf || q.showIf(answers)));
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
@@ -251,7 +282,8 @@ function JTReportIncome({ setRoute, onBack }) {
       const deps = clamp(answers.dependents);
       const kids = clamp(answers.children);
 
-      if (biz + salary + fin <= 0) {
+      const extra = incomeExtraInputs(answers);
+      if (biz + salary + fin + (extra.pension_income || 0) <= 0) {
         setErr('사업·근로·금융 소득 중 하나 이상을 입력해 주세요.');
         setLoading(false);
         return;
@@ -281,11 +313,12 @@ function JTReportIncome({ setRoute, onBack }) {
           dividend_income: dividend,       // 배당소득(분리) — §17③ Gross-up·§56 배당세액공제 (수정 260629 INCOME-R2-03)
           // «국내 법인 배당일 때만» Gross-up. 종전엔 배당이 있으면 무조건 true 라
           //   외국 배당이 국내 배당으로 계산돼 세금이 적게 나왔다 (260806 Codex P1).
-          is_dividend_grossup: dividend > 0 && answers.dividendType === 'domestic',
+          is_dividend_grossup: dividend > 0 && (answers.dividendType === 'domestic' || answers.dividendType === 'mixed_grossup'),
           spouse, dependents: deps, children_count: kids,
           national_pension: np,
           pension_savings: ps,
           irp_contribution: irp,
+          ...extra,
         };
         const j = await callIncomeEng(body);
         const c = j && j.calc;
@@ -299,10 +332,11 @@ function JTReportIncome({ setRoute, onBack }) {
           calc.rate = c['적용세율'];
           calc.refund = c['환급여부'];
           calc.steps = c['단계별계산'] || [];
+          calc.detail = c['주요내역'] || {};
           calc.engineWarnings = c['경고사항'] || [];
           calc.precise = true;
           calc.engineVer = j.version && j.version.engine;
-        } else if (c) { calc.engineErr = true; console.warn('종소세 엔진 응답 무결성 실패', c); }
+        } else if (c) { calc.engineReason = ['needs_input','unsupported'].includes(c['상태']) ? window.jtEngineMessageForDisplay(c['메시지'] || c['사유'] || '입력 요건 또는 지원 범위를 확인해 주세요.') : ''; calc.engineErr = true; console.warn('종소세 엔진 응답 무결성 실패', c); }
       } catch (e) { console.warn('종소세 엔진 연결 실패', e); calc.engineErr = true; }
 
       const rep = { calc, quick: (targetPhase || phase) === 'quick' };
@@ -352,7 +386,7 @@ function JTReportIncome({ setRoute, onBack }) {
         <JTReportShell title="종합소득세 계산 결과" subtitle="사업·근로·금융 소득 합산 종합소득세" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
           {!calc.precise ? (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
-              <strong>정밀 계산이 필요합니다.</strong> 종합소득세는 여러 소득·공제를 정확히 합산해야 해서, 간이 추정으로는 세액을 잘못 안내할 수 있습니다. 정밀 엔진 연결이 지연됐으니 잠시 후 다시 시도하거나 상담을 권합니다.
+              {calc.engineReason && <p role="alert">{calc.engineReason}</p>}<strong>정밀 계산이 필요합니다.</strong> 종합소득세는 여러 소득·공제를 정확히 합산해야 해서, 간이 추정으로는 세액을 잘못 안내할 수 있습니다. 입력 보완 안내가 있으면 해당 항목을 수정하고, 연결 오류라면 잠시 후 다시 시도해 주세요.
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={() => runAnalysis()}>정밀 계산 다시 시도 →</button></div>
             </div>
           ) : (
@@ -375,6 +409,7 @@ function JTReportIncome({ setRoute, onBack }) {
                 <h3>계산 내역</h3>
                 <table className="jt-report-calc">
                   <tbody>
+                    {['연금소득금액','추가공제','보험료공제','배당세액공제'].map(key => typeof (calc.detail || {})[key] === 'number' ? <tr key={key}><th>{key}</th><td>{formatWon(calc.detail[key])}</td></tr> : null)}
                     <tr><th>과세표준</th><td>{formatWon(calc.taxBase)}</td></tr>
                     <tr><th>산출세액 {calc.rate ? `(${calc.rate})` : ''}</th><td>{formatWon(calc.calculated)}</td></tr>
                     <tr><th>결정세액 (세액공제 반영)</th><td>{formatWon(calc.determined)}</td></tr>
