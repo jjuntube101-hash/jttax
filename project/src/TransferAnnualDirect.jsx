@@ -19,7 +19,9 @@ function annualDirectRequest(d) {
     const acquired=date(r.acquired,name+' 취득일'),sold=date(r.sold,name+' 양도일');
     if(Number(sold.slice(0,4))!==year||acquired>sold)throw new Error('양도일은 귀속연도 내이며 취득일 이후여야 합니다.');
     const sale=money(r.sale,name+' 양도가액'),cost=money(r.cost,name+' 세무조정 후 취득가액'),expense=money(r.expense,name+' 필요경비');
-    confirm(r.ordinaryConfirmed,name+' 전체지분·일반 매매');confirm(r.adjustedConfirmed,name+' 취득가 조정·공제 비용');confirm(r.noSpecialConfirmed,name+' 특례·중과 없음');
+    confirm(r.ordinaryConfirmed,name+' 등기 재산·일반 매매');
+    if(r.ownership&&!['whole','share'].includes(r.ownership))throw new Error('지분 입력 방식 확인 필요');
+    if(r.ownership==='share'&&(!mixed||r.type==='주택'))throw new Error('지분은 주택이 함께 있는 혼합 합산의 토지·상가만 지원합니다.');confirm(r.adjustedConfirmed,name+' 취득가 조정·공제 비용');confirm(r.noSpecialConfirmed,name+' 특례·중과 없음');
     if(r.type==='토지')confirm(r.businessConfirmed,name+' 사업용 토지');
     if(r.type==='주택') {
       const count=money(r.housingCount,name+' 양도 당시 세대 주택 수');
@@ -32,6 +34,13 @@ function annualDirectRequest(d) {
     }
     if(mixed&&r.type!=='주택')transfers.push({property_id:id,taxpayer_id:taxpayer,property_type:r.type,acquisition_date:acquired,transfer_date:sold,transfer_price:sale,acquisition_price:cost,expenses_total:expense,housing_count:null,is_regulated_area:false,regulated_at_acquisition:null,ordinary_sale_confirmed:true});
     if(mixed)Object.assign(transfers[transfers.length-1],{business_land:r.type==='토지'?true:null,tax_adjusted_cost_confirmed:true});
+    if(mixed&&r.ownership==='share') {
+      confirm(r.shareBasisConfirmed,name+' 전체금액·단일취득·비례귀속·지분별 경비 없음·소유지분 내 1회 양도');
+      const numerator=money(r.shareNumerator,name+' 지분 분자'),denominator=money(r.shareDenominator,name+' 지분 분모');
+      if(numerator<1||denominator<1||numerator>denominator||denominator>1e9)throw new Error('지분은 1~10억 정수이고 분자는 분모 이하여야 합니다.');
+      for(const amount of [sale,cost,expense])if(BigInt(amount)*BigInt(numerator)%BigInt(denominator)!==0n)throw new Error('지분 귀속액에 원 미만 금액이 생기는 사례는 지원하지 않습니다.');
+      transfers[transfers.length-1].share_context={numerator,denominator,...Object.fromEntries(['common_whole_property_basis_confirmed', 'single_acquisition_basis_confirmed', 'no_share_specific_expenses_confirmed', 'actual_attribution_matches_share_confirmed', 'within_owned_share_confirmed', 'single_disposal_per_property_confirmed'].map(k=>[k,true]))};
+    }
     facts.assets.push({asset_ref:id,source_id:proof,property_type:r.type,whole_property_confirmed:true});
     facts.events.push({kind:'seller_acquisition',asset_ref:id,party_ref:taxpayer,occurred_on:acquired,source_id:proof},{kind:'seller_sale',asset_ref:id,party_ref:taxpayer,occurred_on:sold,source_id:proof});
     facts.amounts.push({asset_ref:id,purpose:'tax_adjusted_acquisition_cost',scope:'whole_property',amount_krw:cost,as_of:acquired,source_id:proof},{asset_ref:id,purpose:'sale_consideration',scope:'whole_property',amount_krw:sale,as_of:sold,source_id:proof});
@@ -85,17 +94,21 @@ function JTTransferAnnualDirect({onBack}) {
   };
   const won=v=>v.toLocaleString('ko-KR')+'원';
   return <div className="jt-container"><JTReportShell title="양도세 연간 합산·정산" subtitle="여러 양도와 기신고·실제 납부 내역" onBack={onBack} tag="CONSULTING">
-    <p>2026년 국내 거주자의 일반 토지·상가·비조정지역 주택을 같은 연도로 묶은 2~20건을 지원합니다. 주택은 매 양도 시 2주택 이상·2년 이상 보유한 일반 매매만 가능합니다. 1주택 비과세·특례·중과·지분·분할취득은 지원하지 않습니다. 혼합 거래의 원 미만 장기보유공제는 중간 절사 근거 확인 전까지 차단합니다. 다만 장기보유공제 전 순차익부터 연간 기본공제 이내이면 과세표준·본세 0원만 확인하고, 미확정 중간값은 표시하지 않습니다. 자료명은 확인한 신고서·계약서·납부영수증의 식별명이며, 자동 증빙 인증을 뜻하지 않습니다.</p>
+    <p>2026년 국내 거주자의 일반 토지·상가·비조정지역 주택을 같은 연도로 묶은 2~20건을 지원합니다. 주택은 매 양도 시 2주택 이상·2년 이상 보유한 일반 매매만 가능합니다. 토지·상가 지분은 전체 금액과 실제 귀속액의 비례 관계를 확인한 경우 지원합니다. 1주택 비과세·특례·중과·주택 지분·분할취득은 지원하지 않습니다. 혼합 거래의 원 미만 장기보유공제는 중간 절사 근거 확인 전까지 차단합니다. 다만 장기보유공제 전 순차익부터 연간 기본공제 이내이면 과세표준·본세 0원만 확인하고, 미확정 중간값은 표시하지 않습니다. 자료명은 확인한 신고서·계약서·납부영수증의 식별명이며, 자동 증빙 인증을 뜻하지 않습니다.</p>
     <form onSubmit={submit}>{field('year','귀속연도')}{field('taxpayer','납세자 식별명 (주민등록번호 입력 금지)')}{field('source','연간 거래·자격·지방세율 검토 자료명')}
     {d.assets.map((r,index)=><fieldset key={r._id}><legend>{index+1}번 양도</legend>
       <label>재산 종류<select data-testid={'annual-asset-'+r._id+'-type'} value={r.type} onChange={e=>edit(r._id,'type',e.target.value)}><option>토지</option><option>상가</option><option>주택</option></select></label>
       {[['ref','다른 재산과 구별되는 식별명','text'],['source','계약서·원가·경비·자격 증빙 자료명','text'],['acquired','취득일','date'],['sold','양도일','date'],['sale','양도가액 (원)','text'],['cost','세무조정 완료 취득가액 (원)','text'],['expense','공제 가능한 필요경비 (원, 없으면 0)','text']].map(([key,label,type])=><label key={key} style={{display:'block',margin:'8px 0'}}>{label}<input data-testid={'annual-asset-'+r._id+'-'+key} className="jt-report-q__input" type={type} value={r[key]??''} onChange={e=>edit(r._id,key,e.target.value)}/></label>)}
+      {r.type!=='주택'&&<div><label>금액 입력 범위<select data-testid={'annual-asset-'+r._id+'-ownership'} value={r.ownership||'whole'} onChange={e=>edit(r._id,'ownership',e.target.value)}><option value="whole">전체 소유·전체 양도</option><option value="share">지분 양도 (주택 포함 혼합 합산)</option></select></label>
+      {r.ownership==='share'&&<><p>위 양도가액·취득가액·경비는 모두 동일한 전체 재산 기준 금액을 입력하세요. 엔진에서 양도 지분을 한 번 적용합니다.</p>
+      {['shareNumerator','shareDenominator'].map((key,i)=><label key={key}>{i===0?'양도 지분 분자':'양도 지분 분모'}<input data-testid={'annual-asset-'+r._id+'-'+key} value={r[key]??''} onChange={e=>edit(r._id,key,e.target.value)}/></label>)}
+      <label><input type="checkbox" data-testid={'annual-asset-'+r._id+'-shareBasisConfirmed'} checked={r.shareBasisConfirmed===true} onChange={e=>edit(r._id,'shareBasisConfirmed',e.target.checked)}/>동일한 전체 재산 기준 금액·단일 취득이며, 실제 귀속액이 지분에 비례하고 별도 지분 경비가 없으며, 소유지분 내에서 해당 재산을 한 번만 양도했습니다.</label></> }</div>}
       {r.type==='주택'&&<div>
         <label>이 양도 당시 세대 주택 수<input data-testid={'annual-asset-'+r._id+'-housingCount'} value={r.housingCount??''} onChange={e=>edit(r._id,'housingCount',e.target.value)}/></label>
         {[['regulated','양도 당시 조정대상지역'],['acqRegulated','취득 당시 조정대상지역']].map(([key,label])=><label key={key}>{label}<select data-testid={'annual-asset-'+r._id+'-'+key} value={r[key]??''} onChange={e=>edit(r._id,key,e.target.value)}><option value="">확인 필요</option><option value="no">아니오</option><option value="yes">예</option></select></label>)}
         <label><input type="checkbox" data-testid={'annual-asset-'+r._id+'-housingOrdinaryConfirmed'} checked={r.housingOrdinaryConfirmed===true} onChange={e=>edit(r._id,'housingOrdinaryConfirmed',e.target.checked)}/>비과세·감면·상속·증여·이월과세·용도변경·환산취득·감가상각 조정이 없는 주택 일반 매매입니다.</label>
       </div>}
-      {[['ordinaryConfirmed','국내 등기 재산 전체지분의 일반 매매입니다.'],['adjustedConfirmed','취득가 세무조정과 공제 가능 경비를 확인했고 추가 조정이 없습니다.'],['noSpecialConfirmed','비과세·감면·이월과세·특례·비사업용 및 지정지역 중과가 없습니다.'],...(r.type==='토지'?[['businessConfirmed','사업용 토지임을 확인했습니다.']]:[])].map(([key,label])=><label key={key} style={{display:'block'}}><input data-testid={'annual-asset-'+r._id+'-'+key} type="checkbox" checked={r[key]===true} onChange={e=>edit(r._id,key,e.target.checked)}/> {label}</label>)}
+      {[['ordinaryConfirmed',r.ownership==='share'?'국내 등기 재산의 지분 일반 매매입니다.':'국내 등기 재산 전체지분의 일반 매매입니다.'],['adjustedConfirmed','취득가 세무조정과 공제 가능 경비를 확인했고 추가 조정이 없습니다.'],['noSpecialConfirmed','비과세·감면·이월과세·특례·비사업용 및 지정지역 중과가 없습니다.'],...(r.type==='토지'?[['businessConfirmed','사업용 토지임을 확인했습니다.']]:[])].map(([key,label])=><label key={key} style={{display:'block'}}><input data-testid={'annual-asset-'+r._id+'-'+key} type="checkbox" checked={r[key]===true} onChange={e=>edit(r._id,key,e.target.checked)}/> {label}</label>)}
       <button type="button" disabled={d.assets.length<=2} onClick={()=>change('assets',d.assets.filter(x=>x._id!==r._id))}>이 양도 삭제</button>
     </fieldset>)}
     <button type="button" disabled={d.assets.length>=20} onClick={()=>change('assets',[...d.assets,blank(nextId.current++)])}>양도 추가</button>
@@ -111,6 +124,7 @@ function JTTransferAnnualDirect({onBack}) {
       {[['prior_assessed','기신고 산출세액'],['actual_paid','실제 납부액'],['prior_unpaid','기존 신고분 미납 본세'],['additional_return_due','확정신고 추가 납부 본세'],['remaining_principal','미납분 포함 남은 본세']].map(([key,label])=><tr key={key}><th>{label}</th>{['national','local'].map(k=><td key={k}>{won(result['납부대사'][k][key])}</td>)}</tr>)}
     </tbody></table><p>남은 본세 합계: <strong>{won(result['납부대사'].total_remaining_principal)}</strong></p><p>{result['납부대사'].notice}</p>
     {(result['원본연간계산']['경고사항']||[]).map((s,i)=><p key={i}>{s}</p>)}
+    {(result['원본연간계산']['원본결과']?.share_normalizations||[]).map(r=><p key={r.property_id}>재산 {r.property_id} 양도 지분 {r.numerator}/{r.denominator}: 귀속 양도가액 {won(r.attributed.transfer_price)}, 취득가액 {won(r.attributed.acquisition_price)}, 필요경비 {won(r.attributed.expenses_total)}</p>)}
     <h3>연간 계산 과정</h3><table className="jt-report-calc"><tbody>{(result['원본연간계산']['단계별계산']||[]).map((s,i)=><tr key={i}><th>{s['항목']||s['단계']}</th><td>{typeof s['금액']==='number'?won(s['금액']):String(s['금액']??'')}</td></tr>)}</tbody></table></section>}
   </JTReportShell></div>;
 }
