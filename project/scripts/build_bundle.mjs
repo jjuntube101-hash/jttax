@@ -47,6 +47,7 @@ export const ORDER = [
   'Report.jsx',
   'ReportConvert.jsx',
   'ReportAppeal.jsx',
+  'TransferAnnualDirect.jsx',
   'ReportCGT.jsx',
   'ReportReform2026.jsx',
   'ReportCrypto2027.jsx',
