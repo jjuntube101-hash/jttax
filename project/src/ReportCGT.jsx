@@ -70,6 +70,7 @@ function cgtTemp2Phrase(years) {
 /* Reviewed facts only: empty inputs never become zero or an eligibility confirmation. */
 function cgtReviewedPayload(a) {
   const r = a.reviewed || {}, out = {};
+  const cross = r.scope === 'mixed' && (r.parts || []).some(p=>p.kind==='대토보상') && (r.parts || []).some(p=>(p.kind || '').startsWith('수용'));
   const money = (v, label) => {
     if (!/^\d+$/.test(String(v == null ? '' : v)) || !Number.isSafeInteger(Number(v))) throw new Error(label + '을 원 단위 정수로 입력해 주세요.');
     return Number(v);
@@ -98,7 +99,9 @@ function cgtReviewedPayload(a) {
     const ctx = { eligibility_confirmed:true, history_complete:true, split_transfer_applicable:false, full_income_eligible:r.scope === 'full', history:[] };
     if (r.historyMode === 'list') ctx.history = r.history.map((h,i) => {
       if (!h.article) throw new Error('이력의 감면 조문을 선택해 주세요.');
-      return {id:'review-'+(i+1),transfer_date:day(h.date,'이력 양도일'),article:h.article,amount:money(h.amount,'이력 감면세액')};
+      const row = {id:'review-'+(i+1),transfer_date:day(h.date,'이력 양도일'),article:h.article,amount:money(h.amount,'이력 감면세액')};
+      if (h.article === '77의3' && Number(a.transferDate.slice(0,4)) >= 2025 && Number(h.date.slice(0,4)) >= Number(a.transferDate.slice(0,4))-4) row.relief_applied_date = day(h.appliedDate,'77조의3 실제 감면 적용일');
+      return row;
     });
     if (r.scope === 'partial') ctx.allocation = {eligible_income:money(r.eligibleIncome,'장기보유특별공제 후 감면소득')};
     if (r.scope === 'mixed') {
@@ -108,9 +111,24 @@ function cgtReviewedPayload(a) {
         if (!['수용현금','수용채권','수용채권3년','수용채권5년','대토보상','감면없음'].includes(p.kind)) throw new Error('보상 종류를 선택해 주세요.');
         return {kind:p.kind,amount:money(p.amount,'보상액')};
       })};
-      if (ctx.allocation.compensation.some(p=>p.kind==='대토보상') && ctx.allocation.compensation.some(p=>p.kind.startsWith('수용'))) throw new Error('수용·대토 동시 감면은 조문별 기본공제와 한도 배분 검토가 필요합니다. 이 화면에서는 아직 입력할 수 없습니다.');
+      if (cross) {
+        confirm(r.allocationConfirmed,'양쪽 조문의 자격·신청 및 기본공제·한도 배분 검토');
+        ctx.allocation.allocation_confirmed = true;
+        if (!['reviewed','unique'].includes(r.deductionMode)) throw new Error('조문별 기본공제 배분 방식을 선택해 주세요.');
+        if (!['auto','reviewed'].includes(r.capMode)) throw new Error('공통한도 배분 방식을 선택해 주세요.');
+        if (r.deductionMode === 'reviewed') {
+          ctx.allocation.article_allocations = [
+            {article:'77',deduction_weight:money(r.weight77,'77조 기본공제 배분비')},
+            {article:'77의2',deduction_weight:money(r.weight772,'77조의2 기본공제 배분비')}
+          ];
+          if (r.capMode === 'reviewed') {
+            ctx.allocation.article_allocations[0].capped_reduction = money(r.cap77,'77조 한도 적용 후 감면액');
+            ctx.allocation.article_allocations[1].capped_reduction = money(r.cap772,'77조의2 한도 적용 후 감면액');
+          }
+        } else if (r.capMode === 'reviewed') throw new Error('한도 감면액을 직접 배분하려면 기본공제 배분비도 함께 입력해 주세요.');
+      }
     }
-    if (r.reliefType.startsWith('수용')) {
+    if (r.reliefType.startsWith('수용') || cross) {
       if (!['yes','no'].includes(r.ruralExempt)) throw new Error('농어촌특별세 비과세 해당 여부를 확인해 주세요.');
       ctx.rural_exempt = r.ruralExempt === 'yes';
     }
@@ -120,7 +138,7 @@ function cgtReviewedPayload(a) {
     confirm(r.lateConfirmed,'고지 전 일정 미납원금·중간납부 및 유예 없음');
     out.simulate_penalty = true;
     out.late_payment_context = {unpaid_tax:money(r.unpaid,'미납 양도소득세 본세'),due_date:day(r.due,'법정 납부기한'),payment_date:day(r.paid,'실제 납부일'),ordinary_unpaid_case_confirmed:true};
-    if (r.reliefEnabled && (r.reliefType === '대토보상' || (r.reliefType || '').startsWith('수용') && r.ruralExempt === 'no')) {
+    if (r.reliefEnabled && (r.reliefType === '대토보상' || cross || (r.reliefType || '').startsWith('수용') && r.ruralExempt === 'no')) {
       confirm(r.ruralPaidConfirmed,'농특세 전액의 법정기한 내 신고·납부');
       out.late_payment_context.rural_surtax_filed_and_paid_by_due_date_confirmed = true;
     }
@@ -137,6 +155,7 @@ function cgtReviewedPayload(a) {
 
 function CGTReviewedInputs({value,onChange}) {
   const r=value || {};
+  const cross = r.scope === 'mixed' && (r.parts || []).some(p=>p.kind==='대토보상') && (r.parts || []).some(p=>(p.kind || '').startsWith('수용'));
   const set=(k,v)=>{ const n={...r,[k]:v}; if (!k.endsWith('Confirmed')) Object.keys(n).filter(x=>x.endsWith('Confirmed')).forEach(x=>delete n[x]); onChange(n); };
   const field=(key,label,type='text')=><label style={{display:'block',margin:'12px 0'}}>{label}<input className="jt-report-q__input" type={type} inputMode={type==='text'?'numeric':undefined} value={r[key] || ''} onChange={e=>set(key,e.target.value)} /></label>;
   const check=(key,label)=><label style={{display:'block',margin:'12px 0',lineHeight:1.6}}><input type="checkbox" checked={r[key]===true} onChange={e=>set(key,e.target.checked)} /> {label}</label>;
@@ -153,9 +172,18 @@ function CGTReviewedInputs({value,onChange}) {
       {select('scope','감면 대상 범위',[['full','전체 소득·단일 감면'],['partial','일부 감면소득'],['mixed','동일 자산의 혼합보상']])}
       {r.scope==='partial' && field('eligibleIncome','장기보유특별공제 후·기본공제 전 감면소득 (원)')}
       {r.scope==='mixed' && <div><p>감면 제외분까지 포함하며, 보상액 합계는 양도가액과 같아야 합니다.</p>{(r.parts || []).map((p,i)=><fieldset key={i}><legend>보상 {i+1}</legend><label>보상 종류<select value={p.kind || ''} onChange={e=>rowChange('parts',i,'kind',e.target.value)}><option value="">선택</option>{kinds.map(k=><option key={k}>{k}</option>)}</select></label><label>보상액 (원)<input inputMode="numeric" value={p.amount || ''} onChange={e=>rowChange('parts',i,'amount',e.target.value)} /></label><button type="button" onClick={()=>set('parts',r.parts.filter((_,j)=>j!==i))}>보상 {i+1} 삭제</button></fieldset>)}<button type="button" onClick={()=>set('parts',[...(r.parts || []),{}])}>보상명세 추가</button>{check('sameAssetConfirmed','같은 자산의 전체 보상명세임을 확인했습니다')}</div>}
-      {(r.reliefType || '').startsWith('수용') && select('ruralExempt','농어촌특별세 비과세 요건',[['yes','해당함 — 확인 완료'],['no','해당하지 않음 — 확인 완료']])}
+      {cross && <fieldset><legend>77조·77조의2 조문별 배분</legend>
+        <p>수용 감면과 대토 감면 양쪽의 자격·신청 및 배분을 검토한 값을 입력하세요. 입력 순서는 적용 우선순위가 아닙니다.</p>
+        {select('deductionMode','잔여 기본공제 배분',[['reviewed','검토한 조문별 배분비 입력'],['unique','금액상 유일한 경우만 엔진에서 계산']])}
+        {r.deductionMode==='reviewed' && <>{field('weight77','77조 기본공제 배분비 (0 이상 정수)')}{field('weight772','77조의2 기본공제 배분비 (0 이상 정수)')}<p>예: 검토 결과 동일 비율이면 1과 1을 입력합니다. 비율을 모르면 임의로 입력하지 마세요.</p></>}
+        {r.deductionMode==='unique' && <p>기본공제 잔여가 0이거나 감면소득 전액이 공제되는 경우만 계산합니다. 여러 배분이 가능하면 입력 보완을 요청합니다.</p>}
+        {select('capMode','공통한도 적용 후 감면액',[['auto','배분 없이 확정 가능한 경우만 계산'],['reviewed','검토한 조문별 감면액 입력']])}
+        {r.capMode==='reviewed' && <>{field('cap77','77조 한도 적용 후 실제 감면액 (원)')}{field('cap772','77조의2 한도 적용 후 실제 감면액 (원)')}</>}
+        {check('allocationConfirmed','양쪽 조문의 자격·신청과 기본공제·한도 배분을 세무 검토로 확인했습니다')}
+      </fieldset>}
+      {((r.reliefType || '').startsWith('수용') || cross) && select('ruralExempt','77조 수용 부분의 농어촌특별세 비과세 요건' ,[['yes','해당함 — 확인 완료'],['no','해당하지 않음 — 확인 완료']])}
       {select('historyMode','같은 해 및 직전 4개 과세기간의 감면 이력',[['none','이력 없음 — 확인 완료'],['list','이력 있음 — 아래 입력']])}
-      {r.historyMode==='list' && <div>{(r.history || []).map((h,i)=><fieldset key={i}><legend>감면 이력 {i+1}</legend><label>양도일<input type="date" value={h.date || ''} onChange={e=>rowChange('history',i,'date',e.target.value)} /></label><label>조세특례제한법 조문<select value={h.article || ''} onChange={e=>rowChange('history',i,'article',e.target.value)}><option value="">선택</option>{['33','43','66','67','68','69','69의2','69의3','69의4','70','77','77의2','85의10'].map(k=><option key={k}>{k}</option>)}</select></label><label>한도 적용 후 감면 국세액 (원)<input inputMode="numeric" value={h.amount || ''} onChange={e=>rowChange('history',i,'amount',e.target.value)} /></label><button type="button" onClick={()=>set('history',r.history.filter((_,j)=>i!==j))}>이력 {i+1} 삭제</button></fieldset>)}<button type="button" onClick={()=>set('history',[...(r.history || []),{}])}>감면 이력 추가</button><p>목록에 없는 과거 감면은 별도 검토가 필요합니다.</p></div>}
+      {r.historyMode==='list' && <div>{(r.history || []).map((h,i)=><fieldset key={i}><legend>감면 이력 {i+1}</legend><label>양도일<input type="date" value={h.date || ''} onChange={e=>rowChange('history',i,'date',e.target.value)} /></label><label>조세특례제한법 조문<select value={h.article || ''} onChange={e=>rowChange('history',i,'article',e.target.value)}><option value="">선택</option>{['33','43','66','67','68','69','69의2','69의3','69의4','70','77','77의2','77의3','85의10','부칙6538_29'].map(k=><option key={k} value={k}>{k==='부칙6538_29'?'법률 제6538호 부칙 제29조':k}</option>)}</select></label>{h.article==='77의3' && <label>실제 감면 적용일 (양도일과 별도)<input type="date" value={h.appliedDate || ''} onChange={e=>rowChange('history',i,'appliedDate',e.target.value)} /></label>}<label>한도 적용 후 감면 국세액 (원)<input inputMode="numeric" value={h.amount || ''} onChange={e=>rowChange('history',i,'amount',e.target.value)} /></label><button type="button" onClick={()=>set('history',r.history.filter((_,j)=>i!==j))}>이력 {i+1} 삭제</button></fieldset>)}<button type="button" onClick={()=>set('history',[...(r.history || []),{}])}>감면 이력 추가</button><p>목록에 없는 과거 감면은 별도 검토가 필요합니다.</p></div>}
       {check('eligibleConfirmed','선택한 감면의 법정 자격·신청 요건을 검토했습니다')}{check('historyConfirmed','해당 기간의 감면 이력을 빠짐없이 확인했습니다')}{check('noSplitConfirmed','분할·지분양도 의제 적용 대상이 아님을 확인했습니다')}
     </fieldset>}
     {check('lateEnabled','신고·납부지연 가산세 계산')}

@@ -1,0 +1,38 @@
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict');
+const parser=require('@babel/parser'),src=fs.readFileSync(path.join(__dirname,'src/ReportCGT.jsx'),'utf8');
+const names=['isValidISODate','isoDate','cgtTemp2Visible','cgtReviewedPayload','mapAnswersToTransfer','cgtApplyAnswer'];
+const ast=parser.parse(src,{sourceType:'script',plugins:['jsx']});
+const ctx=vm.createContext({Date,Math,Number,Object,JSON});
+vm.runInContext(ast.program.body.filter(n=>names.includes(n.id?.name)).map(n=>src.slice(n.start,n.end)).join('\n')+'\nglobalThis.api={cgtReviewedPayload,mapAnswersToTransfer,cgtApplyAnswer};',ctx);
+const {cgtReviewedPayload:extra,mapAnswersToTransfer:map,cgtApplyAnswer:answer}=ctx.api;
+const plain=x=>JSON.parse(JSON.stringify(x));let checks=0;
+function test(name,f){f();checks++;console.log('PASS '+name);}
+const base={assetType:'commercial',nonHouseType:'land',landUse:'business',acquiredDate:'2013-07-01',transferDate:'2026-01-01',acquired:'600000000',sold:'1000000000'};
+const r={reliefEnabled:true,reliefType:'수용현금',scope:'mixed',parts:[{kind:'수용현금',amount:'500000000'},{kind:'대토보상',amount:'500000000'}],sameAssetConfirmed:true,ruralExempt:'no',historyMode:'none',eligibleConfirmed:true,historyConfirmed:true,noSplitConfirmed:true,allocationConfirmed:true,deductionMode:'reviewed',weight77:'1',weight772:'1',capMode:'auto',lateEnabled:true,unpaid:'1000000',due:'2026-03-31',paid:'2026-05-01',lateConfirmed:true,ruralPaidConfirmed:true,filing:'under',filingBase:'1000000',filingConfirmed:true};
+const make=patch=>({...base,reviewed:{...r,...patch}});
+test('both statutory rows with explicit weights',()=>assert.deepEqual(plain(extra(make()).reduction_context.allocation.article_allocations),[{article:'77',deduction_weight:1},{article:'77의2',deduction_weight:1}]));
+for(const key of ['allocationConfirmed','ruralPaidConfirmed']) test('missing '+key+' refuses',()=>assert.throws(()=>extra(make({[key]:false}))));
+for(const key of ['weight77','weight772']) for(const v of ['',null,'-1','0.5','9007199254740992']) test(key+' invalid '+v,()=>assert.throws(()=>extra(make({[key]:v}))));
+test('explicit zero differs from missing',()=>{assert.equal(extra(make({weight77:'0'})).reduction_context.allocation.article_allocations[0].deduction_weight,0);assert.throws(()=>extra(make({capMode:'reviewed',cap77:'',cap772:'0'})));assert.equal(extra(make({capMode:'reviewed',cap77:'0',cap772:'0'})).reduction_context.allocation.article_allocations[0].capped_reduction,0);});
+test('automatic mode sends no invented weights or grants',()=>assert.equal(extra(make({deductionMode:'unique',weight77:'99',cap77:'999'})).reduction_context.allocation.article_allocations,undefined));
+test('same article mode drops stale cross input',()=>{const a=extra(make({parts:[{kind:'수용현금',amount:'500000000'},{kind:'수용채권5년',amount:'500000000'}]})).reduction_context.allocation;assert.equal(a.article_allocations,undefined);assert.equal(a.allocation_confirmed,undefined);});
+test('substitute root still requires article77 rural choice',()=>assert.throws(()=>extra(make({reliefType:'대토보상',ruralExempt:''}))));
+test('article77 exempt does not exempt substitute rural obligation',()=>assert.throws(()=>extra(make({ruralExempt:'yes',ruralPaidConfirmed:false}))));
+test('77-3 needs actual applied date',()=>assert.throws(()=>extra(make({historyMode:'list',history:[{article:'77의3',date:'2025-01-01',amount:'299000000'}]}))));
+test('history type switch drops stale applied date',()=>{const h=extra(make({historyMode:'list',history:[{article:'77',date:'2025-01-01',amount:'100',appliedDate:'2025-03-14'}]})).reduction_context.history[0];assert.equal(h.relief_applied_date,undefined);});
+test('calculation changes clear allocation review',()=>assert.equal(answer(make(),'sold','1200000000').reviewed.allocationConfirmed,undefined));
+const cases=[];
+function add(name,patch,tax,rural,more={}){const answers=make(patch);cases.push({name,answers,request:plain(map(answers)),tax,rural,penalty:106820,...more});}
+add('mixed',{},68628500,5206300);
+for(const root of ['수용현금','대토보상']) for(const exempt of ['yes','no'])add(root+'-'+exempt,{reliefType:root,ruralExempt:exempt},68628500,exempt==='yes'?3786400:5206300);
+for(const exempt of ['yes','no'])add('cap-'+exempt,{ruralExempt:exempt,capMode:'reviewed',cap77:'7099500',cap772:'12900500',historyMode:'list',history:[{article:'77',date:'2026-01-01',amount:'180000000'}]},74660000,exempt==='yes'?2580100:4000000);
+add('unique',{deductionMode:'unique',parts:[{kind:'수용현금',amount:'250000000'},{kind:'대토보상',amount:'250000000'},{kind:'감면없음',amount:'500000000'}]},81536320,2624730);
+add('77-3-before',{historyMode:'list',history:[{article:'77의3',date:'2025-01-01',amount:'299000000',appliedDate:'2025-03-13'}]},68628500,5206300);
+add('77-3-after',{capMode:'reviewed',cap77:'500000',cap772:'500000',historyMode:'list',history:[{article:'77의3',date:'2025-01-01',amount:'299000000',appliedDate:'2025-03-14'}]},93660000,200000);
+add('legacy-history',{reliefType:'자경농지',scope:'full',historyMode:'list',history:[{article:'부칙6538_29',date:'2026-01-01',amount:'80000000'}]},74660000,0);
+add('ambiguous-deduction',{deductionMode:'unique'},null,null,{blocked:true});
+add('ambiguous-cap',{historyMode:'list',history:[{article:'77',date:'2026-01-01',amount:'180000000'}]},null,null,{blocked:true});
+add('invalid-cap-sum',{capMode:'reviewed',cap77:'1',cap772:'1',historyMode:'list',history:[{article:'77',date:'2026-01-01',amount:'180000000'}]},null,null,{blocked:true});
+test('all positive requests retain real review instead of defaulting',()=>{for(const c of cases.filter(c=>!c.blocked && c.name!=='legacy-history'))assert.equal(c.request.reduction_context.allocation.allocation_confirmed,true);});
+if(process.env.CGT_REQUEST_OUTPUT)fs.writeFileSync(process.env.CGT_REQUEST_OUTPUT,JSON.stringify(cases,null,2));
+console.log('OK cross CGT: '+checks+' checks; '+cases.length+' HTTP fixtures');
