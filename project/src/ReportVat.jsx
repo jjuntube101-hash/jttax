@@ -61,7 +61,7 @@ const VAT_QS = [
     id: 'salesAmount', section: '매출', tier: 'core',
     q: '이 기간 매출(공급가액)은 얼마인가요? (원)',
     sub: '세금계산서·신용카드·현금영수증·현금으로 판 금액의 합계예요. 부가세 별도 금액(공급가액)으로 넣어 주세요. 부가세 포함 총액만 안다면 1.1로 나눈 값을 넣으면 됩니다.',
-    numeric: true, money: true,
+    numeric: true, money: true, allowZero: true,
     showIf: (a) => a.businessType === '일반과세자',
     placeholder: '예: 100,000,000',
   },
@@ -238,6 +238,11 @@ function JTReportVat({ setRoute, onBack }) {
   const canNext = () => {
     if (!cur) return false;
     if (cur.freeform) return true;
+    if (cur.allowZero) {
+      const raw = answers[cur.id];
+      const v = Number(raw);
+      return raw != null && String(raw).trim() !== '' && Number.isSafeInteger(v) && v >= 0;
+    }
     if (cur.numeric) { if (cur.optional) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
     return !!answers[cur.id];
   };
@@ -251,8 +256,10 @@ function JTReportVat({ setRoute, onBack }) {
       const extra = vatExtraInputs(answers);
 
       if (bt !== '면세사업자') {
-        const anySales = clamp(answers.salesAmount) + clamp(answers.supplyPrice) + clamp(answers.purchaseAmount) + (extra.export_sales || 0);
-        if (anySales <= 0) { setErr('매출 금액을 입력해 주세요.'); setLoading(false); return; }
+        const anySales = bt === '일반과세자'
+          ? clamp(answers.salesAmount) + clamp(answers.purchaseAmount) + (extra.purchase_vat_paid || 0) + (extra.export_sales || 0)
+          : clamp(answers.supplyPrice);
+        if (anySales <= 0) { setErr('매출·매입 또는 실제 매입세액을 입력해 주세요.'); setLoading(false); return; }
       }
       // P1-3(코덱스): 신용카드·현금영수증 매출(§46 공급대가=부가세 포함)은 전체 매출을 넘을 수 없음 — 엔진 422 전에 안내
       const _card = clamp(answers.creditCardSales);

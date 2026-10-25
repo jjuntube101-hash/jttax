@@ -17084,6 +17084,7 @@ const VAT_QS = [
     sub: "\uC138\uAE08\uACC4\uC0B0\uC11C\xB7\uC2E0\uC6A9\uCE74\uB4DC\xB7\uD604\uAE08\uC601\uC218\uC99D\xB7\uD604\uAE08\uC73C\uB85C \uD310 \uAE08\uC561\uC758 \uD569\uACC4\uC608\uC694. \uBD80\uAC00\uC138 \uBCC4\uB3C4 \uAE08\uC561(\uACF5\uAE09\uAC00\uC561)\uC73C\uB85C \uB123\uC5B4 \uC8FC\uC138\uC694. \uBD80\uAC00\uC138 \uD3EC\uD568 \uCD1D\uC561\uB9CC \uC548\uB2E4\uBA74 1.1\uB85C \uB098\uB208 \uAC12\uC744 \uB123\uC73C\uBA74 \uB429\uB2C8\uB2E4.",
     numeric: true,
     money: true,
+    allowZero: true,
     showIf: (a) => a.businessType === "\uC77C\uBC18\uACFC\uC138\uC790",
     placeholder: "\uC608: 100,000,000"
   },
@@ -17287,6 +17288,11 @@ function JTReportVat({ setRoute, onBack }) {
   const canNext = () => {
     if (!cur) return false;
     if (cur.freeform) return true;
+    if (cur.allowZero) {
+      const raw = answers[cur.id];
+      const v = Number(raw);
+      return raw != null && String(raw).trim() !== "" && Number.isSafeInteger(v) && v >= 0;
+    }
     if (cur.numeric) {
       if (cur.optional) return true;
       const v = Number(answers[cur.id]);
@@ -17303,9 +17309,9 @@ function JTReportVat({ setRoute, onBack }) {
       const isCorp = answers.isCorporate === "yes";
       const extra = vatExtraInputs(answers);
       if (bt !== "\uBA74\uC138\uC0AC\uC5C5\uC790") {
-        const anySales = clamp(answers.salesAmount) + clamp(answers.supplyPrice) + clamp(answers.purchaseAmount) + (extra.export_sales || 0);
+        const anySales = bt === "\uC77C\uBC18\uACFC\uC138\uC790" ? clamp(answers.salesAmount) + clamp(answers.purchaseAmount) + (extra.purchase_vat_paid || 0) + (extra.export_sales || 0) : clamp(answers.supplyPrice);
         if (anySales <= 0) {
-          setErr("\uB9E4\uCD9C \uAE08\uC561\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+          setErr("\uB9E4\uCD9C\xB7\uB9E4\uC785 \uB610\uB294 \uC2E4\uC81C \uB9E4\uC785\uC138\uC561\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
           setLoading(false);
           return;
         }

@@ -7,6 +7,25 @@ const vat=load('ReportVat.jsx',['vatExtraInputs','VAT_QS']);
 const gift=load('ReportGift.jsx',['mapAnswersToGift','giftAmount','giftPriorDedGiven']);
 const inh=load('ReportInheritance.jsx',['mapAnswersToInheritance','inhChildCount','inhPriorGiftDropped']);
 const plain=x=>JSON.parse(JSON.stringify(x));
+
+// Render the real VAT component at its sales step: zero must reach the existing
+// purchase/export inputs, while blank or invalid sales must not advance.
+function vatSalesNextDisabled(salesAmount) {
+ const values=[3,{businessType:'일반과세자',isCorporate:'no',periodType:'1기_확정',salesAmount},false,null,null];
+ let hook=0;
+ const env=vm.createContext({window:{},Number,Math,String,Object,
+  React:{useState:()=>[values[hook++],()=>{}],useEffect(){},createElement:(type,props,...children)=>({type,props:props||{},children})},
+  JTReportShell:'shell',JTNumericInput:'input'});
+ const source=fs.readFileSync(path.join(__dirname,'src/ReportVat.jsx'),'utf8');
+ vm.runInContext(require('esbuild').transformSync(source,{loader:'jsx'}).code+'\nglobalThis.tree=JTReportVat({onBack(){}});',env);
+ const walk=n=>!n||typeof n!=='object'?[]:[n,...(n.children||[]).flat(Infinity).flatMap(walk)];
+ const next=walk(env.tree).find(n=>n.type==='button'&&n.children.includes('다음 →'));
+ assert(next,'sales step must render a Next button');
+ return next.props.disabled;
+}
+test('VAT zero sales reaches purchase and export inputs',()=>assert.equal(vatSalesNextDisabled('0'),false));
+test('VAT positive sales still advances',()=>assert.equal(vatSalesNextDisabled('100000000'),false));
+test('VAT blank and invalid sales do not advance',()=>{for(const value of ['',undefined,'-1','0.5','NaN'])assert.equal(vatSalesNextDisabled(value),true);});
 test('empty extras preserve old requests',()=>{assert.deepEqual(plain(inc.incomeExtraInputs({})),{});assert.deepEqual(plain(vat.vatExtraInputs({businessType:'일반과세자'})),{});});
 test('mixed domestic dividend explicit zero allowed',()=>{const a={dividendIncome:'30000000',dividendType:'mixed_grossup',grossupEligible:'0'};assert.equal(inc.incomeExtraInputs(a).grossup_eligible_dividend,0);assert.equal(inc.incFallbackGaps(a,{}).length,0);});
 test('mixed domestic missing and excessive blocked',()=>{for(const n of ['',undefined,'30000001','-1','0.5'])assert.throws(()=>inc.incomeExtraInputs({dividendIncome:30000000,dividendType:'mixed_grossup',grossupEligible:n}));});
