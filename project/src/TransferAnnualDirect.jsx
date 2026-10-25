@@ -85,7 +85,7 @@ function JTTransferAnnualDirect({onBack}) {
   };
   const won=v=>v.toLocaleString('ko-KR')+'원';
   return <div className="jt-container"><JTReportShell title="양도세 연간 합산·정산" subtitle="여러 양도와 기신고·실제 납부 내역" onBack={onBack} tag="CONSULTING">
-    <p>2026년 국내 거주자의 일반 토지·상가·비조정지역 주택을 같은 연도로 묶은 2~20건을 지원합니다. 주택은 매 양도 시 2주택 이상·2년 이상 보유한 일반 매매만 가능합니다. 1주택 비과세·특례·중과·지분·분할취득은 지원하지 않습니다. 혼합 거래에서 장기보유공제에 원 미만 금액이 생기면 중간 절사 근거 확인을 위해 차단합니다. 자료명은 확인한 신고서·계약서·납부영수증의 식별명이며, 자동 증빙 인증을 뜻하지 않습니다.</p>
+    <p>2026년 국내 거주자의 일반 토지·상가·비조정지역 주택을 같은 연도로 묶은 2~20건을 지원합니다. 주택은 매 양도 시 2주택 이상·2년 이상 보유한 일반 매매만 가능합니다. 1주택 비과세·특례·중과·지분·분할취득은 지원하지 않습니다. 혼합 거래의 원 미만 장기보유공제는 중간 절사 근거 확인 전까지 차단합니다. 다만 장기보유공제 전 순차익부터 연간 기본공제 이내이면 과세표준·본세 0원만 확인하고, 미확정 중간값은 표시하지 않습니다. 자료명은 확인한 신고서·계약서·납부영수증의 식별명이며, 자동 증빙 인증을 뜻하지 않습니다.</p>
     <form onSubmit={submit}>{field('year','귀속연도')}{field('taxpayer','납세자 식별명 (주민등록번호 입력 금지)')}{field('source','연간 거래·자격·지방세율 검토 자료명')}
     {d.assets.map((r,index)=><fieldset key={r._id}><legend>{index+1}번 양도</legend>
       <label>재산 종류<select data-testid={'annual-asset-'+r._id+'-type'} value={r.type} onChange={e=>edit(r._id,'type',e.target.value)}><option>토지</option><option>상가</option><option>주택</option></select></label>
