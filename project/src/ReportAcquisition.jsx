@@ -798,7 +798,122 @@ function JTAcqOrdinanceCard({ region }) {
 }
 window.JTAcqOrdinanceCard = JTAcqOrdinanceCard;
 
+/* Existing direct API contracts only; no new tax formula or common-fact defaults. */
+function mapAcqBasisInputs(a) {
+  if (!['original_actual', 'original_standard', 'land_purchase'].includes(a.mode)) throw new Error('계산할 취득 유형을 선택해 주세요.');
+  const day = String(a.date || '');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !Number.isFinite(Date.parse(day)) || new Date(day).toISOString().slice(0, 10) !== day) throw new Error('실제 취득일을 정확히 입력해 주세요.');
+  if (a.scopeConfirmed !== true) throw new Error('물건·취득 원인과 중과·감면·특례 제외 조건을 확인해 주세요.');
+  if (a.basisConfirmed !== true) throw new Error('선택한 가격 기준의 확인 사항을 확인해 주세요.');
+  const raw = a.mode === 'original_standard' ? a.standardValue : a.actualValue;
+  const amount = Number(raw);
+  if (raw == null || String(raw).trim() === '' || !Number.isSafeInteger(amount) || amount <= 0) throw new Error('선택한 기준의 가액을 양수 정수 원으로 입력해 주세요.');
+  if (a.mode === 'land_purchase') return {
+    acquisition_type: '유상취득', property_type: '토지', is_housing: false,
+    property_value: amount, acquisition_date: day,
+  };
+  if (!['상가사무실', '주택', '오피스텔_주거용', '오피스텔_업무용'].includes(a.propertyType)) throw new Error('신축 건축물의 종류를 선택해 주세요.');
+  if (!['individual', 'corporate'].includes(a.owner)) throw new Error('취득 명의를 확인해 주세요.');
+  const body = {
+    acquisition_type: '원시취득', property_type: a.propertyType, is_housing: a.propertyType === '주택',
+    is_corporate: a.owner === 'corporate', acquisition_date: day, property_value: amount,
+  };
+  if (body.is_housing) {
+    const area = Number(a.area);
+    if (!Number.isFinite(area) || area <= 0) throw new Error('주택 전체 전용면적을 입력해 주세요.');
+    body.exclusive_area = area;
+  }
+  if (a.mode === 'original_standard') {
+    if (a.owner !== 'individual') throw new Error('가격 확인 불가 시 시가표준액 선택은 비법인 건축만 지원합니다.');
+    if (!day.startsWith('2026-')) throw new Error('이 시가표준액 선택 경로는 2026년 취득만 지원합니다.');
+    body.property_value = 0;
+    body.standard_value = amount;
+    body.original_tax_base_context = 'noncorporate_building_construction_unverifiable';
+  }
+  return body;
+}
+
+function JTAcqBasisInputs({ onBack }) {
+  const [a, setA] = React.useState({mode: '', date: '', owner: '', propertyType: ''});
+  const [result, setResult] = React.useState(null);
+  const [error, setError] = React.useState('');
+  const [busy, setBusy] = React.useState(false);
+  const alive = React.useRef(true);
+  React.useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+  const change = (key, value) => {
+    setA(old => {
+      if (key === 'mode') return {mode: value, date: old.date, owner: '', propertyType: ''};
+      return {...old, [key]: value, ...(['owner', 'propertyType'].includes(key) ? {scopeConfirmed: false, basisConfirmed: false} : {})};
+    });
+    setResult(null); setError('');
+  };
+  const run = async e => {
+    e.preventDefault(); if (busy) return;
+    setResult(null); setError('');
+    let body;
+    try { body = mapAcqBasisInputs(a); } catch (err) { setError(err.message); return; }
+    setBusy(true);
+    try {
+      const calc = acqCalcFromEngine(await callAcqEngine(body));
+      if (!alive.current) return;
+      if (calc.precise) setResult(calc);
+      else setError(calc.engineState === 'refused'
+        ? '이 취득일·물건·조건 조합은 지원 범위 밖이거나 추가 확인이 필요합니다. 세액을 표시하지 않습니다.'
+        : '계산 엔진에 연결하지 못했습니다. 입력을 유지했으니 다시 계산해 주세요.');
+    } catch (err) {
+      if (alive.current) setError(acqCalcFromEngineError(err).engineState === 'refused'
+        ? '입력 조건을 확인해 주세요. 계산 엔진이 이 요청을 받아들이지 않았습니다.'
+        : '계산 엔진에 연결하지 못했습니다. 다시 계산해 주세요.');
+    } finally { if (alive.current) setBusy(false); }
+  };
+  const standard = a.mode === 'original_standard';
+  const land = a.mode === 'land_purchase';
+  const won = n => Number(n).toLocaleString('ko-KR') + '원';
+  return <div className="jt-container"><JTReportShell title="취득일·과세표준 확인 계산" subtitle="확인한 취득일과 가격 기준으로 계산합니다." tag="LIVE" onBack={busy ? () => {} : onBack}>
+    <p>일반 토지 매매와 건축물 신축의 기존 지원 범위를 계산합니다. 지분·증축·개수·부담부증여·특수관계인 거래는 이 화면에서 계산하지 않습니다.</p>
+    <form onSubmit={run}><fieldset disabled={busy} style={{border: 0, padding: 0, margin: 0}}>
+      <div style={{display: 'grid', gap: 16}}>
+        <label>계산할 취득 유형<select className="jt-report-q__input" value={a.mode} onChange={e => change('mode', e.target.value)}>
+          <option value="">선택해 주세요</option><option value="original_actual">건축물 신축 — 사실상취득가격 확인</option>
+          <option value="original_standard">건축물 신축 — 가격 확인 불가·시가표준액</option><option value="land_purchase">일반 비농지 토지 — 개인 매매</option>
+        </select></label>
+        <label>실제 취득일 (YYYY-MM-DD)<input className="jt-report-q__input" type="text" placeholder="예: 2026-10-21" maxLength={10} value={a.date} onChange={e => change('date', e.target.value)}/></label>
+        <p style={{margin: 0}}>취득일을 현재 날짜로 대신하지 않습니다. 지원하지 않는 과거·미래 시점은 세액 없이 안내합니다.</p>
+        {a.mode && !land && <>
+          <label>신축 건축물 종류<select className="jt-report-q__input" value={a.propertyType} onChange={e => change('propertyType', e.target.value)}>
+            <option value="">선택해 주세요</option><option value="상가사무실">일반 건물·상가·사무실</option><option value="주택">주택</option>
+            <option value="오피스텔_주거용">오피스텔 — 주거용</option><option value="오피스텔_업무용">오피스텔 — 업무용</option>
+          </select></label>
+          <label>취득 명의<select className="jt-report-q__input" value={a.owner} onChange={e => change('owner', e.target.value)}>
+            <option value="">선택해 주세요</option><option value="individual">개인 (비법인)</option><option value="corporate">법인</option>
+          </select></label>
+          {a.propertyType === '주택' && <label>주택 전체 전용면적 (㎡)<input className="jt-report-q__input" type="text" inputMode="decimal" value={a.area || ''} onChange={e => change('area', e.target.value)}/></label>}
+        </>}
+        {a.mode && <>
+          <label>{standard ? '건축물분 시가표준액 (토지 제외, 원)' : '확인한 사실상취득가격 (원)'}<JTNumericInput className="jt-report-q__input" money type="text" inputMode="numeric" value={(standard ? a.standardValue : a.actualValue) || ''} onChange={e => change(standard ? 'standardValue' : 'actualValue', e.target.value)}/></label>
+          <label><input type="checkbox" checked={a.basisConfirmed === true} onChange={e => change('basisConfirmed', e.target.checked)}/>{standard
+            ? '사실상취득가격을 확인할 수 없는 비법인의 건축이며, 입력액은 토지를 제외한 건축물분 시가표준액임을 확인했습니다.'
+            : '증빙으로 확인한 사실상취득가격이며, 산입할 비용을 반영한 금액입니다.'}</label>
+          <label><input type="checkbox" checked={a.scopeConfirmed === true} onChange={e => change('scopeConfirmed', e.target.checked)}/>{land
+            ? '개인 간 일반 비농지 토지 전체 매매이며, 특수관계·중과·감면·특례가 없는 거래입니다.'
+            : '건축물 전체를 새로 지은 원시취득이며, 증축·개수·정비사업·고급주택 등 중과·감면·특례 대상이 아닙니다.'}</label>
+        </>}
+        <button className="jt-btn jt-btn--primary" type="submit">{busy ? '계산 중…' : '취득세 계산'}</button>
+      </div>
+    </fieldset></form>
+    {error && <p role="alert">{error}</p>}
+    {result && <section aria-label="취득세 계산 결과" className="jt-report-result__section">
+      <h2>취득세 계산 결과</h2><p>입력 취득일: {a.date} · 입력한 사실관계를 기준으로 한 추정이며 증빙 진위를 자동 확인하지 않습니다.</p>
+      <table className="jt-report-calc"><tbody>{[['과세표준',result.taxBase],['취득세',result.acqTax],['지방교육세',result.eduTax],['농어촌특별세',result.farmTax],['총 납부세액',result.totalTax]].map(([label,value]) => <tr key={label}><th>{label}</th><td>{won(value)}</td></tr>)}</tbody></table>
+      {result.deadline && <p>일반 신고기한: {result.deadline} — 조기 등기신청 등 실제 신고 조건은 별도로 확인하세요.</p>}
+      {(result.engineWarnings || []).map((w,i) => <p key={i}>{window.jtEngineMessageForDisplay(w)}</p>)}
+      <h3>계산 과정</h3><table className="jt-report-calc"><tbody>{result.steps.map((s,i) => <tr key={i}><th>{s.항목}{s.비고 && <small style={{display:'block',fontWeight:400}}>{window.jtEngineMessageForDisplay(s.비고)}</small>}</th><td>{acqFormatStepValue(s.항목,s.금액,s.비고)}</td></tr>)}</tbody></table>
+    </section>}
+  </JTReportShell></div>;
+}
+
 function JTReportAcquisition({ setRoute, onBack }) {
+  const [basisInputs, setBasisInputs] = useAcqState(false);
   const [step, setStep] = useAcqState(0);
   /* ★ 260921 R2: 상태에 담기는 것은 «원본 답»이고(setAns 는 병합만 한다), 화면·매퍼·차단
      검사가 보는 것은 정규화를 거친 답이다. 이름을 answers 로 둬서 «이 컴포넌트 안에서는
@@ -1010,6 +1125,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
     if (phase === 'detail') { setPhase('quick'); setStep(0); setReport(quickReport); return; }
     onBack();
   };
+
+  if (basisInputs) return <JTAcqBasisInputs onBack={() => setBasisInputs(false)}/>;
 
   if (loading) {
     return (
@@ -1232,6 +1349,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <JTReportShell title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+        <button className="jt-btn jt-btn--ghost" onClick={() => setBasisInputs(true)}>취득일·신축 과세표준 확인 계산 →</button>
         {err && <p role="alert">{err}</p>}
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
