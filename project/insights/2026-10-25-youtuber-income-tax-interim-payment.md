@@ -75,6 +75,8 @@ heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건�
 
 <div><a class="jt-simple-cta" href="https://pf.kakao.com/_CcxlJG">중간예납 확인과 기장 상담</a></div>
 
+중간예납이 낯설다면 [블로그: 종합소득세 중간예납, 유튜버도 11월에 내나요?](https://blog.naver.com/jt_tax/224453017756)에서 자주 묻는 질문부터 확인해 보세요.
+
 ## 근거와 적용 범위
 
 2026년 10월 25일 기준 소득세법 제65조·제76조·제86조, 같은 법 시행령 제123조·제124조·제125조 및 시행규칙 제64조를 확인했습니다. [국세청 중간예납추계액 신고 안내](https://s.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7675&mi=2238)도 함께 참고했습니다.
