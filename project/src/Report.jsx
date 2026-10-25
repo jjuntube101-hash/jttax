@@ -442,8 +442,9 @@ const JT_PRIVACY_NOTE = window.JT_PRIVACY_NOTE = {
 
 function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag, dataFlow }) {
   // P2-2: 로딩·결과 화면은 stepIdx=stepTotal을 넘겨 진행률 100% 초과·"Step N+1/N"이 되던 것 클램프(0~100%)
-  const _tot = Math.max(1, stepTotal || 0);
-  const _stepNo = Math.max(0, Math.min(stepIdx + 1, _tot));
+  const hasSteps = Number.isInteger(stepIdx) && Number.isInteger(stepTotal) && stepTotal > 0;
+  const _tot = hasSteps ? stepTotal : 1;
+  const _stepNo = Math.max(0, Math.min((hasSteps ? stepIdx : 0) + 1, _tot));
   const pct = Math.max(0, Math.min(100, Math.round((_stepNo / _tot) * 100)));
   return (
     <div className="jt-report-shell">
@@ -451,10 +452,10 @@ function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, 
         <button className="jt-report-shell__back" onClick={onBack}>← 세금 계산기</button>
         <div className="jt-report-shell__meta">
           <span className="jt-tag">{tag}</span>
-          <span>Step {_stepNo} / {_tot}</span>
+          {hasSteps && <span>Step {_stepNo} / {_tot}</span>}
         </div>
       </div>
-      <div className="jt-report-shell__bar"><div style={{width: `${pct}%`}} /></div>
+      {hasSteps && <div className="jt-report-shell__bar"><div style={{width: `${pct}%`}} /></div>}
       <div className="jt-report-shell__title">
         <h1>{title}</h1>
         <p>{subtitle}</p>

@@ -67,6 +67,16 @@ function annualDirectValid(c) {
   return ['연간본세','확정신고산식상잔액'].every(key=>c[key].total===c[key].national+c[key].local)&&c['납부대사'].total_remaining_principal===c['납부대사'].national.remaining_principal+c['납부대사'].local.remaining_principal;
 }
 
+function annualStepAmount(value) {
+  if (Number.isSafeInteger(value)) return value.toLocaleString('ko-KR')+'원';
+  if (value && typeof value==='object' && /^-?\d+$/.test(value.numerator) && /^\d+$/.test(value.denominator)) {
+    const n=BigInt(value.numerator),d=BigInt(value.denominator);
+    if(d>0n)return n%d===0n?(n/d).toLocaleString('ko-KR')+'원':n.toLocaleString('ko-KR')+' / '+d.toLocaleString('ko-KR')+'원 (정확분수)';
+  }
+  return '금액 확인 필요';
+}
+const ANNUAL_STEP_LABELS={positive_income:'양수 소득 합계',loss_total:'차손 합계',loss_absorbed:'통산한 차손',unabsorbed_loss:'통산하지 못한 차손',transfer_income:'차손 통산 후 소득',basic_deduction:'연간 기본공제',tax_base_exact:'원 단위 처리 전 과세표준',tax_base:'과세표준',calculated_tax_exact:'징수금 끝수 처리 전 국세',calculated_local_tax_exact:'징수금 끝수 처리 전 지방소득세',national_tax:'국세',local_tax:'지방소득세',total_tax:'본세 합계'};
+
 function JTTransferAnnualDirect({onBack,initialDraft}) {
   const blank=id=>({_id:id,type:'토지',ref:'',source:'',acquired:'',sold:'',sale:'',cost:'',expense:''});
   const clearChecks=x=>Object.fromEntries(Object.entries(x).map(([k,v])=>[k,k.endsWith('Confirmed')?false:v]));
@@ -120,13 +130,13 @@ function JTTransferAnnualDirect({onBack,initialDraft}) {
     {check('assessmentsConfirmed','예정신고 산출세액 내역을 빠짐없이 포함했습니다.')}{check('noCorrectionConfirmed','결정·경정·수시부과 내역이 없습니다.')}{check('noOtherCreditsConfirmed','다른 세액공제·조정 내역이 없습니다.')}{check('paymentsConfirmed','입력한 실제 납부액은 위 예정신고분에만 대응합니다.')}{check('noOffsetsConfirmed','환급·충당·기타 납부 내역이 없습니다.')}
     <p>입력을 바꾸면 기존 결과와 관련 확인을 해제합니다. 자료를 다시 확인한 뒤 재계산하세요.</p><button type="submit" className="jt-btn jt-btn--primary" disabled={busy}>{busy?'계산 중…':'연간 합산·정산 계산'}</button></form>
     {error&&<p role="alert">{error}</p>}
-    {result&&<section data-testid="annual-direct-result"><h3>연간 본세와 남은 납부액</h3><table className="jt-report-calc"><thead><tr><th>구분</th><th>국세</th><th>지방세</th></tr></thead><tbody>
-      <tr><th>연간 본세</th>{['national','local'].map(k=><td key={k}>{won(result['연간본세'][k])}</td>)}</tr>
-      {[['prior_assessed','기신고 산출세액'],['actual_paid','실제 납부액'],['prior_unpaid','기존 신고분 미납 본세'],['additional_return_due','확정신고 추가 납부 본세'],['remaining_principal','미납분 포함 남은 본세']].map(([key,label])=><tr key={key}><th>{label}</th>{['national','local'].map(k=><td key={k}>{won(result['납부대사'][k][key])}</td>)}</tr>)}
+    {result&&<section data-testid="annual-direct-result"><h3>연간 본세와 남은 납부액</h3><table className="jt-report-calc"><thead><tr><th style={{width:"40%"}}>구분</th><th style={{width:"30%",textAlign:"right",paddingLeft:12}}>국세</th><th style={{width:"30%",textAlign:"right",paddingLeft:12}}>지방세</th></tr></thead><tbody>
+      <tr><th style={{width:"40%"}}>연간 본세</th>{['national','local'].map(k=><td key={k} style={{paddingLeft:12,overflowWrap:"anywhere"}}>{won(result['연간본세'][k])}</td>)}</tr>
+      {[['prior_assessed','기신고 산출세액'],['actual_paid','실제 납부액'],['prior_unpaid','기존 신고분 미납 본세'],['additional_return_due','확정신고 추가 납부 본세'],['remaining_principal','미납분 포함 남은 본세']].map(([key,label])=><tr key={key}><th style={{width:"40%"}}>{label}</th>{['national','local'].map(k=><td key={k} style={{paddingLeft:12,overflowWrap:"anywhere"}}>{won(result['납부대사'][k][key])}</td>)}</tr>)}
     </tbody></table><p>남은 본세 합계: <strong>{won(result['납부대사'].total_remaining_principal)}</strong></p><p>{result['납부대사'].notice}</p>
     {(result['원본연간계산']['경고사항']||[]).map((s,i)=><p key={i}>{s}</p>)}
     {(result['원본연간계산']['원본결과']?.share_normalizations||[]).map(r=><p key={r.property_id}>재산 {r.property_id} 양도 지분 {r.numerator}/{r.denominator}: 귀속 양도가액 {won(r.attributed.transfer_price)}, 취득가액 {won(r.attributed.acquisition_price)}, 필요경비 {won(r.attributed.expenses_total)}</p>)}
-    <h3>연간 계산 과정</h3><table className="jt-report-calc"><tbody>{(result['원본연간계산']['단계별계산']||[]).map((s,i)=><tr key={i}><th>{s['항목']||s['단계']}</th><td>{typeof s['금액']==='number'?won(s['금액']):String(s['금액']??'')}</td></tr>)}</tbody></table></section>}
+    <h3>연간 계산 과정</h3><table className="jt-report-calc"><tbody>{(result['원본연간계산']['단계별계산']||[]).map((s,i)=><tr key={i}><th>{ANNUAL_STEP_LABELS[s['항목']||s['단계']]||s['항목']||s['단계']}</th><td>{annualStepAmount(s['금액'])}</td></tr>)}</tbody></table></section>}
   </JTReportShell></div>;
 }
 window.JTTransferAnnualDirect=JTTransferAnnualDirect;

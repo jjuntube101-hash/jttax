@@ -1,7 +1,7 @@
 const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict'),esbuild=require('esbuild');
 const src=fs.readFileSync(path.join(__dirname,'src/TransferAnnualDirect.jsx'),'utf8');
 const env=vm.createContext({React:{},window:{},Date,Number,String,Object,JSON,Set});
-vm.runInContext(esbuild.transformSync(src,{loader:'jsx'}).code+'\nglobalThis.api={annualDirectRequest,annualDirectValid}',env);
+vm.runInContext(esbuild.transformSync(src,{loader:'jsx'}).code+'\nglobalThis.api={annualDirectRequest,annualDirectValid,annualStepAmount}',env);
 const draft={year:'2026',taxpayer:'SYNTH-NH-ANNUAL',source:'synthetic-annual-review',residentConfirmed:true,scopeConfirmed:true,localConfirmed:true,assessmentsConfirmed:true,noCorrectionConfirmed:true,noOtherCreditsConfirmed:true,paymentsConfirmed:true,noOffsetsConfirmed:true,nationalAssessed:'20000000',localAssessed:'2000000',nationalPaid:'15000000',localPaid:'1500000',nationalAssessmentSource:'synthetic-national-return',localAssessmentSource:'synthetic-local-return',nationalPaymentSource:'synthetic-national-receipt',localPaymentSource:'synthetic-local-receipt',assets:[{_id:1,ref:'A',source:'synthetic-A',type:'토지',acquired:'2020-01-01',sold:'2026-10-19',sale:'500000000',cost:'300000000',expense:'10000000',ordinaryConfirmed:true,adjustedConfirmed:true,noSpecialConfirmed:true,businessConfirmed:true},{_id:2,ref:'B',source:'synthetic-B',type:'상가',acquired:'2019-01-01',sold:'2026-10-20',sale:'400000000',cost:'250000000',expense:'5000000',ordinaryConfirmed:true,adjustedConfirmed:true,noSpecialConfirmed:true}]};
 const clone=x=>JSON.parse(JSON.stringify(x));let checks=0;
 function test(name,fn){fn();checks++;console.log('PASS '+name);}
@@ -18,3 +18,13 @@ const third=clone(draft);third.assets.push({...third.assets[0],_id:3,ref:'C',acq
 const fixtures={draft,requests:{original:request(draft),changed:request(changed),third:request(third),unpaid:request({...draft,nationalPaid:'0',localPaid:'0'}),paid:request({...draft,nationalPaid:'20000000',localPaid:'2000000'})}};
 if(process.env.ANNUAL_FIXTURE_OUT)fs.writeFileSync(process.env.ANNUAL_FIXTURE_OUT,JSON.stringify(fixtures,null,2));
 module.exports={draft,fixtures};console.log(`${checks} annual direct checks PASS`);
+
+for(const [value,expected] of [[0,'0원'],[-10,'-10원'],[{numerator:'150000000',denominator:'1'},'150,000,000원'],[{numerator:'2',denominator:'2'},'1원'],[{numerator:'1',denominator:'3'},'1 / 3원 (정확분수)'],[{numerator:'1',denominator:'0'},'금액 확인 필요'],[null,'금액 확인 필요']]) test('exact amount display '+JSON.stringify(value),()=>assert.equal(env.api.annualStepAmount(value),expected));
+const report=fs.readFileSync(path.join(__dirname,'src/Report.jsx'),'utf8');
+const shellSource=report.slice(report.indexOf('function JTReportShell('),report.indexOf('window.JTReportShell = JTReportShell;'));
+const shellEnv=vm.createContext({React:{createElement:(tag,props,...children)=>({tag,props,children})},JT_PRIVACY_NOTE:{engine:'privacy'}});
+vm.runInContext(esbuild.transformSync(shellSource,{loader:'jsx'}).code+';globalThis.shell=JTReportShell',shellEnv);
+function textOf(node){return node==null||typeof node==='boolean'?'':typeof node==='object'?(node.children||[]).map(textOf).join(''):String(node);}
+test('direct form hides undefined progress',()=>{const out=JSON.stringify(shellEnv.shell({}));assert(!out.includes('NaN'));assert(!out.includes('Step '));assert(!out.includes('jt-report-shell__bar'));});
+test('wizard progress remains visible and clamped',()=>{assert(textOf(shellEnv.shell({stepIdx:1,stepTotal:3})).includes('Step 2 / 3'));assert(textOf(shellEnv.shell({stepIdx:3,stepTotal:3})).includes('Step 3 / 3'));});
+console.log(`${checks} annual direct and display checks PASS`);
