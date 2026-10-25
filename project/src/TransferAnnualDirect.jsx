@@ -8,16 +8,28 @@ function annualDirectRequest(d) {
   const taxpayer=ref(d.taxpayer,'납세자 식별명',100),source=ref(d.source,'연간 검토 자료명');
   confirm(d.residentConfirmed,'국내 거주자');confirm(d.scopeConfirmed,'전체 거래의 누락·중복 없음');confirm(d.localConfirmed,'지방 표준세율');
   if(!Array.isArray(d.assets)||d.assets.length<2||d.assets.length>20)throw new Error('서로 다른 재산의 양도 2~20건을 입력해 주세요.');
+  const housing=d.assets.every(r=>r.type==='주택');
+  if(!housing&&d.assets.some(r=>r.type==='주택'))throw new Error('주택과 토지·상가 혼합 합산은 아직 지원하지 않습니다. 전체 거래 확인을 해제하고 별도 검토해 주세요.');
+  const transfers=[];
   const facts={schema_version:1,source_id:source,parties:[{party_ref:taxpayer,source_id:source,role:'taxpayer',person_type:'individual',resident:true}],assets:[],events:[],amounts:[],expenses:[],valuations:[],liabilities:[]},reviews=[],seen=new Set();
   for(const [i,r] of d.assets.entries()) {
     const name=(i+1)+'번 재산',id=ref(r.ref,name+' 식별명',100),proof=ref(r.source,name+' 증빙 자료명');
     if(seen.has(id))throw new Error('같은 재산 식별명을 중복 입력할 수 없습니다.');seen.add(id);
-    if(!['토지','상가'].includes(r.type))throw new Error('직접 정산은 일반 토지·상가만 지원합니다.');
+    if(!['토지','상가','주택'].includes(r.type))throw new Error('직접 정산은 일반 토지·상가만 지원합니다.');
     const acquired=date(r.acquired,name+' 취득일'),sold=date(r.sold,name+' 양도일');
     if(Number(sold.slice(0,4))!==year||acquired>sold)throw new Error('양도일은 귀속연도 내이며 취득일 이후여야 합니다.');
     const sale=money(r.sale,name+' 양도가액'),cost=money(r.cost,name+' 세무조정 후 취득가액'),expense=money(r.expense,name+' 필요경비');
     confirm(r.ordinaryConfirmed,name+' 전체지분·일반 매매');confirm(r.adjustedConfirmed,name+' 취득가 조정·공제 비용');confirm(r.noSpecialConfirmed,name+' 특례·중과 없음');
     if(r.type==='토지')confirm(r.businessConfirmed,name+' 사업용 토지');
+    if(housing) {
+      const count=money(r.housingCount,name+' 양도 당시 세대 주택 수');
+      if(count<2||count>1000)throw new Error('각 양도 당시 세대 주택 수 2~1000채만 지원합니다. 1주택·특례는 별도 검토가 필요합니다.');
+      if(r.regulated!=='no'||!['yes','no'].includes(r.acqRegulated))throw new Error('양도 당시 비조정지역 여부와 취득 당시 조정지역 여부를 확인해 주세요.');
+      const ad=new Date(acquired),sd=new Date(sold),years=sd.getUTCFullYear()-ad.getUTCFullYear()-((sold.slice(5)<acquired.slice(5))?1:0);
+      if(years<2)throw new Error('주택은 2년 이상 보유한 일반 매매만 지원합니다.');
+      confirm(r.housingOrdinaryConfirmed,name+' 주택 비과세·상속증여·이월과세·용도변경·조정 없음');
+      transfers.push({property_id:id,taxpayer_id:taxpayer,property_type:'주택',acquisition_date:acquired,transfer_date:sold,transfer_price:sale,acquisition_price:cost,expenses_total:expense,housing_count:count,is_regulated_area:false,regulated_at_acquisition:r.acqRegulated==='yes',ordinary_sale_confirmed:true});
+    }
     facts.assets.push({asset_ref:id,source_id:proof,property_type:r.type,whole_property_confirmed:true});
     facts.events.push({kind:'seller_acquisition',asset_ref:id,party_ref:taxpayer,occurred_on:acquired,source_id:proof},{kind:'seller_sale',asset_ref:id,party_ref:taxpayer,occurred_on:sold,source_id:proof});
     facts.amounts.push({asset_ref:id,purpose:'tax_adjusted_acquisition_cost',scope:'whole_property',amount_krw:cost,as_of:acquired,source_id:proof},{asset_ref:id,purpose:'sale_consideration',scope:'whole_property',amount_krw:sale,as_of:sold,source_id:proof});
@@ -27,7 +39,7 @@ function annualDirectRequest(d) {
   confirm(d.assessmentsConfirmed,'예정신고 산출세액 전부 포함');confirm(d.noCorrectionConfirmed,'결정·경정·수시부과 없음');confirm(d.noOtherCreditsConfirmed,'다른 세액공제·조정 없음');confirm(d.paymentsConfirmed,'해당 예정신고에 대한 실제 납부액');confirm(d.noOffsetsConfirmed,'환급·충당·기타 납부 없음');
   const national=money(d.nationalAssessed,'국세 기신고 산출세액'),local=money(d.localAssessed,'지방세 기신고 산출세액'),np=money(d.nationalPaid,'국세 실제 납부액'),lp=money(d.localPaid,'지방세 실제 납부액');
   if(np>national||lp>local)throw new Error('실제 납부액이 입력한 기신고 산출세액을 넘습니다. 초과납부·충당 등은 별도 검토가 필요합니다.');
-  return {annual_request:{schema_version:'transfer-annual-public/2',ai_consultation:true,common_facts:facts,consultation_context:{source_id:source,year,taxpayer_ref:taxpayer,all_annual_subject_transfers_included:true,annual_scope_source_id:source,local_standard_rate_confirmed:true,local_rate_source_id:source,asset_reviews:reviews}},settlement_context:{schema_version:'transfer-annual-prior-assessed/1',source_id:source,taxpayer_id:taxpayer,year,national_prior_assessed_tax_krw:national,local_prior_assessed_tax_krw:local,national_source_id:ref(d.nationalAssessmentSource,'국세 신고서 자료명'),local_source_id:ref(d.localAssessmentSource,'지방세 신고서 자료명'),all_preliminary_return_assessments_included_confirmed:true,no_determination_correction_or_casual_assessment_confirmed:true,no_other_tax_credits_or_adjustments_confirmed:true},payment_context:{taxpayer_id:taxpayer,year,national_paid_krw:np,local_paid_krw:lp,national_source_id:ref(d.nationalPaymentSource,'국세 납부 자료명'),local_source_id:ref(d.localPaymentSource,'지방세 납부 자료명'),payments_against_listed_preliminary_assessments_only_confirmed:true,no_refunds_offsets_or_other_payments_confirmed:true}};
+  return {annual_request:housing?{schema_version:'transfer-annual-public/1',source_id:source,asset_source_ids:Object.fromEntries(d.assets.map(r=>[r.ref.trim(),r.source.trim()])),year,taxpayer_id:taxpayer,resident_confirmed:true,scope_confirmed:true,local_standard_rate_confirmed:true,transfers}:{schema_version:'transfer-annual-public/2',ai_consultation:true,common_facts:facts,consultation_context:{source_id:source,year,taxpayer_ref:taxpayer,all_annual_subject_transfers_included:true,annual_scope_source_id:source,local_standard_rate_confirmed:true,local_rate_source_id:source,asset_reviews:reviews}},settlement_context:{schema_version:'transfer-annual-prior-assessed/1',source_id:source,taxpayer_id:taxpayer,year,national_prior_assessed_tax_krw:national,local_prior_assessed_tax_krw:local,national_source_id:ref(d.nationalAssessmentSource,'국세 신고서 자료명'),local_source_id:ref(d.localAssessmentSource,'지방세 신고서 자료명'),all_preliminary_return_assessments_included_confirmed:true,no_determination_correction_or_casual_assessment_confirmed:true,no_other_tax_credits_or_adjustments_confirmed:true},payment_context:{taxpayer_id:taxpayer,year,national_paid_krw:np,local_paid_krw:lp,national_source_id:ref(d.nationalPaymentSource,'국세 납부 자료명'),local_source_id:ref(d.localPaymentSource,'지방세 납부 자료명'),payments_against_listed_preliminary_assessments_only_confirmed:true,no_refunds_offsets_or_other_payments_confirmed:true}};
 }
 
 function annualDirectValid(c) {
@@ -71,12 +83,17 @@ function JTTransferAnnualDirect({onBack}) {
   };
   const won=v=>v.toLocaleString('ko-KR')+'원';
   return <div className="jt-container"><JTReportShell title="양도세 연간 합산·정산" subtitle="여러 양도와 기신고·실제 납부 내역" onBack={onBack} tag="CONSULTING">
-    <p>2026년 국내 거주자의 서로 다른 일반 토지·상가 전체지분 양도 2~20건을 지원합니다. 주택·특례·중과·지분 및 분할취득은 이 직접 정산 화면의 지원 범위 밖입니다. 자료명은 확인한 신고서·계약서·납부영수증의 식별명이며, 자동 증빙 인증을 뜻하지 않습니다.</p>
+    <p>2026년 국내 거주자의 일반 토지·상가 묶음 또는 비조정지역 주택 묶음 2~20건을 지원합니다. 주택은 매 양도 시 2주택 이상·2년 이상 보유한 일반 매매만 가능합니다. 주택과 비주택 혼합·1주택 비과세·특례·중과·지분·분할취득은 지원하지 않습니다. 자료명은 확인한 신고서·계약서·납부영수증의 식별명이며, 자동 증빙 인증을 뜻하지 않습니다.</p>
     <form onSubmit={submit}>{field('year','귀속연도')}{field('taxpayer','납세자 식별명 (주민등록번호 입력 금지)')}{field('source','연간 거래·자격·지방세율 검토 자료명')}
     {d.assets.map((r,index)=><fieldset key={r._id}><legend>{index+1}번 양도</legend>
-      <label>재산 종류<select data-testid={'annual-asset-'+r._id+'-type'} value={r.type} onChange={e=>edit(r._id,'type',e.target.value)}><option>토지</option><option>상가</option></select></label>
+      <label>재산 종류<select data-testid={'annual-asset-'+r._id+'-type'} value={r.type} onChange={e=>edit(r._id,'type',e.target.value)}><option>토지</option><option>상가</option><option>주택</option></select></label>
       {[['ref','다른 재산과 구별되는 식별명','text'],['source','계약서·원가·경비·자격 증빙 자료명','text'],['acquired','취득일','date'],['sold','양도일','date'],['sale','양도가액 (원)','text'],['cost','세무조정 완료 취득가액 (원)','text'],['expense','공제 가능한 필요경비 (원, 없으면 0)','text']].map(([key,label,type])=><label key={key} style={{display:'block',margin:'8px 0'}}>{label}<input data-testid={'annual-asset-'+r._id+'-'+key} className="jt-report-q__input" type={type} value={r[key]??''} onChange={e=>edit(r._id,key,e.target.value)}/></label>)}
-      {[['ordinaryConfirmed','국내 등기 비주거 재산 전체지분의 일반 매매입니다.'],['adjustedConfirmed','취득가 세무조정과 공제 가능 경비를 확인했고 추가 조정이 없습니다.'],['noSpecialConfirmed','비과세·감면·이월과세·특례·비사업용 및 지정지역 중과가 없습니다.'],...(r.type==='토지'?[['businessConfirmed','사업용 토지임을 확인했습니다.']]:[])].map(([key,label])=><label key={key} style={{display:'block'}}><input data-testid={'annual-asset-'+r._id+'-'+key} type="checkbox" checked={r[key]===true} onChange={e=>edit(r._id,key,e.target.checked)}/> {label}</label>)}
+      {r.type==='주택'&&<div>
+        <label>이 양도 당시 세대 주택 수<input data-testid={'annual-asset-'+r._id+'-housingCount'} value={r.housingCount??''} onChange={e=>edit(r._id,'housingCount',e.target.value)}/></label>
+        {[['regulated','양도 당시 조정대상지역'],['acqRegulated','취득 당시 조정대상지역']].map(([key,label])=><label key={key}>{label}<select data-testid={'annual-asset-'+r._id+'-'+key} value={r[key]??''} onChange={e=>edit(r._id,key,e.target.value)}><option value="">확인 필요</option><option value="no">아니오</option><option value="yes">예</option></select></label>)}
+        <label><input type="checkbox" data-testid={'annual-asset-'+r._id+'-housingOrdinaryConfirmed'} checked={r.housingOrdinaryConfirmed===true} onChange={e=>edit(r._id,'housingOrdinaryConfirmed',e.target.checked)}/>비과세·감면·상속·증여·이월과세·용도변경·환산취득·감가상각 조정이 없는 주택 일반 매매입니다.</label>
+      </div>}
+      {[['ordinaryConfirmed','국내 등기 재산 전체지분의 일반 매매입니다.'],['adjustedConfirmed','취득가 세무조정과 공제 가능 경비를 확인했고 추가 조정이 없습니다.'],['noSpecialConfirmed','비과세·감면·이월과세·특례·비사업용 및 지정지역 중과가 없습니다.'],...(r.type==='토지'?[['businessConfirmed','사업용 토지임을 확인했습니다.']]:[])].map(([key,label])=><label key={key} style={{display:'block'}}><input data-testid={'annual-asset-'+r._id+'-'+key} type="checkbox" checked={r[key]===true} onChange={e=>edit(r._id,key,e.target.checked)}/> {label}</label>)}
       <button type="button" disabled={d.assets.length<=2} onClick={()=>change('assets',d.assets.filter(x=>x._id!==r._id))}>이 양도 삭제</button>
     </fieldset>)}
     <button type="button" disabled={d.assets.length>=20} onClick={()=>change('assets',[...d.assets,blank(nextId.current++)])}>양도 추가</button>
@@ -92,7 +109,7 @@ function JTTransferAnnualDirect({onBack}) {
       {[['prior_assessed','기신고 산출세액'],['actual_paid','실제 납부액'],['prior_unpaid','기존 신고분 미납 본세'],['additional_return_due','확정신고 추가 납부 본세'],['remaining_principal','미납분 포함 남은 본세']].map(([key,label])=><tr key={key}><th>{label}</th>{['national','local'].map(k=><td key={k}>{won(result['납부대사'][k][key])}</td>)}</tr>)}
     </tbody></table><p>남은 본세 합계: <strong>{won(result['납부대사'].total_remaining_principal)}</strong></p><p>{result['납부대사'].notice}</p>
     {(result['원본연간계산']['경고사항']||[]).map((s,i)=><p key={i}>{s}</p>)}
-    <h3>연간 계산 과정</h3><table className="jt-report-calc"><tbody>{(result['원본연간계산']['단계별계산']||[]).map((s,i)=><tr key={i}><th>{s['항목']}</th><td>{typeof s['금액']==='number'?won(s['금액']):String(s['금액']??'')}</td></tr>)}</tbody></table></section>}
+    <h3>연간 계산 과정</h3><table className="jt-report-calc"><tbody>{(result['원본연간계산']['단계별계산']||[]).map((s,i)=><tr key={i}><th>{s['항목']||s['단계']}</th><td>{typeof s['금액']==='number'?won(s['금액']):String(s['금액']??'')}</td></tr>)}</tbody></table></section>}
   </JTReportShell></div>;
 }
 window.JTTransferAnnualDirect=JTTransferAnnualDirect;
