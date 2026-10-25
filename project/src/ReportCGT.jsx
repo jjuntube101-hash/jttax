@@ -920,6 +920,7 @@ async function computeScenarios(answers) {
 
 function JTReportCGT({ setRoute, onBack }) {
   const [annualMode, setAnnualMode] = useCgtState(false);
+  const [annualDraft, setAnnualDraft] = useCgtState(null);
   const [step, setStep] = useCgtState(0);
   // 양도일은 세액을 크게 좌우(2026.5.10 다주택 중과 복원 전후) → 오늘 날짜로 미리 채워 명시
   const [answers, setAnswers] = useCgtState(() => ({ transferDate: isoDate(new Date()) }));
@@ -1275,7 +1276,7 @@ cautions 3개, saving_ideas 2~3개.`;
 
   // ===== 결과 =====
   /* 로딩을 결과보다 먼저 본다 — 차단 화면의 「다시 시도」 중에 옛 차단 화면이 남아 있지 않게 */
-  if (annualMode) return <JTTransferAnnualDirect onBack={()=>setAnnualMode(false)} />;
+  if (annualMode) return <JTTransferAnnualDirect initialDraft={annualDraft} onBack={draft=>{setAnnualDraft(draft);setAnnualMode(false);}} />;
 
   if (loading) {
     return (
@@ -1297,7 +1298,7 @@ cautions 3개, saving_ideas 2~3개.`;
         <p style={{maxWidth: 580, margin: '12px auto', lineHeight: 1.7, opacity: 0.85}}>{report.message}</p>
         <div style={{marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center'}}>
           <button className="jt-btn jt-btn--primary" onClick={() => { window.jtTrackCta && window.jtTrackCta('booking', 'report_cgt_result'); setRoute && setRoute('booking'); }}>상담 예약 <span className="jt-arrow">→</span></button>
-          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setStep(0); setAnswers({ transferDate: isoDate(new Date()) }); }}>다시 계산</button>
+          <button className="jt-btn jt-btn--ghost" data-testid="cgt-edit-result" onClick={() => { setReport(null); setErr(null); setStep(0); }}>입력 수정 후 다시 계산</button>
         </div>
       </div>
     );
@@ -1530,7 +1531,8 @@ cautions 3개, saving_ideas 2~3개.`;
         )}
 
         <div className="jt-report-result__foot">
-          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setStep(0); setAnswers({ transferDate: isoDate(new Date()) }); }}>다시 계산</button>
+          <button type="button" data-testid="result-open-annual" onClick={()=>setAnnualMode(true)}>여러 부동산 연간 합산·정산</button>
+          <button className="jt-btn jt-btn--ghost" data-testid="cgt-edit-result" onClick={() => { setReport(null); setErr(null); setStep(0); }}>입력 수정 후 다시 계산</button>
           <button className="jt-btn jt-btn--ghost" onClick={() => window.print()}>PDF / 인쇄</button>
         </div>
       </div>

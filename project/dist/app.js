@@ -3018,12 +3018,13 @@ function annualDirectValid(c) {
   }
   return ["\uC5F0\uAC04\uBCF8\uC138", "\uD655\uC815\uC2E0\uACE0\uC0B0\uC2DD\uC0C1\uC794\uC561"].every((key) => c[key].total === c[key].national + c[key].local) && c["\uB0A9\uBD80\uB300\uC0AC"].total_remaining_principal === c["\uB0A9\uBD80\uB300\uC0AC"].national.remaining_principal + c["\uB0A9\uBD80\uB300\uC0AC"].local.remaining_principal;
 }
-function JTTransferAnnualDirect({ onBack }) {
+function JTTransferAnnualDirect({ onBack, initialDraft }) {
   var _a;
   const blank = (id) => ({ _id: id, type: "\uD1A0\uC9C0", ref: "", source: "", acquired: "", sold: "", sale: "", cost: "", expense: "" });
-  const [d, setD] = React.useState(() => ({ year: "2026", assets: [blank(1), blank(2)] }));
+  const clearChecks = (x) => Object.fromEntries(Object.entries(x).map(([k, v]) => [k, k.endsWith("Confirmed") ? false : v]));
+  const [d, setD] = React.useState(() => initialDraft ? __spreadProps(__spreadValues({}, clearChecks(initialDraft)), { assets: initialDraft.assets.map(clearChecks) }) : { year: "2026", assets: [blank(1), blank(2)] });
   const [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
-  const seq = React.useRef(0), control = React.useRef(null), nextId = React.useRef(3);
+  const seq = React.useRef(0), control = React.useRef(null), nextId = React.useRef(Math.max(...d.assets.map((r) => r._id)) + 1);
   React.useEffect(() => () => {
     var _a2;
     seq.current++;
@@ -3086,7 +3087,7 @@ function JTTransferAnnualDirect({ onBack }) {
     }
   };
   const won = (v) => v.toLocaleString("ko-KR") + "\uC6D0";
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC591\uB3C4\uC138 \uC5F0\uAC04 \uD569\uC0B0\xB7\uC815\uC0B0", subtitle: "\uC5EC\uB7EC \uC591\uB3C4\uC640 \uAE30\uC2E0\uACE0\xB7\uC2E4\uC81C \uB0A9\uBD80 \uB0B4\uC5ED", onBack, tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uAD6D\uB0B4 \uAC70\uC8FC\uC790\uC758 \uC77C\uBC18 \uD1A0\uC9C0\xB7\uC0C1\uAC00\xB7\uBE44\uC870\uC815\uC9C0\uC5ED \uC8FC\uD0DD\uC744 \uAC19\uC740 \uC5F0\uB3C4\uB85C \uBB36\uC740 2~20\uAC74\uC744 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC8FC\uD0DD\uC740 \uB9E4 \uC591\uB3C4 \uC2DC 2\uC8FC\uD0DD \uC774\uC0C1\xB72\uB144 \uC774\uC0C1 \uBCF4\uC720\uD55C \uC77C\uBC18 \uB9E4\uB9E4\uB9CC \uAC00\uB2A5\uD569\uB2C8\uB2E4. \uD1A0\uC9C0\xB7\uC0C1\uAC00 \uC9C0\uBD84\uC740 \uC804\uCCB4 \uAE08\uC561\uACFC \uC2E4\uC81C \uADC0\uC18D\uC561\uC758 \uBE44\uB840 \uAD00\uACC4\uB97C \uD655\uC778\uD55C \uACBD\uC6B0 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. 1\uC8FC\uD0DD \uBE44\uACFC\uC138\xB7\uD2B9\uB840\xB7\uC911\uACFC\xB7\uC8FC\uD0DD \uC9C0\uBD84\xB7\uBD84\uD560\uCDE8\uB4DD\uC740 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uD63C\uD569 \uAC70\uB798\uC758 \uC6D0 \uBBF8\uB9CC \uC7A5\uAE30\uBCF4\uC720\uACF5\uC81C\uB294 \uC911\uAC04 \uC808\uC0AC \uADFC\uAC70 \uD655\uC778 \uC804\uAE4C\uC9C0 \uCC28\uB2E8\uD569\uB2C8\uB2E4. \uB2E4\uB9CC \uC7A5\uAE30\uBCF4\uC720\uACF5\uC81C \uC804 \uC21C\uCC28\uC775\uBD80\uD130 \uC5F0\uAC04 \uAE30\uBCF8\uACF5\uC81C \uC774\uB0B4\uC774\uBA74 \uACFC\uC138\uD45C\uC900\xB7\uBCF8\uC138 0\uC6D0\uB9CC \uD655\uC778\uD558\uACE0, \uBBF8\uD655\uC815 \uC911\uAC04\uAC12\uC740 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC790\uB8CC\uBA85\uC740 \uD655\uC778\uD55C \uC2E0\uACE0\uC11C\xB7\uACC4\uC57D\uC11C\xB7\uB0A9\uBD80\uC601\uC218\uC99D\uC758 \uC2DD\uBCC4\uBA85\uC774\uBA70, \uC790\uB3D9 \uC99D\uBE59 \uC778\uC99D\uC744 \uB73B\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, field("year", "\uADC0\uC18D\uC5F0\uB3C4"), field("taxpayer", "\uB0A9\uC138\uC790 \uC2DD\uBCC4\uBA85 (\uC8FC\uBBFC\uB4F1\uB85D\uBC88\uD638 \uC785\uB825 \uAE08\uC9C0)"), field("source", "\uC5F0\uAC04 \uAC70\uB798\xB7\uC790\uACA9\xB7\uC9C0\uBC29\uC138\uC728 \uAC80\uD1A0 \uC790\uB8CC\uBA85"), d.assets.map((r, index) => {
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC591\uB3C4\uC138 \uC5F0\uAC04 \uD569\uC0B0\xB7\uC815\uC0B0", subtitle: "\uC5EC\uB7EC \uC591\uB3C4\uC640 \uAE30\uC2E0\uACE0\xB7\uC2E4\uC81C \uB0A9\uBD80 \uB0B4\uC5ED", onBack: () => onBack(d), tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uAD6D\uB0B4 \uAC70\uC8FC\uC790\uC758 \uC77C\uBC18 \uD1A0\uC9C0\xB7\uC0C1\uAC00\xB7\uBE44\uC870\uC815\uC9C0\uC5ED \uC8FC\uD0DD\uC744 \uAC19\uC740 \uC5F0\uB3C4\uB85C \uBB36\uC740 2~20\uAC74\uC744 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC8FC\uD0DD\uC740 \uB9E4 \uC591\uB3C4 \uC2DC 2\uC8FC\uD0DD \uC774\uC0C1\xB72\uB144 \uC774\uC0C1 \uBCF4\uC720\uD55C \uC77C\uBC18 \uB9E4\uB9E4\uB9CC \uAC00\uB2A5\uD569\uB2C8\uB2E4. \uD1A0\uC9C0\xB7\uC0C1\uAC00 \uC9C0\uBD84\uC740 \uC804\uCCB4 \uAE08\uC561\uACFC \uC2E4\uC81C \uADC0\uC18D\uC561\uC758 \uBE44\uB840 \uAD00\uACC4\uB97C \uD655\uC778\uD55C \uACBD\uC6B0 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. 1\uC8FC\uD0DD \uBE44\uACFC\uC138\xB7\uD2B9\uB840\xB7\uC911\uACFC\xB7\uC8FC\uD0DD \uC9C0\uBD84\xB7\uBD84\uD560\uCDE8\uB4DD\uC740 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uD63C\uD569 \uAC70\uB798\uC758 \uC6D0 \uBBF8\uB9CC \uC7A5\uAE30\uBCF4\uC720\uACF5\uC81C\uB294 \uC911\uAC04 \uC808\uC0AC \uADFC\uAC70 \uD655\uC778 \uC804\uAE4C\uC9C0 \uCC28\uB2E8\uD569\uB2C8\uB2E4. \uB2E4\uB9CC \uC7A5\uAE30\uBCF4\uC720\uACF5\uC81C \uC804 \uC21C\uCC28\uC775\uBD80\uD130 \uC5F0\uAC04 \uAE30\uBCF8\uACF5\uC81C \uC774\uB0B4\uC774\uBA74 \uACFC\uC138\uD45C\uC900\xB7\uBCF8\uC138 0\uC6D0\uB9CC \uD655\uC778\uD558\uACE0, \uBBF8\uD655\uC815 \uC911\uAC04\uAC12\uC740 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC790\uB8CC\uBA85\uC740 \uD655\uC778\uD55C \uC2E0\uACE0\uC11C\xB7\uACC4\uC57D\uC11C\xB7\uB0A9\uBD80\uC601\uC218\uC99D\uC758 \uC2DD\uBCC4\uBA85\uC774\uBA70, \uC790\uB3D9 \uC99D\uBE59 \uC778\uC99D\uC744 \uB73B\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, field("year", "\uADC0\uC18D\uC5F0\uB3C4"), field("taxpayer", "\uB0A9\uC138\uC790 \uC2DD\uBCC4\uBA85 (\uC8FC\uBBFC\uB4F1\uB85D\uBC88\uD638 \uC785\uB825 \uAE08\uC9C0)"), field("source", "\uC5F0\uAC04 \uAC70\uB798\xB7\uC790\uACA9\xB7\uC9C0\uBC29\uC138\uC728 \uAC80\uD1A0 \uC790\uB8CC\uBA85"), d.assets.map((r, index) => {
     var _a2;
     return /* @__PURE__ */ React.createElement("fieldset", { key: r._id }, /* @__PURE__ */ React.createElement("legend", null, index + 1, "\uBC88 \uC591\uB3C4"), /* @__PURE__ */ React.createElement("label", null, "\uC7AC\uC0B0 \uC885\uB958", /* @__PURE__ */ React.createElement("select", { "data-testid": "annual-asset-" + r._id + "-type", value: r.type, onChange: (e) => edit(r._id, "type", e.target.value) }, /* @__PURE__ */ React.createElement("option", null, "\uD1A0\uC9C0"), /* @__PURE__ */ React.createElement("option", null, "\uC0C1\uAC00"), /* @__PURE__ */ React.createElement("option", null, "\uC8FC\uD0DD"))), [["ref", "\uB2E4\uB978 \uC7AC\uC0B0\uACFC \uAD6C\uBCC4\uB418\uB294 \uC2DD\uBCC4\uBA85", "text"], ["source", "\uACC4\uC57D\uC11C\xB7\uC6D0\uAC00\xB7\uACBD\uBE44\xB7\uC790\uACA9 \uC99D\uBE59 \uC790\uB8CC\uBA85", "text"], ["acquired", "\uCDE8\uB4DD\uC77C", "date"], ["sold", "\uC591\uB3C4\uC77C", "date"], ["sale", "\uC591\uB3C4\uAC00\uC561 (\uC6D0)", "text"], ["cost", "\uC138\uBB34\uC870\uC815 \uC644\uB8CC \uCDE8\uB4DD\uAC00\uC561 (\uC6D0)", "text"], ["expense", "\uACF5\uC81C \uAC00\uB2A5\uD55C \uD544\uC694\uACBD\uBE44 (\uC6D0, \uC5C6\uC73C\uBA74 0)", "text"]].map(([key, label, type]) => {
       var _a3;
@@ -3934,6 +3935,7 @@ async function computeScenarios(answers) {
 }
 function JTReportCGT({ setRoute, onBack }) {
   const [annualMode, setAnnualMode] = useCgtState(false);
+  const [annualDraft, setAnnualDraft] = useCgtState(null);
   const [step, setStep] = useCgtState(0);
   const [answers, setAnswers] = useCgtState(() => ({ transferDate: isoDate(/* @__PURE__ */ new Date()) }));
   const [loading, setLoading] = useCgtState(false);
@@ -4230,7 +4232,10 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
   const goPrev = () => {
     step === 0 ? onBack() : setStep((s) => s - 1);
   };
-  if (annualMode) return /* @__PURE__ */ React.createElement(JTTransferAnnualDirect, { onBack: () => setAnnualMode(false) });
+  if (annualMode) return /* @__PURE__ */ React.createElement(JTTransferAnnualDirect, { initialDraft: annualDraft, onBack: (draft) => {
+    setAnnualDraft(draft);
+    setAnnualMode(false);
+  } });
   if (loading) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), /* @__PURE__ */ React.createElement("h2", null, "\uC138\uC561\uC744 \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uBCF8\uC138\uC728 \xB7 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C \xB7 \uC9C0\uBC29\uC18C\uB4DD\uC138\uB97C \uBC18\uC601\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { className: "jt-report-loading__privacy", style: { fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 } }, (window.JT_PRIVACY_NOTE || {})["engine"] || (window.JT_PRIVACY_NOTE || {}).engine));
   }
@@ -4238,11 +4243,11 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-loading" }, /* @__PURE__ */ React.createElement("h2", null, report.title), /* @__PURE__ */ React.createElement("p", { style: { maxWidth: 580, margin: "12px auto", lineHeight: 1.7, opacity: 0.85 } }, report.message), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 24, display: "flex", gap: 12, justifyContent: "center" } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => {
       window.jtTrackCta && window.jtTrackCta("booking", "report_cgt_result");
       setRoute && setRoute("booking");
-    } }, "\uC0C1\uB2F4 \uC608\uC57D ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192")), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+    } }, "\uC0C1\uB2F4 \uC608\uC57D ", /* @__PURE__ */ React.createElement("span", { className: "jt-arrow" }, "\u2192")), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", "data-testid": "cgt-edit-result", onClick: () => {
       setReport(null);
+      setErr(null);
       setStep(0);
-      setAnswers({ transferDate: isoDate(/* @__PURE__ */ new Date()) });
-    } }, "\uB2E4\uC2DC \uACC4\uC0B0")));
+    } }, "\uC785\uB825 \uC218\uC815 \uD6C4 \uB2E4\uC2DC \uACC4\uC0B0")));
   }
   if (report) {
     const { calc, commentary } = report;
@@ -4287,11 +4292,11 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
         kakaoSummary: buildKakaoSummary(answers, calc),
         urgent: false
       }
-    ), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__foot" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+    ), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "result-open-annual", onClick: () => setAnnualMode(true) }, "\uC5EC\uB7EC \uBD80\uB3D9\uC0B0 \uC5F0\uAC04 \uD569\uC0B0\xB7\uC815\uC0B0"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", "data-testid": "cgt-edit-result", onClick: () => {
       setReport(null);
+      setErr(null);
       setStep(0);
-      setAnswers({ transferDate: isoDate(/* @__PURE__ */ new Date()) });
-    } }, "\uB2E4\uC2DC \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => window.print() }, "PDF / \uC778\uC1C4")));
+    } }, "\uC785\uB825 \uC218\uC815 \uD6C4 \uB2E4\uC2DC \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => window.print() }, "PDF / \uC778\uC1C4")));
   }
   if (err) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-loading" }, /* @__PURE__ */ React.createElement("h2", null, "\uC77C\uC2DC\uC801\uC778 \uC624\uB958\uC785\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("p", null, err), /* @__PURE__ */ React.createElement("p", { className: "jt-report-loading__privacy", style: { fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 } }, (window.JT_PRIVACY_NOTE || {})["engine"] || (window.JT_PRIVACY_NOTE || {}).engine), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 24, display: "flex", gap: 12, justifyContent: "center" } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => {

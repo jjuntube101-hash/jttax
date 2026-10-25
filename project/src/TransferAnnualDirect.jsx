@@ -67,11 +67,12 @@ function annualDirectValid(c) {
   return ['연간본세','확정신고산식상잔액'].every(key=>c[key].total===c[key].national+c[key].local)&&c['납부대사'].total_remaining_principal===c['납부대사'].national.remaining_principal+c['납부대사'].local.remaining_principal;
 }
 
-function JTTransferAnnualDirect({onBack}) {
+function JTTransferAnnualDirect({onBack,initialDraft}) {
   const blank=id=>({_id:id,type:'토지',ref:'',source:'',acquired:'',sold:'',sale:'',cost:'',expense:''});
-  const [d,setD]=React.useState(()=>({year:'2026',assets:[blank(1),blank(2)]}));
+  const clearChecks=x=>Object.fromEntries(Object.entries(x).map(([k,v])=>[k,k.endsWith('Confirmed')?false:v]));
+  const [d,setD]=React.useState(()=>initialDraft?{...clearChecks(initialDraft),assets:initialDraft.assets.map(clearChecks)}:{year:'2026',assets:[blank(1),blank(2)]});
   const [result,setResult]=React.useState(null),[error,setError]=React.useState(''),[busy,setBusy]=React.useState(false);
-  const seq=React.useRef(0),control=React.useRef(null),nextId=React.useRef(3);
+  const seq=React.useRef(0),control=React.useRef(null),nextId=React.useRef(Math.max(...d.assets.map(r=>r._id))+1);
   React.useEffect(()=>()=>{seq.current++;control.current?.abort();},[]);
   const invalidate=()=>{seq.current++;control.current?.abort();setResult(null);setError('');setBusy(false);};
   const resetChecks=x=>Object.fromEntries(Object.entries(x).map(([k,v])=>[k,k.endsWith('Confirmed')?false:v]));
@@ -93,7 +94,7 @@ function JTTransferAnnualDirect({onBack}) {
     } catch(e){if(current===seq.current)setError(e.name==='AbortError'?'계산 응답 시간이 초과됐습니다. 다시 계산해 주세요.':e.message);}finally{clearTimeout(timer);if(current===seq.current)setBusy(false);}
   };
   const won=v=>v.toLocaleString('ko-KR')+'원';
-  return <div className="jt-container"><JTReportShell title="양도세 연간 합산·정산" subtitle="여러 양도와 기신고·실제 납부 내역" onBack={onBack} tag="CONSULTING">
+  return <div className="jt-container"><JTReportShell title="양도세 연간 합산·정산" subtitle="여러 양도와 기신고·실제 납부 내역" onBack={()=>onBack(d)} tag="CONSULTING">
     <p>2026년 국내 거주자의 일반 토지·상가·비조정지역 주택을 같은 연도로 묶은 2~20건을 지원합니다. 주택은 매 양도 시 2주택 이상·2년 이상 보유한 일반 매매만 가능합니다. 토지·상가 지분은 전체 금액과 실제 귀속액의 비례 관계를 확인한 경우 지원합니다. 1주택 비과세·특례·중과·주택 지분·분할취득은 지원하지 않습니다. 혼합 거래의 원 미만 장기보유공제는 중간 절사 근거 확인 전까지 차단합니다. 다만 장기보유공제 전 순차익부터 연간 기본공제 이내이면 과세표준·본세 0원만 확인하고, 미확정 중간값은 표시하지 않습니다. 자료명은 확인한 신고서·계약서·납부영수증의 식별명이며, 자동 증빙 인증을 뜻하지 않습니다.</p>
     <form onSubmit={submit}>{field('year','귀속연도')}{field('taxpayer','납세자 식별명 (주민등록번호 입력 금지)')}{field('source','연간 거래·자격·지방세율 검토 자료명')}
     {d.assets.map((r,index)=><fieldset key={r._id}><legend>{index+1}번 양도</legend>
