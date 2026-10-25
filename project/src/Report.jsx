@@ -396,6 +396,8 @@ if (typeof window !== 'undefined' && !window.jtValidCalc) {
   window.jtValidCalc = function (c, requiredKeys) {
     if (!c || typeof c !== 'object' || Array.isArray(c)) return false;
     if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return false;
+    // A refusal remains a refusal even when a partial response includes numeric fields.
+    if (Object.prototype.hasOwnProperty.call(c, '상태') && c['상태'] !== 'ok') return false;
     const keys = (requiredKeys && requiredKeys.length) ? requiredKeys : ['총세부담'];
     return keys.every(function (k) {
       const v = c[k];

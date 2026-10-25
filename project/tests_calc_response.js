@@ -87,6 +87,9 @@ for (const [file, fixture] of cases) {
     for (const c of [null, {}, [], { 오류: '계산 실패' }, { ...fixture, 오류: '계산 실패' }, { ...fixture, success: false }]) {
       check(accepts({ c }), false, file + ': error/incomplete');
     }
+    for (const status of ['needs_input','unsupported','error','',null,'OK',true]) {
+      check(accepts({c:{...fixture,상태:status}}),false,file+': non-ok status with numeric fields '+status);
+    }
     // Each predicate may require a subset (gift and burdened gift share a file).
     for (const [key, value] of Object.entries(fixture)) {
       if (typeof value !== 'number') continue;
@@ -267,8 +270,19 @@ const compareExpr = compareSrc.match(/const allValid = ([\s\S]*?);\r?\n/)[1];
 const compareFixture = { 시나리오별: Object.fromEntries(['증여','매매','상속'].map(k => [k, { 총세부담: 100, 증여세: 40, 양도세: 0, 상속세: 0, 취득세: 60 }])) };
 const acceptCompare = c => vm.runInNewContext(compareExpr, { c, scv: c && c['시나리오별'], window: { jtValidCalc: valid } });
 check(acceptCompare(compareFixture), true, 'valid three-way comparison');
+for(const status of ['needs_input','unsupported','error']) {
+ for(const key of ['증여','매매','상속'])check(acceptCompare({시나리오별:{...compareFixture['시나리오별'],[key]:{...compareFixture['시나리오별'][key],상태:status}}}),false,'child status '+key);
+}
 check(acceptCompare({ ...compareFixture, 오류: '일부 실패' }), false, 'outer comparison failure');
 for (const key of ['증여','매매','상속']) {
   check(acceptCompare({ 시나리오별: { ...compareFixture['시나리오별'], [key]: { ...compareFixture['시나리오별'][key], 총세부담: Infinity } } }), false, 'comparison nonfinite ' + key);
 }
 console.log(`OK calc response: ${checks} checks across 13 calculators (gift includes burdened-gift; transfer·acquisition: 엔진 상태 키·세 갈래)`);
+
+for(const file of ['ReportIncome.jsx','ReportVat.jsx']) {
+ const source=read(file),ast=parser.parse(source,{sourceType:'script',plugins:['jsx']});let expression;
+ walk(ast,n=>{if(n.type==='AssignmentExpression'&&source.slice(n.left.start,n.left.end)==='calc.engineReason')expression=source.slice(n.right.start,n.right.end);});
+ assert(expression,file+' reason expression exists');
+ for(const status of ['needs_input','unsupported'])assert.equal(vm.runInNewContext(expression,{c:{상태:status,오류:'확인된 입력 누락 사유'},window:{jtEngineMessageForDisplay:s=>s}}),'확인된 입력 누락 사유');
+}
+console.log('income/VAT refusal reason forwarding PASS');

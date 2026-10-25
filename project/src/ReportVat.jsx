@@ -302,7 +302,7 @@ function JTReportVat({ setRoute, onBack }) {
           calc.engineVer = j.version && j.version.engine;
           // §69 간이과세자 납부의무 면제. 수정 260628(VAT-R2-03): 프론트 독자 판정 제거 — 엔진 납부세액 0 신호로만 면제 라벨(§64 재고납부세액이 있으면 netTax>0 → 면제 제외·실액 표시, §69① 단서 준수).
           calc.simplifiedExempt = (calc.netTax === 0 && answers.businessType === '간이과세자' && clamp(answers.supplyPrice) > 0 && clamp(answers.supplyPrice) < 48000000);
-        } else if(c) { calc.engineReason = ['needs_input','unsupported'].includes(c['상태']) ? window.jtEngineMessageForDisplay(c['메시지'] || c['사유'] || '입력 요건 또는 지원 범위를 확인해 주세요.') : ''; }
+        } else if(c) { calc.engineReason = ['needs_input','unsupported'].includes(c['상태']) ? window.jtEngineMessageForDisplay(c['오류'] || c['메시지'] || c['사유'] || '입력 요건 또는 지원 범위를 확인해 주세요.') : ''; }
       } catch (e) { console.warn('부가세 엔진 연결 실패', e); calc.engineErr = true; }
 
       setReport({ calc });

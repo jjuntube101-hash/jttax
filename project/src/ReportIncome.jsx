@@ -336,7 +336,7 @@ function JTReportIncome({ setRoute, onBack }) {
           calc.engineWarnings = c['경고사항'] || [];
           calc.precise = true;
           calc.engineVer = j.version && j.version.engine;
-        } else if (c) { calc.engineReason = ['needs_input','unsupported'].includes(c['상태']) ? window.jtEngineMessageForDisplay(c['메시지'] || c['사유'] || '입력 요건 또는 지원 범위를 확인해 주세요.') : ''; calc.engineErr = true; console.warn('종소세 엔진 응답 무결성 실패', c); }
+        } else if (c) { calc.engineReason = ['needs_input','unsupported'].includes(c['상태']) ? window.jtEngineMessageForDisplay(c['오류'] || c['메시지'] || c['사유'] || '입력 요건 또는 지원 범위를 확인해 주세요.') : ''; calc.engineErr = true; console.warn('종소세 엔진 응답 무결성 실패', c); }
       } catch (e) { console.warn('종소세 엔진 연결 실패', e); calc.engineErr = true; }
 
       const rep = { calc, quick: (targetPhase || phase) === 'quick' };

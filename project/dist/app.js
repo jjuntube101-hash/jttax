@@ -2057,6 +2057,7 @@ if (typeof window !== "undefined" && !window.jtValidCalc) {
   window.jtValidCalc = function(c, requiredKeys) {
     if (!c || typeof c !== "object" || Array.isArray(c)) return false;
     if (c["\uC624\uB958"] || c.error || c.errors || c.detail || c.success === false) return false;
+    if (Object.prototype.hasOwnProperty.call(c, "\uC0C1\uD0DC") && c["\uC0C1\uD0DC"] !== "ok") return false;
     const keys = requiredKeys && requiredKeys.length ? requiredKeys : ["\uCD1D\uC138\uBD80\uB2F4"];
     return keys.every(function(k) {
       const v = c[k];
@@ -6558,7 +6559,7 @@ function JTReportIncome({ setRoute, onBack }) {
           calc.precise = true;
           calc.engineVer = j.version && j.version.engine;
         } else if (c) {
-          calc.engineReason = ["needs_input", "unsupported"].includes(c["\uC0C1\uD0DC"]) ? window.jtEngineMessageForDisplay(c["\uBA54\uC2DC\uC9C0"] || c["\uC0AC\uC720"] || "\uC785\uB825 \uC694\uAC74 \uB610\uB294 \uC9C0\uC6D0 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.") : "";
+          calc.engineReason = ["needs_input", "unsupported"].includes(c["\uC0C1\uD0DC"]) ? window.jtEngineMessageForDisplay(c["\uC624\uB958"] || c["\uBA54\uC2DC\uC9C0"] || c["\uC0AC\uC720"] || "\uC785\uB825 \uC694\uAC74 \uB610\uB294 \uC9C0\uC6D0 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.") : "";
           calc.engineErr = true;
           console.warn("\uC885\uC18C\uC138 \uC5D4\uC9C4 \uC751\uB2F5 \uBB34\uACB0\uC131 \uC2E4\uD328", c);
         }
@@ -17350,7 +17351,7 @@ function JTReportVat({ setRoute, onBack }) {
           calc.engineVer = j.version && j.version.engine;
           calc.simplifiedExempt = calc.netTax === 0 && answers.businessType === "\uAC04\uC774\uACFC\uC138\uC790" && clamp(answers.supplyPrice) > 0 && clamp(answers.supplyPrice) < 48e6;
         } else if (c) {
-          calc.engineReason = ["needs_input", "unsupported"].includes(c["\uC0C1\uD0DC"]) ? window.jtEngineMessageForDisplay(c["\uBA54\uC2DC\uC9C0"] || c["\uC0AC\uC720"] || "\uC785\uB825 \uC694\uAC74 \uB610\uB294 \uC9C0\uC6D0 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.") : "";
+          calc.engineReason = ["needs_input", "unsupported"].includes(c["\uC0C1\uD0DC"]) ? window.jtEngineMessageForDisplay(c["\uC624\uB958"] || c["\uBA54\uC2DC\uC9C0"] || c["\uC0AC\uC720"] || "\uC785\uB825 \uC694\uAC74 \uB610\uB294 \uC9C0\uC6D0 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.") : "";
         }
       } catch (e) {
         console.warn("\uBD80\uAC00\uC138 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328", e);
