@@ -1,0 +1,37 @@
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict'),esbuild=require('esbuild');
+function load(name,functions){const s=fs.readFileSync(path.join(__dirname,'src/Report'+name+'.jsx'),'utf8'),env=vm.createContext({React:{useState(){},createElement(){}},Date,Number,String,Object,Math,JSON,window:{jtLaw:(_k,v)=>v,jtFallbackGaps:r=>r.filter(x=>x.when).map(x=>x.why)}});vm.runInContext(esbuild.transformSync(s,{loader:'jsx'}).code+'\nglobalThis.api={'+functions.join(',')+'}',env);return env.api;}
+const inh=load('Inheritance',['mapAnswersToInheritance']),prop=load('Property',['mapAnswersToProperty','propFallbackGaps']),comp=load('Comprehensive',['mapAnswersToComprehensive','compFallbackGaps','COMP_QS']),cgt=load('CGT',['mapAnswersToTransfer','cgtReviewedPayload','CGT_QS']),acq=load('Acquisition',['mapAnswersToAcquisition','acqNormalizeAnswers']);
+let checks=0;const rows=[];const plain=x=>JSON.parse(JSON.stringify(x));function test(n,f){f();checks++;console.log('PASS '+n);}
+function add(name,endpoint,a,fn){rows.push({name,endpoint,answers:a,request:plain(fn(a))});}
+const ia={estateValue:2000000000,isResident:'yes',hasSpouse:'no',numChildren:'2',reinherit:'yes',reinheritYears:3,priorInheritanceTax:20000000,priorEstate:1000000000,reInherited:500000000};
+for(const years of [1,3,10])add('reinherit-'+years,'inheritance',{...ia,reinheritYears:years},inh.mapAnswersToInheritance);
+for(const key of ['reinheritYears','priorInheritanceTax','priorEstate','reInherited'])test('missing '+key,()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,[key]:''})));
+test('reinherit off drops stale fields',()=>assert.equal(inh.mapAnswersToInheritance({...ia,reinherit:'no'}).prior_estate_value,undefined));
+test('reinherit ratio over 100 blocked',()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,reInherited:1100000000})));
+const pa={propertyKind:'주택',standardValue:500000000,ownerType:'corporate',isOneHouse:'yes',priorYearStandardValue:'input',priorYearStandardValueAmount:450000000,housingTaxedBefore2024:'yes',priorYearTax:100000,priorYearUrbanTax:50000};
+add('property-corporate','property',pa,prop.mapAnswersToProperty);
+test('corporate house does not use personal single-home relief',()=>{const b=prop.mapAnswersToProperty(pa);assert.equal(b.owner_is_corporation,true);assert.notEqual(b.is_one_house,true);});
+test('corporate house retains prior-value requirement',()=>{assert.equal(prop.mapAnswersToProperty({...pa,priorYearStandardValue:''}),null);assert(prop.propFallbackGaps({...pa,priorYearStandardValue:''},{precise:true}).length);});
+test('switch to individual omits corporation',()=>assert.equal(prop.mapAnswersToProperty({...pa,ownerType:'person'}).owner_is_corporation,undefined));
+const ca={ownerType:'corporate',corporateType:'일반',corporateHouseCount:2,totalValue:2000000000,housingCount:'one',ownership:'joint',ownShare:50,ownerAge:75,holdingYears:20};
+for(const type of ['일반','공익법인_직접사용','공공주택사업자등','공익법인_기타'])add('comprehensive-'+type,'comprehensive',{...ca,corporateType:type},comp.mapAnswersToComprehensive);
+test('corporate ignores all stale personal relief',()=>{const b=comp.mapAnswersToComprehensive(ca);assert.equal(b.is_one_house,false);for(const k of ['ownership_share','owner_age','holding_years','one_house_exceptions'])assert.equal(b[k],undefined);assert.equal(comp.compFallbackGaps(ca,{precise:true}).length,0);});
+for(const patch of [{corporateType:''},{corporateHouseCount:''},{corporateHouseCount:1.5},{priorYearTotalTax:-1}])test('corporate missing/invalid facts',()=>{assert.equal(comp.mapAnswersToComprehensive({...ca,...patch}),null);assert(comp.compFallbackGaps({...ca,...patch},{precise:true}).length);});
+const ta={assetType:'commercial',nonHouseType:'land',landUse:'business',acquiredDate:'2015-01-01',transferDate:'2026-01-01',sold:800000000,acquired:123456,costMethod:'converted',expenses:10000000,reviewed:{convertedAcq:100000000,convertedTransfer:400000000,convertedExpense:'estimate',convertedAcqSource:'합성 취득 기준시가 증빙',convertedTransferSource:'합성 양도 기준시가 증빙',convertedNote:'합성 순차적용 불가 검토',convertedConfirmed:true}};
+for(const mode of ['estimate','actual'])add('converted-'+mode,'transfer',{...ta,expenses:mode==='actual'?400000000:10000000,nonHouseType:mode==='actual'?'commercial':'land',reviewed:{...ta.reviewed,convertedExpense:mode}},cgt.mapAnswersToTransfer);
+test('converted ignores stale actual acquisition price',()=>assert.equal(cgt.mapAnswersToTransfer(ta).acquisition_price,0));
+test('converted missing review blocked',()=>assert.throws(()=>cgt.mapAnswersToTransfer({...ta,reviewed:{...ta.reviewed,convertedConfirmed:false}})));
+test('converted off omits all basis fields',()=>assert.equal(cgt.mapAnswersToTransfer({...ta,costMethod:'actual'}).converted_context,undefined));
+test('converted skips actual price question',()=>assert.equal(cgt.CGT_QS.find(q=>q.id==='acquired').showIf(ta),false));
+test('converted missing source blocked',()=>assert.throws(()=>cgt.mapAnswersToTransfer({...ta,reviewed:{...ta.reviewed,convertedAcqSource:''}})));
+const aa={acquisitionType:'증여',propertyType:'상가사무실',propertyValue:100000000,giftBaseChoice:'standard',giftChoiceDate:'2026-06-01',giftWholeStandard:80000000,giftPartStandard:40000000};
+add('acquisition-standard','acquisition',aa,acq.mapAnswersToAcquisition);
+test('gift standard whole threshold enforced',()=>assert.throws(()=>acq.mapAnswersToAcquisition({...aa,giftWholeStandard:100000001})));
+test('gift standard type change removes stale election',()=>assert.equal(acq.mapAnswersToAcquisition({...aa,acquisitionType:'매매'}).gift_tax_base_choice,undefined));
+const share={acquisitionType:'매매',propertyType:'주택',propertyValue:400000000,exclusiveArea:84,acquirerType:'person',housingCount:1,isRegulatedArea:'no',wholeHouseValue:800000000};
+add('acquisition-share','acquisition',share,acq.mapAnswersToAcquisition);
+test('whole house cannot be below share consideration',()=>assert.throws(()=>acq.mapAnswersToAcquisition({...share,wholeHouseValue:300000000})));
+test('corporate hides stale personal questions and summaries',()=>{for(const id of ['housingCount','deemedOneHouse','secondValue','ownership','ownShare','ownerAge','holdingYears'])assert.equal(comp.COMP_QS.find(q=>q.id===id).showIf(ca),false);});
+test('gift date missing blocked',()=>assert.throws(()=>acq.mapAnswersToAcquisition({...aa,giftChoiceDate:''})));
+if(process.env.WEB_REMAINING_REQUESTS)fs.writeFileSync(process.env.WEB_REMAINING_REQUESTS,JSON.stringify(rows,null,2));
+console.log('PASS '+checks+' checks; '+rows.length+' mapped HTTP cases');

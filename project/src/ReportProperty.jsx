@@ -82,13 +82,14 @@ const PROP_QS = [
       ['골프장_고급오락장', '회원제 골프장·고급오락장용 건축물', '4%'],
     ],
   },
+  {"id": "ownerType", "section": "추가 계산 조건", "q": "주택의 소유자는 누구인가요?", "opts": [["person", "개인", ""], ["corporate", "법인", ""]], "tier": "quick", showIf:a=>a.propertyKind==='주택'},
   {
     id: 'isOneHouse',
     tier: 'quick',
     section: '1세대 1주택',
     q: '1세대가 가진 유일한 주택인가요?',
     sub: '1세대 1주택이면 낮은 공정시장가액비율(43~45%)이 적용됩니다 — 공시가격 9억원을 초과하는 1세대 1주택도 포함됩니다(지방세법 시행령 §109). 여기에 더해 공시 9억원 이하이면 특례세율(0.05~0.35%, 지방세법 §111의2)까지 적용돼 세금이 더 줄어듭니다. 다주택이면 일반 비율(60%)·일반세율(0.1~0.4%)입니다.',
-    showIf: (a) => a.propertyKind === '주택',
+    showIf: (a) => a.propertyKind === '주택' && a.ownerType !== 'corporate',
     opts: [
       ['yes', '네, 1세대 1주택', '공정비율·세율 특례'],
       ['no', '아니오 (다주택 등)', '일반 비율·세율'],
@@ -177,7 +178,8 @@ function mapAnswersToProperty(a) {
   if (category === '토지_분리과세') body.land_divided_type = a.landType === '분리전답' ? '전답과수원' : '기타분리';
   if (category === '주택') {
     // 1세대1주택 특례(§111의2)는 주택만
-    if (a.isOneHouse === 'yes') body.is_one_house = true;
+    if (a.ownerType === 'corporate') body.owner_is_corporation = true;
+    else if (a.isOneHouse === 'yes') body.is_one_house = true;
     // 과세표준상한(§110③) — 작년 공시가격을 짐작으로 채우지 않는다
     if (a.priorYearStandardValue === 'input') {
       const py = Number(a.priorYearStandardValueAmount);
@@ -853,6 +855,10 @@ function JTReportProperty({ setRoute, onBack }) {
         return;
       }
 
+      if(answers.ownerType==='corporate') {
+        const rep={calc,commentary:{headline:'확인한 법인 유형과 입력 사실에 따른 계산입니다.',cautions:[],saving_ideas:[],followup:['주택별 공시가격','법인 유형 확인 자료','전년도 고지서']},quick:phase==='quick'};
+        setReport(rep);if(phase==='quick')setQuickReport(rep);return;
+      }
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');

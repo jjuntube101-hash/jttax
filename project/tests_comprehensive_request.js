@@ -408,7 +408,7 @@ console.log('════ 문항 구조 ════');
   const ids = F.COMP_QS.map((q) => q.id);
   const dm = Q('deemedOneHouse'), sv = Q('secondValue'), age = Q('ownerAge'), hy = Q('holdingYears'), pyt = Q('priorYearTotalTax'), ptp = Q('propertyTaxPaid');
   ok(dm && sv && age && hy && pyt && ptp, '새 문항 여섯이 모두 있다');
-  eq(plain(F.COMP_QS.filter((q) => q.tier === 'quick').map((q) => q.id)), ['housingCount', 'totalValue'], '빠른 계산 단계는 그대로 — 주택 수·공시가격 합계 둘뿐');
+  eq(plain(F.COMP_QS.filter((q) => q.tier === 'quick').map((q) => q.id)), ['ownerType', 'corporateType', 'corporateHouseCount', 'housingCount', 'totalValue'], '빠른 계산 단계에 소유자·법인 유형·법인 주택 수 추가');
   eq([dm.tier, sv.tier, age.tier, hy.tier, pyt.tier, ptp.tier], [undefined, undefined, undefined, undefined, undefined, undefined], '새 문항은 모두 상세 단계');
   eq(plain(dm.opts.map((o) => o[0])), ['no', 'temp', 'inherit', 'rural', 'land', 'unknown'], '의제 문항 선택지 6개');
   eq(dm.q, '두 번째 주택 때문에 2주택이 됐지만 1세대 1주택자로 보는 경우인가요?', '의제 문항 문구');

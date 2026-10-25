@@ -69,7 +69,7 @@ function cgtTemp2Phrase(years) {
 
 /* Reviewed facts only: empty inputs never become zero or an eligibility confirmation. */
 function cgtReviewedPayload(a) {
-  const r = a.reviewed || {}, out = {};
+  const r = {...(a.reviewed || {}),convertedEnabled:a.assetType==='commercial' && a.costMethod==='converted'}, out = {};
   const cross = r.scope === 'mixed' && (r.parts || []).some(p=>p.kind==='대토보상') && (r.parts || []).some(p=>(p.kind || '').startsWith('수용'));
   const money = (v, label) => {
     if (!/^\d+$/.test(String(v == null ? '' : v)) || !Number.isSafeInteger(Number(v))) throw new Error(label + '을 원 단위 정수로 입력해 주세요.');
@@ -78,6 +78,19 @@ function cgtReviewedPayload(a) {
   const day = (v, label) => { if (!isValidISODate(v || '')) throw new Error(label + '을 확인해 주세요.'); return v; };
   const confirm = (v, label) => { if (v !== true) throw new Error(label + ' 확인이 필요합니다.'); return true; };
   if ((r.reliefEnabled || r.lateEnabled || r.giftEnabled) && (!isValidISODate(a.transferDate || '') || a.transferDate < '2022-01-01' || a.transferDate > '2026-12-31')) throw new Error('현재 지원하는 양도연도는 2022~2026년입니다.');
+  if(r.convertedEnabled) {
+    confirm(r.convertedConfirmed,'환산취득가 자격·단순 기준시가');
+    if(r.giftEnabled||r.reliefEnabled||r.lateEnabled)throw new Error('환산취득가는 이 화면의 증여·감면·가산세 입력과 함께 신청할 수 없습니다.');
+    if(a.assetType!=='commercial')throw new Error('이 화면의 환산취득가 연결은 일반 토지·상가에 한정됩니다.');
+    out.use_converted_price=true;
+    out.standard_price_at_acq=money(r.convertedAcq,'취득 시 기준시가');
+    out.standard_price_at_transfer=money(r.convertedTransfer,'양도 시 기준시가');
+    if(!out.standard_price_at_acq||!out.standard_price_at_transfer)throw new Error('기준시가는 양수여야 합니다.');
+    if(!['estimate','actual'].includes(r.convertedExpense))throw new Error('환산취득가 필요경비 방식을 선택해 주세요.');
+    out.converted_expense_method=r.convertedExpense;
+    for(const key of ['convertedAcqSource','convertedTransferSource','convertedNote'])if(!String(r[key]||'').trim()||String(r[key]).length>1000)throw new Error('기준시가 출처와 순차 적용 검토 내용을 입력해 주세요(각 1000자 이내).');
+    out.converted_context={actual_acquisition_status:'unavailable_reviewed',comparable_status:'unavailable_reviewed',appraisal_status:'unavailable_reviewed',basis:{acquisition_pre_first_publication:false,new_publication_during_holding:true,special_disposal:false,attribution_confirmed:true,simple_no_adjustment_confirmed:true,acquisition_source:r.convertedAcqSource,transfer_source:r.convertedTransferSource},review_note:r.convertedNote};
+  }
   if (r.giftEnabled) {
     out.is_gifted = true; out.is_deferred = true; out.donor_relationship = '배우자';
     out.gift_date = day(r.giftDate, '증여일');
@@ -164,6 +177,7 @@ function CGTReviewedInputs({value,onChange}) {
   const rowChange=(key,i,k,v)=>set(key,(r[key] || []).map((row,j)=>i===j?{...row,[k]:v}:row));
   return <div>
     <p>해당하는 항목만 켜세요. 금액은 원 단위이며, 모르는 사실은 확인으로 표시하지 마세요. 입력을 바꾸면 검토 확인이 해제됩니다.</p>
+    {r.convertedEnabled && <fieldset><legend>환산취득가 확인 자료</legend>{field('convertedAcq','취득 시 기준시가 (원)')}{field('convertedTransfer','양도 시 기준시가 (원)')}{select('convertedExpense','필요경비 방식',[['estimate','개산공제'],['actual','확인한 실제 필요경비 (기존 필요경비 입력칸 사용)']])}{['convertedAcqSource','convertedTransferSource','convertedNote'].map((key,i)=><label key={key} style={{display:'block'}}>{['취득 시 기준시가 출처','양도 시 기준시가 출처','실가·매매사례·감정가를 순서대로 적용할 수 없는 이유'][i]}<textarea value={r[key]||''} maxLength={1000} onChange={e=>set(key,e.target.value)}/></label>)}{check('convertedConfirmed','실가·매매사례·감정가 적용 불가를 검토했고, 최초고시 전 취득·특수처분이 없고 보유 중 신규고시가 있으며 기준시가의 귀속과 별도 조정 불필요를 확인했습니다')}</fieldset>}
     {check('giftEnabled','배우자에게 증여받은 자산의 이월과세 검토')}
     {r.giftEnabled && <fieldset><legend>배우자 증여 원자료</legend>{field('giftDate','증여일','date')}{field('donorDate','증여자의 원래 취득일','date')}{field('donorCost','증여자의 실제 취득가액 (원)')}{field('giftTax','해당 증여세 납부액 (원, 0원도 직접 입력)')}{check('giftConfirmed','배우자 관계·증빙·원가 완전성을 검토했습니다')}<p>연도·주택 수·보유기간·증여세액에 따라 지원 범위를 판단합니다.</p></fieldset>}
     {check('reliefEnabled','토지 양도소득세 감면 신청')}
@@ -240,11 +254,12 @@ const CGT_QS = [
     sub: '보유기간·장기보유특별공제·2년 비과세 요건을 정확히 계산합니다. 보통 잔금 치른 날(잔금일)을 입력하세요 — 등기를 더 먼저 했다면 등기접수일을 입력합니다. 숫자 8자리로 입력하면 자동 정리됩니다 (예: 20180315 → 2018-03-15).',
     date: true,
   },
+  {id:'costMethod',section:'취득가액 방식',q:'취득가액 계산 방식을 선택하세요.',showIf:a=>a.assetType==='commercial',opts:[['actual','실제 취득가액','증빙으로 확인한 금액'],['converted','환산취득가','실가·매매사례·감정가 적용 불가 검토 필요']]},
   {
-    id: 'acquired',
+    id: 'acquired', showIf:a=>!(a.assetType==='commercial'&&a.costMethod==='converted'),
     section: '취득 시 정보',
     q: '얼마에 취득했나요? (취득가 · 원)',
-    sub: '실제 산 가격을 입력하세요. 오래전 상속·증여로 받아 취득가를 모르면 「환산취득가」(양도가에 취득시점 기준시가 비율을 곱해 추정한 취득가, 소법 §97①1호나목)로 갈음할 수 있는데, 이 경우 아래 「필요경비」에 취득세·법무사비 등 실제 경비를 다시 넣지 마세요 — 환산취득가를 쓰면 경비가 개산공제로 갈음되어 별도 차감이 안 됩니다(소법 §97②2호). 환산 계산은 복잡하니 우선 아는 근사치를 넣고 상담으로 확정하세요. 숫자만 입력.',
+    sub: '증빙으로 확인한 실제 취득가액을 입력하세요. 일반 토지·상가에서 실가를 확인할 수 없으면 앞의 환산취득가 방식을 선택하고 검토 자료를 입력하세요.',
     numeric: true,
     placeholder: '예: 500,000,000',
   },
@@ -680,7 +695,7 @@ function mapAnswersToTransfer(answers) {
   const usesMoveIn = isHouseType || assetType === 'replacement';  // 거주: 주택·대체주택만 (입주권·분양권·비주택 무관)
   const body = {
     transfer_price: Number(answers.sold) || 0,
-    acquisition_price: Number(answers.acquired) || 0,
+    acquisition_price: answers.assetType==='commercial' && answers.costMethod==='converted' ? 0 : Number(answers.acquired) || 0,
     property_type: propertyType,
     transfer_date: transferDate,
     acquisition_date: acqDate,
@@ -758,7 +773,7 @@ function mapAnswersToTransfer(answers) {
     body.held_right_type = answers.houseConcurrentRight === 'occupancy' ? '입주권' : '분양권';
     if (answers.houseRightAcqDate) body.right_acquisition_date = answers.houseRightAcqDate;  // 일시적 1·3년 기산
   }
-  if (answers.reviewed) Object.assign(body, cgtReviewedPayload(answers));
+  if (answers.reviewed || answers.costMethod==='converted') Object.assign(body, cgtReviewedPayload(answers));
   return body;
 }
 
@@ -991,7 +1006,7 @@ function JTReportCGT({ setRoute, onBack }) {
         return;
       }
 
-      if (answers.reviewed && (answers.reviewed.reliefEnabled || answers.reviewed.lateEnabled || answers.reviewed.giftEnabled)) {
+      if (answers.reviewed && (answers.reviewed.reliefEnabled || answers.reviewed.lateEnabled || answers.reviewed.giftEnabled || answers.costMethod==='converted')) {
         setReport({calc, commentary:{headline:'입력한 검토 자료를 반영한 계산 결과입니다.',cautions:[],saving_ideas:[],followup:[]},quick:false});
         return;
       }
@@ -1554,7 +1569,7 @@ cautions 3개, saving_ideas 2~3개.`;
           <h2>{cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
-          {cur.reviewed && <><CGTReviewedInputs value={answers.reviewed} onChange={v=>setAns('reviewed',v)} />{reviewedIssue && <p role="alert" style={{color:'#a62323',marginTop:16}}>{reviewedIssue}</p>}</>}
+          {cur.reviewed && <><CGTReviewedInputs value={{...(answers.reviewed||{}),convertedEnabled:answers.assetType==='commercial'&&answers.costMethod==='converted'}} onChange={v=>setAns('reviewed',v)} />{reviewedIssue && <p role="alert" style={{color:'#a62323',marginTop:16}}>{reviewedIssue}</p>}</>}
           {cur.freeform && (
             <textarea
               className="jt-report-q__textarea"

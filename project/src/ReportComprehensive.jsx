@@ -25,8 +25,13 @@ function compIsDeemed(a) {
 }
 
 const COMP_QS = [
+  {"id": "ownerType", "section": "추가 계산 조건", "q": "주택의 소유자는 누구인가요?", "opts": [["person", "개인", ""], ["corporate", "법인", ""]], "tier": "quick", showIf:a=>true},
+  {"id": "corporateType", "section": "추가 계산 조건", "q": "검토한 종부세 법인 유형을 선택하세요", "opts": [["일반", "일반 법인", ""], ["공익법인_직접사용", "공익법인 직접사용 요건 확인", ""], ["공공주택사업자등", "공공주택사업자 등 요건 확인", ""], ["공익법인_기타", "그 밖의 공익법인 요건 확인", ""]], "tier": "quick", showIf:a=>a.ownerType==='corporate'},
+  {"id": "corporateHouseCount", "section": "추가 계산 조건", "q": "법인 세율 적용 주택 수 (정확한 채수)", "numeric": true, "money": false, "optional": false, "tier":"quick", showIf:a=>a.ownerType==='corporate'},
+
   {
     id: 'housingCount',
+    showIf: a => a.ownerType !== 'corporate',
     tier: 'quick',
     section: '주택 보유 현황',
     q: '본인 세대가 보유한 주택은 몇 채인가요?',
@@ -53,7 +58,7 @@ const COMP_QS = [
     section: '1세대 1주택 특례(의제)',
     q: '두 번째 주택 때문에 2주택이 됐지만 1세대 1주택자로 보는 경우인가요?',
     sub: '일시적 2주택, 상속주택, 지방 저가주택, 다른 주택의 부속토지만 가진 경우에는 2채여도 1세대 1주택자로 보아 공제(12억)와 세액공제를 적용합니다(종부세법 §8④). 어느 경우인지에 따라 세액이 크게 갈리므로, 모르시면 「모름」을 골라 주세요 — 금액 대신 세무사 확인을 안내합니다.',
-    showIf: (a) => a.housingCount === 'two',
+    showIf: (a) => a.ownerType !== 'corporate' && (a.housingCount === 'two'),
     opts: [
       ['no', '아니요 — 일반 2주택', '공제 9억 · 세액공제 없음'],
       ['temp', '일시적 2주택', '이사하려고 새 집을 산 뒤 3년 안'],
@@ -68,7 +73,7 @@ const COMP_QS = [
     section: '특례 대상 주택의 공시가격',
     q: '특례 대상 주택(일시적 2주택의 새 집·상속주택·지방 저가주택, 또는 부속토지)의 공시가격은 얼마인가요? (원)',
     sub: '앞서 입력한 합계에 들어 있는 금액입니다. 합계에서 이 금액을 뺀 나머지를 주된 주택으로 계산합니다. 이 특례는 올해 9월 16일~30일에 1세대 1주택자 특례 신청을 했거나 할 예정이어야 적용됩니다 — 신청 여부는 묻지 않고, 신청하는 것으로 보고 계산합니다.',
-    showIf: (a) => compIsDeemed(a),
+    showIf: (a) => a.ownerType !== 'corporate' && (compIsDeemed(a)),
     numeric: true, money: true,
     placeholder: '예: 600,000,000',
   },
@@ -78,7 +83,7 @@ const COMP_QS = [
     section: '나이 (세액공제)',
     q: '주택 소유자의 나이가 어떻게 되나요? (만 나이)',
     sub: '1세대 1주택자는 만 60세 이상이면 연령별 세액공제를 받습니다(60~65세 20%, 65~70세 30%, 70세 이상 40%, 종부세법 §9⑥). 아래 보유기간 공제와 합쳐 최대 80%까지 공제됩니다. 60세 미만이면 그대로 입력하세요. 나이를 모르면 「모름」을 눌러 주세요 — 연령 공제 없이 계산하고 알려 드립니다.',
-    showIf: (a) => a.housingCount === 'one' || compIsDeemed(a),
+    showIf: (a) => a.ownerType !== 'corporate' && (a.housingCount === 'one' || compIsDeemed(a)),
     numeric: true, unknownId: 'ownerAgeUnknown', min: 1, max: 120,
     placeholder: '예: 62',
   },
@@ -87,7 +92,7 @@ const COMP_QS = [
     section: '보유기간 (세액공제)',
     q: '그 주택을 몇 년 보유하셨나요?',
     sub: '1세대 1주택자는 5년 이상 보유하면 보유기간별 세액공제를 받습니다(5~10년 20%, 10~15년 40%, 15년 이상 50%, 종부세법 §9⑧). 위 연령 공제와 합쳐 최대 80%까지 공제됩니다. 5년 미만이면 그대로 입력하세요(1년 미만이면 0). 모르면 「모름」을 눌러 주세요 — 보유 공제 없이 계산하고 알려 드립니다.',
-    showIf: (a) => a.housingCount === 'one' || compIsDeemed(a),
+    showIf: (a) => a.ownerType !== 'corporate' && (a.housingCount === 'one' || compIsDeemed(a)),
     numeric: true, unknownId: 'holdingYearsUnknown', allowZero: true,
     placeholder: '예: 8',
   },
@@ -96,7 +101,7 @@ const COMP_QS = [
     section: '명의 (단독 / 부부 공동)',
     q: '이 주택의 명의는 어떻게 되어 있나요?',
     sub: '부부 공동명의 1주택은 부부가 각자 공제(각 9억, 합 18억)를 받아(종부세법 §8①) 단독명의(12억)보다 유리할 수 있습니다. 다만 1세대1주택 연령·보유 세액공제는 공동명의 1주택자 특례(§10의2) 신청 시 받을 수 있어, 둘 중 유리한 쪽을 자동 비교해 드립니다. 2채 특례(의제)인 경우의 부부 공동명의는 이 계산기가 지원하지 않아 세무사 확인을 안내합니다.',
-    showIf: (a) => a.housingCount === 'one' || compIsDeemed(a),
+    showIf: (a) => a.ownerType !== 'corporate' && (a.housingCount === 'one' || compIsDeemed(a)),
     opts: [
       ['single', '단독명의', '1세대1주택 공제 12억'],
       ['joint', '부부 공동명의', '각 9억(합 18억) vs 특례 12억 자동 비교'],
@@ -108,7 +113,7 @@ const COMP_QS = [
     q: '부부 공동명의 중 본인 지분율은 몇 %인가요?',
     /* 종전 「비워두면 50%로 봅니다」는 이제 거짓이다 — 비우면 계산하지 않는다 */
     sub: '본인이 가진 지분 비율입니다. 보통 50%이며, 나머지는 배우자 지분으로 계산합니다. 등기부등본의 「지분」란에 적혀 있어요. 비워 두시면 세액이 크게 갈려(50%면 65만원, 30%면 159만원) 금액 대신 안내를 드립니다.',
-    showIf: (a) => a.housingCount === 'one' && a.ownership === 'joint',
+    showIf: (a) => a.ownerType !== 'corporate' && (a.housingCount === 'one' && a.ownership === 'joint'),
     numeric: true, optional: true,
     placeholder: '예: 50',
   },
@@ -149,6 +154,13 @@ const COMP_QS = [
    ①층은 mapAnswersToComprehensive 가 null 을 돌려주는 입력과 «같은 규칙»이어야 한다(시험이 전수로 대조한다).
    ⚠️ 이 함수는 자기완결이어야 한다(tests_fallback_block.js 가 함수 본문만 꺼내 실행한다) — 다른 모듈 함수를 부르지 않는다. */
 function compFallbackGaps(answers, calc) {
+  if(answers.ownerType==='corporate') {
+    const n=Number(answers.corporateHouseCount),v=Number(answers.totalValue);
+    if(!['일반','공익법인_직접사용','공공주택사업자등','공익법인_기타'].includes(answers.corporateType)||!Number.isSafeInteger(n)||n<1||!Number.isSafeInteger(v)||v<0)return ['법인 유형·정확한 주택 수·공시가격을 확인해 주세요.'];
+    for(const key of ['propertyTaxPaid','priorYearTotalTax'])if(answers[key]!=null&&String(answers[key]).trim()!==''&&(!Number.isSafeInteger(Number(answers[key]))||Number(answers[key])<0))return ['재산세·전년도 세액은 0 이상의 정수로 입력해 주세요.'];
+    answers={...answers,housingCount:'three',deemedOneHouse:'no',ownership:'sole'};
+  }
+
   const share = Number(answers.ownShare);
   /* §8④ 의제: 2채일 때만 의미가 있다. 미응답(빠른 계산 단계)·「아니요」는 일반 2주택이다. 「모름」·목록 밖의 값은 막는다. */
   const dm = answers.housingCount === 'two' ? answers.deemedOneHouse : undefined;
@@ -193,6 +205,18 @@ function compFallbackGaps(answers, calc) {
    · 선택: property_tax_paid(양수일 때), prior_year_total_tax(양수일 때) — 비우면 보내지 않는다. tax_year 는 보내지 않는다(엔진 기본 2026).
    ⚠️ 이 함수는 자기완결이어야 한다(tests_acq_holding.js 가 함수 본문만 꺼내 실행한다). */
 function mapAnswersToComprehensive(a) {
+  if(a.ownerType==='corporate') {
+    const n=Number(a.corporateHouseCount),v=Number(a.totalValue);
+    if(!['일반','공익법인_직접사용','공공주택사업자등','공익법인_기타'].includes(a.corporateType)||!Number.isSafeInteger(n)||n<1||!Number.isSafeInteger(v)||v<0)return null;
+    const body={housing_values:[v],housing_count:n,is_corporate:true,corporate_type:a.corporateType,is_one_house:false};
+    for(const [key,field] of [['propertyTaxPaid','property_tax_paid'],['priorYearTotalTax','prior_year_total_tax']]) {
+      if(a[key]==null||String(a[key]).trim()==='')continue;
+      if(!Number.isSafeInteger(Number(a[key]))||Number(a[key])<0)return null;
+      body[field]=Number(a[key]);
+    }
+    return body;
+  }
+
   const countMap = { one: 1, two: 2, three: 3 };
   const deemedType = { temp: '일시적2주택_신규', inherit: '상속주택', rural: '지방저가주택', land: '부속토지' };
   const tv = Number(a.totalValue) || 0;
@@ -456,7 +480,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
   };
   const resetAddr = () => { setAns('totalValue', ''); setAddedCount(0); setLinfo(null); setLaddrSync(''); };
 
-  const allVisible = COMP_QS.filter(q => !q.showIf || q.showIf(answers));
+  const allVisible = COMP_QS.filter(q => (!q.showIf || q.showIf(answers)) && !(answers.ownerType==='corporate' && ['housingCount','deemedOneHouse','secondValue','ownership','ownShare','ownerAge','ownerAgeUnknown','holdingYears','holdingYearsUnknown'].includes(q.id)));
   const visibleQs = phase === 'quick' ? allVisible.filter(q => q.tier === 'quick') : allVisible.filter(q => q.tier !== 'quick');
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
@@ -523,6 +547,10 @@ function JTReportComprehensive({ setRoute, onBack }) {
         return;
       }
 
+      if(answers.ownerType==='corporate') {
+        const rep={calc,commentary:{headline:'확인한 법인 유형과 입력 사실에 따른 계산입니다.',cautions:[],saving_ideas:[],followup:['주택별 공시가격','법인 유형 확인 자료','전년도 고지서']},quick:phase==='quick'};
+        setReport(rep);if(phase==='quick')setQuickReport(rep);return;
+      }
       let commentary;
       try {
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
@@ -560,7 +588,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
   };
 
   /* 연령·보유 세액공제를 받을 수 있는 경우 — 1세대 1주택, 또는 2채여도 §8④ 로 1세대 1주택자로 보는 경우 */
-  const hasCredit = answers.housingCount === 'one' || compIsDeemed(answers);
+  const hasCredit = answers.ownerType!=='corporate' && (answers.housingCount === 'one' || compIsDeemed(answers));
 
   if (loading) {
     return (
@@ -608,7 +636,8 @@ function JTReportComprehensive({ setRoute, onBack }) {
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
 
-          {report.quick && (
+          {report.quick && answers.ownerType==='corporate' && <p>법인 유형: {answers.corporateType} · 세율 적용 주택 {answers.corporateHouseCount}채 <button className="jt-btn jt-btn--ghost" onClick={goDetail}>재산세·전년도 세액 추가 입력 →</button></p>}
+          {report.quick && answers.ownerType!=='corporate' && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
                 <strong>기본 정보로 낸 빠른 예상치예요.</strong>{' '}
@@ -722,7 +751,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
               precise={true}
               quick={report.quick}
               reportType="종합부동산세"
-              reportSummary={`주택 ${answers.housingCount === 'one' ? '1채' : answers.housingCount === 'two' ? '2채' : '3채+'} 공시합계 ${formatWon(Number(answers.totalValue) || 0)} → 연 ${formatWon(calc.totalTax)}`}
+              reportSummary={`주택 ${answers.ownerType==='corporate' ? answers.corporateHouseCount+'채 (법인)' : answers.housingCount === 'one' ? '1채' : answers.housingCount === 'two' ? '2채' : '3채+'} 공시합계 ${formatWon(Number(answers.totalValue) || 0)} → 연 ${formatWon(calc.totalTax)}`}
               reportDetail={buildCompDetail(answers, calc, commentary)}
               kakaoSummary={buildCompKakao(answers, calc)}
               setRoute={setRoute}

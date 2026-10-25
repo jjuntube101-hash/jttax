@@ -55,7 +55,7 @@ function acqIsCorporate(a) { return a.acquirerType === 'corporate'; }
 function acqNewTypeSelected(a) {
   return a.acquisitionType === '공매' || a.acquisitionType === '재산분할'
     || a.propertyType === '농지' || a.propertyType === '오피스텔_주거용' || a.propertyType === '오피스텔_업무용'
-    || acqIsCorporate(a) || a.reduction === 'childbirth';
+    || acqIsCorporate(a) || a.reduction === 'childbirth' || a.giftBaseChoice==='standard' || Number(a.wholeHouseValue)>0;
 }
 
 /* 감면 선택지에 «항상» 붙는 고정 문구.
@@ -283,6 +283,11 @@ const ACQ_QS = [
     sub: '세액 계산에는 쓰지 않습니다. 시·도마다 「도세(시세) 감면 조례」가 따로 있어서, 그 원문을 찾아 드리기 위해서만 씁니다. 모르시면 「선택 안 함」을 고르세요 — 세액은 그대로 계산됩니다.',
     opts: ACQ_REGIONS.map((r) => [r, r, '조례 원문 안내']).concat([['unknown', '선택 안 함 / 모르겠어요', '조례 안내 생략']]),
   },
+  {"id": "giftBaseChoice", "section": "추가 계산 조건", "q": "증여 취득 과세표준을 명시적으로 선택하나요?", "opts": [["default", "기존 시가인정액 기준", ""], ["standard", "전체 시가표준액 1억원 이하 선택 요건 검토 완료", ""]], showIf:a=>a.acquisitionType==='증여'},
+  {id:'giftChoiceDate',section:'증여 취득일',q:'실제 증여 취득일 (YYYY-MM-DD)',freeform:true,showIf:a=>a.acquisitionType==='증여'&&a.giftBaseChoice==='standard'},
+  {"id": "giftWholeStandard", "section": "추가 계산 조건", "q": "전체 물건의 시가표준액 (원, 지분분 아님)", "numeric": true, "money": true, "optional": true, showIf:a=>a.acquisitionType==='증여' && a.giftBaseChoice==='standard'},
+  {"id": "giftPartStandard", "section": "추가 계산 조건", "q": "취득하는 지분분의 시가표준액 (원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.acquisitionType==='증여' && a.giftBaseChoice==='standard'},
+  {"id": "wholeHouseValue", "section": "추가 계산 조건", "q": "지분 취득 시 전체 주택의 취득당시가액 (원, 전체 취득이면 비움)", "numeric": true, "money": true, "optional": true, showIf:a=>a.propertyType==='주택' && ['매매','공매'].includes(a.acquisitionType)},
   {
     id: 'context',
     section: '추가 사항',
@@ -452,6 +457,20 @@ function mapAnswersToAcquisition(rawA) {
     if (isHousing && a.inheritOneHouse === 'yes') body.inheritance_one_house = true;
     else if (isHousing && a.inheritOneHouse === 'no') body.inheritance_one_house = false;
   }
+  if(a.giftBaseChoice==='standard'&&a.acquisitionType==='증여') {
+    const d=String(a.giftChoiceDate||'');
+    if(!/^2026-\d{2}-\d{2}$/.test(d)||!Number.isFinite(Date.parse(d))||new Date(d).toISOString().slice(0,10)!==d)throw new Error('실제 증여 취득일을 입력해 주세요. 이 선택 경로는 2026년만 지원합니다.');
+    body.acquisition_date=d;
+    const whole=Number(a.giftWholeStandard),part=Number(a.giftPartStandard);
+    if(!Number.isSafeInteger(whole)||!Number.isSafeInteger(part)||whole<=0||whole>100000000||part<=0||part>whole)throw new Error('전체 시가표준액 1억원 이하와 취득 지분분 시가표준액을 확인해 주세요.');
+    if(isHousing && Number(a.standardValue)!==part)throw new Error('주택 중과 판정용 시가표준액과 취득 지분분 시가표준액을 일치시켜 주세요.');
+    body.whole_property_standard_value=whole;body.standard_value=part;body.gift_tax_base_choice='standard';
+  }
+  if(isHousing&&isPurchase&&a.wholeHouseValue!=null&&String(a.wholeHouseValue).trim()!=='') {
+    const v=Number(a.wholeHouseValue);if(!Number.isSafeInteger(v)||v<body.property_value||v<=0)throw new Error('전체 주택 취득당시가액은 취득 지분 가액 이상인 양수여야 합니다.');
+    body.whole_house_acquisition_value=v;
+  }
+
   return body;
 }
 
@@ -911,8 +930,9 @@ function JTReportAcquisition({ setRoute, onBack }) {
          자체 계산식으로 메우지 않는다. 유효 응답이면 precise:true, 거부면 engineState:'refused',
          연결 실패면 engineState:'down'. */
       let calc;
+      const acqRequest = mapAnswersToAcquisition(answers);
       try {
-        calc = acqCalcFromEngine(await callAcqEngine(mapAnswersToAcquisition(answers)));
+        calc = acqCalcFromEngine(await callAcqEngine(acqRequest));
       } catch (e) {
         console.warn('취득세 엔진 호출 실패', e);
         calc = acqCalcFromEngineError(e);
@@ -1212,6 +1232,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <JTReportShell title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+        {err && <p role="alert">{err}</p>}
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
           <h2>{cur.qFor ? cur.qFor(answers) : cur.q}</h2>

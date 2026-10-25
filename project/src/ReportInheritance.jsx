@@ -290,6 +290,11 @@ const INHERITANCE_QS = [
   {"id": "foreignTaxBase", "section": "추가 계산 입력", "q": "해당 재산의 외국 법령상 과세표준 (원)", "sub": "국내 평가액이 아닌 외국에서 실제 적용한 과세표준입니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => true && Number(a.foreignTaxPaid)>0},
   {"id": "bequestNonHeirs", "section": "추가 계산 입력", "q": "상속인 아닌 수유자에게 유증한 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
   {"id": "renouncedNext", "section": "추가 계산 입력", "q": "선순위 상속 포기로 다음 순위가 받은 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
+  {"id": "reinherit", "section": "추가 계산 조건", "q": "단기 재상속공제를 신청하나요?", "opts": [["no", "아니오", ""], ["yes", "예 — 이전 상속 자료 확인", ""]], showIf:a=>true},
+  {"id": "reinheritYears", "section": "추가 계산 조건", "q": "전의 상속부터 이번 상속까지 올림한 연수 (1년 이내=1)", "numeric": true, "money": false, "optional": true, showIf:a=>a.reinherit==='yes'},
+  {"id": "priorInheritanceTax", "section": "추가 계산 조건", "q": "전의 상속세 산출세액 (납부세액 아님, 원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
+  {"id": "priorEstate", "section": "추가 계산 조건", "q": "전의 총상속재산가액 (원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
+  {"id": "reInherited", "section": "추가 계산 조건", "q": "이번에 재상속되는 재산가액 (원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
   {
     id: 'context',
     section: '추가 사항',
@@ -368,6 +373,16 @@ function mapAnswersToInheritance(a) {
     const n=Number(a.foreignTaxBase);
     if(a.foreignTaxBase==null || String(a.foreignTaxBase).trim()==='' || !Number.isSafeInteger(n)||n<=0) throw new Error('외국납부세액 공제를 위해 외국 과세표준을 입력해 주세요.');
     body.foreign_tax_base=n;
+  }
+
+  if(a.reinherit==='yes') {
+    const fields=[['reinheritYears','years_since_prior'],['priorInheritanceTax','prior_inheritance_tax'],['priorEstate','prior_estate_value'],['reInherited','re_inherited_value']];
+    for(const [key,field] of fields) {
+      if(a[key]==null||String(a[key]).trim()===''||!Number.isSafeInteger(Number(a[key]))||Number(a[key])<0) throw new Error('단기 재상속공제의 기간·이전 산출세액·재산가액을 모두 정수로 입력해 주세요.');
+      body[field]=Number(a[key]);
+    }
+    if(body.years_since_prior<1||body.years_since_prior>10||body.prior_estate_value<=0||body.re_inherited_value>body.prior_estate_value||body.re_inherited_value>body.estate_value) throw new Error('재상속 기간(1~10년)과 이전·현재 재산가액 범위를 확인해 주세요.');
+    body.short_term_re_inheritance=true;
   }
 
   return body;
@@ -740,6 +755,7 @@ function JTReportInheritance({ setRoute, onBack }) {
                 <tr><th><strong>과세표준</strong></th><td><strong>{formatWon(calc.taxBase)}</strong></td></tr>
                 <tr><th>산출세액</th><td>{formatWon(calc.calcTax)}</td></tr>
                 {ddNum('증여세액공제') > 0 && <tr><th>증여세액공제 (사전증여 §28)</th><td>− {formatWon(ddNum('증여세액공제'))}</td></tr>}
+                {ddNum('단기재상속공제') > 0 && <tr><th>단기 재상속공제</th><td>− {formatWon(ddNum('단기재상속공제'))}</td></tr>}
                 {ddNum('외국납부세액공제') > 0 && <tr><th>외국납부세액공제</th><td>− {formatWon(ddNum('외국납부세액공제'))}</td></tr>}
                 <tr><th><strong>총 납부세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
               </tbody>
@@ -826,6 +842,7 @@ function JTReportInheritance({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <JTReportShell title="상속세 계산" subtitle={phase === 'quick' ? '총재산·가족만 입력하면 예상 상속세를 바로 보여드려요.' : '공제·사전증여 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+        {err && <p role="alert">{err}</p>}
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
           <h2>{cur.q}</h2>
