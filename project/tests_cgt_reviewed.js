@@ -1,0 +1,36 @@
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict');
+const parser=require('@babel/parser');
+const src=fs.readFileSync(path.join(__dirname,'src/ReportCGT.jsx'),'utf8');
+const names=['isValidISODate','isoDate','cgtTemp2Visible','cgtApplyAnswer','cgtReviewedPayload','mapAnswersToTransfer','cgtEngineVerdict','cgtCalcFromEngine','CGT_ENGINE_REQUIRED'];
+const ast=parser.parse(src,{sourceType:'script',plugins:['jsx']});
+const selected=ast.program.body.filter(n=>names.includes(n.id?.name)||n.declarations?.some(d=>names.includes(d.id.name)));
+assert.equal(selected.length,names.length);
+const ctx=vm.createContext({window:{jtValidCalc:()=>true},Date,Number,Math,Object,JSON});
+vm.runInContext(selected.map(n=>src.slice(n.start,n.end)).join('\n')+'\nglobalThis.api={cgtReviewedPayload,mapAnswersToTransfer,cgtApplyAnswer,cgtCalcFromEngine};',ctx);
+const {cgtReviewedPayload:extra,mapAnswersToTransfer:map,cgtApplyAnswer:answer,cgtCalcFromEngine:result}=ctx.api;
+const copy=x=>JSON.parse(JSON.stringify(x));let count=0;
+function test(name,f){f();count++;console.log('PASS '+name);}
+const base={assetType:'commercial',nonHouseType:'land',landUse:'business',acquiredDate:'2013-07-01',transferDate:'2026-01-01',acquired:'600000000',sold:'1000000000'};
+const facts={reliefEnabled:true,reliefType:'수용현금',scope:'mixed',parts:[{kind:'수용현금',amount:'500000000'},{kind:'수용채권5년',amount:'500000000'}],sameAssetConfirmed:true,ruralExempt:'no',historyMode:'none',eligibleConfirmed:true,historyConfirmed:true,noSplitConfirmed:true,lateEnabled:true,unpaid:'1000000',due:'2026-03-31',paid:'2026-05-01',lateConfirmed:true,ruralPaidConfirmed:true,filing:'under',filingBase:'1000000',filingConfirmed:true};
+test('no extra inputs preserves original request',()=>assert.deepEqual(copy(extra(base)),{}));
+test('reviewed relief maps real rows and payment context',()=>{const b=copy(map({...base,reviewed:facts}));assert.equal(b.reduction_context.allocation.compensation.length,2);assert.equal(b.reduction_context.rural_exempt,false);assert.equal(b.late_payment_context.rural_surtax_filed_and_paid_by_due_date_confirmed,true);assert.equal(b.filing_penalty_context.filing_tax_base,1000000);});
+for(const key of ['eligibleConfirmed','sameAssetConfirmed','historyConfirmed','noSplitConfirmed','lateConfirmed','ruralPaidConfirmed','filingConfirmed']) test('missing '+key+' fails closed',()=>assert.throws(()=>extra({...base,reviewed:{...facts,[key]:false}})));
+for(const key of ['unpaid','filingBase']) for(const v of ['',null,'-1','1.5','9007199254740992']) test(key+' rejects '+v,()=>assert.throws(()=>extra({...base,reviewed:{...facts,[key]:v}})));
+test('changing asset price clears confirmations, retains inputs',()=>{const n=answer({...base,reviewed:facts},'sold','2000000000');assert.equal(n.reviewed.unpaid,'1000000');assert.equal(n.reviewed.eligibleConfirmed,undefined);});
+test('free text does not invalidate reviewed tax facts',()=>assert.equal(answer({...base,reviewed:facts},'context','memo').reviewed.eligibleConfirmed,true));
+test('disabled blocks do not send stale inputs',()=>assert.deepEqual(copy(extra({...base,reviewed:{...facts,reliefEnabled:false,lateEnabled:false}})),{}));
+test('future year refuses without substituting present year',()=>assert.throws(()=>extra({...base,transferDate:'2027-01-01',reviewed:facts}),/2022~2026/));
+test('cross-article allocation requests review instead of guesses',()=>assert.throws(()=>extra({...base,reviewed:{...facts,parts:[{kind:'수용현금',amount:'500000000'},{kind:'대토보상',amount:'500000000'}]}}),/배분/));
+test('needs_input preserves reason without tax',()=>{const r=result({calc:{상태:'needs_input',오류:'감면 이력 필요',세액:999}});assert.equal(r.engineReason,'needs_input');assert.equal(r.engineMessage,'감면 이력 필요');assert.equal('totalTax' in r,false);});
+test('unsupported preserves reason without tax',()=>assert.equal(result({calc:{상태:'unsupported',오류:'2027 미지원'}}).engineReason,'unsupported'));
+test('result keeps penalty and rural components',()=>{const r=result({calc:{상태:'ok',양도차익:100,과세표준:10,세액:1,지방소득세:2,총세부담:10,장기보유특별공제:0,기본공제:0,농어촌특별세:3,가산세:4}});assert.deepEqual([r.baseTax,r.localTax,r.ruralTax,r.penaltyTax,r.totalTax],[1,2,3,4,10]);});
+const cases=[];
+cases.push({name:'mixed',request:copy(map({...base,reviewed:facts})),tax:66262000,penalty:106820});
+for(const kind of ['자경농지','축사업용']){const r={...facts,reliefType:kind,scope:'partial',eligibleIncome:'152000000'};cases.push({name:kind,request:copy(map({...base,reviewed:r})),tax:46937540,penalty:106820});}
+cases.push({name:'substitute',request:copy(map({...base,reviewed:{...facts,reliefType:'대토보상',scope:'mixed',parts:[{kind:'대토보상',amount:'500000000'},{kind:'감면없음',amount:'500000000'}]}})),tax:75571010,penalty:106820});
+const gift={assetType:'house_2',otherHouseSource:'other',acquiredDate:'2018-01-01',transferDate:'2022-12-31',acquired:'400000000',sold:'800000000',adjustedZone:'no',acqAdjustedZone:'no',reviewed:{giftEnabled:true,giftDate:'2018-01-01',donorDate:'2010-01-01',donorCost:'300000000',giftTax:'0',giftConfirmed:true}};
+cases.push({name:'spouse2022',request:copy(map(gift)),tax:121600000,penalty:0});
+test('gift zero is explicit, missing gift amount is blocked',()=>{assert.equal(extra(gift).donor_gift_tax_paid,0);assert.throws(()=>extra({...gift,reviewed:{...gift.reviewed,giftTax:''}}));});
+test('history rows preserve dates article and actual amount',()=>{const r=extra({...base,reviewed:{...facts,historyMode:'list',history:[{date:'2025-01-01',article:'77',amount:'80000000'}]}});assert.deepEqual(copy(r.reduction_context.history),[{id:'review-1',transfer_date:'2025-01-01',article:'77',amount:80000000}]);});
+if(process.env.CGT_REQUEST_OUTPUT)fs.writeFileSync(process.env.CGT_REQUEST_OUTPUT,JSON.stringify(cases,null,2));
+console.log('OK reviewed CGT: '+count+' checks; '+cases.length+' HTTP fixtures');

@@ -20,6 +20,10 @@ function cgtTemp2Visible(a) {
 function cgtApplyAnswer(a, id, v) {
   const next = Object.assign({}, a);
   next[id] = v;
+  if (id !== 'reviewed' && id !== 'context' && a[id] !== v && next.reviewed) {
+    next.reviewed = {...next.reviewed};
+    Object.keys(next.reviewed).filter(k=>k.endsWith('Confirmed')).forEach(k=>delete next.reviewed[k]);
+  }
   if ((id === 'assetType' || id === 'otherHouseSource' || id === 'newHouseDate') && a[id] !== v) {
     delete next.temp2Zone;
   }
@@ -62,6 +66,103 @@ function cgtTemp2Phrase(years) {
   if (years === 3) return '3년';
   return '두 집이 모두 조정대상지역이었다면 2년, 아니면 3년';
 }
+
+/* Reviewed facts only: empty inputs never become zero or an eligibility confirmation. */
+function cgtReviewedPayload(a) {
+  const r = a.reviewed || {}, out = {};
+  const money = (v, label) => {
+    if (!/^\d+$/.test(String(v == null ? '' : v)) || !Number.isSafeInteger(Number(v))) throw new Error(label + '을 원 단위 정수로 입력해 주세요.');
+    return Number(v);
+  };
+  const day = (v, label) => { if (!isValidISODate(v || '')) throw new Error(label + '을 확인해 주세요.'); return v; };
+  const confirm = (v, label) => { if (v !== true) throw new Error(label + ' 확인이 필요합니다.'); return true; };
+  if ((r.reliefEnabled || r.lateEnabled || r.giftEnabled) && (!isValidISODate(a.transferDate || '') || a.transferDate < '2022-01-01' || a.transferDate > '2026-12-31')) throw new Error('현재 지원하는 양도연도는 2022~2026년입니다.');
+  if (r.giftEnabled) {
+    out.is_gifted = true; out.is_deferred = true; out.donor_relationship = '배우자';
+    out.gift_date = day(r.giftDate, '증여일');
+    if (out.gift_date !== a.acquiredDate) throw new Error('배우자 증여일과 취득일이 같아야 합니다.');
+    out.donor_acquisition_date = day(r.donorDate, '증여자 취득일');
+    out.donor_acquisition_price = money(r.donorCost, '증여자 실제 취득가액');
+    out.donor_gift_tax_paid = money(r.giftTax, '증여세 납부액');
+    confirm(r.giftConfirmed, '배우자 관계·증빙·원가 완전성');
+  }
+  if (r.reliefEnabled) {
+    if (a.assetType !== 'commercial' || a.nonHouseType !== 'land' || a.landUse !== 'business') throw new Error('이 감면 입력은 일반 사업용 토지를 대상으로 합니다. 자산 종류와 사용현황을 확인해 주세요.');
+    if (!['자경농지','축사업용','수용현금','수용채권','수용채권3년','수용채권5년','대토보상'].includes(r.reliefType)) throw new Error('감면 종류를 선택해 주세요.');
+    if (!['full','partial','mixed'].includes(r.scope)) throw new Error('감면 대상 범위를 선택해 주세요.');
+    confirm(r.eligibleConfirmed, '감면 자격·신청 요건');
+    confirm(r.historyConfirmed, '같은 해 및 직전 4개 과세기간 감면 이력');
+    confirm(r.noSplitConfirmed, '분할·지분양도 의제 비해당');
+    if (!['none','list'].includes(r.historyMode)) throw new Error('과거 감면 이력의 유무를 선택해 주세요.');
+    if (r.historyMode === 'list' && !(r.history || []).length) throw new Error('과거 감면 이력을 추가해 주세요.');
+    const ctx = { eligibility_confirmed:true, history_complete:true, split_transfer_applicable:false, full_income_eligible:r.scope === 'full', history:[] };
+    if (r.historyMode === 'list') ctx.history = r.history.map((h,i) => {
+      if (!h.article) throw new Error('이력의 감면 조문을 선택해 주세요.');
+      return {id:'review-'+(i+1),transfer_date:day(h.date,'이력 양도일'),article:h.article,amount:money(h.amount,'이력 감면세액')};
+    });
+    if (r.scope === 'partial') ctx.allocation = {eligible_income:money(r.eligibleIncome,'장기보유특별공제 후 감면소득')};
+    if (r.scope === 'mixed') {
+      confirm(r.sameAssetConfirmed, '동일 자산의 전체 보상명세');
+      if (!(r.parts || []).length) throw new Error('보상명세를 추가해 주세요.');
+      ctx.allocation = {same_asset_confirmed:true,compensation:r.parts.map(p => {
+        if (!['수용현금','수용채권','수용채권3년','수용채권5년','대토보상','감면없음'].includes(p.kind)) throw new Error('보상 종류를 선택해 주세요.');
+        return {kind:p.kind,amount:money(p.amount,'보상액')};
+      })};
+      if (ctx.allocation.compensation.some(p=>p.kind==='대토보상') && ctx.allocation.compensation.some(p=>p.kind.startsWith('수용'))) throw new Error('수용·대토 동시 감면은 조문별 기본공제와 한도 배분 검토가 필요합니다. 이 화면에서는 아직 입력할 수 없습니다.');
+    }
+    if (r.reliefType.startsWith('수용')) {
+      if (!['yes','no'].includes(r.ruralExempt)) throw new Error('농어촌특별세 비과세 해당 여부를 확인해 주세요.');
+      ctx.rural_exempt = r.ruralExempt === 'yes';
+    }
+    out.reduction_type = r.reliefType; out.reduction_context = ctx;
+  }
+  if (r.lateEnabled) {
+    confirm(r.lateConfirmed,'고지 전 일정 미납원금·중간납부 및 유예 없음');
+    out.simulate_penalty = true;
+    out.late_payment_context = {unpaid_tax:money(r.unpaid,'미납 양도소득세 본세'),due_date:day(r.due,'법정 납부기한'),payment_date:day(r.paid,'실제 납부일'),ordinary_unpaid_case_confirmed:true};
+    if (r.reliefEnabled && (r.reliefType === '대토보상' || (r.reliefType || '').startsWith('수용') && r.ruralExempt === 'no')) {
+      confirm(r.ruralPaidConfirmed,'농특세 전액의 법정기한 내 신고·납부');
+      out.late_payment_context.rural_surtax_filed_and_paid_by_due_date_confirmed = true;
+    }
+    if (!['none','ordinary','under','fraud'].includes(r.filing)) throw new Error('신고가산세 구분을 선택해 주세요.');
+    if (r.filing !== 'none') {
+      confirm(r.filingConfirmed,'신고가산세 유형·감면 없음·기부과 및 경합 없음');
+      out.penalty_type = {ordinary:'일반무신고',under:'과소신고',fraud:'부정무신고'}[r.filing];
+      out.filing_penalty_context = {filing_tax_base:money(r.filingBase,'신고가산세 대상 본세'),ordinary_domestic_case_confirmed:r.filing!=='fraud',no_filing_relief_confirmed:true,no_prior_filing_penalty_confirmed:true,no_concurrent_penalty_confirmed:true};
+      if (r.filing === 'fraud') out.filing_penalty_context.fraudulent_domestic_nonfiling_confirmed = true;
+    }
+  }
+  return out;
+}
+
+function CGTReviewedInputs({value,onChange}) {
+  const r=value || {};
+  const set=(k,v)=>{ const n={...r,[k]:v}; if (!k.endsWith('Confirmed')) Object.keys(n).filter(x=>x.endsWith('Confirmed')).forEach(x=>delete n[x]); onChange(n); };
+  const field=(key,label,type='text')=><label style={{display:'block',margin:'12px 0'}}>{label}<input className="jt-report-q__input" type={type} inputMode={type==='text'?'numeric':undefined} value={r[key] || ''} onChange={e=>set(key,e.target.value)} /></label>;
+  const check=(key,label)=><label style={{display:'block',margin:'12px 0',lineHeight:1.6}}><input type="checkbox" checked={r[key]===true} onChange={e=>set(key,e.target.checked)} /> {label}</label>;
+  const select=(key,label,opts)=><label style={{display:'block',margin:'12px 0'}}>{label}<select className="jt-report-q__input" value={r[key] || ''} onChange={e=>set(key,e.target.value)}><option value="">선택해 주세요</option>{opts.map(([v,t])=><option key={v} value={v}>{t}</option>)}</select></label>;
+  const kinds=['수용현금','수용채권','수용채권3년','수용채권5년','대토보상','감면없음'];
+  const rowChange=(key,i,k,v)=>set(key,(r[key] || []).map((row,j)=>i===j?{...row,[k]:v}:row));
+  return <div>
+    <p>해당하는 항목만 켜세요. 금액은 원 단위이며, 모르는 사실은 확인으로 표시하지 마세요. 입력을 바꾸면 검토 확인이 해제됩니다.</p>
+    {check('giftEnabled','배우자에게 증여받은 자산의 이월과세 검토')}
+    {r.giftEnabled && <fieldset><legend>배우자 증여 원자료</legend>{field('giftDate','증여일','date')}{field('donorDate','증여자의 원래 취득일','date')}{field('donorCost','증여자의 실제 취득가액 (원)')}{field('giftTax','해당 증여세 납부액 (원, 0원도 직접 입력)')}{check('giftConfirmed','배우자 관계·증빙·원가 완전성을 검토했습니다')}<p>연도·주택 수·보유기간·증여세액에 따라 지원 범위를 판단합니다.</p></fieldset>}
+    {check('reliefEnabled','토지 양도소득세 감면 신청')}
+    {r.reliefEnabled && <fieldset><legend>감면 요건과 한도 이력</legend>
+      {select('reliefType','감면 종류',['자경농지','축사업용',...kinds.filter(k=>k!=='감면없음')].map(k=>[k,k]))}
+      {select('scope','감면 대상 범위',[['full','전체 소득·단일 감면'],['partial','일부 감면소득'],['mixed','동일 자산의 혼합보상']])}
+      {r.scope==='partial' && field('eligibleIncome','장기보유특별공제 후·기본공제 전 감면소득 (원)')}
+      {r.scope==='mixed' && <div><p>감면 제외분까지 포함하며, 보상액 합계는 양도가액과 같아야 합니다.</p>{(r.parts || []).map((p,i)=><fieldset key={i}><legend>보상 {i+1}</legend><label>보상 종류<select value={p.kind || ''} onChange={e=>rowChange('parts',i,'kind',e.target.value)}><option value="">선택</option>{kinds.map(k=><option key={k}>{k}</option>)}</select></label><label>보상액 (원)<input inputMode="numeric" value={p.amount || ''} onChange={e=>rowChange('parts',i,'amount',e.target.value)} /></label><button type="button" onClick={()=>set('parts',r.parts.filter((_,j)=>j!==i))}>보상 {i+1} 삭제</button></fieldset>)}<button type="button" onClick={()=>set('parts',[...(r.parts || []),{}])}>보상명세 추가</button>{check('sameAssetConfirmed','같은 자산의 전체 보상명세임을 확인했습니다')}</div>}
+      {(r.reliefType || '').startsWith('수용') && select('ruralExempt','농어촌특별세 비과세 요건',[['yes','해당함 — 확인 완료'],['no','해당하지 않음 — 확인 완료']])}
+      {select('historyMode','같은 해 및 직전 4개 과세기간의 감면 이력',[['none','이력 없음 — 확인 완료'],['list','이력 있음 — 아래 입력']])}
+      {r.historyMode==='list' && <div>{(r.history || []).map((h,i)=><fieldset key={i}><legend>감면 이력 {i+1}</legend><label>양도일<input type="date" value={h.date || ''} onChange={e=>rowChange('history',i,'date',e.target.value)} /></label><label>조세특례제한법 조문<select value={h.article || ''} onChange={e=>rowChange('history',i,'article',e.target.value)}><option value="">선택</option>{['33','43','66','67','68','69','69의2','69의3','69의4','70','77','77의2','85의10'].map(k=><option key={k}>{k}</option>)}</select></label><label>한도 적용 후 감면 국세액 (원)<input inputMode="numeric" value={h.amount || ''} onChange={e=>rowChange('history',i,'amount',e.target.value)} /></label><button type="button" onClick={()=>set('history',r.history.filter((_,j)=>i!==j))}>이력 {i+1} 삭제</button></fieldset>)}<button type="button" onClick={()=>set('history',[...(r.history || []),{}])}>감면 이력 추가</button><p>목록에 없는 과거 감면은 별도 검토가 필요합니다.</p></div>}
+      {check('eligibleConfirmed','선택한 감면의 법정 자격·신청 요건을 검토했습니다')}{check('historyConfirmed','해당 기간의 감면 이력을 빠짐없이 확인했습니다')}{check('noSplitConfirmed','분할·지분양도 의제 적용 대상이 아님을 확인했습니다')}
+    </fieldset>}
+    {check('lateEnabled','신고·납부지연 가산세 계산')}
+    {r.lateEnabled && <fieldset><legend>실제 납부 자료</legend>{field('unpaid','미납 양도소득세 본세 (원, 지방세·농특세 제외)')}{field('due','법정 납부기한','date')}{field('paid','실제 납부일','date')}{select('filing','신고가산세 구분',[['none','납부지연만 계산'],['ordinary','일반 무신고'],['under','일반 과소신고'],['fraud','국내 부정 무신고 — 별도 검토 완료']])}{r.filing && r.filing!=='none' && <>{field('filingBase','신고가산세 대상 본세 (원)')}{check('filingConfirmed','신고유형 및 가산세 감면·중복 부과·경합이 없음을 검토했습니다')}</>}{check('lateConfirmed','고지 전 일정 미납원금이며 분납·중간납부·유예·면제·초과환급·이자상당액이 없음을 확인했습니다')}{r.reliefEnabled && check('ruralPaidConfirmed','농특세가 발생하는 경우, 전액을 법정기한 내 신고·납부했습니다')}<p>입력한 기한이 엔진의 법정기한과 다르면 계산을 중단합니다. 지방세 가산세는 포함하지 않습니다.</p></fieldset>}
+  </div>;
+}
+
 
 const CGT_QS = [
   {
@@ -335,6 +436,9 @@ const CGT_QS = [
     showIf: (a) => a.assetType === 'replacement',
   },
   {
+    id: 'reviewed', section: '감면·증여·가산세', q: '추가로 검토한 계산 조건이 있나요?', reviewed: true,
+  },
+  {
     id: 'context',
     section: '추가 정보',
     q: '추가로 공유하고 싶은 맥락이 있으면 적어주세요.',
@@ -425,8 +529,10 @@ function buildReportDetail(answers, calc, commentary) {
   L.push('  · 과세대상(비과세 반영 후): ' + formatWon(calc.taxableAfter1House));
   L.push('  · 장기보유특별공제: ' + formatWon(calc.ltDeduction) + (calc.ltRate == null ? '' : ' (' + Math.round(calc.ltRate * 100) + '%)'));
   L.push('  · 과세표준: ' + formatWon(calc.taxBase));
-  L.push('  · 산출세액: ' + formatWon(calc.baseTax));
+  L.push('  · 양도소득세 본세: ' + formatWon(calc.baseTax));
   L.push('  · 지방소득세: ' + formatWon(calc.localTax));
+  if (Number.isFinite(calc.ruralTax)) L.push('  · 농어촌특별세: '+formatWon(calc.ruralTax));
+  if (Number.isFinite(calc.penaltyTax)) L.push('  · 국세 가산세: '+formatWon(calc.penaltyTax));
   L.push('  · 총 세부담: ' + formatWon(calc.totalTax) + ' (실효세율 ' + (calc.effectiveRate || 0).toFixed(1) + '%)');
   const notes = [calc.multiHouseNote, calc.temp2Assumption, calc.ipjuCaveat, calc.concurrentRightCaveat, calc.landCaveat, calc.replCaveat, cgtDeadlineWarnText(calc.deadlineWarn)].filter(Boolean);
   const ew = calc.engineWarnings || [];
@@ -624,6 +730,7 @@ function mapAnswersToTransfer(answers) {
     body.held_right_type = answers.houseConcurrentRight === 'occupancy' ? '입주권' : '분양권';
     if (answers.houseRightAcqDate) body.right_acquisition_date = answers.houseRightAcqDate;  // 일시적 1·3년 기산
   }
+  if (answers.reviewed) Object.assign(body, cgtReviewedPayload(answers));
   return body;
 }
 
@@ -642,7 +749,11 @@ async function callEngineBody(body) {
       body: JSON.stringify(body),
       signal: ctrl ? ctrl.signal : undefined,
     });
-    if (!res.ok) { const _err = new Error('engine ' + res.status); _err.status = res.status; throw _err; }
+    if (!res.ok) {
+      const _err = new Error('engine ' + res.status); _err.status = res.status;
+      if (res.status === 422) _err.engineMessage = '입력 형식 또는 현재 지원하는 입력 항목을 확인해 주세요. 날짜·금액·검토 확인을 점검한 뒤 다시 계산해 주세요.';
+      throw _err;
+    }
     return await res.json();
   } finally { if (to) clearTimeout(to); }
 }
@@ -680,7 +791,9 @@ function cgtAcceptedCalc(ej) {
 function cgtCalcFromEngine(ej) {
   const c = ej && ej.calc;
   const verdict = cgtEngineVerdict(c);
-  if (verdict !== 'ok') return { precise: false, engineState: verdict };
+  if (verdict === 'down') return { precise:false, engineState:'down' };
+  if (verdict !== 'ok') return { precise:false, engineState:verdict,
+    engineReason:c && c['상태'], engineMessage:c && typeof c['오류'] === 'string' ? c['오류'] : '' };
   /* 엔진 장특공제율로 동기화: '16.0%'→0.16, '-'(미적용·중과배제)→0. 키가 없으면 null(비율을 말하지 않는다). */
   const ltsd = c['장특공제율'];
   let ltRate = null;
@@ -703,6 +816,7 @@ function cgtCalcFromEngine(ej) {
     precise: true, engineVer: ej.version && ej.version.engine,
     capGain: c['양도차익'], taxBase: c['과세표준'], ltDeduction: c['장기보유특별공제'], ltRate,
     basicDeduction: c['기본공제'], baseTax: c['세액'], localTax: c['지방소득세'], totalTax: c['총세부담'],
+    ruralTax: c['농어촌특별세'], penaltyTax: c['가산세'], penaltyScope: c['가산세범위'],
     afterLt, taxableAfter1House: afterLt + (c['장기보유특별공제'] || 0),         // 과세대상 = 공제후 + 장특
     effectiveRate: c['양도차익'] > 0 ? (c['총세부담'] / c['양도차익'] * 100) : 0,
     exempt, nonTaxableMsg,
@@ -714,7 +828,7 @@ function cgtCalcFromEngine(ej) {
 function cgtCalcFromEngineError(e) {
   /* 408(시간 초과)·429(호출 제한)는 입력 문제가 아니라 일시적 상태다 — 다시 시도를 안내한다 */
   return (e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429)
-    ? { precise: false, engineState: 'refused' }
+    ? { precise: false, engineState: 'refused', engineReason:e.status===422?'needs_input':'unsupported', engineMessage:e.engineMessage || '' }
     : { precise: false, engineState: 'down' };
 }
 
@@ -778,7 +892,10 @@ function JTReportCGT({ setRoute, onBack }) {
 
   const setAns = (id, v) => setAnswers(a => cgtApplyAnswer(a, id, v));
 
+  let reviewedIssue = '';
+  if (cur.reviewed) { try { cgtReviewedPayload(answers); } catch(e) { reviewedIssue=e.message; } }
   const canNext = () => {
+    if (cur.reviewed) return !reviewedIssue;
     if (cur.freeform) return true;
     if (cur.numeric) {
       if (cur.optional) return true;             // 선택 항목(필요경비)은 0/공란 허용
@@ -846,6 +963,10 @@ function JTReportCGT({ setRoute, onBack }) {
         return;
       }
 
+      if (answers.reviewed && (answers.reviewed.reliefEnabled || answers.reviewed.lateEnabled || answers.reviewed.giftEnabled)) {
+        setReport({calc, commentary:{headline:'입력한 검토 자료를 반영한 계산 결과입니다.',cautions:[],saving_ideas:[],followup:[]},quick:false});
+        return;
+      }
       const acquired = Number(answers.acquired) || 0;
       const sold = Number(answers.sold) || 0;
       // 보유·거주연수 = 실제 날짜 차이(표시용) — 세액 계산이 아니다
@@ -1036,7 +1157,7 @@ function JTReportCGT({ setRoute, onBack }) {
 
 계산 결과(엔진):
 - 과세표준: ${formatWon(calc.taxBase)}
-- 산출세액: ${formatWon(calc.baseTax)}
+- 양도소득세 본세: ${formatWon(calc.baseTax)}
 - 지방소득세: ${formatWon(calc.localTax)}
 - 총 세액: ${formatWon(calc.totalTax)}
 - 실효세율: ${calc.effectiveRate.toFixed(1)}%
@@ -1148,6 +1269,7 @@ cautions 3개, saving_ideas 2~3개.`;
       /* 입력으로 돌아가기 — 답은 그대로 두고 커서만 옮긴다. 입력 불확정이면 그 문항(살 때 조정대상지역)으로 보낸다 */
       const cgtBackToInput = () => {
         setReport(null);
+        if (answers.reviewed) { const i=visibleQs.findIndex(q=>q.id==='reviewed'); if(i>=0) setStep(i); }
         if (cgtBlockReason === 'input') {
           const i = visibleQs.findIndex(q => q.id === 'acqAdjustedZone');
           if (i >= 0) setStep(i);
@@ -1157,9 +1279,10 @@ cautions 3개, saving_ideas 2~3개.`;
         <div className="jt-container jt-report-result">
           <div className="jt-report-result__head">
             <button className="jt-report-shell__back" onClick={onBack}>← 세금 계산기</button>
-            <div className="jt-report-result__meta"><span className="jt-tag">{cgtBlockReason === 'input' ? '정밀 계산 필요' : (cgtBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패')}</span></div>
+            <div className="jt-report-result__meta"><span className="jt-tag">{cgtBlockReason === 'input' ? '정밀 계산 필요' : (cgtBlockReason === 'refused' ? (calc.engineReason === 'needs_input' ? '입력 보완 필요' : '현재 조건은 지원하지 않음') : '계산 엔진 연결 실패')}</span></div>
           </div>
           {/* 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다 */}
+          {calc.engineMessage && <div role="alert" style={{padding:16,marginBottom:16,border:'1px solid #d6d6d6',borderRadius:8}}><strong>{calc.engineReason==='needs_input'?'입력을 보완해 주세요':'지원 범위를 확인해 주세요'}</strong><p>{window.jtEngineMessageForDisplay(calc.engineMessage)}</p><p>2027년 이후 양도 등 미지원 연도는 날짜를 임의로 바꾸어 계산하지 마세요.</p></div>}
           <JTFallbackBlocked gaps={cgtBlockReason === 'input' ? cgtGaps : []} onRetry={() => { setReport(null); runAnalysis(); }} reason={cgtBlockReason} />
           <p style={{ margin: '0 0 10px', fontSize: 14, lineHeight: 1.6 }}>지금까지 답하신 내용은 그대로 남습니다.</p>
           <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
@@ -1272,8 +1395,10 @@ cautions 3개, saving_ideas 2~3개.`;
               <tr><th>공제 후 금액</th><td>{formatWon(calc.afterLt)}</td></tr>
               <tr><th>기본공제</th><td>− {formatWon(calc.basicDeduction)}</td></tr>
               <tr><th><strong>과세표준</strong></th><td><strong>{formatWon(calc.taxBase)}</strong></td></tr>
-              <tr><th>산출세액</th><td>{formatWon(calc.baseTax)}</td></tr>
+              <tr><th>양도소득세 본세 (감면 후)</th><td>{formatWon(calc.baseTax)}</td></tr>
               <tr><th>지방소득세 (10%)</th><td>{formatWon(calc.localTax)}</td></tr>
+              {Number.isFinite(calc.ruralTax) && <tr><th>농어촌특별세</th><td>{formatWon(calc.ruralTax)}</td></tr>}
+              {Number.isFinite(calc.penaltyTax) && <tr><th>국세 가산세</th><td>{formatWon(calc.penaltyTax)}{calc.penaltyScope && <small style={{display:'block'}}>{calc.penaltyScope}</small>}</td></tr>}
               <tr className="jt-report-calc__total"><th>총 세액</th><td>{formatWon(calc.totalTax)}</td></tr>
               <tr><th>실효세율 (양도차익 대비)</th><td>{calc.effectiveRate.toFixed(1)}%</td></tr>
             </tbody>
@@ -1401,6 +1526,7 @@ cautions 3개, saving_ideas 2~3개.`;
           <h2>{cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
+          {cur.reviewed && <><CGTReviewedInputs value={answers.reviewed} onChange={v=>setAns('reviewed',v)} />{reviewedIssue && <p role="alert" style={{color:'#a62323',marginTop:16}}>{reviewedIssue}</p>}</>}
           {cur.freeform && (
             <textarea
               className="jt-report-q__textarea"
@@ -1439,7 +1565,7 @@ cautions 3개, saving_ideas 2~3개.`;
             />
           )}
 
-          {!cur.freeform && !cur.numeric && !cur.date && (
+          {!cur.reviewed && !cur.freeform && !cur.numeric && !cur.date && (
             <div className="jt-report-q__opts">
               {cur.opts.map(([v, label, hint]) => {
                 const selected = answers[cur.id] === v;
