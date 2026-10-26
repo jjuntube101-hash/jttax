@@ -71,6 +71,8 @@ heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건�
 
 직접 신고한 자료를 넘기는 과정이 궁금하다면 [유튜버 기장 인계 안내](https://www.jttax.co.kr/insights/youtuber-bookkeeping-handover.html)도 참고하세요. [제이티 기장 서비스](https://www.jttax.co.kr/services/bookkeeping.html)에서 업무 내용을 확인할 수 있습니다.
 
+[블로그: 유튜버 경비처리, 촬영할 때 입은 옷도 비용인가요?](https://blog.naver.com/jt_tax/224454753116)에서 자주 묻는 질문부터 확인해 보세요.
+
 ## 근거와 적용 범위
 
 2026년 10월 26일 확인한 소득세법 제27조·제33조·제160조의2 및 소득세법 시행령 제61조를 기준으로 작성했습니다. 아래 사례는 설명을 위한 가정이며 실제 고객 사례가 아닙니다.
