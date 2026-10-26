@@ -25,6 +25,7 @@ function compIsDeemed(a) {
 }
 
 const COMP_QS = [
+  {id: 'taxYear', tier: 'quick', section: '과세 시점', q: '종합부동산세 과세연도는 언제인가요?', sub: '입력한 연도의 6월 1일 기준 사실을 입력하세요. 미지원 연도·조건은 세액 없이 안내합니다.', numeric: true, placeholder: '2025'},
   {"id": "ownerType", "section": "추가 계산 조건", "q": "주택의 소유자는 누구인가요?", "opts": [["person", "개인", ""], ["corporate", "법인", ""]], "tier": "quick", showIf:a=>true},
   {"id": "corporateType", "section": "추가 계산 조건", "q": "검토한 종부세 법인 유형을 선택하세요", "opts": [["일반", "일반 법인", ""], ["공익법인_직접사용", "공익법인 직접사용 요건 확인", ""], ["공공주택사업자등", "공공주택사업자 등 요건 확인", ""], ["공익법인_기타", "그 밖의 공익법인 요건 확인", ""]], "tier": "quick", showIf:a=>a.ownerType==='corporate'},
   {"id": "corporateHouseCount", "section": "추가 계산 조건", "q": "법인 세율 적용 주택 수 (정확한 채수)", "numeric": true, "money": false, "optional": false, "tier":"quick", showIf:a=>a.ownerType==='corporate'},
@@ -35,11 +36,11 @@ const COMP_QS = [
     tier: 'quick',
     section: '주택 보유 현황',
     q: '본인 세대가 보유한 주택은 몇 채인가요?',
-    sub: '종합부동산세는 매년 6월 1일 기준, 세대가 보유한 주택의 공시가격을 합산해 공제(1세대1주택 12억·그 외 9억)를 넘는 부분에 부과됩니다(종부세법 §7·§8). 1세대 1주택이면 공제도 크고, 만 60세 이상·5년 이상 보유 시 세액공제까지 받습니다.',
+    sub: '종합부동산세는 매년 6월 1일 기준, 세대가 보유한 주택의 공시가격을 합산해 해당 연도 공제(2022년 1세대1주택 11억·그 외 6억, 2023년 이후 12억·9억)를 넘는 부분에 부과됩니다(종부세법 §7·§8). 1세대 1주택이면 공제도 크고, 만 60세 이상·5년 이상 보유 시 세액공제까지 받습니다.',
     opts: [
-      ['one', '1채 (1세대 1주택)', '공제 12억 · 연령·보유 세액공제'],
-      ['two', '2채', '공제 9억 · 일반세율'],
-      ['three', '3채 이상', '공제 9억 · 중과세율(12억 초과 구간↑)'],
+      ['one', '1채 (1세대 1주택)', '해당 연도 1세대1주택 공제 · 연령·보유 세액공제'],
+      ['two', '2채', '해당 연도 일반 공제·세율'],
+      ['three', '3채 이상', '해당 연도 다주택 세율·요건 확인'],
     ],
   },
   {
@@ -47,10 +48,11 @@ const COMP_QS = [
     tier: 'quick',
     section: '공시가격 합계',
     q: '보유 주택의 공시가격을 모두 더하면 얼마인가요? (원)',
-    sub: '실거래가가 아니라 정부가 매년 고시하는 공시가격의 합계입니다. 여러 채면 전부 더해 주세요. 부동산공시가격알리미(realtyprice.kr)에서 조회됩니다. 공제(1세대1주택 12억·그 외 9억) 이하이면 종부세는 0원입니다.',
+    sub: '실거래가가 아니라 정부가 매년 고시하는 공시가격의 합계입니다. 여러 채면 전부 더해 주세요. 부동산공시가격알리미(realtyprice.kr)에서 조회됩니다. 해당 연도 공제(2022년 1세대1주택 11억·그 외 6억, 2023년 이후 12억·9억) 이하이면 종부세는 0원입니다.',
     numeric: true, money: true,
     placeholder: '예: 1,500,000,000',
   },
+  {id:'historicalHousingValues',tier:'quick',section:'물건별 공시가격',q:'본인 소유 주택 각각의 공시가격을 원 단위로 입력하세요.',sub:'쉼표로 구분합니다. 예: 800000000, 700000000. 앞에서 입력한 합계와 같아야 합니다.',freeform:true,showIf:a=>a.taxYear && Number(a.taxYear)<2026 && a.ownerType==='person' && ['two','three'].includes(a.housingCount)},
   /* 2채일 때만 묻는다. 「아니요」가 아니면 아래 secondValue 로 특례 대상 주택의 공시가격을 따로 받는다(합계 − 그 금액 = 주된 주택).
      「모름」은 차단(①층) — 공제 12억/9억과 세액공제가 이 답에 따라 갈리므로 짐작으로 채우지 않는다. */
   {
@@ -100,11 +102,11 @@ const COMP_QS = [
     id: 'ownership',
     section: '명의 (단독 / 부부 공동)',
     q: '이 주택의 명의는 어떻게 되어 있나요?',
-    sub: '부부 공동명의 1주택은 부부가 각자 공제(각 9억, 합 18억)를 받아(종부세법 §8①) 단독명의(12억)보다 유리할 수 있습니다. 다만 1세대1주택 연령·보유 세액공제는 공동명의 1주택자 특례(§10의2) 신청 시 받을 수 있어, 둘 중 유리한 쪽을 자동 비교해 드립니다. 2채 특례(의제)인 경우의 부부 공동명의는 이 계산기가 지원하지 않아 세무사 확인을 안내합니다.',
+    sub: '부부 공동명의 공제는 연도별로 다릅니다. 과거연도 공동명의는 현재 지원 범위에서 제외되어 금액 없이 안내합니다. 다만 1세대1주택 연령·보유 세액공제는 공동명의 1주택자 특례(§10의2) 신청 시 받을 수 있어, 둘 중 유리한 쪽을 자동 비교해 드립니다. 2채 특례(의제)인 경우의 부부 공동명의는 이 계산기가 지원하지 않아 세무사 확인을 안내합니다.',
     showIf: (a) => a.ownerType !== 'corporate' && (a.housingCount === 'one' || compIsDeemed(a)),
     opts: [
-      ['single', '단독명의', '1세대1주택 공제 12억'],
-      ['joint', '부부 공동명의', '각 9억(합 18억) vs 특례 12억 자동 비교'],
+      ['single', '단독명의', '해당 연도 1세대1주택 공제'],
+      ['joint', '부부 공동명의', '지원 연도에서 지분별 과세와 특례 비교'],
     ],
   },
   {
@@ -121,16 +123,16 @@ const COMP_QS = [
   {
     id: 'priorYearTotalTax',
     section: '세부담 상한 (직전 연도 세액)',
-    q: '작년에 이 주택(들)의 재산세 본세와 종합부동산세(농어촌특별세 제외)를 합치면 얼마였나요? (원, 선택)',
-    sub: '세부담 상한(종부세법 §10, 직전 연도의 150%)을 계산하려면 필요합니다. 작년 재산세 고지서의 본세와 종부세 고지서의 종합부동산세액을 더해 주세요. 작년에 없었거나 모르면 비워 두세요 — 상한 없이 계산하고 알려 드립니다(공시가격이 크게 올랐다면 실제 세액은 더 적을 수 있습니다).',
+    q: '선택 연도의 직전 연도 총세액상당액은 얼마인가요? (재산세 본세+종부세, 원)',
+    sub: '세부담 상한(종부세법 §10, 직전 연도의 150%)을 계산하려면 필요합니다. 같은 재산에 대해 법정 방식으로 계산한 직전 연도 총세액상당액을 입력하세요. 단순히 이전 고지서를 더한 값과 다를 수 있습니다. 과거연도 계산에서 모르면 금액 없이 추가 입력을 안내합니다.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 3,000,000',
   },
   {
     id: 'propertyTaxPaid',
     section: '올해 재산세 (재산세 공제)',
-    q: '올해 7·9월 재산세 고지서의 주택분 재산세 본세를 모두 합하면 얼마인가요? (원, 선택)',
-    sub: '도시지역분·지방교육세는 뺀 재산세 본세만 더해 주세요. 종부세는 같은 주택에 낸 재산세만큼을 빼 주므로(종부세법 §9③) 실제 금액을 넣으면 더 정확해집니다. 비워 두면 엔진이 추정해 계산하고 알려 드립니다.',
+    q: '선택 연도 7·9월 고지서의 주택분 재산세 본세 합계는 얼마인가요? (원)',
+    sub: '도시지역분·지방교육세는 뺀 재산세 본세만 더해 주세요. 종부세는 같은 주택에 낸 재산세만큼을 빼 주므로(종부세법 §9③) 실제 금액을 넣으면 더 정확해집니다. 과거연도는 확인된 실제 금액이 필요하며, 과세 대상인데 미입력하면 세액 없이 추가 입력을 안내합니다. 2026년 미입력은 엔진의 추정 여부 안내를 확인하세요.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 2,000,000',
   },
@@ -161,6 +163,14 @@ function compFallbackGaps(answers, calc) {
     answers={...answers,housingCount:'three',deemedOneHouse:'no',ownership:'sole'};
   }
 
+  const historyYear = answers.taxYear == null || answers.taxYear === '' ? 2026 : Number(answers.taxYear);
+  if (!Number.isInteger(historyYear) || historyYear < 1900 || historyYear > 2100) return ['과세연도를 1900~2100 사이의 정수로 입력해 주세요.'];
+  if (historyYear < 2026 && answers.ownerType !== 'corporate' && ['two','three'].includes(answers.housingCount) && (!answers.deemedOneHouse || answers.deemedOneHouse === 'no')) {
+    const parts=String(answers.historicalHousingValues||'').split(',').map(x=>x.trim()), values=parts.map(Number);
+    if(parts.some(x=>!/^\d+$/.test(x)) || values.some(x=>!Number.isSafeInteger(x)||x<=0)
+       || (answers.housingCount==='two' ? values.length!==2 : values.length<3)
+       || values.reduce((sum,x)=>sum+x,0)!==Number(answers.totalValue)) return ['주택 수에 맞게 물건별 공시가격을 쉼표로 구분하고, 앞에서 입력한 합계와 일치시켜 주세요.'];
+  }
   const share = Number(answers.ownShare);
   /* §8④ 의제: 2채일 때만 의미가 있다. 미응답(빠른 계산 단계)·「아니요」는 일반 2주택이다. 「모름」·목록 밖의 값은 막는다. */
   const dm = answers.housingCount === 'two' ? answers.deemedOneHouse : undefined;
@@ -202,13 +212,16 @@ function compFallbackGaps(answers, calc) {
      (특례 대상 공시가격이 없거나 합계 이하면, 「모름」이거나 목록 밖의 값이면 null)
    · 나이·보유기간: 1세대 1주택(또는 의제)일 때만, 「모름」·비움이면 키를 보내지 않는다(엔진이 공제 없이 계산하고 알린다). 보유기간 0 은 보낸다.
    · 공동명의: 1채일 때만 ownership_share(지분 0<x<100 %), 지분이 없으면 null. 2채 의제 + 공동명의는 null(지원하지 않는다)
-   · 선택: property_tax_paid(양수일 때), prior_year_total_tax(양수일 때) — 비우면 보내지 않는다. tax_year 는 보내지 않는다(엔진 기본 2026).
+   · 선택: property_tax_paid(양수일 때), prior_year_total_tax(양수일 때) — 비우면 보내지 않는다. tax_year 는 선택한 연도로 전달한다(기존 호출에서 생략 시 2026).
    ⚠️ 이 함수는 자기완결이어야 한다(tests_acq_holding.js 가 함수 본문만 꺼내 실행한다). */
 function mapAnswersToComprehensive(a) {
+  const year = a.taxYear == null || a.taxYear === '' ? 2026 : Number(a.taxYear);
+  if (!Number.isInteger(year) || year < 1900 || year > 2100) return null;
   if(a.ownerType==='corporate') {
     const n=Number(a.corporateHouseCount),v=Number(a.totalValue);
     if(!['일반','공익법인_직접사용','공공주택사업자등','공익법인_기타'].includes(a.corporateType)||!Number.isSafeInteger(n)||n<1||!Number.isSafeInteger(v)||v<0)return null;
     const body={housing_values:[v],housing_count:n,is_corporate:true,corporate_type:a.corporateType,is_one_house:false};
+    if (a.taxYear) body.tax_year = year;
     for(const [key,field] of [['propertyTaxPaid','property_tax_paid'],['priorYearTotalTax','prior_year_total_tax']]) {
       if(a[key]==null||String(a[key]).trim()==='')continue;
       if(!Number.isSafeInteger(Number(a[key]))||Number(a[key])<0)return null;
@@ -243,6 +256,14 @@ function mapAnswersToComprehensive(a) {
     };
     credit = a.housingCount === 'one';
   }
+  if (year < 2026 && body.housing_count >= 2 && !body.one_house_exceptions) {
+    const parts=String(a.historicalHousingValues||'').split(',').map(x=>x.trim());
+    const values=parts.map(Number);
+    if(parts.some(x=>!/^\d+$/.test(x)) || values.some(x=>!Number.isSafeInteger(x)||x<=0)
+      || (a.housingCount==='two' ? values.length!==2 : values.length<3)
+      || values.reduce((sum,x)=>sum+x,0)!==tv) return null;
+    body.housing_values=values; body.housing_count=values.length;
+  }
   if (credit) {
     const blank = (v) => v === undefined || v === null || String(v).trim() === '';
     if (a.ownerAgeUnknown !== 'yes' && !blank(a.ownerAge) && Math.floor(Number(a.ownerAge)) > 0) body.owner_age = Math.floor(Number(a.ownerAge));
@@ -256,6 +277,7 @@ function mapAnswersToComprehensive(a) {
   }
   if (Number(a.propertyTaxPaid) > 0) body.property_tax_paid = Number(a.propertyTaxPaid);
   if (Number(a.priorYearTotalTax) > 0) body.prior_year_total_tax = Number(a.priorYearTotalTax);
+  if (a.taxYear) body.tax_year = year;
   return body;
 }
 
@@ -481,7 +503,8 @@ function JTReportComprehensive({ setRoute, onBack }) {
   const resetAddr = () => { setAns('totalValue', ''); setAddedCount(0); setLinfo(null); setLaddrSync(''); };
 
   const allVisible = COMP_QS.filter(q => (!q.showIf || q.showIf(answers)) && !(answers.ownerType==='corporate' && ['housingCount','deemedOneHouse','secondValue','ownership','ownShare','ownerAge','ownerAgeUnknown','holdingYears','holdingYearsUnknown'].includes(q.id)));
-  const visibleQs = phase === 'quick' ? allVisible.filter(q => q.tier === 'quick') : allVisible.filter(q => q.tier !== 'quick');
+  const isQuick = q => q.tier === 'quick' || (answers.taxYear && Number(answers.taxYear) < 2026 && ['ownerAge','holdingYears','ownership','deemedOneHouse','priorYearTotalTax','propertyTaxPaid'].includes(q.id));
+  const visibleQs = phase === 'quick' ? allVisible.filter(isQuick) : allVisible.filter(q => !isQuick(q));
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
@@ -490,6 +513,8 @@ function JTReportComprehensive({ setRoute, onBack }) {
 
   const canNext = () => {
     if (!cur) return false;
+    if (cur.id === 'historicalHousingValues') return compFallbackGaps(answers, {precise:true}).length === 0;
+    if (cur.id === 'taxYear') return Number.isInteger(Number(answers.taxYear)) && Number(answers.taxYear)>=1900 && Number(answers.taxYear)<=2100;
     if (cur.freeform) return true;
     /* 「모름」 보조 답이 켜져 있으면 값 없이 다음으로 간다 — 모름은 차단이 아니라 «공제 없이 계산 + 엔진 고지» 다. */
     if (cur.unknownId && answers[cur.unknownId] === 'yes') return true;
@@ -614,6 +639,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
       return (
         <div className="jt-container">
           <JTReportShell title="종합부동산세 계산 결과" subtitle={compBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
             {/* 'down' 은 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다. 엔진 오류 문구의 조문 표기(SS8(1))는 읽기 좋게 바꾼다 */}
             <JTFallbackBlocked gaps={compBlockReason === 'down' ? [] : compGaps.map(compFmtArticle)} onRetry={runAnalysis} reason={compBlockReason} />
             {/* 'refused' 패널에는 재시도 버튼이 없다 — 지원 안 함·형식 오류는 일시적일 수 있어 다시 시도할 길을 둔다(입력 보완은 «← 이전» 으로 고친다) */}
@@ -630,14 +656,15 @@ function JTReportComprehensive({ setRoute, onBack }) {
     const deemedLabel = { temp: '일시적 2주택', inherit: '상속주택', rural: '지방 저가주택', land: '다른 주택의 부속토지' }[answers.deemedOneHouse];
     return (
       <div className="jt-container">
-        <JTReportShell title="종합부동산세 계산 결과" subtitle="종부세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell title="종합부동산세 계산 결과" subtitle={(answers.taxYear || '2026') + '년 종부세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 종부세(연간, 농특세 포함)' : '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)'}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
           </div>
 
           {report.quick && answers.ownerType==='corporate' && <p>법인 유형: {answers.corporateType} · 세율 적용 주택 {answers.corporateHouseCount}채 <button className="jt-btn jt-btn--ghost" onClick={goDetail}>재산세·전년도 세액 추가 입력 →</button></p>}
-          {report.quick && answers.ownerType!=='corporate' && (
+          {report.quick && Number(answers.taxYear || 2026) >= 2026 && answers.ownerType!=='corporate' && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
                 <strong>기본 정보로 낸 빠른 예상치예요.</strong>{' '}
@@ -835,7 +862,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
                   <button type="button" className={'jt-report-q__opt' + (answers[cur.unknownId] === 'yes' ? ' is-selected' : '')}
                     onClick={() => setAns(cur.unknownId, answers[cur.unknownId] === 'yes' ? '' : 'yes')}>
                     <span className="jt-report-q__opt-mark">{answers[cur.unknownId] === 'yes' ? '●' : '○'}</span>
-                    <span><strong>모름</strong><span style={{ opacity: 0.7 }}> · 공제 없이 계산하고 알려 드립니다</span></span>
+                    <span><strong>모름</strong><span style={{ opacity: 0.7 }}> · 연도별 지원 조건 확인</span></span>
                   </button>
                 </div>
               )}

@@ -23,6 +23,7 @@ function koreanAmount(raw) {
 }
 
 const GIFT_QS = [
+  {id: 'giftDate', tier: 'quick', section: '증여 시점', q: '증여일은 언제인가요?', sub: '해당 날짜의 연도로 계산합니다. 지원하지 않는 과거 조건은 확인 안내가 표시됩니다.', date: true},
   {
     id: 'assetType',
     tier: 'quick',
@@ -184,12 +185,17 @@ const GIFT_QS = [
     section: '사전증여 이력',
     q: '그때 적용받은 증여재산공제는? (모르면 비우면 관계별 기본공제로 추정 · 선택)',
     sub: '사전증여 당시 적용받은 공제(예: 직계존비속 5천만·기타친족 1천만 등). 합산 시 이미 낸 증여세를 빼주는 한도(상증법 §58 납부세액공제) 계산에 쓰입니다. ⚠️ 0으로 두면 이 사전증여세액공제가 과다 산정돼 현재 증여세가 실제보다 적게 나올 수 있어, 비워두면 0이 아니라 관계별 기본공제로 추정해 드립니다. 사전증여 당시 혼인·출산공제 등으로 공제가 더 컸다면 정확한 값을 입력하세요.',
-    showIf: (a) => a.priorGiftHas === 'yes',
+    showIf: (a) => a.priorGiftHas === 'yes' && !(a.giftDate && a.giftDate.slice(0,4) < '2026'),
     numeric: true,
     money: true,
     optional: true,
     placeholder: '예: 50,000,000 (모르면 비우면 기본공제 추정)',
   },
+  ...[
+    ['historicalPriorValues','사전증여별 재산가액을 오래된 순서대로 입력하세요.','예: 150000000, 50000000'],
+    ['historicalPriorTaxes','같은 순서로 각 사전증여의 실제 산출세액을 입력하세요.','신고세액공제 전 산출세액입니다. 예: 10000000, 10000000'],
+    ['historicalPriorDeductions','같은 순서로 당시 일반 증여재산공제액을 입력하세요.','혼인·출산공제와 섞지 마세요. 예: 50000000, 0']
+  ].map(([id,q,sub])=>({id,section:'과거 사전증여 사실',q,sub:sub+' 원 단위 정수를 쉼표로 구분합니다. 없으면 0을 명시하세요.',freeform:true,showIf:a=>a.priorGiftHas==='yes' && a.giftDate && a.giftDate.slice(0,4)<'2026'})),
   // ── 부담부증여 (부동산) ──
   {
     id: 'isBurdened',
@@ -396,6 +402,10 @@ function giftFallbackGaps(answers, calc) {
    · gift_history — 합계 1건. total_deduction_used 는 입력란을 채운 경우에만 */
 function mapAnswersToGift(a) {
   const body = { value: giftAmount(a) };
+  if (a.giftDate) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(a.giftDate) || isNaN(Date.parse(a.giftDate)) || new Date(a.giftDate).toISOString().slice(0,10) !== a.giftDate) throw new Error('실제 증여일을 입력해 주세요.');
+    body.tax_year = Number(a.giftDate.slice(0,4));
+  }
   if (a.relationship) body.relationship = a.relationship;
   /* 보이지 않는 문항의 낡은 답(관계를 바꾸기 전에 답한 것)은 보내지 않는다 */
   const lineal = a.relationship === '직계존속';
@@ -421,7 +431,15 @@ function mapAnswersToGift(a) {
        지금 성년이면 당시 미성년이었는지 알 수 없어 보내지 않는다. */
     if (ageAnswered && Number(a.doneeAge) < 19) item.is_minor = true;
     item.donor_child_deceased = skipAnswer === 'yes' && a.childDeceased === 'yes';
-    body.gift_history = [item];
+    if (body.tax_year >= 2020 && body.tax_year < 2026) {
+      const lists=['historicalPriorValues','historicalPriorTaxes','historicalPriorDeductions'].map(key=>{
+        const parts=String(a[key]||'').split(',').map(x=>x.trim());
+        if(parts.some(x=>!/^\d+$/.test(x)) || parts.some(x=>!Number.isSafeInteger(Number(x)))) throw new Error('각 사전증여의 가액·실제 산출세액·일반 공제액을 같은 순서의 원 단위 정수로 입력해 주세요.');
+        return parts.map(Number);
+      });
+      if(lists.some(x=>x.length!==lists[0].length) || lists[0].reduce((sum,x)=>sum+x,0)!==Number(a.priorGiftValue)) throw new Error('사전증여별 입력 건수를 맞추고 재산가액 합계가 앞선 합계와 같은지 확인해 주세요.');
+      [body.prior_gift_values,body.prior_gift_taxes,body.prior_gift_deductions]=lists;
+    } else body.gift_history = [item];
   }
   for (const [key,field] of [["appraisalFee", "appraisal_fee"], ["foreignTaxPaid", "foreign_tax_paid"], ["nonTaxable", "non_taxable"]]) {
     if(a[key]==null || String(a[key]).trim()==='') continue;
@@ -449,11 +467,13 @@ function mapAnswersToGift(a) {
    · is_objective_debt — 답한 경우에만(모름·미응답은 생략). is_generation_skip·donor_child_deceased — 관계가 직계존속일 때만
    · regulated_at_acquisition·move_in_date — 묻는 경우(giftAsksZoneAtAcq / 주택)에 답한 값만 */
 function mapAnswersToBurdenedGift(a) {
+  if (a.giftDate && !isValidISODate(a.giftDate)) throw new Error("실제 증여일을 입력해 주세요.");
   const isHouse = a.reType === '공동주택' || a.reType === '개별주택';
   // 수정 260628(GIFT-R2-04): 상가를 '오피스텔'로 오매핑하던 것을 '상가' enum 직접 전달(비주택 양도·취득세 정상 과세, 소법 §89①3호 비과세 배제).
   const propertyType = a.reType === '토지' ? '토지' : (a.reType === '상가' ? '상가' : '주택');
   const body = {
     property_value: giftAmount(a),
+    ...(a.giftDate ? {gift_date:a.giftDate} : {}),
     debt_assumed: Number(a.debtAssumed) || 0,
     ...(Number(a.acqPrice) > 0 ? { acquisition_price: Number(a.acqPrice) } : {}),   // 빈칸·0 은 보내지 않는다(결과 단계 이전에 giftFallbackGaps 가 막는다)
     ...(isValidISODate(a.acqDate || '') ? { acquisition_date: a.acqDate } : {}),
@@ -684,10 +704,13 @@ function JTReportGift({ setRoute, onBack }) {
   }, []);
 
   const allVisible = GIFT_QS.filter(q => !q.showIf || q.showIf(answers));
-  // quick 단계 = tier:'quick' 문항만 / detail 단계 = 나머지(상세) 문항만
+  // 과거연도는 엔진이 요구하는 사실을 첫 계산 전에 받는다.
+  const isQuick = q => q.tier === 'quick' || (answers.giftDate && answers.giftDate.slice(0,4) < '2026'
+    && ['genSkip','childDeceased','marriageDed','childbirthDed','priorGiftHas','priorGiftValue',
+        'historicalPriorValues','historicalPriorTaxes','historicalPriorDeductions','priorMarriageChildUsed'].includes(q.id));
   const visibleQs = phase === 'quick'
-    ? allVisible.filter(q => q.tier === 'quick')
-    : allVisible.filter(q => q.tier !== 'quick');
+    ? allVisible.filter(isQuick)
+    : allVisible.filter(q => !isQuick(q));
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
@@ -865,6 +888,7 @@ function JTReportGift({ setRoute, onBack }) {
     // 사전증여 공제액 입력란이 비어 있었던 경우(엔진이 한도 안 순차 공제로 보고 계산) → 결과화면에 캐비엇 노출
     const priorDedEstimated = !isBurdened && calc.precise &&
       answers.priorGiftHas === 'yes' && Number(answers.priorGiftValue) > 0 &&
+      (!answers.giftDate || Number(answers.giftDate.slice(0,4)) >= 2026) &&
       !giftPriorDedGiven(answers);
     /* 엔진 값이 없거나(down·refused) 입력이 불확정이면 숫자를 내지 않는다 (261004: 자체 계산식 없음).
        부담부증여 엔진 실패(engineErr)도 여기서 함께 잡는다 — 종전엔 예외로 빼 두어
@@ -881,6 +905,7 @@ function JTReportGift({ setRoute, onBack }) {
       return (
         <div className="jt-container">
           <JTReportShell title="증여세 계산 결과" subtitle={giftBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
             {/* 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다.
                 단 부담부증여 엔진 실패(engineErr)의 사유 문구는 그대로 보인다(종전 동작) */}
             <JTFallbackBlocked gaps={(giftBlockReason === 'input' || calc.engineErr || calc.engineMessage) ? giftGaps : []} onRetry={runAnalysis} reason={giftBlockReason} />
@@ -893,7 +918,8 @@ function JTReportGift({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : '증여세 정밀 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (answers.giftDate || '2026년 기본값') + ' 증여세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
           <button className="jt-btn jt-btn--ghost" onClick={() => setCaseMode(true)}>사건 저장·불러오기</button>
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
@@ -919,8 +945,9 @@ function JTReportGift({ setRoute, onBack }) {
           {report.quick && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
-                <strong>관계·금액만으로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
-                10년 내 사전증여(합산) · 부담부(빚도 함께 넘김) · 세대생략(손주 증여) · 혼인·출산 공제.
+                {answers.giftDate && answers.giftDate.slice(0,4) < '2026'
+                  ? <strong>입력한 증여일·관계·사전증여·공제 사실을 반영한 예상치입니다. 다른 사실을 추가하면 지원 여부와 세액이 달라질 수 있습니다.</strong>
+                  : <><strong>관계·금액만으로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />10년 내 사전증여(합산) · 부담부(빚도 함께 넘김) · 세대생략(손주 증여) · 혼인·출산 공제.</>}
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
             </div>
@@ -958,7 +985,7 @@ function JTReportGift({ setRoute, onBack }) {
                   {calc.genSkipSurcharge > 0 && <tr><th>세대생략 할증 (§57)</th><td>+ {formatWon(calc.genSkipSurcharge)}</td></tr>}
                   {calc.giftCredit > 0 && <tr><th>납부세액공제 (사전증여 §58)</th><td>− {formatWon(calc.giftCredit)}</td></tr>}
                   {calc.foreignCredit > 0 && <tr><th>외국납부세액공제</th><td>− {formatWon(calc.foreignCredit)}</td></tr>}
-                  <tr><th>신고세액공제 (§69, 3%)</th><td>− {formatWon(calc.filingCredit)}</td></tr>
+                  <tr><th>신고세액공제 (§69, 해당 연도)</th><td>− {formatWon(calc.filingCredit)}</td></tr>
                   <tr><th><strong>총 세액</strong></th><td><strong>{formatWon(calc.totalTax)}</strong></td></tr>
                 </tbody>
               </table>
@@ -1009,7 +1036,7 @@ function JTReportGift({ setRoute, onBack }) {
           )}
 
           <p style={{ fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 }}>
-            본 계산은 입력 정보와 현행 세법을 기준으로 한 예상액입니다. 실제 세액은 사실관계·평가액·세법 개정에 따라 달라질 수 있으며, 신고기한은 증여일이 속한 달의 말일부터 3개월입니다(신고세액공제 3%). 정확한 신고는 담당 세무사 확인이 필요합니다.
+            본 계산은 증여일 {answers.giftDate || '2026년 기본값'}의 적용 규정에 따른 예상액입니다. 실제 세액은 사실관계·평가액·세법 개정에 따라 달라질 수 있으며, 신고세액공제는 해당 연도 기준으로 반영합니다. 정확한 신고는 담당 세무사 확인이 필요합니다.
           </p>
 
           {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
@@ -1022,7 +1049,7 @@ function JTReportGift({ setRoute, onBack }) {
             completeEligible={true}
             precise={calc.precise}
             quick={report.quick}
-            reportType={isBurdened ? '부담부증여 통합 계산' : '증여세 정밀 계산'}
+            reportType={isBurdened ? '부담부증여 통합 계산' : (answers.giftDate || '2026년 기본값') + ' 증여세 계산'}
             reportTag="LEGACY"
             reportSummary={`총 세부담 ${formatWon(calc.totalTax)}${isBurdened ? ' (부담부)' : ' / 과세표준 ' + formatWon(calc.taxBase)} / ${commentary.headline || ''}`}
             reportDetail={buildGiftDetail(answers, calc, commentary)}

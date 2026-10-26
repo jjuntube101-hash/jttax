@@ -408,7 +408,7 @@ console.log('════ 문항 구조 ════');
   const ids = F.COMP_QS.map((q) => q.id);
   const dm = Q('deemedOneHouse'), sv = Q('secondValue'), age = Q('ownerAge'), hy = Q('holdingYears'), pyt = Q('priorYearTotalTax'), ptp = Q('propertyTaxPaid');
   ok(dm && sv && age && hy && pyt && ptp, '새 문항 여섯이 모두 있다');
-  eq(plain(F.COMP_QS.filter((q) => q.tier === 'quick').map((q) => q.id)), ['ownerType', 'corporateType', 'corporateHouseCount', 'housingCount', 'totalValue'], '빠른 계산 단계에 소유자·법인 유형·법인 주택 수 추가');
+  eq(plain(F.COMP_QS.filter((q) => q.tier === 'quick').map((q) => q.id)), ['taxYear', 'ownerType', 'corporateType', 'corporateHouseCount', 'housingCount', 'totalValue', 'historicalHousingValues'], '과세연도·물건별 과거 가액을 빠른 계산에 연결');
   eq([dm.tier, sv.tier, age.tier, hy.tier, pyt.tier, ptp.tier], [undefined, undefined, undefined, undefined, undefined, undefined], '새 문항은 모두 상세 단계');
   eq(plain(dm.opts.map((o) => o[0])), ['no', 'temp', 'inherit', 'rural', 'land', 'unknown'], '의제 문항 선택지 6개');
   eq(dm.q, '두 번째 주택 때문에 2주택이 됐지만 1세대 1주택자로 보는 경우인가요?', '의제 문항 문구');
@@ -435,8 +435,8 @@ console.log('════ 문항 구조 ════');
   ok(hy.sub.includes('1년 미만이면 0'), '보유기간 0 안내');
   /* 선택 문항 */
   for (const q of [pyt, ptp]) eq([q.numeric, q.money, q.optional, q.showIf], [true, true, true, undefined], q.id + ': 금액·선택·항상 묻는다');
-  ok(pyt.q.includes('재산세 본세') && pyt.q.includes('종합부동산세') && pyt.q.includes('농어촌특별세'), '직전 연도 세액 문항 문구');
-  ok(pyt.sub.includes('§10') && pyt.sub.includes('150%') && pyt.sub.includes('상한 없이 계산하고 알려 드립니다'), '직전 연도 세액: 세부담 상한 안내');
+  ok(pyt.q.includes('재산세 본세') && pyt.q.includes('종부세') && pyt.q.includes('직전 연도 총세액상당액'), '직전 연도 총세액상당액 문항');
+  ok(pyt.sub.includes('§10') && pyt.sub.includes('150%') && pyt.sub.includes('법정 방식') && pyt.sub.includes('추가 입력'), '과거연도 상한 자료 미확정은 추가 입력 안내');
   ok(ptp.q.includes('7·9월') && ptp.q.includes('재산세 본세') && ptp.sub.includes('도시지역분·지방교육세') && ptp.sub.includes('§9③'), '올해 재산세 문항 문구');
   eq(ids.indexOf('priorYearTotalTax') + 1, ids.indexOf('propertyTaxPaid'), '직전 연도 세액 → 올해 재산세 순서');
   eq(plain(ids.slice(-3)), ['priorYearTotalTax', 'propertyTaxPaid', 'context'], '선택 문항은 자유 입력 앞');
@@ -511,7 +511,7 @@ console.log('════ 엔진 호출 → 판정 (fetch 대역) ════')
   ok(!/0\.60|0\.6\b|1_200_000_000|900_000_000|\* 1\.20|\* 0\.0|\* 0\.[0-9]/.test(stripped), '화면이 공정비율·공제·세율·농특세를 곱하는 식이 없다(주석·문자열 제외)');
   const mapSrc = code.slice(code.indexOf('function mapAnswersToComprehensive('), code.indexOf('const COMP_ENGINE_REQUIRED'));
   ok(/one_house_exceptions/.test(mapSrc) && /property_tax_paid/.test(mapSrc) && /prior_year_total_tax/.test(mapSrc) && /owner_age/.test(mapSrc) && /holding_years/.test(mapSrc), '새 키가 모두 요청 변환에 있다');
-  ok(!/tax_year/.test(mapSrc.replace(/\/\*[\s\S]*?\*\//g, '')), '요청 변환이 tax_year 를 보내지 않는다(엔진 기본 2026)');
+  ok(/body\.tax_year = year/.test(mapSrc), '선택한 과세연도가 요청에 전달된다');
   /* 결과 화면: 새 행·문구 */
   ok(/calc\.creditExcluded > 0/.test(code) && /세액공제 제외분/.test(code), '결과 화면에 세액공제 제외분 행(값 > 0 일 때)');
   ok(/calc\.limitApplied/.test(code) && /종부세법 §10/.test(code) && /상한액/.test(code), '결과 화면에 세부담 상한 적용 → 상한액 행(근거 종부세법 §10)');

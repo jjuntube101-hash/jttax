@@ -54,6 +54,15 @@ const body = (a) => plain(map(a));
 
 /* 기준 답 — 양도일·취득일을 명시해 «오늘»에 기대지 않는다 */
 const BASE = { acquiredDate: '2018-03-15', transferDate: '2026-10-05', acquired: '500000000', sold: '900000000' };
+for (const answer of ['yes','no',undefined]) {
+  eq(body({...BASE,assetType:'house_2',transferDate:'2020-06-01',historicalOrdinary:answer}).historical_ordinary_sale_confirmed, answer==='yes', '과거 일반양도 명시 확인');
+}
+eq(body({...BASE,assetType:'house_2',historicalOrdinary:'yes'}).historical_ordinary_sale_confirmed,undefined,'현행 연도에 과거 확인값 미전달');
+eq(body({...BASE,assetType:'commercial',transferDate:'2020-06-01',historicalOrdinary:'yes'}).historical_ordinary_sale_confirmed,undefined,'비주택에 과거 주택 확인값 미전달');
+const ordinaryPast={...BASE,assetType:'house_2',transferDate:'2020-06-01',historicalOrdinary:'yes',otherHouseSource:'bought',newHouseDate:'2019-01-01'};
+eq(body(ordinaryPast).exemption_special_type,undefined,'확인된 과거 일반양도에 숨겨진 일시적2주택 요청 미전달');
+eq(body({...ordinaryPast,otherHouseSource:'inherited',inheritanceDate:'2019-01-01'}).inherited_house_count,undefined,'확인된 과거 일반양도에 숨겨진 상속주택 요청 미전달');
+eq(body({...ordinaryPast,transferDate:'2026-06-01'}).exemption_special_type,'temporary_2house','현행 특례 요청은 보존');
 
 // ───────────────────────── 유형별 property_type · housing_count ─────────────────────────
 console.log('════ 유형별 property_type · housing_count ════');

@@ -40,6 +40,7 @@ function fmtArticle(s) {
 }
 
 const INHERITANCE_QS = [
+  {id: 'deathDate', tier: 'quick', section: '상속 시점', q: '상속개시일(사망일)은 언제인가요?', placeholder: '2025-06-01', freeform: true},
   // ── 빠른 계산 (필수 3문항 → 즉시 예상) ──
   {
     id: 'estateValue',
@@ -95,6 +96,7 @@ const INHERITANCE_QS = [
     placeholder: '예: 7',
     showIf: (a) => a.numChildren === 'many',
   },
+  {id: 'historicalChildAges', tier: 'quick', section: '상속인 사실', q: '자녀 각각의 상속개시일 현재 만 나이를 입력하세요.', sub: '쉼표로 구분합니다. 예: 30, 35. 자녀가 없으면 비워 두세요. 과거연도 계산에 필요한 실제 나이입니다.', freeform: true, showIf: a => a.deathDate && a.deathDate.slice(0,4) < '2026'},
   /* 배우자가 실제로 상속받는 금액은 배우자상속공제(§19)를 갈라 세액이 크게 달라진다 — 그래서 «빠른 계산»에서 묻는다.
      종전엔 상세 단계에서 「법정상속분 / 받지 않음」 둘만 있었고, 묻지 않은 빠른 계산은 법정상속분으로 «확정»했다(261010 폐지).
      「모름」은 엔진을 부르지 않는다 — 짐작으로 채우면 틀린 금액에 「정밀 계산」 딱지가 붙는다. */
@@ -168,7 +170,7 @@ const INHERITANCE_QS = [
     id: 'netFinancialAssets',
     section: '공제 항목',
     q: '예금·주식 등 순금융재산은 얼마인가요? (원)',
-    sub: '상속재산 중 금융재산(예금·적금·주식·펀드 등)에서 금융기관 빚을 뺀 금액입니다. 금융재산상속공제(최대 2억)가 적용됩니다(상증법 §22). 이 금액은 위 「총재산」에 이미 포함된 것이며, 추가로 더하지 않고 공제 계산에만 씁니다(중복 가산 아님). 예) 예금 5억 + 주식 1억 − 대출 1억 = 순금융재산 5억. 모르면 비워두셔도 공제만 못 받을 뿐 세액이 틀리지 않습니다.',
+    sub: '상속재산 중 금융재산(예금·적금·주식·펀드 등)에서 금융기관 빚을 뺀 금액입니다. 금융재산상속공제(최대 2억)가 적용됩니다(상증법 §22). 이 금액은 위 「총재산」에 이미 포함된 것이며, 추가로 더하지 않고 공제 계산에만 씁니다(중복 가산 아님). 예) 예금 5억 + 주식 1억 − 대출 1억 = 순금융재산 5억. 모르면 비워둘 수 있으나 금융재산공제가 누락되어 세액이 실제보다 커질 수 있습니다.',
     numeric: true, money: true, optional: true,
     placeholder: '예: 500,000,000',
   },
@@ -331,6 +333,16 @@ function mapAnswersToInheritance(a) {
   if (a.numChildren === 'many' && !(Number(a.numChildrenExact) >= 7)) return null;   // 7명 이상인데 정확한 인원이 없거나 7 미만이다 — 임의로 올리지 않는다
   if (a.priorGiftHas === 'yes' && a.priorGiftOneRecipient !== 'one') return null;   // 사전증여를 받은 사람이 여럿이거나 답이 없다 — 합계 1건으로 섞지 않는다
   const body = { estate_value: Number(a.estateValue) || 0 };
+  if (a.deathDate) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(a.deathDate) || isNaN(Date.parse(a.deathDate)) || new Date(a.deathDate).toISOString().slice(0,10) !== a.deathDate) throw new Error('실제 상속개시일을 YYYY-MM-DD 형식으로 입력해 주세요.');
+    body.death_date = a.deathDate;
+    if (Number(a.deathDate.slice(0,4)) < 2026) {
+      const ages = String(a.historicalChildAges || '').trim() ? String(a.historicalChildAges).split(',').map(x => x.trim()) : [];
+      if (ages.length !== inhChildCount(a) || ages.some(x => !/^\d{1,3}$/.test(x))) return null;
+      body.heirs = ages.map((x,i) => ({name: '자녀'+(i+1), relationship: '자녀', age: Number(x)}));
+      if (spouseYes) body.heirs.push({name: '배우자', relationship: '배우자', actual_inheritance: a.spouseActual === 'none' ? 0 : a.spouseActual === 'amount' ? Number(a.spouseInheritanceAmount) : undefined});
+    }
+  }
   if (a.hasSpouse === 'yes' || a.hasSpouse === 'no') body.has_spouse = spouseYes;
   if (a.numChildren != null && a.numChildren !== '') body.num_children = inhChildCount(a);
   Object.assign(body, spouse);
@@ -412,7 +424,11 @@ function inhFallbackGaps(answers, calc) {
      계산 구조 자체가 다른데, 그대로 두면 거주자 기준 금액에 「정밀 계산」 딱지가 붙는다.
      경고 배너만으로는 부족하다 — 사람은 숫자를 먼저 본다.
      배우자 「모름」은 요청을 보내지 않는다 — 배우자공제가 5억에서 30억까지 갈려 세액이 크게 달라진다(261010). */
+  const past = answers.deathDate && answers.deathDate.slice(0,4) < '2026';
+  const ages = String(answers.historicalChildAges || '').trim() ? String(answers.historicalChildAges).split(',').map(x=>x.trim()) : [];
+  const childCount = answers.numChildren === 'many' ? Number(answers.numChildrenExact) : Number(answers.numChildren);
   const unknown = window.jtFallbackGaps([
+    { when: past && (ages.length !== childCount || ages.some(x=>!/^\d{1,3}$/.test(x))), why: '자녀 수에 맞춰 상속개시일 현재 만 나이를 쉼표로 구분해 입력해 주세요.' },
     { when: nonResident,
       why: '고인의 거주자 여부가 «거주자»로 확인되지 않았습니다 — 비거주자는 국내 재산만 과세되고 일괄공제·배우자상속공제가 배제됩니다. 계산 엔진이 아직 거주자 기준만 지원해 금액을 표시하지 않습니다(상담에서 정확히 안내해 드립니다).' },
     { when: spouseYes && sp === 'unsure',
@@ -580,9 +596,8 @@ function JTReportInheritance({ setRoute, onBack }) {
   }, []);
 
   const allVisible = INHERITANCE_QS.filter(q => !q.showIf || q.showIf(answers));
-  const visibleQs = phase === 'quick'
-    ? allVisible.filter(q => q.tier === 'quick')
-    : allVisible.filter(q => q.tier !== 'quick');
+  const isQuick = q => q.tier === 'quick' || (answers.deathDate && answers.deathDate.slice(0,4) < '2026' && ['funeralExpenses','burialFacilityExpenses','netFinancialAssets'].includes(q.id));
+  const visibleQs = phase === 'quick' ? allVisible.filter(isQuick) : allVisible.filter(q => !isQuick(q));
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
@@ -590,6 +605,11 @@ function JTReportInheritance({ setRoute, onBack }) {
   const setAns = (id, v) => setAnswers(a => ({ ...a, [id]: v }));
 
   const canNext = () => {
+    if (cur.id === 'deathDate') return /^\d{4}-\d{2}-\d{2}$/.test(answers.deathDate || '') && !isNaN(Date.parse(answers.deathDate)) && new Date(answers.deathDate).toISOString().slice(0,10) === answers.deathDate;
+    if (cur.id === 'historicalChildAges') {
+      const parts = String(answers.historicalChildAges || '').trim() ? String(answers.historicalChildAges).split(',').map(x=>x.trim()) : [];
+      return parts.length === inhChildCount(answers) && parts.every(x=>/^\d{1,3}$/.test(x));
+    }
     if (cur.freeform) return true;
     if (cur.numeric) {
       const mustFill = cur.requiredIf && cur.requiredIf(answers);   // 조건부 필수(예: 사전증여 '있음' 시 금액)
@@ -710,6 +730,7 @@ function JTReportInheritance({ setRoute, onBack }) {
       return (
         <div className="jt-container">
           <JTReportShell title="상속세 계산 결과" subtitle={inhBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
             {/* 'down' 은 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다.
                 'input'·'refused' 는 무엇을 채워야 하는지(엔진이 준 문구 포함)를 목록으로 보인다 */}
             <JTFallbackBlocked gaps={inhBlockReason === 'down' ? [] : inhGaps} onRetry={runAnalysis} reason={inhBlockReason} />
@@ -724,7 +745,8 @@ function JTReportInheritance({ setRoute, onBack }) {
     const ddNum = (k) => (typeof dd[k] === 'number' && isFinite(dd[k])) ? dd[k] : null;
     return (
       <div className="jt-container">
-        <JTReportShell title="상속세 계산 결과" subtitle="상속세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell title="상속세 계산 결과" subtitle={(answers.deathDate || '2026년 기본값') + ' 상속세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
               ⚠️ 비거주자 상속은 국내 재산만 과세되고 일괄공제 등이 배제되어 계산이 크게 달라집니다. 아래는 거주자 기준 참고치이며, 정확한 계산은 상담으로 안내해 드립니다.
@@ -738,7 +760,7 @@ function JTReportInheritance({ setRoute, onBack }) {
           {report.quick && (
             <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px', marginBottom: 16 }}>
               <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}>
-                <strong>총재산·가족·배우자 상속 방식만으로 낸 빠른 예상치예요.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
+                <strong>입력한 재산·가족·공제 사실에 따른 예상치입니다.</strong> 아래를 반영하면 세액이 달라질 수 있어요 —<br />
                 채무·장례비·봉안비 · 금융재산공제 · 동거주택공제 · 10년 내 사전증여(합산) · 보험금·퇴직금.
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
@@ -814,7 +836,7 @@ function JTReportInheritance({ setRoute, onBack }) {
           )}
 
           <p style={{ fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 }}>
-            본 계산은 입력 정보와 현행 세법을 기준으로 한 예상액입니다. 실제 세액은 재산 평가액·상속재산 분할·공제 적용·세법 개정에 따라 달라질 수 있으며, 신고기한은 상속개시일(사망일)이 속한 달의 말일부터 6개월입니다(피상속인 또는 상속인 중 한 분이라도 외국에 주소를 둔 경우 9개월, 신고세액공제 3%). 정확한 신고는 담당 세무사 확인이 필요합니다.
+            본 계산은 입력 정보와 선택한 과세연도를 기준으로 한 예상액입니다. 실제 세액은 재산 평가액·상속재산 분할·공제 적용·세법 개정에 따라 달라질 수 있으며, 신고기한은 상속개시일(사망일)이 속한 달의 말일부터 6개월입니다(피상속인 또는 상속인 중 한 분이라도 외국에 주소를 둔 경우 9개월, 신고세액공제는 해당 연도 적용률). 정확한 신고는 담당 세무사 확인이 필요합니다.
           </p>
 
           {/* 차단 중에는 위 조기 반환으로 이 화면에 오지 않으므로 «공유·전송»도 열리지 않는다 —

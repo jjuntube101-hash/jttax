@@ -282,6 +282,7 @@ const CGT_QS = [
     optional: true,
     allowFuture: true,
   },
+  {id:'historicalOrdinary',section:'과거 주택 양도 확인',q:'일시적 2주택·상속주택 등 비과세·감면 특례가 없는 일반 양도인가요?',sub:'2018~2021년 일반 다주택 계산에 필요한 확인입니다. 특례가 있거나 모르면 세액을 확정하지 않습니다.',showIf:a=>['house_2','house_3'].includes(a.assetType) && a.transferDate>='2018-01-01' && a.transferDate<'2022-01-01',opts:[['yes','네, 특례가 없는 일반 양도입니다',''],['no','특례가 있거나 확인이 필요합니다','']]},
   {
     id: 'sold',
     section: '양도 시 정보',
@@ -698,6 +699,7 @@ function mapAnswersToTransfer(answers) {
     acquisition_price: answers.assetType==='commercial' && answers.costMethod==='converted' ? 0 : Number(answers.acquired) || 0,
     property_type: propertyType,
     transfer_date: transferDate,
+    ...(propertyType === '주택' && transferDate >= '2018-01-01' && transferDate < '2022-01-01' ? {historical_ordinary_sale_confirmed: answers.historicalOrdinary === 'yes'} : {}),
     acquisition_date: acqDate,
     housing_count: housingCount,
     // 조정대상지역 중과는 주택만(§104⑦) — 비주택·입주권·분양권에 stale 'yes'가 새지 않도록 주택 한정
@@ -748,7 +750,7 @@ function mapAnswersToTransfer(answers) {
     body.move_in_date = mid;
   }
   // 2주택: 고객 자기분류 대신 사실(다른 집 취득경위·취득일·상속개시일)로 엔진이 특례 자동 판정
-  if (assetType === 'house_2') {
+  if (assetType === 'house_2' && body.historical_ordinary_sale_confirmed !== true) {
     if (answers.otherHouseSource === 'inherited') {
       // 상속주택 특례(§155②)는 일반주택(파는 집)을 상속개시 당시 보유한 경우만 → 취득일 ≤ 상속개시일
       if (answers.inheritanceDate && acqDate <= answers.inheritanceDate) {
@@ -929,7 +931,9 @@ function JTReportCGT({ setRoute, onBack }) {
   const [err, setErr] = useCgtState(null);
 
   // 조건부 질문(showIf) 반영: 현재 답변에 따라 보이는 질문만 추림 (예: 일시적2주택은 2주택만)
-  const visibleQs = CGT_QS.filter(q => !q.showIf || q.showIf(answers));
+  const historicalOrdinary = answers.historicalOrdinary === 'yes' && answers.transferDate >= '2018-01-01' && answers.transferDate < '2022-01-01';
+  const visibleQs = CGT_QS.filter(q => (!q.showIf || q.showIf(answers))
+    && !(historicalOrdinary && ['otherHouseSource','newHouseDate','inheritanceDate','temp2Zone'].includes(q.id)));
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
   const cur = visibleQs[safeStep];
@@ -1103,7 +1107,7 @@ function JTReportCGT({ setRoute, onBack }) {
         ? `${is3House ? '3주택 이상' : '2주택'} 다주택자는 1세대 1주택 비과세 대상이 아니며, 양도차익 전액이 과세됩니다.`
         : null;
       if (calc.exempt) multiHouseNote = null;
-      else if (is2House) {
+      else if (is2House && !historicalOrdinary) {
         if (answers.otherHouseSource === 'bought' && answers.newHouseDate) {
           multiHouseNote = `입력하신 취득일 기준, 일시적 2주택 비과세 요건(① 종전 집 취득 1년 후 새 집 취득 ② 새 집 취득 후 ${cgtTemp2Phrase(cgtTemp2Years(answers))} 내 종전 집 양도 ③ 종전 집 2년 이상 보유 — 소득세법 시행령 §155①)을 충족하지 못해 과세됩니다.`;
         } else if (answers.otherHouseSource === 'inherited') {
