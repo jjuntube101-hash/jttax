@@ -6,6 +6,7 @@ const draft={taxpayer:'SYNTH-TAXPAYER',issuer:'SYNTH-ISSUER',established:'2010-0
 const clone=x=>JSON.parse(JSON.stringify(x)),request=d=>clone(env.api.stockDirectRequest(d));let count=0;
 const historical={...draft,sold:'2025-10-20',fye:'2024-12-31',reviewDate:'2025-10-20'};
 const rawBasis={...historical,valuationMode:'raw',value:'',netIncome:'80000000000',netAssets:'50000000000',businessStart:'2010-01-01',businessStartSource:'SYNTH-business-start',...Object.fromEntries(env.api.STOCK_BASIS_CHECKS.map(([key])=>[key,true]))};
+const older={...rawBasis,sold:'2024-01-20',fye:'2023-12-31',acquired:'2022-03-01',reviewDate:'2024-01-20'};
 function test(name,fn){fn();count++;console.log('PASS '+name);}
 test('complete ordinary payload, independent input values',()=>{const r=request(draft);assert.equal(r.transactions[0].quantity,1000);assert.equal(r.issuers[0].holder_scope.positions[1].quantity,998000);assert.equal(r.transactions[0].acquisition_payment.amount,100000000);assert.equal(r.transactions[0].disposal_receipt.amount,120000000);assert.equal(r.taxpayer.taxpayer_id,draft.taxpayer);assert.deepEqual(r.foreign_taxes,[]);assert(!JSON.stringify(r).includes('national_payable'));});
 for(const [key] of env.api.STOCK_DIRECT_CHECKS)test('unknown confirmation '+key,()=>assert.throws(()=>request({...draft,[key]:false})));
@@ -19,6 +20,8 @@ test('raw statutory basis is explicit, no manual amount or cost replacement',()=
 for(const [key] of env.api.STOCK_BASIS_CHECKS)test('unknown raw basis '+key,()=>assert.throws(()=>request({...rawBasis,[key]:false})));
 for(const key of ['netIncome','netAssets'])for(const value of ['','-1','1.5'])test('raw basis invalid '+key+value,()=>assert.throws(()=>request({...rawBasis,[key]:value})));
 for(const [key,value] of [['businessStart',''],['businessStart','2024-02-30'],['businessStartSource','']])test('raw basis requires sourced business start '+key+value,()=>assert.throws(()=>request({...rawBasis,[key]:value})));
+for(const sold of ['2024-01-01','2024-01-20','2024-02-28'])test('H6 older reviewed date '+sold,()=>{const r=request({...older,sold});assert.equal(r.tax_year,2024);assert.equal(r.annual_scope.as_of,'2024-12-31');assert.equal(r.issuers[0].per_share_value.raw_basis.reference_fiscal_year_end,'2023-12-31');});
+for(const sold of ['2023-12-31','2024-02-29'])test('H6 unreviewed date blocked '+sold,()=>assert.throws(()=>request({...older,sold})));
 test('malformed and blocked results never pass',()=>{for(const value of [null,{}, {status:'needs_input',totals:{national_payable:1,local_payable:1,total_payable:2}}, {status:'ok',candidate_only:false,issues:[],totals:{national_payable:10,local_payable:1,total_payable:12}}])assert.equal(env.api.stockDirectValid(value),false);});
 test('valid zero and integer totals pass',()=>{for(const n of [0,1750000])assert.equal(env.api.stockDirectValid({status:'ok',candidate_only:false,issues:[],totals:{national_payable:n,local_payable:n/10,total_payable:n+n/10}}),true);});
 // Exercise actual rendered edit handlers, including late async responses.
@@ -43,7 +46,7 @@ async function main(){
   test('editing after success clears old result',()=>assert.equal(find(render(),n=>n.props['data-testid']==='stock-direct-result'),null));
   checkAll();delete ui.window.JT_ENGINE_BASE;const previousCalls=calls;await find(render(),n=>n.tag==='form').props.onSubmit({preventDefault(){}});
   test('missing server configuration blocks network',()=>{assert.equal(calls,previousCalls);assert(find(render(),n=>n.props.role==='alert'));});
-  if(process.env.STOCK_FIXTURE_OUT)fs.writeFileSync(process.env.STOCK_FIXTURE_OUT,JSON.stringify({original:request(draft),changed:request({...draft,sale:'130000000'}),historical_original:request(historical),historical_changed:request({...historical,sale:'130000000'}),historical_raw_basis:request(rawBasis),historical_basis_below_threshold:request({...rawBasis,netIncome:'79999999999'}),current_raw_basis:request({...rawBasis,sold:draft.sold,fye:draft.fye,reviewDate:draft.reviewDate})},null,2));
+  if(process.env.STOCK_FIXTURE_OUT)fs.writeFileSync(process.env.STOCK_FIXTURE_OUT,JSON.stringify({original:request(draft),changed:request({...draft,sale:'130000000'}),historical_original:request(historical),historical_changed:request({...historical,sale:'130000000'}),historical_raw_basis:request(rawBasis),historical_basis_below_threshold:request({...rawBasis,netIncome:'79999999999'}),current_raw_basis:request({...rawBasis,sold:draft.sold,fye:draft.fye,reviewDate:draft.reviewDate}),older_original:request({...older,valuationMode:'manual',value:'1000'}),older_raw_basis:request(older),older_changed:request({...older,valuationMode:'manual',value:'1000',sale:'130000000'})},null,2));
   console.log(count+' stock direct checks PASS');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

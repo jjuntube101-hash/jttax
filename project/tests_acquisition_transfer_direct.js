@@ -21,6 +21,9 @@ test('exchange independent values cannot silently equalize',()=>assert.throws(()
 test('future registration review blocked',()=>assert.throws(()=>api.acquisitionTransferRequest({...fixture('exchange'),checkedOn:'2099-01-01'},'exchange')));
 test('blocked and malformed results no tax',()=>{for(const v of [null,{}, {'상태':'needs_input','세액':0},{'상태':'ok','과세표준':1,'취득세':1,'지방교육세':0,'농어촌특별세':0,'세액':2}])assert.throws(()=>api.acquisitionTransferResult(v));});
 test('independent ordinary land total result accepted',()=>assert.equal(api.acquisitionTransferResult({'상태':'ok','과세표준':300000000,'취득세':12000000,'지방교육세':1200000,'농어촌특별세':600000,'세액':13800000})['세액'],13800000));
+for(const year of [2023,2024,2025]){const day=year+'-07-15';test('court historical '+year,()=>{const body=clone(api.acquisitionTransferRequest({...fixture('court'),day},'court'));assert.equal(body.common_facts.events[0].occurred_on,day);requests['court_'+year]=body;});}
+for(const year of [2023,2024,2025]){const day=year+'-07-15';test('exchange historical '+year,()=>{const body=clone(api.acquisitionTransferRequest({...fixture('exchange'),day},'exchange'));assert.equal(body.common_facts.events[0].occurred_on,day);requests['exchange_'+year]=body;});}
+test('court pre-2023 blocked',()=>assert.throws(()=>api.acquisitionTransferRequest({...fixture('court'),day:'2022-12-31'},'court')));
 requests.court_changed=clone(api.acquisitionTransferRequest({...fixture('court'),price:'400000000'},'court'));
 requests.exchange_changed=clone(api.acquisitionTransferRequest({...fixture('exchange'),...Object.fromEntries(['offeredContract','receivedContract','offeredValue','receivedValue'].map(k=>[k,'400000000']))},'exchange'));
 if(process.env.ACQ_TRANSFER_FIXTURE_OUT)fs.writeFileSync(process.env.ACQ_TRANSFER_FIXTURE_OUT,JSON.stringify(requests,null,2));

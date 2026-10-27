@@ -49,6 +49,7 @@ export const ORDER = [
   'ReportAppeal.jsx',
   'TransferAnnualDirect.jsx',
   'StockTransferDirect.jsx',
+  'LandStandardValueDirect.jsx',
   'TransferSplitDirect.jsx',
   'BurdenedGiftDirect.jsx',
   'ReportCGT.jsx',

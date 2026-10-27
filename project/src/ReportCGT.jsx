@@ -1429,6 +1429,7 @@ cautions 3개, saving_ideas 2~3개.`;
   // ===== 결과 =====
   /* 로딩을 결과보다 먼저 본다 — 차단 화면의 「다시 시도」 중에 옛 차단 화면이 남아 있지 않게 */
   if (annualMode) return <JTTransferAnnualDirect initialDraft={annualDraft} onBack={draft=>{setAnnualDraft(draft);setAnnualMode(false);}} />;
+  if (directMode === 'landValue') return <JTLandStandardValueDirect initialDraft={directDrafts.landValue} onBack={draft=>{setDirectDrafts(old=>({...old,landValue:draft}));setDirectMode(null);}} />;
   if (directMode === 'stock') return <JTStockTransferDirect initialDraft={directDrafts.stock} onBack={draft=>{setDirectDrafts(old=>({...old,stock:draft}));setDirectMode(null);}} />;
   if (directMode === 'split') return <JTTransferSplitDirect initialDraft={directDrafts.split} onBack={draft=>{setDirectDrafts(old=>({...old,split:draft}));setDirectMode(null);}} />;
   if (directMode === 'burdened') return <JTBurdenedGiftDirect initialDraft={directDrafts.burdened} onBack={draft=>{setDirectDrafts(old=>({...old,burdened:draft}));setDirectMode(null);}} />;
@@ -1723,6 +1724,7 @@ cautions 3개, saving_ideas 2~3개.`;
       >
         <button type="button" data-testid="open-annual-direct" onClick={()=>setAnnualMode(true)}>여러 부동산 연간 합산·기신고·납부 정산</button>
         <button type="button" data-testid="open-stock-direct" onClick={()=>setDirectMode('stock')}>주식 양도 계산</button>
+        <button type="button" data-testid="open-land-value-direct" onClick={()=>setDirectMode('landValue')}>최초 공시 전 토지 기준시가</button>
         <button type="button" data-testid="open-split-direct" onClick={()=>setDirectMode('split')}>토지 분할취득 계산</button>
         <button type="button" data-testid="open-burdened-direct" onClick={()=>setDirectMode('burdened')}>부담부증여 원자료 계산</button>
         <div className="jt-report-q">
