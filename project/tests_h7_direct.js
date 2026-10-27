@@ -46,3 +46,14 @@ const used={...exclusion,exclusion_label:'노인복지주택 사용완료',statu
 assert.equal(c.request('exclusion',used).heavy_exclusion_facts.use_started,'2023-01-02');
 assert.throws(()=>c.request('exclusion',{...used,verified_through:''}));
 console.log('H9 other shares and completed-use inputs PASS');
+const joint={land_acquisition_date:'2017-01-01',goodwill_acquisition_date:'2021-01-01',transfer_date:'2022-02-01',total_price:'400000000',land_price:'300000000',goodwill_price:'100000000',land_cost:'100000000',goodwill_cost:'50000000',land_expenses:'0',goodwill_expenses:'0',common_sale_expenses:'4000000',business_land_joint_sale_confirmed:true,ordinary_resident_confirmed:true,prices_separately_verified:true,actual_net_costs_confirmed:true,only_annual_disposals_confirmed:true};
+assert.equal(c.request('goodwill',joint).common_sale_expenses,4000000);
+assert.throws(()=>c.request('goodwill',{...joint,prices_separately_verified:false}));
+assert.throws(()=>c.request('goodwill',{...joint,land_cost:'1.5'}));
+assert.equal(c.request('indirectStock',{...other,indirect_stock_value:'600000000',subsidiary_asset_total:'1000000000',subsidiary_real_estate_value:'500000000',subsidiary_leaf_confirmed:true}).no_indirect_holdings,false);
+assert.throws(()=>c.request('indirectStock',{...other,subsidiary_leaf_confirmed:false}));
+const converted={...used,exclusion_label:'국공립 전환 어린이집 사용완료',statutory_home_childcare:true,statutory_public_conversion:true,conversion_no_interruption:true,conversion_date:'2024-01-01'};
+assert.equal(c.request('exclusion',converted).heavy_exclusion_facts.conversion_date,'2024-01-01');
+assert.throws(()=>c.request('exclusion',{...converted,conversion_date:''}));
+assert.throws(()=>c.request('exclusion',{...converted,conversion_no_interruption:false}));
+console.log('H10 joint/indirect/conversion request guards PASS');
