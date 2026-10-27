@@ -28,3 +28,13 @@ for(const key of ['expensesEnabled','depreciationEnabled','giftEnabled','reliefE
 assert.throws(()=>map(env.api.cgtApplyAnswer(ledger,'sold',1200000000)));
 assert.equal(map({...ledger,reviewed:{...ledger.reviewed,costLedgerEnabled:false}}).cost_facts,undefined);
 console.log('PASS cost ledger mapper: basis, explicit facts, stale opt-out, conflict guards, confirmation reset');
+
+for(const year of [2018,2019,2020,2021,2022,2023,2024,2025])assert.equal(map({...ledger,transferDate:year+'-10-20'}).cost_facts.share_denominator,2);
+assert.throws(()=>map({...ledger,transferDate:'2018-03-31'}));
+for(const [category,flag,key] of [['contract_price_interest','interestConfirmed','interest'],['donated_road_land_cost','roadConfirmed','road']]) {
+ const input={...ledger,nonHouseType:'land',reviewed:{...ledger.reviewed,ledgerRows:[{...ledger.reviewed.ledgerRows[0],category}]}};
+ assert.throws(()=>map(input));input.reviewed.ledgerRows[0][flag]=true;
+ assert.ok(map(input).cost_facts.rows[0][key]);
+ assert.throws(()=>map(env.api.cgtApplyAnswer(input,'acquired',700000000)));
+}
+console.log('PASS historical 2018-2025 ledger and explicit contractual-interest/donated-road facts');
