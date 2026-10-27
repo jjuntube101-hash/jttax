@@ -581,6 +581,8 @@ function inhCalcFromEngineError(e) {
 }
 
 function JTReportInheritance({ setRoute, onBack }) {
+  const [installmentMode,setInstallmentMode] = useInhState(false);
+  const [installmentDraft,setInstallmentDraft] = useInhState({});
   const [step, setStep] = useInhState(0);
   const [answers, setAnswers] = useInhState({});
   const [loading, setLoading] = useInhState(false);
@@ -704,6 +706,7 @@ function JTReportInheritance({ setRoute, onBack }) {
     onBack();
   };
 
+  if (installmentMode) return <JTH7TaxDirect mode="installment" initialDraft={installmentDraft} onBack={draft=>{setInstallmentDraft(draft);setInstallmentMode(false);}} />;
   if (loading) {
     return (
       <div className="jt-container">
@@ -864,6 +867,7 @@ function JTReportInheritance({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <JTReportShell title="상속세 계산" subtitle={phase === 'quick' ? '총재산·가족만 입력하면 예상 상속세를 바로 보여드려요.' : '공제·사전증여 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+        <button type="button" data-testid="open-installment-direct" onClick={()=>setInstallmentMode(true)}>일반 연부연납 산식</button>
         {err && <p role="alert">{err}</p>}
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}

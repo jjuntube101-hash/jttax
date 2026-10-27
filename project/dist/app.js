@@ -1,6 +1,6 @@
 /* 자동 생성 파일 — 직접 수정하지 마세요.
    생성: node project/scripts/build_bundle.mjs
-   소스: project/src/*.jsx (57개, ORDER 순서)
+   소스: project/src/*.jsx (58개, ORDER 순서)
    ⛔ 이 파일을 손으로 고치면 다음 빌드에 덮어써집니다. 소스를 고치고 다시 빌드하세요.
    ⛔ 커밋에서 빠뜨리면 라이브가 «옛 코드»로 돕니다 — tests_build_fresh.js 가 막습니다. */
 
@@ -3251,6 +3251,162 @@ function JTStockTransferDirect({ onBack, initialDraft }) {
 window.JTStockTransferDirect = JTStockTransferDirect;
 
 
+/* ────────── H7TaxDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const H7_TITLES = { rights: "\uB4F1\uAE30 \uAD8C\uB9AC \uC591\uB3C4 \uACC4\uC0B0", installment: "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD", penalty: "\uCDE8\uB4DD\uC138 \uBCF8\uC138 \uAC00\uC0B0\uC138" };
+const H7_PATHS = { rights: "real-estate-right-transfer", installment: "general-installment", penalty: "acquisition-penalty" };
+const H7_FIELDS = {
+  rights: [["property_type", "\uAD8C\uB9AC \uC885\uB958", "select", ["\uC9C0\uC0C1\uAD8C", "\uC804\uC138\uAD8C", "\uB4F1\uAE30\uB41C\uBD80\uB3D9\uC0B0\uC784\uCC28\uAD8C"]], ["acquisition_date", "\uC2E4\uC81C \uCDE8\uB4DD\uC77C", "date"], ["transfer_date", "\uC591\uB3C4\uC77C", "date"], ["transfer_price", "\uC591\uB3C4\uAC00\uC561 (\uC6D0)"], ["acquisition_price", "\uC2E4\uC81C \uCDE8\uB4DD\uAC00\uC561 (\uC6D0)"], ["expenses_total", "\uC2E4\uC81C \uD544\uC694\uACBD\uBE44 (\uC6D0)"]],
+  penalty: [["filing_type", "\uC2E0\uACE0 \uAD6C\uBD84", "select", ["\uBB34\uC2E0\uACE0", "\uACFC\uC18C\uC2E0\uACE0"]], ["tax_amount", "\uBB34\uC2E0\uACE0\xB7\uACFC\uC18C\uC2E0\uACE0\uD55C \uCDE8\uB4DD\uC138 \uBCF8\uC138 (\uC6D0)"], ["fraudulent_tax_amount", "\uADF8\uC911 \uBD80\uC815\uD589\uC704 \uD574\uB2F9 \uBCF8\uC138 (\uC6D0)"], ["unpaid_tax", "\uAE30\uAC04 \uC911 \uC77C\uC815\uD55C \uBBF8\uB0A9 \uCDE8\uB4DD\uC138 \uBCF8\uC138 (\uC6D0)"], ["due_date", "\uD655\uC778\uD55C \uBC95\uC815 \uC2E0\uACE0\xB7\uB0A9\uBD80\uAE30\uD55C", "date"], ["filing_date", "\uC2E4\uC81C \uAE30\uD55C\uD6C4\xB7\uC218\uC815\uC2E0\uACE0\uC77C", "date"], ["payment_date", "\uC2E4\uC81C \uB0A9\uBD80\uC77C", "date"], ["assessment_expected", "\uACB0\uC815\xB7\uACBD\uC815\uC744 \uBBF8\uB9AC \uC54C\uACE0 \uC2E0\uACE0\uD588\uC2B5\uB2C8\uAE4C?", "select", ["\uC544\uB2C8\uC624", "\uC608"]], ["no_prior_correction_before_2020", "2020\uB144 \uC804\uC5D0 \uAE30\uD55C\uD6C4\xB7\uC218\uC815\uC2E0\uACE0\uD55C \uC774\uB825\uC774 \uC5C6\uC2B5\uB2C8\uAE4C?", "select", ["\uC544\uB2C8\uC624", "\uC608"]]],
+  installment: [["tax_type", "\uC138\uBAA9", "select", ["\uC0C1\uC18D\uC138", "\uC99D\uC5EC\uC138"]], ["event_date", "\uC0C1\uC18D\uAC1C\uC2DC\uC77C\xB7\uC99D\uC5EC\uC77C", "date"], ["original_due_date", "\uCD5C\uCD08 \uBC95\uC815 \uB0A9\uBD80\uAE30\uD55C", "date"], ["permission_date", "\uC5F0\uBD80\uC5F0\uB0A9 \uD5C8\uAC00\uC77C", "date"], ["total_tax", "\uC5F0\uBD80\uC5F0\uB0A9 \uB300\uC0C1 \uCD1D \uB0A9\uBD80\uC138\uC561 (\uC6D0)"], ["installment_due_dates", "\uD5C8\uAC00\uC11C\uC758 \uD68C\uCC28\uBCC4 \uB0A9\uBD80\uAE30\uD55C (YYYY-MM-DD, \uD55C \uC904\uC5D0 \uD558\uB098)", "textarea"], ["rate_segments", "\uD655\uC778\uD55C \uC801\uC6A9 \uC774\uC728 \uAD6C\uAC04 (\uC2DC\uC791\uC77C, \uC77C\uBCC4 \uC774\uC728 \u2014 \uC608: 2024-01-01, 0.00005)", "textarea"], ["due_dates_source", "\uD5C8\uAC00\uC11C\xB7\uB0A9\uAE30 \uD655\uC778 \uC790\uB8CC\uBA85"], ["rate_source", "\uC801\uC6A9 \uC774\uC728 \uD655\uC778 \uC790\uB8CC\uBA85"], ["pre_2023_method", "2023-02-28 \uC804 \uD5C8\uAC00\uC790\uC758 \uC774\uD6C4 \uB0A9\uBD80 \uC801\uC6A9 \uBC29\uC2DD", "select", ["\uAD6C\uAC04\uBCC4 \uC774\uC728", "\uB0A9\uBD80\uAE30\uD55C \uD604\uC7AC \uC774\uC728"]]]
+};
+const H7_CHECKS = { rights: [["ordinary_registered_right_confirmed", "\uAD6D\uB0B4\uC5D0 \uB4F1\uAE30\uB41C \uAD8C\uB9AC\uC758 \uC77C\uBC18 \uC720\uC0C1\uCDE8\uB4DD\xB7\uB2E8\uB3C5\uC18C\uC720\uC774\uBA70 \uC0C1\uC18D\xB7\uC99D\uC5EC\xB7\uD658\uC0B0\xB7\uAC10\uBA74\xB7\uBE44\uAC70\uC8FC\uC790 \uD2B9\uB840\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["single_disposal_confirmed", "\uD574\uB2F9 \uC5F0\uB3C4\uC758 \uC720\uC77C\uD55C \uC591\uB3C4\uC774\uBA70 \uAE30\uBCF8\uACF5\uC81C\uB97C \uB2E4\uB978 \uC591\uB3C4\uC5D0 \uC0AC\uC6A9\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4"], ["resident_confirmed", "\uAC70\uC8FC\uC790\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]], penalty: [["ordinary_case_confirmed", "\uCDE8\uB4DD\uC138 \uBCF8\uC138\uB9CC\uC758 \uACE0\uC9C0 \uC804 \uC77C\uBC18 \uC790\uC9C4\uC2E0\uACE0\xB7\uB0A9\uBD80\uC785\uB2C8\uB2E4. \uCD5C\uCD08 \uAE30\uD55C\uD6C4/\uB2E8\uC21C \uCD5C\uCD08\uC218\uC815\uC774\uBA70 \uACFC\uC18C\uC2E0\uACE0\uB294 \uB2F9\uCD08 \uAE30\uD55C \uB0B4 \uC2E0\uACE0\uD588\uC2B5\uB2C8\uB2E4. \uBBF8\uB0A9\uC6D0\uAE08 \uBCC0\uB3D9\xB7\uBA74\uC81C\xB7\uC815\uB2F9\uD55C \uC0AC\uC720\xB7\uCD94\uC9D5 \uC774\uC790\uC0C1\uB2F9\uC561\xB7\uBD84\uB0A9\uC740 \uC5C6\uC2B5\uB2C8\uB2E4"]], installment: [["due_dates_verified", "\uD5C8\uAC00\uC11C\uC0C1 \uB0A9\uAE30\uC640 \uC801\uC6A9 \uC774\uC728\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4. \uC77C\uBC18 \uC0C1\uC18D\xB7\uC99D\uC5EC\uC774\uBA70 \uAC00\uC5C5 \uB4F1 \uD2B9\uB840\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"]] };
+const H7_EXCLUSION_RULES = {
+  "\uB9E4\uB3C4\uC790 \uC7AC\uC784\uCC28 \uB9AC\uCE20": ["sale_leaseback_reit", [["fund_lh_joint_or_kamco_funded_reit", "\uC8FC\uD0DD\uB3C4\uC2DC\uAE30\uAE08\xB7LH \uACF5\uB3D9 \uB610\uB294 \uCEA0\uCF54 \uCD9C\uC790 \uB9AC\uCE20"], ["seller_resides", "\uB9E4\uB3C4\uC790\uAC00 \uAC70\uC8FC\uD558\uB294 \uC8FC\uD0DD"], ["seller_household_only_home", "\uB9E4\uB3C4 \uC138\uB300\uC758 \uC720\uC77C\uD55C \uC8FC\uD0DD"], ["seller_repurchase_right", "\uB9E4\uB3C4\uC790\uC758 \uC7AC\uB9E4\uC785 \uAD8C\uB9AC\uB97C \uBCF4\uC7A5"]]],
+  "\uBE44\uC218\uB3C4\uAD8C \uC900\uACF5 \uBBF8\uBD84\uC591 \uB9AC\uCE20": ["unsold_reit", [["corporate_restructuring_reit", "\uAE30\uC5C5\uAD6C\uC870\uC870\uC815 \uBD80\uB3D9\uC0B0\uD22C\uC790\uD68C\uC0AC"], ["is_apartment", "\uBC95\uC815 \uC544\uD30C\uD2B8"], ["outside_capital_region", "\uC218\uB3C4\uAD8C \uBC16 \uC18C\uC7AC"], ["first_paid_succession", "\uCD5C\uCD08 \uC720\uC0C1\uC2B9\uACC4 \uCDE8\uB4DD"], ["unsold_after_use_approval", "\uC0AC\uC6A9\uAC80\uC0AC\xB7\uC2B9\uC778 \uD6C4 \uBBF8\uBD84\uC591"], ["seller_is_statutory_project_operator", "\uB9E4\uB3C4\uC790\uAC00 \uBC95\uC815 \uC0AC\uC5C5\uC8FC\uCCB4"]]],
+  "2026 \uBE44\uC218\uB3C4\uAD8C \uC900\uACF5 \uBBF8\uBD84\uC591": ["completed_unsold_2026", [["whole_home_acquisition", "\uC804\uCCB4 \uC8FC\uD0DD \uCDE8\uB4DD\uC73C\uB85C \uC9C0\uBD84 \uC77C\uBD80 \uCDE8\uB4DD \uC544\uB2D8"], ["is_apartment", "\uBC95\uC815 \uC544\uD30C\uD2B8"], ["outside_capital_region", "\uC218\uB3C4\uAD8C \uBC16 \uC18C\uC7AC"], ["first_paid_succession", "\uCD5C\uCD08 \uC720\uC0C1\uC2B9\uACC4 \uCDE8\uB4DD"], ["unsold_after_use_approval", "\uC0AC\uC6A9\uAC80\uC0AC\xB7\uC2B9\uC778 \uD6C4 \uBBF8\uBD84\uC591"], ["seller_is_statutory_project_operator", "\uB9E4\uB3C4\uC790\uAC00 \uBC95\uC815 \uC0AC\uC5C5\uC8FC\uCCB4"]]],
+  "\uACF5\uACF5 \uC9C0\uBD84\uC801\uB9BD\xB7\uC774\uC775\uACF5\uC720\uD615 \uACF5\uAE09": ["public_shared_equity_supply", [["designated_public_housing_operator", "\uC9C0\uC815\uB41C \uACF5\uACF5\uC8FC\uD0DD\uC0AC\uC5C5\uC790"], ["supply_shared_equity_or_profit_sharing_housing", "\uC9C0\uBD84\uC801\uB9BD\uD615\xB7\uC774\uC775\uACF5\uC720\uD615 \uACF5\uACF5\uBD84\uC591\uC8FC\uD0DD \uACF5\uAE09 \uBAA9\uC801"]]],
+  "\uACF5\uACF5 \uC9C0\uBD84\uC801\uB9BD\xB7\uC774\uC775\uACF5\uC720\uD615 \uC7AC\uB9E4\uC785": ["public_shared_equity_repurchase", [["designated_public_housing_operator", "\uC9C0\uC815\uB41C \uACF5\uACF5\uC8FC\uD0DD\uC0AC\uC5C5\uC790"], ["repurchase_from_shared_equity_or_profit_sharing_buyer", "\uC9C0\uBD84\uC801\uB9BD\uD615\xB7\uC774\uC775\uACF5\uC720\uD615 \uACF5\uACF5\uBD84\uC591\uC8FC\uD0DD \uC218\uBD84\uC591\uC790\uB85C\uBD80\uD130 \uC7AC\uB9E4\uC785"]]],
+  "\uB9AC\uBAA8\uB378\uB9C1 \uC8FC\uD0DD\uC870\uD569": ["remodeling_association", [["statutory_remodeling_housing_association", "\uBC95\uC815 \uB9AC\uBAA8\uB378\uB9C1\uC8FC\uD0DD\uC870\uD569"], ["acquired_under_housing_act_22_2", "\uC8FC\uD0DD\uBC95\uC0C1 \uB9E4\uB3C4\uCCAD\uAD6C\uC5D0 \uB530\uB978 \uCDE8\uB4DD"]]]
+};
+H7_TITLES.exclusion = "\uC8FC\uD0DD \uCDE8\uB4DD \uC911\uACFC\uC81C\uC678";
+H7_PATHS.exclusion = "acquisition";
+H7_FIELDS.exclusion = [["exclusion_label", "\uC911\uACFC\uC81C\uC678 \uC720\uD615", "select", Object.keys(H7_EXCLUSION_RULES)], ["acquisition_date", "\uCDE8\uB4DD\uC77C", "date"], ["property_value", "\uCDE8\uB4DD\uB2F9\uC2DC\uAC00\uC561 (\uC6D0)"], ["standard_value", "\uC804\uCCB4 \uC8FC\uD0DD \uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0)"], ["exclusive_area", "\uC804\uCCB4 \uC804\uC6A9\uBA74\uC801 (\u33A1)"], ["housing_count", "\uCDE8\uB4DD \uD6C4 \uC2E4\uC81C \uC8FC\uD0DD \uC218"], ["is_corporate", "\uBC95\uC778 \uCDE8\uB4DD\uC785\uB2C8\uAE4C?", "select", ["\uC544\uB2C8\uC624", "\uC608"]], ["is_regulated_area", "\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC785\uB2C8\uAE4C?", "select", ["\uC544\uB2C8\uC624", "\uC608"]], ["is_capital_area", "\uC218\uB3C4\uAD8C \uC18C\uC7AC\uC785\uB2C8\uAE4C?", "select", ["\uC544\uB2C8\uC624", "\uC608"]], ["evidence", "\uC790\uACA9\uACFC \uAC00\uC561\uC744 \uD655\uC778\uD55C \uC790\uB8CC\uBA85"]];
+H7_CHECKS.exclusion = [["scope_confirmed", "\uC77C\uBC18 \uC8FC\uD0DD \uC804\uCCB4 \uB9E4\uB9E4\uC774\uBA70 \uC9C0\uBD84\xB7\uACE0\uAE09\uC8FC\uD0DD\xB7\uB300\uB3C4\uC2DC \uBC95\uC778 \uCD94\uAC00\uC911\uACFC\xB7\uAC10\uBA74\xB7\uD2B9\uC218\uAD00\uACC4\xB7\uC870\uB840 \uD2B9\uB840\uB294 \uC5C6\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uAC00\uC561\uACFC \uC911\uACFC\uC81C\uC678 \uC790\uACA9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."]];
+function h7Checks(mode, d) {
+  var _a;
+  return mode === "exclusion" ? [...H7_CHECKS.exclusion, ...((_a = H7_EXCLUSION_RULES[d.exclusion_label]) == null ? void 0 : _a[1]) || []] : H7_CHECKS[mode];
+}
+function h7Request(mode, d) {
+  const required = (k) => {
+    var _a, _b;
+    const s = String((_a = d[k]) != null ? _a : "").trim();
+    if (!s) throw Error("\uD544\uC218 \uC785\uB825\uC744 \uD655\uC778\uD558\uC138\uC694: " + (((_b = H7_FIELDS[mode].find((f) => f[0] === k)) == null ? void 0 : _b[1]) || k));
+    return s;
+  };
+  const money = (k) => {
+    const s = required(k);
+    if (!/^\d+$/.test(s) || !Number.isSafeInteger(Number(s)) || Number(s) > 1e15) throw Error("\uAE08\uC561\uC744 0 \uC774\uC0C1 \uC815\uC218 \uC6D0\uC73C\uB85C \uC785\uB825\uD558\uC138\uC694.");
+    return Number(s);
+  };
+  const day = (k) => {
+    const s = required(k);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) throw Error("\uB0A0\uC9DC\uB97C \uD655\uC778\uD558\uC138\uC694.");
+    return s;
+  };
+  const checks = Object.fromEntries(h7Checks(mode, d).map(([k]) => {
+    if (d[k] !== true) throw Error("\uC0AC\uC2E4 \uD655\uC778\uB780\uC744 \uB2E4\uC2DC \uD655\uC778\uD558\uC138\uC694.");
+    return [k, true];
+  }));
+  if (mode === "exclusion") {
+    const rule = H7_EXCLUSION_RULES[required("exclusion_label")];
+    if (!rule) throw Error("\uC911\uACFC\uC81C\uC678 \uC720\uD615\uC744 \uC120\uD0DD\uD558\uC138\uC694.");
+    const acquired = day("acquisition_date"), evidence = required("evidence");
+    const facts = __spreadValues({ schema_version: 1, as_of: acquired, evidence }, Object.fromEntries(rule[1].map(([k]) => [k, checks[k]])));
+    if (rule[0] === "sale_leaseback_reit") {
+      facts.whole_home_assessed_value = money("standard_value");
+      facts.lease_years = money("lease_years");
+    }
+    const count = money("housing_count"), area = Number(required("exclusive_area"));
+    if (count < 1 || count > 100 || !Number.isFinite(area) || area <= 0) throw Error("\uC2E4\uC81C \uC8FC\uD0DD \uC218\uC640 \uBA74\uC801\uC744 \uD655\uC778\uD558\uC138\uC694.");
+    const payload = { property_type: "\uC8FC\uD0DD", acquisition_type: "\uC720\uC0C1\uCDE8\uB4DD", acquisition_date: acquired, property_value: money("property_value"), standard_value: money("standard_value"), exclusive_area: area, housing_count: count, is_housing: true, is_corporate: required("is_corporate") === "\uC608", is_regulated_area: required("is_regulated_area") === "\uC608", is_capital_area: required("is_capital_area") === "\uC608", heavy_exclusion_type: rule[0], heavy_exclusion_facts: facts };
+    if (acquired < "2026-01-01") payload.historical_facts = { schema_version: "acquisition-history/1", scope_confirmed: true, valuation_confirmed: true, base_rule: "actual", actual_basis: "actual_price", scope_evidence: evidence, valuation_evidence: evidence };
+    return payload;
+  }
+  if (mode === "rights") return __spreadValues(__spreadProps(__spreadValues({}, checks), { property_type: required("property_type"), acquisition_date: day("acquisition_date"), transfer_date: day("transfer_date") }), Object.fromEntries(["transfer_price", "acquisition_price", "expenses_total"].map((k) => [k, money(k)])));
+  if (mode === "penalty") return __spreadProps(__spreadValues(__spreadValues(__spreadProps(__spreadValues({}, checks), { filing_type: required("filing_type") }), Object.fromEntries(["tax_amount", "fraudulent_tax_amount", "unpaid_tax"].map((k) => [k, money(k)]))), Object.fromEntries(["due_date", "filing_date", "payment_date"].map((k) => [k, day(k)]))), { assessment_expected: required("assessment_expected") === "\uC608", no_prior_correction_before_2020: required("no_prior_correction_before_2020") === "\uC608" });
+  const dates = required("installment_due_dates").split(/\n/).map((x) => x.trim()).filter(Boolean);
+  const rates = required("rate_segments").split(/\n/).filter((x) => x.trim()).map((line) => {
+    const a = line.split(",").map((x) => x.trim());
+    if (a.length !== 2 || !/^\d{4}-\d{2}-\d{2}$/.test(a[0]) || !/^0(?:\.\d{1,18})?$/.test(a[1])) throw Error("\uC774\uC728 \uAD6C\uAC04\uC740 \uC2DC\uC791\uC77C, \uC77C\uBCC4 \uC18C\uC218\uC774\uC728 \uD615\uC2DD\uC73C\uB85C \uC785\uB825\uD558\uC138\uC694.");
+    return { effective_date: a[0], daily_rate: a[1] };
+  });
+  return __spreadProps(__spreadValues({}, checks), { tax_type: required("tax_type"), event_date: day("event_date"), original_due_date: day("original_due_date"), permission_date: day("permission_date"), total_tax: money("total_tax"), installment_due_dates: dates, rate_segments: rates, due_dates_source: required("due_dates_source"), rate_source: required("rate_source"), pre_2023_method: d.pre_2023_method === "\uAD6C\uAC04\uBCC4 \uC774\uC728" ? "segmented" : d.pre_2023_method === "\uB0A9\uBD80\uAE30\uD55C \uD604\uC7AC \uC774\uC728" ? "payment_date" : null, special_case: false });
+}
+function h7ResultValid(mode, r, request) {
+  var _a, _b;
+  const money = (v) => Number.isSafeInteger(v) && v >= 0;
+  const frac = (v) => v && typeof v.numerator === "string" && typeof v.denominator === "string" && /^\d+$/.test(v.numerator) && /^[1-9]\d*$/.test(v.denominator);
+  if (mode === "exclusion") return money(r.\uC138\uC561) && money(r.\uCDE8\uB4DD\uC138) && typeof r.\uC911\uACFC\uC5EC\uBD80 === "boolean";
+  if (mode === "rights") return money(r.\uCD1D\uC138\uBD80\uB2F4) && money(r.\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C) && r.\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C === 0;
+  if (mode === "penalty") return money(r.total_penalty) && money((_a = r.filing_penalty) == null ? void 0 : _a.penalty_amount) && money((_b = r.late_penalty) == null ? void 0 : _b.penalty_amount);
+  return frac(r.initial_principal_exact) && frac(r.total_interest_exact) && r.rounding_status === "unverified" && r.due_dates_status === "user_verified_not_automatically_determined" && Array.isArray(r.schedule) && r.schedule.length > 0 && (!request || r.schedule.length === request.installment_due_dates.length) && r.schedule.every((x, i) => typeof x.due_date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x.due_date) && (!request || x.due_date === request.installment_due_dates[i]) && frac(x.principal_exact) && frac(x.interest_exact) && frac(x.total_payment_exact) && frac(x.remaining_balance_exact));
+}
+function JTH7TaxDirect({ mode, onBack, initialDraft }) {
+  const clear = (d2) => __spreadValues(__spreadValues({}, d2), Object.fromEntries((mode === "exclusion" ? [...H7_CHECKS.exclusion, ...Object.values(H7_EXCLUSION_RULES).flatMap((v) => v[1])] : H7_CHECKS[mode]).map(([k]) => [k, false])));
+  const [d, setD] = React.useState(() => clear(initialDraft || {})), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const seq = React.useRef(0), control = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+  }, []);
+  const edit = (k, v) => {
+    var _a;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+    setBusy(false);
+    setResult(null);
+    setError("");
+    setD((old) => __spreadProps(__spreadValues({}, h7Checks(mode, d).some(([key]) => key === k) ? old : clear(old)), { [k]: v }));
+  };
+  const submit = async (e) => {
+    e.preventDefault();
+    if (busy) return;
+    let req;
+    setResult(null);
+    setError("");
+    try {
+      req = h7Request(mode, d);
+    } catch (e2) {
+      setError(e2.message);
+      return;
+    }
+    const current = ++seq.current, c = new AbortController();
+    control.current = c;
+    setBusy(true);
+    const timer = setTimeout(() => c.abort(), 3e4);
+    try {
+      if (!window.JT_ENGINE_BASE) throw Error("\uACC4\uC0B0 \uC11C\uBC84\uAC00 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const response = await fetch(window.JT_ENGINE_BASE.replace(/\/$/, "") + "/v1/calc/" + H7_PATHS[mode], { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(req), signal: c.signal });
+      const data = await response.json();
+      if (current !== seq.current) return;
+      if (!response.ok) throw Error("\uC785\uB825 \uD615\uC2DD\uACFC \uB0A0\uC9DC\uB97C \uD655\uC778\uD558\uC138\uC694.");
+      const r = data.calc;
+      if (!r || !["ok", void 0].includes(r.status || r.\uC0C1\uD0DC)) throw Error((r == null ? void 0 : r.reason) || (r == null ? void 0 : r.\uC624\uB958) || "\uC9C0\uC6D0 \uBC94\uC704 \uB610\uB294 \uCD94\uAC00 \uC0AC\uC2E4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+      if (!h7ResultValid(mode, r, req)) throw Error("\uACC4\uC0B0 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+      setResult(r);
+    } catch (e2) {
+      if (current === seq.current) setError(e2.name === "AbortError" ? "\uC751\uB2F5 \uC2DC\uAC04\uC774 \uCD08\uACFC\uB410\uC2B5\uB2C8\uB2E4." : window.jtEngineMessageForDisplay ? window.jtEngineMessageForDisplay(e2.message) : e2.message);
+    } finally {
+      clearTimeout(timer);
+      if (current === seq.current) setBusy(false);
+    }
+  };
+  const exact = (v) => String(v.denominator) === "1" ? String(v.numerator) + "\uC6D0" : String(v.numerator) + " / " + String(v.denominator) + "\uC6D0";
+  return /* @__PURE__ */ React.createElement("section", { style: { maxWidth: 850, margin: "32px auto", padding: 24 } }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => onBack == null ? void 0 : onBack(clear(d)) }, "\uB3CC\uC544\uAC00\uAE30"), /* @__PURE__ */ React.createElement("h1", null, H7_TITLES[mode]), /* @__PURE__ */ React.createElement("p", null, mode === "exclusion" ? "2023~2026\uB144 \uD655\uC778\uB41C \uC77C\uBD80 \uC8FC\uD0DD\uC758 \uBCF8\uAC74 \uC720\uC0C1\uAC70\uB798 \uC911\uACFC\uC81C\uC678\uC785\uB2C8\uB2E4. \uBCF4\uC720 \uC8FC\uD0DD \uC218 \uC81C\uC678\xB7\uAC10\uBA74\uACFC \uB2E4\uB985\uB2C8\uB2E4. 2026 \uBBF8\uBD84\uC591 \uD2B9\uB840\uB294 2026\uB144 \uCDE8\uB4DD\uB9CC \uC801\uC6A9\uD558\uBA70 \uB2E4\uB978 \uC720\uD615\uB3C4 \uC2DC\uD589\uC77C\uC744 \uD655\uC778\uD569\uB2C8\uB2E4." : mode === "rights" ? "2022~2026\uB144\uC758 \uC9C0\uC0C1\uAD8C\xB7\uC804\uC138\uAD8C\xB7\uB4F1\uAE30\uB41C \uC784\uCC28\uAD8C \uC77C\uBC18 \uB9E4\uB9E4\uB97C \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC601\uC5C5\uAD8C\xB7\uC2DC\uC124\uBB3C\uC774\uC6A9\uAD8C\xB7\uD2B9\uC815\uC8FC\uC2DD\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uBBF8\uB798 \uC591\uB3C4\uB294 \uD604\uC7AC \uD655\uC778\uB41C \uBC95\uB839 \uAE30\uC900\uC758 \uC608\uC0C1\uC785\uB2C8\uB2E4." : mode === "penalty" ? "2019~2026\uB144 \uCDE8\uB4DD\uC138 \uBCF8\uC138\uC758 \uC2E0\uACE0\xB7\uB0A9\uBD80 \uAC00\uC0B0\uC138\uC785\uB2C8\uB2E4. \uAD50\uC721\uC138\xB7\uB18D\uD2B9\uC138\uC640 \uCD94\uC9D5 \uC774\uC790\uC0C1\uB2F9\uC561\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC2E0\uACE0\xB7\uB0A9\uBD80\uAE30\uD55C\uC740 \uD655\uC778\uD55C \uC2E4\uC81C \uBC95\uC815\uAE30\uD55C\uC744 \uC785\uB825\uD558\uC138\uC694." : "2021~2026\uB144 \uC77C\uBC18 \uC0C1\uC18D\xB7\uC99D\uC5EC\uC758 \uD655\uC778\uB41C \uB0A9\uAE30\uC640 \uC77C\uBCC4 \uC774\uC728\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uD5C8\uAC00\xB7\uB2F4\uBCF4\xB7\uB0A9\uAE30\uC758 \uBC95\uC815 \uC801\uD569\uC131\uC744 \uC790\uB3D9 \uD310\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC6D0 \uB2E8\uC704 \uC808\uC0AC \uC804 \uC815\uD655\uD55C \uC0B0\uC2DD\uC774\uBA70 \uD655\uC815 \uACE0\uC9C0\uAE08\uC561\uC774 \uC544\uB2D9\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, (mode === "exclusion" && d.exclusion_label === "\uB9E4\uB3C4\uC790 \uC7AC\uC784\uCC28 \uB9AC\uCE20" ? [...H7_FIELDS.exclusion, ["lease_years", "\uB9E4\uB3C4\uC790 \uC784\uB300\uAE30\uAC04 (\uB144)"]] : H7_FIELDS[mode]).map(([k, label, type, options]) => /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "grid", margin: "12px 0" } }, label, type === "select" ? /* @__PURE__ */ React.createElement("select", { "data-testid": "h7-" + k, value: d[k] || "", onChange: (e) => edit(k, e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD558\uC138\uC694"), options.map((v) => /* @__PURE__ */ React.createElement("option", { key: v }, v))) : type === "textarea" ? /* @__PURE__ */ React.createElement("textarea", { "data-testid": "h7-" + k, value: d[k] || "", onChange: (e) => edit(k, e.target.value) }) : /* @__PURE__ */ React.createElement("input", { "data-testid": "h7-" + k, type: type || "text", value: d[k] || "", onChange: (e) => edit(k, e.target.value) }))), h7Checks(mode, d).map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block", margin: "12px 0" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "h7-" + k, type: "checkbox", checked: d[k] === true, onChange: (e) => edit(k, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("p", null, "\uC785\uB825\uC744 \uC218\uC815\uD558\uBA74 \uC774\uC804 \uACB0\uACFC\uC640 \uC0AC\uC2E4 \uD655\uC778\uC744 \uC9C0\uC6C1\uB2C8\uB2E4. \uC790\uB8CC\uBA85\uC5D0\uB294 \uAC1C\uC778\uC815\uBCF4\uB97C \uB123\uC9C0 \uB9C8\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { type: "submit", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uACC4\uC0B0\uD558\uAE30")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("div", { "data-testid": "h7-result", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("h2", null, "\uACC4\uC0B0 \uACB0\uACFC"), mode === "exclusion" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uC138\xB7\uAD50\uC721\uC138\xB7\uB18D\uD2B9\uC138 \uD569\uACC4: ", result.\uC138\uC561.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uC911\uACFC \uC5EC\uBD80: ", result.\uC911\uACFC\uC5EC\uBD80 ? "\uD574\uB2F9" : "\uD574\uB2F9 \uC5C6\uC74C"), /* @__PURE__ */ React.createElement("p", null, "\uBCF4\uC720 \uC8FC\uD0DD \uC218: ", result.\uC8FC\uD0DD\uC218)) : mode === "rights" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uCD1D \uB0A9\uBD80\uC138\uC561: ", result.\uCD1D\uC138\uBD80\uB2F4.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C: 0\uC6D0")) : mode === "penalty" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC2E0\uACE0 \uAC00\uC0B0\uC138: ", result.filing_penalty.penalty_amount.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uB0A9\uBD80\uC9C0\uC5F0 \uAC00\uC0B0\uC138: ", result.late_penalty.penalty_amount.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uAC00\uC0B0\uC138 \uD569\uACC4 (\uC6D0 \uB2E8\uC704 \uD45C\uC2DC): ", result.total_penalty.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uBCF8\uC138 \uB4F1\uACFC \uD569\uC0B0 \uB0A9\uBD80 \uC2DC \uB05D\uC218 \uCC98\uB9AC\uB97C \uBCC4\uB3C4\uB85C \uD655\uC778\uD558\uC138\uC694.")) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uCD5C\uCD08 \uC6D0\uAE08: ", exact(result.initial_principal_exact)), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB0A9\uBD80\uAE30\uD55C"), /* @__PURE__ */ React.createElement("th", null, "\uC6D0\uAE08"), /* @__PURE__ */ React.createElement("th", null, "\uAC00\uC0B0\uAE08"), /* @__PURE__ */ React.createElement("th", null, "\uD569\uACC4"))), /* @__PURE__ */ React.createElement("tbody", null, result.schedule.map((x, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("td", null, x.due_date), /* @__PURE__ */ React.createElement("td", null, exact(x.principal_exact)), /* @__PURE__ */ React.createElement("td", null, exact(x.interest_exact)), /* @__PURE__ */ React.createElement("td", null, exact(x.total_payment_exact)))))), /* @__PURE__ */ React.createElement("p", null, "\uC804\uCCB4 \uAC00\uC0B0\uAE08: ", exact(result.total_interest_exact)))));
+}
+window.JTH7TaxDirect = JTH7TaxDirect;
+
+
 /* ────────── LandStandardValueDirect.jsx ────────── */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -5004,6 +5160,10 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
     setAnnualDraft(draft);
     setAnnualMode(false);
   } });
+  if (directMode === "rights") return /* @__PURE__ */ React.createElement(JTH7TaxDirect, { mode: "rights", initialDraft: directDrafts.rights, onBack: (draft) => {
+    setDirectDrafts((old) => __spreadProps(__spreadValues({}, old), { rights: draft }));
+    setDirectMode(null);
+  } });
   if (directMode === "landValue") return /* @__PURE__ */ React.createElement(JTLandStandardValueDirect, { initialDraft: directDrafts.landValue, onBack: (draft) => {
     setDirectDrafts((old) => __spreadProps(__spreadValues({}, old), { landValue: draft }));
     setDirectMode(null);
@@ -5102,6 +5262,7 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
       tag: "LIVE"
     },
     /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-annual-direct", onClick: () => setAnnualMode(true) }, "\uC5EC\uB7EC \uBD80\uB3D9\uC0B0 \uC5F0\uAC04 \uD569\uC0B0\xB7\uAE30\uC2E0\uACE0\xB7\uB0A9\uBD80 \uC815\uC0B0"),
+    /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-rights-direct", onClick: () => setDirectMode("rights") }, "\uB4F1\uAE30 \uAD8C\uB9AC \uC591\uB3C4 \uACC4\uC0B0"),
     /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-stock-direct", onClick: () => setDirectMode("stock") }, "\uC8FC\uC2DD \uC591\uB3C4 \uACC4\uC0B0"),
     /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-land-value-direct", onClick: () => setDirectMode("landValue") }, "\uCD5C\uCD08 \uACF5\uC2DC \uC804 \uD1A0\uC9C0 \uAE30\uC900\uC2DC\uAC00"),
     /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-split-direct", onClick: () => setDirectMode("split") }, "\uD1A0\uC9C0 \uBD84\uD560\uCDE8\uB4DD \uACC4\uC0B0"),
@@ -12705,6 +12866,8 @@ function buildGiftKakao(answers, calc) {
   return L.join("\n");
 }
 function JTReportGift({ setRoute, onBack }) {
+  const [installmentMode, setInstallmentMode] = useGiftState(false);
+  const [installmentDraft, setInstallmentDraft] = useGiftState({});
   const [caseMode, setCaseMode] = useGiftState(false);
   const [caseValuation, setCaseValuation] = useGiftState(null);
   const [step, setStep] = useGiftState(0);
@@ -12903,6 +13066,10 @@ function JTReportGift({ setRoute, onBack }) {
     setReport(null);
     setQuickReport(null);
   }, onExit: () => setCaseMode(false) });
+  if (installmentMode) return /* @__PURE__ */ React.createElement(JTH7TaxDirect, { mode: "installment", initialDraft: installmentDraft, onBack: (draft) => {
+    setInstallmentDraft(draft);
+    setInstallmentMode(false);
+  } });
   if (loading) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
@@ -12950,7 +13117,7 @@ function JTReportGift({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC99D\uC5EC\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uC0AC\uC804\uC99D\uC5EC\xB7\uBD80\uB2F4\uBD80 \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", style: { marginBottom: 16 }, onClick: () => setCaseMode(true) }, "\uC0AC\uAC74 \uC800\uC7A5\xB7\uBD88\uB7EC\uC624\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && cur.id !== "reAddress" && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC99D\uC5EC\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uC0AC\uC804\uC99D\uC5EC\xB7\uBD80\uB2F4\uBD80 \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-installment-direct", onClick: () => setInstallmentMode(true) }, "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", style: { marginBottom: 16 }, onClick: () => setCaseMode(true) }, "\uC0AC\uAC74 \uC800\uC7A5\xB7\uBD88\uB7EC\uC624\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && cur.id !== "reAddress" && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -13613,6 +13780,8 @@ function inhCalcFromEngineError(e) {
   return e && e.status >= 400 && e.status < 500 && e.status !== 408 && e.status !== 429 ? { precise: false, engineState: "refused", engineMessage: "" } : { precise: false, engineState: "down" };
 }
 function JTReportInheritance({ setRoute, onBack }) {
+  const [installmentMode, setInstallmentMode] = useInhState(false);
+  const [installmentDraft, setInstallmentDraft] = useInhState({});
   const [step, setStep] = useInhState(0);
   const [answers, setAnswers] = useInhState({});
   const [loading, setLoading] = useInhState(false);
@@ -13734,6 +13903,10 @@ function JTReportInheritance({ setRoute, onBack }) {
     }
     onBack();
   };
+  if (installmentMode) return /* @__PURE__ */ React.createElement(JTH7TaxDirect, { mode: "installment", initialDraft: installmentDraft, onBack: (draft) => {
+    setInstallmentDraft(draft);
+    setInstallmentMode(false);
+  } });
   if (loading) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
@@ -13782,7 +13955,7 @@ function JTReportInheritance({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCD1D\uC7AC\uC0B0\xB7\uAC00\uC871\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC0C1\uC18D\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uACF5\uC81C\xB7\uC0AC\uC804\uC99D\uC5EC \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCD1D\uC7AC\uC0B0\xB7\uAC00\uC871\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC0C1\uC18D\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uACF5\uC81C\xB7\uC0AC\uC804\uC99D\uC5EC \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-installment-direct", onClick: () => setInstallmentMode(true) }, "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -15026,6 +15199,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
     setBuildingDraft(draft);
     setBuildingDirect(false);
   } });
+  if (extraMode === "penalty" || extraMode === "exclusion") return /* @__PURE__ */ React.createElement(JTH7TaxDirect, { mode: extraMode, initialDraft: extraDrafts[extraMode], onBack: (draft) => {
+    setExtraDrafts((old) => __spreadProps(__spreadValues({}, old), { [extraMode]: draft }));
+    setExtraMode(null);
+  } });
   if (extraMode === "value") return /* @__PURE__ */ React.createElement(JTAcquisitionValueDirect, { initialDraft: extraDrafts.value, onBack: (draft) => {
     setExtraDrafts((old) => __spreadProps(__spreadValues({}, old), { value: draft }));
     setExtraMode(null);
@@ -15078,7 +15255,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCDE8\uB4DD \uC6D0\uC778\xB7\uC885\uB958\xB7\uAC00\uC561\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uCDE8\uB4DD\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uBA74\uC801\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC10\uBA74\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setBasisInputs(true) }, "\uCDE8\uB4DD\uC77C\xB7\uC2E0\uCD95 \uACFC\uC138\uD45C\uC900 \uD655\uC778 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-reviewed-direct", className: "jt-btn jt-btn--ghost", onClick: () => setReviewedDirect(true) }, "\uC9C0\uBAA9\uBCC0\uACBD \uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-building-direct", className: "jt-btn jt-btn--ghost", onClick: () => setBuildingDirect(true) }, "\uC99D\uCD95\xB7\uB300\uC218\uC120 \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-value-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("value") }, "\uC9C0\uBAA9\uBCC0\uACBD \uC0B0\uC815\uC561\xB7\uC644\uACF5\uC8FC\uD0DD \uC9C1\uC811\uB9E4\uC218 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-court-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("court") }, "\uBC95\uC6D0\uACBD\uB9E4 \uD1A0\uC9C0 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exchange-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("exchange") }, "\uD1A0\uC9C0 \uAD50\uD658 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-divorce-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("divorce") }, "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-burdened-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("burdened") }, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.qFor ? cur.qFor(answers) : cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCDE8\uB4DD \uC6D0\uC778\xB7\uC885\uB958\xB7\uAC00\uC561\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uCDE8\uB4DD\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uBA74\uC801\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC10\uBA74\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setBasisInputs(true) }, "\uCDE8\uB4DD\uC77C\xB7\uC2E0\uCD95 \uACFC\uC138\uD45C\uC900 \uD655\uC778 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exclusion-direct", onClick: () => setExtraMode("exclusion") }, "\uC8FC\uD0DD \uCDE8\uB4DD \uC911\uACFC\uC81C\uC678"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-penalty-direct", onClick: () => setExtraMode("penalty") }, "\uCDE8\uB4DD\uC138 \uBCF8\uC138 \uAC00\uC0B0\uC138"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-reviewed-direct", className: "jt-btn jt-btn--ghost", onClick: () => setReviewedDirect(true) }, "\uC9C0\uBAA9\uBCC0\uACBD \uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-building-direct", className: "jt-btn jt-btn--ghost", onClick: () => setBuildingDirect(true) }, "\uC99D\uCD95\xB7\uB300\uC218\uC120 \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-value-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("value") }, "\uC9C0\uBAA9\uBCC0\uACBD \uC0B0\uC815\uC561\xB7\uC644\uACF5\uC8FC\uD0DD \uC9C1\uC811\uB9E4\uC218 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-court-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("court") }, "\uBC95\uC6D0\uACBD\uB9E4 \uD1A0\uC9C0 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exchange-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("exchange") }, "\uD1A0\uC9C0 \uAD50\uD658 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-divorce-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("divorce") }, "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-burdened-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("burdened") }, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.qFor ? cur.qFor(answers) : cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
