@@ -1,6 +1,6 @@
 /* 자동 생성 파일 — 직접 수정하지 마세요.
    생성: node project/scripts/build_bundle.mjs
-   소스: project/src/*.jsx (47개, ORDER 순서)
+   소스: project/src/*.jsx (56개, ORDER 순서)
    ⛔ 이 파일을 손으로 고치면 다음 빌드에 덮어써집니다. 소스를 고치고 다시 빌드하세요.
    ⛔ 커밋에서 빠뜨리면 라이브가 «옛 코드»로 돕니다 — tests_build_fresh.js 가 막습니다. */
 
@@ -3115,6 +3115,446 @@ function JTTransferAnnualDirect({ onBack, initialDraft }) {
 window.JTTransferAnnualDirect = JTTransferAnnualDirect;
 
 
+/* ────────── StockTransferDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const STOCK_DIRECT_FIELDS = [["taxpayer", "\uB0A9\uC138\uC790 \uC2DD\uBCC4\uBA85"], ["issuer", "\uBC1C\uD589\uBC95\uC778 \uC2DD\uBCC4\uBA85"], ["established", "\uBC95\uC778 \uC124\uB9BD\uC77C", "date"], ["fye", "\uC9C1\uC804 \uC0AC\uC5C5\uC5F0\uB3C4 \uB9D0\uC77C", "date"], ["issued", "\uC9C1\uC804 \uC0AC\uC5C5\uC5F0\uB3C4 \uB9D0 \uCD1D\uBC1C\uD589\uC8FC\uC2DD\uC218"], ["own", "\uBCF8\uC778 \uBCF4\uC720\uC8FC\uC2DD\uC218"], ["other", "\uB2E4\uB978 \uD55C \uBA85\uC758 \uBCF4\uC720\uC8FC\uC2DD\uC218"], ["value", "\uC9C1\uC804 \uC0AC\uC5C5\uC5F0\uB3C4 \uB9D0 \uBC95\uC815 \uD3C9\uAC00 1\uC8FC\uB2F9 \uAC00\uC561 (\uC6D0)"], ["assets", "\uC591\uB3C4\uC77C \uD604\uC7AC \uCD1D\uC790\uC0B0 (\uC6D0)"], ["acquired", "\uCDE8\uB4DD \uACB0\uC81C\xB7\uC9C0\uAE09\uC77C", "date"], ["sold", "\uC591\uB3C4 \uACB0\uC81C\xB7\uC218\uB839\uC77C", "date"], ["lotQuantity", "\uD574\uB2F9 \uCDE8\uB4DD\uBD84 \uC804\uCCB4 \uC8FC\uC2DD\uC218"], ["quantity", "\uC591\uB3C4 \uC8FC\uC2DD\uC218"], ["cost", "\uCDE8\uB4DD \uC9C0\uAE09\uC561 (\uC6D0)"], ["sale", "\uC591\uB3C4 \uC218\uB839\uC561 (\uC6D0)"], ["source", "\uACC4\uC57D\xB7\uBC95\uC778\xB7\uC8FC\uC8FC\xB7\uC6D0\uAC00 \uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["reviewer", "\uAC80\uD1A0\uC790 \uC2DD\uBCC4\uBA85"], ["reviewDate", "\uAC80\uD1A0\uC77C", "date"], ["jurisdiction", "\uC9C0\uBC29\uC18C\uB4DD\uC138 \uAD00\uD560"]];
+const STOCK_DIRECT_CHECKS = [["resident", "\uB300\uD55C\uBBFC\uAD6D \uAD6D\uC801\uC758 \uAD6D\uB0B4 \uAC70\uC8FC\uC790\uC785\uB2C8\uB2E4."], ["ordinary", "\uAD6D\uB0B4 \uBE44\uC0C1\uC7A5 \uBCF4\uD1B5\uC8FC\uB97C \uC6D0\uD654\uB85C \uC9C1\uC811 \uB9E4\uC218\xB7\uC7A5\uC678 \uB9E4\uB3C4\uD55C \uC77C\uBC18 \uB9E4\uB9E4\uC774\uBA70, \uCDE8\uB4DD\xB7\uC591\uB3C4 \uACB0\uC81C\uC77C\uACFC \uC2E4\uC81C \uC9C0\uAE09\xB7\uC218\uB839\uC77C\uC774 \uAC19\uC2B5\uB2C8\uB2E4."], ["population", "\uC9C1\uC804 \uC0AC\uC5C5\uC5F0\uB3C4 \uB9D0 \uC8FC\uC8FC\uB294 \uBCF8\uC778\uACFC \uD2B9\uC218\uAD00\uACC4 \uC5C6\uB294 \uB2E4\uB978 \uD55C \uBA85\uBFD0\uC774\uBA70, \uAD00\uACC4\uC778\xB7\uC9C0\uBC30\uBC95\uC778\xB7\uCD5C\uB300\uC9D1\uB2E8\xB7\uBB38\uD131 \uC801\uC6A9 \uB300\uC0C1\uC790\uB97C \uBE60\uC9D0\uC5C6\uC774 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."], ["history", "\uC5F0\uC911 \uBCC4\uB3C4 \uB9E4\uC218\xB7\uC8FC\uC2DD \uC774\uB3D9\xB7\uC99D\uAC10\uC790\xB7\uBD84\uD560\xB7\uBCD1\uD569\uC740 \uC5C6\uC73C\uBA70, \uC785\uB825\uD55C \uC591\uB3C4\uB9CC \uC788\uC2B5\uB2C8\uB2E4."], ["assetScope", "\uBD80\uB3D9\uC0B0\xB7\uAC04\uC811\uBCF4\uC720 \uBD80\uB3D9\uC0B0 \uB4F1 \uAE30\uD0C0\uC790\uC0B0 \uD574\uB2F9 \uC790\uC0B0\uACFC \uC2DC\uC124\uC774\uC6A9\uAD8C\xB7\uC804\uD658\uAD8C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."], ["valuation", "1\uC8FC\uB2F9 \uAC00\uC561\uC740 \uBE44\uC0C1\uC7A5\uC8FC\uC2DD\uC758 \uBC95\uC815 \uD3C9\uAC00\uBC29\uBC95\uC73C\uB85C \uBCC4\uB3C4 \uAC80\uD1A0\uD55C \uAC12\uC785\uB2C8\uB2E4."], ["costScope", "\uCDE8\uB4DD \uC9C0\uAE09\uC561\uC740 \uACBD\uBE44 \uC81C\uC678 \uC2E4\uAC00, \uC591\uB3C4 \uC218\uB839\uC561\uC740 \uACBD\uBE44 \uACF5\uC81C \uC804 \uCD1D\uC561\uC774\uBA70 \uBCC4\uB3C4 \uCDE8\uB4DD\xB7\uC591\uB3C4 \uACBD\uBE44\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."], ["annual", "\uD574\uB2F9 \uC5F0\uB3C4 \uAD6D\uB0B4\uC678 \uC8FC\uC2DD \uAC70\uB798\uB294 \uC774 \uD55C \uAC74\uBFD0\uC774\uBA70 \uC5F0\uB9D0\uAE4C\uC9C0\uC758 \uC804\uCCB4 \uAC70\uB798\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4."], ["special", "\uC0C1\uC18D\xB7\uC99D\uC5EC\xB7\uC774\uC6D4\xB7\uAC10\uBA74\xB7\uD2B9\uB840\xB7\uAD6D\uC678\uC804\uCD9C\uC774 \uC5C6\uACE0 \uAE30\uC0AC\uC6A9 \uAE30\uBCF8\uACF5\uC81C\xB7\uAE30\uB0A9\uBD80\uC561\xB7\uC678\uAD6D\uB0A9\uBD80\uC138\uC561\uC774 \uBAA8\uB450 \uC5C6\uC2B5\uB2C8\uB2E4."], ["local", "\uC9C0\uBC29\uC18C\uB4DD\uC138 \uD45C\uC900\uC138\uC728 \uB300\uC0C1\uC774\uBA70 10\uC6D0 \uBBF8\uB9CC \uBC84\uB9BC\uC744 \uC120\uD0DD\uD558\uACE0 \uBD84\uD560 \uC9D5\uC218\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."]];
+function stockDirectRequest(d) {
+  const text = (k) => {
+    var _a, _b;
+    const v = String((_a = d[k]) != null ? _a : "").trim();
+    if (!v || v.length > 200) throw new Error((((_b = STOCK_DIRECT_FIELDS.find((f) => f[0] === k)) == null ? void 0 : _b[1]) || k) + "\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const number = (k) => {
+    const raw = text(k);
+    if (!/^\d+$/.test(raw) || !Number.isSafeInteger(Number(raw))) throw new Error("\uC218\uB7C9\xB7\uAC00\uC561\uC740 0 \uC774\uC0C1\uC758 \uC6D0 \uB2E8\uC704 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return Number(raw);
+  };
+  const date = (k) => {
+    const v = text(k);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || !Number.isFinite(Date.parse(v)) || new Date(v).toISOString().slice(0, 10) !== v) throw new Error("\uC2E4\uC81C \uB0A0\uC9DC\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  for (const [key, label] of STOCK_DIRECT_CHECKS) if (d[key] !== true) throw new Error(label + " \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  if (!["SME", "NON_SME"].includes(d.sme)) throw new Error("\uBC95\uC815 \uC911\uC18C\uAE30\uC5C5 \uD574\uB2F9 \uC5EC\uBD80\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+  const sold = date("sold"), acquired = date("acquired"), fye = date("fye"), established = date("established"), asof = date("reviewDate");
+  if (!["2026-10-19", "2026-10-20"].includes(sold)) throw new Error("\uD604\uC7AC \uC591\uB3C4\uC77C\uC740 2026\uB144 10\uC6D4 19\uC77C\xB720\uC77C\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.");
+  if (acquired > sold || acquired >= "2026-01-01" || established > fye || fye >= "2026-01-01" || fye <= "2024-12-31") throw new Error("2026\uB144 \uC774\uC804 \uCDE8\uB4DD\uBD84\uACFC 2025\uB144 \uC9C1\uC804 \uC0AC\uC5C5\uC5F0\uB3C4 \uB9D0 \uC790\uB8CC\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.");
+  const issued = number("issued"), own = number("own"), other = number("other"), quantity = number("quantity"), lot = number("lotQuantity"), assets = number("assets");
+  if (!issued || !quantity || !lot || !assets || !other || own + other !== issued || !Number.isSafeInteger(own + other) || quantity > lot || lot > own) throw new Error("\uC8FC\uC8FC\uBCC4 \uC218\uB7C9 \uD569\uACC4\uC640 \uBC1C\uD589\uC8FC\uC2DD\uC218, \uCDE8\uB4DD\uBD84\xB7\uC591\uB3C4 \uC218\uB7C9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+  const source = text("source"), reviewer = text("reviewer"), review = (scope) => ({ confirmed: true, scope, source_ref: source, reviewer, as_of: asof });
+  const cash = (amount, occurred_on) => ({ amount, currency: "KRW", occurred_on, source_ref: source });
+  const group = (id, holder) => ({ group_id: id, comparison_member_ids: [holder], threshold_member_ids: [holder], source_ref: source });
+  return { tax_year: 2026, taxpayer: { taxpayer_id: text("taxpayer"), nationality: "KR", resident_status: "resident", residency_review: review("resident status") }, issuers: [{ issuer_id: text("issuer"), incorporation_country: "KR", listing_market: "UNLISTED", prior_fiscal_year_end: fye, established_on: established, sme_document: { category: d.sme, as_of: fye, source_ref: source, definition_review: review("statutory company definition") }, asset_schedule: { as_of: sold, total_assets: assets, real_property_assets: 0, indirect_entity_assets: 0, facility_or_conversion_rights: false, source_ref: source, ordinary_share_review: review("ordinary share asset exclusions") }, per_share_value: { amount_krw: number("value"), as_of: fye, method: "unlisted_statutory_valuation", source_ref: source, method_review: review("statutory valuation method") }, holder_scope: { as_of: fye, issued_quantity: issued, taxpayer_holder_id: "SELF", positions: [{ holder_id: "SELF", relation: "self", quantity: own, source_ref: source }, { holder_id: "OTHER", relation: "unrelated", quantity: other, source_ref: source }], max_comparison_groups: [group("OWN", "SELF"), group("OTHER_GROUP", "OTHER")], taxpayer_comparison_group_id: "OWN", unlisted_nonmaximum_member_ids: ["SELF"], inyear_acquisitions: [], population_review: review("complete relevant holder population"), max_comparison_review: review("complete maximum comparison population"), threshold_population_review: review("complete statutory threshold population"), events_review: review("complete year transfer ledger without capital changes") } }], transactions: [{ transaction_id: "T1", issuer_id: text("issuer"), security_kind: "ordinary_common", execution_mode: "off_market", market_review: review("actual execution/exception review"), acquisition_method: "purchase", quantity, acquired_quantity: lot, lot_id: "L1", acquisition_settlement_date: acquired, disposal_settlement_date: sold, ordinary_timing_review: review("ordinary payment clearing; no special timing"), acquisition_payment: cash(number("cost"), acquired), disposal_receipt: cash(number("sale"), sold), acquisition_amount_basis: "excluding_itemized_costs", disposal_amount_basis: "gross", costs: [], cost_completeness_review: review("all costs, confirmed none") }], annual_scope: { transaction_ids: ["T1"], full_year: true, as_of: "2026-12-31", full_population_review: review("complete domestic/foreign full-year securities pool"), no_relief_or_special_regime_review: review("no relief/special regime"), prior_stock_basic_deduction: 0, prior_stock_payments: 0, declared_foreign_tax_krw: 0, foreign_tax_scope_review: review("confirmed no foreign taxes") }, foreign_taxes: [], local_tax: { jurisdiction: text("jurisdiction"), standard_rates_apply: true, ordinance_review: review("standard rate ordinance"), ten_won_floor_elected: true, no_installment_collection: true } };
+}
+function stockDirectValid(c) {
+  const n = (v) => Number.isSafeInteger(v) && v >= 0, t = c == null ? void 0 : c.totals;
+  return !!((c == null ? void 0 : c.status) === "ok" && c.candidate_only === false && Array.isArray(c.issues) && c.issues.length === 0 && t && ["national_payable", "local_payable", "total_payable"].every((k) => n(t[k])) && Number.isSafeInteger(t.national_payable + t.local_payable) && t.total_payable === t.national_payable + t.local_payable);
+}
+function JTStockTransferDirect({ onBack, initialDraft }) {
+  const clear = (d) => __spreadValues(__spreadValues({}, d), Object.fromEntries(STOCK_DIRECT_CHECKS.map(([key]) => [key, false])));
+  const [draft, setDraft] = React.useState(() => clear(initialDraft || {})), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [issues, setIssues] = React.useState([]), [busy, setBusy] = React.useState(false);
+  const seq = React.useRef(0), control = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+  }, []);
+  const edit = (key, value) => {
+    var _a;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+    setBusy(false);
+    setResult(null);
+    setError("");
+    setIssues([]);
+    setDraft((old) => __spreadProps(__spreadValues({}, STOCK_DIRECT_CHECKS.some(([k]) => k === key) ? old : clear(old)), { [key]: value }));
+  };
+  const submit = async (e) => {
+    var _a;
+    e.preventDefault();
+    if (busy) return;
+    setResult(null);
+    setIssues([]);
+    setError("");
+    let body;
+    try {
+      body = stockDirectRequest(draft);
+    } catch (e2) {
+      setError(e2.message);
+      return;
+    }
+    const current = ++seq.current;
+    (_a = control.current) == null ? void 0 : _a.abort();
+    const abort = new AbortController();
+    control.current = abort;
+    setBusy(true);
+    const timer = setTimeout(() => abort.abort(), 45e3);
+    try {
+      const configured = window.JT_ENGINE_BASE;
+      if (!configured) throw new Error("\uACC4\uC0B0 \uC11C\uBC84\uAC00 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const base = configured.replace(/\/$/, "");
+      const response = await fetch(base + "/v1/calc/stock-transfer-annual", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: abort.signal });
+      const data = await response.json();
+      if (current !== seq.current) return;
+      if (!response.ok) throw new Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uACC4\uC0B0 \uC5F0\uACB0\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      const c = data.calc;
+      if (c && ["needs_input", "unsupported"].includes(c.status)) {
+        setIssues(Array.isArray(c.issues) ? c.issues : []);
+        setError("\uCD94\uAC00 \uC0AC\uC2E4\xB7\uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uAC70\uB098 \uC9C0\uC6D0 \uBC94\uC704\uB97C \uBC97\uC5B4\uB0A9\uB2C8\uB2E4. \uC138\uC561\uC740 \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+        return;
+      }
+      if (!stockDirectValid(c)) throw new Error("\uACC4\uC0B0 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+      setResult(c);
+    } catch (e2) {
+      if (current === seq.current) setError(e2.name === "AbortError" ? "\uC751\uB2F5 \uC2DC\uAC04\uC774 \uCD08\uACFC\uB410\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uACC4\uC0B0\uD574 \uC8FC\uC138\uC694." : e2.message);
+    } finally {
+      clearTimeout(timer);
+      if (current === seq.current) setBusy(false);
+    }
+  };
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC8FC\uC2DD \uC591\uB3C4 \uC5F0\uAC04 \uACC4\uC0B0", subtitle: "\uAD6D\uB0B4 \uBE44\uC0C1\uC7A5 \uBCF4\uD1B5\uC8FC \uC77C\uBC18 \uB9E4\uB9E4 1\uAC74", tag: "CONSULTING", onBack: () => onBack == null ? void 0 : onBack(draft) }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 10\uC6D4 19\uC77C\xB720\uC77C \uC591\uB3C4\uD55C \uC6D0\uD654 \uC7A5\uC678 \uB9E4\uB9E4 \uC911, 2026\uB144 \uC774\uC804\uC5D0 \uCDE8\uB4DD\uD558\uACE0 \uC8FC\uC8FC\uAC00 \uBCF8\uC778\uACFC \uD2B9\uC218\uAD00\uACC4 \uC5C6\uB294 \uB2E4\uB978 \uD55C \uBA85\uC778 \uBC95\uC778\uC744 \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC5F0\uC911 \uC8FC\uC8FC \uBCC0\uB3D9\xB7\uC99D\uAC10\uC790\xB7\uBD84\uD560\xB7\uBCD1\uD569, \uBCC4\uB3C4 \uACBD\uBE44, \uB2E4\uB978 \uC8FC\uC2DD \uAC70\uB798, \uC0C1\uC18D\xB7\uC99D\uC5EC\xB7\uAC10\uBA74\xB7\uAE30\uB0A9\uBD80\xB7\uC678\uAD6D\uC138\uAC00 \uC788\uC73C\uBA74 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4. \uBC95\uC815 1\uC8FC\uB2F9 \uD3C9\uAC00\uC561\uC740 \uBCC4\uB3C4 \uAC80\uD1A0\uD55C \uAC12\uC744 \uC785\uB825\uD558\uBA70 \uC774 \uD654\uBA74\uC5D0\uC11C \uC790\uB3D9 \uD3C9\uAC00\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, STOCK_DIRECT_FIELDS.map(([key, label, type]) => {
+    var _a;
+    return /* @__PURE__ */ React.createElement("label", { key, style: { display: "block", margin: "10px 0" } }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "stock-direct-" + key, className: "jt-report-q__input", type: type || "text", value: (_a = draft[key]) != null ? _a : "", onChange: (e) => edit(key, e.target.value) }));
+  }), /* @__PURE__ */ React.createElement("label", null, "\uBC95\uC815 \uC911\uC18C\uAE30\uC5C5 \uD574\uB2F9 \uC5EC\uBD80", /* @__PURE__ */ React.createElement("select", { "data-testid": "stock-direct-sme", value: draft.sme || "", onChange: (e) => edit("sme", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD655\uC778 \uD544\uC694"), /* @__PURE__ */ React.createElement("option", { value: "SME" }, "\uC911\uC18C\uAE30\uC5C5"), /* @__PURE__ */ React.createElement("option", { value: "NON_SME" }, "\uC911\uC18C\uAE30\uC5C5 \uC544\uB2D8"))), STOCK_DIRECT_CHECKS.map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key, style: { display: "block", margin: "10px 0" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "stock-direct-" + key, type: "checkbox", checked: draft[key] === true, onChange: (e) => edit(key, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("p", null, "\uAC80\uD1A0 \uC790\uB8CC\uBA85\uC740 \uC2E4\uC81C \uD655\uC778\uD55C \uC790\uB8CC\uC758 \uC2DD\uBCC4\uBA85\uC774\uBA70 \uC790\uB3D9 \uC778\uC99D\uC744 \uB73B\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC8FC\uBBFC\uB4F1\uB85D\uBC88\uD638\xB7\uAC1C\uC778\uC815\uBCF4\uB294 \uC785\uB825\uD558\uC9C0 \uB9C8\uC138\uC694. \uC785\uB825 \uBCC0\uACBD \uC2DC \uACB0\uACFC\uC640 \uD655\uC778\uB780\uC744 \uC9C0\uC6B0\uBBC0\uB85C \uC790\uB8CC\uB97C \uB2E4\uC2DC \uD655\uC778\uD558\uACE0 \uACC4\uC0B0\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { type: "submit", className: "jt-btn jt-btn--primary", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uC8FC\uC2DD \uC591\uB3C4 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), !!issues.length && /* @__PURE__ */ React.createElement("ul", null, issues.map((issue, i) => /* @__PURE__ */ React.createElement("li", { key: i }, issue.path, ": ", issue.message))), result && /* @__PURE__ */ React.createElement("section", { "data-testid": "stock-direct-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uC5F0\uAC04 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, [["national_payable", "\uAD6D\uC138"], ["local_payable", "\uC9C0\uBC29\uC18C\uB4DD\uC138"], ["total_payable", "\uD569\uACC4"]].map(([key, label]) => /* @__PURE__ */ React.createElement("tr", { key }, /* @__PURE__ */ React.createElement("th", null, label), /* @__PURE__ */ React.createElement("td", null, result.totals[key].toLocaleString("ko-KR"), "\uC6D0"))))), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uC2E0\uACE0\xB7\uAE30\uB0A9\uBD80 \uC815\uC0B0\uACFC \uC2E0\uACE0\uC11C \uC81C\uCD9C\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."))));
+}
+window.JTStockTransferDirect = JTStockTransferDirect;
+
+
+/* ────────── TransferSplitDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const splitReviewLabels = {
+  ordinary_purchase_sale: "\uD1B5\uC0C1\uC801\uC778 \uB9E4\uC218 \uD6C4 \uB9E4\uB3C4\uC785\uB2C8\uB2E4",
+  domestic_registered_actual: "\uAD6D\uB0B4 \uB4F1\uAE30 \uC790\uC0B0\uC774\uBA70 \uC2E4\uC9C0\uAC70\uB798\uAC00\uC561\uC785\uB2C8\uB2E4",
+  business_land_after_use_tax_review: "\uC0AC\uC6A9 \uC774\uB825\uC744 \uAC80\uD1A0\uD558\uC5EC \uC0AC\uC5C5\uC6A9 \uD1A0\uC9C0\uB85C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4",
+  tax_adjusted_costs_and_eligible_expenses: "\uCDE8\uB4DD\uC6D0\uAC00 \uC870\uC815\uACFC \uD544\uC694\uACBD\uBE44 \uC801\uACA9 \uAC80\uD1A0\uB97C \uB9C8\uCCE4\uC2B5\uB2C8\uB2E4",
+  no_depreciation_or_other_cost_adjustments: "\uAC10\uAC00\uC0C1\uAC01 \uB4F1 \uCD94\uAC00 \uC6D0\uAC00 \uC870\uC815\uC774 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_special_exemption_relief_deferral: "\uBE44\uACFC\uC138\xB7\uAC10\uBA74\xB7\uACFC\uC138\uC774\uC5F0 \uD2B9\uB840\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_prior_disposals: "\uAC19\uC740 \uD574 \uB2E4\uB978 \uC591\uB3C4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  known_lot_attribution: "\uAC01 \uCDE8\uB4DD\uBD84\uC758 \uAE08\uC561 \uADC0\uC18D\uC774 \uC99D\uBE59\uC73C\uB85C \uD655\uC778\uB429\uB2C8\uB2E4",
+  resident: "\uAC70\uC8FC\uC790 \uAC1C\uC778\uC785\uB2C8\uB2E4",
+  annual: "\uD574\uB2F9 \uC5F0\uB3C4\uC758 \uACFC\uC138 \uB300\uC0C1 \uC591\uB3C4\uAC00 \uBAA8\uB450 \uD3EC\uD568\uB418\uC5B4 \uC788\uC2B5\uB2C8\uB2E4",
+  local: "\uC9C0\uBC29\uC18C\uB4DD\uC138 \uD45C\uC900\uC138\uC728 \uC801\uC6A9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"
+};
+function splitDirectBlank() {
+  return { source: "", property: "", sold: "", whole: "", review: {}, sources: {}, lots: [0, 1].map(() => ({ date: "", numerator: "", denominator: "", sale: "", cost: "", expense: "", source: "" })) };
+}
+function splitDirectResume(d) {
+  return d ? __spreadProps(__spreadValues({}, JSON.parse(JSON.stringify(d))), { review: {} }) : splitDirectBlank();
+}
+function splitDirectResult(calc) {
+  const raw = calc == null ? void 0 : calc["\uC6D0\uBCF8\uACB0\uACFC"], money = (v) => Number.isSafeInteger(v) && v >= 0;
+  if ((calc == null ? void 0 : calc["\uC0C1\uD0DC"]) !== "ok" || calc["\uACF5\uAC1C\uACC4\uC57D"] !== "transfer-split-public/1" || (raw == null ? void 0 : raw.schema_version) !== "transfer-split-result/1" || !Array.isArray(raw.rows) || raw.rows.length !== 2) throw Error("\uACC4\uC0B0 \uC751\uB2F5\uC744 \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uACC4\uC0B0\uD558\uC138\uC694.");
+  const top = ["\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uCD1D\uC138\uBD80\uB2F4"], totals = ["transfer_income", "basic_deduction", "tax_base", "calculated_tax", "final_tax", "local_income_tax", "total_tax"];
+  if (!top.every((k) => money(calc[k])) || !totals.every((k) => money(raw[k])) || !raw.rows.every((r, i) => r.lot_id === "L" + (i + 1) && ["transfer_gain", "long_term_deduction", "transfer_income"].every((k) => money(r[k])) && r.transfer_gain > 0 && r.transfer_gain - r.long_term_deduction === r.transfer_income) || raw.rows.reduce((s, r) => s + BigInt(r.transfer_income), /* @__PURE__ */ BigInt("0")) !== BigInt(raw.transfer_income) || raw.tax_base !== Math.max(raw.transfer_income - raw.basic_deduction, 0) || raw.final_tax !== calc["\uC138\uC561"] || raw.local_income_tax !== calc["\uC9C0\uBC29\uC18C\uB4DD\uC138"] || raw.total_tax !== calc["\uCD1D\uC138\uBD80\uB2F4"] || calc["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"] !== 0 || BigInt(calc["\uC138\uC561"]) + BigInt(calc["\uC9C0\uBC29\uC18C\uB4DD\uC138"]) !== BigInt(calc["\uCD1D\uC138\uBD80\uB2F4"])) throw Error("\uACC4\uC0B0 \uC751\uB2F5\uC758 \uAE08\uC561\uC744 \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uACC4\uC0B0\uD558\uC138\uC694.");
+  return calc;
+}
+function splitDirectRequest(d) {
+  const need = (v, label) => {
+    if (typeof v !== "string" || !v.trim()) throw Error(label + "\uC744 \uC785\uB825\uD558\uC138\uC694.");
+    return v.trim();
+  };
+  const amount = (v, label, positive = false) => {
+    if (!/^\d+$/.test(v) || !Number.isSafeInteger(Number(v)) || Number(v) > 1e15 || positive && Number(v) <= 0) throw Error(label + "\uC740 1,000\uC870 \uC774\uD558\uC758 " + (positive ? "\uC591\uC758" : "0 \uC774\uC0C1\uC758") + " \uC815\uC218\uC5EC\uC57C \uD569\uB2C8\uB2E4.");
+    return Number(v);
+  };
+  const day = (v, label) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || !Number.isFinite(Date.parse(v + "T00:00:00Z")) || (/* @__PURE__ */ new Date(v + "T00:00:00Z")).toISOString().slice(0, 10) !== v) throw Error(label + "\uC744 \uD655\uC778\uD558\uC138\uC694.");
+    return v;
+  };
+  const source = need(d.source, "\uACF5\uD1B5 \uC99D\uBE59 \uCC38\uC870"), property = need(d.property, "\uBB3C\uAC74 \uC2DD\uBCC4\uBA85"), sold = day(d.sold, "\uC591\uB3C4\uC77C"), whole = amount(d.whole, "\uC804\uCCB4 \uC591\uB3C4\uAC00\uC561", true);
+  if (sold < "2026-10-01" || sold > "2026-10-23") throw Error("\uD604\uC7AC \uC9C0\uC6D0 \uC591\uB3C4\uC77C\uC740 2026-10-01\uBD80\uD130 2026-10-23\uAE4C\uC9C0\uC785\uB2C8\uB2E4.");
+  for (const k of Object.keys(splitReviewLabels)) {
+    if (d.review[k] !== true) throw Error("\uBAA8\uB4E0 \uAC80\uD1A0 \uD56D\uBAA9\uC744 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4.");
+    need(d.sources[k], splitReviewLabels[k] + "\uC758 \uADFC\uAC70");
+  }
+  if (!Array.isArray(d.lots) || d.lots.length !== 2) throw Error("\uB450 \uCDE8\uB4DD\uBD84\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  const common = { schema_version: 1, source_id: source, parties: [{ party_ref: "T", source_id: d.sources.resident, role: "taxpayer", person_type: "individual", resident: true }], assets: [], events: [], valuations: [], liabilities: [], amounts: [], expenses: [] };
+  const lots = d.lots.map((l, i) => {
+    const ref = "L" + (i + 1), s = need(l.source, ref + " \uC99D\uBE59 \uCC38\uC870"), acquired = day(l.date, ref + " \uCDE8\uB4DD\uC77C"), n = amount(l.numerator, "\uC9C0\uBD84 \uBD84\uC790", true), den = amount(l.denominator, "\uC9C0\uBD84 \uBD84\uBAA8", true), sale = amount(l.sale, "\uCDE8\uB4DD\uBD84 \uC591\uB3C4\uAC00\uC561", true), cost = amount(l.cost, "\uCDE8\uB4DD\uBD84 \uC6D0\uAC00", true), expense = amount(l.expense, "\uCDE8\uB4DD\uBD84 \uACBD\uBE44");
+    if (n >= den || den > 1e9) throw Error("\uAC01 \uC9C0\uBD84\uC740 0\uBCF4\uB2E4 \uD06C\uACE0 1\uBCF4\uB2E4 \uC791\uC544\uC57C \uD558\uBA70 \uBD84\uBAA8\uB294 10\uC5B5 \uC774\uD558\uC5EC\uC57C \uD569\uB2C8\uB2E4.");
+    if (acquired >= sold) throw Error("\uCDE8\uB4DD\uC77C\uC740 \uC591\uB3C4\uC77C \uC774\uC804\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.");
+    if (sale <= cost + expense) throw Error("\uD604\uC7AC \uAC01 \uCDE8\uB4DD\uBD84\uC758 \uC591\uB3C4\uCC28\uC775\uC774 \uC591\uC218\uC778 \uACBD\uC6B0\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.");
+    common.assets.push({ asset_ref: ref, source_id: s, property_type: "\uD1A0\uC9C0", whole_property_confirmed: false, share_numerator: n, share_denominator: den, share_source_id: s });
+    for (const [kind, date] of [["seller_acquisition", acquired], ["seller_sale", sold]]) common.events.push({ kind, asset_ref: ref, party_ref: "T", occurred_on: date, source_id: s });
+    for (const [purpose, value, date] of [["tax_adjusted_acquisition_cost", cost, acquired], ["sale_consideration", sale, sold]]) common.amounts.push({ asset_ref: ref, purpose, scope: "transaction_share", amount_krw: value, as_of: date, source_id: s });
+    common.expenses.push({ asset_ref: ref, payer_ref: "T", kind: "deductible_sale_expenses", scope: "transaction_share", amount_krw: expense, event_kind: "seller_sale", source_id: s });
+    return { n: BigInt(n), den: BigInt(den), sale, date: acquired };
+  });
+  if (lots[0].n * lots[1].den + lots[1].n * lots[0].den !== lots[0].den * lots[1].den) throw Error("\uB450 \uC9C0\uBD84 \uD569\uACC4\uAC00 1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.");
+  if (lots[0].date === lots[1].date) throw Error("\uB450 \uCDE8\uB4DD\uC77C\uC774 \uB2EC\uB77C\uC57C \uD569\uB2C8\uB2E4.");
+  if (BigInt(lots[0].sale) + BigInt(lots[1].sale) !== BigInt(whole)) throw Error("\uCDE8\uB4DD\uBD84 \uC591\uB3C4\uAC00\uC561 \uD569\uACC4\uAC00 \uC804\uCCB4 \uC591\uB3C4\uAC00\uC561\uACFC \uB2E4\uB985\uB2C8\uB2E4.");
+  const keys = Object.keys(splitReviewLabels).filter((k) => !["resident", "annual", "local"].includes(k));
+  return { schema_version: "transfer-split-public/1", ai_consultation: true, common_facts: common, consultation_context: { source_id: source, year: 2026, taxpayer_ref: "T", property_id: property, property_source_id: source, all_annual_subject_transfers_included: true, annual_scope_source_id: d.sources.annual, local_standard_rate_confirmed: true, local_rate_source_id: d.sources.local, whole_sale_price_krw: whole, whole_sale_price_source_id: source, lot_refs: ["L1", "L2"], facts: Object.fromEntries(keys.map((k) => [k, true])), fact_sources: Object.fromEntries(keys.map((k) => [k, d.sources[k]])) } };
+}
+function JTTransferSplitDirect({ onBack, initialDraft }) {
+  var _a;
+  const [draft, setDraft] = React.useState(() => splitDirectResume(initialDraft)), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const version = React.useRef(0), control = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a2;
+    version.current++;
+    (_a2 = control.current) == null ? void 0 : _a2.abort();
+  }, []);
+  const edit = (fn, reviewOnly = false) => {
+    var _a2;
+    version.current++;
+    (_a2 = control.current) == null ? void 0 : _a2.abort();
+    setBusy(false);
+    setResult(null);
+    setError("");
+    setDraft((d) => {
+      const next = fn(d);
+      return reviewOnly ? next : __spreadProps(__spreadValues({}, next), { review: {} });
+    });
+  };
+  const field = (label, value, onChange, type = "text") => /* @__PURE__ */ React.createElement("label", { style: { display: "grid", gap: 5, marginBottom: 12 } }, label, /* @__PURE__ */ React.createElement("input", { type, value, onChange: (e) => onChange(e.target.value) }));
+  const calculate = async (e) => {
+    var _a2;
+    e.preventDefault();
+    if (busy) return;
+    setResult(null);
+    setError("");
+    let body;
+    try {
+      body = splitDirectRequest(draft);
+    } catch (e2) {
+      setError(e2.message);
+      return;
+    }
+    const ticket = ++version.current, ctrl = new AbortController();
+    control.current = ctrl;
+    setBusy(true);
+    const timer = setTimeout(() => ctrl.abort(), 25e3);
+    try {
+      const base = window.JT_ENGINE_BASE || (typeof ENGINE_BASE !== "undefined" ? ENGINE_BASE : "");
+      if (!base) throw Error("\uACC4\uC0B0 \uC11C\uBC84\uAC00 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const response = await fetch(base.replace(/\/$/, "") + "/v1/calc/transfer-split", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctrl.signal });
+      const data = await response.json();
+      if (ticket !== version.current) return;
+      if (!response.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC9C0\uC6D0 \uBC94\uC704\uB97C \uD655\uC778\uD558\uC138\uC694.");
+      if (!data.calc || data.calc["\uC0C1\uD0DC"] !== "ok") throw Error(typeof window.jtEngineMessageForDisplay === "function" ? window.jtEngineMessageForDisplay(((_a2 = data.calc) == null ? void 0 : _a2["\uC624\uB958"]) || "\uCD94\uAC00 \uC0AC\uC2E4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.") : "\uCD94\uAC00 \uC0AC\uC2E4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+      setResult(splitDirectResult(data.calc));
+    } catch (e2) {
+      if (ticket === version.current) setError(e2.name === "AbortError" ? "\uACC4\uC0B0 \uC5F0\uACB0 \uC2DC\uAC04\uC774 \uCD08\uACFC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694." : typeof window.jtEngineMessageForDisplay === "function" ? window.jtEngineMessageForDisplay(e2.message) : "\uACC4\uC0B0\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uACFC \uC5F0\uACB0\uC744 \uD655\uC778\uD558\uC138\uC694.");
+    } finally {
+      clearTimeout(timer);
+      if (ticket === version.current) setBusy(false);
+    }
+  };
+  return /* @__PURE__ */ React.createElement("section", { style: { maxWidth: 900, margin: "32px auto", padding: 24 } }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => onBack(draft) }, "\uB3CC\uC544\uAC00\uAE30"), /* @__PURE__ */ React.createElement("h1", null, "\uD1A0\uC9C0 \uBD84\uD560\uCDE8\uB4DD \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("p", null, "\uC11C\uB85C \uB2E4\uB978 \uB0A0 \uCDE8\uB4DD\uD55C \uB450 \uC9C0\uBD84\uC744 \uD568\uAED8 \uC591\uB3C4\uD55C \uACBD\uC6B0\uC785\uB2C8\uB2E4. \uAC01 \uCDE8\uB4DD\uBD84\uC758 \uC591\uB3C4\uAC00\uC561\xB7\uC6D0\uAC00\xB7\uACBD\uBE44\uB294 \uC99D\uBE59\uC5D0 \uB530\uB978 \uADC0\uC18D\uAE08\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uC804\uCCB4 \uAE08\uC561\uC744 \uC9C0\uBD84\uC728\uB85C \uC790\uB3D9 \uBC30\uBD84\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uC6D0 \uBC94\uC704: 2026\uB144 10\uC6D4 1\uC77C~23\uC77C \uC591\uB3C4, \uAC01 \uCDE8\uB4DD\uBD84 2\uB144 \uC774\uC0C1 \uBCF4\uC720, \uC9C0\uBD84 \uD569\uACC4 100%, \uAC01 \uCDE8\uB4DD\uBD84 \uC591\uB3C4\uCC28\uC775\uC774 \uC591\uC218\uC778 \uC0AC\uC5C5\uC6A9 \uD1A0\uC9C0\uC785\uB2C8\uB2E4. \uC8FC\uD0DD\xB7\uC785\uC8FC\uAD8C\xB7\uCCAD\uC0B0\uAE08 \uACB0\uD569\uC740 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: calculate }, field("\uBB3C\uAC74 \uC2DD\uBCC4\uBA85 (\uAC1C\uC778\uC815\uBCF4 \uC81C\uC678)", draft.property, (v) => edit((d) => __spreadProps(__spreadValues({}, d), { property: v }))), field("\uACF5\uD1B5 \uC99D\uBE59 \uCC38\uC870 (\uBB3C\uAC74\xB7\uC804\uCCB4 \uB9E4\uB9E4\uB300\uAE08 \uD655\uC778 \uC790\uB8CC)", draft.source, (v) => edit((d) => __spreadProps(__spreadValues({}, d), { source: v }))), field("\uC591\uB3C4\uC77C", draft.sold, (v) => edit((d) => __spreadProps(__spreadValues({}, d), { sold: v })), "date"), field("\uC804\uCCB4 \uC591\uB3C4\uAC00\uC561 (\uC6D0)", draft.whole, (v) => edit((d) => __spreadProps(__spreadValues({}, d), { whole: v }))), draft.lots.map((lot, i) => /* @__PURE__ */ React.createElement("fieldset", { key: i }, /* @__PURE__ */ React.createElement("legend", null, "\uCDE8\uB4DD\uBD84 ", i + 1), [["\uCDE8\uB4DD\uC77C", "date", "date"], ["\uC9C0\uBD84 \uBD84\uC790", "numerator"], ["\uC9C0\uBD84 \uBD84\uBAA8", "denominator"], ["\uC774 \uCDE8\uB4DD\uBD84\uC758 \uC591\uB3C4\uAC00\uC561 (\uC6D0)", "sale"], ["\uC138\uBB34 \uC870\uC815 \uD6C4 \uCDE8\uB4DD\uC6D0\uAC00 (\uC6D0)", "cost"], ["\uC801\uACA9 \uD544\uC694\uACBD\uBE44 \uD569\uACC4 (\uC6D0, \uC5C6\uC73C\uBA74 0)", "expense"], ["\uCDE8\uB4DD\xB7\uC9C0\uBD84\xB7\uAE08\uC561\xB7\uACBD\uBE44 \uC99D\uBE59 \uCC38\uC870", "source"]].map(([label, key, type]) => /* @__PURE__ */ React.createElement(React.Fragment, { key }, field(label, lot[key], (v) => edit((d) => __spreadProps(__spreadValues({}, d), { lots: d.lots.map((l, j) => j === i ? __spreadProps(__spreadValues({}, l), { [key]: v }) : l) })), type))))), /* @__PURE__ */ React.createElement("h2", null, "\uAC80\uD1A0\uC640 \uADFC\uAC70"), /* @__PURE__ */ React.createElement("p", null, "\uC785\uB825\uC774\uB098 \uADFC\uAC70\uB97C \uC218\uC815\uD558\uBA74 \uD655\uC778 \uD45C\uC2DC\uC640 \uC774\uC804 \uACB0\uACFC\uAC00 \uCD08\uAE30\uD654\uB429\uB2C8\uB2E4. \uADFC\uAC70 \uCC38\uC870\uB294 \uC0AC\uC6A9\uC790\uAC00 \uC785\uB825\uD55C \uC815\uBCF4\uC774\uBA70 \uC2DC\uC2A4\uD15C\uC774 \uC99D\uBE59\uC758 \uC9C4\uC704\uB97C \uC778\uC99D\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), Object.entries(splitReviewLabels).map(([key, label]) => /* @__PURE__ */ React.createElement("div", { key, style: { marginBottom: 16 } }, field(label + " \u2014 \uADFC\uAC70 \uCC38\uC870", draft.sources[key] || "", (v) => edit((d) => __spreadProps(__spreadValues({}, d), { sources: __spreadProps(__spreadValues({}, d.sources), { [key]: v }) }))), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: draft.review[key] === true, onChange: (e) => {
+    const checked = e.target.checked;
+    edit((d) => __spreadProps(__spreadValues({}, d), { review: __spreadProps(__spreadValues({}, d.review), { [key]: checked }) }), true);
+  } }), " ", label, " \u2014 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"))), /* @__PURE__ */ React.createElement("button", { disabled: busy, type: "submit" }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uACC4\uC0B0\uD558\uAE30")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("div", { "aria-live": "polite" }, /* @__PURE__ */ React.createElement("h2", null, "\uACC4\uC0B0 \uACB0\uACFC"), ["\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4"].map((k) => /* @__PURE__ */ React.createElement("p", { key: k }, k, ": ", typeof result[k] === "number" ? result[k].toLocaleString() + "\uC6D0" : "\uD655\uC778 \uD544\uC694")), /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uBD84"), /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4\uCC28\uC775"), /* @__PURE__ */ React.createElement("th", null, "\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C"), /* @__PURE__ */ React.createElement("th", null, "\uC591\uB3C4\uC18C\uB4DD\uAE08\uC561"))), /* @__PURE__ */ React.createElement("tbody", null, (((_a = result["\uC6D0\uBCF8\uACB0\uACFC"]) == null ? void 0 : _a.rows) || []).map((r) => /* @__PURE__ */ React.createElement("tr", { key: r.lot_id }, /* @__PURE__ */ React.createElement("td", null, r.lot_id), ["transfer_gain", "long_term_deduction", "transfer_income"].map((k) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("td", { key: k }, (_a2 = r[k]) == null ? void 0 : _a2.toLocaleString(), "\uC6D0");
+  })))))));
+}
+
+
+/* ────────── BurdenedGiftDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const burdenedDirectReviews = {
+  whole_property_confirmed: "\uC804\uCCB4 \uD1A0\uC9C0 \uC18C\uC720\uAD8C\uC744 \uC99D\uC5EC\uD569\uB2C8\uB2E4",
+  gift_debt_deduction_confirmed: "\uC99D\uC5EC\uC138\uC5D0\uC11C \uACF5\uC81C\uD560 \uCC44\uBB34\uC758 \uC694\uAC74\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4",
+  transfer_debt_payment_confirmed: "\uCC44\uBB34 \uC778\uC218\uBD84\uC774 \uC591\uB3C4\uC18C\uB4DD\uC138\uC0C1 \uC720\uC0C1\uC591\uB3C4\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4",
+  acquisition_debt_payment_confirmed: "\uCDE8\uB4DD\uC138\uC0C1 \uC720\uC0C1\uCDE8\uB4DD \uCC44\uBB34 \uC694\uAC74\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4",
+  national_gift_valuation_qualified_confirmed: "\uAD6D\uC138 \uC99D\uC5EC \uC2DC\uAC00\uC758 \uD3C9\uAC00 \uC801\uACA9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4",
+  local_acquisition_valuation_qualified_confirmed: "\uC9C0\uBC29\uC138 \uCDE8\uB4DD \uC2DC\uAC00\uC758 \uD3C9\uAC00 \uC801\uACA9\uC744 \uBCC4\uB3C4\uB85C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4",
+  same_day_valuation_debt_transfer_confirmed: "\uD3C9\uAC00\xB7\uCC44\uBB34\uC794\uC561\xB7\uCC44\uBB34\uC778\uC218\xB7\uC99D\uC5EC\uACC4\uC57D\xB7\uBC95\uC815\uC591\uB3C4\xB7\uB4F1\uAE30\uC77C\uC774 \uC785\uB825\uD55C \uAC19\uC740 \uB0A0\uC785\uB2C8\uB2E4",
+  business_land_full_holding_period_confirmed: "\uC804\uCCB4 \uBCF4\uC720\uAE30\uAC04 \uC0AC\uC5C5\uC6A9 \uD1A0\uC9C0\uC785\uB2C8\uB2E4",
+  basis_includes_acquisition_costs_confirmed: "\uC785\uB825 \uCDE8\uB4DD\uC6D0\uAC00\uB294 \uB9E4\uC218\uB300\uAE08\uB9CC\uC774\uBA70 \uBCC4\uB3C4 \uCDE8\uB4DD\uC138\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4",
+  single_acquisition_lot_confirmed: "\uD55C \uBC88\uC5D0 \uCDE8\uB4DD\uD55C \uB2E8\uC77C \uC790\uC0B0\uC785\uB2C8\uB2E4",
+  donor_resident_confirmed: "\uC99D\uC5EC\uC790\uB294 \uAC70\uC8FC\uC790\uC785\uB2C8\uB2E4",
+  donee_resident_confirmed: "\uC218\uC99D\uC790\uB294 \uAC70\uC8FC\uC790\uC785\uB2C8\uB2E4",
+  individual_parties_confirmed: "\uB2F9\uC0AC\uC790 \uBAA8\uB450 \uAC1C\uC778\uC774\uBA70 \uC11C\uB85C \uBE44\uCE5C\uC871\uC785\uB2C8\uB2E4",
+  registered_land_confirmed: "\uB4F1\uAE30\uB41C \uD1A0\uC9C0\uC785\uB2C8\uB2E4",
+  registered_donor_acquisition_confirmed: "\uC99D\uC5EC\uC790\uC758 \uCDE8\uB4DD \uB4F1\uAE30\uAC00 \uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4",
+  donor_purchase_acquisition_confirmed: "\uC99D\uC5EC\uC790\uB294 \uD574\uB2F9 \uD1A0\uC9C0\uB97C \uB9E4\uC218\uD588\uC2B5\uB2C8\uB2E4",
+  non_farmland_confirmed: "\uB18D\uC9C0\uAC00 \uC544\uB2CC \uD1A0\uC9C0\uC785\uB2C8\uB2E4",
+  ordinary_acquisition_rate_confirmed: "\uCDE8\uB4DD\uC138 \uC77C\uBC18 \uC138\uC728\uC744 \uC801\uC6A9\uD569\uB2C8\uB2E4",
+  rural_special_tax_applies_confirmed: "\uCDE8\uB4DD\uC138\uC5D0 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uAC00 \uC801\uC6A9\uB429\uB2C8\uB2E4",
+  non_designated_area_confirmed: "\uC9C0\uC815\uC9C0\uC5ED \uAC00\uC911\uC138\uC728 \uC0AC\uC720\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_special_exemption_confirmed: "\uBE44\uACFC\uC138\xB7\uAC10\uBA74\xB7\uACFC\uC138\uC774\uC5F0 \uD2B9\uB840\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  transfer_basic_deduction_unused_confirmed: "\uD574\uB2F9 \uC5F0\uB3C4 \uC591\uB3C4 \uAE30\uBCF8\uACF5\uC81C\uB97C \uC0AC\uC6A9\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4",
+  no_prior_gifts_confirmed: "\uD569\uC0B0\uD560 \uC885\uC804 \uC99D\uC5EC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_prior_deduction_used_confirmed: "\uC885\uC804 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uC0AC\uC6A9\uC561\uC774 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_appraisal_fee_confirmed: "\uACF5\uC81C\uD560 \uAC10\uC815\uD3C9\uAC00\uC218\uC218\uB8CC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_non_taxable_amount_confirmed: "\uBCC4\uB3C4 \uBE44\uACFC\uC138 \uAE08\uC561\uC774 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_donor_expenses_confirmed: "\uC99D\uC5EC\uC790 \uBE44\uC6A9\uC740 \uC785\uB825\uD55C \uCDE8\uB4DD\uC138 1\uAC74\uBFD0\uC785\uB2C8\uB2E4",
+  no_other_transfers_same_year_confirmed: "\uD574\uB2F9 \uC5F0\uB3C4 \uB2E4\uB978 \uC591\uB3C4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_reductions_confirmed: "\uBCC4\uB3C4 \uAC10\uBA74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_special_tax_credits_confirmed: "\uBCC4\uB3C4 \uC138\uC561\uACF5\uC81C\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_foreign_tax_credit_confirmed: "\uC678\uAD6D\uB0A9\uBD80\uC138\uC561\uACF5\uC81C\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_prepayments_confirmed: "\uAE30\uB0A9\uBD80\uC138\uC561\uC774 \uC5C6\uC2B5\uB2C8\uB2E4",
+  no_penalties_confirmed: "\uAC00\uC0B0\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  timely_gift_filing_confirmed: "\uC99D\uC5EC\uC138\uB97C \uAE30\uD55C \uB0B4 \uC2E0\uACE0\uD569\uB2C8\uB2E4",
+  timely_transfer_filing_confirmed: "\uC591\uB3C4\uC18C\uB4DD\uC138\uB97C \uAE30\uD55C \uB0B4 \uC2E0\uACE0\uD569\uB2C8\uB2E4",
+  timely_acquisition_filing_confirmed: "\uCDE8\uB4DD\uC138\uB97C \uB4F1\uAE30 \uC811\uC218 \uC804 \uAE30\uD55C \uB0B4 \uC2E0\uACE0\xB7\uB0A9\uBD80\uD569\uB2C8\uB2E4",
+  donee_taxes_not_paid_by_donor_confirmed: "\uC218\uC99D\uC790 \uC138\uAE08\uC744 \uC99D\uC5EC\uC790\uAC00 \uB300\uC2E0 \uBD80\uB2F4\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4",
+  ledger: "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uC138 \uC99D\uBE59\xB7\uBC95\uC801 \uC801\uACA9\xB7\uC804\uCCB4 \uC790\uC0B0 \uADC0\uC18D\uC744 \uD655\uC778\uD588\uACE0, \uC6D0\uAC00 \uBC0F \uC0AC\uC5C5\uC18C\uB4DD \uACBD\uBE44\uC640 \uC911\uBCF5\uB418\uC9C0 \uC54A\uC73C\uBA70 \uAC10\uAC00\uC0C1\uAC01\xB7\uB2E4\uB978 \uBE44\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4",
+  debt: "\uC785\uB825 \uCC44\uBB34\uB294 \uC99D\uC5EC\uC790\uC758 \uAE08\uC735\uAE30\uAD00 \uCC44\uBB34\uB85C \uD574\uB2F9 \uD1A0\uC9C0\uC5D0 \uADC0\uC18D\uB418\uBA70 \uC218\uC99D\uC790\uC758 \uC2E4\uC81C \uC778\uC218\xB7\uBD80\uB2F4\uACFC \uC99D\uBA85\uBC29\uBC95\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4",
+  zone: "\uC99D\uC5EC\uC77C\uACFC \uC99D\uC5EC\uC790 \uCDE8\uB4DD\uC77C \uBAA8\uB450 \uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC774 \uC544\uB2D9\uB2C8\uB2E4",
+  rates: "\uC9C0\uBC29\uC18C\uB4DD\uC138 \uD45C\uC900\uC138\uC728\uC744 \uC801\uC6A9\uD558\uBA70 \uBE44\uC6A9 \uC6D0\uC7A5\uACFC \uC0AC\uC2E4 \uAC80\uD1A0\uAC00 \uC644\uACB0\uB418\uC5C8\uC2B5\uB2C8\uB2E4",
+  adult: "\uC218\uC99D\uC790\uB294 \uC131\uB144\uC774\uBA70 \uC138\uB300\uC0DD\uB7B5\xB7\uC790\uB140 \uC0AC\uB9DD \uD2B9\uB840\uC5D0 \uD574\uB2F9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4"
+};
+const burdenedDirectFields = [["source", "\uACF5\uD1B5 \uC0AC\uC2E4\xB7\uAC80\uD1A0 \uC99D\uBE59 \uBB36\uC74C \uCC38\uC870"], ["giftDate", "\uC99D\uC5EC\xB7\uC591\uB3C4\xB7\uB4F1\uAE30\uC77C", "date"], ["acquired", "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uC77C", "date"], ["age", "\uC218\uC99D\uC790 \uB9CC \uB098\uC774"], ["national", "\uAD6D\uC138 \uC99D\uC5EC \uC2DC\uAC00 (\uC6D0)"], ["local", "\uC9C0\uBC29\uC138 \uCDE8\uB4DD \uC2DC\uAC00 (\uC6D0)"], ["standard", "\uC9C0\uBC29\uC138 \uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0)"], ["debt", "\uC2E4\uC81C \uC778\uC218 \uCC44\uBB34 (\uC6D0)"], ["purchase", "\uC99D\uC5EC\uC790 \uB9E4\uC218\uB300\uAE08 (\uCDE8\uB4DD\uC138 \uC81C\uC678, \uC6D0)"], ["tax", "\uC99D\uC5EC\uC790\uAC00 \uCDE8\uB4DD \uB2F9\uC2DC \uB0B8 \uCDE8\uB4DD\uC138 (\uC6D0)"], ["nationalSource", "\uAD6D\uC138 \uC2DC\uAC00 \uD3C9\uAC00 \uC99D\uBE59 \uCC38\uC870"], ["localSource", "\uC9C0\uBC29\uC138 \uC2DC\uAC00 \uD3C9\uAC00 \uC99D\uBE59 \uCC38\uC870"], ["standardSource", "\uC2DC\uAC00\uD45C\uC900\uC561 \uC99D\uBE59 \uCC38\uC870"], ["debtSource", "\uCC44\uBB34 \uC99D\uBE59 \uCC38\uC870"], ["purchaseSource", "\uB9E4\uC218\uB300\uAE08\xB7\uCDE8\uB4DD\uC77C \uC99D\uBE59 \uCC38\uC870"], ["taxSource", "\uC99D\uC5EC\uC790 \uCDE8\uB4DD\uC138 \uB0A9\uBD80 \uC99D\uBE59 \uCC38\uC870"]];
+function burdenedDirectBlank() {
+  return __spreadProps(__spreadValues({}, Object.fromEntries(burdenedDirectFields.map(([k]) => [k, ""]))), { review: {} });
+}
+function burdenedDirectResume(d) {
+  return d ? __spreadProps(__spreadValues({}, JSON.parse(JSON.stringify(d))), { review: {} }) : burdenedDirectBlank();
+}
+function burdenedDirectRequest(d) {
+  const text = (v, label) => {
+    if (typeof v !== "string" || !v.trim()) throw Error(label + "\uC744 \uC785\uB825\uD558\uC138\uC694.");
+    return v.trim();
+  };
+  const money = (v, label) => {
+    if (!/^\d+$/.test(v) || !Number.isSafeInteger(Number(v)) || Number(v) <= 0 || Number(v) > 1e15) throw Error(label + "\uC740 1,000\uC870 \uC774\uD558 \uC591\uC758 \uC815\uC218\uC5EC\uC57C \uD569\uB2C8\uB2E4.");
+    return Number(v);
+  };
+  const day = (v, label) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || !Number.isFinite(Date.parse(v + "T00:00:00Z")) || (/* @__PURE__ */ new Date(v + "T00:00:00Z")).toISOString().slice(0, 10) !== v) throw Error(label + "\uC744 \uD655\uC778\uD558\uC138\uC694.");
+    return v;
+  };
+  for (const k of Object.keys(burdenedDirectReviews)) if (d.review[k] !== true) throw Error("\uBAA8\uB4E0 \uC0AC\uC2E4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4. \uBAA8\uB974\uB294 \uD56D\uBAA9\uC740 \uD655\uC778\uD558\uC9C0 \uB9C8\uC138\uC694.");
+  const source = text(d.source, "\uACF5\uD1B5 \uC99D\uBE59"), gift = day(d.giftDate, "\uC99D\uC5EC\uC77C"), acq = day(d.acquired, "\uCDE8\uB4DD\uC77C");
+  if (gift !== "2026-10-20" || acq >= gift) throw Error("\uD604\uC7AC \uC9C0\uC6D0 \uBC94\uC704\uB294 2026-10-20 \uC99D\uC5EC \uBC0F \uADF8 \uC774\uC804 \uCDE8\uB4DD\uC785\uB2C8\uB2E4.");
+  const n = money(d.national, "\uAD6D\uC138 \uC2DC\uAC00"), local = money(d.local, "\uC9C0\uBC29\uC138 \uC2DC\uAC00"), standard = money(d.standard, "\uC2DC\uAC00\uD45C\uC900\uC561"), debt = money(d.debt, "\uC778\uC218\uCC44\uBB34"), purchase = money(d.purchase, "\uB9E4\uC218\uB300\uAE08"), tax = money(d.tax, "\uCDE8\uB4DD\uC138"), age = money(d.age, "\uC218\uC99D\uC790 \uB098\uC774");
+  if (age < 19 || age > 120) throw Error("\uC131\uB144 \uC218\uC99D\uC790 \uB098\uC774\uB97C \uD655\uC778\uD558\uC138\uC694.");
+  if (n !== local) throw Error("\uC774 \uD654\uBA74\uC740 \uB3C5\uB9BD \uAC80\uD1A0\uD55C \uAD6D\uC138\xB7\uC9C0\uBC29\uC138 \uC2DC\uAC00\uAC00 \uAC19\uC740 \uACBD\uC6B0\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.");
+  if (debt >= n) throw Error("\uC778\uC218\uCC44\uBB34\uB294 \uC2DC\uAC00\uBCF4\uB2E4 \uC791\uC544\uC57C \uD569\uB2C8\uB2E4.");
+  const sources = {};
+  for (const k of ["nationalSource", "localSource", "standardSource", "debtSource", "purchaseSource", "taxSource"]) sources[k] = text(d[k], burdenedDirectFields.find((r) => r[0] === k)[1]);
+  const context = Object.fromEntries(Object.keys(burdenedDirectReviews).filter((k) => !["ledger", "debt", "zone", "rates", "adult"].includes(k)).map((k) => [k, !["basis_includes_acquisition_costs_confirmed", "no_donor_expenses_confirmed"].includes(k)]));
+  const ledger = { schema_version: 1, unit: { package_ref: source, target_asset_ref: "land", gift_scope: "single_cgt_asset", gift_value_scope: "gifted_unit", ownership: { numerator: 1, denominator: 1 }, same_asset_unit_confirmed: true, number_of_cgt_assets: 1 }, valuation: { method: "market60", evaluated_value: n, valuation_date: gift, evaluation_scope: "gifted_unit", market_value_difficult: false, selected_evaluation_confirmed: true, evaluation_qualification_confirmed: true, source_ref: sources.nationalSource }, debt: { debt_ref: sources.debtSource, debtor_is_donor: true, creditor_type: "financial_institution", available_balance: debt, balance_date: gift, assumption_date: gift, actual_assumption_confirmed: true, actual_burden_confirmed: true, proof_method_confirmed: true, presumption_rebuttal_confirmed: null, property_related_confirmed: true, asset_assignment_confirmed: true, evidence_ref: sources.debtSource }, dates: { legal_transfer_date: gift, registration_date: gift, gift_contract_date: gift, legal_transfer_date_confirmed: true }, basis: { method: "actual_purchase", scalar_price_basis: "purchase_price_excludes_incidentals", scalar_price_depreciation_state: "before_depreciation", depreciation_input_basis: "cumulative_against_unadjusted_basis", depreciation_deducted_or_deductible: 0, cost_basis_complete_confirmed: true, depreciation_complete_confirmed: true }, costs: [{ cost_ref: "acq-tax", transaction_ref: sources.taxSource, amount: tax, category: "acquisition_incidental", basis_role: "acquisition_incidental", included_in_scalar_price: false, asset_ref: "land", scope: "whole_asset", treatment: "add_to_acquisition_basis", evidence_confirmed: true, eligible_confirmed: true, scope_attribution_confirmed: true, direct_attribution_confirmed: null, already_deducted_in_business_income: false }], review: { resident: true, registered: true, single_acquisition_lot: true, business_use_land: true, nonbusiness_land: false, designated_area: false, other_transfers_in_tax_year: false, basic_deduction_used: 0, reductions: 0, credits: 0, penalties: 0, prepaid_tax: 0, no_special_exemption_confirmed: true, no_duplicate_costs_confirmed: true, ledger_complete_confirmed: true, local_standard_rates_confirmed: true, purchase_acquisition_confirmed: true } };
+  return { ai_consultation: true, is_generation_skip: false, donor_child_deceased: false, is_objective_debt: true, is_regulated_area: false, regulated_at_acquisition: false, consultation_context: context, common_facts: { schema_version: 1, source_id: source, parties: [{ party_ref: "donor", role: "donor", person_type: "individual", resident: true }, { party_ref: "donee", role: "donee", person_type: "individual", resident: true, age_at_event: age, relationship_to_donor: "\uAE30\uD0C0" }], assets: [{ asset_ref: "land", property_type: "\uD1A0\uC9C0", whole_property_confirmed: true }], events: [["gift", gift], ["registration", gift], ["donor_acquisition", acq], ["transfer", gift]].map(([kind, occurred_on]) => ({ kind, asset_ref: "land", party_ref: kind === "registration" ? "donee" : "donor", occurred_on, source_id: kind === "donor_acquisition" ? sources.purchaseSource : source })), valuations: [["national_gift", n, gift, sources.nationalSource], ["local_acquisition_market", local, gift, sources.localSource], ["local_acquisition_standard", standard, gift, sources.standardSource], ["donor_acquisition_basis", purchase, acq, sources.purchaseSource]].map(([purpose, amount_krw, as_of, source_id]) => ({ asset_ref: "land", purpose, amount_krw, as_of, source_id })), liabilities: [{ asset_ref: "land", debtor_ref: "donor", assumed_by_ref: "donee", amount_krw: debt, balance_as_of: gift, source_id: sources.debtSource }], expenses: [{ asset_ref: "land", payer_ref: "donor", kind: "donor_acquisition_tax", scope: "whole_property", event_kind: "donor_acquisition", amount_krw: tax, source_id: sources.taxSource }], donor_transfer_context: ledger } };
+}
+function burdenedDirectResult(c) {
+  var _a;
+  const keys = ["\uC99D\uC5EC\uC138", "\uC591\uB3C4\uC138", "\uCDE8\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4"];
+  if ((c == null ? void 0 : c["\uC0C1\uD0DC"]) !== "ok" || !keys.every((k) => Number.isSafeInteger(c[k]) && c[k] >= 0) || keys.slice(0, 3).reduce((s, k) => s + BigInt(c[k]), /* @__PURE__ */ BigInt("0")) !== BigInt(c["\uCD1D\uC138\uBD80\uB2F4"]) || !((_a = c["\uC6D0\uBCF8\uACB0\uACFC"]) == null ? void 0 : _a.transfer_tax_result)) throw Error("\uACC4\uC0B0 \uC751\uB2F5\uC744 \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.");
+  const t = c["\uC6D0\uBCF8\uACB0\uACFC"].transfer_tax_result;
+  if (!["transfer_price", "acquisition_price", "necessary_expenses", "tax_base", "final_tax", "local_income_tax", "total_tax_burden"].every((k) => Number.isSafeInteger(t[k]) && t[k] >= 0) || t.total_tax_burden !== c["\uC591\uB3C4\uC138"] || BigInt(t.final_tax) + BigInt(t.local_income_tax) !== BigInt(t.total_tax_burden)) throw Error("\uC591\uB3C4\uC138 \uACC4\uC0B0 \uC751\uB2F5\uC758 \uAE08\uC561\uC774 \uC77C\uCE58\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
+  return c;
+}
+function JTBurdenedGiftDirect({ onBack, initialDraft }) {
+  const [draft, setDraft] = React.useState(() => burdenedDirectResume(initialDraft)), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false), version = React.useRef(0), controller = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a;
+    version.current++;
+    (_a = controller.current) == null ? void 0 : _a.abort();
+  }, []);
+  const edit = (fn, review = false) => {
+    var _a;
+    version.current++;
+    (_a = controller.current) == null ? void 0 : _a.abort();
+    setBusy(false);
+    setResult(null);
+    setError("");
+    setDraft((d) => {
+      const n = fn(d);
+      return review ? n : __spreadProps(__spreadValues({}, n), { review: {} });
+    });
+  };
+  const submit = async (e) => {
+    var _a, _b;
+    e.preventDefault();
+    if (busy) return;
+    setResult(null);
+    setError("");
+    let body;
+    try {
+      body = burdenedDirectRequest(draft);
+    } catch (e2) {
+      setError(e2.message);
+      return;
+    }
+    const ticket = ++version.current, ctrl = new AbortController();
+    controller.current = ctrl;
+    setBusy(true);
+    const timer = setTimeout(() => ctrl.abort(), 25e3);
+    try {
+      const base = window.JT_ENGINE_BASE || (typeof ENGINE_BASE !== "undefined" ? ENGINE_BASE : "");
+      if (!base) throw Error("\uACC4\uC0B0 \uC11C\uBC84\uAC00 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const r = await fetch(base.replace(/\/$/, "") + "/v1/calc/burdened-gift", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctrl.signal }), data = await r.json();
+      if (ticket !== version.current) return;
+      if (!r.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC9C0\uC6D0 \uBC94\uC704\uB97C \uD655\uC778\uD558\uC138\uC694.");
+      if (((_a = data.calc) == null ? void 0 : _a["\uC0C1\uD0DC"]) !== "ok") throw Error(((_b = data.calc) == null ? void 0 : _b["\uC624\uB958"]) || "\uCD94\uAC00 \uC0AC\uC2E4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+      setResult(burdenedDirectResult(data.calc));
+    } catch (e2) {
+      if (ticket === version.current) setError(e2.name === "AbortError" ? "\uC5F0\uACB0 \uC2DC\uAC04\uC774 \uCD08\uACFC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uACC4\uC0B0\uD558\uC138\uC694." : typeof window.jtEngineMessageForDisplay === "function" ? window.jtEngineMessageForDisplay(e2.message) : "\uACC4\uC0B0\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uACFC \uC5F0\uACB0\uC744 \uD655\uC778\uD558\uC138\uC694.");
+    } finally {
+      clearTimeout(timer);
+      if (ticket === version.current) setBusy(false);
+    }
+  };
+  return /* @__PURE__ */ React.createElement("section", { style: { maxWidth: 900, margin: "32px auto", padding: 24 } }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => onBack(draft) }, "\uB3CC\uC544\uAC00\uAE30"), /* @__PURE__ */ React.createElement("h1", null, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uC6D0\uC790\uB8CC \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("p", null, "\uBE44\uCE5C\uC871 \uC131\uB144 \uC0AC\uC774\uC758 \uC804\uCCB4 \uC0AC\uC5C5\uC6A9 \uBE44\uB18D\uC9C0 \uD1A0\uC9C0, 2026\uB144 10\uC6D4 20\uC77C \uC99D\uC5EC\xB7\uB4F1\uAE30 \uC0AC\uB840\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC99D\uC5EC\uC790\uC758 \uB9E4\uC218\uB300\uAE08\uACFC \uCDE8\uB4DD \uB2F9\uC2DC \uB0A9\uBD80\uD55C \uCDE8\uB4DD\uC138 1\uAC74\uC744 \uAD6C\uBD84\uD558\uC5EC \uC785\uB825\uD569\uB2C8\uB2E4. \uCC44\uBB34 \uCD5C\uC801\uD654\xB7\uAC00\uC871 \uAC04 \uC99D\uC5EC\xB7\uC785\uC8FC\uAD8C\xB7\uAE30\uC900\uC2DC\uAC00 \uD3C9\uAC00\xB7\uB2E4\uB978 \uBE44\uC6A9\uC740 \uC774 \uD654\uBA74\uC758 \uC9C0\uC6D0 \uBC94\uC704 \uBC16\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, burdenedDirectFields.map(([k, label, type]) => /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "grid", gap: 5, marginBottom: 12 } }, label, /* @__PURE__ */ React.createElement("input", { type: type || "text", value: draft[k], onChange: (e) => {
+    const value = e.target.value;
+    edit((d) => __spreadProps(__spreadValues({}, d), { [k]: value }));
+  } }))), /* @__PURE__ */ React.createElement("h2", null, "\uAC80\uD1A0 \uD655\uC778"), /* @__PURE__ */ React.createElement("p", null, "\uAC01 \uD56D\uBAA9\uC744 \uC99D\uBE59\uC73C\uB85C \uAC80\uD1A0\uD55C \uACBD\uC6B0\uC5D0\uB9CC \uC120\uD0DD\uD558\uC138\uC694. \uBAA8\uB974\uB294 \uC0AC\uC2E4\uC740 \uC790\uB3D9\uC73C\uB85C \uCC44\uC6B0\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC785\uB825\uC744 \uC218\uC815\uD558\uBA74 \uD655\uC778\uACFC \uACB0\uACFC\uAC00 \uCD08\uAE30\uD654\uB429\uB2C8\uB2E4. \uC99D\uBE59 \uCC38\uC870\uB294 \uC0AC\uC6A9\uC790\uC758 \uC120\uC5B8\uC774\uBA70 \uC790\uB3D9 \uC778\uC99D\uC774 \uC544\uB2D9\uB2C8\uB2E4."), Object.entries(burdenedDirectReviews).map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block", margin: "12px 0" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: draft.review[k] === true, onChange: (e) => {
+    const checked = e.target.checked;
+    edit((d) => __spreadProps(__spreadValues({}, d), { review: __spreadProps(__spreadValues({}, d.review), { [k]: checked }) }), true);
+  } }), " ", label)), /* @__PURE__ */ React.createElement("button", { disabled: busy, type: "submit" }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uC138 \uAC00\uC9C0 \uC138\uAE08 \uACC4\uC0B0\uD558\uAE30")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("div", { "aria-live": "polite" }, /* @__PURE__ */ React.createElement("h2", null, "\uACC4\uC0B0 \uACB0\uACFC"), ["\uC99D\uC5EC\uC138", "\uC591\uB3C4\uC138", "\uCDE8\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4"].map((k) => /* @__PURE__ */ React.createElement("p", { key: k }, k, ": ", result[k].toLocaleString(), "\uC6D0")), /* @__PURE__ */ React.createElement("p", null, "\uC591\uB3C4\uC138\uC5D0\uB294 \uC9C0\uBC29\uC18C\uB4DD\uC138\uAC00, \uCDE8\uB4DD\uC138\uC5D0\uB294 \uBD80\uAC00\uC138\uBAA9\uC774 \uD3EC\uD568\uB429\uB2C8\uB2E4."), ["\uCDE8\uB4DD\uC138_\uC2E0\uACE0\uAE30\uD55C"].map((k) => result[k] && /* @__PURE__ */ React.createElement("p", { key: k }, k, ": ", result[k])), (result["\uACBD\uACE0\uC0AC\uD56D"] || []).map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i }, typeof window.jtEngineMessageForDisplay === "function" ? window.jtEngineMessageForDisplay(w) : "\uC138\uBD80 \uC2E0\uACE0 \uC870\uAC74\uC744 \uD655\uC778\uD558\uC138\uC694."))));
+}
+
+
 /* ────────── ReportCGT.jsx ────────── */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -4100,6 +4540,8 @@ async function computeScenarios(answers) {
 function JTReportCGT({ setRoute, onBack }) {
   const [annualMode, setAnnualMode] = useCgtState(false);
   const [annualDraft, setAnnualDraft] = useCgtState(null);
+  const [directMode, setDirectMode] = useCgtState(null);
+  const [directDrafts, setDirectDrafts] = useCgtState({});
   const [step, setStep] = useCgtState(0);
   const [answers, setAnswers] = useCgtState(() => ({ transferDate: isoDate(/* @__PURE__ */ new Date()) }));
   const [loading, setLoading] = useCgtState(false);
@@ -4401,6 +4843,18 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
     setAnnualDraft(draft);
     setAnnualMode(false);
   } });
+  if (directMode === "stock") return /* @__PURE__ */ React.createElement(JTStockTransferDirect, { initialDraft: directDrafts.stock, onBack: (draft) => {
+    setDirectDrafts((old) => __spreadProps(__spreadValues({}, old), { stock: draft }));
+    setDirectMode(null);
+  } });
+  if (directMode === "split") return /* @__PURE__ */ React.createElement(JTTransferSplitDirect, { initialDraft: directDrafts.split, onBack: (draft) => {
+    setDirectDrafts((old) => __spreadProps(__spreadValues({}, old), { split: draft }));
+    setDirectMode(null);
+  } });
+  if (directMode === "burdened") return /* @__PURE__ */ React.createElement(JTBurdenedGiftDirect, { initialDraft: directDrafts.burdened, onBack: (draft) => {
+    setDirectDrafts((old) => __spreadProps(__spreadValues({}, old), { burdened: draft }));
+    setDirectMode(null);
+  } });
   if (loading) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), /* @__PURE__ */ React.createElement("h2", null, "\uC138\uC561\uC744 \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4"), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uBCF8\uC138\uC728 \xB7 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C \xB7 \uC9C0\uBC29\uC18C\uB4DD\uC138\uB97C \uBC18\uC601\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { className: "jt-report-loading__privacy", style: { fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 } }, (window.JT_PRIVACY_NOTE || {})["engine"] || (window.JT_PRIVACY_NOTE || {}).engine));
   }
@@ -4483,6 +4937,9 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
       tag: "LIVE"
     },
     /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-annual-direct", onClick: () => setAnnualMode(true) }, "\uC5EC\uB7EC \uBD80\uB3D9\uC0B0 \uC5F0\uAC04 \uD569\uC0B0\xB7\uAE30\uC2E0\uACE0\xB7\uB0A9\uBD80 \uC815\uC0B0"),
+    /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-stock-direct", onClick: () => setDirectMode("stock") }, "\uC8FC\uC2DD \uC591\uB3C4 \uACC4\uC0B0"),
+    /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-split-direct", onClick: () => setDirectMode("split") }, "\uD1A0\uC9C0 \uBD84\uD560\uCDE8\uB4DD \uACC4\uC0B0"),
+    /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-burdened-direct", onClick: () => setDirectMode("burdened") }, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uC6D0\uC790\uB8CC \uACC4\uC0B0"),
     /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { display: "inline-block", fontSize: 12, fontWeight: 700, letterSpacing: "0.04em", color: "#fff", background: "#111", borderRadius: 4, padding: "4px 10px", marginBottom: 12 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.reviewed && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(CGTReviewedInputs, { value: __spreadProps(__spreadValues({}, answers.reviewed || {}), { convertedEnabled: answers.assetType === "commercial" && answers.costMethod === "converted" }), onChange: (v) => setAns("reviewed", v) }), reviewedIssue && /* @__PURE__ */ React.createElement("p", { role: "alert", style: { color: "#a62323", marginTop: 16 } }, reviewedIssue)), cur.freeform && /* @__PURE__ */ React.createElement(
       "textarea",
       {
@@ -14198,6 +14655,12 @@ function JTAcqBasisInputs({ onBack }) {
 }
 function JTReportAcquisition({ setRoute, onBack }) {
   const [basisInputs, setBasisInputs] = useAcqState(false);
+  const [reviewedDirect, setReviewedDirect] = useAcqState(false);
+  const [reviewedDraft, setReviewedDraft] = useAcqState(null);
+  const [buildingDirect, setBuildingDirect] = useAcqState(false);
+  const [buildingDraft, setBuildingDraft] = useAcqState(null);
+  const [extraMode, setExtraMode] = useAcqState(null);
+  const [extraDrafts, setExtraDrafts] = useAcqState({});
   const [step, setStep] = useAcqState(0);
   const [rawAnswers, setAnswers] = useAcqState({});
   const acqNorm = acqNormalize(rawAnswers);
@@ -14389,6 +14852,30 @@ function JTReportAcquisition({ setRoute, onBack }) {
     onBack();
   };
   if (basisInputs) return /* @__PURE__ */ React.createElement(JTAcqBasisInputs, { onBack: () => setBasisInputs(false) });
+  if (reviewedDirect) return /* @__PURE__ */ React.createElement(JTAcquisitionReviewedDirect, { initialDraft: reviewedDraft, onBack: (draft) => {
+    setReviewedDraft(draft);
+    setReviewedDirect(false);
+  } });
+  if (buildingDirect) return /* @__PURE__ */ React.createElement(JTAcquisitionBuildingDirect, { initialDraft: buildingDraft, onBack: (draft) => {
+    setBuildingDraft(draft);
+    setBuildingDirect(false);
+  } });
+  if (extraMode === "value") return /* @__PURE__ */ React.createElement(JTAcquisitionValueDirect, { initialDraft: extraDrafts.value, onBack: (draft) => {
+    setExtraDrafts((old) => __spreadProps(__spreadValues({}, old), { value: draft }));
+    setExtraMode(null);
+  } });
+  if (extraMode === "divorce") return /* @__PURE__ */ React.createElement(JTAcquisitionDivorceDirect, { initialDraft: extraDrafts.divorce, onBack: (draft) => {
+    setExtraDrafts((old) => __spreadProps(__spreadValues({}, old), { divorce: draft }));
+    setExtraMode(null);
+  } });
+  if (extraMode === "burdened") return /* @__PURE__ */ React.createElement(JTAcquisitionBurdenedDirect, { initialDraft: extraDrafts.burdened, onBack: (draft) => {
+    setExtraDrafts((old) => __spreadProps(__spreadValues({}, old), { burdened: draft }));
+    setExtraMode(null);
+  } });
+  if (extraMode === "court" || extraMode === "exchange") return /* @__PURE__ */ React.createElement(JTAcquisitionTransferDirect, { mode: extraMode, initialDraft: extraDrafts[extraMode], onBack: (draft) => {
+    setExtraDrafts((old) => __spreadProps(__spreadValues({}, old), { [extraMode]: draft }));
+    setExtraMode(null);
+  } });
   if (loading) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
@@ -14425,7 +14912,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCDE8\uB4DD \uC6D0\uC778\xB7\uC885\uB958\xB7\uAC00\uC561\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uCDE8\uB4DD\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uBA74\uC801\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC10\uBA74\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setBasisInputs(true) }, "\uCDE8\uB4DD\uC77C\xB7\uC2E0\uCD95 \uACFC\uC138\uD45C\uC900 \uD655\uC778 \uACC4\uC0B0 \u2192"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.qFor ? cur.qFor(answers) : cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCDE8\uB4DD \uC6D0\uC778\xB7\uC885\uB958\xB7\uAC00\uC561\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uCDE8\uB4DD\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uBA74\uC801\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC10\uBA74\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setBasisInputs(true) }, "\uCDE8\uB4DD\uC77C\xB7\uC2E0\uCD95 \uACFC\uC138\uD45C\uC900 \uD655\uC778 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-reviewed-direct", className: "jt-btn jt-btn--ghost", onClick: () => setReviewedDirect(true) }, "\uC9C0\uBAA9\uBCC0\uACBD \uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-building-direct", className: "jt-btn jt-btn--ghost", onClick: () => setBuildingDirect(true) }, "\uC99D\uCD95\xB7\uB300\uC218\uC120 \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-value-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("value") }, "\uC9C0\uBAA9\uBCC0\uACBD \uC0B0\uC815\uC561\xB7\uC644\uACF5\uC8FC\uD0DD \uC9C1\uC811\uB9E4\uC218 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-court-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("court") }, "\uBC95\uC6D0\uACBD\uB9E4 \uD1A0\uC9C0 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exchange-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("exchange") }, "\uD1A0\uC9C0 \uAD50\uD658 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-divorce-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("divorce") }, "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-burdened-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("burdened") }, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.qFor ? cur.qFor(answers) : cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -14472,6 +14959,784 @@ function JTReportAcquisition({ setRoute, onBack }) {
   }))), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: goPrev }, safeStep === 0 ? "\u2190 \uD5C8\uBE0C" : "\u2190 \uC774\uC804"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goNext, disabled: !canNext() }, isLast ? phase === "quick" ? "\uBE60\uB978 \uACB0\uACFC \uBCF4\uAE30 \u2192" : "\uACB0\uACFC \uBCF4\uAE30 \u2192" : "\uB2E4\uC74C \u2192"))));
 }
 window.JTReportAcquisition = JTReportAcquisition;
+
+
+/* ────────── AcquisitionReviewedDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const ACQ_REVIEW_CONFIRM = [
+  ["land_category_change_confirmed", "\uC9C0\uBAA9\uC774 \uC2E4\uC81C \uBCC0\uACBD\uB418\uC5C8\uC2B5\uB2C8\uB2E4"],
+  ["increased_value_confirmed", "\uC9C0\uBAA9\uBCC0\uACBD\uC73C\uB85C \uAC00\uCE58\uAC00 \uC99D\uAC00\uD588\uC2B5\uB2C8\uB2E4"],
+  ["domestic_land_confirmed", "\uAD6D\uB0B4 \uD1A0\uC9C0\uC785\uB2C8\uB2E4"],
+  ["noncorporate_confirmed", "\uAC1C\uC778\uC785\uB2C8\uB2E4"],
+  ["nonhousing_confirmed", "\uC8FC\uD0DD\uC774 \uC544\uB2D9\uB2C8\uB2E4"],
+  ["nonfarmland_confirmed", "\uB18D\uC9C0\uAC00 \uC544\uB2D9\uB2C8\uB2E4"],
+  ["nonluxury_confirmed", "\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC774 \uC544\uB2D9\uB2C8\uB2E4"],
+  ["whole_land_confirmed", "\uB3D9\uC77C \uD544\uC9C0 \uC804\uCCB4 \uCDE8\uB4DD\uC785\uB2C8\uB2E4"],
+  ["no_prior_partial_use_confirmed", "\uC774\uC804 \uBD80\uBD84 \uC0AC\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"],
+  ["actual_increased_price_verified_confirmed", "\uC2E4\uC81C \uC99D\uAC00 \uCDE8\uB4DD\uAC00\uACA9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"],
+  ["price_inclusion_exclusion_verified_confirmed", "\uAC00\uACA9 \uD3EC\uD568\xB7\uC81C\uC678 \uD56D\uBAA9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"],
+  ["no_other_includible_costs_confirmed", "\uCD94\uAC00 \uC0B0\uC785 \uBE44\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"],
+  ["ordinary_rate_confirmed", "\uC77C\uBC18 \uC138\uC728 \uB300\uC0C1\uC785\uB2C8\uB2E4"],
+  ["no_reductions_confirmed", "\uAC10\uBA74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"],
+  ["no_municipal_rate_variation_confirmed", "\uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"],
+  ["rural_special_tax_applies_confirmed", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 \uACFC\uC138 \uB300\uC0C1\uC785\uB2C8\uB2E4"],
+  ["no_early_property_rights_registration_application_confirmed", "\uC77C\uBC18 \uC2E0\uACE0\uAE30\uD55C \uC804 \uBCC4\uB3C4 \uAD8C\uB9AC \uCDE8\uB4DD\xB7\uC774\uC804 \uB4F1\uAE30 \uC2E0\uCCAD\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"]
+];
+const ACQ_REVIEW_SOURCES = [["source", "\uAC70\uB798 \uC804\uCCB4 \uC790\uB8CC\uBA85"], ["owner", "\uCDE8\uB4DD\uC790 \uC790\uB8CC\uBA85"], ["land", "\uD544\uC9C0 \uC790\uB8CC\uBA85"], ["factualSource", "\uC0AC\uC2E4\uC0C1 \uBCC0\uACBD\uC77C \uC790\uB8CC\uBA85"], ["registerSource", "\uACF5\uBD80\uC0C1 \uBCC0\uACBD\uC77C \uC790\uB8CC\uBA85"], ["priceSource", "\uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uC790\uB8CC\uBA85"], ["reviewSource", "\uAC00\uACA9 \uD3EC\uD568\xB7\uC81C\uC678 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["rightsSource", "\uBCC4\uB3C4 \uAD8C\uB9AC \uB4F1\uAE30 \uAC80\uD1A0 \uC790\uB8CC\uBA85"]];
+function acquisitionReviewedRequest(d) {
+  var _a;
+  const ref = (k) => {
+    var _a2;
+    const v = String((_a2 = d[k]) != null ? _a2 : "").trim();
+    if (!v || v.length > 200) throw Error("\uC790\uB8CC\uBA85\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const date = (k) => {
+    const v = d[k];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v || "") || !Number.isFinite(Date.parse(v)) || new Date(v).toISOString().slice(0, 10) !== v || !v.startsWith("2026-")) throw Error("2026\uB144\uC758 \uC815\uD655\uD55C \uBCC0\uACBD\uC77C\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const factual = date("factual"), register = date("register");
+  if (!/^\d+$/.test(String((_a = d.price) != null ? _a : "")) || !Number.isSafeInteger(Number(d.price)) || Number(d.price) <= 5e5) throw Error("\uC2E4\uC81C \uC99D\uAC00 \uCDE8\uB4DD\uAC00\uACA9\uC740 50\uB9CC\uC6D0 \uCD08\uACFC\uC758 \uC815\uC218 \uC6D0\uC73C\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+  const ctx = { case_type: "land_category_change_ordinary_actual", source_id: ref("source"), price_basis_source_id: ref("reviewSource"), property_rights_registration_review_source_id: ref("rightsSource") };
+  for (const [key, label] of ACQ_REVIEW_CONFIRM) {
+    if (d[key] !== true) throw Error(label + " \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+    ctx[key] = true;
+  }
+  const facts = { schema_version: 1, source_id: ref("source"), parties: [{ party_ref: "OWNER", role: "acquirer", person_type: "individual", source_id: ref("owner") }], assets: [{ asset_ref: "LAND", property_type: "\uD1A0\uC9C0", whole_property_confirmed: true, source_id: ref("land") }], events: [{ kind: "land_category_factual_changed", asset_ref: "LAND", party_ref: "OWNER", occurred_on: factual, source_id: ref("factualSource") }, { kind: "land_category_register_changed", asset_ref: "LAND", party_ref: "OWNER", occurred_on: register, source_id: ref("registerSource") }], amounts: [{ purpose: "land_category_actual_increased_price", scope: "whole_property", asset_ref: "LAND", amount_krw: Number(d.price), as_of: factual < register ? factual : register, source_id: ref("priceSource") }], valuations: [], liabilities: [], expenses: [] };
+  return { common_facts: facts, consultation_context: ctx };
+}
+function acqReviewedClearChecks(d) {
+  const copy = __spreadValues({}, d);
+  for (const [key] of ACQ_REVIEW_CONFIRM) delete copy[key];
+  return copy;
+}
+function acqReviewedResult(calc) {
+  if (!calc || calc["\uC0C1\uD0DC"] !== "ok") throw Error("\uC774 \uC785\uB825\uC740 \uACC4\uC0B0 \uBC94\uC704\uB97C \uBC97\uC5B4\uB098\uAC70\uB098 \uCD94\uAC00 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  const keys = ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"];
+  if (keys.some((k) => !Number.isSafeInteger(calc[k]) || calc[k] < 0) || calc["\uC138\uC561"] !== calc["\uCDE8\uB4DD\uC138"] + calc["\uC9C0\uBC29\uAD50\uC721\uC138"] + calc["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"]) throw Error("\uC11C\uBC84 \uACC4\uC0B0 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+  return calc;
+}
+function JTAcquisitionReviewedDirect({ onBack, initialDraft }) {
+  var _a, _b, _c, _d, _e;
+  const [d, setD] = React.useState(() => acqReviewedClearChecks(initialDraft || {})), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false), seq = React.useRef(0), pending = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a2;
+    seq.current++;
+    (_a2 = pending.current) == null ? void 0 : _a2.abort();
+  }, []);
+  const edit = (key, value) => {
+    var _a2;
+    seq.current++;
+    (_a2 = pending.current) == null ? void 0 : _a2.abort();
+    setBusy(false);
+    setD((x) => __spreadProps(__spreadValues({}, ACQ_REVIEW_CONFIRM.some(([k]) => k === key) ? x : acqReviewedClearChecks(x)), { [key]: value }));
+    setResult(null);
+    setError("");
+  };
+  async function submit(e) {
+    var _a2;
+    e.preventDefault();
+    let body;
+    try {
+      body = acquisitionReviewedRequest(d);
+    } catch (err) {
+      setError(err.message);
+      return;
+    }
+    const id = ++seq.current;
+    (_a2 = pending.current) == null ? void 0 : _a2.abort();
+    const controller = new AbortController();
+    pending.current = controller;
+    const timer = setTimeout(() => controller.abort(), 3e4);
+    setBusy(true);
+    setError("");
+    setResult(null);
+    try {
+      if (!window.JT_ENGINE_BASE) throw Error("\uACC4\uC0B0 \uC11C\uBC84 \uC8FC\uC18C\uAC00 \uC124\uC815\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const base = window.JT_ENGINE_BASE.replace(/\/$/, "");
+      const r = await fetch(base + "/v1/calc/acquisition", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: controller.signal });
+      const j = await r.json();
+      if (id !== seq.current) return;
+      if (!r.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC5F0\uACB0 \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      setResult(acqReviewedResult(j.calc));
+    } catch (err) {
+      if (id === seq.current) setError(err.name === "AbortError" ? "\uACC4\uC0B0 \uC694\uCCAD \uC2DC\uAC04\uC774 \uCD08\uACFC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694." : err.message);
+    } finally {
+      clearTimeout(timer);
+      if (id === seq.current) {
+        pending.current = null;
+        setBusy(false);
+      }
+    }
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC9C0\uBAA9\uBCC0\uACBD \uCDE8\uB4DD\uC138", subtitle: "\uC2E4\uC81C \uC99D\uAC00 \uCDE8\uB4DD\uAC00\uACA9\uC744 \uD655\uC778\uD55C \uC77C\uBC18 \uD1A0\uC9C0", onBack: () => onBack(acqReviewedClearChecks(d)), tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uBE44\uB18D\uC9C0 \uC77C\uBC18 \uD1A0\uC9C0 \uC804\uCCB4\uC758 \uC2E4\uC81C \uC99D\uAC00 \uCDE8\uB4DD\uAC00\uACA9\uC774 50\uB9CC\uC6D0\uC744 \uCD08\uACFC\uD558\uB294 \uACBD\uC6B0\uB9CC \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uC790\uB8CC\uBA85\uC740 \uC785\uB825\uC790\uAC00 \uD655\uC778\uD55C \uC790\uB8CC\uC758 \uC2DD\uBCC4\uBA85\uC774\uBA70 \uC9C4\uC704 \uC778\uC99D\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uAC00\uC0B0\uC138\uC640 \uAE30\uB0A9\uBD80\uC561\uC740 \uBC18\uC601\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, [["factual", "\uC0AC\uC2E4\uC0C1 \uC9C0\uBAA9\uBCC0\uACBD\uC77C"], ["register", "\uACF5\uBD80\uC0C1 \uC9C0\uBAA9\uBCC0\uACBD\uC77C"], ["price", "\uC2E4\uC81C \uC99D\uAC00 \uCDE8\uB4DD\uAC00\uACA9 (\uC6D0)"], ...ACQ_REVIEW_SOURCES].map(([key, label]) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { key, style: { display: "block" } }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "acq-reviewed-" + key, value: (_a2 = d[key]) != null ? _a2 : "", onChange: (e) => edit(key, e.target.value) }));
+  }), ACQ_REVIEW_CONFIRM.map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "acq-reviewed-" + key, checked: d[key] === true, onChange: (e) => edit(key, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("button", { type: "submit", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uBCF8\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", { "data-testid": "acq-reviewed-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uACFC\uC138\uD45C\uC900 ", (_a = result["\uACFC\uC138\uD45C\uC900"]) == null ? void 0 : _a.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uC138 ", (_b = result["\uCDE8\uB4DD\uC138"]) == null ? void 0 : _b.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC9C0\uBC29\uAD50\uC721\uC138 ", (_c = result["\uC9C0\uBC29\uAD50\uC721\uC138"]) == null ? void 0 : _c.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 ", (_d = result["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"]) == null ? void 0 : _d.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uD569\uACC4 ", (_e = result["\uC138\uC561"]) == null ? void 0 : _e.toLocaleString("ko-KR"), "\uC6D0")))));
+}
+window.JTAcquisitionReviewedDirect = JTAcquisitionReviewedDirect;
+
+
+/* ────────── AcquisitionBuildingDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const BUILDING_SHARED = [["existing_building_confirmed", "\uAE30\uC874 \uAC74\uBB3C\uC785\uB2C8\uB2E4"], ["sole_owner_confirmed", "\uAC1C\uC778 \uB2E8\uB3C5\uC18C\uC720\uC785\uB2C8\uB2E4"], ["domestic_building_confirmed", "\uAD6D\uB0B4 \uAC74\uBB3C\uC785\uB2C8\uB2E4"], ["noncorporate_confirmed", "\uBE44\uBC95\uC778\uC785\uB2C8\uB2E4"], ["nonhousing_confirmed", "\uBE44\uC8FC\uD0DD \uAC74\uBB3C\uC785\uB2C8\uB2E4"], ["nonluxury_confirmed", "\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["approval_required_and_issued_confirmed", "\uC0AC\uC6A9\uC2B9\uC778\uC774 \uD544\uC694\uD558\uACE0 \uBC1C\uAE09\uB418\uC5C8\uC2B5\uB2C8\uB2E4"], ["no_prior_partial_use_confirmed", "\uC774\uC804 \uBD80\uBD84 \uC0AC\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_earlier_temporary_use_approval_confirmed", "\uC55E\uC120 \uC784\uC2DC\uC0AC\uC6A9\uC2B9\uC778\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_old_building_cost_included_confirmed", "\uAE30\uC874 \uAC74\uBB3C \uAC00\uACA9\uC744 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4"], ["price_inclusion_exclusion_verified_confirmed", "\uC2E4\uC81C \uAC00\uACA9\uC758 \uD3EC\uD568\xB7\uC81C\uC678 \uD56D\uBAA9\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["no_other_includible_costs_confirmed", "\uCD94\uAC00 \uC0B0\uC785\uD560 \uBE44\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["ordinary_rate_confirmed", "\uC77C\uBC18 \uC138\uC728 \uB300\uC0C1\uC785\uB2C8\uB2E4"], ["no_reductions_confirmed", "\uAC10\uBA74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_municipal_rate_variation_confirmed", "\uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_special_rate_or_surcharge_confirmed", "\uD2B9\uB840\uC138\uC728 \uB610\uB294 \uC911\uACFC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["rural_special_tax_applies_confirmed", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 \uACFC\uC138 \uB300\uC0C1\uC785\uB2C8\uB2E4"], ["no_early_property_rights_registration_application_confirmed", "\uC77C\uBC18 \uC2E0\uACE0\uAE30\uD55C \uC804 \uBCC4\uB3C4 \uAD8C\uB9AC \uCDE8\uB4DD\xB7\uC774\uC804 \uB4F1\uAE30 \uC2E0\uCCAD\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["principal_tax_only_calculation_confirmed", "\uAC00\uC0B0\uC138\xB7\uAE30\uB0A9\uBD80\uC561\uC744 \uC81C\uC678\uD55C \uBCF8\uC138 \uACC4\uC0B0\uB9CC \uC694\uCCAD\uD569\uB2C8\uB2E4"]];
+const BUILDING_MODE = {
+  extension: { title: "\uAC74\uBB3C \uC99D\uCD95 \uCDE8\uB4DD\uC138", prefix: "building_extension", scope: "whole_extension", purpose: "building_extension_actual_increased_price", checks: [["building_extension_permit_confirmed", "\uC99D\uCD95 \uD5C8\uAC00\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["increased_floor_area_confirmed", "\uC99D\uAC00 \uC5F0\uBA74\uC801\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["whole_extension_confirmed", "\uC99D\uCD95 \uBD80\uBD84 \uC804\uCCB4\uC785\uB2C8\uB2E4"], ["no_mixed_renovation_confirmed", "\uAC1C\uC218 \uACF5\uC0AC\uAC00 \uD63C\uD569\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4"], ["first_whole_extension_actual_use_confirmed", "\uC99D\uCD95 \uBD80\uBD84 \uC804\uCCB4\uC758 \uCD5C\uCD08 \uC2E4\uC81C \uC0AC\uC6A9\uC77C\uC785\uB2C8\uB2E4"], ["actual_extension_price_verified_confirmed", "\uC99D\uCD95\uBD84 \uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["extension_cost_allocation_verified_confirmed", "\uC99D\uCD95\uC5D0 \uADC0\uC18D\uB418\uB294 \uC6D0\uAC00\uB97C \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"]], sources: [["extension_permit_source_id", "\uC99D\uCD95 \uD5C8\uAC00 \uADFC\uAC70"], ["floor_area_source_id", "\uC5F0\uBA74\uC801 \uADFC\uAC70"]], areas: [["before_floor_area_sqm", "\uC99D\uCD95 \uC804 \uC5F0\uBA74\uC801 (\u33A1)"], ["after_floor_area_sqm", "\uC99D\uCD95 \uD6C4 \uC5F0\uBA74\uC801 (\u33A1)"], ["increased_floor_area_sqm", "\uC99D\uAC00 \uC5F0\uBA74\uC801 (\u33A1)"]] },
+  repair: { title: "\uB0B4\uB825\uBCBD \uB300\uC218\uC120 \uCDE8\uB4DD\uC138", prefix: "building_major_repair", scope: "whole_major_repair", purpose: "building_major_repair_actual_attributable_price", checks: [["statutory_major_repair_confirmed", "\uBC95\uC815 \uB300\uC218\uC120\uC5D0 \uD574\uB2F9\uD569\uB2C8\uB2E4"], ["bearing_wall_repair_confirmed", "\uB0B4\uB825\uBCBD \uB300\uC218\uC120\uC785\uB2C8\uB2E4"], ["whole_major_repair_confirmed", "\uB300\uC218\uC120 \uBD80\uBD84 \uC804\uCCB4\uC785\uB2C8\uB2E4"], ["no_mixed_extension_or_other_work_confirmed", "\uC99D\uCD95\uC774\uB098 \uB2E4\uB978 \uACF5\uC0AC\uAC00 \uD63C\uD569\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4"], ["first_whole_major_repair_actual_use_confirmed", "\uB300\uC218\uC120 \uBD80\uBD84 \uC804\uCCB4\uC758 \uCD5C\uCD08 \uC2E4\uC81C \uC0AC\uC6A9\uC77C\uC785\uB2C8\uB2E4"], ["actual_major_repair_price_verified_confirmed", "\uB300\uC218\uC120\uBD84 \uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["major_repair_cost_allocation_verified_confirmed", "\uB300\uC218\uC120\uC5D0 \uADC0\uC18D\uB418\uB294 \uC6D0\uAC00\uB97C \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"]], sources: [["major_repair_permit_source_id", "\uB300\uC218\uC120 \uD5C8\uAC00 \uADFC\uAC70"], ["bearing_wall_work_source_id", "\uB0B4\uB825\uBCBD \uACF5\uC0AC \uADFC\uAC70"], ["area_source_id", "\uBA74\uC801 \uADFC\uAC70"]], areas: [["bearing_wall_repair_area_sqm", "\uB0B4\uB825\uBCBD \uACF5\uC0AC \uBA74\uC801 (\u33A1)"], ["before_floor_area_sqm", "\uACF5\uC0AC \uC804 \uC5F0\uBA74\uC801 (\u33A1)"], ["after_floor_area_sqm", "\uACF5\uC0AC \uD6C4 \uC5F0\uBA74\uC801 (\u33A1)"], ["before_building_area_sqm", "\uACF5\uC0AC \uC804 \uAC74\uCD95\uBA74\uC801 (\u33A1)"], ["after_building_area_sqm", "\uACF5\uC0AC \uD6C4 \uAC74\uCD95\uBA74\uC801 (\u33A1)"]] }
+};
+const BUILDING_COMMON_SOURCES = [["source_id", "\uC804\uCCB4 \uBC94\uC704 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["price_basis_source_id", "\uAC00\uACA9 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["property_rights_registration_review_source_id", "\uBCC4\uB3C4 \uAD8C\uB9AC \uB4F1\uAE30 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["owner_source", "\uAC1C\uC778 \uC18C\uC720 \uD655\uC778 \uC790\uB8CC\uBA85"], ["asset_source", "\uAC74\uBB3C \uD655\uC778 \uC790\uB8CC\uBA85"], ["approval_source", "\uC0AC\uC6A9\uC2B9\uC778\uC77C \uC790\uB8CC\uBA85"], ["use_source", "\uCD5C\uCD08 \uC2E4\uC81C \uC0AC\uC6A9\uC77C \uC790\uB8CC\uBA85"], ["price_source", "\uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9 \uC790\uB8CC\uBA85"]];
+function buildingClearChecks(d) {
+  const copy = __spreadValues({}, d);
+  for (const [k] of [...BUILDING_SHARED, ...BUILDING_MODE.extension.checks, ...BUILDING_MODE.repair.checks]) delete copy[k];
+  return copy;
+}
+function buildingReviewedRequest(d) {
+  var _a, _b;
+  const m = BUILDING_MODE[d.mode];
+  if (!m) throw Error("\uAC74\uBB3C \uCDE8\uB4DD \uC720\uD615\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.");
+  const text = (k) => {
+    var _a2;
+    const v = String((_a2 = d[k]) != null ? _a2 : "").trim();
+    if (!v || v.length > 200) throw Error("\uD544\uC694\uD55C \uC790\uB8CC\uBA85\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const date = (k) => {
+    const v = d[k];
+    if (!/^2026-\d{2}-\d{2}$/.test(v || "") || !Number.isFinite(Date.parse(v)) || new Date(v).toISOString().slice(0, 10) !== v) throw Error("2026\uB144\uC758 \uC2E4\uC81C \uB0A0\uC9DC\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const approval = date("approval"), use = date("use");
+  if (!/^\d+$/.test(String((_a = d.price) != null ? _a : "")) || !Number.isSafeInteger(Number(d.price)) || Number(d.price) <= 5e5) throw Error("\uC2E4\uC81C \uCDE8\uB4DD\uAC00\uACA9\uC740 50\uB9CC\uC6D0 \uCD08\uACFC \uC815\uC218 \uC6D0\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.");
+  const ctx = { case_type: m.prefix + "_ordinary_actual" };
+  for (const [k] of [...BUILDING_SHARED, ...m.checks]) {
+    if (d[k] !== true) throw Error("\uBAA8\uB4E0 \uAC1C\uBCC4 \uD655\uC778 \uC0AC\uD56D\uC744 \uAC80\uD1A0\uD574 \uC8FC\uC138\uC694.");
+    ctx[k] = true;
+  }
+  for (const [k] of [...m.sources, ...BUILDING_COMMON_SOURCES.slice(0, 3)]) ctx[k] = text(k);
+  for (const [k] of m.areas) {
+    const raw = String((_b = d[k]) != null ? _b : "");
+    if (!/^\d+(?:\.\d{1,4})?$/.test(raw) || !Number.isFinite(Number(raw)) || Number(raw) <= 0 || Number(raw) > 9007199254740991e-4) throw Error("\uBA74\uC801\uC740 \uC18C\uC218 \uB124 \uC790\uB9AC \uC774\uD558 \uC591\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    ctx[k] = Number(raw);
+  }
+  const fact = { schema_version: 1, source_id: text("source_id"), parties: [{ party_ref: "OWNER", role: "acquirer", person_type: "individual", source_id: text("owner_source") }], assets: [{ asset_ref: "BUILDING", property_type: "\uAC74\uBB3C", whole_property_confirmed: true, source_id: text("asset_source") }], events: [{ kind: m.prefix + "_use_approval", asset_ref: "BUILDING", party_ref: "OWNER", scope: m.scope, occurred_on: approval, source_id: text("approval_source") }, { kind: m.prefix + "_actual_use", asset_ref: "BUILDING", party_ref: "OWNER", scope: m.scope, occurred_on: use, source_id: text("use_source") }], amounts: [{ purpose: m.purpose, scope: m.scope, asset_ref: "BUILDING", amount_krw: Number(d.price), as_of: approval < use ? approval : use, source_id: text("price_source") }], valuations: [], liabilities: [], expenses: [] };
+  return { common_facts: fact, consultation_context: ctx };
+}
+function buildingReviewedResult(calc) {
+  const ks = ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"];
+  if ((calc == null ? void 0 : calc["\uC0C1\uD0DC"]) !== "ok" || ks.some((k) => !Number.isSafeInteger(calc[k]) || calc[k] < 0) || calc["\uCDE8\uB4DD\uC138"] + calc["\uC9C0\uBC29\uAD50\uC721\uC138"] + calc["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"] !== calc["\uC138\uC561"]) throw Error("\uACC4\uC0B0 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uAC70\uB098 \uCD94\uAC00 \uC0AC\uC2E4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  return calc;
+}
+function JTAcquisitionBuildingDirect({ onBack, initialDraft }) {
+  const [d, setD] = React.useState(() => buildingClearChecks(initialDraft || {})), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const seq = React.useRef(0), pending = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a;
+    seq.current++;
+    (_a = pending.current) == null ? void 0 : _a.abort();
+  }, []);
+  const m = BUILDING_MODE[d.mode], checks = m ? [...BUILDING_SHARED, ...m.checks] : [];
+  const edit = (k, v) => {
+    var _a;
+    seq.current++;
+    (_a = pending.current) == null ? void 0 : _a.abort();
+    setBusy(false);
+    setResult(null);
+    setError("");
+    setD((old) => __spreadProps(__spreadValues({}, checks.some(([x]) => x === k) ? old : buildingClearChecks(old)), { [k]: v }));
+  };
+  async function submit(e) {
+    e.preventDefault();
+    if (busy) return;
+    let body;
+    try {
+      body = buildingReviewedRequest(d);
+    } catch (err) {
+      setError(err.message);
+      return;
+    }
+    const id = ++seq.current, ctrl = new AbortController();
+    pending.current = ctrl;
+    const timer = setTimeout(() => ctrl.abort(), 3e4);
+    setBusy(true);
+    setError("");
+    setResult(null);
+    try {
+      if (!window.JT_ENGINE_BASE) throw Error("\uACC4\uC0B0 \uC11C\uBC84 \uC8FC\uC18C\uAC00 \uC124\uC815\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const r = await fetch(window.JT_ENGINE_BASE.replace(/\/$/, "") + "/v1/calc/acquisition", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctrl.signal });
+      const j = await r.json();
+      if (id !== seq.current) return;
+      if (!r.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC5F0\uACB0 \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      setResult(buildingReviewedResult(j.calc));
+    } catch (err) {
+      if (id === seq.current) setError(err.name === "AbortError" ? "\uACC4\uC0B0 \uC694\uCCAD \uC2DC\uAC04\uC774 \uCD08\uACFC\uB418\uC5C8\uC2B5\uB2C8\uB2E4." : err.message);
+    } finally {
+      clearTimeout(timer);
+      if (id === seq.current) {
+        pending.current = null;
+        setBusy(false);
+      }
+    }
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uAC74\uBB3C \uC99D\uCD95\xB7\uB300\uC218\uC120 \uCDE8\uB4DD\uC138", subtitle: "\uD655\uC778\uD55C \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9", onBack: () => onBack(buildingClearChecks(d)), tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 \uAC1C\uC778 \uC18C\uC720 \uBE44\uC8FC\uD0DD \uC77C\uBC18 \uAC74\uBB3C\uC758 \uC99D\uCD95 \uB610\uB294 \uB0B4\uB825\uBCBD \uB300\uC218\uC120\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uACF5\uC0AC\uBCC4 \uC694\uAC74\uACFC \uCD9C\uCC98\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC790\uB8CC\uBA85\uC740 \uC99D\uBE59 \uC9C4\uC704 \uC778\uC99D\uC774 \uC544\uB2D9\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uACC4\uC0B0 \uC720\uD615", /* @__PURE__ */ React.createElement("select", { value: d.mode || "", onChange: (e) => edit("mode", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD558\uC138\uC694"), /* @__PURE__ */ React.createElement("option", { value: "extension" }, "\uC99D\uCD95"), /* @__PURE__ */ React.createElement("option", { value: "repair" }, "\uB0B4\uB825\uBCBD \uB300\uC218\uC120"))), m && /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("h3", null, m.title), [["approval", "\uC0AC\uC6A9\uC2B9\uC778\uC11C \uBC1C\uAE09\uC77C"], ["use", "\uCD5C\uCD08 \uC804\uCCB4 \uC2E4\uC81C \uC0AC\uC6A9\uC77C"], ["price", "\uD574\uB2F9 \uACF5\uC0AC\uC758 \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9 (\uC6D0)"], ...m.areas, ...m.sources, ...BUILDING_COMMON_SOURCES].map(([k, label]) => {
+    var _a;
+    return /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block" } }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "building-" + k, value: (_a = d[k]) != null ? _a : "", onChange: (e) => edit(k, e.target.value) }));
+  }), checks.map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "building-" + k, checked: d[k] === true, onChange: (e) => edit(k, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("button", { type: "submit", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uBCF8\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement("p", null, "\uACFC\uC138\uD45C\uC900 ", result["\uACFC\uC138\uD45C\uC900"].toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uC138 ", result["\uCDE8\uB4DD\uC138"].toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC9C0\uBC29\uAD50\uC721\uC138 ", result["\uC9C0\uBC29\uAD50\uC721\uC138"].toLocaleString("ko-KR"), "\uC6D0 \xB7 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 ", result["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"].toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uBCF8\uC138 \uD569\uACC4 ", result["\uC138\uC561"].toLocaleString("ko-KR"), "\uC6D0"), typeof result["\uC2E0\uACE0\uAE30\uD55C"] === "string" && /* @__PURE__ */ React.createElement("p", null, "\uC870\uAC74\uBD80 \uC2E0\uACE0\uAE30\uD55C: ", result["\uC2E0\uACE0\uAE30\uD55C"]), Array.isArray(result["\uACBD\uACE0\uC0AC\uD56D"]) && result["\uACBD\uACE0\uC0AC\uD56D"].map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i }, window.jtEngineMessageForDisplay ? window.jtEngineMessageForDisplay(w) : "\uAE30\uD55C\uACFC \uB0A9\uBD80\uC774\uB825\uC740 \uBCC4\uB3C4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.")))));
+}
+window.JTAcquisitionBuildingDirect = JTAcquisitionBuildingDirect;
+
+
+/* ────────── AcquisitionValueDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const VALUE_FALLBACK_CHECKS = [["land_category_change_confirmed", "\uC9C0\uBAA9\uC774 \uC2E4\uC81C \uBCC0\uACBD\uB418\uC5C8\uC2B5\uB2C8\uB2E4"], ["increased_value_confirmed", "\uC9C0\uBAA9\uBCC0\uACBD\uC73C\uB85C \uAC00\uCE58\uAC00 \uC99D\uAC00\uD588\uC2B5\uB2C8\uB2E4"], ["domestic_land_confirmed", "\uAD6D\uB0B4 \uD1A0\uC9C0\uC785\uB2C8\uB2E4"], ["noncorporate_confirmed", "\uAC1C\uC778\uC785\uB2C8\uB2E4"], ["nonhousing_confirmed", "\uC8FC\uD0DD\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["nonfarmland_confirmed", "\uB18D\uC9C0\uAC00 \uC544\uB2D9\uB2C8\uB2E4"], ["nonluxury_confirmed", "\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["whole_land_confirmed", "\uB3D9\uC77C \uD544\uC9C0 \uC804\uCCB4\uC785\uB2C8\uB2E4"], ["no_prior_partial_use_confirmed", "\uC774\uC804 \uBD80\uBD84 \uC0AC\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["ordinary_rate_confirmed", "\uC77C\uBC18 \uC138\uC728 \uB300\uC0C1\uC785\uB2C8\uB2E4"], ["no_reductions_confirmed", "\uAC10\uBA74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_municipal_rate_variation_confirmed", "\uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["rural_special_tax_applies_confirmed", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 \uACFC\uC138 \uB300\uC0C1\uC785\uB2C8\uB2E4"], ["no_early_property_rights_registration_application_confirmed", "\uC2E0\uACE0\uAE30\uD55C \uC804 \uBCC4\uB3C4 \uAD8C\uB9AC \uCDE8\uB4DD\xB7\uC774\uC804 \uB4F1\uAE30 \uC2E0\uCCAD\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["actual_increased_price_unavailable_confirmed", "\uC2E4\uC81C \uC99D\uAC00 \uCDE8\uB4DD\uAC00\uACA9\uC744 \uAC1D\uAD00\uC801\uC73C\uB85C \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4"], ["before_published_category_price_absent_confirmed", "\uCDE8\uB4DD\uC77C \uD604\uC7AC \uBCC0\uACBD \uC804 \uC9C0\uBAA9\uC758 \uAC1C\uBCC4\uACF5\uC2DC\uC9C0\uAC00\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["same_parcel_area_scope_confirmed", "\uC804\uD6C4 \uD3C9\uAC00\uC561\uC740 \uB3D9\uC77C \uC804\uCCB4 \uD544\uC9C0\xB7\uBA74\uC801\uC758 \uC6D0\uD654 \uCD1D\uC561\uC774\uACE0 \uAC74\uBB3C\uC774 \uD3EC\uD568\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4"], ["valuation_method_confirmed", "\uC804\uD6C4 \uBAA8\uB450 \uC9C0\uC790\uCCB4\uC7A5\uC774 \uC720\uC0AC \uD1A0\uC9C0\uC758 \uAC00\uACA9\uACFC \uAD6D\uD1A0\uAD50\uD1B5\uBD80 \uBE44\uAD50\uD45C\uB97C \uC0AC\uC6A9\uD574 \uC0B0\uC815\uD588\uC2B5\uB2C8\uB2E4"]];
+const VALUE_HOME_CHECKS = [["developer_corporate_confirmed", "\uC0AC\uC5C5\uC2DC\uD589\uC790\uB294 \uBC95\uC778\uC785\uB2C8\uB2E4"], ["completed_housing_at_contract_confirmed", "\uACC4\uC57D \uB2F9\uC2DC \uC644\uACF5\uB41C \uC8FC\uD0DD\uC785\uB2C8\uB2E4"], ["direct_developer_sale_confirmed", "\uC0AC\uC5C5\uC2DC\uD589\uC790\uB85C\uBD80\uD130 \uC9C1\uC811 \uB9E4\uC218\uD588\uC2B5\uB2C8\uB2E4"], ["buyer_individual_confirmed", "\uB9E4\uC218\uC778\uC740 \uAC1C\uC778\uC785\uB2C8\uB2E4"], ["whole_paid_purchase_confirmed", "\uC8FC\uD0DD \uC804\uCCB4\uB97C \uC720\uC0C1 \uB9E4\uC218\uD588\uC2B5\uB2C8\uB2E4"], ["registered_housing_confirmed", "\uC8FC\uD0DD\uB300\uC7A5\uC5D0 \uAE30\uC7AC\uB41C \uC8FC\uD0DD\uC785\uB2C8\uB2E4"], ["no_prior_registration_confirmed", "\uD574\uB2F9 \uB9E4\uC218\uC778\uC758 \uC120\uD589 \uB4F1\uAE30 \uC2E0\uCCAD\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["first_registration_application_confirmed", "\uCCAB \uB4F1\uAE30 \uC2E0\uCCAD\uC77C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["contract_no_other_housing_or_rights_confirmed", "\uACC4\uC57D \uB2F9\uC2DC \uB2E4\uB978 \uC8FC\uD0DD\xB7\uAD8C\uB9AC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["acquisition_no_other_housing_or_rights_confirmed", "\uCDE8\uB4DD \uB2F9\uC2DC \uB2E4\uB978 \uC8FC\uD0DD\xB7\uAD8C\uB9AC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["after_acquisition_one_house_confirmed", "\uCDE8\uB4DD \uD6C4 1\uC8FC\uD0DD\uC785\uB2C8\uB2E4"], ["nonregulated_confirmed", "\uBE44\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\uC785\uB2C8\uB2E4"], ["nonluxury_confirmed", "\uC0AC\uCE58\uC131 \uC8FC\uD0DD\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["no_exemption_or_reduction_confirmed", "\uBE44\uACFC\uC138\xB7\uAC10\uBA74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["price_inclusions_exclusions_reviewed_confirmed", "\uCDE8\uB4DD\uAC00\uACA9 \uD3EC\uD568\xB7\uC81C\uC678 \uD56D\uBAA9\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["no_other_includible_costs_confirmed", "\uCD94\uAC00 \uC0B0\uC785\uD560 \uBE44\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_debt_or_conditional_obligation_confirmed", "\uCC44\uBB34 \uB610\uB294 \uC870\uAC74\uBD80 \uC758\uBB34\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_related_party_or_special_timing_confirmed", "\uD2B9\uC218\uAD00\uACC4\xB7\uD2B9\uBCC4 \uCDE8\uB4DD\uC2DC\uAE30\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_installment_or_cancellation_confirmed", "\uC5F0\uBD80\uCDE8\uB4DD \uB610\uB294 \uACC4\uC57D\uD574\uC81C\uAC00 \uC544\uB2D9\uB2C8\uB2E4"], ["no_municipal_rate_variation_confirmed", "\uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["national_housing_size_confirmed", "\uAD6D\uBBFC\uC8FC\uD0DD \uADDC\uBAA8 \uB300\uC0C1\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["no_prepayments_or_penalties_confirmed", "\uAE30\uB0A9\uBD80\uC561 \uB610\uB294 \uAC00\uC0B0\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["timely_filing_confirmed", "\uAE30\uD55C \uB0B4 \uC2E0\uACE0\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]];
+const VALUE_FALLBACK_FIELDS = [["factual", "\uC0AC\uC2E4\uC0C1 \uC9C0\uBAA9\uBCC0\uACBD\uC77C"], ["register", "\uACF5\uBD80\uC0C1 \uC9C0\uBAA9\uBCC0\uACBD\uC77C"], ["before", "\uBCC0\uACBD \uC804 \uC9C0\uC790\uCCB4 \uC0B0\uC815\uC561 (\uC6D0)"], ["after", "\uBCC0\uACBD \uD6C4 \uC9C0\uC790\uCCB4 \uC0B0\uC815\uC561 (\uC6D0)"], ["reference", "\uBCC0\uACBD \uD6C4 \uACF5\uC2DC \uAE30\uC900\uC77C"], ["reason", "\uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uD655\uC778 \uBD88\uAC00 \uC0AC\uC720"], ["source", "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["owner", "\uC18C\uC720\uC790 \uC790\uB8CC\uBA85"], ["asset", "\uD544\uC9C0 \uC790\uB8CC\uBA85"], ["factual_source", "\uC0AC\uC2E4\uC0C1 \uBCC0\uACBD \uC790\uB8CC\uBA85"], ["register_source", "\uACF5\uBD80\uC0C1 \uBCC0\uACBD \uC790\uB8CC\uBA85"], ["before_source", "\uBCC0\uACBD \uC804 \uC0B0\uC815\uC561 \uC790\uB8CC\uBA85"], ["after_source", "\uBCC0\uACBD \uD6C4 \uC0B0\uC815\uC561 \uC790\uB8CC\uBA85"], ["price_basis", "\uAC00\uACA9 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["rights", "\uBCC4\uB3C4 \uAD8C\uB9AC \uB4F1\uAE30 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["unavailable_source", "\uC2E4\uC81C \uAC00\uACA9 \uD655\uC778 \uBD88\uAC00 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["municipality_source", "\uC9C0\uC790\uCCB4\uC7A5 \uC0B0\uC815 \uADFC\uAC70 \uC790\uB8CC\uBA85"]];
+const VALUE_HOME_FIELDS = [["approval", "\uC0AC\uC6A9\uC2B9\uC778\uC77C"], ["register", "\uC8FC\uD0DD\uB300\uC7A5 \uAE30\uC7AC\uC77C"], ["contract", "\uB9E4\uB9E4\uACC4\uC57D\uC77C"], ["balance", "\uC794\uAE08 \uC9C0\uAE09\uC77C"], ["registration", "\uCCAB \uB4F1\uAE30 \uC2E0\uCCAD\uC77C"], ["price", "\uC804\uCCB4 \uB9E4\uB9E4\uB300\uAE08 (\uC6D0)"], ["area", "\uC2E4\uC81C \uC804\uC6A9\uBA74\uC801 (\u33A1)"], ["source", "\uACF5\uD1B5 \uC0AC\uC2E4 \uC790\uB8CC\uBA85"], ["buyer_source", "\uB9E4\uC218\uC790 \uC790\uB8CC\uBA85"], ["developer_source", "\uC0AC\uC5C5\uC2DC\uD589\uC790 \uC790\uB8CC\uBA85"], ["asset_source", "\uC8FC\uD0DD \uC790\uB8CC\uBA85"], ["approval_source", "\uC0AC\uC6A9\uC2B9\uC778 \uC790\uB8CC\uBA85"], ["register_source", "\uC8FC\uD0DD\uB300\uC7A5 \uC790\uB8CC\uBA85"], ["contract_source", "\uB9E4\uB9E4\uACC4\uC57D \uC790\uB8CC\uBA85"], ["balance_source", "\uC794\uAE08 \uC790\uB8CC\uBA85"], ["registration_source", "\uCCAB \uB4F1\uAE30 \uC2E0\uCCAD \uC790\uB8CC\uBA85"], ["price_source", "\uB9E4\uB9E4\uB300\uAE08 \uC790\uB8CC\uBA85"], ["review_source", "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["area_source_id", "\uBA74\uC801 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["contract_inventory_source_id", "\uACC4\uC57D \uB2F9\uC2DC \uBCF4\uC720 \uD604\uD669 \uC790\uB8CC\uBA85"], ["acquisition_inventory_source_id", "\uCDE8\uB4DD \uB2F9\uC2DC \uBCF4\uC720 \uD604\uD669 \uC790\uB8CC\uBA85"], ["price_review_source_id", "\uAC00\uACA9 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["developer_status_source_id", "\uC0AC\uC5C5\uC2DC\uD589\uC790 \uC790\uACA9 \uC790\uB8CC\uBA85"], ["timing_source_id", "\uCDE8\uB4DD\uC2DC\uAE30 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["rate_relief_source_id", "\uC138\uC728\xB7\uAC10\uBA74 \uAC80\uD1A0 \uC790\uB8CC\uBA85"]];
+function valueEdit(d, k, v) {
+  return k === "mode" ? { mode: v } : __spreadProps(__spreadValues({}, VALUE_FALLBACK_CHECKS.some(([x]) => x === k) || VALUE_HOME_CHECKS.some(([x]) => x === k) ? d : valueClear(d)), { [k]: v });
+}
+function valueClear(d) {
+  const o = __spreadValues({}, d);
+  for (const [k] of [...VALUE_FALLBACK_CHECKS, ...VALUE_HOME_CHECKS]) delete o[k];
+  return o;
+}
+function valueReviewedRequest(d) {
+  const fallback = d.mode === "fallback", home = d.mode === "home";
+  if (!fallback && !home) throw Error("\uACC4\uC0B0 \uC720\uD615\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.");
+  const fields = fallback ? VALUE_FALLBACK_FIELDS : VALUE_HOME_FIELDS, checks = fallback ? VALUE_FALLBACK_CHECKS : VALUE_HOME_CHECKS;
+  const text = (k) => {
+    var _a;
+    const v = String((_a = d[k]) != null ? _a : "").trim();
+    if (!v || v.length > 200) throw Error("\uD544\uC694\uD55C \uC785\uB825\uACFC \uC790\uB8CC\uBA85\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  for (const [k] of fields) text(k);
+  for (const [k, label] of checks) if (d[k] !== true) throw Error(label + " \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  const day = (k) => {
+    const v = text(k);
+    if (!/^2026-\d{2}-\d{2}$/.test(v) || !Number.isFinite(Date.parse(v)) || new Date(v).toISOString().slice(0, 10) !== v) throw Error("2026\uB144\uC758 \uC815\uD655\uD55C \uB0A0\uC9DC\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const money = (k) => {
+    const v = text(k);
+    if (!/^\d+$/.test(v) || !Number.isSafeInteger(Number(v)) || Number(v) <= 0) throw Error("\uAC00\uACA9\uC740 \uC591\uC758 \uC6D0 \uB2E8\uC704 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return Number(v);
+  };
+  if (fallback) {
+    const factual = day("factual"), register = day("register"), reference = day("reference"), before = money("before"), after = money("after");
+    if (factual !== "2026-06-01" || register !== factual || reference >= factual || after - before <= 5e5) throw Error("\uC774 \uACBD\uB85C\uB294 2026-06-01 \uB3D9\uC77C \uBCC0\uACBD\uC77C, \uADF8 \uC774\uC804 \uACF5\uC2DC\uAE30\uC900\uC77C\uACFC 50\uB9CC\uC6D0 \uCD08\uACFC \uCC28\uC561\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.");
+    const ctx2 = { case_type: "land_category_change_ordinary_standard_fallback", source_id: text("source"), price_basis_source_id: text("price_basis"), property_rights_registration_review_source_id: text("rights"), actual_price_unavailability_reason: text("reason"), actual_price_review_source_id: text("unavailable_source"), municipality_issuer_source_id: text("municipality_source"), before_valuation_method: "similar_land_prices_and_molit_comparison_table", after_valuation_method: "similar_land_prices_and_molit_comparison_table", after_public_reference_on: reference };
+    for (const [k] of checks) if (k !== "valuation_method_confirmed") ctx2[k] = true;
+    const common_facts = { schema_version: 1, source_id: text("source"), parties: [{ party_ref: "OWNER", role: "acquirer", person_type: "individual", source_id: text("owner") }], assets: [{ asset_ref: "LAND", property_type: "\uD1A0\uC9C0", whole_property_confirmed: true, source_id: text("asset") }], events: [["land_category_factual_changed", factual, "factual_source"], ["land_category_register_changed", register, "register_source"]].map(([kind, occurred_on, src]) => ({ kind, occurred_on, source_id: text(src), asset_ref: "LAND", party_ref: "OWNER" })), amounts: [], valuations: [["before", before, "before_source"], ["after", after, "after_source"]].map(([purpose, amount_krw, src]) => ({ asset_ref: "LAND", purpose: "land_category_standard_" + purpose, scope: "whole_property", amount_krw, as_of: factual, source_id: text(src) })), liabilities: [], expenses: [] };
+    return { common_facts, consultation_context: ctx2 };
+  }
+  const days = { approval: day("approval"), register: day("register"), contract: day("contract"), balance: day("balance"), registration: day("registration") }, price = money("price"), areaRaw = text("area"), area = Number(areaRaw);
+  if (!/^\d+(?:\.\d{1,4})?$/.test(areaRaw) || !Number.isFinite(area) || area <= 0 || area > 85) throw Error("\uC804\uC6A9\uBA74\uC801\uC740 85\u33A1 \uC774\uD558\uC758 \uC591\uC218\uC785\uB2C8\uB2E4.");
+  const ctx = { case_type: "completed_developer_housing_sale_ordinary", source_id: text("review_source"), exclusive_area_sqm: area };
+  for (const [k] of VALUE_HOME_FIELDS.filter(([k2]) => k2.endsWith("_source_id"))) ctx[k] = text(k);
+  for (const [k] of checks) if (k !== "developer_corporate_confirmed") ctx[k] = true;
+  const events = [["housing_use_approval", "developer", "approval"], ["housing_register_record", "developer", "register"], ["developer_sale_contract", "developer", "contract"], ["final_balance_paid", "buyer", "balance"], ["first_registration_application", "buyer", "registration"]].map(([kind, party, key]) => ({ kind, asset_ref: "HOME", party_ref: party, occurred_on: days[key], source_id: text(key + "_source") }));
+  return { common_facts: { schema_version: 1, source_id: text("source"), parties: [{ party_ref: "buyer", role: "buyer", person_type: "individual", source_id: text("buyer_source") }, { party_ref: "developer", role: "developer", person_type: "corporate", source_id: text("developer_source") }], assets: [{ asset_ref: "HOME", property_type: "\uC8FC\uD0DD", whole_property_confirmed: true, source_id: text("asset_source") }], events, valuations: [], liabilities: [], amounts: [{ asset_ref: "HOME", purpose: "sale_consideration", scope: "whole_property", amount_krw: price, as_of: days.balance, source_id: text("price_source") }], expenses: [] }, consultation_context: ctx };
+}
+function valueReviewedResult(c) {
+  const keys = ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"];
+  if ((c == null ? void 0 : c["\uC0C1\uD0DC"]) !== "ok" || keys.some((k) => !Number.isSafeInteger(c[k]) || c[k] < 0) || c["\uCDE8\uB4DD\uC138"] + c["\uC9C0\uBC29\uAD50\uC721\uC138"] + c["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"] !== c["\uC138\uC561"]) throw Error("\uACC4\uC0B0 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uAC70\uB098 \uCD94\uAC00 \uC0AC\uC2E4 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  return c;
+}
+function JTAcquisitionValueDirect({ onBack, initialDraft }) {
+  const [d, setD] = React.useState(() => valueClear(initialDraft || {})), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const seq = React.useRef(0), pending = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a;
+    seq.current++;
+    (_a = pending.current) == null ? void 0 : _a.abort();
+  }, []);
+  const checks = d.mode === "fallback" ? VALUE_FALLBACK_CHECKS : d.mode === "home" ? VALUE_HOME_CHECKS : [], fields = d.mode === "fallback" ? VALUE_FALLBACK_FIELDS : VALUE_HOME_FIELDS;
+  const edit = (k, v) => {
+    var _a;
+    seq.current++;
+    (_a = pending.current) == null ? void 0 : _a.abort();
+    setBusy(false);
+    setResult(null);
+    setError("");
+    setD((old) => valueEdit(old, k, v));
+  };
+  async function submit(e) {
+    e.preventDefault();
+    if (busy) return;
+    let body;
+    try {
+      body = valueReviewedRequest(d);
+    } catch (err) {
+      setError(err.message);
+      return;
+    }
+    const id = ++seq.current, ctrl = new AbortController();
+    pending.current = ctrl;
+    const timer = setTimeout(() => ctrl.abort(), 3e4);
+    setBusy(true);
+    setResult(null);
+    setError("");
+    try {
+      if (!window.JT_ENGINE_BASE) throw Error("\uACC4\uC0B0 \uC11C\uBC84 \uC8FC\uC18C\uAC00 \uC124\uC815\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const r = await fetch(window.JT_ENGINE_BASE.replace(/\/$/, "") + "/v1/calc/acquisition", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctrl.signal });
+      const j = await r.json();
+      if (id !== seq.current) return;
+      if (!r.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC5F0\uACB0 \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      setResult(valueReviewedResult(j.calc));
+    } catch (err) {
+      if (id === seq.current) setError(err.name === "AbortError" ? "\uACC4\uC0B0 \uC694\uCCAD \uC2DC\uAC04\uC774 \uCD08\uACFC\uB418\uC5C8\uC2B5\uB2C8\uB2E4." : err.message);
+    } finally {
+      clearTimeout(timer);
+      if (id === seq.current) {
+        pending.current = null;
+        setBusy(false);
+      }
+    }
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uCD94\uAC00 \uACC4\uC0B0", subtitle: "\uD655\uC778\uD55C \uC0AC\uC2E4\uACFC \uC790\uB8CC\uB97C \uC785\uB825\uD569\uB2C8\uB2E4", onBack: () => onBack(valueClear(d)), tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("p", null, "\uC81C\uD55C\uB41C 2026\uB144 \uC0AC\uB840\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uC785\uB825\uD55C \uC790\uB8CC\uBA85\uC740 \uC99D\uBE59\uC758 \uC9C4\uC704 \uC778\uC99D\uC774 \uC544\uB2D9\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("label", null, "\uACC4\uC0B0 \uC720\uD615", /* @__PURE__ */ React.createElement("select", { value: d.mode || "", onChange: (e) => edit("mode", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD558\uC138\uC694"), /* @__PURE__ */ React.createElement("option", { value: "fallback" }, "\uC9C0\uBAA9\uBCC0\uACBD \uC9C0\uC790\uCCB4 \uC0B0\uC815\uC561 \uCC28\uC561"), /* @__PURE__ */ React.createElement("option", { value: "home" }, "\uC644\uACF5\uC8FC\uD0DD \uC0AC\uC5C5\uC2DC\uD589\uC790 \uC9C1\uC811 \uB9E4\uC218"))), d.mode === "fallback" && /* @__PURE__ */ React.createElement("p", null, "\uC0AC\uC2E4\uC0C1\xB7\uACF5\uBD80\uC0C1 \uC9C0\uBAA9\uBCC0\uACBD\uC77C\uC774 \uBAA8\uB450 2026\uB144 6\uC6D4 1\uC77C\uC774\uACE0, \uBCC0\uACBD \uC804 \uACF5\uC2DC\uC9C0\uAC00\uAC00 \uC5C6\uC5B4 \uC9C0\uC790\uCCB4\uC7A5\uC774 \uC0B0\uC815\uD55C \uC804\uD6C4 \uCC28\uC561\uC774 50\uB9CC\uC6D0\uC744 \uCD08\uACFC\uD558\uB294 \uACBD\uC6B0\uC785\uB2C8\uB2E4."), d.mode === "home" && /* @__PURE__ */ React.createElement("p", null, "\uC644\uACF5\xB7\uC8FC\uD0DD\uB300\uC7A5 \uAE30\uC7AC \uD6C4 \uACC4\uC57D\uD55C \uC8FC\uD0DD \uC804\uCCB4\uB97C \uC0AC\uC5C5\uC2DC\uD589\uC790\uB85C\uBD80\uD130 \uC9C1\uC811 \uB9E4\uC218\uD558\uACE0, \uC794\uAE08\uC77C\uC774 2026\uB144 10\uC6D4 1~23\uC77C\uC774\uBA70 \uAC19\uC740 \uB0A0 \uC774\uD6C4 \uCCAB \uB4F1\uAE30 \uC2E0\uCCAD\uC774 10\uC6D4 23\uC77C\uAE4C\uC9C0 \uD655\uC778\uB41C \uACBD\uC6B0\uC785\uB2C8\uB2E4. \uB9E4\uB9E4\uB300\uAE08\uC740 6\uC5B5\uC6D0 \uC774\uD558, \uC804\uC6A9\uBA74\uC801\uC740 85\u33A1 \uC774\uD558\uC5EC\uC57C \uD569\uB2C8\uB2E4."), d.mode && /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, fields.map(([k, label]) => {
+    var _a;
+    return /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block" } }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "value-" + k, value: (_a = d[k]) != null ? _a : "", onChange: (e) => edit(k, e.target.value) }));
+  }), checks.map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: d[k] === true, onChange: (e) => edit(k, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("button", { type: "submit", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uBCF8\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", null, ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"].map((k) => /* @__PURE__ */ React.createElement("p", { key: k }, k, ": ", result[k].toLocaleString("ko-KR"), "\uC6D0")), typeof result["\uC2E0\uACE0\uAE30\uD55C"] === "string" && /* @__PURE__ */ React.createElement("p", null, "\uC870\uAC74\uBD80 \uC2E0\uACE0\uAE30\uD55C: ", result["\uC2E0\uACE0\uAE30\uD55C"]), Array.isArray(result["\uACBD\uACE0\uC0AC\uD56D"]) && result["\uACBD\uACE0\uC0AC\uD56D"].map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i }, window.jtEngineMessageForDisplay ? window.jtEngineMessageForDisplay(w) : "\uC2E0\uACE0\uAE30\uD55C\uACFC \uB0A9\uBD80\uC774\uB825\uC744 \uBCC4\uB3C4\uB85C \uD655\uC778\uD574 \uC8FC\uC138\uC694.")))));
+}
+window.JTAcquisitionValueDirect = JTAcquisitionValueDirect;
+
+
+/* ────────── AcquisitionTransferDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const ACQ_TRANSFER_COMMON = [["noncorporate_confirmed", "\uAC1C\uC778\uC758 \uCDE8\uB4DD\uC785\uB2C8\uB2E4"], ["nonhousing_confirmed", "\uC8FC\uD0DD\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["nonfarmland_confirmed", "\uB18D\uC9C0\uAC00 \uC544\uB2D9\uB2C8\uB2E4"], ["nonluxury_confirmed", "\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["no_earlier_registration_confirmed", "\uCDE8\uB4DD\uC77C\uBCF4\uB2E4 \uC55E\uC120 \uB4F1\uAE30\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_registration_application_before_general_deadline_confirmed", "\uC77C\uBC18 \uC2E0\uACE0\uAE30\uD55C\uC774 \uC9C0\uB09C \uB4A4 \uC2E4\uC81C \uC774\uB825\uC744 \uD655\uC778\uD588\uACE0 \uADF8 \uAE30\uD55C \uC804 \uB4F1\uAE30 \uC2E0\uCCAD\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["price_inclusion_exclusion_verified_confirmed", "\uBC95\uC815 \uAC00\uACA9 \uD3EC\uD568\xB7\uC81C\uC678 \uD56D\uBAA9\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["no_other_includible_costs_confirmed", "\uCD94\uAC00\uB85C \uACFC\uC138\uD45C\uC900\uC5D0 \uB123\uC744 \uBE44\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["ordinary_rate_confirmed", "\uC77C\uBC18 \uC138\uC728 \uB300\uC0C1\uC785\uB2C8\uB2E4"], ["no_reductions_confirmed", "\uAC10\uBA74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_municipal_rate_variation_confirmed", "\uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["rural_special_tax_applies_confirmed", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 \uACFC\uC138 \uB300\uC0C1\uC785\uB2C8\uB2E4"]];
+const ACQ_EXCHANGE_EXTRA = [["exchange_contract_confirmed", "\uAD50\uD658\uACC4\uC57D\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["each_party_pre_exchange_ownership_confirmed", "\uAD50\uD658 \uC804 \uAC01\uC790\uC758 \uD1A0\uC9C0 \uC18C\uC720\uAD8C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["reciprocal_performance_confirmed", "\uC591\uCABD \uC778\uB3C4\xB7\uC218\uB839 \uB124 \uC774\uD589\uC774 \uC785\uB825\uD55C \uAC19\uC740 \uB0A0 \uC774\uB8E8\uC5B4\uC84C\uC2B5\uB2C8\uB2E4"], ["equal_value_no_cash_confirmed", "\uC591\uCABD \uACC4\uC57D\uAC00\uC561\xB7\uB3C5\uB9BD \uAC80\uC99D\uAC00\uC561\uC774 \uAC19\uACE0 \uD604\uAE08 \uC815\uC0B0\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_debt_or_condition_burden_confirmed", "\uCC44\uBB34 \uC778\uC218\xB7\uC870\uAC74\uBD80 \uBD80\uB2F4\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["unrelated_parties_confirmed", "\uC11C\uB85C \uD2B9\uC218\uAD00\uACC4 \uC5C6\uB294 \uAD6D\uB0B4 \uAC70\uC8FC \uAC1C\uC778\uC785\uB2C8\uB2E4"], ["no_special_value_adjustment_confirmed", "\uBCC4\uB3C4 \uAC00\uC561 \uC870\uC815 \uC0AC\uC720\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["domestic_land_confirmed", "\uC591\uCABD \uBAA8\uB450 \uAD6D\uB0B4 \uC77C\uBC18 \uD1A0\uC9C0 \uC804\uCCB4\uC785\uB2C8\uB2E4"], ["no_land_transaction_permit_timing_exception_confirmed", "\uC591\uCABD \uBAA8\uB450 \uD1A0\uC9C0\uAC70\uB798\uD5C8\uAC00\uC5D0 \uB530\uB978 \uCDE8\uB4DD\uC2DC\uAE30 \uC608\uC678\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_prepayments_or_penalties_confirmed", "\uAE30\uB0A9\uBD80\uC561\xB7\uAC00\uC0B0\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["timely_filing_confirmed", "\uBC95\uC815\uAE30\uD55C \uB0B4 \uC2E0\uACE0\uC5D0 \uD574\uB2F9\uD558\uB294 \uBCF8\uC138 \uACC4\uC0B0\uC784\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]];
+const ACQ_TRANSFER_BASE_FIELDS = [["source", "\uC804\uCCB4 \uAC70\uB798 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["ownerSource", "\uCDE8\uB4DD\uC790 \uC2E0\uC6D0 \uC790\uB8CC\uBA85"], ["landSource", "\uCDE8\uB4DD \uD1A0\uC9C0 \uB4F1\uAE30 \uC790\uB8CC\uBA85"], ["priceReview", "\uAC00\uACA9 \uD3EC\uD568\xB7\uC81C\uC678 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["day", "\uB300\uAE08 \uC644\uB0A9\uC77C / \uAD50\uD658 \uC591\uCABD \uC2E4\uC81C \uC774\uD589\uC77C", "date"]];
+const ACQ_COURT_FIELDS = [["paymentSource", "\uBC95\uC6D0 \uB9E4\uAC01\uB300\uAE08 \uC644\uB0A9 \uC601\uC218\uC99D \uC790\uB8CC\uBA85"], ["price", "\uC2E4\uC81C \uB9E4\uAC01\uB300\uAE08 \uC804\uC561 (\uC6D0)"]];
+const ACQ_EXCHANGE_FIELDS = [["counterSource", "\uC0C1\uB300\uBC29 \uC2E0\uC6D0 \uC790\uB8CC\uBA85"], ["offeredSource", "\uB0B4\uAC00 \uC81C\uACF5\uD55C \uD1A0\uC9C0 \uB4F1\uAE30 \uC790\uB8CC\uBA85"], ["contractSource", "\uAD50\uD658\uACC4\uC57D \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["independentSource", "\uB3C5\uB9BD \uAC00\uC561 \uAC80\uC99D \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["relationshipSource", "\uD2B9\uC218\uAD00\uACC4 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["ownershipSource", "\uAD50\uD658 \uC804 \uC591\uCABD \uC18C\uC720\uAD8C \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["registrationSource", "\uAE30\uD55C \uC804 \uB4F1\uAE30 \uC2E0\uCCAD \uBD80\uC7AC \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["checkedOn", "\uB4F1\uAE30 \uC2E0\uCCAD \uC774\uB825 \uD655\uC778\uC77C (\uC77C\uBC18 \uC2E0\uACE0\uAE30\uD55C \uC774\uD6C4)", "date"], ["offeredPermitSource", "\uC81C\uACF5 \uD1A0\uC9C0 \uD5C8\uAC00\xB7\uCDE8\uB4DD\uC2DC\uAE30 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["receivedPermitSource", "\uCDE8\uB4DD \uD1A0\uC9C0 \uD5C8\uAC00\xB7\uCDE8\uB4DD\uC2DC\uAE30 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["giveSource", "\uB0B4 \uD1A0\uC9C0 \uC81C\uACF5 \uC774\uD589 \uC790\uB8CC\uBA85"], ["otherReceiveSource", "\uC0C1\uB300\uBC29\uC758 \uB0B4 \uD1A0\uC9C0 \uC218\uB839 \uC790\uB8CC\uBA85"], ["otherGiveSource", "\uC0C1\uB300\uBC29 \uD1A0\uC9C0 \uC81C\uACF5 \uC774\uD589 \uC790\uB8CC\uBA85"], ["receiveSource", "\uB0B4\uAC00 \uC0C1\uB300\uBC29 \uD1A0\uC9C0\uB97C \uC218\uB839\uD55C \uC790\uB8CC\uBA85"], ["offeredContract", "\uC81C\uACF5 \uD1A0\uC9C0 \uC804\uCCB4 \uACC4\uC57D\uAC00\uC561 (\uC6D0)"], ["offeredContractSource", "\uC81C\uACF5 \uD1A0\uC9C0 \uACC4\uC57D\uAC00\uC561 \uC790\uB8CC\uBA85"], ["receivedContract", "\uCDE8\uB4DD \uD1A0\uC9C0 \uC804\uCCB4 \uACC4\uC57D\uAC00\uC561 (\uC6D0)"], ["receivedContractSource", "\uCDE8\uB4DD \uD1A0\uC9C0 \uACC4\uC57D\uAC00\uC561 \uC790\uB8CC\uBA85"], ["offeredValue", "\uC81C\uACF5 \uD1A0\uC9C0 \uB3C5\uB9BD \uAC80\uC99D\uAC00\uC561 (\uC6D0)"], ["offeredValueSource", "\uC81C\uACF5 \uD1A0\uC9C0 \uB3C5\uB9BD \uAC80\uC99D\uAC00\uC561 \uC790\uB8CC\uBA85"], ["receivedValue", "\uCDE8\uB4DD \uD1A0\uC9C0 \uB3C5\uB9BD \uAC80\uC99D\uAC00\uC561 (\uC6D0)"], ["receivedValueSource", "\uCDE8\uB4DD \uD1A0\uC9C0 \uB3C5\uB9BD \uAC80\uC99D\uAC00\uC561 \uC790\uB8CC\uBA85"]];
+function acquisitionTransferChecks(mode) {
+  return [...ACQ_TRANSFER_COMMON, ...mode === "court" ? [["court_auction_acquisition_confirmed", "\uBBFC\uC0AC\uC9D1\uD589\uBC95\uC0C1 \uBC95\uC6D0 \uACBD\uB9E4\uC774\uBA70 \uD1A0\uC9C0 \uC804\uCCB4 \uB9E4\uAC01\uB300\uAE08\uC744 \uC644\uB0A9\uD588\uC2B5\uB2C8\uB2E4"]] : ACQ_EXCHANGE_EXTRA];
+}
+function acquisitionTransferFields(mode) {
+  return [...ACQ_TRANSFER_BASE_FIELDS, ...mode === "court" ? ACQ_COURT_FIELDS : ACQ_EXCHANGE_FIELDS];
+}
+function acquisitionTransferClear(d) {
+  return Object.fromEntries(Object.entries(d).filter(([key]) => !key.endsWith("_confirmed")));
+}
+function acquisitionTransferRequest(d, mode) {
+  if (!["court", "exchange"].includes(mode)) throw Error("\uCDE8\uB4DD \uC720\uD615\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+  const ref = (k) => {
+    var _a, _b;
+    const value = String((_a = d[k]) != null ? _a : "").trim();
+    if (!value || value.length > 200) throw Error((((_b = acquisitionTransferFields(mode).find((f) => f[0] === k)) == null ? void 0 : _b[1]) || k) + "\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return value;
+  };
+  const day = (k) => {
+    const value = ref(k);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString().slice(0, 10) !== value) throw Error("\uC815\uD655\uD55C \uB0A0\uC9DC\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return value;
+  };
+  const amount = (k) => {
+    const value = ref(k);
+    if (!/^\d+$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) <= (mode === "exchange" ? 5e5 : 0)) throw Error(mode === "exchange" ? "\uAD50\uD658 \uAC00\uC561\uC740 50\uB9CC\uC6D0 \uCD08\uACFC\uC758 \uC548\uC804\uD55C \uC815\uC218 \uC6D0\uC73C\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694." : "\uBC95\uC6D0 \uB9E4\uAC01\uB300\uAE08\uC740 \uC591\uC758 \uC548\uC804\uD55C \uC815\uC218 \uC6D0\uC73C\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return Number(value);
+  };
+  const when = day("day");
+  if (mode === "court" ? when < "2026-01-01" || when > "2026-10-23" : when < "2026-07-01" || when > "2026-10-22") throw Error("\uD604\uC7AC \uAC80\uD1A0\uB41C \uCDE8\uB4DD\uC77C \uBC94\uC704\uB97C \uBC97\uC5B4\uB0A9\uB2C8\uB2E4.");
+  const context = { case_type: mode === "court" ? "court_auction_land_ordinary" : "exchange_land_ordinary", source_id: ref("source"), price_basis_source_id: ref("priceReview") };
+  for (const [key, label] of acquisitionTransferChecks(mode)) {
+    if (d[key] !== true) throw Error(label + " \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+    context[key] = true;
+  }
+  const facts = { schema_version: 1, source_id: ref("source"), parties: [{ party_ref: "A", role: "acquirer", person_type: "individual", source_id: ref("ownerSource") }], assets: [{ asset_ref: "RECEIVED", property_type: "\uD1A0\uC9C0", whole_property_confirmed: true, source_id: ref("landSource") }], events: [], amounts: [], valuations: [], liabilities: [], expenses: [] };
+  if (mode === "court") {
+    facts.events.push({ kind: "court_auction_full_price_paid", asset_ref: "RECEIVED", party_ref: "A", occurred_on: when, source_id: ref("paymentSource") });
+    facts.amounts.push({ purpose: "court_auction_price_paid", scope: "whole_property", asset_ref: "RECEIVED", amount_krw: amount("price"), as_of: when, source_id: ref("paymentSource") });
+  } else {
+    const checked = day("checkedOn");
+    if (checked <= when || checked > (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Seoul" })) throw Error("\uB4F1\uAE30 \uC774\uB825 \uD655\uC778\uC77C\uC740 \uCDE8\uB4DD\uC77C \uC774\uD6C4 \uC2E4\uC81C \uD655\uC778\uC77C\uAE4C\uC9C0\uC5EC\uC57C \uD569\uB2C8\uB2E4.");
+    const values = ["offeredContract", "receivedContract", "offeredValue", "receivedValue"].map(amount);
+    if (!values.every((value) => value === values[0])) throw Error("\uC591\uCABD \uACC4\uC57D\uAC00\uC561\uACFC \uB3C5\uB9BD \uAC80\uC99D\uAC00\uC561 \uB124 \uAE08\uC561\uC774 \uAC19\uC740 \uACBD\uC6B0\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.");
+    facts.parties[0].resident = true;
+    facts.parties.push({ party_ref: "B", role: "counterparty", person_type: "individual", resident: true, source_id: ref("counterSource") });
+    facts.assets.push({ asset_ref: "OFFERED", property_type: "\uD1A0\uC9C0", whole_property_confirmed: true, source_id: ref("offeredSource") });
+    for (const [kind, asset, party, source] of [["exchange_acquirer_gives", "OFFERED", "A", "giveSource"], ["exchange_counterparty_receives", "OFFERED", "B", "otherReceiveSource"], ["exchange_counterparty_gives", "RECEIVED", "B", "otherGiveSource"], ["exchange_acquirer_receives", "RECEIVED", "A", "receiveSource"]]) facts.events.push({ kind, asset_ref: asset, party_ref: party, occurred_on: when, source_id: ref(source) });
+    for (const [asset, key] of [["OFFERED", "offered"], ["RECEIVED", "received"]]) {
+      facts.amounts.push({ purpose: "exchange_contract_value", scope: "whole_property", asset_ref: asset, amount_krw: amount(key + "Contract"), as_of: when, source_id: ref(key + "ContractSource") });
+      facts.valuations.push({ purpose: "independent_exchange_value", scope: "whole_property", asset_ref: asset, amount_krw: amount(key + "Value"), as_of: when, source_id: ref(key + "ValueSource") });
+    }
+    Object.assign(context, { contract_source_id: ref("contractSource"), independent_value_source_id: ref("independentSource"), party_relationship_source_id: ref("relationshipSource"), pre_exchange_ownership_source_id: ref("ownershipSource"), registration_status_source_id: ref("registrationSource"), offered_land_permit_timing_source_id: ref("offeredPermitSource"), received_land_permit_timing_source_id: ref("receivedPermitSource"), registration_status_checked_on: checked });
+  }
+  return { common_facts: facts, consultation_context: context };
+}
+function acquisitionTransferResult(c) {
+  const keys = ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"];
+  if ((c == null ? void 0 : c["\uC0C1\uD0DC"]) !== "ok" || keys.some((k) => !Number.isSafeInteger(c[k]) || c[k] < 0) || BigInt(c["\uC138\uC561"]) !== BigInt(c["\uCDE8\uB4DD\uC138"]) + BigInt(c["\uC9C0\uBC29\uAD50\uC721\uC138"]) + BigInt(c["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"])) throw Error("\uACC4\uC0B0 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+  return c;
+}
+function JTAcquisitionTransferDirect({ onBack, initialDraft, mode = "court" }) {
+  const [d, setD] = React.useState(() => acquisitionTransferClear(initialDraft || {})), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false), seq = React.useRef(0), control = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+  }, []);
+  const previousMode = React.useRef(mode);
+  React.useEffect(() => {
+    var _a;
+    if (previousMode.current === mode) return;
+    previousMode.current = mode;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+    setD({});
+    setResult(null);
+    setError("");
+    setBusy(false);
+  }, [mode]);
+  const edit = (key, value) => {
+    var _a;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+    setResult(null);
+    setError("");
+    setBusy(false);
+    setD((old) => __spreadProps(__spreadValues({}, key.endsWith("_confirmed") ? old : acquisitionTransferClear(old)), { [key]: value }));
+  };
+  const submit = async (e) => {
+    e.preventDefault();
+    if (busy) return;
+    setResult(null);
+    setError("");
+    let body;
+    try {
+      body = acquisitionTransferRequest(d, mode);
+    } catch (e2) {
+      setError(e2.message);
+      return;
+    }
+    const ticket = ++seq.current, abort = new AbortController();
+    control.current = abort;
+    setBusy(true);
+    const timer = setTimeout(() => abort.abort(), 3e4);
+    try {
+      if (!window.JT_ENGINE_BASE) throw Error("\uACC4\uC0B0 \uC11C\uBC84\uAC00 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const response = await fetch(window.JT_ENGINE_BASE.replace(/\/$/, "") + "/v1/calc/acquisition", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: abort.signal });
+      const data = await response.json();
+      if (ticket !== seq.current) return;
+      if (!response.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC5F0\uACB0\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      setResult(acquisitionTransferResult(data.calc));
+    } catch (e2) {
+      if (ticket === seq.current) setError(e2.name === "AbortError" ? "\uC751\uB2F5 \uC2DC\uAC04\uC774 \uCD08\uACFC\uB410\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uACC4\uC0B0\uD574 \uC8FC\uC138\uC694." : e2.message);
+    } finally {
+      clearTimeout(timer);
+      if (ticket === seq.current) setBusy(false);
+    }
+  };
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: mode === "court" ? "\uBC95\uC6D0 \uACBD\uB9E4 \uD1A0\uC9C0 \uCDE8\uB4DD\uC138" : "\uB3D9\uC77C\uAC00\uC561 \uD1A0\uC9C0 \uAD50\uD658 \uCDE8\uB4DD\uC138", subtitle: "\uAD6D\uB0B4 \uBE44\uB18D\uC9C0 \uC77C\uBC18 \uD1A0\uC9C0 \uC804\uCCB4\uC758 \uBCF8\uC138", tag: "CONSULTING", onBack: () => onBack == null ? void 0 : onBack(acquisitionTransferClear(d)) }, /* @__PURE__ */ React.createElement("p", null, mode === "court" ? "2026\uB144 1\uC6D4 1\uC77C~10\uC6D4 23\uC77C \uBC95\uC6D0 \uACBD\uB9E4 \uB300\uAE08 \uC644\uB0A9\uBD84 \uC911 \uC77C\uBC18 \uC2E0\uACE0\uAE30\uD55C\uC774 2026\uB144 10\uC6D4 23\uC77C \uC804\uC5D0 \uB05D\uB098\uACE0, \uADF8 \uAE30\uD55C \uC804 \uB4F1\uAE30 \uC2E0\uCCAD\uC774 \uC5C6\uC74C\uC744 \uC2E4\uC81C \uC774\uB825\uC73C\uB85C \uD655\uC778\uD55C \uACBD\uC6B0\uC785\uB2C8\uB2E4. \uACF5\uB9E4\xB7\uC77C\uBD80 \uC9C0\uBD84\xB7\uCD94\uAC00 \uBE44\uC6A9\uC774 \uC788\uB294 \uACBD\uB9E4\uB294 \uC774 \uACBD\uB85C\uC5D0\uC11C \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4." : "2026\uB144 7\uC6D4 1\uC77C~10\uC6D4 22\uC77C \uAC19\uC740 \uB0A0 \uC774\uD589\uD55C \uAD6D\uB0B4 \uAC70\uC8FC \uAC1C\uC778 \uAC04 \uAD50\uD658\uC785\uB2C8\uB2E4. \uC11C\uB85C \uB2E4\uB978 \uC77C\uBC18 \uD1A0\uC9C0 \uC804\uCCB4 \uB450 \uD544\uC9C0\uC758 \uACC4\uC57D\uAC00\uC561\xB7\uB3C5\uB9BD \uAC80\uC99D\uAC00\uC561\uC774 \uBAA8\uB450 \uAC19\uACE0 \uD604\uAE08\xB7\uCC44\uBB34\xB7\uCD94\uAC00 \uBE44\uC6A9 \uC815\uC0B0\uC774 \uC5C6\uB294 \uACBD\uC6B0\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uB4F1\uAE30 \uC2E0\uCCAD \uBD80\uC7AC \uD655\uC778\uC77C\uC740 \uC77C\uBC18 \uC2E0\uACE0\uAE30\uD55C\uC774 \uC9C0\uB09C \uC2E4\uC81C \uD655\uC778\uC77C\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, acquisitionTransferFields(mode).map(([key, label, type]) => {
+    var _a;
+    return /* @__PURE__ */ React.createElement("label", { key, style: { display: "block", margin: "10px 0" } }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "acq-transfer-" + key, className: "jt-report-q__input", type: type || "text", value: (_a = d[key]) != null ? _a : "", onChange: (e) => edit(key, e.target.value) }));
+  }), acquisitionTransferChecks(mode).map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key, style: { display: "block", margin: "10px 0" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "acq-transfer-" + key, type: "checkbox", checked: d[key] === true, onChange: (e) => edit(key, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("p", null, "\uC790\uB8CC\uBA85\uC740 \uC2E4\uC81C \uD655\uC778\uD55C \uC790\uB8CC\uC758 \uC2DD\uBCC4\uBA85\uC785\uB2C8\uB2E4. \uC99D\uBE59 \uC9C4\uC704\uB97C \uC790\uB3D9 \uC778\uC99D\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC785\uB825 \uBCC0\uACBD \uC2DC \uC774\uC804 \uACB0\uACFC\uC640 \uD655\uC778 \uD45C\uC2DC\uB97C \uC9C0\uC6C1\uB2C8\uB2E4. \uAC1C\uC778\uC815\uBCF4\uB294 \uC785\uB825\uD558\uC9C0 \uB9C8\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", type: "submit", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uCDE8\uB4DD\uC138 \uBCF8\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", { "data-testid": "acq-transfer-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"].map((k) => /* @__PURE__ */ React.createElement("tr", { key: k }, /* @__PURE__ */ React.createElement("th", null, k), /* @__PURE__ */ React.createElement("td", null, result[k].toLocaleString("ko-KR"), "\uC6D0"))))), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uB0A9\uBD80 \uC815\uC0B0\xB7\uAC00\uC0B0\uC138\uC640 \uC2E0\uACE0\uC11C \uC81C\uCD9C\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."))));
+}
+window.JTAcquisitionTransferDirect = JTAcquisitionTransferDirect;
+
+
+/* ────────── AcquisitionDivorceDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const DIVORCE_CHECKS = [["divorce_property_division_confirmed", "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560\uC785\uB2C8\uB2E4"], ["award_entitlement_confirmed", "\uC7AC\uC0B0\uBD84\uD560 \uAD8C\uB9AC\uAC00 \uD655\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4"], ["no_other_consideration_confirmed", "\uBCC4\uB3C4 \uB300\uAC00\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_debt_or_condition_burden_confirmed", "\uC778\uC218 \uCC44\uBB34\uB098 \uC870\uAC74\uBD80 \uBD80\uB2F4\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["legal_market_value_confirmed", "\uC785\uB825\uD55C \uAE08\uC561\uC774 \uC801\uACA9 \uC2DC\uAC00\uC778\uC815\uC561\uC785\uB2C8\uB2E4"], ["whole_standard_value_confirmed", "\uC785\uB825\uD55C \uC2DC\uAC00\uD45C\uC900\uC561\uC740 \uBB3C\uAC74 \uC804\uCCB4\uC758 \uAE08\uC561\uC785\uB2C8\uB2E4"], ["domestic_land_confirmed", "\uAD6D\uB0B4 \uD1A0\uC9C0\uC785\uB2C8\uB2E4"], ["noncorporate_confirmed", "\uCDE8\uB4DD\uC790\uB294 \uAC1C\uC778\uC785\uB2C8\uB2E4"], ["nonhousing_confirmed", "\uC8FC\uD0DD\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["nonfarmland_confirmed", "\uB18D\uC9C0\uAC00 \uC544\uB2D9\uB2C8\uB2E4"], ["nonluxury_confirmed", "\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["ordinary_rate_confirmed", "\uC77C\uBC18 \uC138\uC728 \uB300\uC0C1\uC785\uB2C8\uB2E4"], ["no_other_reductions_confirmed", "\uBCC4\uB3C4 \uAC10\uBA74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_municipal_rate_variation_confirmed", "\uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["no_nontaxable_or_special_exceptions_confirmed", "\uBE44\uACFC\uC138\uB098 \uD2B9\uBCC4 \uC608\uC678\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["rural_special_tax_applies_confirmed", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 \uACFC\uC138 \uB300\uC0C1\uC785\uB2C8\uB2E4"], ["no_prepayments_or_penalties_confirmed", "\uAE30\uB0A9\uBD80\uC561\uACFC \uAC00\uC0B0\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["timely_filing_confirmed", "\uAE30\uD55C \uB0B4 \uC2E0\uACE0\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["individual_residents_confirmed", "\uCDE8\uB4DD\uC790\uC640 \uC804 \uBC30\uC6B0\uC790\uB294 \uAC01\uAC01 \uAD6D\uB0B4 \uAC70\uC8FC \uAC1C\uC778\uC785\uB2C8\uB2E4"], ["whole_land_confirmed", "\uC804\uCCB4 \uD1A0\uC9C0\uB97C \uCDE8\uB4DD\uD569\uB2C8\uB2E4"]];
+const DIVORCE_FIELDS = [["award", "\uC7AC\uC0B0\uBD84\uD560 \uAD8C\uB9AC \uD655\uC815\uC77C"], ["application", "\uB4F1\uAE30 \uC2E0\uCCAD \uC811\uC218\uC77C"], ["registration", "\uB4F1\uAE30 \uC644\uB8CC\uC77C"], ["market", "\uB4F1\uAE30\uC77C \uD604\uC7AC \uC801\uACA9 \uC2DC\uAC00\uC778\uC815\uC561 (\uC6D0)"], ["standard", "\uB4F1\uAE30\uC77C \uD604\uC7AC \uC804\uCCB4 \uD1A0\uC9C0 \uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0)"], ["source", "\uACF5\uD1B5 \uC0AC\uC2E4 \uC790\uB8CC\uBA85"], ["acquirer_source", "\uCDE8\uB4DD\uC790 \uC2E0\uC6D0 \uC790\uB8CC\uBA85"], ["spouse_source", "\uC804 \uBC30\uC6B0\uC790 \uC2E0\uC6D0 \uC790\uB8CC\uBA85"], ["asset_source", "\uD1A0\uC9C0 \uC790\uB8CC\uBA85"], ["award_event_source", "\uAD8C\uB9AC \uD655\uC815\uC77C \uC790\uB8CC\uBA85"], ["application_source", "\uB4F1\uAE30 \uC2E0\uCCAD \uC811\uC218\uC77C \uC790\uB8CC\uBA85"], ["registration_source", "\uB4F1\uAE30 \uC644\uB8CC\uC77C \uC790\uB8CC\uBA85"], ["market_source", "\uC2DC\uAC00\uC778\uC815\uC561 \uC790\uB8CC\uBA85"], ["standard_source", "\uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561 \uC790\uB8CC\uBA85"], ["award_source_id", "\uC7AC\uC0B0\uBD84\uD560 \uAD8C\uB9AC \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["valuation_basis_source_id", "\uD3C9\uAC00 \uC801\uACA9 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["exceptions_source_id", "\uBE44\uACFC\uC138\xB7\uD2B9\uB840 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["rural_special_tax_source_id", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 \uAC80\uD1A0 \uC790\uB8CC\uBA85"]];
+function divorceClear(d) {
+  const o = __spreadValues({}, d);
+  for (const [k] of DIVORCE_CHECKS) delete o[k];
+  return o;
+}
+function divorceDirectRequest(d) {
+  const text = (k) => {
+    var _a;
+    const v = String((_a = d[k]) != null ? _a : "").trim();
+    if (!v || v.length > 200) throw Error("\uAC01 \uC785\uB825\uACFC \uC790\uB8CC\uBA85\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  for (const [k] of DIVORCE_FIELDS) text(k);
+  for (const [k, label] of DIVORCE_CHECKS) if (d[k] !== true) throw Error(label + " \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  const day = (k) => {
+    const v = text(k);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || !Number.isFinite(Date.parse(v)) || new Date(v).toISOString().slice(0, 10) !== v) throw Error("\uC2E4\uC81C \uB0A0\uC9DC\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const award = day("award"), application = day("application"), registration = day("registration");
+  if (registration < "2026-07-01" || registration > "2026-10-22" || award > application || application > registration) throw Error("\uAD8C\uB9AC \uD655\uC815\xB7\uC2E0\uCCAD \uC811\uC218\xB7\uB4F1\uAE30 \uC644\uB8CC \uC21C\uC11C\uC640 2026-07-01~10-22 \uB4F1\uAE30\uC77C\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+  const money = (k) => {
+    const v = text(k);
+    if (!/^\d+$/.test(v) || !Number.isSafeInteger(Number(v))) throw Error("\uAC00\uC561\uC744 \uC548\uC804\uD55C \uC815\uC218 \uC6D0\uC73C\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return Number(v);
+  };
+  const market = money("market"), standard = money("standard");
+  if (market <= 5e5 || standard <= 1e8) throw Error("\uC2DC\uAC00\uC778\uC815\uC561 50\uB9CC\uC6D0 \uCD08\uACFC\uC640 \uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561 1\uC5B5\uC6D0 \uCD08\uACFC\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.");
+  const ctx = { case_type: "divorce_property_division_land_ordinary", source_id: text("source") };
+  for (const [k] of DIVORCE_CHECKS.slice(0, 18)) ctx[k] = true;
+  for (const k of ["award_source_id", "valuation_basis_source_id", "exceptions_source_id", "rural_special_tax_source_id"]) ctx[k] = text(k);
+  const facts = { schema_version: 1, source_id: text("source"), parties: [{ party_ref: "A", role: "acquirer", person_type: "individual", resident: true, source_id: text("acquirer_source") }, { party_ref: "B", role: "former_spouse", person_type: "individual", resident: true, source_id: text("spouse_source") }], assets: [{ asset_ref: "L", property_type: "\uD1A0\uC9C0", whole_property_confirmed: true, source_id: text("asset_source") }], events: [["divorce_property_division_award", award, "award_event_source"], ["divorce_registration_application_accepted", application, "application_source"], ["divorce_property_division_registration", registration, "registration_source"]].map(([kind, occurred_on, source]) => ({ kind, asset_ref: "L", party_ref: "A", occurred_on, source_id: text(source) })), valuations: [["local_divorce_market_value", market, "market_source"], ["local_divorce_whole_standard_value", standard, "standard_source"]].map(([purpose, amount_krw, source]) => ({ purpose, asset_ref: "L", scope: "whole_property", amount_krw, as_of: registration, source_id: text(source) })), liabilities: [], amounts: [], expenses: [] };
+  return { common_facts: facts, consultation_context: ctx };
+}
+function divorceDirectResult(c) {
+  const keys = ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"];
+  if ((c == null ? void 0 : c["\uC0C1\uD0DC"]) !== "ok" || keys.some((k) => !Number.isSafeInteger(c[k]) || c[k] < 0) || BigInt(c["\uC138\uC561"]) !== BigInt(c["\uCDE8\uB4DD\uC138"]) + BigInt(c["\uC9C0\uBC29\uAD50\uC721\uC138"]) + BigInt(c["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"])) throw Error("\uACC4\uC0B0 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uAC70\uB098 \uCD94\uAC00 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+  return c;
+}
+function JTAcquisitionDivorceDirect({ onBack, initialDraft }) {
+  const [d, setD] = React.useState(() => divorceClear(initialDraft || {})), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false), seq = React.useRef(0), pending = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a;
+    seq.current++;
+    (_a = pending.current) == null ? void 0 : _a.abort();
+  }, []);
+  const edit = (k, v) => {
+    var _a;
+    seq.current++;
+    (_a = pending.current) == null ? void 0 : _a.abort();
+    setBusy(false);
+    setResult(null);
+    setError("");
+    setD((old) => __spreadProps(__spreadValues({}, DIVORCE_CHECKS.some(([x]) => x === k) ? old : divorceClear(old)), { [k]: v }));
+  };
+  async function submit(e) {
+    e.preventDefault();
+    if (busy) return;
+    let body;
+    try {
+      body = divorceDirectRequest(d);
+    } catch (err) {
+      setError(err.message);
+      return;
+    }
+    const id = ++seq.current, ctrl = new AbortController();
+    pending.current = ctrl;
+    const timer = setTimeout(() => ctrl.abort(), 3e4);
+    setBusy(true);
+    setResult(null);
+    setError("");
+    try {
+      if (!window.JT_ENGINE_BASE) throw Error("\uACC4\uC0B0 \uC11C\uBC84\uAC00 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const response = await fetch(window.JT_ENGINE_BASE.replace(/\/$/, "") + "/v1/calc/acquisition", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctrl.signal });
+      const data = await response.json();
+      if (id !== seq.current) return;
+      if (!response.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC5F0\uACB0\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      setResult(divorceDirectResult(data.calc));
+    } catch (err) {
+      if (id === seq.current) setError(err.name === "AbortError" ? "\uACC4\uC0B0 \uC694\uCCAD \uC2DC\uAC04\uC774 \uCD08\uACFC\uB418\uC5C8\uC2B5\uB2C8\uB2E4." : err.message);
+    } finally {
+      clearTimeout(timer);
+      if (id === seq.current) {
+        pending.current = null;
+        setBusy(false);
+      }
+    }
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560 \uCDE8\uB4DD\uC138", subtitle: "\uC77C\uBC18 \uD1A0\uC9C0 \uC804\uCCB4 \uCDE8\uB4DD\uC758 \uBCF8\uC138", onBack: () => onBack(divorceClear(d)), tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 7\uC6D4 1\uC77C~10\uC6D4 22\uC77C \uB4F1\uAE30 \uC644\uB8CC\uD55C \uAD6D\uB0B4 \uAC70\uC8FC \uAC1C\uC778 \uAC04 \uBE44\uB18D\uC9C0 \uC77C\uBC18 \uD1A0\uC9C0 \uC804\uCCB4\uC758 \uC7AC\uC0B0\uBD84\uD560\uC5D0 \uD55C\uC815\uD569\uB2C8\uB2E4. \uAD8C\uB9AC \uD655\uC815\xB7\uB4F1\uAE30 \uC2E0\uCCAD \uC811\uC218\xB7\uB4F1\uAE30 \uC644\uB8CC \uC21C\uC11C, \uC2DC\uAC00\uC778\uC815\uC561 50\uB9CC\uC6D0 \uCD08\uACFC \uBC0F \uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561 1\uC5B5\uC6D0 \uCD08\uACFC\uB97C \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uC790\uB8CC\uBA85\uC740 \uC0AC\uC6A9\uC790\uC758 \uC120\uC5B8\uC774\uBA70 \uC790\uB3D9 \uC778\uC99D\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, DIVORCE_FIELDS.map(([k, label]) => {
+    var _a;
+    return /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block" } }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "divorce-" + k, value: (_a = d[k]) != null ? _a : "", onChange: (e) => edit(k, e.target.value) }));
+  }), DIVORCE_CHECKS.map(([k, label]) => /* @__PURE__ */ React.createElement("label", { key: k, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "divorce-" + k, checked: d[k] === true, onChange: (e) => edit(k, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("button", { type: "submit", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uCDE8\uB4DD\uC138 \uBCF8\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", { "data-testid": "divorce-result" }, ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"].map((k) => /* @__PURE__ */ React.createElement("p", { key: k }, k, ": ", result[k].toLocaleString("ko-KR"), "\uC6D0")), typeof result["\uC2E0\uACE0\uAE30\uD55C"] === "string" && /* @__PURE__ */ React.createElement("p", null, "\uC870\uAC74\uBD80 \uC2E0\uACE0\uAE30\uD55C: ", result["\uC2E0\uACE0\uAE30\uD55C"]), Array.isArray(result["\uACBD\uACE0\uC0AC\uD56D"]) && result["\uACBD\uACE0\uC0AC\uD56D"].map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i }, window.jtEngineMessageForDisplay ? window.jtEngineMessageForDisplay(w) : "\uC2E0\uACE0\uAE30\uD55C\uACFC \uB0A9\uBD80\uC774\uB825\uC744 \uBCC4\uB3C4\uB85C \uD655\uC778\uD574 \uC8FC\uC138\uC694.")))));
+}
+window.JTAcquisitionDivorceDirect = JTAcquisitionDivorceDirect;
+
+
+/* ────────── AcquisitionBurdenedDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const ACQ_BURDENED_FIELDS = [["contractDate", "\uC99D\uC5EC\uACC4\uC57D\uC77C", "date"], ["debtDate", "\uCC44\uBB34 \uC778\uC218\uC77C", "date"], ["registrationDate", "\uB4F1\uAE30 \uC2E0\uCCAD\xB7\uC644\uB8CC\uC77C", "date"], ["marketDate", "\uC2DC\uAC00\uC778\uC815\uC561 \uD3C9\uAC00 \uAE30\uC900\uC77C", "date"], ["standardDate", "\uC2DC\uAC00\uD45C\uC900\uC561 \uAE30\uC900\uC77C", "date"], ["balanceDate", "\uCC44\uBB34 \uC794\uC561 \uAE30\uC900\uC77C", "date"], ["market", "\uD1A0\uC9C0 \uC804\uCCB4\uC758 \uC801\uACA9 \uC2DC\uAC00\uC778\uC815\uC561 (\uC6D0)"], ["standard", "\uD1A0\uC9C0 \uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0, 1\uC5B5\uC6D0 \uCD08\uACFC)"], ["debt", "\uC218\uC99D\uC790\uAC00 \uC778\uC218\uD55C \uC99D\uC5EC\uC790 \uCC44\uBB34\uC561 (\uC6D0)"], ["source", "\uC804\uCCB4 \uC6D0\uC790\uB8CC \uBB36\uC74C \uC790\uB8CC\uBA85"], ["donorSource", "\uC99D\uC5EC\uC790 \uC2E0\uC6D0\xB7\uAC70\uC8FC \uC790\uB8CC\uBA85"], ["doneeSource", "\uC218\uC99D\uC790 \uC2E0\uC6D0\xB7\uAC70\uC8FC \uC790\uB8CC\uBA85"], ["landSource", "\uD1A0\uC9C0 \uC804\uCCB4 \uB4F1\uAE30 \uC790\uB8CC\uBA85"], ["contractSource", "\uC99D\uC5EC\uACC4\uC57D \uC0AC\uAC74 \uC790\uB8CC\uBA85"], ["debtEventSource", "\uCC44\uBB34 \uC778\uC218 \uC0AC\uAC74 \uC790\uB8CC\uBA85"], ["registrationSource", "\uB4F1\uAE30 \uC2E0\uCCAD\xB7\uC644\uB8CC \uC0AC\uAC74 \uC790\uB8CC\uBA85"], ["marketSource", "\uC804\uCCB4 \uC2DC\uAC00\uC778\uC815\uC561 \uC790\uB8CC\uBA85"], ["standardSource", "\uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561 \uC790\uB8CC\uBA85"], ["balanceSource", "\uC778\uC218 \uCC44\uBB34 \uC794\uC561 \uC99D\uBE59 \uC790\uB8CC\uBA85"], ["reviewSource", "\uCDE8\uB4DD\uC138 \uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["relationshipSource", "\uBE44\uCE5C\uC871\xB7\uB2F9\uC0AC\uC790 \uAD00\uACC4 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["debtProofSource", "\uCDE8\uB4DD\uC77C\uBD80\uD130 3\uAC1C\uC6D4 \uC774\uB0B4 \uCC44\uBB34 \uC785\uC99D \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["valuationSource", "\uC2DC\uAC00\uC778\uC815\uC561 \uC801\uACA9\uC131 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["costSource", "\uCD94\uAC00 \uCDE8\uB4DD\uBE44\uC6A9 \uAC80\uD1A0 \uC790\uB8CC\uBA85"], ["filingSource", "\uB4F1\uAE30 \uC2E0\uCCAD \uC804 \uC2E0\uACE0 \uC21C\uC11C \uAC80\uD1A0 \uC790\uB8CC\uBA85"]];
+const ACQ_BURDENED_CHECKS = [["unrelated_individuals_confirmed", "\uC11C\uB85C \uB2E4\uB978 \uBE44\uCE5C\uC871 \uAD6D\uB0B4 \uAC70\uC8FC \uAC1C\uC778 \uAC04 \uAC70\uB798\uC785\uB2C8\uB2E4"], ["debt_assumption_proven_within_three_months_confirmed", "\uC99D\uC5EC\uC790 \uCC44\uBB34\uC758 \uC218\uC99D\uC790 \uC778\uC218\uB97C \uCDE8\uB4DD\uC77C\uBD80\uD130 3\uAC1C\uC6D4 \uC774\uB0B4\uC5D0 \uC801\uBC95\uD558\uAC8C \uC785\uC99D\uD588\uC2B5\uB2C8\uB2E4"], ["eligible_local_market_value_confirmed", "\uCDE8\uB4DD\uC138\uC5D0 \uC801\uC6A9\uD560 \uC801\uACA9 \uC2DC\uAC00\uC778\uC815\uC561\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["no_additional_acquisition_costs_confirmed", "\uCD94\uAC00 \uCDE8\uB4DD\uBE44\uC6A9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["ordinary_nonhousing_nonfarmland_land_confirmed", "\uC77C\uBC18 \uBE44\uC8FC\uD0DD\xB7\uBE44\uB18D\uC9C0 \uD1A0\uC9C0 \uC804\uCCB4\uC785\uB2C8\uB2E4"], ["no_relief_or_surcharge_confirmed", "\uAC10\uBA74\xB7\uC911\uACFC \uB300\uC0C1\uC774 \uC544\uB2D9\uB2C8\uB2E4"], ["no_municipal_rate_variation_confirmed", "\uC870\uB840 \uC138\uC728 \uBCC0\uB3D9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["filed_before_registration_application_confirmed", "\uB4F1\uAE30 \uC2E0\uCCAD \uC804\uC5D0 \uC2E0\uACE0\uD588\uC74C\uC744 \uC790\uB8CC\uB85C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]];
+function acqBurdenedClear(d) {
+  return Object.fromEntries(Object.entries(d).filter(([key]) => !key.endsWith("_confirmed")));
+}
+function acqBurdenedRequest(d) {
+  const text = (k) => {
+    var _a, _b;
+    const v = String((_a = d[k]) != null ? _a : "").trim();
+    if (!v || v.length > 200) throw Error((((_b = ACQ_BURDENED_FIELDS.find((f) => f[0] === k)) == null ? void 0 : _b[1]) || k) + "\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  for (const [key, , type] of ACQ_BURDENED_FIELDS) if (type === "date" && text(key) !== "2026-10-23") throw Error("\uD604\uC7AC \uAC01 \uC0AC\uAC74\xB7\uD3C9\uAC00\xB7\uCC44\uBB34 \uAE30\uC900\uC77C\uC740 2026\uB144 10\uC6D4 23\uC77C\uC778 \uACBD\uC6B0\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4.");
+  const amount = (k) => {
+    const v = text(k);
+    if (!/^\d+$/.test(v) || !Number.isSafeInteger(Number(v))) throw Error("\uAC00\uC561\xB7\uCC44\uBB34\uB294 0 \uC774\uC0C1\uC758 \uC548\uC804\uD55C \uC815\uC218 \uC6D0\uC73C\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return Number(v);
+  };
+  const market = amount("market"), standard = amount("standard"), debt = amount("debt");
+  if (standard <= 1e8 || debt <= 5e5 || market - debt <= 5e5) throw Error("\uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561\uC740 1\uC5B5\uC6D0 \uCD08\uACFC, \uC778\uC218 \uCC44\uBB34\uC640 \uB0A8\uC740 \uC99D\uC5EC\uBD80\uBD84\uC740 \uAC01\uAC01 50\uB9CC\uC6D0 \uCD08\uACFC\uC5EC\uC57C \uD569\uB2C8\uB2E4.");
+  const context = { case_type: "burdened_gift_land_acquisition_ordinary", source_id: text("reviewSource"), relationship_review_source_id: text("relationshipSource"), debt_proof_source_id: text("debtProofSource"), valuation_eligibility_source_id: text("valuationSource"), cost_review_source_id: text("costSource"), filing_order_source_id: text("filingSource") };
+  for (const [key, label] of ACQ_BURDENED_CHECKS) {
+    if (d[key] !== true) throw Error(label + " \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+    context[key] = true;
+  }
+  const facts = { schema_version: 1, source_id: text("source"), parties: [{ party_ref: "DONOR", role: "donor", person_type: "individual", resident: true, source_id: text("donorSource") }, { party_ref: "DONEE", role: "donee", person_type: "individual", resident: true, relationship_to_donor: "\uAE30\uD0C0", source_id: text("doneeSource") }], assets: [{ asset_ref: "LAND", property_type: "\uD1A0\uC9C0", whole_property_confirmed: true, source_id: text("landSource") }], events: [], valuations: [], liabilities: [{ asset_ref: "LAND", debtor_ref: "DONOR", assumed_by_ref: "DONEE", amount_krw: debt, balance_as_of: text("balanceDate"), source_id: text("balanceSource") }], amounts: [], expenses: [] };
+  for (const [kind, party, date, source] of [["gift_contract", "DONOR", "contractDate", "contractSource"], ["debt_assumption", "DONEE", "debtDate", "debtEventSource"], ["registration_application_and_completion", "DONEE", "registrationDate", "registrationSource"]]) facts.events.push({ kind, asset_ref: "LAND", party_ref: party, occurred_on: text(date), source_id: text(source) });
+  for (const [purpose, value, date, source] of [["local_acquisition_market", market, "marketDate", "marketSource"], ["local_acquisition_standard", standard, "standardDate", "standardSource"]]) facts.valuations.push({ asset_ref: "LAND", purpose, scope: "whole_property", amount_krw: value, as_of: text(date), source_id: text(source) });
+  return { common_facts: facts, consultation_context: context };
+}
+function acqBurdenedResult(c) {
+  const keys = ["\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"], valid = (v) => Number.isSafeInteger(v) && v >= 0;
+  if ((c == null ? void 0 : c["\uC0C1\uD0DC"]) !== "ok" || c["\uC2E0\uACE0\uAE30\uD55C"] !== "2026-10-23" || !keys.every((k) => valid(c[k]))) throw Error("\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+  for (const part of ["\uC720\uC0C1\uBD80\uBD84", "\uC99D\uC5EC\uBD80\uBD84"]) {
+    const row = c[part];
+    if (!row || !valid(row["\uACFC\uC138\uD45C\uC900"]) || !keys.every((k) => valid(row[k])) || BigInt(row["\uCDE8\uB4DD\uC138"]) + BigInt(row["\uC9C0\uBC29\uAD50\uC721\uC138"]) + BigInt(row["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"]) !== BigInt(row["\uC138\uC561"])) throw Error("\uC720\uC0C1\xB7\uC99D\uC5EC\uBD80\uBD84\uBCC4 \uACB0\uACFC\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+  }
+  if (!keys.every((k) => BigInt(c[k]) === BigInt(c["\uC720\uC0C1\uBD80\uBD84"][k]) + BigInt(c["\uC99D\uC5EC\uBD80\uBD84"][k])) || BigInt(c["\uC138\uC561"]) !== BigInt(c["\uCDE8\uB4DD\uC138"]) + BigInt(c["\uC9C0\uBC29\uAD50\uC721\uC138"]) + BigInt(c["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"])) throw Error("\uBD80\uBD84\uBCC4 \uD569\uACC4\uC640 \uCD1D\uC138\uC561\uC774 \uC77C\uCE58\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
+  return c;
+}
+function JTAcquisitionBurdenedDirect({ onBack, initialDraft }) {
+  const [d, setD] = React.useState(() => acqBurdenedClear(initialDraft || {})), [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false), seq = React.useRef(0), control = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+  }, []);
+  const edit = (key, value) => {
+    var _a;
+    seq.current++;
+    (_a = control.current) == null ? void 0 : _a.abort();
+    setResult(null);
+    setError("");
+    setBusy(false);
+    setD((old) => __spreadProps(__spreadValues({}, key.endsWith("_confirmed") ? old : acqBurdenedClear(old)), { [key]: value }));
+  };
+  const submit = async (e) => {
+    e.preventDefault();
+    if (busy) return;
+    setResult(null);
+    setError("");
+    let body;
+    try {
+      body = acqBurdenedRequest(d);
+    } catch (e2) {
+      setError(e2.message);
+      return;
+    }
+    const ticket = ++seq.current, abort = new AbortController();
+    control.current = abort;
+    setBusy(true);
+    const timer = setTimeout(() => abort.abort(), 3e4);
+    try {
+      if (!window.JT_ENGINE_BASE) throw Error("\uACC4\uC0B0 \uC11C\uBC84\uAC00 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const response = await fetch(window.JT_ENGINE_BASE.replace(/\/$/, "") + "/v1/calc/acquisition", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: abort.signal });
+      const data = await response.json();
+      if (ticket !== seq.current) return;
+      if (!response.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC5F0\uACB0\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      setResult(acqBurdenedResult(data.calc));
+    } catch (e2) {
+      if (ticket === seq.current) setError(e2.name === "AbortError" ? "\uC751\uB2F5 \uC2DC\uAC04\uC774 \uCD08\uACFC\uB410\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uACC4\uC0B0\uD574 \uC8FC\uC138\uC694." : e2.message);
+    } finally {
+      clearTimeout(timer);
+      if (ticket === seq.current) setBusy(false);
+    }
+  };
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138", subtitle: "\uC720\uC0C1\uBD80\uBD84\xB7\uC99D\uC5EC\uBD80\uBD84\uC744 \uB098\uB208 \uCDE8\uB4DD\uC138 \uBCF8\uC138", tag: "CONSULTING", onBack: () => onBack == null ? void 0 : onBack(acqBurdenedClear(d)) }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 10\uC6D4 23\uC77C\uC5D0 \uC99D\uC5EC\uACC4\uC57D\xB7\uCC44\uBB34 \uC778\uC218\xB7\uB4F1\uAE30 \uC2E0\uCCAD\uACFC \uC644\uB8CC\uAC00 \uC774\uB8E8\uC5B4\uC9C4 \uBE44\uCE5C\uC871 \uAD6D\uB0B4 \uAC70\uC8FC \uAC1C\uC778 \uAC04 \uC77C\uBC18 \uBE44\uC8FC\uD0DD\xB7\uBE44\uB18D\uC9C0 \uD1A0\uC9C0 \uC804\uCCB4\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uAC01 \uD3C9\uAC00\xB7\uCC44\uBB34 \uAE30\uC900\uC77C\uB3C4 \uAC19\uC740 \uB0A0\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4. \uC804\uCCB4 \uC2DC\uAC00\uD45C\uC900\uC561\uC740 1\uC5B5\uC6D0 \uCD08\uACFC\uC774\uBA70 \uCC44\uBB34\uC561\uACFC \uC99D\uC5EC\uBD80\uBD84\uC740 \uAC01\uAC01 50\uB9CC\uC6D0 \uCD08\uACFC\uC5EC\uC57C \uD569\uB2C8\uB2E4. \uCC44\uBB34 \uC785\uC99D\xB7\uC2DC\uAC00\uC778\uC815\uC561 \uC801\uACA9\uC131\xB7\uB4F1\uAE30 \uC2E0\uCCAD \uC804 \uC2E0\uACE0 \uC21C\uC11C\uB97C \uC2E4\uC81C \uC790\uB8CC\uB85C \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, ACQ_BURDENED_FIELDS.map(([key, label, type]) => {
+    var _a;
+    return /* @__PURE__ */ React.createElement("label", { key, style: { display: "block", margin: "10px 0" } }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "acq-burdened-" + key, className: "jt-report-q__input", type: type || "text", value: (_a = d[key]) != null ? _a : "", onChange: (e) => edit(key, e.target.value) }));
+  }), ACQ_BURDENED_CHECKS.map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key, style: { display: "block", margin: "10px 0" } }, /* @__PURE__ */ React.createElement("input", { "data-testid": "acq-burdened-" + key, type: "checkbox", checked: d[key] === true, onChange: (e) => edit(key, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("p", null, "\uC790\uB8CC\uBA85\uC740 \uC785\uB825\uC790\uAC00 \uC2E4\uC81C \uD655\uC778\uD55C \uC99D\uBE59\uC758 \uC2DD\uBCC4\uBA85\uC774\uBA70 \uC790\uB3D9 \uC778\uC99D\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uAC1C\uC778\uC815\uBCF4\uB294 \uC785\uB825\uD558\uC9C0 \uB9C8\uC138\uC694. \uC785\uB825\uC774 \uBC14\uB00C\uBA74 \uD655\uC778\uACFC \uACB0\uACFC\uB97C \uC9C0\uC6B0\uACE0 \uB2E4\uC2DC \uACC4\uC0B0\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", type: "submit", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", { "data-testid": "acq-burdened-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("div", { style: { overflowX: "auto" } }, /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc", style: { width: "100%", minWidth: 620, tableLayout: "auto" } }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, ["\uAD6C\uBD84", "\uC720\uC0C1\uBD80\uBD84", "\uC99D\uC5EC\uBD80\uBD84", "\uD569\uACC4"].map((label, i) => /* @__PURE__ */ React.createElement("th", { key: label, style: { width: i === 0 ? "22%" : "26%", padding: "10px 14px", textAlign: i === 0 ? "left" : "right", whiteSpace: "nowrap" } }, label)))), /* @__PURE__ */ React.createElement("tbody", null, ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"].map((key) => /* @__PURE__ */ React.createElement("tr", { key }, /* @__PURE__ */ React.createElement("th", { style: { padding: "10px 14px", textAlign: "left", whiteSpace: "nowrap" } }, key), ["\uC720\uC0C1\uBD80\uBD84", "\uC99D\uC5EC\uBD80\uBD84"].map((part) => /* @__PURE__ */ React.createElement("td", { key: part, style: { padding: "10px 14px", textAlign: "right", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, result[part][key].toLocaleString("ko-KR"), "\uC6D0")), /* @__PURE__ */ React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, key === "\uACFC\uC138\uD45C\uC900" ? "\u2014" : result[key].toLocaleString("ko-KR") + "\uC6D0")))))), /* @__PURE__ */ React.createElement("p", null, "\uD655\uC778\uB41C \uC2E0\uACE0\uAE30\uD55C: ", result["\uC2E0\uACE0\uAE30\uD55C"]), /* @__PURE__ */ React.createElement("p", null, "\uC99D\uC5EC\uC138\uC640 \uC99D\uC5EC\uC790\uC758 \uC591\uB3C4\uC18C\uB4DD\uC138\uB294 \uBCC4\uB3C4\uC785\uB2C8\uB2E4. \uAE30\uB0A9\uBD80 \uC815\uC0B0\xB7\uAC00\uC0B0\uC138\uC640 \uC2E0\uACE0\uC11C \uC81C\uCD9C\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."))));
+}
+window.JTAcquisitionBurdenedDirect = JTAcquisitionBurdenedDirect;
 
 
 /* ────────── ReportAcqCheck.jsx ────────── */

@@ -1071,6 +1071,12 @@ function JTAcqBasisInputs({ onBack }) {
 
 function JTReportAcquisition({ setRoute, onBack }) {
   const [basisInputs, setBasisInputs] = useAcqState(false);
+  const [reviewedDirect, setReviewedDirect] = useAcqState(false);
+  const [reviewedDraft, setReviewedDraft] = useAcqState(null);
+  const [buildingDirect, setBuildingDirect] = useAcqState(false);
+  const [buildingDraft, setBuildingDraft] = useAcqState(null);
+  const [extraMode, setExtraMode] = useAcqState(null);
+  const [extraDrafts, setExtraDrafts] = useAcqState({});
   const [step, setStep] = useAcqState(0);
   /* ★ 260921 R2: 상태에 담기는 것은 «원본 답»이고(setAns 는 병합만 한다), 화면·매퍼·차단
      검사가 보는 것은 정규화를 거친 답이다. 이름을 answers 로 둬서 «이 컴포넌트 안에서는
@@ -1284,6 +1290,12 @@ function JTReportAcquisition({ setRoute, onBack }) {
   };
 
   if (basisInputs) return <JTAcqBasisInputs onBack={() => setBasisInputs(false)}/>;
+  if (reviewedDirect) return <JTAcquisitionReviewedDirect initialDraft={reviewedDraft} onBack={draft=>{setReviewedDraft(draft);setReviewedDirect(false);}} />;
+  if (buildingDirect) return <JTAcquisitionBuildingDirect initialDraft={buildingDraft} onBack={draft=>{setBuildingDraft(draft);setBuildingDirect(false);}} />;
+  if (extraMode === 'value') return <JTAcquisitionValueDirect initialDraft={extraDrafts.value} onBack={draft=>{setExtraDrafts(old=>({...old,value:draft}));setExtraMode(null);}} />;
+  if (extraMode === 'divorce') return <JTAcquisitionDivorceDirect initialDraft={extraDrafts.divorce} onBack={draft=>{setExtraDrafts(old=>({...old,divorce:draft}));setExtraMode(null);}} />;
+  if (extraMode === 'burdened') return <JTAcquisitionBurdenedDirect initialDraft={extraDrafts.burdened} onBack={draft=>{setExtraDrafts(old=>({...old,burdened:draft}));setExtraMode(null);}} />;
+  if (extraMode === 'court' || extraMode === 'exchange') return <JTAcquisitionTransferDirect mode={extraMode} initialDraft={extraDrafts[extraMode]} onBack={draft=>{setExtraDrafts(old=>({...old,[extraMode]:draft}));setExtraMode(null);}} />;
 
   if (loading) {
     return (
@@ -1507,6 +1519,13 @@ function JTReportAcquisition({ setRoute, onBack }) {
     <div className="jt-container">
       <JTReportShell title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <button className="jt-btn jt-btn--ghost" onClick={() => setBasisInputs(true)}>취득일·신축 과세표준 확인 계산 →</button>
+        <button type="button" data-testid="open-acq-reviewed-direct" className="jt-btn jt-btn--ghost" onClick={()=>setReviewedDirect(true)}>지목변경 실제 증가가격 계산 →</button>
+        <button type="button" data-testid="open-acq-building-direct" className="jt-btn jt-btn--ghost" onClick={()=>setBuildingDirect(true)}>증축·대수선 실제 귀속가격 계산 →</button>
+        <button type="button" data-testid="open-acq-value-direct" className="jt-btn jt-btn--ghost" onClick={()=>setExtraMode('value')}>지목변경 산정액·완공주택 직접매수 계산 →</button>
+        <button type="button" data-testid="open-acq-court-direct" className="jt-btn jt-btn--ghost" onClick={()=>setExtraMode('court')}>법원경매 토지 취득 계산 →</button>
+        <button type="button" data-testid="open-acq-exchange-direct" className="jt-btn jt-btn--ghost" onClick={()=>setExtraMode('exchange')}>토지 교환 취득 계산 →</button>
+        <button type="button" data-testid="open-acq-divorce-direct" className="jt-btn jt-btn--ghost" onClick={()=>setExtraMode('divorce')}>이혼 재산분할 원자료 계산 →</button>
+        <button type="button" data-testid="open-acq-burdened-direct" className="jt-btn jt-btn--ghost" onClick={()=>setExtraMode('burdened')}>부담부증여 취득세 원자료 계산 →</button>
         {err && <p role="alert">{err}</p>}
         <div className="jt-report-q">
           {cur.section && <div style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6, marginBottom: 8 }}>{cur.section}</div>}
