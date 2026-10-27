@@ -351,6 +351,9 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "adsense-foreign-exchange-certificate-records", tag: "크리에이터·외화 증빙", date: "2026.10.27", title: "애드센스 신고자료 대조: 외국환매입증명서와 정산·입금 내역의 역할", excerpt: "발급 다음 단계인 자료 대조와 지급 경로별 세무 검토" },
+    { slug: "coupang-partners-withholding-tax-filing", tag: "크리에이터·세금 신고", date: "2026.10.27", title: "쿠팡파트너스 3.3% 원천징수 후 신고: 정산자료와 장부를 맞추는 순서", excerpt: "미리 뗀 세금과 최종 신고를 구분하고 정산자료를 모으는 방법" },
+    { slug: "existing-business-youtuber-startup-tax-relief", tag: "크리에이터·창업감면", date: "2026.10.27", title: "기존 사업자의 유튜브 창업감면 검토: 등록 이력과 실제 사업 개시를 구분해야 하는 이유", excerpt: "두 국세청 회신을 바탕으로 등록 이력과 실제 창업을 구분" },
     { slug: "youtuber-filming-clothing-expenses", tag: "크리에이터·경비처리", date: "2026.10.26", title: "유튜버 촬영 의상 경비처리: 업무 사용과 개인 지출을 구분하는 자료", excerpt: "유튜버 촬영 의상과 평상복의 경비처리는 실제 사용에 따라 달라집니다. 대여 의상과 일상 겸용 옷의 가정 사례, 자료 대조표로 업무 사용과 개인 지출을 구분하는 방법을 설명합니다." },
     { slug: "youtuber-income-tax-interim-payment", tag: "크리에이터·종합소득세", date: "2026.10.25", title: "유튜버 종합소득세 중간예납: 고지 대상과 상반기 실적을 확인하는 순서", excerpt: "유튜버의 종합소득세 중간예납 대상과 고지 내역, 상반기 실적에 따른 추계액 신고를 설명합니다. 두 가지 가정 사례와 자료 대조표로 신고·납부 전에 확인할 조건을 정리했습니다." },
     { slug: "youtuber-business-bank-account", tag: "크리에이터·사업용계좌", date: "2026.10.23", title: "유튜버 사업용계좌, 은행 개설·세무서 신고·실제 사용을 대조하는 법", excerpt: "사업자통장 개설과 사업용계좌 신고는 다릅니다. 개인 유튜버의 신고 대상과 기한, 정산 계좌 변경 사례, 통장·신고 내역·입출금 자료를 대조하는 순서를 설명합니다." },
