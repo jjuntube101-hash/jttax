@@ -833,7 +833,162 @@ function mapAcqBasisInputs(a) {
   return body;
 }
 
+// Explicit facts for already supported engine contracts. No inferred confirmations.
+function acqDeclaredFields(a) {
+  const text = (key, label) => ({key, label, type: 'text'});
+  const won = (key, label, zero = false) => ({key, label, type: 'won', zero});
+  const flag = (key, label) => ({key, label, type: 'flag'});
+  const select = (key, label, options) => ({key, label, type: 'select', options});
+  const yesNo = [['yes','예'],['no','아니요']];
+  const common = [text('date','실제 취득일 (YYYY-MM-DD)'), text('scopeEvidence','거래 범위 확인 근거'),
+    flag('scopeConfirmed','중과·감면·특례·조례변동·특수관계·연부취득이 없는 일반 취득임을 확인했습니다.')];
+  if (!a.mode) return [];
+  if (['nonhousing_purchase','mixed_purchase','mixed_original'].includes(a.mode)) {
+    const mixed = a.mode !== 'nonhousing_purchase';
+    return [...common, won('value','전체 실제 취득가격 (원)'), text('dateEvidence','취득일 확인 근거'),
+      text('valueEvidence','취득가격 확인 근거'), flag('priceConfirmed','입력한 가격이 증빙으로 확인한 전체 실제 취득가격입니다.'),
+      flag('wholeConfirmed','개인 명의의 비농지 전체 취득이며 구성분 두 개에 빠진 부분이 없습니다.'),
+      ...(mixed ? [] : [select('basis','토지·건물 구분 기준',[['separate_prices','확인된 구분가액'],['standard_ratio','시가표준액 비율']])]),
+      ...(a.mode === 'mixed_original' ? [text('part1','주택 부분 연면적 (㎡)'),text('part2','비주택 부분 연면적 (㎡)')] :
+        [won('part1',mixed ? '주택 부분 시가표준액 (원)' : '토지 구분가액 또는 시가표준액 (원)'),
+         won('part2',mixed ? '비주택 부분 시가표준액 (원)' : '건물 구분가액 또는 시가표준액 (원)')]),
+      text('part1Evidence','첫 구성분 확인 근거'),text('part2Evidence','둘째 구성분 확인 근거'),
+      ...(mixed ? [text('area','주택 실제 전용면적 (㎡)'),select('regulated','조정대상지역인가요?',yesNo),
+        text('housingEvidence','도시지역 한 호·부속토지 한도·전용면적 확인 근거'),
+        flag('housingConfirmed','취득 후 개인 일반 1주택이며 주택 부분의 범위와 면적을 확인했습니다.')] : [])];
+  }
+  const base = [...common,select('propertyType','물건 종류',[...(a.mode==='cost'?[]:[['토지','일반 비농지 토지']]),['상가사무실','일반 건물·상가'],...(a.mode==='nonprofit'?[]:[['주택','주택']])]),
+    select('owner','취득 명의',[['individual','개인·비법인'],['corporate','법인']])];
+  if (a.mode === 'history') return [...base,
+    select('cause','취득 원인',[['유상취득','매매'],['원시취득','신축'],['증여','증여'],['상속','상속']]),
+    won('value','취득가액·신고가액 (가격 확인 불가 시 0원)',true),won('standard','당시 취득분 시가표준액 (없으면 0원)',true),
+    won('wholeStandard','전체 물건 시가표준액 (불필요하면 0원)',true),
+    select('baseRule','당시 과세표준 확인 기준',Number(String(a.date).slice(0,4)) < 2023
+      ? [['declared_floor','신고가액·시가표준액 하한'],['actual_verified','법정 요건으로 입증한 실제가격']]
+      : [['actual','매매·신축 실제가격'],['market','증여 시가인정액'],['standard','상속 시가표준액'],['unverifiable_construction','비법인 신축 가격 확인 불가'],['gift_standard_choice','증여 전체 시가표준액 1억원 이하 선택'],['market_unavailable','증여 시가인정액 산정 곤란']]),
+    ...(a.baseRule === 'actual_verified' ? [select('actualBasis','실제가격 법정 입증 유형',[
+      ['government','국가·지자체 등으로부터 취득'],['court_judgment','확정판결'],['corporate_books','적격 법인장부'],
+      ['verified_transaction','법정 거래신고 검증'],['construction_90pct_books','비법인 건축 90% 초과 법인장부 입증']])] : []),
+    text('valueEvidence','당시 과세표준·입증 요건 확인 근거'),flag('valuationConfirmed','선택한 당시 과세표준과 입증 요건을 확인했습니다.'),
+    ...(a.propertyType === '주택' ? [select('regulated','조정대상지역인가요?',yesNo),
+      select('areaClass','주택 전용면적 구분',[['85이하','85㎡ 이하'],['85초과','85㎡ 초과'],['모름','미확인 — 농특세 과세 계산']]),
+      flag('housingConfirmed','개인 일반 1주택 전체 취득이고 도시지역 한 호·부속토지 한도를 확인했습니다.'),
+      ...(a.cause === '유상취득' && Number(String(a.date).slice(0,4)) >= 2020 && Number(String(a.date).slice(0,4)) <= 2022
+        ? [text('contractDate','매매계약일 (YYYY-MM-DD)'),select('presale','공동주택 분양계약인가요?',yesNo),text('contractEvidence','계약일·분양 여부 확인 근거')] : [])] : [])];
+  if (a.mode === 'nonprofit') return [...base,won('value','확인한 시가인정액 (원)'),
+    select('category','법정 비영리사업자 유형', [['religion_rites','종교·제사 목적'],['education_operator','교육사업 운영자'],['social_welfare_corporation','사회복지법인'],['social_welfare_article22','시행령상 사회복지사업자'],['political_party','정당']]),
+    text('eligibilityEvidence','취득일 현재 법정 자격 확인 근거'),text('valueEvidence','시가인정액 확인 근거'),
+    flag('eligibilityConfirmed','선택한 법정 유형의 취득일 현재 자격을 확인했습니다.'),flag('valuationConfirmed','입력한 금액은 확인한 시가인정액입니다.'),
+    flag('wholeConfirmed','비농지·비주택 전체의 무상취득입니다.'),flag('noDebtConfirmed','인수하는 채무가 없습니다.')];
+  if (a.mode === 'share') return [...common,won('value','이미 취득 지분에 귀속된 실제 대가 (원)'),
+    won('numerator','취득 지분 분자'),won('denominator','취득 지분 분모'),won('wholeStandard','전체 주택 시가표준액 (원)'),
+    won('acquiredStandard','취득 지분 시가표준액 (원)'),won('expectedWhole','확인한 전체 주택 환산가액 (원)'),
+    text('area','지분 안분하지 않은 주택 실제 전용면적 (㎡)'),select('regulated','조정대상지역인가요?',yesNo),
+    text('shareEvidence','지분·표준액·대가·면적 확인 근거'),flag('shareConfirmed','개인 일반 1주택의 동일 비례지분이며 대가에 지분을 다시 곱하지 않았습니다.')];
+  if (a.mode === 'cost') return [...base,won('contractAmount','법정 제외 비용을 뺀 도급액 (원, 없으면 0)',true),text('contractEvidence','도급액 확인 근거'),
+    flag('costConfirmed','건축물 전체 신축의 실제 원가이고 추가 비용의 성격과 중복 여부를 확인했습니다.'),
+    flag('exclusionsConfirmed','부가세 등 법정 제외 비용을 도급액에서 제거했습니다.'),
+    ...(a.propertyType === '주택' ? [text('area','주택 전체 실제 전용면적 (㎡)')] : [])];
+  return [];
+}
+
+function mapAcqDeclaredInputs(a) {
+  const fields = acqDeclaredFields(a), v = {};
+  if (!fields.length) throw new Error('계산 유형을 선택해 주세요.');
+  for (const f of fields) {
+    const raw = a[f.key];
+    if (f.type === 'flag') { if (raw !== true) throw new Error('확인 필요: '+f.label); v[f.key] = true; }
+    else if (f.type === 'won') {
+      if (raw === undefined || String(raw).trim() === '' || !/^\d+$/.test(String(raw)) || !Number.isSafeInteger(Number(raw)) || Number(raw) < (f.zero ? 0 : 1)) throw new Error(f.label + ': 원 단위 정수를 입력해 주세요.');
+      v[f.key] = Number(raw);
+    } else {
+      if (typeof raw !== 'string' || !raw.trim() || raw.length > 2000 || (f.options && !f.options.some(x=>x[0]===raw))) throw new Error(f.label + '을 확인해 주세요.');
+      v[f.key] = raw.trim();
+    }
+  }
+  const day = value => { if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString().slice(0,10)!==value) throw new Error('유효한 날짜를 입력해 주세요.'); return value; };
+  day(v.date);
+  const year = Number(v.date.slice(0,4));
+  if (a.mode === 'history' ? year < 2014 || year > 2025 : year < 2023 || year > 2026) throw new Error('이 입력 계약의 지원 연도를 벗어났습니다.');
+  const area = () => { const n = Number(v.area); if (!Number.isFinite(n) || n <= 0) throw new Error('실제 전용면적을 입력해 주세요.'); return n; };
+  if (['nonhousing_purchase','mixed_purchase','mixed_original'].includes(a.mode)) {
+    const mixed = a.mode !== 'nonhousing_purchase', basis = a.mode === 'mixed_original' ? 'area_ratio' : mixed ? 'standard_ratio' : v.basis;
+    const field = {area_ratio:'gross_area',standard_ratio:'standard_value',separate_prices:'value'}[basis];
+    return {composition_facts:{schema_version:'acquisition-components/1',kind:a.mode,acquisition_date:v.date,total_value:v.value,basis,
+      components:[{kind:mixed?'housing':'land',[field]:v.part1,evidence:v.part1Evidence},{kind:mixed?'nonhousing':'building',[field]:v.part2,evidence:v.part2Evidence}],
+      scope_confirmed:v.scopeConfirmed,price_confirmed:v.priceConfirmed,whole_property_confirmed:v.wholeConfirmed,
+      scope_evidence:v.scopeEvidence,date_evidence:v.dateEvidence,price_evidence:v.valueEvidence,
+      ...(mixed ? {exclusive_area:area(),housing_count:1,is_regulated_area:v.regulated==='yes',housing_evidence:v.housingEvidence} : {})}};
+  }
+  const body = {acquisition_date:v.date,property_type:a.mode==='share'?'주택':v.propertyType,
+    is_housing:a.mode==='share'||v.propertyType==='주택',is_corporate:a.mode==='share'?false:v.owner==='corporate',
+    acquisition_type:a.mode==='history'?v.cause:a.mode==='nonprofit'?'증여':a.mode==='cost'?'원시취득':'유상취득'};
+  if (a.mode !== 'cost') body.property_value = v.value;
+  if (a.mode === 'history') {
+    body.standard_value=v.standard; body.whole_property_standard_value=v.wholeStandard;
+    body.historical_facts={schema_version:'acquisition-history/1',scope_confirmed:v.scopeConfirmed,valuation_confirmed:v.valuationConfirmed,
+      scope_evidence:v.scopeEvidence,valuation_evidence:v.valueEvidence,base_rule:v.baseRule,
+      ...(v.actualBasis?{actual_basis:v.actualBasis}:{}),...(v.contractDate?{contract_date:day(v.contractDate),apartment_presale:v.presale==='yes',contract_evidence:v.contractEvidence}:{})};
+    if (body.is_housing) {body.housing_count=1;body.area_class=v.areaClass;body.is_regulated_area=v.regulated==='yes';}
+  } else if (a.mode === 'nonprofit') {
+    body.nonprofit_facts={schema_version:'acquisition-nonprofit/1',category:v.category,as_of:v.date,eligibility_evidence:v.eligibilityEvidence,
+      valuation_evidence:v.valueEvidence,scope_evidence:v.scopeEvidence,eligibility_confirmed:v.eligibilityConfirmed,market_value_confirmed:v.valuationConfirmed,
+      whole_property_confirmed:v.wholeConfirmed,no_debt_confirmed:v.noDebtConfirmed,no_heavy_reduction_or_local_variation_confirmed:v.scopeConfirmed};
+  } else if (a.mode === 'share') {
+    body.exclusive_area=area();body.housing_count=1;body.is_regulated_area=v.regulated==='yes';
+    body.share_facts={schema_version:'acquisition-housing-share/1',numerator:v.numerator,denominator:v.denominator,whole_standard_value:v.wholeStandard,
+      acquired_standard_value:v.acquiredStandard,expected_whole_value:v.expectedWhole,facts_confirmed:v.shareConfirmed,evidence:v.shareEvidence};
+  } else if (a.mode === 'cost') {
+    if (body.is_housing) body.exclusive_area=area();
+    const rows = (a.rows || []).map((r,i) => {
+      if (!ACQ_COST_CATEGORIES.some(x=>x[0]===r.category) || !/^\d+$/.test(String(r.amount)) || !Number.isSafeInteger(Number(r.amount)) || Number(r.amount)<=0 || !['yes','no'].includes(r.overlap) || !r.evidence?.trim()) throw new Error('원가 '+(i+1)+'행의 종류·금액·도급 포함 여부·근거를 확인해 주세요.');
+      return {id:String(i+1),category:r.category,amount:Number(r.amount),included_in_contract:r.overlap==='yes',evidence:r.evidence.trim()};
+    });
+    body.original_cost_facts={schema_version:'acquisition-original-costs/1',contract_amount:v.contractAmount,contract_evidence:v.contractEvidence,rows,
+      cost_scope_confirmed:v.costConfirmed,contract_exclusions_removed_confirmed:v.exclusionsConfirmed};
+  }
+  return body;
+}
+
+const ACQ_COST_CATEGORIES = [['materials','재료비'],['labor','노무비'],['statutory_charge','법정 부담금'],['acquisition_service','취득 관련 용역'],['attached_facility','부착 시설'],['landscaping','조경'],['construction_interest','건설자금 이자'],['installment_interest','할부 이자'],['brokerage','중개수수료'],['vat','부가가치세'],['selling','판매 비용'],['utility_user_charge','시설 이용 부담금'],['separate_right_compensation','별도 권리 보상']];
+
+function JTAcqDeclaredInputs({onBack}) {
+  const [a,setA]=React.useState({mode:'',rows:[]}),[result,setResult]=React.useState(null),[error,setError]=React.useState(''),[busy,setBusy]=React.useState(false);
+  const alive=React.useRef(true);
+  React.useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
+  const change=(key,value)=>{setA(old=>key==='mode'?{mode:value,rows:[]}:{...old,[key]:value,...(['date','propertyType','owner','cause','baseRule','basis'].includes(key)?{scopeConfirmed:false,valuationConfirmed:false,wholeConfirmed:false,housingConfirmed:false,priceConfirmed:false,eligibilityConfirmed:false,shareConfirmed:false,costConfirmed:false,exclusionsConfirmed:false}: {})});setResult(null);setError('');};
+  const run=async e=>{e.preventDefault();if(busy)return;setResult(null);setError('');let body;
+    try{body=mapAcqDeclaredInputs(a);}catch(err){setError(err.message);return;}setBusy(true);
+    try{const response=await callAcqEngine(body);if(!alive.current)return;const calc=acqCalcFromEngine(response);
+      if(calc.precise)setResult(calc);else setError('이 입력 조합은 지원 범위 밖이거나 추가 확인이 필요합니다. 세액을 표시하지 않습니다.');
+    }catch(err){if(alive.current)setError('입력 조건 또는 엔진 연결을 확인해 주세요. 세액을 표시하지 않습니다.');}
+    finally{if(alive.current)setBusy(false);}};
+  const modes=[['history','과거연도 일반 취득'],['nonhousing_purchase','비주택 토지·건물 안분'],['mixed_purchase','겸용 주택·비주택 매매'],['mixed_original','겸용 건물 신축'],['nonprofit','비영리사업자 무상취득'],['cost','신축 원가 명세'],['share','일반 주택 지분 취득']];
+  return <div className="jt-container"><JTReportShell title="취득 사실·과거연도 계산" subtitle="확인한 자료로 과세표준과 취득세를 계산합니다." tag="LIVE" onBack={busy?()=>{}:onBack}>
+    <p>과거 일반 취득은 2014~2025년, 원가·지분·구성·비영리 입력은 2023~2026년의 확인된 범위를 지원합니다. 특수 원인·중과·감면·추징은 별도 검토가 필요합니다.</p>
+    <form onSubmit={run}><fieldset disabled={busy} style={{border:0,padding:0,display:'grid',gap:16}}>
+      <label>계산 유형<select className="jt-report-q__input" value={a.mode} onChange={e=>change('mode',e.target.value)}><option value="">선택해 주세요</option>{modes.map(([k,l])=><option key={k} value={k}>{l}</option>)}</select></label>
+      {acqDeclaredFields(a).map(f=><label key={f.key}>{f.type==='flag'?<><input type="checkbox" checked={a[f.key]===true} onChange={e=>change(f.key,e.target.checked)}/>{f.label}</>:<>{f.label}{f.type==='select'?<select className="jt-report-q__input" value={a[f.key]||''} onChange={e=>change(f.key,e.target.value)}><option value="">선택해 주세요</option>{f.options.map(([k,l])=><option key={k} value={k}>{l}</option>)}</select>:<input className="jt-report-q__input" type="text" inputMode={f.type==='won'?'numeric':undefined} maxLength={2000} value={a[f.key]??''} onChange={e=>change(f.key,e.target.value)}/>}</>}</label>)}
+      {a.mode==='cost'&&<section aria-label="추가 원가 명세"><h2>추가 원가 명세</h2>{(a.rows||[]).map((r,i)=><fieldset key={i}><legend>원가 {i+1}</legend>
+        <label>원가 종류<select value={r.category||''} onChange={e=>change('rows',a.rows.map((x,j)=>j===i?{...x,category:e.target.value}:x))}><option value="">선택해 주세요</option>{ACQ_COST_CATEGORIES.map(([k,l])=><option key={k} value={k}>{l}</option>)}</select></label>
+        <label>원가 금액 (원)<input value={r.amount||''} onChange={e=>change('rows',a.rows.map((x,j)=>j===i?{...x,amount:e.target.value}:x))}/></label>
+        <label>도급액에 포함됐나요?<select value={r.overlap||''} onChange={e=>change('rows',a.rows.map((x,j)=>j===i?{...x,overlap:e.target.value}:x))}><option value="">선택해 주세요</option><option value="yes">예</option><option value="no">아니요</option></select></label>
+        <label>원가 분류·증빙 근거<input value={r.evidence||''} onChange={e=>change('rows',a.rows.map((x,j)=>j===i?{...x,evidence:e.target.value}:x))}/></label>
+        <button type="button" onClick={()=>change('rows',a.rows.filter((_,j)=>j!==i))}>원가 {i+1} 삭제</button></fieldset>)}
+        <button type="button" disabled={(a.rows||[]).length>=500} onClick={()=>change('rows',[...(a.rows||[]),{}])}>원가 추가</button></section>}
+      <button className="jt-btn jt-btn--primary" type="submit">{busy?'계산 중…':'확인한 사실로 취득세 계산'}</button>
+    </fieldset></form>
+    {error&&<p role="alert">{error}</p>}
+    {result&&<section aria-label="명시 사실 취득세 결과"><h2>취득세 계산 결과</h2><p>본세 계산이며 신고기한·기납부·추징은 포함하지 않습니다.</p>
+      <table className="jt-report-calc"><tbody>{[['과세표준',result.taxBase],['취득세',result.acqTax],['지방교육세',result.eduTax],['농어촌특별세',result.farmTax],['총 납부세액',result.totalTax]].map(([k,v])=><tr key={k}><th>{k}</th><td>{Number(v).toLocaleString('ko-KR')}원</td></tr>)}</tbody></table>
+      {(result.engineWarnings||[]).map((w,i)=><p key={i}>{window.jtEngineMessageForDisplay(w)}</p>)}
+      <h3>계산 과정</h3><table className="jt-report-calc"><tbody>{result.steps.map((s,i)=><tr key={i}><th>{s.항목}</th><td>{acqFormatStepValue(s.항목,s.금액,s.비고)}</td></tr>)}</tbody></table>
+    </section>}
+  </JTReportShell></div>;
+}
+
 function JTAcqBasisInputs({ onBack }) {
+  const [declared,setDeclared]=React.useState(false);
   const [a, setA] = React.useState({mode: '', date: '', owner: '', propertyType: ''});
   const [result, setResult] = React.useState(null);
   const [error, setError] = React.useState('');
@@ -869,7 +1024,9 @@ function JTAcqBasisInputs({ onBack }) {
   const standard = a.mode === 'original_standard';
   const land = a.mode === 'land_purchase';
   const won = n => Number(n).toLocaleString('ko-KR') + '원';
+  if (declared) return <JTAcqDeclaredInputs onBack={()=>setDeclared(false)}/>;
   return <div className="jt-container"><JTReportShell title="취득일·과세표준 확인 계산" subtitle="확인한 취득일과 가격 기준으로 계산합니다." tag="LIVE" onBack={busy ? () => {} : onBack}>
+    <button className="jt-btn jt-btn--primary" disabled={busy} onClick={()=>setDeclared(true)}>과거연도·원가·지분·겸용·비영리 입력</button>
     <p>일반 토지 매매와 건축물 신축의 기존 지원 범위를 계산합니다. 지분·증축·개수·부담부증여·특수관계인 거래는 이 화면에서 계산하지 않습니다.</p>
     <form onSubmit={run}><fieldset disabled={busy} style={{border: 0, padding: 0, margin: 0}}>
       <div style={{display: 'grid', gap: 16}}>

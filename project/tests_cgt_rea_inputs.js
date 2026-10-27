@@ -1,0 +1,21 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict'),path=require('path'),esbuild=require('esbuild');
+const src=fs.readFileSync(path.join(__dirname,'src/ReportCGT.jsx'),'utf8');
+const env=vm.createContext({React:{useState(){},createElement(){}},Date,Number,String,Object,Math,JSON,window:{jtLaw:(_k,v)=>v}});
+vm.runInContext(esbuild.transformSync(src,{loader:'jsx'}).code+'\nglobalThis.api={mapAnswersToTransfer,cgtApplyAnswer};',env);
+const map=env.api.mapAnswersToTransfer;
+const keys=['취득세','등기비','법무사비','취득중개비','양도중개비','자본적지출','기타비용'];
+const a={assetType:'commercial',nonHouseType:'building',costMethod:'actual',acquiredDate:'2013-07-01',transferDate:'2026-01-01',sold:1000000000,acquired:600000000,expenses:0,
+ reviewed:{expensesEnabled:true,expensesConfirmed:true,...Object.fromEntries(keys.map(k=>['expense_'+k,'1000000'])),depreciationEnabled:true,depreciationConfirmed:true,depreciation:'20000000'}};
+const body=map(a);assert.equal(body.depreciation_recaptured,20000000);assert.equal(body.expenses_total,0);assert.equal(Object.values(body.expenses).reduce((x,y)=>x+y,0),7000000);
+for(const key of keys)assert.throws(()=>map({...a,reviewed:{...a.reviewed,['expense_'+key]:''}}));
+for(const patch of [{expenses:1},{costMethod:'converted'},{nonHouseType:'land'},{reviewed:{...a.reviewed,expensesConfirmed:false}},{reviewed:{...a.reviewed,depreciationConfirmed:false}},{reviewed:{...a.reviewed,depreciation:'1.5'}}])assert.throws(()=>map({...a,...patch}));
+const off=map({...a,reviewed:{...a.reviewed,expensesEnabled:false,depreciationEnabled:false}});assert.equal(off.expenses,undefined);assert.equal(off.depreciation_recaptured,undefined);
+const changed=env.api.cgtApplyAnswer(a,'sold',1100000000);assert.throws(()=>map(changed));
+const s={assetType:'house_1',sold:2000000000,acquired:1000000000,acquiredDate:'2016-01-01',transferDate:'2026-01-01',expenses:0,reviewed:{sangsaengEnabled:true,sangsaengConfirmed:true,sangsaengResidence:'none'}};
+assert.equal(map(s).is_sangsaeng_rental,true);assert.equal(map(s).sangsaeng_no_residence,true);
+assert.throws(()=>map({...s,moveInDate:'2024-01-01'}));
+assert.throws(()=>map({...s,transferDate:'2022-08-01'}));
+assert.throws(()=>map({...s,reviewed:{...s.reviewed,sangsaengConfirmed:false}}));
+assert.equal(map({...s,reviewed:{...s.reviewed,sangsaengEnabled:false}}).sangsaeng_no_residence,undefined);
+if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(body,null,2));
+console.log('PASS REA expense item mapping, depreciation, double deduction, confirmation reset and stale values');

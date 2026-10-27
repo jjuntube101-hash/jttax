@@ -77,6 +77,27 @@ function cgtReviewedPayload(a) {
   };
   const day = (v, label) => { if (!isValidISODate(v || '')) throw new Error(label + '을 확인해 주세요.'); return v; };
   const confirm = (v, label) => { if (v !== true) throw new Error(label + ' 확인이 필요합니다.'); return true; };
+  if (r.sangsaengEnabled) {
+    if (a.assetType!=='house_1' || !isValidISODate(a.transferDate||'') || a.transferDate<'2022-08-02' || r.giftEnabled || r.reliefEnabled || r.lateEnabled) throw new Error('상생임대 입력은 2022-08-02 이후 일반 1주택 양도의 확인된 범위만 지원합니다.');
+    confirm(r.sangsaengConfirmed,'상생임대 특례 자격');
+    if (!['none','actual'].includes(r.sangsaengResidence)) throw new Error('실제 거주 여부를 선택해 주세요.');
+    out.is_sangsaeng_rental=true;
+    if (r.sangsaengResidence==='none') {
+      if (a.moveInDate || a.moveOutDate) throw new Error('전혀 거주하지 않았다면 앞 단계의 거주 시작·종료일을 지워 주세요.');
+      out.sangsaeng_no_residence=true;
+    } else { day(a.moveInDate,'실제 거주 시작일'); }
+  }
+  if (r.expensesEnabled) {
+    if (Number(a.expenses || 0) !== 0) throw new Error('필요경비 상세를 쓰려면 앞 단계의 필요경비 합계를 0원으로 수정해 주세요. 중복 공제하지 않습니다.');
+    confirm(r.expensesConfirmed,'필요경비의 적격 증빙·양도분 귀속·중복 제외');
+    out.expenses = {};
+    for (const key of ['취득세','등기비','법무사비','취득중개비','양도중개비','자본적지출','기타비용']) out.expenses[key] = money(r['expense_'+key],key);
+  }
+  if (r.depreciationEnabled) {
+    if (a.assetType!=='commercial' || a.nonHouseType!=='building' || a.costMethod!=='actual' || r.giftEnabled || r.reliefEnabled || r.lateEnabled) throw new Error('감가상각비 누계 입력은 이 화면에서 일반 상가의 실제 취득가액 단일 양도만 지원합니다.');
+    confirm(r.depreciationConfirmed,'필요경비 산입 감가상각비 누계·차감 전 취득가액');
+    out.depreciation_recaptured=money(r.depreciation,'감가상각비 누계');
+  }
   if ((r.reliefEnabled || r.lateEnabled || r.giftEnabled) && (!isValidISODate(a.transferDate || '') || a.transferDate < '2022-01-01' || a.transferDate > '2026-12-31')) throw new Error('현재 지원하는 양도연도는 2022~2026년입니다.');
   if(r.convertedEnabled) {
     confirm(r.convertedConfirmed,'환산취득가 자격·단순 기준시가');
@@ -177,6 +198,12 @@ function CGTReviewedInputs({value,onChange}) {
   const rowChange=(key,i,k,v)=>set(key,(r[key] || []).map((row,j)=>i===j?{...row,[k]:v}:row));
   return <div>
     <p>해당하는 항목만 켜세요. 금액은 원 단위이며, 모르는 사실은 확인으로 표시하지 마세요. 입력을 바꾸면 검토 확인이 해제됩니다.</p>
+    {check('sangsaengEnabled','자격을 확인한 상생임대주택 특례')}
+    {r.sangsaengEnabled && <fieldset><legend>상생임대 자격과 실제 거주</legend>{select('sangsaengResidence','실제 거주 여부',[['none','전혀 거주하지 않음 — 확인 완료'],['actual','실제 거주함 — 앞 단계 날짜 사용']])}{check('sangsaengConfirmed','임대차 자료와 적용시점에 따라 상생임대 특례 자격을 검토했습니다')}<p>거주 요건 면제와 실제 거주기간 공제는 다릅니다. 실제 거주기간을 임의로 늘리지 않습니다.</p></fieldset>}
+    {check('expensesEnabled','필요경비를 항목별로 입력')}
+    {r.expensesEnabled && <fieldset><legend>필요경비 상세</legend><p>앞 단계의 필요경비 합계는 0원으로 두세요. 양도분에 귀속되는 적격 비용만 입력하며, 없는 항목도 0원을 직접 입력하세요.</p>{['취득세','등기비','법무사비','취득중개비','양도중개비','자본적지출','기타비용'].map(k=><React.Fragment key={k}>{field('expense_'+k,k+' (원)')}</React.Fragment>)}{check('expensesConfirmed','적격 증빙·양도분 귀속을 검토했고 취득가액 또는 다른 비용에 중복 포함하지 않았습니다')}</fieldset>}
+    {check('depreciationEnabled','일반 상가의 감가상각비 누계 반영')}
+    {r.depreciationEnabled && <fieldset><legend>감가상각비 조정</legend>{field('depreciation','사업소득 필요경비에 산입한 또는 산입할 감가상각비 누계 (원)')}{check('depreciationConfirmed','입력 취득가액은 감가상각비 차감 전 금액이며, 양도분에 귀속되는 산입 누계를 확인했습니다')}<p>이미 차감한 취득가액을 다시 조정하지 마세요. 증여·환산취득가·감면·가산세 결합은 이 화면에서 제외합니다.</p></fieldset>}
     {r.convertedEnabled && <fieldset><legend>환산취득가 확인 자료</legend>{field('convertedAcq','취득 시 기준시가 (원)')}{field('convertedTransfer','양도 시 기준시가 (원)')}{select('convertedExpense','필요경비 방식',[['estimate','개산공제'],['actual','확인한 실제 필요경비 (기존 필요경비 입력칸 사용)']])}{['convertedAcqSource','convertedTransferSource','convertedNote'].map((key,i)=><label key={key} style={{display:'block'}}>{['취득 시 기준시가 출처','양도 시 기준시가 출처','실가·매매사례·감정가를 순서대로 적용할 수 없는 이유'][i]}<textarea value={r[key]||''} maxLength={1000} onChange={e=>set(key,e.target.value)}/></label>)}{check('convertedConfirmed','실가·매매사례·감정가 적용 불가를 검토했고, 최초고시 전 취득·특수처분이 없고 보유 중 신규고시가 있으며 기준시가의 귀속과 별도 조정 불필요를 확인했습니다')}</fieldset>}
     {check('giftEnabled','배우자에게 증여받은 자산의 이월과세 검토')}
     {r.giftEnabled && <fieldset><legend>배우자 증여 원자료</legend>{field('giftDate','증여일','date')}{field('donorDate','증여자의 원래 취득일','date')}{field('donorCost','증여자의 실제 취득가액 (원)')}{field('giftTax','해당 증여세 납부액 (원, 0원도 직접 입력)')}{check('giftConfirmed','배우자 관계·증빙·원가 완전성을 검토했습니다')}<p>연도·주택 수·보유기간·증여세액에 따라 지원 범위를 판단합니다.</p></fieldset>}
@@ -1012,7 +1039,7 @@ function JTReportCGT({ setRoute, onBack }) {
         return;
       }
 
-      if (answers.reviewed && (answers.reviewed.reliefEnabled || answers.reviewed.lateEnabled || answers.reviewed.giftEnabled || answers.costMethod==='converted')) {
+      if (answers.reviewed && (answers.reviewed.sangsaengEnabled || answers.reviewed.expensesEnabled || answers.reviewed.depreciationEnabled || answers.reviewed.reliefEnabled || answers.reviewed.lateEnabled || answers.reviewed.giftEnabled || answers.costMethod==='converted')) {
         setReport({calc, commentary:{headline:'입력한 검토 자료를 반영한 계산 결과입니다.',cautions:[],saving_ideas:[],followup:[]},quick:false});
         return;
       }
