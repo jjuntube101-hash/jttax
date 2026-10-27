@@ -81,6 +81,7 @@ const CGT_GIFT_REVIEWS = [
   ['no_other_transfers_and_basic_unused','다른 양도가 없고 연간 기본공제를 사용하지 않았습니다']
 ];
 const CGT_COST_ITEMS = [
+  ['buyer_paid_seller_cgt','취득 당시 약정에 따라 부담한 종전 매도인의 양도소득세'],
   ['acquisition_tax','취득세'],['registration','등록세·등록면허세'],['legal_registration','등기 법무사비'],['acquisition_brokerage','취득 중개비'],['purchase_incidental','검토한 매입 부대비'],['contract_price_interest','당초 약정 대가에 포함된 이자 (지연이자 제외)'],
   ['materials','자가건설 원재료'],['labor','자가건설 노무비'],['freight','자가건설 운임'],['unloading','자가건설 하역비'],['insurance','자가건설 보험료'],['construction_fees','자가건설 수수료'],['public_charges','자가건설 공과금'],['installation','자가건설 설치비'],['construction_incidental','검토한 자가건설 부대비'],
   ['acquisition_litigation','취득 소유권 쟁송비'],['conversion_improvement','용도변경·개량'],['elevator_hvac','승강기·냉난방 설치'],['evacuation','피난시설'],['disaster_restoration','이용가치 없는 재해자산 복구'],['development_charge','개발부담금'],['reconstruction_charge','재건축부담금'],['value_increasing_repair','내용연수·가치 증가 수선'],['ownership_litigation','취득 후 소유권 쟁송비'],['beneficiary_charge','법정 수익자부담금'],['obstacle_removal','토지 장애철거'],['road_construction','토지 이용 도로 신설'],['erosion_control','사방사업'],['donated_road_land_cost','무상공여 도로 토지의 원래 취득가액'],['transfer_brokerage','양도 중개비'],['return_contract_fee','신고·계약서 작성비'],['notary_stamp','공증비·인지대'],['contract_delivery','계약상 인도의무 명도비'],['statutory_bond_loss','법정채권 매각차손']
@@ -118,6 +119,13 @@ function cgtReviewedPayload(a) {
       if(v.category==='contract_price_interest') {
         confirm(v.interestConfirmed,'당초 약정 거래대가의 이자·지연이자 아님');
         item.interest={included_in_agreed_price:true,late_payment_interest:false};
+      }
+      if(v.category==='buyer_paid_seller_cgt') {
+        if(r.ledgerMethod!=='purchase')throw new Error('종전 매도인 세금 부담액은 매입 원가에만 입력합니다.');
+        for(const [key,label] of [['sellerCgtAgreedConfirmed','취득 당시 약정 거래대가'],['sellerCgtPaidConfirmed','실제 지급'],['sellerCgtConditionalConfirmed','무조건 대신 납부한 증여가 아님'],['sellerCgtPrincipalConfirmed','가산세·지방소득세를 제외한 양도소득세 본세'],['sellerCgtAssetConfirmed','같은 자산의 종전 매도인 세금']])confirm(v[key],label);
+        const contracted=day(v.sellerCgtContractDate,'세금 부담 약정일');
+        if(!isValidISODate(a.acquiredDate||'') || contracted>a.acquiredDate || contracted>item.paid_date)throw new Error('세금 부담 약정일은 취득일과 지출일보다 늦을 수 없습니다.');
+        item.seller_cgt={included_in_agreed_price:true,actually_paid:true,unconditional_payment:false,principal_national_cgt_only:true,previous_seller_same_asset:true,contract_date:contracted,contract_source:text(v.sellerCgtContractSource,'세금 부담 약정 증빙'),payment_source:text(v.sellerCgtPaymentSource,'실제 지급 증빙')};
       }
       if(v.category==='donated_road_land_cost') {
         if(a.nonHouseType!=='land')throw new Error('무상공여 도로 토지 원가는 토지에만 입력합니다.');
@@ -273,7 +281,7 @@ function CGTReviewedInputs({value,onChange}) {
   return <div>
     <p>해당하는 항목만 켜세요. 금액은 원 단위이며, 모르는 사실은 확인으로 표시하지 마세요. 입력을 바꾸면 검토 확인이 해제됩니다.</p>
     {check('costLedgerEnabled','원가·경비 명세와 항목별 지분 입력')}
-    {r.costLedgerEnabled && <fieldset><legend>원가·경비 원자료</legend><p>1999년 이후 취득한 일반 토지·상가를 2년 이상 보유하고 2018-04-01~2026-10-27 양도한 단일 거래입니다. 앞 단계 취득가액은 매입 기본가액(자가건설은 0원), 필요경비 합계는 0원으로 입력하세요. 양도소득세 대납·포괄 기타 가산·감가상각·특례 결합은 별도 검토가 필요합니다. 자본적지출은 취득 후 2016-02-17 이후분만 받습니다.</p>
+    {r.costLedgerEnabled && <fieldset><legend>원가·경비 원자료</legend><p>1999년 이후 취득한 일반 토지·상가를 2년 이상 보유하고 2018-04-01~2026-10-27 양도한 단일 거래입니다. 앞 단계 취득가액은 매입 기본가액(자가건설은 0원), 필요경비 합계는 0원으로 입력하세요. 종전 매도인의 세금은 약정·실제 지급을 확인한 본세만 입력합니다. 현재 양도에 따른 본인 세금·포괄 기타 가산·감가상각·특례 결합은 별도 검토가 필요합니다. 자본적지출은 취득 후 2016-02-17 이후분만 받습니다.</p>
       {select('ledgerMethod','원가 방식',[['purchase','매입'],['construction','자가건설']])}
       {field('ledgerNumerator','양도 지분 분자')}{field('ledgerDenominator','양도 지분 분모')}
       {select('ledgerSaleBasis','앞 단계 양도가액 기준',[['whole','전체 재산 금액'],['transferred','이미 양도 지분에 귀속된 금액']])}
@@ -286,6 +294,10 @@ function CGTReviewedInputs({value,onChange}) {
         <label>기본 취득가액에 이미 포함<select value={v.included||''} onChange={e=>rowChange('ledgerRows',i,'included',e.target.value)}><option value="">선택</option><option value="yes">예 (추가 공제 안 함)</option><option value="no">아니오</option></select></label>
         {v.category==='statutory_bond_loss'&&<><label>채권 매수인이 법정 금융기관<select value={v.institution||''} onChange={e=>rowChange('ledgerRows',i,'institution',e.target.value)}><option value="">선택</option><option value="yes">예</option><option value="no">아니오</option></select></label><label>동일일 금융기관 매각차손 (원)<input value={v.cap??''} onChange={e=>rowChange('ledgerRows',i,'cap',e.target.value)}/></label></>}
         {v.category==='contract_price_interest'&&<label><input type="checkbox" checked={v.interestConfirmed===true} onChange={e=>rowChange('ledgerRows',i,'interestConfirmed',e.target.checked)}/>당초 약정 거래대가에 포함된 이자이며 지급기일 지연이자가 아닙니다</label>}
+        {v.category==='buyer_paid_seller_cgt'&&<fieldset><legend>종전 매도인의 세금 부담 약정</legend><p>본인이 이 재산을 취득할 당시 부담한 종전 매도인의 세금입니다. 이미 기본 취득가액에 포함했다면 위에서 ‘예’를 선택하세요.</p>
+          {[['sellerCgtContractDate','세금 부담 약정일 (YYYY-MM-DD)'],['sellerCgtContractSource','세금 부담 약정 증빙'],['sellerCgtPaymentSource','실제 지급 증빙']].map(([k,t])=><label key={k} style={{display:'block'}}>{t}<input value={v[k]||''} onChange={e=>rowChange('ledgerRows',i,k,e.target.value)}/></label>)}
+          {[['sellerCgtAgreedConfirmed','취득 당시 약정한 거래대가에 포함된 부담액입니다'],['sellerCgtPaidConfirmed','약정한 금액을 실제 지급했습니다'],['sellerCgtConditionalConfirmed','약정과 무관하게 무조건 대신 납부한 금액이 아닙니다'],['sellerCgtPrincipalConfirmed','지방소득세·가산세를 제외한 국세 양도소득세 본세입니다'],['sellerCgtAssetConfirmed','이번 양도 자산과 같은 재산의 종전 매도인 세금입니다']].map(([k,t])=><label key={k} style={{display:'block'}}><input type="checkbox" checked={v[k]===true} onChange={e=>rowChange('ledgerRows',i,k,e.target.checked)}/>{t}</label>)}
+        </fieldset>}
         {v.category==='donated_road_land_cost'&&<label><input type="checkbox" checked={v.roadConfirmed===true} onChange={e=>rowChange('ledgerRows',i,'roadConfirmed',e.target.checked)}/>자기 토지에 신설한 도로를 국가·지자체에 무상공여했고 도로 토지의 원래 취득가액입니다</label>}
         <button type="button" onClick={()=>set('ledgerRows',r.ledgerRows.filter((_,j)=>i!==j))}>비용 {i+1} 삭제</button>
       </fieldset>)}
