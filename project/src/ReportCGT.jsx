@@ -67,6 +67,12 @@ function cgtTemp2Phrase(years) {
   return '두 집이 모두 조정대상지역이었다면 2년, 아니면 3년';
 }
 
+const CGT_COST_ITEMS = [
+  ['acquisition_tax','취득세'],['registration','등록세·등록면허세'],['legal_registration','등기 법무사비'],['acquisition_brokerage','취득 중개비'],['purchase_incidental','검토한 매입 부대비'],
+  ['materials','자가건설 원재료'],['labor','자가건설 노무비'],['freight','자가건설 운임'],['unloading','자가건설 하역비'],['insurance','자가건설 보험료'],['construction_fees','자가건설 수수료'],['public_charges','자가건설 공과금'],['installation','자가건설 설치비'],['construction_incidental','검토한 자가건설 부대비'],
+  ['acquisition_litigation','취득 소유권 쟁송비'],['conversion_improvement','용도변경·개량'],['elevator_hvac','승강기·냉난방 설치'],['evacuation','피난시설'],['disaster_restoration','이용가치 없는 재해자산 복구'],['development_charge','개발부담금'],['reconstruction_charge','재건축부담금'],['value_increasing_repair','내용연수·가치 증가 수선'],['ownership_litigation','취득 후 소유권 쟁송비'],['beneficiary_charge','법정 수익자부담금'],['obstacle_removal','토지 장애철거'],['road_construction','토지 이용 도로 신설'],['erosion_control','사방사업'],['transfer_brokerage','양도 중개비'],['return_contract_fee','신고·계약서 작성비'],['notary_stamp','공증비·인지대'],['contract_delivery','계약상 인도의무 명도비'],['statutory_bond_loss','법정채권 매각차손']
+];
+
 /* Reviewed facts only: empty inputs never become zero or an eligibility confirmation. */
 function cgtReviewedPayload(a) {
   const r = {...(a.reviewed || {}),convertedEnabled:a.assetType==='commercial' && a.costMethod==='converted'}, out = {};
@@ -77,6 +83,33 @@ function cgtReviewedPayload(a) {
   };
   const day = (v, label) => { if (!isValidISODate(v || '')) throw new Error(label + '을 확인해 주세요.'); return v; };
   const confirm = (v, label) => { if (v !== true) throw new Error(label + ' 확인이 필요합니다.'); return true; };
+  if (r.costLedgerEnabled) {
+    if (a.assetType!=='commercial' || a.costMethod!=='actual' || r.expensesEnabled || r.depreciationEnabled || r.giftEnabled || r.reliefEnabled || r.lateEnabled || r.sangsaengEnabled || Number(a.expenses||0)!==0) throw new Error('원자료는 일반 비주택 실가 계산만 지원하며 합계 경비는 0원, 다른 검토 옵션은 꺼야 합니다.');
+    if (!['purchase','construction'].includes(r.ledgerMethod)) throw new Error('매입/자가건설 방식을 선택해 주세요.');
+    if (r.ledgerMethod==='construction' && (a.nonHouseType!=='building' || Number(a.acquired)!==0)) throw new Error('자가건설은 상가이며 앞 단계 취득가액 0원, 비용 명세로 입력합니다.');
+    if (!isValidISODate(a.transferDate||'') || a.transferDate<'2026-01-01' || a.transferDate>'2026-10-27') throw new Error('원자료 검토 범위는 2026-01-01~2026-10-27 양도입니다.');
+    const basis=v=>{if(!['whole','transferred'].includes(v))throw new Error('각 금액의 전체/양도지분 귀속 기준을 선택해 주세요.');return v;};
+    const text=(v,label)=>{if(!String(v||'').trim() || String(v).length>500)throw new Error(label+'을 500자 이내로 입력해 주세요.');return String(v).trim();};
+    confirm(r.ledgerOrdinaryConfirmed,'국내 등기 일반 단일양도·2년 이상·특례 없음');
+    confirm(r.ledgerQualifiedConfirmed,'항목별 적격 증빙·법정 요건');
+    confirm(r.ledgerAdjustmentsConfirmed,'지분 귀속·기공제·중복·추가 세무조정 없음');
+    const n=money(r.ledgerNumerator,'지분 분자'),d=money(r.ledgerDenominator,'지분 분모');
+    if(n<1||n>d||d>1e9)throw new Error('지분 분자·분모를 확인해 주세요.');
+    if(!Array.isArray(r.ledgerRows)||r.ledgerRows.length<1||r.ledgerRows.length>60)throw new Error('비용 명세 1~60행을 입력해 주세요.');
+    out.acquisition_price=0;
+    out.housing_count=0;out.is_regulated_area=false;out.regulated_at_acquisition=false;
+    out.cost_facts={schema_version:1,method:r.ledgerMethod,base_price:money(a.acquired,'앞 단계 취득가액'),base_basis:basis(r.ledgerBaseBasis),sale_basis:basis(r.ledgerSaleBasis),share_numerator:n,share_denominator:d,ordinary_confirmed:true,qualification_confirmed:true,no_other_adjustments_confirmed:true,source:text(r.ledgerSource,'검토 자료명'),rows:r.ledgerRows.map((v,i)=>{
+      if(!CGT_COST_ITEMS.some(([k])=>k===v.category))throw new Error('비용 항목을 선택해 주세요.');
+      if(!['yes','no'].includes(v.included))throw new Error('기본 취득가액 포함 여부를 선택해 주세요.');
+      const item={id:'cost-'+(i+1),category:v.category,amount:money(v.amount,'지출액'),basis:basis(v.basis),source:text(v.source,'비용 증빙'),included_in_base:v.included==='yes',previously_deducted:money(v.deducted,'기공제액'),qualified_confirmed:true,paid_date:day(v.paid,'지출일')};
+      if(v.category==='statutory_bond_loss') {
+        if(!['yes','no'].includes(v.institution))throw new Error('채권 매수 금융기관 여부를 선택해 주세요.');
+        confirm(r.ledgerBondConfirmed,'법정 국민주택·토지개발채권 의무매입 및 만기전 매각');
+        item.bond={mandatory_confirmed:true,before_maturity_confirmed:true,financial_institution:v.institution==='yes',same_day_institution_loss:money(v.cap,'동일일 금융기관 매각차손')};
+      }
+      return item;
+    })};
+  }
   if (r.sangsaengEnabled) {
     if (a.assetType!=='house_1' || !isValidISODate(a.transferDate||'') || a.transferDate<'2022-08-02' || r.giftEnabled || r.reliefEnabled || r.lateEnabled) throw new Error('상생임대 입력은 2022-08-02 이후 일반 1주택 양도의 확인된 범위만 지원합니다.');
     confirm(r.sangsaengConfirmed,'상생임대 특례 자격');
@@ -198,6 +231,27 @@ function CGTReviewedInputs({value,onChange}) {
   const rowChange=(key,i,k,v)=>set(key,(r[key] || []).map((row,j)=>i===j?{...row,[k]:v}:row));
   return <div>
     <p>해당하는 항목만 켜세요. 금액은 원 단위이며, 모르는 사실은 확인으로 표시하지 마세요. 입력을 바꾸면 검토 확인이 해제됩니다.</p>
+    {check('costLedgerEnabled','원가·경비 명세와 항목별 지분 입력')}
+    {r.costLedgerEnabled && <fieldset><legend>원가·경비 원자료</legend><p>1999년 이후 취득한 일반 토지·상가를 2년 이상 보유하고 2026-01-01~10-27 양도한 단일 거래입니다. 앞 단계 취득가액은 매입 기본가액(자가건설은 0원), 필요경비 합계는 0원으로 입력하세요. 양도소득세 대납·포괄 기타 가산·감가상각·특례 결합은 별도 검토가 필요합니다. 자본적지출은 취득 후 2016-02-17 이후분만 받습니다.</p>
+      {select('ledgerMethod','원가 방식',[['purchase','매입'],['construction','자가건설']])}
+      {field('ledgerNumerator','양도 지분 분자')}{field('ledgerDenominator','양도 지분 분모')}
+      {select('ledgerSaleBasis','앞 단계 양도가액 기준',[['whole','전체 재산 금액'],['transferred','이미 양도 지분에 귀속된 금액']])}
+      {select('ledgerBaseBasis','앞 단계 취득가액 기준',[['whole','전체 재산 금액'],['transferred','이미 양도 지분에 귀속된 금액']])}
+      {field('ledgerSource','원가·귀속 검토 자료명')}
+      {(r.ledgerRows||[]).map((v,i)=><fieldset key={i}><legend>{i+1}번 비용</legend>
+        <label>비용 항목<select value={v.category||''} onChange={e=>rowChange('ledgerRows',i,'category',e.target.value)}><option value="">선택</option>{CGT_COST_ITEMS.map(([k,t])=><option key={k} value={k}>{t}</option>)}</select></label>
+        {[['amount','지출액 (원)'],['deducted','이미 소득금액에서 공제한 쟁송비 (없으면 0)'],['paid','지출일 (YYYY-MM-DD)'],['source','증빙 식별명']].map(([k,t])=><label key={k} style={{display:'block'}}>{t}<input value={v[k]??''} onChange={e=>rowChange('ledgerRows',i,k,e.target.value)}/></label>)}
+        <label>비용 금액 기준<select value={v.basis||''} onChange={e=>rowChange('ledgerRows',i,'basis',e.target.value)}><option value="">선택</option><option value="whole">전체 재산 금액</option><option value="transferred">이미 양도 지분 귀속액</option></select></label>
+        <label>기본 취득가액에 이미 포함<select value={v.included||''} onChange={e=>rowChange('ledgerRows',i,'included',e.target.value)}><option value="">선택</option><option value="yes">예 (추가 공제 안 함)</option><option value="no">아니오</option></select></label>
+        {v.category==='statutory_bond_loss'&&<><label>채권 매수인이 법정 금융기관<select value={v.institution||''} onChange={e=>rowChange('ledgerRows',i,'institution',e.target.value)}><option value="">선택</option><option value="yes">예</option><option value="no">아니오</option></select></label><label>동일일 금융기관 매각차손 (원)<input value={v.cap??''} onChange={e=>rowChange('ledgerRows',i,'cap',e.target.value)}/></label></>}
+        <button type="button" onClick={()=>set('ledgerRows',r.ledgerRows.filter((_,j)=>i!==j))}>비용 {i+1} 삭제</button>
+      </fieldset>)}
+      <button type="button" disabled={(r.ledgerRows||[]).length>=60} onClick={()=>set('ledgerRows',[...(r.ledgerRows||[]),{}])}>비용 행 추가</button>
+      {check('ledgerOrdinaryConfirmed','국내 거주자·등기 일반 단일양도·2년 이상 보유·사업용이며 비과세·감면·특례·다른 양도가 없습니다')}
+      {check('ledgerQualifiedConfirmed','각 비용의 실제 지출 증빙과 항목별 공제 요건을 검토했습니다 (명칭만으로 적격 판정하지 않음)')}
+      {check('ledgerAdjustmentsConfirmed','보유지분 내 귀속·기공제·중복 포함을 확인했고 감가상각 등 추가 세무조정이 없습니다')}
+      {(r.ledgerRows||[]).some(v=>v.category==='statutory_bond_loss')&&check('ledgerBondConfirmed','국민주택채권·토지개발채권의 법정 의무매입 및 만기 전 양도를 확인했습니다')}
+    </fieldset>}
     {check('sangsaengEnabled','자격을 확인한 상생임대주택 특례')}
     {r.sangsaengEnabled && <fieldset><legend>상생임대 자격과 실제 거주</legend>{select('sangsaengResidence','실제 거주 여부',[['none','전혀 거주하지 않음 — 확인 완료'],['actual','실제 거주함 — 앞 단계 날짜 사용']])}{check('sangsaengConfirmed','임대차 자료와 적용시점에 따라 상생임대 특례 자격을 검토했습니다')}<p>거주 요건 면제와 실제 거주기간 공제는 다릅니다. 실제 거주기간을 임의로 늘리지 않습니다.</p></fieldset>}
     {check('expensesEnabled','필요경비를 항목별로 입력')}
@@ -893,6 +947,7 @@ function cgtCalcFromEngine(ej) {
     effectiveRate: c['양도차익'] > 0 ? (c['총세부담'] / c['양도차익'] * 100) : 0,
     exempt, nonTaxableMsg,
     steps: c['단계별계산'] || [],
+    costLedger: c['원가경비명세'] || null,
     engineWarnings: c['경고사항'] || [],  // 엔진 실질 경고(입주권 장특 인가전 한정·청산금 근사·승계취득 비과세 배제 등)
   };
 }
@@ -1039,7 +1094,7 @@ function JTReportCGT({ setRoute, onBack }) {
         return;
       }
 
-      if (answers.reviewed && (answers.reviewed.sangsaengEnabled || answers.reviewed.expensesEnabled || answers.reviewed.depreciationEnabled || answers.reviewed.reliefEnabled || answers.reviewed.lateEnabled || answers.reviewed.giftEnabled || answers.costMethod==='converted')) {
+      if (answers.reviewed && (answers.reviewed.costLedgerEnabled || answers.reviewed.sangsaengEnabled || answers.reviewed.expensesEnabled || answers.reviewed.depreciationEnabled || answers.reviewed.reliefEnabled || answers.reviewed.lateEnabled || answers.reviewed.giftEnabled || answers.costMethod==='converted')) {
         setReport({calc, commentary:{headline:'입력한 검토 자료를 반영한 계산 결과입니다.',cautions:[],saving_ideas:[],followup:[]},quick:false});
         return;
       }
@@ -1465,7 +1520,7 @@ cautions 3개, saving_ideas 2~3개.`;
               {calc.expenses > 0 && (
                 <tr><th>필요경비 (취득세·중개비·자본적지출 등)</th><td>− {formatWon(calc.expenses)}</td></tr>
               )}
-              <tr><th>{calc.expenses > 0 ? '양도차익 (양도가 − 취득가 − 필요경비)' : '양도차익 (양도가 − 취득가)'}</th><td>{formatWon(calc.capGain)}</td></tr>
+              <tr><th>양도차익 (취득원가·필요경비 반영)</th><td>{formatWon(calc.capGain)}</td></tr>
               {calc.nonTaxableMsg && (
                 <tr><th>비과세 반영 후 과세대상</th><td>{formatWon(calc.taxableAfter1House)}</td></tr>
               )}
@@ -1484,6 +1539,7 @@ cautions 3개, saving_ideas 2~3개.`;
         </section>
         )}
 
+        {!cgtBlocked && calc.costLedger && <section className="jt-report-result__section"><h3>원가·경비 귀속 명세</h3><p>{calc.costLedger.note}</p><table className="jt-report-calc"><tbody>{calc.costLedger.rows.map(r=><tr key={r.id}><th>{CGT_COST_ITEMS.find(([k])=>k===r.category)?.[1]||r.category} · {r.basis==='whole'?'전체 금액에 지분 적용':'귀속액 그대로'}</th><td>{r.attributed.toLocaleString('ko-KR')}원</td></tr>)}</tbody></table></section>}
         {calc.precise && calc.steps && calc.steps.length > 0 && (
           <section className="jt-report-result__section">
             <h3>단계별 계산 · 법조문 근거</h3>

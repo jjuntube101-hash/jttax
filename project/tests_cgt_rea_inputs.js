@@ -19,3 +19,12 @@ assert.throws(()=>map({...s,reviewed:{...s.reviewed,sangsaengConfirmed:false}}))
 assert.equal(map({...s,reviewed:{...s.reviewed,sangsaengEnabled:false}}).sangsaeng_no_residence,undefined);
 if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(body,null,2));
 console.log('PASS REA expense item mapping, depreciation, double deduction, confirmation reset and stale values');
+const ledger={...a,transferDate:'2026-10-20',reviewed:{costLedgerEnabled:true,ledgerMethod:'purchase',ledgerNumerator:'1',ledgerDenominator:'2',ledgerBaseBasis:'transferred',ledgerSaleBasis:'whole',ledgerSource:'synthetic review',ledgerOrdinaryConfirmed:true,ledgerQualifiedConfirmed:true,ledgerAdjustmentsConfirmed:true,ledgerRows:[{category:'conversion_improvement',amount:'10000000',basis:'whole',included:'no',deducted:'0',paid:'2020-01-01',source:'invoice'}]}};
+const lb=map(ledger);assert.equal(lb.acquisition_price,0);assert.equal(lb.cost_facts.base_price,600000000);assert.equal(lb.cost_facts.rows[0].amount,10000000);
+assert.equal(lb.housing_count,0);assert.equal(lb.is_regulated_area,false);assert.equal(lb.regulated_at_acquisition,false);
+for(const key of ['ledgerMethod','ledgerNumerator','ledgerDenominator','ledgerBaseBasis','ledgerSaleBasis','ledgerSource','ledgerOrdinaryConfirmed','ledgerQualifiedConfirmed','ledgerAdjustmentsConfirmed'])assert.throws(()=>map({...ledger,reviewed:{...ledger.reviewed,[key]:undefined}}));
+for(const key of ['category','amount','basis','included','deducted','paid','source'])assert.throws(()=>map({...ledger,reviewed:{...ledger.reviewed,ledgerRows:[{...ledger.reviewed.ledgerRows[0],[key]:''}]}}));
+for(const key of ['expensesEnabled','depreciationEnabled','giftEnabled','reliefEnabled','lateEnabled','sangsaengEnabled'])assert.throws(()=>map({...ledger,reviewed:{...ledger.reviewed,[key]:true}}));
+assert.throws(()=>map(env.api.cgtApplyAnswer(ledger,'sold',1200000000)));
+assert.equal(map({...ledger,reviewed:{...ledger.reviewed,costLedgerEnabled:false}}).cost_facts,undefined);
+console.log('PASS cost ledger mapper: basis, explicit facts, stale opt-out, conflict guards, confirmation reset');
