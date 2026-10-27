@@ -67,6 +67,19 @@ function cgtTemp2Phrase(years) {
   return '두 집이 모두 조정대상지역이었다면 2년, 아니면 3년';
 }
 
+const CGT_GIFT_REVIEWS = [
+  ['same_assessment_confirmed','산출세액과 과세가액이 같은 증여세 과세건의 자료입니다'],
+  ['t56_assessed_amount_confirmed','입력 세액은 신고세액공제·기납부 차감 전 증여세 산출세액입니다'],
+  ['article47_basis_and_components_complete','과세가액의 현재 재산과 과거 합산 구성을 빠짐없이 입력했습니다'],
+  ['target_is_current_gift_asset','양도 자산은 현재 증여재산 목록에 포함된 자산입니다'],
+  ['full_single_target_ownership_confirmed','양도 대상 자산 전체를 단독 소유하며 전체를 양도합니다'],
+  ['ordinary_spouse_scope_confirmed','배우자 일반 상가 무상증여이며 사망·수용·부담부·감면 등 예외가 없습니다'],
+  ['both_acquisition_costs_complete','증여자 취득원가와 수증자 취득가액을 모두 확인했습니다'],
+  ['separate_expenses_qualified_and_nonduplicated','별도 필요경비의 적격 증빙과 중복 공제 여부를 확인했습니다'],
+  ['same_expenses_apply_to_both_branches','입력 필요경비는 이월과세 적용·미적용 양쪽에 동일하게 적용됩니다'],
+  ['gift_tax_not_already_in_costs','입력 취득가액·필요경비에 증여세 상당액이 이미 포함되지 않았습니다'],
+  ['no_other_transfers_and_basic_unused','다른 양도가 없고 연간 기본공제를 사용하지 않았습니다']
+];
 const CGT_COST_ITEMS = [
   ['acquisition_tax','취득세'],['registration','등록세·등록면허세'],['legal_registration','등기 법무사비'],['acquisition_brokerage','취득 중개비'],['purchase_incidental','검토한 매입 부대비'],['contract_price_interest','당초 약정 대가에 포함된 이자 (지연이자 제외)'],
   ['materials','자가건설 원재료'],['labor','자가건설 노무비'],['freight','자가건설 운임'],['unloading','자가건설 하역비'],['insurance','자가건설 보험료'],['construction_fees','자가건설 수수료'],['public_charges','자가건설 공과금'],['installation','자가건설 설치비'],['construction_incidental','검토한 자가건설 부대비'],
@@ -160,8 +173,27 @@ function cgtReviewedPayload(a) {
     if (out.gift_date !== a.acquiredDate) throw new Error('배우자 증여일과 취득일이 같아야 합니다.');
     out.donor_acquisition_date = day(r.donorDate, '증여자 취득일');
     out.donor_acquisition_price = money(r.donorCost, '증여자 실제 취득가액');
-    out.donor_gift_tax_paid = money(r.giftTax, '증여세 납부액');
+    out.donor_gift_tax_paid = money(r.giftTax, '증여세 산출세액');
     confirm(r.giftConfirmed, '배우자 관계·증빙·원가 완전성');
+    if(out.donor_gift_tax_paid>0) {
+      if(a.assetType!=='commercial'||a.nonHouseType!=='building'||r.reliefEnabled||r.lateEnabled||r.depreciationEnabled)throw new Error('양수 증여세 상당액은 일반 상가의 배우자 단일 무상증여만 지원합니다.');
+      const ref=(v,label)=>{if(typeof v!=='string'||!v.trim()||v.length>500)throw new Error(label+'을 500자 이내로 입력해 주세요.');return v.trim();};
+      const assessment=ref(r.giftAssessment,'증여세 과세건 식별명');
+      const target=ref(r.giftTarget,'양도 자산 식별명');
+      if(!(r.giftAssets||[]).length)throw new Error('현재 증여재산 목록을 입력해 주세요.');
+      if(!['none','list'].includes(r.giftPriorMode))throw new Error('과거 증여 합산 여부를 확인해 주세요.');
+      if(r.giftPriorMode==='list'&&!(r.giftPrior||[]).length)throw new Error('과거 합산 명세를 입력해 주세요.');
+      const current=r.giftAssets.map(v=>({asset_ref:ref(v.ref,'현재 자산 식별명'),assessment_ref:assessment,taxable_value:money(v.amount,'현재 자산 과세가액')}));
+      const prior=r.giftPriorMode==='none'?[]:r.giftPrior.map(v=>({prior_gift_ref:ref(v.ref,'과거 증여 식별명'),gift_date:day(v.date,'과거 증여일'),included_in_assessment_ref:assessment,included_value:money(v.amount,'과거 합산 과세가액')}));
+      const ids=[...current.map(v=>v.asset_ref),...prior.map(v=>v.prior_gift_ref)];
+      if(new Set(ids).size!==ids.length||!current.some(v=>v.asset_ref===target))throw new Error('재산 식별명은 중복 없이 입력하고 양도 자산을 현재 목록에서 지정해 주세요.');
+      if(prior.some(v=>v.gift_date>=out.gift_date))throw new Error('과거 합산 증여일은 현재 증여일보다 빨라야 합니다.');
+      const total=money(r.giftV47,'증여세 과세가액');
+      if(!total||current.reduce((s,v)=>s+v.taxable_value,0)+prior.reduce((s,v)=>s+v.included_value,0)!==total)throw new Error('현재 재산과 과거 합산 과세가액 합계가 증여세 과세가액과 같아야 합니다.');
+      const manual_review={review_reference:ref(r.giftReviewSource,'증여세 검토 자료명')};
+      for(const [key,label] of CGT_GIFT_REVIEWS){confirm(r['gift_'+key+'Confirmed'],label);manual_review[key]=true;}
+      out.carryover_gift_tax_context={schema_version:1,assessment:{assessment_ref:assessment,t56_source_assessment_ref:assessment,v47_source_assessment_ref:assessment,gift_date:out.gift_date,v47_taxable_value:total},target_asset_ref:target,current_assets:current,prior_aggregated_gifts:prior,manual_review};
+    }
   }
   if (r.reliefEnabled) {
     if (a.assetType !== 'commercial' || a.nonHouseType !== 'land' || a.landUse !== 'business') throw new Error('이 감면 입력은 일반 사업용 토지를 대상으로 합니다. 자산 종류와 사용현황을 확인해 주세요.');
@@ -271,7 +303,16 @@ function CGTReviewedInputs({value,onChange}) {
     {r.depreciationEnabled && <fieldset><legend>감가상각비 조정</legend>{field('depreciation','사업소득 필요경비에 산입한 또는 산입할 감가상각비 누계 (원)')}{check('depreciationConfirmed','입력 취득가액은 감가상각비 차감 전 금액이며, 양도분에 귀속되는 산입 누계를 확인했습니다')}<p>이미 차감한 취득가액을 다시 조정하지 마세요. 증여·환산취득가·감면·가산세 결합은 이 화면에서 제외합니다.</p></fieldset>}
     {r.convertedEnabled && <fieldset><legend>환산취득가 확인 자료</legend>{field('convertedAcq','취득 시 기준시가 (원)')}{field('convertedTransfer','양도 시 기준시가 (원)')}{select('convertedExpense','필요경비 방식',[['estimate','개산공제'],['actual','확인한 실제 필요경비 (기존 필요경비 입력칸 사용)']])}{['convertedAcqSource','convertedTransferSource','convertedNote'].map((key,i)=><label key={key} style={{display:'block'}}>{['취득 시 기준시가 출처','양도 시 기준시가 출처','실가·매매사례·감정가를 순서대로 적용할 수 없는 이유'][i]}<textarea value={r[key]||''} maxLength={1000} onChange={e=>set(key,e.target.value)}/></label>)}{check('convertedConfirmed','실가·매매사례·감정가 적용 불가를 검토했고, 최초고시 전 취득·특수처분이 없고 보유 중 신규고시가 있으며 기준시가의 귀속과 별도 조정 불필요를 확인했습니다')}</fieldset>}
     {check('giftEnabled','배우자에게 증여받은 자산의 이월과세 검토')}
-    {r.giftEnabled && <fieldset><legend>배우자 증여 원자료</legend>{field('giftDate','증여일','date')}{field('donorDate','증여자의 원래 취득일','date')}{field('donorCost','증여자의 실제 취득가액 (원)')}{field('giftTax','해당 증여세 납부액 (원, 0원도 직접 입력)')}{check('giftConfirmed','배우자 관계·증빙·원가 완전성을 검토했습니다')}<p>연도·주택 수·보유기간·증여세액에 따라 지원 범위를 판단합니다.</p></fieldset>}
+    {r.giftEnabled && <fieldset><legend>배우자 증여 원자료</legend>{field('giftDate','증여일','date')}{field('donorDate','증여자의 원래 취득일','date')}{field('donorCost','증여자의 실제 취득가액 (원)')}{field('giftTax','증여세 산출세액 (원, 납부액 아님·0원도 직접 입력)')}{check('giftConfirmed','배우자 관계·증빙·원가 완전성을 검토했습니다')}<p>연도·주택 수·보유기간·증여세액에 따라 지원 범위를 판단합니다.</p>
+      {Number(r.giftTax)>0&&<fieldset><legend>증여세 상당액 계산 자료</legend><p>2022~2026년 일반 상가·배우자 단일 무상증여·양쪽 보유기간 2년 이상 경로입니다. 산출세액은 공제·기납부를 차감한 납부액과 다릅니다. 현재 과세건에 합산된 과거 증여도 함께 입력하세요.</p>
+        {field('giftAssessment','증여세 과세건 식별명')}{field('giftV47','증여세 과세가액 (원)')}{field('giftTarget','양도 자산 식별명')}
+        {(r.giftAssets||[]).map((v,i)=><fieldset key={i}><legend>현재 증여재산 {i+1}</legend><label>현재 자산 식별명<input value={v.ref||''} onChange={e=>rowChange('giftAssets',i,'ref',e.target.value)}/></label><label>현재 자산 과세가액 (원)<input value={v.amount??''} onChange={e=>rowChange('giftAssets',i,'amount',e.target.value)}/></label><button type="button" onClick={()=>set('giftAssets',r.giftAssets.filter((_,j)=>i!==j))}>현재 재산 {i+1} 삭제</button></fieldset>)}
+        <button type="button" onClick={()=>set('giftAssets',[...(r.giftAssets||[]),{}])}>현재 증여재산 추가</button>
+        {select('giftPriorMode','과거 증여 합산 여부',[['none','합산 없음 — 확인 완료'],['list','합산 있음 — 명세 입력']])}
+        {r.giftPriorMode==='list'&&<>{(r.giftPrior||[]).map((v,i)=><fieldset key={i}><legend>과거 합산 증여 {i+1}</legend><label>과거 증여 식별명<input value={v.ref||''} onChange={e=>rowChange('giftPrior',i,'ref',e.target.value)}/></label><label>과거 증여일<input type="date" value={v.date||''} onChange={e=>rowChange('giftPrior',i,'date',e.target.value)}/></label><label>과거 합산 과세가액 (원)<input value={v.amount??''} onChange={e=>rowChange('giftPrior',i,'amount',e.target.value)}/></label><button type="button" onClick={()=>set('giftPrior',r.giftPrior.filter((_,j)=>i!==j))}>과거 증여 {i+1} 삭제</button></fieldset>)}<button type="button" onClick={()=>set('giftPrior',[...(r.giftPrior||[]),{}])}>과거 합산 증여 추가</button></>}
+        {field('giftReviewSource','증여세 검토 자료명')}{CGT_GIFT_REVIEWS.map(([key,label])=><React.Fragment key={key}>{check('gift_'+key+'Confirmed',label)}</React.Fragment>)}
+      </fieldset>}
+    </fieldset>}
     {check('reliefEnabled','토지 양도소득세 감면 신청')}
     {r.reliefEnabled && <fieldset><legend>감면 요건과 한도 이력</legend>
       {select('reliefType','감면 종류',['자경농지','축사업용',...kinds.filter(k=>k!=='감면없음')].map(k=>[k,k]))}

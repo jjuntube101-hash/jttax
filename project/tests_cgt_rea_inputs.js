@@ -38,3 +38,19 @@ for(const [category,flag,key] of [['contract_price_interest','interestConfirmed'
  assert.throws(()=>map(env.api.cgtApplyAnswer(input,'acquired',700000000)));
 }
 console.log('PASS historical 2018-2025 ledger and explicit contractual-interest/donated-road facts');
+
+const giftReviews=vm.runInContext('CGT_GIFT_REVIEWS',env);
+const gift={...a,acquiredDate:'2023-01-01',transferDate:'2025-10-20',acquired:500000000,expenses:10000000,
+ reviewed:{giftEnabled:true,giftDate:'2023-01-01',donorDate:'2000-10-20',donorCost:'100000000',giftTax:'70000000',giftConfirmed:true,
+ giftAssessment:'SYN-A',giftV47:'1000000000',giftTarget:'SHOP',giftAssets:[{ref:'SHOP',amount:'500000000'},{ref:'CASH',amount:'500000000'}],
+ giftPriorMode:'none',giftReviewSource:'synthetic reviewed facts',...Object.fromEntries(giftReviews.map(([k])=>['gift_'+k+'Confirmed',true]))}};
+const gp=map(gift);assert.equal(gp.donor_gift_tax_paid,70000000);assert.equal(gp.carryover_gift_tax_context.current_assets.length,2);
+assert.equal(gp.carryover_gift_tax_context.assessment.v47_taxable_value,1000000000);
+for(const [k] of giftReviews)assert.throws(()=>map({...gift,reviewed:{...gift.reviewed,['gift_'+k+'Confirmed']:false}}));
+for(const patch of [{giftPriorMode:''},{giftV47:'1'},{giftAssets:[{ref:'SHOP',amount:'1000000000'},{ref:'SHOP',amount:'0'}]},{giftTarget:'MISSING'},{giftAssessment:''}])assert.throws(()=>map({...gift,reviewed:{...gift.reviewed,...patch}}));
+const priorGift={...gift,reviewed:{...gift.reviewed,giftAssets:[gift.reviewed.giftAssets[0]],giftPriorMode:'list',giftPrior:[{ref:'OLD',date:'2019-01-01',amount:'500000000'}]}};
+assert.equal(map(priorGift).carryover_gift_tax_context.prior_aggregated_gifts.length,1);
+assert.throws(()=>map(env.api.cgtApplyAnswer(gift,'sold',1100000000)));
+assert.equal(map({...gift,reviewed:{...gift.reviewed,giftTax:'0'}}).carryover_gift_tax_context,undefined);
+assert.equal(map({...gift,reviewed:{...gift.reviewed,giftEnabled:false}}).carryover_gift_tax_context,undefined);
+console.log('PASS positive assessed gift tax: current/prior composition, all explicit reviews, stale opt-out and edit reset');
