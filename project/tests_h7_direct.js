@@ -38,3 +38,11 @@ assert.equal(c.request('exclusion',heritage).heavy_exclusion_facts.heritage_kind
 assert.throws(()=>c.request('exclusion',{...heritage,designation_date:''}));
 assert.throws(()=>c.request('exclusion',{...heritage,dwelling_itself_protected:false}));
 console.log('H8 membership and heritage request guards PASS');
+const other={property_type:'특정주식',acquisition_date:'2023-01-01',transfer_date:'2023-02-01',transfer_price:'200000000',acquisition_price:'100000000',expenses_total:'0',asset_total:'1000000000',real_estate_value:'500000000',issued_shares:'100',group_shares:'60',disposed_shares:'50',business_kind:'일반사업',buyer_outside_group:'예',facility_share_right:'아니오',ordinary_case_confirmed:true,resident_confirmed:true,single_disposal_confirmed:true,valuation_rules_confirmed:true,no_indirect_holdings:true,no_nonbusiness_land:true,no_other_share_transfers:true};
+assert.equal(c.request('otherStock',other).group_shares,60);
+assert.throws(()=>c.request('otherStock',{...other,no_nonbusiness_land:false}));
+assert.throws(()=>c.request('otherStock',{...other,issued_shares:'1.5'}));
+const used={...exclusion,exclusion_label:'노인복지주택 사용완료',statutory_elderly_home:true,acquired_for_qualified_use:true,continuous_direct_use:true,no_early_sale_gift_or_change:true,use_started:'2023-01-02',verified_through:'2026-01-03'};
+assert.equal(c.request('exclusion',used).heavy_exclusion_facts.use_started,'2023-01-02');
+assert.throws(()=>c.request('exclusion',{...used,verified_through:''}));
+console.log('H9 other shares and completed-use inputs PASS');

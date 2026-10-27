@@ -1429,6 +1429,7 @@ cautions 3개, saving_ideas 2~3개.`;
   // ===== 결과 =====
   /* 로딩을 결과보다 먼저 본다 — 차단 화면의 「다시 시도」 중에 옛 차단 화면이 남아 있지 않게 */
   if (annualMode) return <JTTransferAnnualDirect initialDraft={annualDraft} onBack={draft=>{setAnnualDraft(draft);setAnnualMode(false);}} />;
+  if (directMode === 'otherStock') return <JTH7TaxDirect mode="otherStock" initialDraft={directDrafts.otherStock} onBack={draft=>{setDirectDrafts(old=>({...old,otherStock:draft}));setDirectMode(null);}} />;
   if (directMode === 'facility') return <JTH7TaxDirect mode="facility" initialDraft={directDrafts.facility} onBack={draft=>{setDirectDrafts(old=>({...old,facility:draft}));setDirectMode(null);}} />;
   if (directMode === 'rights') return <JTH7TaxDirect mode="rights" initialDraft={directDrafts.rights} onBack={draft=>{setDirectDrafts(old=>({...old,rights:draft}));setDirectMode(null);}} />;
   if (directMode === 'landValue') return <JTLandStandardValueDirect initialDraft={directDrafts.landValue} onBack={draft=>{setDirectDrafts(old=>({...old,landValue:draft}));setDirectMode(null);}} />;
@@ -1725,6 +1726,7 @@ cautions 3개, saving_ideas 2~3개.`;
         tag="LIVE"
       >
         <button type="button" data-testid="open-annual-direct" onClick={()=>setAnnualMode(true)}>여러 부동산 연간 합산·기신고·납부 정산</button>
+        <button type="button" data-testid="open-other-stock-direct" onClick={()=>setDirectMode('otherStock')}>기타자산 주식 양도 계산</button>
         <button type="button" data-testid="open-facility-direct" onClick={()=>setDirectMode('facility')}>회원권·시설물이용권 양도 계산</button>
         <button type="button" data-testid="open-rights-direct" onClick={()=>setDirectMode('rights')}>등기 권리 양도 계산</button>
         <button type="button" data-testid="open-stock-direct" onClick={()=>setDirectMode('stock')}>주식 양도 계산</button>
