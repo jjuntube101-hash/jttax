@@ -27,3 +27,14 @@ assert.equal(c.request('exclusion',exclusion).heavy_exclusion_type,'public_share
 assert.throws(()=>c.request('exclusion',{...exclusion,designated_public_housing_operator:false}));
 assert.equal(c.valid('exclusion',{'세액':100,'취득세':80,'중과여부':false}),true);
 assert.equal(c.valid('exclusion',{'세액':100,'취득세':80,'중과여부':'false'}),false);
+const facility={...rights,property_type:'골프회원권',ordinary_membership_confirmed:true,membership_contract_confirmed:true};
+const fq=c.request('facility',facility);
+assert.equal(fq.ordinary_membership_confirmed,true);
+assert.equal(fq.membership_contract_confirmed,true);
+assert.equal(fq.ordinary_registered_right_confirmed,undefined);
+assert.throws(()=>c.request('facility',{...facility,membership_contract_confirmed:false}));
+const heritage={...exclusion,exclusion_label:'지정·등록 유산 주택',heritage_kind:'등록문화재·등록문화유산',designation_date:'2020-01-01',dwelling_itself_protected:true,designation_valid_on_acquisition:true};
+assert.equal(c.request('exclusion',heritage).heavy_exclusion_facts.heritage_kind,'registered');
+assert.throws(()=>c.request('exclusion',{...heritage,designation_date:''}));
+assert.throws(()=>c.request('exclusion',{...heritage,dwelling_itself_protected:false}));
+console.log('H8 membership and heritage request guards PASS');
