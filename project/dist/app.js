@@ -13508,6 +13508,7 @@ if (typeof window !== "undefined" && !window.jtLookupRegion) {
     return res.json();
   };
 }
+const YS_REVENUE_YEAR = (/* @__PURE__ */ new Date()).getFullYear();
 const YS_QS = [
   {
     id: "mode",
@@ -13643,8 +13644,8 @@ const YS_QS = [
     numeric: true,
     money: true,
     optional: true,
-    q: "\uC5F0 \uC218\uC785\uAE08\uC561(\uB9E4\uCD9C)\uC740 \uB300\uB7B5 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC120\uD0DD)",
-    sub: "\uCCAD\uB144\uC774 \uC544\uB2C8\uC5B4\uB3C4 \uADF8\uD574 \uC5F0 \uC218\uC785\uAE08\uC561\uC774 1\uC5B5 4\uBC31\uB9CC\uC6D0 \uC774\uD558\uC778 \u300C\uC18C\uADDC\uBAA8\u300D \uCC3D\uC5C5\uC774\uBA74 \uCCAD\uB144\uACFC \uAC19\uC740 \uB192\uC740 \uAC10\uBA74\uC728\uC744 \uBC1B\uC2B5\uB2C8\uB2E4(\xA76\u2465, \uC18C\uADDC\uBAA8 \uD2B9\uB840 \u2014 2026\uB144 \uC774\uD6C4 \uC2DC\uC791\uD558\uB294 \uACFC\uC138\uC5F0\uB3C4 \uAE30\uC900\uC774\uBA70, 2025\uB144 \uACFC\uC138\uC5F0\uB3C4\uBD84\uAE4C\uC9C0\uB294 8\uCC9C\uB9CC\uC6D0). \uB300\uB7B5\uC801\uC778 \uC5F0 \uB9E4\uCD9C\uC744 \uB123\uC73C\uBA74 \uC774 \uD2B9\uB840 \uC801\uC6A9 \uC5EC\uBD80\uB97C \uD310\uC815\uD569\uB2C8\uB2E4.",
+    q: "\uC62C\uD574(" + YS_REVENUE_YEAR + "\uB144) \uC5F0 \uC218\uC785\uAE08\uC561(\uB9E4\uCD9C)\uC740 \uB300\uB7B5 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC120\uD0DD)",
+    sub: "\uCCAD\uB144\uC774 \uC544\uB2C8\uC5B4\uB3C4 \uADF8 \uACFC\uC138\uC5F0\uB3C4\uC758 \uC5F0 \uC218\uC785\uAE08\uC561\uC774 1\uC5B5 4\uBC31\uB9CC\uC6D0 \uC774\uD558\uC778 \u300C\uC18C\uADDC\uBAA8\u300D \uCC3D\uC5C5\uC774\uBA74 \uCCAD\uB144\uACFC \uAC19\uC740 \uB192\uC740 \uAC10\uBA74\uC728\uC744 \uBC1B\uC2B5\uB2C8\uB2E4(\xA76\u2465, \uC18C\uADDC\uBAA8 \uD2B9\uB840 \u2014 2026\uB144 1\uC6D4 1\uC77C \uC774\uD6C4 \uC2DC\uC791\uD558\uB294 \uACFC\uC138\uC5F0\uB3C4 \uAE30\uC900\uC774\uBA70, \uADF8 \uC804\uC5D0 \uC2DC\uC791\uD55C \uACFC\uC138\uC5F0\uB3C4\uB294 8\uCC9C\uB9CC\uC6D0). \uC62C\uD574 \uC608\uC0C1 \uC5F0 \uB9E4\uCD9C\uC744 \uB123\uC73C\uBA74 \uC62C\uD574(" + YS_REVENUE_YEAR + "\uB144) \uACFC\uC138\uC5F0\uB3C4 \uAE30\uC900\uC73C\uB85C \uD310\uC815\uD569\uB2C8\uB2E4.",
     placeholder: "\uC608: 80,000,000"
   },
   {
@@ -13755,7 +13756,10 @@ function mapAnswersToYouth(a, industryMatch, region) {
     body.overcrowding_uncertain = !!region.overcrowding_uncertain;
     if (region.sigungu_code) body.sigungu_code = region.sigungu_code;
   }
-  if (Number(a.annualRevenue) > 0) body.annual_revenue = Number(a.annualRevenue);
+  if (Number(a.annualRevenue) > 0) {
+    body.annual_revenue = Number(a.annualRevenue);
+    body.tax_year = YS_REVENUE_YEAR;
+  }
   if (a.employeeCount !== void 0 && a.employeeCount !== "") body.employee_count = Number(a.employeeCount);
   if (Number(a.expectedTax) > 0) body.expected_annual_tax = Number(a.expectedTax);
   return body;

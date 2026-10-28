@@ -32,6 +32,9 @@ if (typeof window !== 'undefined' && !window.jtLookupRegion) {
   };
 }
 
+// 연 수입금액 질문의 기준 과세연도(올해). §6⑥ 소규모 특례 한도는 과세연도 개시 시점으로 갈린다 — 2026.1.1 이후 1억4백만원, 그 전 8천만원.
+const YS_REVENUE_YEAR = new Date().getFullYear();
+
 const YS_QS = [
   {
     id: 'mode', tier: 'quick', section: '시작하기',
@@ -128,8 +131,8 @@ const YS_QS = [
   },
   {
     id: 'annualRevenue', tier: 'detail', section: '연 수입금액', numeric: true, money: true, optional: true,
-    q: '연 수입금액(매출)은 대략 얼마인가요? (선택)',
-    sub: '청년이 아니어도 그해 연 수입금액이 1억 4백만원 이하인 「소규모」 창업이면 청년과 같은 높은 감면율을 받습니다(§6⑥, 소규모 특례 — 2026년 이후 시작하는 과세연도 기준이며, 2025년 과세연도분까지는 8천만원). 대략적인 연 매출을 넣으면 이 특례 적용 여부를 판정합니다.',
+    q: '올해(' + YS_REVENUE_YEAR + '년) 연 수입금액(매출)은 대략 얼마인가요? (선택)',
+    sub: '청년이 아니어도 그 과세연도의 연 수입금액이 1억 4백만원 이하인 「소규모」 창업이면 청년과 같은 높은 감면율을 받습니다(§6⑥, 소규모 특례 — 2026년 1월 1일 이후 시작하는 과세연도 기준이며, 그 전에 시작한 과세연도는 8천만원). 올해 예상 연 매출을 넣으면 올해(' + YS_REVENUE_YEAR + '년) 과세연도 기준으로 판정합니다.',
     placeholder: '예: 80,000,000',
   },
   {
@@ -225,7 +228,10 @@ function mapAnswersToYouth(a, industryMatch, region) {
     body.overcrowding_uncertain = !!region.overcrowding_uncertain;   // 과밀 부분지정(남양주·시흥·인천 경제자유구역 등)
     if (region.sigungu_code) body.sigungu_code = region.sigungu_code;
   }
-  if (Number(a.annualRevenue) > 0) body.annual_revenue = Number(a.annualRevenue);
+  if (Number(a.annualRevenue) > 0) {
+    body.annual_revenue = Number(a.annualRevenue);
+    body.tax_year = YS_REVENUE_YEAR;   // 질문이 «올해» 매출을 묻는다 — §6⑥ 한도는 과세연도 개시 시점으로 갈린다(부칙 제21223호 §2)
+  }
   if (a.employeeCount !== undefined && a.employeeCount !== '') body.employee_count = Number(a.employeeCount);
   if (Number(a.expectedTax) > 0) body.expected_annual_tax = Number(a.expectedTax);
   return body;
