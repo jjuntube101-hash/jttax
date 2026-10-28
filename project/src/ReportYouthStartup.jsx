@@ -129,7 +129,7 @@ const YS_QS = [
   {
     id: 'annualRevenue', tier: 'detail', section: '연 수입금액', numeric: true, money: true, optional: true,
     q: '연 수입금액(매출)은 대략 얼마인가요? (선택)',
-    sub: '청년이 아니어도 연 수입금액이 8천만원 이하인 「소규모」 창업이면 청년과 같은 높은 감면율을 받습니다(§6⑥, 소규모 특례). 대략적인 연 매출을 넣으면 이 특례 적용 여부를 판정합니다.',
+    sub: '청년이 아니어도 그해 연 수입금액이 1억 4백만원 이하인 「소규모」 창업이면 청년과 같은 높은 감면율을 받습니다(§6⑥, 소규모 특례 — 2026년 이후 시작하는 과세연도 기준이며, 2025년 과세연도분까지는 8천만원). 대략적인 연 매출을 넣으면 이 특례 적용 여부를 판정합니다.',
     placeholder: '예: 80,000,000',
   },
   {
@@ -456,7 +456,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                   {calc.is_youth ? '청년창업중소기업' : (calc.small_scale_applied ? '소규모 창업 특례(§6⑥)' : '일반 창업중소기업')} · {calc.area}
                 </div>
                 {!calc.is_youth && !calc.small_scale_applied && (
-                  <div style={{ fontSize: 12.5, opacity: 0.75, marginTop: 6, lineHeight: 1.5 }}>※ 청년이 아니면 일반율입니다. <strong>연 수입금액 8천만원 이하 소규모</strong>로 창업하면 청년과 같은 높은 율(§6⑥)을 받을 수 있어요 — 정밀 단계에서 매출을 넣어 확인하세요.</div>
+                  <div style={{ fontSize: 12.5, opacity: 0.75, marginTop: 6, lineHeight: 1.5 }}>※ 청년이 아니면 일반율입니다. <strong>연 수입금액 1억 4백만원 이하 소규모</strong>로 창업하면 청년과 같은 높은 율(§6⑥)을 받을 수 있어요 — 정밀 단계에서 매출을 넣어 확인하세요.</div>
                 )}
                 {calc.estimated_annual_reduction != null && (
                   <div style={{ marginTop: 10, fontSize: 15 }}>예상 감면액(연) <strong style={{ color: meta.color }}>{formatWon(calc.estimated_annual_reduction)}</strong>{calc.cap_applied ? ' (5억 한도)' : ''}</div>
@@ -502,7 +502,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                   ))}
                 </tbody>
               </table>
-              <p style={{ fontSize: 12.5, opacity: 0.7, marginTop: 8 }}>※ 수도권 인구감소지역 = 인천 강화·옹진, 경기 가평·연천 (2026년 이후 창업 기준). 청년이 아니어도 연 수입 8천만원 이하 소규모면 청년과 같은 율을 받습니다.</p>
+              <p style={{ fontSize: 12.5, opacity: 0.7, marginTop: 8 }}>※ 수도권 인구감소지역 = 인천 강화·옹진, 경기 가평·연천 (2026년 이후 창업 기준). 청년이 아니어도 연 수입 1억 4백만원 이하 소규모면 청년과 같은 율을 받습니다(2026년 이후 시작하는 과세연도 기준).</p>
             </section>
           )}
 
