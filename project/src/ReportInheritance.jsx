@@ -293,7 +293,7 @@ const INHERITANCE_QS = [
   {"id": "bequestNonHeirs", "section": "추가 계산 입력", "q": "상속인 아닌 수유자에게 유증한 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
   {"id": "renouncedNext", "section": "추가 계산 입력", "q": "선순위 상속 포기로 다음 순위가 받은 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
   {"id": "reinherit", "section": "추가 계산 조건", "q": "단기 재상속공제를 신청하나요?", "opts": [["no", "아니오", ""], ["yes", "예 — 이전 상속 자료 확인", ""]], showIf:a=>true},
-  {id:'priorInheritanceDate', section:'추가 계산 조건', q:'전의 상속개시일 (알면 날짜 입력, 모르면 다음 경과연수 입력)', placeholder:'2025-01-01', freeform:true, optional:true, showIf:a=>a.reinherit==='yes'},
+  {id:'priorInheritanceDate', section:'추가 계산 조건', q:'전의 상속개시일 (2020~2025년 필수, 2026년은 날짜 또는 다음 경과연수)', placeholder:'2025-01-01', freeform:true, optional:true, showIf:a=>a.reinherit==='yes'},
   {"id": "reinheritYears", "section": "추가 계산 조건", "q": "전의 상속부터 이번 상속까지 올림한 연수 (1년 이내=1)", "numeric": true, "money": false, "optional": true, showIf:a=>a.reinherit==='yes'},
   {"id": "priorInheritanceTax", "section": "추가 계산 조건", "q": "전의 상속세 산출세액 (납부세액 아님, 원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
   {"id": "priorEstate", "section": "추가 계산 조건", "q": "전의 총상속재산가액 (원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
@@ -389,8 +389,9 @@ function mapAnswersToInheritance(a) {
   }
 
   if(a.reinherit==='yes') {
-    if(body.death_date && body.death_date.slice(0,4)!=='2026') throw new Error('단기 재상속공제는 현재 2026년 상속만 지원합니다. 과거 연도는 당시 법령과 입력요건 검토가 필요합니다.');
+    if(body.death_date && Number(body.death_date.slice(0,4))<2020) throw new Error('2017~2019년 단기 재상속공제는 당시 재산가액 차감·상한에 필요한 추가 자료 검토가 필요합니다.');
     const priorDate=String(a.priorInheritanceDate||'').trim();
+    if(body.death_date && Number(body.death_date.slice(0,4))<2026 && !priorDate) throw new Error('2020~2025년 단기 재상속공제는 전의 상속개시일을 입력해 주세요.');
     if(priorDate) {
       if(!body.death_date || !/^\d{4}-\d{2}-\d{2}$/.test(priorDate) || isNaN(Date.parse(priorDate)) || new Date(priorDate).toISOString().slice(0,10)!==priorDate || priorDate>=body.death_date) throw new Error('전의 상속개시일은 유효한 날짜이며 이번 상속개시일보다 앞서야 합니다.');
       body.prior_inheritance_date=priorDate;

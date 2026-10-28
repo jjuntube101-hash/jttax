@@ -48,3 +48,6 @@ for(const d of ['2027-01-01','2026-10-10','2025-02-30'])test('invalid prior date
 test('prior date requires current date',()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,priorInheritanceDate:'2025-01-01'})));
 test('past reinheritance not silently calculated',()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,deathDate:'2019-10-10',historicalChildAges:'30,35'})));
 test('reinherit off discards stale date',()=>assert.equal(inh.mapAnswersToInheritance({...ia,reinherit:'no',priorInheritanceDate:'2027-01-01'}).prior_inheritance_date,undefined));
+
+for(let year=2020;year<=2025;year++)test('historical reinheritance date '+year,()=>{const b=inh.mapAnswersToInheritance({...ia,deathDate:year+'-10-10',historicalChildAges:'30,35',priorInheritanceDate:(year-1)+'-10-10',burialFacilityExpenses:'0'});assert.equal(b.prior_inheritance_date,(year-1)+'-10-10');assert.equal(b.short_term_re_inheritance,true);});
+test('historical reinheritance requires exact prior date',()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,deathDate:'2020-10-10',historicalChildAges:'30,35',priorInheritanceDate:''})));
