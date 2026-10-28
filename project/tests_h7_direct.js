@@ -57,3 +57,13 @@ assert.equal(c.request('exclusion',converted).heavy_exclusion_facts.conversion_d
 assert.throws(()=>c.request('exclusion',{...converted,conversion_date:''}));
 assert.throws(()=>c.request('exclusion',{...converted,conversion_no_interruption:false}));
 console.log('H10 joint/indirect/conversion request guards PASS');
+const buildingJoint={...joint,total_price:'500000000',common_sale_expenses:'5000000',include_building:'예',building_acquisition_date:'2017-01-01',building_price:'100000000',building_cost:'50000000',building_depreciation:'10000000',building_expenses:'0',ordinary_business_building_confirmed:true};
+assert.equal(c.request('goodwill',buildingJoint).building.depreciation,10000000);
+assert.equal(c.request('goodwill',buildingJoint).ordinary_business_building_confirmed,undefined);
+assert.equal(c.request('goodwill',{...buildingJoint,include_building:'아니오'}).building,undefined);
+assert.throws(()=>c.request('goodwill',{...buildingJoint,ordinary_business_building_confirmed:false}));
+assert.throws(()=>c.request('goodwill',{...buildingJoint,building_depreciation:'1.5'}));
+const jr={'총세부담':1,'장기보유특별공제':1,'토지공통비용':1,'영업권공통비용':1,'기본공제':1,'과세표준':1};
+assert.equal(c.valid('goodwill',jr,c.request('goodwill',buildingJoint)),false);
+assert.equal(c.valid('goodwill',{...jr,'건물공통비용':1,'건물양도차익':1,'건물장기보유특별공제':1,'토지장기보유특별공제':1},c.request('goodwill',buildingJoint)),true);
+console.log('H11 building payload, scope and response checks PASS');
