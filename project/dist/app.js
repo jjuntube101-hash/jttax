@@ -13590,6 +13590,7 @@ const INHERITANCE_QS = [
   { "id": "bequestNonHeirs", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC0C1\uC18D\uC778 \uC544\uB2CC \uC218\uC720\uC790\uC5D0\uAC8C \uC720\uC99D\uD55C \uC7AC\uC0B0\uAC00\uC561 (\uC6D0)", "sub": "\uCD1D\uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD3EC\uD568\uB41C \uAE08\uC561\uC785\uB2C8\uB2E4. \uC0C1\uC18D\uACF5\uC81C \uD55C\uB3C4 \uACC4\uC0B0\uC5D0 \uBC18\uC601\uD569\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true },
   { "id": "renouncedNext", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC120\uC21C\uC704 \uC0C1\uC18D \uD3EC\uAE30\uB85C \uB2E4\uC74C \uC21C\uC704\uAC00 \uBC1B\uC740 \uC7AC\uC0B0\uAC00\uC561 (\uC6D0)", "sub": "\uCD1D\uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD3EC\uD568\uB41C \uAE08\uC561\uC785\uB2C8\uB2E4. \uC0C1\uC18D\uACF5\uC81C \uD55C\uB3C4 \uACC4\uC0B0\uC5D0 \uBC18\uC601\uD569\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true },
   { "id": "reinherit", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", "q": "\uB2E8\uAE30 \uC7AC\uC0C1\uC18D\uACF5\uC81C\uB97C \uC2E0\uCCAD\uD558\uB098\uC694?", "opts": [["no", "\uC544\uB2C8\uC624", ""], ["yes", "\uC608 \u2014 \uC774\uC804 \uC0C1\uC18D \uC790\uB8CC \uD655\uC778", ""]], showIf: (a) => true },
+  { id: "priorInheritanceDate", section: "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", q: "\uC804\uC758 \uC0C1\uC18D\uAC1C\uC2DC\uC77C (\uC54C\uBA74 \uB0A0\uC9DC \uC785\uB825, \uBAA8\uB974\uBA74 \uB2E4\uC74C \uACBD\uACFC\uC5F0\uC218 \uC785\uB825)", placeholder: "2025-01-01", freeform: true, optional: true, showIf: (a) => a.reinherit === "yes" },
   { "id": "reinheritYears", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", "q": "\uC804\uC758 \uC0C1\uC18D\uBD80\uD130 \uC774\uBC88 \uC0C1\uC18D\uAE4C\uC9C0 \uC62C\uB9BC\uD55C \uC5F0\uC218 (1\uB144 \uC774\uB0B4=1)", "numeric": true, "money": false, "optional": true, showIf: (a) => a.reinherit === "yes" },
   { "id": "priorInheritanceTax", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", "q": "\uC804\uC758 \uC0C1\uC18D\uC138 \uC0B0\uCD9C\uC138\uC561 (\uB0A9\uBD80\uC138\uC561 \uC544\uB2D8, \uC6D0)", "numeric": true, "money": true, "optional": true, showIf: (a) => a.reinherit === "yes" },
   { "id": "priorEstate", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", "q": "\uC804\uC758 \uCD1D\uC0C1\uC18D\uC7AC\uC0B0\uAC00\uC561 (\uC6D0)", "numeric": true, "money": true, "optional": true, showIf: (a) => a.reinherit === "yes" },
@@ -13671,12 +13672,19 @@ function mapAnswersToInheritance(a) {
     body.foreign_tax_base = n;
   }
   if (a.reinherit === "yes") {
+    if (body.death_date && body.death_date.slice(0, 4) !== "2026") throw new Error("\uB2E8\uAE30 \uC7AC\uC0C1\uC18D\uACF5\uC81C\uB294 \uD604\uC7AC 2026\uB144 \uC0C1\uC18D\uB9CC \uC9C0\uC6D0\uD569\uB2C8\uB2E4. \uACFC\uAC70 \uC5F0\uB3C4\uB294 \uB2F9\uC2DC \uBC95\uB839\uACFC \uC785\uB825\uC694\uAC74 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4.");
+    const priorDate = String(a.priorInheritanceDate || "").trim();
+    if (priorDate) {
+      if (!body.death_date || !/^\d{4}-\d{2}-\d{2}$/.test(priorDate) || isNaN(Date.parse(priorDate)) || new Date(priorDate).toISOString().slice(0, 10) !== priorDate || priorDate >= body.death_date) throw new Error("\uC804\uC758 \uC0C1\uC18D\uAC1C\uC2DC\uC77C\uC740 \uC720\uD6A8\uD55C \uB0A0\uC9DC\uC774\uBA70 \uC774\uBC88 \uC0C1\uC18D\uAC1C\uC2DC\uC77C\uBCF4\uB2E4 \uC55E\uC11C\uC57C \uD569\uB2C8\uB2E4.");
+      body.prior_inheritance_date = priorDate;
+    }
     const fields = [["reinheritYears", "years_since_prior"], ["priorInheritanceTax", "prior_inheritance_tax"], ["priorEstate", "prior_estate_value"], ["reInherited", "re_inherited_value"]];
     for (const [key, field] of fields) {
+      if (priorDate && key === "reinheritYears") continue;
       if (a[key] == null || String(a[key]).trim() === "" || !Number.isSafeInteger(Number(a[key])) || Number(a[key]) < 0) throw new Error("\uB2E8\uAE30 \uC7AC\uC0C1\uC18D\uACF5\uC81C\uC758 \uAE30\uAC04\xB7\uC774\uC804 \uC0B0\uCD9C\uC138\uC561\xB7\uC7AC\uC0B0\uAC00\uC561\uC744 \uBAA8\uB450 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
       body[field] = Number(a[key]);
     }
-    if (body.years_since_prior < 1 || body.years_since_prior > 10 || body.prior_estate_value <= 0 || body.re_inherited_value > body.prior_estate_value || body.re_inherited_value > body.estate_value) throw new Error("\uC7AC\uC0C1\uC18D \uAE30\uAC04(1~10\uB144)\uACFC \uC774\uC804\xB7\uD604\uC7AC \uC7AC\uC0B0\uAC00\uC561 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    if (!priorDate && (body.years_since_prior < 1 || body.years_since_prior > 10) || body.prior_estate_value <= 0 || body.re_inherited_value > body.prior_estate_value || body.re_inherited_value > body.estate_value) throw new Error("\uC7AC\uC0C1\uC18D \uAE30\uAC04(1~10\uB144)\uACFC \uC774\uC804\xB7\uD604\uC7AC \uC7AC\uC0B0\uAC00\uC561 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
     body.short_term_re_inheritance = true;
   }
   return body;

@@ -42,3 +42,9 @@ test('land drops stale original/corporate/housing data and preserves actual day'
 for(const [name,patch] of [['original-standard',{}],['original-standard-edit',{standardValue:'200000000'}],['original-actual',{mode:'original_actual',actualValue:'120000000'}],['land-dated',{mode:'land_purchase',date:'2025-07-15',actualValue:'300000000'}],['original-unsupported-year',{mode:'original_actual',date:'2025-10-21',actualValue:'120000000'}]])add(name,'acquisition',{...ba,...patch},acq.mapAcqBasisInputs);
 if(process.env.WEB_REMAINING_REQUESTS)fs.writeFileSync(process.env.WEB_REMAINING_REQUESTS,JSON.stringify(rows,null,2));
 console.log('PASS '+checks+' checks; '+rows.length+' mapped HTTP cases');
+
+test('prior date replaces stale manual years',()=>{const b=inh.mapAnswersToInheritance({...ia,deathDate:'2026-10-10',priorInheritanceDate:'2025-10-09',reinheritYears:99});assert.equal(b.prior_inheritance_date,'2025-10-09');assert.equal(b.years_since_prior,undefined);});
+for(const d of ['2027-01-01','2026-10-10','2025-02-30'])test('invalid prior date '+d,()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,deathDate:'2026-10-10',priorInheritanceDate:d})));
+test('prior date requires current date',()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,priorInheritanceDate:'2025-01-01'})));
+test('past reinheritance not silently calculated',()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,deathDate:'2019-10-10',historicalChildAges:'30,35'})));
+test('reinherit off discards stale date',()=>assert.equal(inh.mapAnswersToInheritance({...ia,reinherit:'no',priorInheritanceDate:'2027-01-01'}).prior_inheritance_date,undefined));

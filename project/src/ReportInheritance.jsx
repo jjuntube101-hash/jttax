@@ -293,6 +293,7 @@ const INHERITANCE_QS = [
   {"id": "bequestNonHeirs", "section": "추가 계산 입력", "q": "상속인 아닌 수유자에게 유증한 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
   {"id": "renouncedNext", "section": "추가 계산 입력", "q": "선순위 상속 포기로 다음 순위가 받은 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
   {"id": "reinherit", "section": "추가 계산 조건", "q": "단기 재상속공제를 신청하나요?", "opts": [["no", "아니오", ""], ["yes", "예 — 이전 상속 자료 확인", ""]], showIf:a=>true},
+  {id:'priorInheritanceDate', section:'추가 계산 조건', q:'전의 상속개시일 (알면 날짜 입력, 모르면 다음 경과연수 입력)', placeholder:'2025-01-01', freeform:true, optional:true, showIf:a=>a.reinherit==='yes'},
   {"id": "reinheritYears", "section": "추가 계산 조건", "q": "전의 상속부터 이번 상속까지 올림한 연수 (1년 이내=1)", "numeric": true, "money": false, "optional": true, showIf:a=>a.reinherit==='yes'},
   {"id": "priorInheritanceTax", "section": "추가 계산 조건", "q": "전의 상속세 산출세액 (납부세액 아님, 원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
   {"id": "priorEstate", "section": "추가 계산 조건", "q": "전의 총상속재산가액 (원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
@@ -388,12 +389,19 @@ function mapAnswersToInheritance(a) {
   }
 
   if(a.reinherit==='yes') {
+    if(body.death_date && body.death_date.slice(0,4)!=='2026') throw new Error('단기 재상속공제는 현재 2026년 상속만 지원합니다. 과거 연도는 당시 법령과 입력요건 검토가 필요합니다.');
+    const priorDate=String(a.priorInheritanceDate||'').trim();
+    if(priorDate) {
+      if(!body.death_date || !/^\d{4}-\d{2}-\d{2}$/.test(priorDate) || isNaN(Date.parse(priorDate)) || new Date(priorDate).toISOString().slice(0,10)!==priorDate || priorDate>=body.death_date) throw new Error('전의 상속개시일은 유효한 날짜이며 이번 상속개시일보다 앞서야 합니다.');
+      body.prior_inheritance_date=priorDate;
+    }
     const fields=[['reinheritYears','years_since_prior'],['priorInheritanceTax','prior_inheritance_tax'],['priorEstate','prior_estate_value'],['reInherited','re_inherited_value']];
     for(const [key,field] of fields) {
+      if(priorDate && key==='reinheritYears') continue;
       if(a[key]==null||String(a[key]).trim()===''||!Number.isSafeInteger(Number(a[key]))||Number(a[key])<0) throw new Error('단기 재상속공제의 기간·이전 산출세액·재산가액을 모두 정수로 입력해 주세요.');
       body[field]=Number(a[key]);
     }
-    if(body.years_since_prior<1||body.years_since_prior>10||body.prior_estate_value<=0||body.re_inherited_value>body.prior_estate_value||body.re_inherited_value>body.estate_value) throw new Error('재상속 기간(1~10년)과 이전·현재 재산가액 범위를 확인해 주세요.');
+    if((!priorDate&&(body.years_since_prior<1||body.years_since_prior>10))||body.prior_estate_value<=0||body.re_inherited_value>body.prior_estate_value||body.re_inherited_value>body.estate_value) throw new Error('재상속 기간(1~10년)과 이전·현재 재산가액 범위를 확인해 주세요.');
     body.short_term_re_inheritance=true;
   }
 
