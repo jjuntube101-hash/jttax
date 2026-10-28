@@ -1,6 +1,6 @@
 /* 자동 생성 파일 — 직접 수정하지 마세요.
    생성: node project/scripts/build_bundle.mjs
-   소스: project/src/*.jsx (58개, ORDER 순서)
+   소스: project/src/*.jsx (59개, ORDER 순서)
    ⛔ 이 파일을 손으로 고치면 다음 빌드에 덮어써집니다. 소스를 고치고 다시 빌드하세요.
    ⛔ 커밋에서 빠뜨리면 라이브가 «옛 코드»로 돕니다 — tests_build_fresh.js 가 막습니다. */
 
@@ -15273,6 +15273,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
     setBuildingDraft(draft);
     setBuildingDirect(false);
   } });
+  if (extraMode === "special") return /* @__PURE__ */ React.createElement(JTAcquisitionSpecialDirect, { initialDraft: extraDrafts.special, onBack: (draft) => {
+    setExtraDrafts((old) => __spreadProps(__spreadValues({}, old), { special: draft }));
+    setExtraMode(null);
+  } });
   if (extraMode === "penalty" || extraMode === "exclusion") return /* @__PURE__ */ React.createElement(JTH7TaxDirect, { mode: extraMode, initialDraft: extraDrafts[extraMode], onBack: (draft) => {
     setExtraDrafts((old) => __spreadProps(__spreadValues({}, old), { [extraMode]: draft }));
     setExtraMode(null);
@@ -15329,7 +15333,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCDE8\uB4DD \uC6D0\uC778\xB7\uC885\uB958\xB7\uAC00\uC561\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uCDE8\uB4DD\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uBA74\uC801\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC10\uBA74\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setBasisInputs(true) }, "\uCDE8\uB4DD\uC77C\xB7\uC2E0\uCD95 \uACFC\uC138\uD45C\uC900 \uD655\uC778 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exclusion-direct", onClick: () => setExtraMode("exclusion") }, "\uC8FC\uD0DD \uCDE8\uB4DD \uC911\uACFC\uC81C\uC678"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-penalty-direct", onClick: () => setExtraMode("penalty") }, "\uCDE8\uB4DD\uC138 \uBCF8\uC138 \uAC00\uC0B0\uC138"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-reviewed-direct", className: "jt-btn jt-btn--ghost", onClick: () => setReviewedDirect(true) }, "\uC9C0\uBAA9\uBCC0\uACBD \uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-building-direct", className: "jt-btn jt-btn--ghost", onClick: () => setBuildingDirect(true) }, "\uC99D\uCD95\xB7\uB300\uC218\uC120 \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-value-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("value") }, "\uC9C0\uBAA9\uBCC0\uACBD \uC0B0\uC815\uC561\xB7\uC644\uACF5\uC8FC\uD0DD \uC9C1\uC811\uB9E4\uC218 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-court-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("court") }, "\uBC95\uC6D0\uACBD\uB9E4 \uD1A0\uC9C0 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exchange-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("exchange") }, "\uD1A0\uC9C0 \uAD50\uD658 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-divorce-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("divorce") }, "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-burdened-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("burdened") }, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.qFor ? cur.qFor(answers) : cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCDE8\uB4DD \uC6D0\uC778\xB7\uC885\uB958\xB7\uAC00\uC561\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uCDE8\uB4DD\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uBA74\uC801\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC10\uBA74\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setBasisInputs(true) }, "\uCDE8\uB4DD\uC77C\xB7\uC2E0\uCD95 \uACFC\uC138\uD45C\uC900 \uD655\uC778 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-special-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("special") }, "\uBC95\uC778 \uC911\uACFC\xB7\uCE35\uBCC4 \uC548\uBD84\xB7\uACFC\uC810\uC8FC\uC8FC\xB7\uC815\uB960 \uAC10\uBA74 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exclusion-direct", onClick: () => setExtraMode("exclusion") }, "\uC8FC\uD0DD \uCDE8\uB4DD \uC911\uACFC\uC81C\uC678"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-penalty-direct", onClick: () => setExtraMode("penalty") }, "\uCDE8\uB4DD\uC138 \uBCF8\uC138 \uAC00\uC0B0\uC138"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-reviewed-direct", className: "jt-btn jt-btn--ghost", onClick: () => setReviewedDirect(true) }, "\uC9C0\uBAA9\uBCC0\uACBD \uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-building-direct", className: "jt-btn jt-btn--ghost", onClick: () => setBuildingDirect(true) }, "\uC99D\uCD95\xB7\uB300\uC218\uC120 \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-value-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("value") }, "\uC9C0\uBAA9\uBCC0\uACBD \uC0B0\uC815\uC561\xB7\uC644\uACF5\uC8FC\uD0DD \uC9C1\uC811\uB9E4\uC218 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-court-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("court") }, "\uBC95\uC6D0\uACBD\uB9E4 \uD1A0\uC9C0 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exchange-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("exchange") }, "\uD1A0\uC9C0 \uAD50\uD658 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-divorce-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("divorce") }, "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-burdened-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("burdened") }, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.qFor ? cur.qFor(answers) : cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -15512,6 +15516,249 @@ function JTAcquisitionReviewedDirect({ onBack, initialDraft }) {
   }), ACQ_REVIEW_CONFIRM.map(([key, label]) => /* @__PURE__ */ React.createElement("label", { key, style: { display: "block" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "acq-reviewed-" + key, checked: d[key] === true, onChange: (e) => edit(key, e.target.checked) }), label)), /* @__PURE__ */ React.createElement("button", { type: "submit", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uBCF8\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", { "data-testid": "acq-reviewed-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uACFC\uC138\uD45C\uC900 ", (_a = result["\uACFC\uC138\uD45C\uC900"]) == null ? void 0 : _a.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uCDE8\uB4DD\uC138 ", (_b = result["\uCDE8\uB4DD\uC138"]) == null ? void 0 : _b.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uC9C0\uBC29\uAD50\uC721\uC138 ", (_c = result["\uC9C0\uBC29\uAD50\uC721\uC138"]) == null ? void 0 : _c.toLocaleString("ko-KR"), "\uC6D0 \xB7 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138 ", (_d = result["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"]) == null ? void 0 : _d.toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("p", null, "\uD569\uACC4 ", (_e = result["\uC138\uC561"]) == null ? void 0 : _e.toLocaleString("ko-KR"), "\uC6D0")))));
 }
 window.JTAcquisitionReviewedDirect = JTAcquisitionReviewedDirect;
+
+
+/* ────────── AcquisitionSpecialDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const ACQ_SPECIAL_KINDS = [["corporate_heavy", "\uBC95\uC778 \uC911\uACFC"], ["floor_allocation", "\uCE35\uBCC4\xB7\uC6A9\uB3C4\uBCC4 \uC548\uBD84"], ["majority_shareholder", "\uACFC\uC810\uC8FC\uC8FC"], ["reviewed_reduction", "\uAC80\uD1A0\uB41C \uC815\uB960 \uAC10\uBA74"]];
+const ACQ_SPECIAL_CHECKS = {
+  corporate_heavy: [["eligibility_confirmed", "\uC120\uD0DD\uD55C \uC911\uACFC \uC0AC\uC720\uC758 \uC694\uAC74\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["exceptions_reviewed_confirmed", "\uAD8C\uC5ED\xB7\uC2DC\uAE30\xB7\uC5C5\uC885 \uB4F1 \uC911\uACFC \uC81C\uC678 \uC694\uAC74\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["price_confirmed", "\uD3EC\uD568\xB7\uC81C\uC678 \uBE44\uC6A9\uC744 \uBC18\uC601\uD55C \uCDE8\uB4DD\uAC00\uACA9\uC785\uB2C8\uB2E4"], ["no_reduction_confirmed", "\uB2E4\uB978 \uAC10\uBA74\uC744 \uC911\uBCF5 \uC801\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4"]],
+  floor_allocation: [["price_confirmed", "\uC804\uCCB4 \uCDE8\uB4DD\uAC00\uACA9\uC758 \uD3EC\uD568\xB7\uC81C\uC678 \uBE44\uC6A9\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["whole_interest_confirmed", "\uB3D9\uC77C \uCDE8\uB4DD \uC0AC\uAC74\uC758 \uC804\uCCB4 \uC9C0\uBD84\uC785\uB2C8\uB2E4"], ["allocation_confirmed", "\uCE35\uBCC4 \uC6D0\uC790\uB8CC\uC640 \uBC95\uC815 \uC548\uBD84\uAE30\uC900\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"]],
+  majority_shareholder: [["history_complete_confirmed", "\uC124\uB9BD \uC774\uD6C4 \uACFC\uC810\uC8FC\uC8FC \uC774\uB825\uC744 \uBE60\uC9D0\uC5C6\uC774 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["fixed_group_confirmed", "\uC804\uD6C4 \uB3D9\uC77C\uD55C \uD2B9\uC218\uAD00\uACC4\uC778 \uC9D1\uB2E8\uC785\uB2C8\uB2E4"], ["voting_rights_exercised_confirmed", "\uC8FC\uC8FC\uAD8C \uD589\uC0AC \uB4F1 \uC2E4\uC9C8\uC801 \uAD8C\uB9AC \uC694\uAC74\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["no_treasury_or_nonvoting_shares_confirmed", "\uC790\uAE30\uC8FC\uC2DD\xB7\uC758\uACB0\uAD8C \uC5C6\uB294 \uC8FC\uC2DD\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["unlisted_corporation_confirmed", "\uBE44\uC0C1\uC7A5\uBC95\uC778\uC785\uB2C8\uB2E4"], ["stock_acquisition_confirmed", "\uC2E4\uC81C \uC8FC\uC2DD \uCDE8\uB4DD \uC0AC\uAC74\uC785\uB2C8\uB2E4"]],
+  reviewed_reduction: [["eligibility_confirmed", "\uAE30\uC900\uC77C\uC758 \uD574\uB2F9 \uC870\uBB38\xB7\uD56D\xB7\uD638 \uAC10\uBA74 \uC694\uAC74\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["no_heavy_or_special_rates_confirmed", "\uC911\uACFC\xB7\uD2B9\uB840\uC138\uC728\uACFC \uD63C\uD569\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4"], ["price_confirmed", "\uD3EC\uD568\xB7\uC81C\uC678 \uBE44\uC6A9\uC744 \uBC18\uC601\uD55C \uCDE8\uB4DD\uAC00\uACA9\uC785\uB2C8\uB2E4"], ["minimum_review_confirmed", "\uCD5C\uC18C\uB0A9\uBD80\xB7\uC81C\uC678 \uC870\uBB38\xB7\uBD80\uCE59\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["aggregation_complete_confirmed", "\uC5F0\uBD80\uCDE8\uB4DD\xB7\uB3D9\uC77C \uC18C\uC720\uC790\xB7\uC5F0\uC811 \uCDE8\uB4DD \uB4F1\uC758 \uD569\uC0B0 \uBC94\uC704\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]]
+};
+function acquisitionSpecialRequest(d) {
+  var _a, _b;
+  const text = (v, label) => {
+    v = String(v != null ? v : "").trim();
+    if (!v || v.length > 2e3) throw Error(label + "\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const number = (v, label, zero = false) => {
+    if (!/^\d+$/.test(String(v != null ? v : ""))) throw Error(label + "\uC740 \uC6D0 \uB610\uB294 \uC218\uB7C9\uC758 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    const n = Number(v);
+    if (!Number.isSafeInteger(n) || n < (zero ? 0 : 1)) throw Error(label + "\uC758 \uAE08\uC561\xB7\uC218\uB7C9\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    return n;
+  };
+  const decimal = (v, label) => {
+    if (!/^\d+(?:\.\d+)?$/.test(String(v != null ? v : "")) || !Number.isFinite(Number(v)) || Number(v) <= 0) throw Error(label + "\uC744 \uC720\uD6A8\uD55C \uC591\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return Number(v);
+  };
+  const yesNo = (v, label) => {
+    if (v !== "yes" && v !== "no") throw Error(label + "\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    return v === "yes";
+  };
+  const date = (v, label) => {
+    if (!/^2026-\d{2}-\d{2}$/.test(v || "") || !Number.isFinite(Date.parse(v)) || new Date(v).toISOString().slice(0, 10) !== v || v > "2026-10-28") throw Error(label + "\uC740 \uAC80\uC99D \uBC94\uC704\uC778 2026-01-01~2026-10-28\uC758 \uC2E4\uC81C \uB0A0\uC9DC\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const pick = (v, values, label) => {
+    if (!values.includes(v)) throw Error(label + "\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const check = (k, label) => {
+    var _a2;
+    if (((_a2 = d.checks) == null ? void 0 : _a2[k]) !== true) throw Error(label + " \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+    return true;
+  };
+  const kind = pick(d.kind, ACQ_SPECIAL_KINDS.map((x) => x[0]), "\uACC4\uC0B0 \uC885\uB958");
+  const f = {
+    schema_version: "acquisition-special/1",
+    kind,
+    acquisition_date: date(d.date, "\uCDE8\uB4DD\uC77C"),
+    scope_confirmed: check("scope_confirmed", "\uD574\uB2F9 \uACC4\uC0B0 \uBC94\uC704"),
+    evidence: text(d.evidence, "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85")
+  };
+  for (const [key, label] of ACQ_SPECIAL_CHECKS[kind]) f[key] = check(key, label);
+  const origin = () => pick(d.origin, ["\uC720\uC0C1\uCDE8\uB4DD", "\uC6D0\uC2DC\uCDE8\uB4DD"], "\uCDE8\uB4DD \uC6D0\uC778");
+  const prop = () => pick(d.propertyType, ["\uD1A0\uC9C0", "\uAC74\uBB3C"], "\uBE44\uC8FC\uD0DD \uBB3C\uAC74 \uC885\uB958");
+  if (kind === "corporate_heavy") Object.assign(f, {
+    property_value: number(d.value, "\uCDE8\uB4DD\uAC00\uACA9"),
+    property_type: prop(),
+    acquisition_type: origin(),
+    capital_ground: pick(d.capitalGround, ["none", "head_office_new_or_extension", "factory_new_or_extension"], "\uBCF8\uC810\xB7\uACF5\uC7A5 \uC911\uACFC \uC0AC\uC720"),
+    metropolitan_heavy: yesNo(d.metro, "\uB300\uB3C4\uC2DC \uC911\uACFC \uC5EC\uBD80"),
+    luxury: yesNo(d.luxury, "\uC0AC\uCE58\uC131 \uC7AC\uC0B0 \uC5EC\uBD80"),
+    ground_evidence: text(d.groundEvidence, "\uC911\uACFC \uC694\uAC74 \uAC80\uD1A0 \uC790\uB8CC\uBA85")
+  });
+  if (kind === "reviewed_reduction") Object.assign(f, {
+    property_value: number(d.value, "\uCDE8\uB4DD\uAC00\uACA9"),
+    property_type: prop(),
+    acquisition_type: origin(),
+    relief_law: "\uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95",
+    relief_article: { article: number(d.article, "\uAC10\uBA74 \uC870 \uBC88\uD638"), branch: number(d.branch, "\uAC00\uC9C0 \uC870 \uBC88\uD638", true), paragraph: number(d.paragraph, "\uD56D \uBC88\uD638", true), item: number(d.item, "\uD638 \uBC88\uD638", true) },
+    reduction_ratio: { numerator: number(d.reliefPercent, "\uAC10\uBA74\uC728", true), denominator: 100 },
+    eligibility_as_of: date(d.eligibilityDate, "\uAC10\uBA74 \uC790\uACA9 \uD655\uC778 \uAE30\uC900\uC77C"),
+    eligibility_evidence: text(d.eligibilityEvidence, "\uAC10\uBA74 \uC790\uACA9 \uADFC\uAC70"),
+    minimum_review_evidence: text(d.minimumEvidence, "\uCD5C\uC18C\uB0A9\uBD80 \uAC80\uD1A0 \uADFC\uAC70"),
+    aggregation_gross_tax: number(d.aggregationTax, "\uBC95\uC815 \uD569\uC0B0 \uBC94\uC704\uC758 \uAC10\uBA74 \uC804 \uCDE8\uB4DD\uC138", true),
+    aggregation_evidence: text(d.aggregationEvidence, "\uD569\uC0B0 \uBC94\uC704 \uAC80\uD1A0 \uADFC\uAC70"),
+    rural_base_exempt: yesNo(d.ruralBaseExempt, "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138 \uBE44\uACFC\uC138 \uC5EC\uBD80"),
+    rural_reduction_exempt: yesNo(d.ruralReductionExempt, "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138 \uBE44\uACFC\uC138 \uC5EC\uBD80"),
+    rural_base_evidence: text(d.ruralBaseEvidence, "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70"),
+    rural_reduction_evidence: text(d.ruralReductionEvidence, "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70")
+  });
+  if (kind === "majority_shareholder") {
+    Object.assign(f, {
+      total_shares_before: number(d.totalBefore, "\uCDE8\uB4DD \uC804 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218", true),
+      total_shares_after: number(d.totalAfter, "\uCDE8\uB4DD \uD6C4 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218"),
+      had_prior_majority: yesNo(d.hadPrior, "\uACFC\uAC70 \uACFC\uC810\uC8FC\uC8FC \uC774\uB825"),
+      acquisition_route: pick(d.route, ["transfer", "capital_increase", "formation_issuance"], "\uCDE8\uB4DD \uACBD\uB85C"),
+      shareholders: (d.shareholders || []).map((row, i) => ({
+        id: text(row.id, "\uC8FC\uC8FC \uC774\uB984 " + (i + 1)),
+        before_shares: number(row.before, "\uCDE8\uB4DD \uC804 \uC8FC\uC2DD\uC218", true),
+        after_shares: number(row.after, "\uCDE8\uB4DD \uD6C4 \uC8FC\uC2DD\uC218", true),
+        in_group: yesNo(row.inGroup, "\uB3D9\uC77C \uC9D1\uB2E8 \uD3EC\uD568 \uC5EC\uBD80"),
+        evidence: text(row.evidence, "\uC8FC\uC8FC\uBA85\uBD80 \uADFC\uAC70")
+      })),
+      assets: (d.assets || []).map((row) => ({
+        id: text(row.id, "\uC7AC\uC0B0 \uC774\uB984"),
+        property_type: pick(row.type, ["\uD1A0\uC9C0", "\uAC74\uBB3C"], "\uC7AC\uC0B0 \uC885\uB958"),
+        net_book_value: number(row.value, "\uC7AC\uC0B0 \uC7A5\uBD80\uAC00\uC561", true),
+        jurisdiction: text(row.region, "\uC7AC\uC0B0 \uC18C\uC7AC\uC9C0"),
+        evidence: text(row.evidence, "\uC7AC\uC0B0 \uC7A5\uBD80 \uADFC\uAC70")
+      }))
+    });
+    if (f.had_prior_majority) {
+      f.prior_highest_ratio = { numerator: number(d.highNumerator, "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uBD84\uC790", true), denominator: number(d.highDenominator, "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uBD84\uBAA8") };
+      f.prior_highest_date = text(d.highDate, "\uCD5C\uACE0 \uC9C0\uBD84 \uAE30\uC900\uC77C");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(f.prior_highest_date) || !Number.isFinite(Date.parse(f.prior_highest_date)) || new Date(f.prior_highest_date).toISOString().slice(0, 10) !== f.prior_highest_date) throw Error("\uCD5C\uACE0 \uC9C0\uBD84 \uAE30\uC900\uC77C\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      if (String((_a = d.previousNumerator) != null ? _a : "") !== "" || String((_b = d.previousDenominator) != null ? _b : "") !== "") f.previous_majority_ratio = { numerator: number(d.previousNumerator, "\uC885\uC804 \uACFC\uC810 \uB2F9\uC2DC \uC9C0\uBD84 \uBD84\uC790", true), denominator: number(d.previousDenominator, "\uC885\uC804 \uACFC\uC810 \uB2F9\uC2DC \uC9C0\uBD84 \uBD84\uBAA8") };
+    }
+  }
+  if (kind === "floor_allocation") {
+    const basis = pick(d.basis, ["separate_prices", "standard_ratio", "area_ratio"], "\uC548\uBD84 \uAE30\uC900");
+    const field = { separate_prices: "value", standard_ratio: "standard_value", area_ratio: "gross_area" }[basis];
+    Object.assign(f, {
+      total_value: number(d.value, "\uC804\uCCB4 \uCDE8\uB4DD\uAC00\uACA9"),
+      is_corporate: false,
+      acquisition_type: origin(),
+      allocation_basis: basis,
+      allocation_evidence: text(d.allocationEvidence, "\uC548\uBD84 \uC6D0\uC790\uB8CC \uADFC\uAC70"),
+      tax_groups: (d.groups || []).map((row) => {
+        const type = pick(row.use, ["nonhousing", "luxury", "housing"], "\uACFC\uC138 \uBB36\uC74C \uC6A9\uB3C4");
+        const tax_facts = type === "housing" ? { housing_count: number(row.houses, "\uCDE8\uB4DD \uD6C4 \uC138\uB300 \uC8FC\uD0DD\uC218"), is_regulated_area: yesNo(row.regulated, "\uC870\uC815\uC9C0\uC5ED \uC5EC\uBD80"), exclusive_area: decimal(row.area, "\uD574\uB2F9 \uC8FC\uD0DD \uC804\uCCB4 \uC804\uC6A9\uBA74\uC801") } : type === "luxury" ? { is_luxury: true } : {};
+        return { id: text(row.id, "\uACFC\uC138 \uBB36\uC74C \uC774\uB984"), use: type === "housing" ? "housing" : "nonhousing", whole_tax_unit_confirmed: check("group:" + row.id, "\uACFC\uC138 \uBB36\uC74C \uC804\uCCB4 \uBC94\uC704"), evidence: text(row.evidence, "\uACFC\uC138 \uBB36\uC74C \uADFC\uAC70"), tax_facts };
+      }),
+      rows: (d.floors || []).map((row) => ({ id: text(row.id, "\uCE35 \uC774\uB984"), tax_group_id: text(row.group, "\uACFC\uC138 \uBB36\uC74C \uC774\uB984"), [field]: basis === "area_ratio" ? text(row.weight, "\uCE35\uBCC4 \uCD1D\uBA74\uC801") : number(row.weight, "\uCE35\uBCC4 \uAC00\uACA9\xB7\uC2DC\uAC00\uD45C\uC900\uC561"), evidence: text(row.evidence, "\uCE35\uBCC4 \uC6D0\uC790\uB8CC") }))
+    });
+    check("floor_personal", "\uAC1C\uC778\xB7\uBE44\uB18D\uC9C0\xB7\uD2B9\uC218\uAD00\uACC4 \uBC0F \uC870\uB840 \uBCC0\uB3D9 \uC5C6\uB294 \uC804\uCCB4 \uCDE8\uB4DD");
+  }
+  if (kind === "reviewed_reduction" && f.reduction_ratio.numerator > 100) throw Error("\uAC10\uBA74\uC728\uC740 0~100%\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+  return { special_facts: f };
+}
+function acquisitionSpecialResult(calc) {
+  if (!calc || calc["\uC0C1\uD0DC"] !== "ok") throw Error((calc == null ? void 0 : calc["\uC624\uB958"]) || "\uCD94\uAC00 \uC0AC\uC2E4\uC774\uB098 \uC801\uC6A9 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uAE08\uC561\uC744 \uD655\uC815\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+  const keys = ["\uACFC\uC138\uD45C\uC900", "\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"];
+  for (const key of keys) if (!Number.isSafeInteger(calc[key]) || calc[key] < 0) throw Error("\uACC4\uC0B0 \uC751\uB2F5\uC758 \uAE08\uC561\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+  if (calc["\uCDE8\uB4DD\uC138"] + calc["\uC9C0\uBC29\uAD50\uC721\uC138"] + calc["\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138"] !== calc["\uC138\uC561"]) throw Error("\uC138\uBAA9\uBCC4 \uAE08\uC561 \uD569\uACC4\uB97C \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+  return calc;
+}
+function JTAcquisitionSpecialDirect({ onBack, initialDraft }) {
+  var _a;
+  const [d, setD] = React.useState(() => __spreadProps(__spreadValues({}, initialDraft), {
+    kind: (initialDraft == null ? void 0 : initialDraft.kind) || "corporate_heavy",
+    checks: {},
+    shareholders: (initialDraft == null ? void 0 : initialDraft.shareholders) || [{}, {}],
+    assets: (initialDraft == null ? void 0 : initialDraft.assets) || [{}],
+    groups: (initialDraft == null ? void 0 : initialDraft.groups) || [{}],
+    floors: (initialDraft == null ? void 0 : initialDraft.floors) || [{}, {}]
+  }));
+  const [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const sequence = React.useRef(0), pending = React.useRef(null);
+  React.useEffect(() => () => {
+    var _a2;
+    sequence.current++;
+    (_a2 = pending.current) == null ? void 0 : _a2.abort();
+  }, []);
+  const invalidate = () => {
+    var _a2;
+    sequence.current++;
+    (_a2 = pending.current) == null ? void 0 : _a2.abort();
+    setBusy(false);
+    setResult(null);
+    setError("");
+  };
+  const edit = (key, value) => {
+    invalidate();
+    setD((old) => __spreadProps(__spreadValues({}, old), { [key]: value, checks: {} }));
+  };
+  const checked = (key, value) => {
+    invalidate();
+    setD((old) => __spreadProps(__spreadValues({}, old), { checks: __spreadProps(__spreadValues({}, old.checks), { [key]: value }) }));
+  };
+  const rowEdit = (list, index, key, value) => edit(list, d[list].map((row, i) => i === index ? __spreadProps(__spreadValues({}, row), { [key]: value }) : row));
+  const field = (key, label, type = "text", placeholder = "") => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { className: "jt-special-field", key }, label, /* @__PURE__ */ React.createElement("input", { type, "data-testid": "acq-special-" + key, value: (_a2 = d[key]) != null ? _a2 : "", placeholder, onChange: (e) => edit(key, e.target.value) }));
+  };
+  const select = (key, label, options) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { className: "jt-special-field", key }, label, /* @__PURE__ */ React.createElement("select", { "data-testid": "acq-special-" + key, value: (_a2 = d[key]) != null ? _a2 : "", onChange: (e) => edit(key, e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uBBF8\uD655\uC778 \xB7 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), options.map(([v, l]) => /* @__PURE__ */ React.createElement("option", { value: v, key: v }, l))));
+  };
+  const yn = [["yes", "\uC608"], ["no", "\uC544\uB2C8\uC624"]];
+  const confirmation = (key, label) => /* @__PURE__ */ React.createElement("label", { className: "jt-special-check", key }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "acq-special-check-" + key, checked: d.checks[key] === true, onChange: (e) => checked(key, e.target.checked) }), label);
+  const rows = (list, label, columns) => /* @__PURE__ */ React.createElement("fieldset", { className: "jt-special-rows" }, /* @__PURE__ */ React.createElement("legend", null, label), d[list].map((row, i) => /* @__PURE__ */ React.createElement("div", { className: "jt-special-row", key: i }, /* @__PURE__ */ React.createElement("span", null, i + 1), columns.filter(([key]) => list !== "groups" || row.use === "housing" || !["houses", "regulated", "area"].includes(key)).map(([key, title, options]) => {
+    var _a2, _b;
+    return /* @__PURE__ */ React.createElement("label", { key }, title, Array.isArray(options) ? /* @__PURE__ */ React.createElement("select", { value: (_a2 = row[key]) != null ? _a2 : "", "data-testid": "acq-special-" + list + "-" + i + "-" + key, onChange: (e) => rowEdit(list, i, key, e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), options.map(([v, l]) => /* @__PURE__ */ React.createElement("option", { key: v, value: v }, l))) : /* @__PURE__ */ React.createElement("input", { value: (_b = row[key]) != null ? _b : "", inputMode: options === "number" ? "decimal" : void 0, "data-testid": "acq-special-" + list + "-" + i + "-" + key, onChange: (e) => rowEdit(list, i, key, e.target.value) }));
+  }), /* @__PURE__ */ React.createElement("button", { type: "button", "aria-label": label + " " + (i + 1) + "\uD589 \uC0AD\uC81C", onClick: () => edit(list, d[list].filter((_, j) => j !== i)) }, "\uD589 \uC0AD\uC81C"))), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => edit(list, [...d[list], {}]), disabled: d[list].length >= 100 }, "\uD589 \uCD94\uAC00"));
+  async function submit(e) {
+    e.preventDefault();
+    let body;
+    try {
+      body = acquisitionSpecialRequest(d);
+    } catch (err) {
+      setError(err.message);
+      setResult(null);
+      return;
+    }
+    invalidate();
+    const id = ++sequence.current, controller = new AbortController();
+    pending.current = controller;
+    const timeout = setTimeout(() => controller.abort(), 3e4);
+    setBusy(true);
+    try {
+      if (!window.JT_ENGINE_BASE) throw Error("\uACC4\uC0B0 \uC11C\uBC84 \uC8FC\uC18C\uAC00 \uC124\uC815\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.");
+      const response = await fetch(
+        window.JT_ENGINE_BASE.replace(/\/$/, "") + "/v1/calc/acquisition",
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: controller.signal }
+      );
+      const data = await response.json();
+      if (id !== sequence.current) return;
+      if (!response.ok) throw Error("\uC785\uB825 \uD615\uC2DD \uB610\uB294 \uC5F0\uACB0 \uC0C1\uD0DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      setResult(acquisitionSpecialResult(data.calc));
+    } catch (err) {
+      if (id === sequence.current) setError(err.name === "AbortError" ? "\uACC4\uC0B0 \uC694\uCCAD \uC2DC\uAC04\uC774 \uCD08\uACFC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694." : err.message);
+    } finally {
+      clearTimeout(timeout);
+      if (id === sequence.current) {
+        pending.current = null;
+        setBusy(false);
+      }
+    }
+  }
+  const origin = select("origin", "\uCDE8\uB4DD \uC6D0\uC778", [["\uC720\uC0C1\uCDE8\uB4DD", "\uC720\uC0C1\uCDE8\uB4DD"], ["\uC6D0\uC2DC\uCDE8\uB4DD", "\uC6D0\uC2DC\uCDE8\uB4DD"]]);
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uC138\uBD80 \uC0AC\uC2E4 \uACC4\uC0B0", subtitle: "\uAE30\uC900\uC77C\xB7\uACFC\uC138\uB2E8\uC704\xB7\uAC80\uD1A0 \uADFC\uAC70\uB97C \uD655\uC778\uD55C \uACC4\uC0B0", tag: "CONSULTING", onBack: () => onBack(__spreadProps(__spreadValues({}, d), { checks: {} })) }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 10\uC6D4 28\uC77C\uAE4C\uC9C0 \uD655\uC778\uD55C \uBC95\uB839 \uBC94\uC704\uC785\uB2C8\uB2E4. \uC790\uB8CC\uBA85\uC740 \uC785\uB825\uC790\uAC00 \uAC80\uD1A0\uD55C \uADFC\uAC70\uC774\uBA70, \uC790\uB3D9\uC73C\uB85C \uC778\uC99D\uD55C \uC790\uB8CC\uAC00 \uC544\uB2D9\uB2C8\uB2E4. \uBAA8\uB974\uB294 \uC0AC\uC2E4\uC740 \uD655\uC778 \uD6C4 \uC785\uB825\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("kind", "\uACC4\uC0B0 \uC885\uB958", ACQ_SPECIAL_KINDS), field("date", "\uC2E4\uC81C \uCDE8\uB4DD\uC77C", "date"), field("evidence", "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85")), ["corporate_heavy", "reviewed_reduction", "floor_allocation"].includes(d.kind) && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, field("value", "\uC804\uCCB4 \uCDE8\uB4DD\uAC00\uACA9 (\uC6D0)", "text", "\uC608: 100000000"), origin, d.kind !== "floor_allocation" && select("propertyType", "\uBE44\uC8FC\uD0DD \uBB3C\uAC74 \uC885\uB958", [["\uD1A0\uC9C0", "\uBE44\uB18D\uC9C0 \uD1A0\uC9C0"], ["\uAC74\uBB3C", "\uBE44\uC8FC\uD0DD \uAC74\uBB3C"]])), d.kind === "corporate_heavy" && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("capitalGround", "\uBCF8\uC810\xB7\uACF5\uC7A5 \uC911\uACFC \uC0AC\uC720", [["none", "\uD574\uB2F9 \uC5C6\uC74C"], ["head_office_new_or_extension", "\uBCF8\uC810\xB7\uC8FC\uC0AC\uBB34\uC18C \uC2E0\uC99D\uCD95"], ["factory_new_or_extension", "\uACF5\uC7A5 \uC2E0\uC99D\uC124"]]), select("metro", "\uB300\uB3C4\uC2DC \uBC95\uC778 \uC911\uACFC \uB300\uC0C1\uC778\uAC00\uC694?", yn), select("luxury", "\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC778\uAC00\uC694?", yn), field("groundEvidence", "\uAD8C\uC5ED\xB7\uC2DC\uAE30\xB7\uC2DC\uC124\xB7\uC5C5\uC885 \uC608\uC678 \uAC80\uD1A0 \uADFC\uAC70")), d.kind === "reviewed_reduction" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95\uC758 \uC815\uB960 \uAC10\uBA74\uC785\uB2C8\uB2E4. \uC5C6\uB294 \uAC00\uC9C0 \uC870\xB7\uD56D\xB7\uD638\uB294 0\uC744 \uC785\uB825\uD558\uACE0, \uCD5C\uC18C\uB0A9\uBD80 \uD569\uC0B0 \uBC94\uC704\uC640 \uB18D\uD2B9\uC138 \uB450 \uBD80\uBD84\uC744 \uAC01\uAC01 \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, [["article", "\uAC10\uBA74 \uC870 \uBC88\uD638"], ["branch", "\uAC00\uC9C0 \uC870 \uBC88\uD638"], ["paragraph", "\uD56D \uBC88\uD638"], ["item", "\uD638 \uBC88\uD638"], ["reliefPercent", "\uBC95\uC815 \uAC10\uBA74\uC728 (%)"], ["eligibilityDate", "\uAC10\uBA74 \uC790\uACA9 \uAE30\uC900\uC77C", "date"], ["eligibilityEvidence", "\uAC10\uBA74 \uC790\uACA9 \uAC80\uD1A0 \uADFC\uAC70"], ["minimumEvidence", "\uCD5C\uC18C\uB0A9\uBD80\xB7\uBD80\uCE59 \uAC80\uD1A0 \uADFC\uAC70"], ["aggregationTax", "\uD569\uC0B0 \uBC94\uC704 \uAC10\uBA74 \uC804 \uCDE8\uB4DD\uC138 (\uC6D0)"], ["aggregationEvidence", "\uBC95\uC815 \uD569\uC0B0 \uBC94\uC704 \uADFC\uAC70"], ["ruralBaseEvidence", "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70"], ["ruralReductionEvidence", "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70"]].map(([k, l, t]) => field(k, l, t || "text")), select("ruralBaseExempt", "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138\uAC00 \uBE44\uACFC\uC138\uC778\uAC00\uC694?", yn), select("ruralReductionExempt", "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138\uAC00 \uBE44\uACFC\uC138\uC778\uAC00\uC694?", yn))), d.kind === "majority_shareholder" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, field("totalBefore", "\uCDE8\uB4DD \uC804 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218"), field("totalAfter", "\uCDE8\uB4DD \uD6C4 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218"), select("hadPrior", "\uACFC\uAC70 \uACFC\uC810\uC8FC\uC8FC\uC600\uB358 \uC774\uB825\uC774 \uC788\uB098\uC694?", yn), select("route", "\uC8FC\uC2DD \uCDE8\uB4DD \uACBD\uB85C", [["transfer", "\uC8FC\uC2DD \uC591\uC218"], ["capital_increase", "\uC99D\uC790"], ["formation_issuance", "\uC124\uB9BD \uC2DC \uBC1C\uD589"]])), d.hadPrior === "yes" && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, [["highNumerator", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uBD84\uC790"], ["highDenominator", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uBD84\uBAA8"], ["highDate", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uAE30\uC900\uC77C", "date"], ["previousNumerator", "\uC7AC\uC9C4\uC785 \uC804 \uC885\uC804 \uACFC\uC810 \uC9C0\uBD84 \uBD84\uC790 (\uD574\uB2F9 \uC2DC)"], ["previousDenominator", "\uC7AC\uC9C4\uC785 \uC804 \uC885\uC804 \uACFC\uC810 \uC9C0\uBD84 \uBD84\uBAA8 (\uD574\uB2F9 \uC2DC)"]].map(([k, l, t]) => field(k, l, t || "text"))), rows("shareholders", "\uC804\uCCB4 \uC8FC\uC8FC\uBA85\uBD80", [["id", "\uC8FC\uC8FC \uC774\uB984"], ["before", "\uC804 \uC8FC\uC2DD\uC218", "number"], ["after", "\uD6C4 \uC8FC\uC2DD\uC218", "number"], ["inGroup", "\uB3D9\uC77C \uC9D1\uB2E8 \uD3EC\uD568", yn], ["evidence", "\uC8FC\uC8FC\uBA85\uBD80 \uADFC\uAC70"]]), rows("assets", "\uBC95\uC778 \uCDE8\uB4DD\uC138 \uB300\uC0C1 \uC7AC\uC0B0", [["id", "\uC7AC\uC0B0 \uC774\uB984"], ["type", "\uC7AC\uC0B0 \uC885\uB958", [["\uD1A0\uC9C0", "\uBE44\uB18D\uC9C0 \uD1A0\uC9C0"], ["\uAC74\uBB3C", "\uBE44\uC8FC\uD0DD \uAC74\uBB3C"]]], ["value", "\uC21C\uC7A5\uBD80\uAC00\uC561 (\uC6D0)", "number"], ["region", "\uC18C\uC7AC\uC9C0"], ["evidence", "\uC7A5\uBD80 \uADFC\uAC70"]])), d.kind === "floor_allocation" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uAC1C\uC778\uC758 \uBE44\uB18D\uC9C0\xB7\uC804\uCCB4 \uCDE8\uB4DD \uC911 \uC77C\uBC18 \uBE44\uC8FC\uD0DD\xB7\uC8FC\uD0DD\xB7\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC744 \uAD6C\uBD84\uD569\uB2C8\uB2E4. \uAC19\uC740 \uC8FC\uD0DD \uD55C \uD638\uC758 \uC5EC\uB7EC \uCE35\uC740 \uAC19\uC740 \uACFC\uC138 \uBB36\uC74C\uC5D0 \uB123\uC73C\uC138\uC694. \uC8FC\uD0DD \uAC10\uBA74\xB7\uBC95\uC778 \uC911\uACFC\uC640 \uD63C\uD569\uD55C \uBB36\uC74C\uC740 \uB2F4\uB2F9\uC790 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("basis", "\uCE35\uBCC4 \uC548\uBD84 \uAE30\uC900", [["separate_prices", "\uCE35\uBCC4\uB85C \uAD6C\uBD84\uB41C \uC2E4\uC81C\uAC00\uACA9"], ["standard_ratio", "\uC2DC\uAC00\uD45C\uC900\uC561 \uBE44\uC728"], ["area_ratio", "\uC2E0\uCD95 \uBA74\uC801 \uBE44\uC728"]]), field("allocationEvidence", "\uC548\uBD84 \uC6D0\uC790\uB8CC\xB7\uBC95\uC815 \uAE30\uC900 \uAC80\uD1A0 \uADFC\uAC70")), rows("groups", "\uACFC\uC138 \uBB36\uC74C", [["id", "\uBB36\uC74C \uC774\uB984"], ["use", "\uC6A9\uB3C4", [["nonhousing", "\uC77C\uBC18 \uBE44\uC8FC\uD0DD"], ["luxury", "\uC0AC\uCE58\uC131 \uBE44\uC8FC\uD0DD"], ["housing", "\uC8FC\uD0DD"]]], ["houses", "\uC8FC\uD0DD\uC774\uBA74 \uC138\uB300 \uC8FC\uD0DD\uC218", "number"], ["regulated", "\uC8FC\uD0DD\uC774\uBA74 \uC870\uC815\uC9C0\uC5ED", yn], ["area", "\uC8FC\uD0DD \uC804\uCCB4 \uC804\uC6A9\uBA74\uC801 (\u33A1)", "number"], ["evidence", "\uBB36\uC74C \uC804\uCCB4 \uBC94\uC704 \uADFC\uAC70"]]), rows("floors", "\uCE35\uBCC4 \uC6D0\uC790\uB8CC", [["id", "\uCE35 \uC774\uB984"], ["group", "\uACFC\uC138 \uBB36\uC74C \uC774\uB984"], ["weight", d.basis === "area_ratio" ? "\uCD1D\uBA74\uC801 (\u33A1)" : d.basis === "standard_ratio" ? "\uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0)" : "\uC2E4\uC81C\uAC00\uACA9 (\uC6D0)", "number"], ["evidence", "\uCE35\uBCC4 \uADFC\uAC70"]]), confirmation("floor_personal", "\uAC1C\uC778\xB7\uBE44\uB18D\uC9C0\xB7\uD2B9\uC218\uAD00\uACC4 \uBC0F \uC870\uB840 \uC138\uC728 \uBCC0\uB3D9 \uC5C6\uB294 \uC804\uCCB4 \uCDE8\uB4DD\uC785\uB2C8\uB2E4"), d.groups.map((row, i) => confirmation("group:" + row.id, "\uACFC\uC138 \uBB36\uC74C \u2018" + (row.id || i + 1) + "\u2019\uC758 \uC804\uCCB4 \uBC94\uC704\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4(\uB3D9\uC77C \uC8FC\uD0DD\xB7\uBD80\uC18D\uD1A0\uC9C0 \uD3EC\uD568)"))), /* @__PURE__ */ React.createElement("fieldset", null, /* @__PURE__ */ React.createElement("legend", null, "\uC801\uC6A9 \uBC94\uC704 \uD655\uC778"), confirmation("scope_confirmed", "\uD604\uC7AC \uC120\uD0DD\uD55C \uACC4\uC0B0 \uBC94\uC704\uC640 \uC0AC\uC2E4\uC774 \uC77C\uCE58\uD569\uB2C8\uB2E4"), ACQ_SPECIAL_CHECKS[d.kind].map(([k, l]) => confirmation(k, l))), /* @__PURE__ */ React.createElement("p", null, "\uAE08\uC561\xB7\uB0A0\uC9DC\xB7\uC6A9\uB3C4\xB7\uC6D0\uC790\uB8CC\uB97C \uBC14\uAFB8\uBA74 \uAE30\uC874 \uACB0\uACFC\uC640 \uD655\uC778 \uD45C\uC2DC\uAC00 \uD574\uC81C\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { type: "submit", className: "jt-btn jt-btn--primary", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uD655\uC778\uD55C \uC0AC\uC2E4\uB85C \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert", "data-testid": "acq-special-error" }, error), result && /* @__PURE__ */ React.createElement("section", { "aria-live": "polite", "data-testid": "acq-special-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uD655\uC778\uD55C \uC0AC\uC2E4\uC758 \uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("p", null, "\uACFC\uC138\uD45C\uC900 ", result["\uACFC\uC138\uD45C\uC900"].toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("dl", null, ["\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"].map((k) => /* @__PURE__ */ React.createElement(React.Fragment, { key: k }, /* @__PURE__ */ React.createElement("dt", null, k === "\uC138\uC561" ? "\uD569\uACC4" : k), /* @__PURE__ */ React.createElement("dd", null, result[k].toLocaleString("ko-KR"), "\uC6D0")))), (_a = result["\uACBD\uACE0\uC0AC\uD56D"]) == null ? void 0 : _a.map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i }, w)))));
+}
+window.JTAcquisitionSpecialDirect = JTAcquisitionSpecialDirect;
 
 
 /* ────────── AcquisitionBuildingDirect.jsx ────────── */

@@ -78,6 +78,7 @@ export const ORDER = [
   'ReportInheritance.jsx',
   'ReportAcquisition.jsx',
   'AcquisitionReviewedDirect.jsx',
+  'AcquisitionSpecialDirect.jsx',
   'AcquisitionBuildingDirect.jsx',
   'AcquisitionValueDirect.jsx',
   'AcquisitionTransferDirect.jsx',
