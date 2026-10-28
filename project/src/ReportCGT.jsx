@@ -1073,10 +1073,16 @@ function JTReportCGT({ setRoute, onBack }) {
   const [directDrafts, setDirectDrafts] = useCgtState({});
   const [step, setStep] = useCgtState(0);
   // 양도일은 세액을 크게 좌우(2026.5.10 다주택 중과 복원 전후) → 오늘 날짜로 미리 채워 명시
-  const [answers, setAnswers] = useCgtState(() => ({ transferDate: isoDate(new Date()) }));
-  const [loading, setLoading] = useCgtState(false);
-  const [report, setReport] = useCgtState(null);
-  const [err, setErr] = useCgtState(null);
+  const [answers, rawSetAnswers] = useCgtState(() => ({ transferDate: isoDate(new Date()) }));
+  const [loading, rawSetLoading] = useCgtState(false);
+  const [report, rawSetReport] = useCgtState(null);
+  const [err, rawSetErr] = useCgtState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+
 
   // 조건부 질문(showIf) 반영: 현재 답변에 따라 보이는 질문만 추림 (예: 일시적2주택은 2주택만)
   const historicalOrdinary = answers.historicalOrdinary === 'yes' && answers.transferDate >= '2018-01-01' && answers.transferDate < '2022-01-01';
@@ -1111,6 +1117,12 @@ function JTReportCGT({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    setReport(null);
+
     setLoading(true);
     setErr(null);
     try {
@@ -1718,7 +1730,7 @@ cautions 3개, saving_ideas 2~3개.`;
 
   return (
     <div className="jt-container">
-      <JTReportShell
+      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}}
         title="양도소득세 간이 계산"
         subtitle="취득·양도·보유·거주 정보로 추정 세액을 계산합니다."
         stepIdx={safeStep}

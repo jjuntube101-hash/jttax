@@ -2834,3 +2834,21 @@ button { font-family: inherit; }
 .jt-special-rows { min-width:0; margin:24px 0; padding:16px; border:1px solid #dbe2e9; border-radius:12px; }
 .jt-special-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; align-items:end; padding:14px 0; border-bottom:1px solid #e5eaf0; }
 .jt-special-row button { min-height:44px; }
+
+/* Question review shared by all nine principal tax wizards. */
+.jt-input-review { margin:0 0 24px; padding:16px; border:1px solid var(--border-1); border-radius:12px; background:var(--jt-ink-050); }
+.jt-input-review summary { cursor:pointer; font-weight:600; }
+.jt-input-review summary span { margin-left:8px; font-size:.85em; opacity:.65; }
+.jt-input-review p { margin:12px 0; line-height:1.6; }
+.jt-input-review ul { list-style:none; padding:0; margin:0; }
+.jt-input-review li { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 0; border-top:1px solid var(--border-1); }
+.jt-input-review li div { display:flex; flex-direction:column; min-width:0; gap:5px; overflow-wrap:anywhere; }
+.jt-input-review li strong { font-size:.88em; font-weight:500; }
+.jt-input-review li em { font-size:.85em; font-style:normal; }
+.jt-input-review li button { flex-shrink:0; min-height:44px; }
+
+.jt-credit-table { overflow-x:auto; margin:20px 0; }
+.jt-credit-table table { width:100%; border-collapse:collapse; }
+.jt-credit-table caption { text-align:left; font-weight:600; padding:12px 0; }
+.jt-credit-table th,.jt-credit-table td { padding:10px; text-align:right; border-bottom:1px solid var(--border-1); white-space:nowrap; }
+.jt-credit-table th:first-child,.jt-credit-table td:first-child { text-align:left; }

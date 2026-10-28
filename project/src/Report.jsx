@@ -440,7 +440,7 @@ const JT_PRIVACY_NOTE = window.JT_PRIVACY_NOTE = {
   ai: <>입력값은 계정에 저장하지 않습니다. 이 진단은 <strong>외부 AI</strong>에 입력 내용을 보내 답을 받는 방식이며, 세액 계산 엔진은 쓰지 않습니다. 담당 세무사에게 전달되는 것은 <strong>동의하신 경우</strong>뿐입니다.</>,
 };
 
-function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag, dataFlow }) {
+function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag, dataFlow, inputReview, extraActions }) {
   // P2-2: 로딩·결과 화면은 stepIdx=stepTotal을 넘겨 진행률 100% 초과·"Step N+1/N"이 되던 것 클램프(0~100%)
   const hasSteps = Number.isInteger(stepIdx) && Number.isInteger(stepTotal) && stepTotal > 0;
   const _tot = hasSteps ? stepTotal : 1;
@@ -467,6 +467,8 @@ function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, 
         </p>
       </div>
       <div className="jt-report-shell__body">
+        {inputReview && <JTInputReview {...inputReview} />}
+        {extraActions}
         {children}
       </div>
     </div>

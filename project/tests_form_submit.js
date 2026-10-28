@@ -1310,7 +1310,7 @@ console.log('\n════ 유입 출처 유틸·CGT 잔재 ════\n');
   // 대조군 — 정상 보유 파일에는 그대로 있어야 한다(과잉 삭제 방지)
   const acq = fs.readFileSync(SRC('ReportAcquisition.jsx'), 'utf8');
   eq('대조군: ReportAcquisition 은 phase state 를 «보유»(과잉 삭제 아님)',
-    /const \[phase, setPhase\]/.test(acq) && /const \[quickReport, setQuickReport\]/.test(acq), true);
+    /const \[phase, setPhase\]/.test(acq) && /const \[quickReport, rawSetQuickReport\]/.test(acq), true);
 }
 
 console.log('\n════ 양성 대조군 — 검사가 실제로 동작하는지 ════\n');

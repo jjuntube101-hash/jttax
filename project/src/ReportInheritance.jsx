@@ -593,12 +593,19 @@ function JTReportInheritance({ setRoute, onBack }) {
   const [installmentMode,setInstallmentMode] = useInhState(false);
   const [installmentDraft,setInstallmentDraft] = useInhState({});
   const [step, setStep] = useInhState(0);
-  const [answers, setAnswers] = useInhState({});
-  const [loading, setLoading] = useInhState(false);
-  const [report, setReport] = useInhState(null);
-  const [err, setErr] = useInhState(null);
+  const [answers, rawSetAnswers] = useInhState({});
+  const [loading, rawSetLoading] = useInhState(false);
+  const [report, rawSetReport] = useInhState(null);
+  const [err, rawSetErr] = useInhState(null);
   const [phase, setPhase] = useInhState('quick');
-  const [quickReport, setQuickReport] = useInhState(null);
+  const [quickReport, rawSetQuickReport] = useInhState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);rawSetQuickReport(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+  const setQuickReport=rawSetQuickReport;
+
 
   // 엔진 미리 깨우기(scale-to-zero 콜드스타트 대비) — fire-and-forget.
   React.useEffect(() => {
@@ -632,6 +639,13 @@ function JTReportInheritance({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    const setQuickReport=inputSession.sink(inputRequest,rawSetQuickReport);
+    setReport(null);
+
     setLoading(true); setErr(null);
     try {
       /* ★ «불확정 입력»은 엔진을 부르기 «전»에 막는다 (260806 Codex R20 P1).
@@ -719,7 +733,7 @@ function JTReportInheritance({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="상속세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="상속세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -741,7 +755,7 @@ function JTReportInheritance({ setRoute, onBack }) {
       const inhBlockTag = inhBlockReason === 'input' ? '정밀 계산 필요' : (inhBlockReason === 'refused' ? '입력이 더 필요합니다' : '계산 엔진 연결 실패');
       return (
         <div className="jt-container">
-          <JTReportShell title="상속세 계산 결과" subtitle={inhBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="상속세 계산 결과" subtitle={inhBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
             {/* 'down' 은 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다.
                 'input'·'refused' 는 무엇을 채워야 하는지(엔진이 준 문구 포함)를 목록으로 보인다 */}
@@ -757,7 +771,7 @@ function JTReportInheritance({ setRoute, onBack }) {
     const ddNum = (k) => (typeof dd[k] === 'number' && isFinite(dd[k])) ? dd[k] : null;
     return (
       <div className="jt-container">
-        <JTReportShell title="상속세 계산 결과" subtitle={(answers.deathDate || '2026년 기본값') + ' 상속세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="상속세 계산 결과" subtitle={(answers.deathDate || '2026년 기본값') + ' 상속세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
           {nonResident && (
             <div className="jt-report-result__section" style={{ background: '#fff4e5', borderLeft: '4px solid #d08b00', padding: '14px 18px', marginBottom: 16 }}>
@@ -875,7 +889,7 @@ function JTReportInheritance({ setRoute, onBack }) {
   // 입력 화면
   return (
     <div className="jt-container">
-      <JTReportShell title="상속세 계산" subtitle={phase === 'quick' ? '총재산·가족만 입력하면 예상 상속세를 바로 보여드려요.' : '공제·사전증여 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="상속세 계산" subtitle={phase === 'quick' ? '총재산·가족만 입력하면 예상 상속세를 바로 보여드려요.' : '공제·사전증여 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <button type="button" data-testid="open-installment-direct" onClick={()=>setInstallmentMode(true)}>일반 연부연납 산식</button>
         {err && <p role="alert">{err}</p>}
         <div className="jt-report-q">

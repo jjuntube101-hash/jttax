@@ -422,12 +422,19 @@ async function callCompEngine(body) {
 
 function JTReportComprehensive({ setRoute, onBack }) {
   const [step, setStep] = useCompState(0);
-  const [answers, setAnswers] = useCompState({});
-  const [loading, setLoading] = useCompState(false);
-  const [report, setReport] = useCompState(null);
-  const [err, setErr] = useCompState(null);
+  const [answers, rawSetAnswers] = useCompState({});
+  const [loading, rawSetLoading] = useCompState(false);
+  const [report, rawSetReport] = useCompState(null);
+  const [err, rawSetErr] = useCompState(null);
   const [phase, setPhase] = useCompState('quick');
-  const [quickReport, setQuickReport] = useCompState(null);
+  const [quickReport, rawSetQuickReport] = useCompState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);rawSetQuickReport(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+  const setQuickReport=rawSetQuickReport;
+
   const [laddr, setLaddr] = useCompState('');
   const [lbusy, setLbusy] = useCompState(false);
   const [linfo, setLinfo] = useCompState(null);
@@ -531,6 +538,13 @@ function JTReportComprehensive({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    const setQuickReport=inputSession.sink(inputRequest,rawSetQuickReport);
+    setReport(null);
+
     setLoading(true); setErr(null);
     try {
       /* ★ «불확정 입력»은 엔진을 부르기 «전»에 막는다 (260806 Codex R20 P1).
@@ -618,7 +632,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="종합부동산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합부동산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -638,7 +652,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
       const compBlockTag = compBlockReason === 'input' ? '정밀 계산 필요' : (calc.engineState === 'needs_input' ? '입력 보완 필요' : '세무사 확인 필요');
       return (
         <div className="jt-container">
-          <JTReportShell title="종합부동산세 계산 결과" subtitle={compBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합부동산세 계산 결과" subtitle={compBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
             {/* 'down' 은 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다. 엔진 오류 문구의 조문 표기(SS8(1))는 읽기 좋게 바꾼다 */}
             <JTFallbackBlocked gaps={compBlockReason === 'down' ? [] : compGaps.map(compFmtArticle)} onRetry={runAnalysis} reason={compBlockReason} />
@@ -656,7 +670,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
     const deemedLabel = { temp: '일시적 2주택', inherit: '상속주택', rural: '지방 저가주택', land: '다른 주택의 부속토지' }[answers.deemedOneHouse];
     return (
       <div className="jt-container">
-        <JTReportShell title="종합부동산세 계산 결과" subtitle={(answers.taxYear || '2026') + '년 종부세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합부동산세 계산 결과" subtitle={(answers.taxYear || '2026') + '년 종부세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 종부세(연간, 농특세 포함)' : '연간 총 납부세액 · 정밀 계산 (JT택스랩 엔진)'}</div>
@@ -798,7 +812,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="종합부동산세 계산" subtitle={phase === 'quick' ? '주택수·공시가격 합계만 넣으면 예상 종부세를 바로 보여드려요.' : '1세대 1주택 특례 여부·연령·보유 세액공제·직전 연도 세액까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합부동산세 계산" subtitle={phase === 'quick' ? '주택수·공시가격 합계만 넣으면 예상 종부세를 바로 보여드려요.' : '1세대 1주택 특례 여부·연령·보유 세액공제·직전 연도 세액까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>

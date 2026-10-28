@@ -659,12 +659,19 @@ if (typeof window !== 'undefined' && !window.JTUnitAsk) {
 
 function JTReportProperty({ setRoute, onBack }) {
   const [step, setStep] = usePropState(0);
-  const [answers, setAnswers] = usePropState({});
-  const [loading, setLoading] = usePropState(false);
-  const [report, setReport] = usePropState(null);
-  const [err, setErr] = usePropState(null);
+  const [answers, rawSetAnswers] = usePropState({});
+  const [loading, rawSetLoading] = usePropState(false);
+  const [report, rawSetReport] = usePropState(null);
+  const [err, rawSetErr] = usePropState(null);
   const [phase, setPhase] = usePropState('quick');
-  const [quickReport, setQuickReport] = usePropState(null);
+  const [quickReport, rawSetQuickReport] = usePropState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);rawSetQuickReport(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+  const setQuickReport=rawSetQuickReport;
+
   // 주소→공시가격 자동조회 상태 (주택 standardValue 단계)
   const [laddr, setLaddr] = usePropState('');
   const [lbusy, setLbusy] = usePropState(false);
@@ -812,6 +819,13 @@ function JTReportProperty({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    const setQuickReport=inputSession.sink(inputRequest,rawSetQuickReport);
+    setReport(null);
+
     setLoading(true); setErr(null);
     try {
       /* ★ «불확정 입력»은 엔진을 부르기 «전»에 막는다 (260806 Codex R20 P1).
@@ -898,7 +912,7 @@ function JTReportProperty({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="재산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -919,7 +933,7 @@ function JTReportProperty({ setRoute, onBack }) {
       const propBlockTag = propBlockReason === 'input' ? '정밀 계산 필요' : (propBlockReason === 'refused' ? '입력이 더 필요합니다' : '계산 엔진 연결 실패');
       return (
         <div className="jt-container">
-          <JTReportShell title="재산세 계산 결과" subtitle={propBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산 결과" subtitle={propBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
             {/* 'down' 은 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다 */}
             <JTFallbackBlocked gaps={propBlockReason === 'down' ? [] : propGaps} onRetry={runAnalysis} reason={propBlockReason} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
@@ -931,7 +945,7 @@ function JTReportProperty({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell title="재산세 계산 결과" subtitle="재산세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산 결과" subtitle="재산세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 재산세(연간 총액)' : '재산세·부가세목 계산 소계 (지원 범위 확인 필요)'}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
@@ -1065,7 +1079,7 @@ function JTReportProperty({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <button className="jt-btn jt-btn--ghost" onClick={() => { window.location.hash = "/report/workspace"; }}>보유세 사건 입력·저장 작업대 열기</button>
-      <JTReportShell title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <JTVWorldAttributes propertyKind={answers.propertyKind} onApplyValue={value => setAnswers(prior => ({ ...prior, standardValue: String(value) }))} />
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">

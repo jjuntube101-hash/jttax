@@ -45,6 +45,8 @@ export const ORDER = [
   'Pages2.jsx',
   'Legal.jsx',
   'Report.jsx',
+  'InputReview.jsx',
+  'CreditSettlementDirect.jsx',
   'ReportConvert.jsx',
   'ReportAppeal.jsx',
   'TransferAnnualDirect.jsx',

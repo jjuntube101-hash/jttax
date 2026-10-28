@@ -14,8 +14,9 @@ function vatSalesNextDisabled(salesAmount) {
  const values=[3,{businessType:'일반과세자',isCorporate:'no',periodType:'1기_확정',salesAmount},false,null,null];
  let hook=0;
  const env=vm.createContext({window:{},Number,Math,String,Object,
-  React:{useState:()=>[values[hook++],()=>{}],useEffect(){},createElement:(type,props,...children)=>({type,props:props||{},children})},
+  React:{useState:()=>[values[hook++],()=>{}],useRef:value=>({current:value}),useEffect(){},createElement:(type,props,...children)=>({type,props:props||{},children})},
   JTReportShell:'shell',JTNumericInput:'input'});
+ vm.runInContext(require('esbuild').transformSync(fs.readFileSync(path.join(__dirname,'src/InputReview.jsx'),'utf8'),{loader:'jsx'}).code,env);
  const source=fs.readFileSync(path.join(__dirname,'src/ReportVat.jsx'),'utf8');
  vm.runInContext(require('esbuild').transformSync(source,{loader:'jsx'}).code+'\nglobalThis.tree=JTReportVat({onBack(){}});',env);
  const walk=n=>!n||typeof n!=='object'?[]:[n,...(n.children||[]).flat(Infinity).flatMap(walk)];

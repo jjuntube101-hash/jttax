@@ -226,14 +226,23 @@ function JTCorporateDirect({onBack}) {
 }
 
 function JTReportCorporate({ setRoute, onBack }) {
+  const [creditMode,setCreditMode]=useCorpState(false);
+
   const [directMode,setDirectMode]=useCorpState(false);
   const [step, setStep] = useCorpState(0);
-  const [answers, setAnswers] = useCorpState({});
-  const [loading, setLoading] = useCorpState(false);
-  const [report, setReport] = useCorpState(null);
-  const [err, setErr] = useCorpState(null);
+  const [answers, rawSetAnswers] = useCorpState({});
+  const [loading, rawSetLoading] = useCorpState(false);
+  const [report, rawSetReport] = useCorpState(null);
+  const [err, rawSetErr] = useCorpState(null);
   const [phase, setPhase] = useCorpState('quick');
-  const [quickReport, setQuickReport] = useCorpState(null);
+  const [quickReport, rawSetQuickReport] = useCorpState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);rawSetQuickReport(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+  const setQuickReport=rawSetQuickReport;
+
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
@@ -256,6 +265,13 @@ function JTReportCorporate({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    const setQuickReport=inputSession.sink(inputRequest,rawSetQuickReport);
+    setReport(null);
+
     setLoading(true); setErr(null);
     try {
       // 엔진은 정수 필드 → 소수·지수 입력은 422 유발. 매핑 직전 정수 반올림(견고성).
@@ -340,6 +356,8 @@ function JTReportCorporate({ setRoute, onBack }) {
     } catch (e) { console.error(e); setErr(e.message || '계산 중 오류가 발생했습니다.'); }
     finally { setLoading(false); }
   };
+  if(creditMode)return <JTCreditSettlementDirect initialKind="corporate" onBack={()=>setCreditMode(false)}/>;
+
 
   const goDetail = () => { setReport(null); setPhase('detail'); setStep(0); };
   const goNext = () => { if (isLast) runAnalysis(); else setStep(s => s + 1); };
@@ -353,7 +371,7 @@ function JTReportCorporate({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="법인 전환 시뮬레이터" subtitle="개인 vs 법인 비교 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="CONSULTING">
+        <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="법인 전환 시뮬레이터" subtitle="개인 vs 법인 비교 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="CONSULTING">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />개인·법인 세부담을 검증 엔진으로 비교하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -367,7 +385,7 @@ function JTReportCorporate({ setRoute, onBack }) {
     if (corpBlocked) {
       return (
         <div className="jt-container">
-          <JTReportShell title="법인 전환 비교" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="법인 전환 비교" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
             <JTFallbackBlocked gaps={corpGaps} onRetry={() => runAnalysis()} reason={corpFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
@@ -379,7 +397,7 @@ function JTReportCorporate({ setRoute, onBack }) {
     const favorable = calc.precise && calc.corpTotal < calc.indivTotal;
     return (
       <div className="jt-container">
-        <JTReportShell title="법인 전환 시뮬레이터 결과" subtitle="개인사업자 vs 법인 세부담 비교" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="CONSULTING">
+        <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="법인 전환 시뮬레이터 결과" subtitle="개인사업자 vs 법인 세부담 비교" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="CONSULTING">
           {!calc.precise ? (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               <strong>정밀 계산이 필요합니다.</strong> 법인 전환 비교는 개인·법인 세액을 동시에 정확히 계산해야 해서, 간이 추정으로는 유·불리를 잘못 안내할 수 있습니다. 정밀 엔진 연결이 지연됐으니 잠시 후 다시 시도하거나 상담을 권합니다.
@@ -481,7 +499,7 @@ function JTReportCorporate({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="법인 전환 시뮬레이터" subtitle={phase === 'quick' ? '사업 이익·대표 연봉만 넣으면 개인 vs 법인을 바로 비교해요.' : '부양가족·배당 계획까지 반영해 더 정확히 비교합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="CONSULTING">
+      <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="법인 전환 시뮬레이터" subtitle={phase === 'quick' ? '사업 이익·대표 연봉만 넣으면 개인 vs 법인을 바로 비교해요.' : '부양가족·배당 계획까지 반영해 더 정확히 비교합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="CONSULTING">
         <button className="jt-btn jt-btn--ghost" onClick={()=>setDirectMode(true)}>법인세 직접 계산 (사업연도·공제 입력) →</button>
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">

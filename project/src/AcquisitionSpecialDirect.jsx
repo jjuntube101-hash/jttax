@@ -6,6 +6,25 @@ const ACQ_SPECIAL_CHECKS={
  majority_shareholder:[['history_complete_confirmed','설립 이후 과점주주 이력을 빠짐없이 검토했습니다'],['fixed_group_confirmed','전후 동일한 특수관계인 집단입니다'],['voting_rights_exercised_confirmed','주주권 행사 등 실질적 권리 요건을 확인했습니다'],['no_treasury_or_nonvoting_shares_confirmed','자기주식·의결권 없는 주식이 없습니다'],['unlisted_corporation_confirmed','비상장법인입니다'],['stock_acquisition_confirmed','실제 주식 취득 사건입니다']],
  reviewed_reduction:[['eligibility_confirmed','기준일의 해당 조문·항·호 감면 요건을 검토했습니다'],['no_heavy_or_special_rates_confirmed','중과·특례세율과 혼합하지 않습니다'],['price_confirmed','포함·제외 비용을 반영한 취득가격입니다'],['minimum_review_confirmed','최소납부·제외 조문·부칙을 검토했습니다'],['aggregation_complete_confirmed','연부취득·동일 소유자·연접 취득 등의 합산 범위를 확인했습니다']]
 };
+const ACQ_MAJORITY_HISTORY_CHECKS=[['history_complete_confirmed','과세 판단에 필요한 전체 변동 이력을 원자료와 대조했습니다'],['ordinary_shares_only_confirmed','일반 보통주·자기주식만 있으며 다른 무의결권 종류주식·상호보유 제한이 없습니다'],['rights_reviewed_confirmed','실제 주주권·의결권과 해당 집단을 검토했습니다'],['unlisted_corporation_confirmed','비상장법인입니다'],['no_other_concurrent_event_confirmed','같은 날 다른 취득·소각·명의환원 등이 섞여 있지 않습니다'],['assets_complete_confirmed','전체 일반 과세재산과 장부순가액을 대조했습니다']];
+const ACQ_MAJORITY_EVENTS=[['transfer','주식 양수'],['capital_increase','설립 후 증자'],['group_internal_transfer','동일 집단 내부 이전'],['formation_issuance','법인설립 시 발행주식'],['treasury_acquisition_only','집단 취득 없는 자기주식 매입'],['treasury_cancellation_only','자기주식 소각만 발생'],['relationship_change_only','주식수 변동 없는 관계변화만 발생']];
+function acquisitionSpecialChecks(d){return d.kind==='majority_shareholder'&&d.majorityMode==='history'?ACQ_MAJORITY_HISTORY_CHECKS:ACQ_SPECIAL_CHECKS[d.kind];}
+function acquisitionMajorityHistoryFacts(d,f,helpers){
+ const {text,number,yesNo,pick}=helpers;
+ const iso=(value,label)=>{const v=text(value,label);if(!/^\d{4}-\d{2}-\d{2}$/.test(v)||!Number.isFinite(Date.parse(v))||new Date(v).toISOString().slice(0,10)!==v)throw Error(label+'을 실제 날짜로 입력해 주세요.');return v;};
+ const event=pick(d.historyEvent,ACQ_MAJORITY_EVENTS.map(x=>x[0]),'주식 사건 종류');
+ Object.assign(f,{schema_version:'acquisition-special/2',event_type:event,formation_date:iso(d.formationDate,'법인설립일'),
+  total_shares_before:number(d.totalBefore,'전 발행총수',true),total_shares_after:number(d.totalAfter,'후 발행총수'),
+  same_group_confirmed:yesNo(d.sameGroup,'전후 동일 집단 여부'),stock_acquisition_confirmed:yesNo(d.actualAcquisition,'집단의 실제 주식취득 여부'),
+  group_review_evidence:text(d.groupEvidence,'특수관계인 집단 검토 자료명'),
+  shareholders:(d.shareholders||[]).map(row=>({id:text(row.id,'주주 이름'),before_shares:number(row.before,'전 주식수',true),after_shares:number(row.after,'후 주식수',true),
+   in_group_before:yesNo(row.inGroup,'전 집단 소속'),in_group_after:event==='relationship_change_only'?yesNo(row.inGroupAfter,'후 집단 소속'):yesNo(row.inGroup,'동일 집단 소속'),
+   is_treasury:yesNo(row.isTreasury,'발행법인 자기주식 여부'),evidence:text(row.evidence,'주주명세 근거')})),
+  history:(d.majorityHistory||[]).map(row=>({date:iso(row.date,'이력 기준일'),issued_shares:number(row.issued,'이력 발행총수'),treasury_shares:number(row.treasury,'이력 자기주식수',true),
+   group_shares:number(row.group,'이력 집단 보유량',true),evidence:text(row.evidence,'이력 근거')})),
+  assets:(d.assets||[]).map(row=>({id:text(row.id,'과세재산 이름'),property_type:pick(row.type,['토지','건물'],'재산 종류'),net_book_value:number(row.value,'장부순가액',true),jurisdiction:text(row.region,'재산 소재지'),evidence:text(row.evidence,'장부 근거')}))});
+}
+
 function acquisitionSpecialRequest(d){
  const text=(v,label)=>{v=String(v??'').trim();if(!v||v.length>2000)throw Error(label+'을 입력해 주세요.');return v;};
  const number=(v,label,zero=false)=>{if(!/^\d+$/.test(String(v??'')))throw Error(label+'은 원 또는 수량의 정수로 입력해 주세요.');const n=Number(v);if(!Number.isSafeInteger(n)||n<(zero?0:1))throw Error(label+'의 금액·수량을 확인해 주세요.');return n;};
@@ -17,7 +36,7 @@ function acquisitionSpecialRequest(d){
  const kind=pick(d.kind,ACQ_SPECIAL_KINDS.map(x=>x[0]),'계산 종류');
  const f={schema_version:'acquisition-special/1',kind,acquisition_date:date(d.date,'취득일'),
   scope_confirmed:check('scope_confirmed','해당 계산 범위'),evidence:text(d.evidence,'전체 검토 자료명')};
- for(const [key,label] of ACQ_SPECIAL_CHECKS[kind])f[key]=check(key,label);
+ for(const [key,label] of acquisitionSpecialChecks(d))f[key]=check(key,label);
  const origin=()=>pick(d.origin,['유상취득','원시취득'],'취득 원인');
  const prop=()=>pick(d.propertyType,['토지','건물'],'비주택 물건 종류');
  if(kind==='corporate_heavy')Object.assign(f,{property_value:number(d.value,'취득가격'),property_type:prop(),acquisition_type:origin(),
@@ -30,7 +49,8 @@ function acquisitionSpecialRequest(d){
   aggregation_gross_tax:number(d.aggregationTax,'법정 합산 범위의 감면 전 취득세',true),aggregation_evidence:text(d.aggregationEvidence,'합산 범위 검토 근거'),
   rural_base_exempt:yesNo(d.ruralBaseExempt,'본세분 농특세 비과세 여부'),rural_reduction_exempt:yesNo(d.ruralReductionExempt,'감면분 농특세 비과세 여부'),
   rural_base_evidence:text(d.ruralBaseEvidence,'본세분 농특세 근거'),rural_reduction_evidence:text(d.ruralReductionEvidence,'감면분 농특세 근거')});
- if(kind==='majority_shareholder'){
+ if(kind==='majority_shareholder'&&d.majorityMode==='history')acquisitionMajorityHistoryFacts(d,f,{text,number,yesNo,pick});
+ if(kind==='majority_shareholder'&&d.majorityMode!=='history'){
   Object.assign(f,{total_shares_before:number(d.totalBefore,'취득 전 발행주식총수',true),total_shares_after:number(d.totalAfter,'취득 후 발행주식총수'),
    had_prior_majority:yesNo(d.hadPrior,'과거 과점주주 이력'),acquisition_route:pick(d.route,['transfer','capital_increase','formation_issuance'],'취득 경로'),
    shareholders:(d.shareholders||[]).map((row,i)=>({id:text(row.id,'주주 이름 '+(i+1)),before_shares:number(row.before,'취득 전 주식수',true),after_shares:number(row.after,'취득 후 주식수',true),
@@ -64,7 +84,7 @@ function acquisitionSpecialResult(calc){
 }
 function JTAcquisitionSpecialDirect({onBack,initialDraft}){
  const [d,setD]=React.useState(()=>({...initialDraft,kind:initialDraft?.kind||'corporate_heavy',checks:{},
-  shareholders:initialDraft?.shareholders||[{},{}],assets:initialDraft?.assets||[{}],groups:initialDraft?.groups||[{}],floors:initialDraft?.floors||[{},{}]}));
+  shareholders:initialDraft?.shareholders||[{},{}],assets:initialDraft?.assets||[{}],groups:initialDraft?.groups||[{}],floors:initialDraft?.floors||[{},{}],majorityHistory:initialDraft?.majorityHistory||[]}));
  const [result,setResult]=React.useState(null),[error,setError]=React.useState(''),[busy,setBusy]=React.useState(false);
  const sequence=React.useRef(0),pending=React.useRef(null);
  React.useEffect(()=>()=>{sequence.current++;pending.current?.abort();},[]);
@@ -92,7 +112,8 @@ function JTAcquisitionSpecialDirect({onBack,initialDraft}){
   {['corporate_heavy','reviewed_reduction','floor_allocation'].includes(d.kind)&&<div className="jt-special-grid">{field('value','전체 취득가격 (원)','text','예: 100000000')}{origin}{d.kind!=='floor_allocation'&&select('propertyType','비주택 물건 종류',[['토지','비농지 토지'],['건물','비주택 건물']])}</div>}
   {d.kind==='corporate_heavy'&&<div className="jt-special-grid">{select('capitalGround','본점·공장 중과 사유',[['none','해당 없음'],['head_office_new_or_extension','본점·주사무소 신증축'],['factory_new_or_extension','공장 신증설']])}{select('metro','대도시 법인 중과 대상인가요?',yn)}{select('luxury','사치성 재산인가요?',yn)}{field('groundEvidence','권역·시기·시설·업종 예외 검토 근거')}</div>}
   {d.kind==='reviewed_reduction'&&<><p>지방세특례제한법의 정률 감면입니다. 없는 가지 조·항·호는 0을 입력하고, 최소납부 합산 범위와 농특세 두 부분을 각각 확인하세요.</p><div className="jt-special-grid">{[['article','감면 조 번호'],['branch','가지 조 번호'],['paragraph','항 번호'],['item','호 번호'],['reliefPercent','법정 감면율 (%)'],['eligibilityDate','감면 자격 기준일','date'],['eligibilityEvidence','감면 자격 검토 근거'],['minimumEvidence','최소납부·부칙 검토 근거'],['aggregationTax','합산 범위 감면 전 취득세 (원)'],['aggregationEvidence','법정 합산 범위 근거'],['ruralBaseEvidence','본세분 농특세 근거'],['ruralReductionEvidence','감면분 농특세 근거']].map(([k,l,t])=>field(k,l,t||'text'))}{select('ruralBaseExempt','본세분 농특세가 비과세인가요?',yn)}{select('ruralReductionExempt','감면분 농특세가 비과세인가요?',yn)}</div></>}
-  {d.kind==='majority_shareholder'&&<><div className="jt-special-grid">{field('totalBefore','취득 전 발행주식총수')}{field('totalAfter','취득 후 발행주식총수')}{select('hadPrior','과거 과점주주였던 이력이 있나요?',yn)}{select('route','주식 취득 경로',[['transfer','주식 양수'],['capital_increase','증자'],['formation_issuance','설립 시 발행']])}</div>
+  {d.kind==='majority_shareholder'&&<div className="jt-special-grid"><label className="jt-special-field">계산 방식<select data-testid="acq-special-majorityMode" value={d.majorityMode||'legacy'} onChange={e=>edit('majorityMode',e.target.value)}><option value="legacy">기본 전후 명세</option><option value="history">전체 변동 이력·자기주식 예외</option></select></label></div>}
+  {d.kind==='majority_shareholder'&&d.majorityMode!=='history'&&<><div className="jt-special-grid">{field('totalBefore','취득 전 발행주식총수')}{field('totalAfter','취득 후 발행주식총수')}{select('hadPrior','과거 과점주주였던 이력이 있나요?',yn)}{select('route','주식 취득 경로',[['transfer','주식 양수'],['capital_increase','증자'],['formation_issuance','설립 시 발행']])}</div>
    {d.hadPrior==='yes'&&<div className="jt-special-grid">{[['highNumerator','과거 최고 지분 분자'],['highDenominator','과거 최고 지분 분모'],['highDate','과거 최고 지분 기준일','date'],['previousNumerator','재진입 전 종전 과점 지분 분자 (해당 시)'],['previousDenominator','재진입 전 종전 과점 지분 분모 (해당 시)']].map(([k,l,t])=>field(k,l,t||'text'))}</div>}
    {rows('shareholders','전체 주주명부',[['id','주주 이름'],['before','전 주식수','number'],['after','후 주식수','number'],['inGroup','동일 집단 포함',yn],['evidence','주주명부 근거']])}
    {rows('assets','법인 취득세 대상 재산',[['id','재산 이름'],['type','재산 종류',[['토지','비농지 토지'],['건물','비주택 건물']]],['value','순장부가액 (원)','number'],['region','소재지'],['evidence','장부 근거']])}</>}
@@ -100,7 +121,15 @@ function JTAcquisitionSpecialDirect({onBack,initialDraft}){
    {rows('groups','과세 묶음',[['id','묶음 이름'],['use','용도',[['nonhousing','일반 비주택'],['luxury','사치성 비주택'],['housing','주택']]],['houses','주택이면 세대 주택수','number'],['regulated','주택이면 조정지역',yn],['area','주택 전체 전용면적 (㎡)','number'],['evidence','묶음 전체 범위 근거']])}
    {rows('floors','층별 원자료',[['id','층 이름'],['group','과세 묶음 이름'],['weight',d.basis==='area_ratio'?'총면적 (㎡)':d.basis==='standard_ratio'?'시가표준액 (원)':'실제가격 (원)','number'],['evidence','층별 근거']])}
    {confirmation('floor_personal','개인·비농지·특수관계 및 조례 세율 변동 없는 전체 취득입니다')}{d.groups.map((row,i)=>confirmation('group:'+row.id,'과세 묶음 ‘'+(row.id||i+1)+'’의 전체 범위를 확인했습니다(동일 주택·부속토지 포함)'))}</>}
-  <fieldset><legend>적용 범위 확인</legend>{confirmation('scope_confirmed','현재 선택한 계산 범위와 사실이 일치합니다')}{ACQ_SPECIAL_CHECKS[d.kind].map(([k,l])=>confirmation(k,l))}</fieldset>
+  {d.kind==='majority_shareholder'&&d.majorityMode==='history'&&<>
+   <p>집단 전체 주주지위가0이 된 경우와 개인만 이탈한 경우를 구별합니다. 설립일부터 사건 전일까지 이력을 날짜순으로 넣어 주세요. 주식취득 없는 단독 사건은 현재 전후 명세로 판단합니다.</p>
+   <div className="jt-special-grid">{select('historyEvent','현재 사건 종류',ACQ_MAJORITY_EVENTS)}{field('formationDate','법인설립일','date')}{field('totalBefore','전 발행주식총수 (자기주식 포함)','number')}{field('totalAfter','후 발행주식총수 (자기주식 포함)','number')}{select('sameGroup','전후 동일 특수관계인 집단',yn)}{select('actualAcquisition','집단의 실제 주식취득이 있습니까?',yn)}{field('groupEvidence','집단·권리 검토 자료명')}</div>
+   {rows('shareholders','전체 주주명세 (발행법인 자기주식은 별도 행)',[['id','주주 이름'],['before','전 보통주 수','number'],['after','후 보통주 수','number'],['inGroup','전 집단 소속',yn],...(d.historyEvent==='relationship_change_only'?[['inGroupAfter','후 집단 소속',yn]]:[]),['isTreasury','발행법인 자기주식',yn],['evidence','주주명세 근거']])}
+   {rows('majorityHistory','설립부터 사건 직전까지 전체 변동 이력',[['date','이력 기준일','date'],['issued','전체 발행총수','number'],['treasury','자기주식수 (없으면0)','number'],['group','집단 보유주식수 (없으면0)','number'],['evidence','이력 근거']])}
+   {rows('assets','일반 과세재산 전체 장부',[['id','재산 이름'],['type','종류','select',[['토지','일반 비농지 토지'],['건물','일반 비주택 건물']]],['value','장부순가액 (원)','number'],['region','재산 소재지'],['evidence','장부 근거']])}
+  </>}
+
+<fieldset><legend>적용 범위 확인</legend>{confirmation('scope_confirmed','현재 선택한 계산 범위와 사실이 일치합니다')}{acquisitionSpecialChecks(d).map(([k,l])=>confirmation(k,l))}</fieldset>
   <p>금액·날짜·용도·원자료를 바꾸면 기존 결과와 확인 표시가 해제됩니다.</p><button type="submit" className="jt-btn jt-btn--primary" disabled={busy}>{busy?'계산 중…':'확인한 사실로 계산'}</button></form>
   {error&&<p role="alert" data-testid="acq-special-error">{error}</p>}{result&&<section aria-live="polite" data-testid="acq-special-result"><h3>확인한 사실의 계산 결과</h3><p>과세표준 {result['과세표준'].toLocaleString('ko-KR')}원</p><dl>{['취득세','지방교육세','농어촌특별세','세액'].map(k=><React.Fragment key={k}><dt>{k==='세액'?'합계':k}</dt><dd>{result[k].toLocaleString('ko-KR')}원</dd></React.Fragment>)}</dl>{result['경고사항']?.map((w,i)=><p key={i}>{w}</p>)}</section>}
  </JTReportShell></div>;

@@ -218,10 +218,16 @@ function buildVatKakao(answers, calc) {
 
 function JTReportVat({ setRoute, onBack }) {
   const [step, setStep] = useVatState(0);
-  const [answers, setAnswers] = useVatState({});
-  const [loading, setLoading] = useVatState(false);
-  const [report, setReport] = useVatState(null);
-  const [err, setErr] = useVatState(null);
+  const [answers, rawSetAnswers] = useVatState({});
+  const [loading, rawSetLoading] = useVatState(false);
+  const [report, rawSetReport] = useVatState(null);
+  const [err, rawSetErr] = useVatState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
@@ -248,6 +254,12 @@ function JTReportVat({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    setReport(null);
+
     setLoading(true); setErr(null);
     try {
       const clamp = (x) => Math.max(0, Math.round(Number(x) || 0));
@@ -323,7 +335,7 @@ function JTReportVat({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="부가가치세 계산기" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="BOOKKEEPING">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="부가가치세 계산기" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="BOOKKEEPING">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />매출세액에서 매입세액·공제를 빼 부가가치세를 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -336,7 +348,7 @@ function JTReportVat({ setRoute, onBack }) {
     const deadline = VAT_DEADLINE[calc.periodType] || '각 과세기간 종료 후 25일 이내';
     return (
       <div className="jt-container">
-        <JTReportShell title="부가가치세 계산 결과" subtitle="매출세액 − 매입세액 − 공제" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="부가가치세 계산 결과" subtitle="매출세액 − 매입세액 − 공제" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
           {!calc.precise ? (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               <strong>정밀 계산이 필요합니다.</strong> {calc.engineReason || '정밀 엔진 연결이 지연됐습니다.'} 잘못된 세액을 안내하지 않기 위해 결과를 표시하지 않았어요. 잠시 후 다시 시도하거나 상담을 권합니다.
@@ -449,7 +461,7 @@ function JTReportVat({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="부가가치세 계산기" subtitle="사업자 유형과 매출·매입만 넣으면 낼 부가세를 바로 계산해요." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
+      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="부가가치세 계산기" subtitle="사업자 유형과 매출·매입만 넣으면 낼 부가세를 바로 계산해요." stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>

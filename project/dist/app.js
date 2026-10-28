@@ -1,6 +1,6 @@
 /* 자동 생성 파일 — 직접 수정하지 마세요.
    생성: node project/scripts/build_bundle.mjs
-   소스: project/src/*.jsx (59개, ORDER 순서)
+   소스: project/src/*.jsx (61개, ORDER 순서)
    ⛔ 이 파일을 손으로 고치면 다음 빌드에 덮어써집니다. 소스를 고치고 다시 빌드하세요.
    ⛔ 커밋에서 빠뜨리면 라이브가 «옛 코드»로 돕니다 — tests_build_fresh.js 가 막습니다. */
 
@@ -2080,12 +2080,12 @@ const JT_PRIVACY_NOTE = window.JT_PRIVACY_NOTE = {
   local: /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC785\uB825\uAC12\uC740 \uACC4\uC815\uC5D0 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uACC4\uC0B0\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uC804\uBD80 \uBE0C\uB77C\uC6B0\uC800 \uC548\uC5D0\uC11C"), " \uC774\uB904\uC9C0\uBA70 \uC678\uBD80\uB85C \uC804\uC1A1\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uB2F4\uB2F9 \uC138\uBB34\uC0AC\uC5D0\uAC8C \uC804\uB2EC\uB418\uB294 \uAC83\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uB3D9\uC758\uD558\uC2E0 \uACBD\uC6B0"), "\uBFD0\uC785\uB2C8\uB2E4."),
   ai: /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC785\uB825\uAC12\uC740 \uACC4\uC815\uC5D0 \uC800\uC7A5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC774 \uC9C4\uB2E8\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uC678\uBD80 AI"), "\uC5D0 \uC785\uB825 \uB0B4\uC6A9\uC744 \uBCF4\uB0B4 \uB2F5\uC744 \uBC1B\uB294 \uBC29\uC2DD\uC774\uBA70, \uC138\uC561 \uACC4\uC0B0 \uC5D4\uC9C4\uC740 \uC4F0\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uB2F4\uB2F9 \uC138\uBB34\uC0AC\uC5D0\uAC8C \uC804\uB2EC\uB418\uB294 \uAC83\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uB3D9\uC758\uD558\uC2E0 \uACBD\uC6B0"), "\uBFD0\uC785\uB2C8\uB2E4.")
 };
-function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag, dataFlow }) {
+function JTReportShell({ title, subtitle, stepIdx, stepTotal, children, onBack, tag, dataFlow, inputReview, extraActions }) {
   const hasSteps = Number.isInteger(stepIdx) && Number.isInteger(stepTotal) && stepTotal > 0;
   const _tot = hasSteps ? stepTotal : 1;
   const _stepNo = Math.max(0, Math.min((hasSteps ? stepIdx : 0) + 1, _tot));
   const pct = Math.max(0, Math.min(100, Math.round(_stepNo / _tot * 100)));
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__head" }, /* @__PURE__ */ React.createElement("button", { className: "jt-report-shell__back", onClick: onBack }, "\u2190 \uC138\uAE08 \uACC4\uC0B0\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__meta" }, /* @__PURE__ */ React.createElement("span", { className: "jt-tag" }, tag), hasSteps && /* @__PURE__ */ React.createElement("span", null, "Step ", _stepNo, " / ", _tot))), hasSteps && /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__bar" }, /* @__PURE__ */ React.createElement("div", { style: { width: `${pct}%` } })), /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__title" }, /* @__PURE__ */ React.createElement("h1", null, title), /* @__PURE__ */ React.createElement("p", null, subtitle), /* @__PURE__ */ React.createElement("p", { className: "jt-report-shell__privacy", style: { fontSize: 12.5, opacity: 0.65, lineHeight: 1.6, marginTop: 6 } }, JT_PRIVACY_NOTE[dataFlow] || JT_PRIVACY_NOTE.engine)), /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__body" }, children));
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__head" }, /* @__PURE__ */ React.createElement("button", { className: "jt-report-shell__back", onClick: onBack }, "\u2190 \uC138\uAE08 \uACC4\uC0B0\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__meta" }, /* @__PURE__ */ React.createElement("span", { className: "jt-tag" }, tag), hasSteps && /* @__PURE__ */ React.createElement("span", null, "Step ", _stepNo, " / ", _tot))), hasSteps && /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__bar" }, /* @__PURE__ */ React.createElement("div", { style: { width: `${pct}%` } })), /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__title" }, /* @__PURE__ */ React.createElement("h1", null, title), /* @__PURE__ */ React.createElement("p", null, subtitle), /* @__PURE__ */ React.createElement("p", { className: "jt-report-shell__privacy", style: { fontSize: 12.5, opacity: 0.65, lineHeight: 1.6, marginTop: 6 } }, JT_PRIVACY_NOTE[dataFlow] || JT_PRIVACY_NOTE.engine)), /* @__PURE__ */ React.createElement("div", { className: "jt-report-shell__body" }, inputReview && /* @__PURE__ */ React.createElement(JTInputReview, __spreadValues({}, inputReview)), extraActions, children));
 }
 window.JTReportShell = JTReportShell;
 const JT_ABBR = {
@@ -2263,6 +2263,272 @@ function JTReportPage({ setRoute }) {
   return /* @__PURE__ */ React.createElement("div", { className: "jt-report" }, subRoute === "workspace" && /* @__PURE__ */ React.createElement(JTCaseWorkspace, { onBack: back }), subRoute === "hub" && /* @__PURE__ */ React.createElement(JTReportHub, { setRoute, setSubRoute }), subRoute === "reform-cgt" && /* @__PURE__ */ React.createElement(JTReportReformCGT, { setRoute, setSubRoute, onBack: back }), subRoute === "reform-cre" && /* @__PURE__ */ React.createElement(JTReportReformCRE, { setRoute, setSubRoute, onBack: back }), subRoute === "crypto" && /* @__PURE__ */ React.createElement(JTReportCrypto, { setRoute, setSubRoute, onBack: back }), subRoute === "appeal" && /* @__PURE__ */ React.createElement(JTReportAppeal, { setRoute, onBack: back }), subRoute === "cgt" && /* @__PURE__ */ React.createElement(JTReportCGT, { setRoute, onBack: back }), subRoute === "income" && /* @__PURE__ */ React.createElement(JTReportIncome, { setRoute, onBack: back }), subRoute === "gift" && /* @__PURE__ */ React.createElement(JTReportGift, { setRoute, onBack: back }), subRoute === "inheritance" && /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setSubRoute("workspace") }, "\uC0C1\uC18D \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5 \uC791\uC5C5\uB300 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement("p", null, "\uC0AC\uAC74 \uC791\uC5C5\uB300\uC5D0\uC11C\uB294 \uACE0\uAC1D\uBCC4 \uC7AC\uC0B0\xB7\uC0C1\uC18D\uC778 \uC0AC\uC2E4\uC744 \uD655\uC778\uD558\uACE0 \uC800\uC7A5\xB7\uACC4\uC0B0\xB7\uACFC\uAC70 \uACB0\uACFC\uB97C \uAD00\uB9AC\uD569\uB2C8\uB2E4. \uC544\uB798 \uBE60\uB978 \uACC4\uC0B0 \uB2F5\uC548\uC740 \uC790\uB3D9 \uC774\uC804\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")), subRoute === "inheritance" && /* @__PURE__ */ React.createElement(JTReportInheritance, { setRoute, onBack: back }), subRoute === "acquisition" && /* @__PURE__ */ React.createElement(JTReportAcquisition, { setRoute, onBack: back }), subRoute === "acq-check" && /* @__PURE__ */ React.createElement(JTReportAcqCheck, { setRoute, onBack: back }), subRoute === "property" && /* @__PURE__ */ React.createElement(JTReportProperty, { setRoute, onBack: back }), subRoute === "comprehensive" && /* @__PURE__ */ React.createElement(JTReportComprehensive, { setRoute, onBack: back }), subRoute === "corporate" && /* @__PURE__ */ React.createElement(JTReportCorporate, { setRoute, onBack: back }), subRoute === "insurance" && /* @__PURE__ */ React.createElement(JTReportInsurance, { setRoute, onBack: back }), subRoute === "vat" && /* @__PURE__ */ React.createElement(JTReportVat, { setRoute, onBack: back }), subRoute === "compare" && /* @__PURE__ */ React.createElement(JTReportCompare, { setRoute, onBack: back }), subRoute === "burden" && /* @__PURE__ */ React.createElement(JTReportBurden, { setRoute, onBack: back }), subRoute === "youthstartup" && /* @__PURE__ */ React.createElement(JTReportYouthStartup, { setRoute, onBack: back }));
 }
 window.JTReportPage = JTReportPage;
+
+
+/* ────────── InputReview.jsx ────────── */
+function jtCreateInputSession(onInvalidate) {
+  let revision = 0, active = true;
+  const current = (token) => active && token === revision;
+  return {
+    begin() {
+      return ++revision;
+    },
+    invalidate() {
+      revision++;
+      if (active && onInvalidate) onInvalidate();
+    },
+    current,
+    sink(token, commit) {
+      return (value) => {
+        if (current(token)) commit(typeof value === "function" ? (prior) => current(token) ? value(prior) : prior : value);
+      };
+    },
+    mount() {
+      active = true;
+    },
+    dispose() {
+      active = false;
+      revision++;
+    }
+  };
+}
+function useJTInputSession(reset) {
+  const resetRef = React.useRef(reset);
+  resetRef.current = reset;
+  const session = React.useRef(null);
+  if (!session.current) session.current = jtCreateInputSession(() => resetRef.current());
+  React.useEffect(() => {
+    session.current.mount();
+    return () => session.current.dispose();
+  }, []);
+  return session.current;
+}
+function jtInputReviewRows(questions, answers) {
+  return (questions || []).filter((q) => q && q.id).map((q, index) => {
+    const raw = answers[q.id], blank = raw == null || String(raw).trim() === "" || Array.isArray(raw) && raw.length === 0;
+    let value, status = blank ? "unknown" : "entered";
+    const optional = !!q.optional && !(q.requiredIf && q.requiredIf(answers));
+    if (blank) value = q.reviewed ? "\uC138\uBD80 \uC0AC\uC2E4 \uD655\uC778" : optional ? "\uC785\uB825\uD558\uC9C0 \uC54A\uC74C \xB7 \uC801\uC6A9 \uC5EC\uBD80\uB294 \uACC4\uC0B0 \uACB0\uACFC\uC5D0\uC11C \uD655\uC778" : "\uC544\uC9C1 \uC785\uB825\uD558\uC9C0 \uC54A\uC74C";
+    else if (q.date) {
+      const s = String(raw);
+      const valid = /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+      value = s;
+      if (!valid) status = "invalid";
+    } else if (q.money) {
+      const digits = window.jtMoneyDigits(raw);
+      if (digits === null) {
+        status = "invalid";
+        value = String(raw);
+      } else value = Number(digits).toLocaleString("ko-KR") + "\uC6D0";
+    } else if (Array.isArray(q.opts)) {
+      const label = (v) => {
+        const option = q.opts.find((o) => o[0] === v);
+        return option ? option[1] : String(v);
+      };
+      value = Array.isArray(raw) ? raw.map(label).join(", ") : label(raw);
+    } else if (typeof raw === "boolean") value = raw ? "\uC608" : "\uC544\uB2C8\uC624";
+    else if (typeof raw === "object") value = "\uC138\uBD80 \uC790\uB8CC \uC785\uB825\uB428";
+    else value = String(raw) + (q.unit ? " " + q.unit : "");
+    if (q.amountId && answers[q.id] === q.amountWhen) {
+      const amount = answers[q.amountId];
+      value += " \xB7 " + (amount == null || String(amount).trim() === "" ? "\uAD00\uB828 \uAE08\uC561 \uBBF8\uC785\uB825" : Number.isSafeInteger(Number(amount)) ? Number(amount).toLocaleString("ko-KR") + "\uC6D0" : "\uAD00\uB828 \uAE08\uC561 \uD655\uC778 \uD544\uC694");
+    }
+    return { id: q.id, index, label: q.q || q.label || "\uC785\uB825 \uD56D\uBAA9", value, status, optional };
+  });
+}
+function JTInputReview({ questions, answers, onEdit }) {
+  const rows = jtInputReviewRows(questions, answers), filled = rows.filter((r) => r.status === "entered").length;
+  if (!rows.length) return null;
+  return /* @__PURE__ */ React.createElement("details", { className: "jt-input-review", "data-testid": "jt-input-review" }, /* @__PURE__ */ React.createElement("summary", null, "\uD604\uC7AC \uB2E8\uACC4\uC758 \uC785\uB825 \uD655\uC778 ", /* @__PURE__ */ React.createElement("span", null, filled, " / ", rows.length)), /* @__PURE__ */ React.createElement("p", null, "\uC9C8\uBB38\uC744 \uB20C\uB7EC \uC218\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC218\uC815\uD558\uBA74 \uC774\uC804 \uACC4\uC0B0 \uACB0\uACFC\uB294 \uD574\uC81C\uB429\uB2C8\uB2E4. \uBE48\uCE78\uC740 0\uC6D0\uC774\uB098 \uD574\uB2F9 \uC5C6\uC74C\uC73C\uB85C \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("ul", null, rows.map((row) => /* @__PURE__ */ React.createElement("li", { key: row.id, "data-input-status": row.status }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, row.label), /* @__PURE__ */ React.createElement("span", null, row.value), row.status === "invalid" && /* @__PURE__ */ React.createElement("em", null, "\uC785\uB825 \uD615\uC2DD\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", "aria-label": "\uC785\uB825 \uC218\uC815: " + (typeof row.label === "string" ? row.label : row.id), onClick: () => onEdit(row.index) }, "\uC218\uC815")))));
+}
+window.jtCreateInputSession = jtCreateInputSession;
+window.jtInputReviewRows = jtInputReviewRows;
+window.useJTInputSession = useJTInputSession;
+window.JTInputReview = JTInputReview;
+
+
+/* ────────── CreditSettlementDirect.jsx ────────── */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const CREDIT_REVIEW_CHECKS = [["income_and_deductions_complete", "\uC18C\uB4DD\xB7\uACB0\uC190\uAE08\xB7\uC778\uC801\uACF5\uC81C\uC758 \uD574\uB2F9 \uBC94\uC704\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["residence_and_ordinary_tax_status", "\uC77C\uBC18 \uB0A9\uC138\uC790 \uC9C0\uC704\uC640 \uAC70\uC8FC\uC790 \uC694\uAC74\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["direct_foreign_taxes_only", "\uC678\uAD6D\uC138\uAC00 \uC788\uB2E4\uBA74 \uC2E4\uC81C \uC9C1\uC811 \uC18C\uB4DD\uACFC\uC138\uC774\uBA70 \uAC04\uC811\xB7\uAC04\uC8FC \uC678\uAD6D\uC138\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"], ["eligibility_and_amounts_reviewed", "\uBC1C\uC0DD\uACF5\uC81C\uC561\xB7\uAC10\uBA74 \uC790\uACA9\xB7\uC774\uC6D4\uACFC \uAE30\uC0AC\uC6A9\uC561\uC744 \uC6D0\uC790\uB8CC\uC640 \uB300\uC870\uD588\uC2B5\uB2C8\uB2E4"], ["no_other_credits", "\uC785\uB825\uD558\uC9C0 \uC54A\uC740 \uB2E4\uB978 \uACF5\uC81C\xB7\uAC10\uBA74\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"]];
+const CREDIT_SOURCE_CHECKS = [["relief_income_excluded", "\uAD6D\uAC00\uBCC4 \uD55C\uB3C4\uBD84\uC790\uC5D0\uC11C \uBC95\uC815 \uAC10\uBA74\xB7\uBA74\uC81C \uB300\uC0C1\uBD84\uC744 \uC870\uC815\uD588\uC2B5\uB2C8\uB2E4"], ["attributable_costs_reconciled", "\uB300\uC751\uBE44\uC6A9\xB7\uACB0\uC190 \uBC30\uBD84 \uD6C4 \uAD6D\uAC00\uBCC4 \uD55C\uB3C4\uBD84\uC790\uC785\uB2C8\uB2E4"], ["no_expense_related_noncarry_excess", "\uB300\uC751\uBE44\uC6A9 \uAD00\uB828 \uD55C\uB3C4\uCD08\uACFC \uBD88\uC774\uC6D4 \uD2B9\uB840\uAC00 \uC5C6\uB294 \uC815\uC0C1\uBC94\uC704\uC785\uB2C8\uB2E4"]];
+const CREDIT_CODES = [["rd_general", "\uC77C\uBC18 \uC5F0\uAD6C\xB7\uC778\uB825\uAC1C\uBC1C\uBE44 \uACF5\uC81C"], ["investment", "\uD1B5\uD569\uD22C\uC790 \uACF5\uC81C"], ["employment", "\uD1B5\uD569\uACE0\uC6A9 \uACF5\uC81C"], ["sme_reduction", "\uC911\uC18C\uAE30\uC5C5 \uD2B9\uBCC4\uAC10\uBA74"]];
+function creditSettlementRequest(d) {
+  const text = (v, label) => {
+    if (typeof v !== "string" || !v.trim() || v.length > 2e3) throw Error(label + "\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v.trim();
+  };
+  const n = (v, label) => {
+    if (!/^\d+$/.test(String(v != null ? v : "")) || !Number.isSafeInteger(Number(v))) throw Error(label + "\uC740 \uC6D0 \uB610\uB294 \uC218\uB7C9\uC758 \uC548\uC804\uD55C \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694. \uBE48\uCE78\uACFC0\uC740 \uB2E4\uB985\uB2C8\uB2E4.");
+    return Number(v);
+  };
+  const yn = (v, label) => {
+    if (!["yes", "no"].includes(v)) throw Error(label + "\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.");
+    return v === "yes";
+  };
+  const chosen = (v, values, label) => {
+    if (!values.includes(v)) throw Error(label + "\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const check = (key, label) => {
+    var _a;
+    if (((_a = d.checks) == null ? void 0 : _a[key]) !== true) throw Error(label + " \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+    return true;
+  };
+  const kind = chosen(d.taxType, ["corporate", "income"], "\uC138\uBAA9"), review = {};
+  for (const [key, label] of CREDIT_REVIEW_CHECKS) review[key] = check(key, label);
+  const base = kind === "corporate" ? { net_income: n(d.income, "\uB2F9\uAE30\uC21C\uC774\uC775"), corporate_type: chosen(d.corporateType, ["\uC911\uC18C\uAE30\uC5C5", "\uC911\uACAC\uAE30\uC5C5", "\uC77C\uBC18\uBC95\uC778"], "\uBC95\uC778 \uC720\uD615"), carried_forward_loss: n(d.loss, "\uC801\uACA9 \uAC80\uD1A0\uB41C \uC774\uC6D4\uACB0\uC190\uAE08") } : { business_income: n(d.income, "\uD544\uC694\uACBD\uBE44 \uD6C4 \uC0AC\uC5C5\uC18C\uB4DD\uAE08\uC561"), spouse: yn(d.spouse, "\uBC30\uC6B0\uC790 \uACF5\uC81C \uC790\uACA9"), dependents: n(d.dependents, "\uC801\uACA9 \uBD80\uC591\uAC00\uC871 \uC218"), national_pension: n(d.pension, "\uAD6D\uBBFC\uC5F0\uAE08 \uB0A9\uC785\uC561") };
+  if (kind === "corporate") {
+    review.ordinary_minimum_status_confirmed = check("ordinary_minimum_status_confirmed", "\uC911\uC18C\uAE30\uC5C5 \uC878\uC5C5\uC720\uC608\xB7\uD2B9\uC218 \uCD5C\uC800\uD55C\uC138\uAC00 \uC5C6\uB294 \uC9C0\uC704");
+    review.separate_businesses_reconciled = check("separate_businesses_reconciled", "\uC0AC\uC5C5\uBCC4 \uC18C\uB4DD\uACFC \uC790\uC0B0 \uAD6C\uBD84\uACBD\uB9AC");
+  }
+  const vintage = (row, label) => {
+    const item = { id: text(row.id, label + " \uC774\uB984"), origin_year: n(row.year, label + " \uBC1C\uC0DD\uC5F0\uB3C4"), generated_amount: n(row.amount, label + " \uBC1C\uC0DD\uACF5\uC81C\uC561\xB7\uC2E4\uC81C \uC678\uAD6D\uC138"), used_before: n(row.used, label + " \uACFC\uAC70 \uC0AC\uC6A9\uC561"), evidence: text(row.evidence, label + " \uC6D0\uC7A5 \uADFC\uAC70") };
+    if (item.origin_year < 2021) Object.assign(item, { original_expiry_year: n(row.oldExpiry, label + " \uAC1C\uC815 \uC804 \uC18C\uBA78\uC5F0\uB3C4"), transition_2021_eligible: yn(row.transition, label + " 2021\uC2DC\uD589 \uC9C1\uC804 \uC720\uD6A8\uC794\uC561"), transition_evidence: text(row.transitionEvidence, label + " \uC801\uC6A9\uB840 \uADFC\uAC70") });
+    return item;
+  };
+  const credits = kind === "corporate" ? (d.credits || []).map((row, i) => {
+    const code = chosen(row.code, CREDIT_CODES.map((x) => x[0]), "\uACF5\uC81C \uD56D\uBAA9"), sme = code === "sme_reduction";
+    const item = vintage(sme ? __spreadProps(__spreadValues({}, row), { amount: "0", used: "0" }) : row, "\uACF5\uC81C" + (i + 1));
+    Object.assign(item, { code, business_id: text(row.business, "\uAD6C\uBD84\uACBD\uB9AC \uC0AC\uC5C5 \uC774\uB984"), asset_ids: String(row.assets || "").split(",").map((x) => x.trim()).filter(Boolean) });
+    if (sme) Object.assign(item, { reduction_income: n(row.reductionIncome, "\uAC10\uBA74 \uB300\uC0C1 \uC18C\uB4DD"), reduction_rate: { numerator: n(chosen(row.percent, ["5", "10", "15", "20", "30"], "\uBC95\uC815 \uAC10\uBA74\uC728"), "\uAC10\uBA74\uC728"), denominator: 100 } });
+    return item;
+  }) : [];
+  const adjustment_review = {};
+  if ((d.foreign || []).length) for (const [key, label] of CREDIT_SOURCE_CHECKS) adjustment_review[key] = check(key, label);
+  const countryMap = /* @__PURE__ */ new Map();
+  for (const row of d.foreign || []) {
+    const country = text(row.country, "\uAD6D\uAC00"), income = n(row.sourceIncome, "\uD574\uB2F9 \uAD6D\uAC00\uC758 \uB2F9\uAE30 \uAD6D\uC678\uC6D0\uCC9C \uC21C\uC18C\uB4DD"), tax = vintage(row, "\uC678\uAD6D\uC138");
+    if (countryMap.has(country) && countryMap.get(country).source_income !== income) throw Error("\uAC19\uC740 \uAD6D\uAC00\uC758 \uB2F9\uAE30 \uC21C\uC18C\uB4DD\uC740 \uBAA8\uB4E0 \uC774\uC6D4 \uD589\uC5D0\uC11C \uAC19\uC544\uC57C \uD569\uB2C8\uB2E4.");
+    if (!countryMap.has(country)) countryMap.set(country, { country, source_income: income, taxes: [], adjustment_review, evidence: text(d.countryEvidence, "\uAD6D\uAC00\uBCC4 \uC21C\uC18C\uB4DD \uBC30\uBD84 \uADFC\uAC70") });
+    countryMap.get(country).taxes.push(tax);
+  }
+  const local = kind === "corporate" ? (d.local || []).map((row) => ({ id: text(row.id, "\uC9C0\uBC29 \uC6D0\uC138\uC561 \uC774\uB984"), origin_year: n(row.year, "\uC9C0\uBC29 \uC6D0\uC138\uC561 \uBC1C\uC0DD\uC5F0\uB3C4"), foreign_tax_amount: n(row.amount, "\uC774\uC6D4\uB41C \uC9C0\uBC29 \uC6D0\uC138\uC561"), used_before: n(row.used, "\uACFC\uAC70 \uC9C0\uBC29 \uACFC\uD45C \uCC28\uAC10\uC561"), evidence: text(row.evidence, "\uC9C0\uBC29 \uC6D0\uC7A5 \uADFC\uAC70") })) : [];
+  const request = {
+    schema_version: "credit-settlement/1",
+    tax_type: kind,
+    tax_year: 2026,
+    base,
+    credits,
+    foreign_countries: [...countryMap.values()],
+    local_foreign_carryovers: local,
+    credit_order: String(d.order || "").split(",").map((x) => x.trim()).filter(Boolean),
+    review,
+    evidence: text(d.evidence, "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85")
+  };
+  if (d.choiceEvidence) request.choice_evidence = text(d.choiceEvidence, "\uB3D9\uC21C\uC704 \uC120\uD0DD \uADFC\uAC70");
+  if (credits.some((x) => x.code === "sme_reduction")) request.decreased_regular_employees = n(d.decreased, "\uC0C1\uC2DC\uADFC\uB85C\uC790 \uAC10\uC18C \uC778\uC6D0");
+  return { request };
+}
+function creditSettlementResult(calc) {
+  if (!calc || !["ok", "partial"].includes(calc["\uC0C1\uD0DC"])) throw Error((calc == null ? void 0 : calc["\uC624\uB958"]) || "\uC801\uC6A9 \uBC94\uC704\uC640 \uB204\uB77D\uB41C \uC6D0\uC790\uB8CC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+  for (const key of ["\uC0B0\uCD9C\uC138\uC561", "\uAD6D\uC138\uACB0\uC815\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4"]) if (!Number.isSafeInteger(calc[key]) || calc[key] < 0) throw Error("\uD655\uC815 \uC138\uC561 \uC751\uB2F5\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+  if (calc["\uAD6D\uC138\uACB0\uC815\uC138\uC561"] + calc["\uC9C0\uBC29\uC18C\uB4DD\uC138"] !== calc["\uCD1D\uC138\uBD80\uB2F4"]) throw Error("\uAD6D\uC138\xB7\uC9C0\uBC29\uC138 \uD569\uACC4 \uC751\uB2F5\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+  return calc;
+}
+function JTCreditSettlementDirect({ onBack, initialKind = "corporate" }) {
+  var _a, _b, _c;
+  const [d, setD] = React.useState({ taxType: initialKind, credits: [], foreign: [], local: [], checks: {} });
+  const [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+  const ids = React.useRef(0), session = useJTInputSession(() => {
+    setResult(null);
+    setError("");
+    setBusy(false);
+  });
+  const edit = (key, value) => {
+    session.invalidate();
+    setD((old) => key === "taxType" ? { taxType: value, credits: [], foreign: [], local: [], checks: {} } : __spreadProps(__spreadValues({}, old), { [key]: value, checks: {} }));
+  };
+  const check = (key, value) => {
+    session.invalidate();
+    setD((old) => __spreadProps(__spreadValues({}, old), { checks: __spreadProps(__spreadValues({}, old.checks), { [key]: value }) }));
+  };
+  const modify = (list, i, key, value) => edit(list, d[list].map((row, index) => index === i ? __spreadProps(__spreadValues({}, row), { [key]: value }) : row));
+  const input = (key, label, money = false) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { className: "jt-special-field" }, label, /* @__PURE__ */ React.createElement(JTNumericInput, { money, "data-testid": "credit-" + key, value: (_a2 = d[key]) != null ? _a2 : "", onChange: (e) => edit(key, e.target.value) }));
+  };
+  const plain = (key, label) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { className: "jt-special-field" }, label, /* @__PURE__ */ React.createElement("input", { "data-testid": "credit-" + key, value: (_a2 = d[key]) != null ? _a2 : "", onChange: (e) => edit(key, e.target.value) }));
+  };
+  const select = (key, label, options) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("label", { className: "jt-special-field" }, label, /* @__PURE__ */ React.createElement("select", { "data-testid": "credit-" + key, value: (_a2 = d[key]) != null ? _a2 : "", onChange: (e) => edit(key, e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uBBF8\uD655\uC778 \xB7 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694"), options.map(([v, l]) => /* @__PURE__ */ React.createElement("option", { value: v, key: v }, l))));
+  };
+  const yn = [["yes", "\uC608"], ["no", "\uC544\uB2C8\uC624"]];
+  const vintageColumns = [
+    ["id", "\uC6D0\uC7A5 \uC774\uB984"],
+    ["year", "\uBC1C\uC0DD\uC5F0\uB3C4", "number"],
+    ["amount", "\uBC1C\uC0DD \uACF5\uC81C\uC561 \uB610\uB294 \uC2E4\uC81C \uC678\uAD6D\uC138 (\uC6D0)", "money"],
+    ["used", "\uACFC\uAC70 \uC0AC\uC6A9\uC561 (\uC5C6\uC73C\uBA740)", "money"],
+    ["evidence", "\uB0A9\uC138\xB7\uBC1C\uC0DD\xB7\uAE30\uC0AC\uC6A9 \uADFC\uAC70 \uC790\uB8CC\uBA85"],
+    ["oldExpiry", "2021\uC804 \uBC1C\uC0DD\uBD84\uC758 \uC885\uC804 \uC18C\uBA78\uC5F0\uB3C4", "number", null, (row) => Number(row.year) < 2021 && row.year !== ""],
+    ["transition", "2021 \uC2DC\uD589 \uC9C1\uC804 \uC720\uD6A8\uC794\uC561", "select", yn, (row) => Number(row.year) < 2021 && row.year !== ""],
+    ["transitionEvidence", "2021 \uC801\uC6A9\uB840\xB7\uC794\uC561 \uADFC\uAC70", "text", null, (row) => Number(row.year) < 2021 && row.year !== ""]
+  ];
+  const rows = (list, title, columns) => /* @__PURE__ */ React.createElement("fieldset", { className: "jt-special-rows" }, /* @__PURE__ */ React.createElement("legend", null, title), d[list].map((row, i) => /* @__PURE__ */ React.createElement("div", { className: "jt-special-row", key: i }, /* @__PURE__ */ React.createElement("span", null, i + 1), columns.filter((c) => !c[4] || c[4](row)).map(([key, label, type = "text", options]) => {
+    var _a2, _b2, _c2;
+    return /* @__PURE__ */ React.createElement("label", { key }, label, type === "select" ? /* @__PURE__ */ React.createElement("select", { "data-testid": "credit-" + list + "-" + i + "-" + key, value: (_a2 = row[key]) != null ? _a2 : "", onChange: (e) => modify(list, i, key, e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uBBF8\uD655\uC778"), options.map(([v, l]) => /* @__PURE__ */ React.createElement("option", { value: v, key: v }, l))) : type === "money" || type === "number" ? /* @__PURE__ */ React.createElement(JTNumericInput, { money: type === "money", "data-testid": "credit-" + list + "-" + i + "-" + key, value: (_b2 = row[key]) != null ? _b2 : "", onChange: (e) => modify(list, i, key, e.target.value) }) : /* @__PURE__ */ React.createElement("input", { "data-testid": "credit-" + list + "-" + i + "-" + key, value: (_c2 = row[key]) != null ? _c2 : "", onChange: (e) => modify(list, i, key, e.target.value) }));
+  }), /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => edit(list, d[list].filter((_, index) => index !== i)) }, "\uD589 \uC0AD\uC81C"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => edit(list, [...d[list], { id: (list === "credits" ? "C" : list === "foreign" ? "F" : "L") + ++ids.current, year: list === "local" ? "" : "2026" }]) }, "\uD589 \uCD94\uAC00"));
+  const submit = async (event) => {
+    event.preventDefault();
+    const token = session.begin(), commit = session.sink(token, setResult), fail = session.sink(token, setError), loading = session.sink(token, setBusy);
+    commit(null);
+    fail("");
+    loading(true);
+    try {
+      const payload = creditSettlementRequest(d), base = window.JT_ENGINE_BASE;
+      if (!base) throw Error("\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      const response = await fetch(base + "/v1/calc/credit-settlement", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (!response.ok) throw Error("\uC785\uB825 \uBC94\uC704\uC640 \uC5D4\uC9C4 \uC751\uB2F5\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+      const body = await response.json();
+      commit(creditSettlementResult(body.calc));
+    } catch (e) {
+      fail(e.message || "\uACC4\uC0B0\uC744 \uC644\uB8CC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.");
+    } finally {
+      loading(false);
+    }
+  };
+  const won = (v) => v === null ? "\uD655\uC778 \uD544\uC694" : Number.isSafeInteger(v) ? v.toLocaleString("ko-KR") + "\uC6D0" : "\u2014";
+  const checks = [...CREDIT_REVIEW_CHECKS, ...d.foreign.length ? CREDIT_SOURCE_CHECKS : [], ...d.taxType === "corporate" ? [["ordinary_minimum_status_confirmed", "\uC878\uC5C5 \uC720\uC608\xB7\uD2B9\uC218 \uCD5C\uC800\uD55C\uC138\uAC00 \uC5C6\uB294 \uC77C\uBC18 \uC9C0\uC704\uC785\uB2C8\uB2E4"], ["separate_businesses_reconciled", "\uC0AC\uC5C5\uBCC4 \uC18C\uB4DD\xB7\uD22C\uC790\uC790\uC0B0\uC774 \uAD6C\uBD84\uB418\uC5B4 \uC788\uC2B5\uB2C8\uB2E4"]] : []];
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-special-direct" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0", subtitle: "\uBC1C\uC0DD\uC561, \uB2F9\uAE30 \uC0AC\uC6A9\uC561\uACFC \uC794\uC561\uC744 \uBD84\uB9AC\uD558\uACE0 \uAD6D\uC138\xB7\uC9C0\uBC29\uC138\uB97C \uB530\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4.", tag: "2026 \uACF5\uC81C \uC815\uC0B0", onBack }, /* @__PURE__ */ React.createElement("p", null, "2026 \uB2EC\uB825\uC5F0\uB3C4 \uC815\uC0C1\uBC94\uC704\uC785\uB2C8\uB2E4. \uC5F0\uAD6C\xB7\uD22C\uC790\xB7\uACE0\uC6A9\uC740 \uC801\uACA9 \uAC80\uD1A0\uB97C \uB9C8\uCE5C \uBC1C\uC0DD\uACF5\uC81C\uC561\uC744 \uB123\uC2B5\uB2C8\uB2E4. \uD22C\uC790\uC561\xB7\uC5F0\uAD6C\uBE44 \uC9C0\uCD9C\uCD1D\uC561\uACFC \uB2E4\uB985\uB2C8\uB2E4. \uC911\uC18C\uAE30\uC5C5 \uD2B9\uBCC4\uAC10\uBA74\uC740 \uB300\uC0C1 \uC18C\uB4DD\uACFC \uBC95\uC815 \uAC10\uBA74\uC728\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("taxType", "\uC138\uBAA9", [["corporate", "\uBC95\uC778\uC138"], ["income", "\uAC1C\uC778 \uC0AC\uC5C5\uC18C\uB4DD \uC678\uAD6D\uB0A9\uBD80 \uACF5\uC81C"]]), input("income", d.taxType === "corporate" ? "\uB2F9\uAE30\uC21C\uC774\uC775 (\uC6D0)" : "\uD544\uC694\uACBD\uBE44 \uD6C4 \uC0AC\uC5C5\uC18C\uB4DD\uAE08\uC561 (\uC6D0)", true), d.taxType === "corporate" ? /* @__PURE__ */ React.createElement(React.Fragment, null, select("corporateType", "\uBC95\uC778 \uC720\uD615", [["\uC911\uC18C\uAE30\uC5C5", "\uC911\uC18C\uAE30\uC5C5"], ["\uC911\uACAC\uAE30\uC5C5", "\uC911\uACAC\uAE30\uC5C5"], ["\uC77C\uBC18\uBC95\uC778", "\uC77C\uBC18\uBC95\uC778"]]), input("loss", "\uC801\uACA9 \uAC80\uD1A0\uB41C \uC774\uC6D4\uACB0\uC190\uAE08 (\uC5C6\uC73C\uBA740)", true)) : /* @__PURE__ */ React.createElement(React.Fragment, null, select("spouse", "\uBC30\uC6B0\uC790 \uACF5\uC81C \uC790\uACA9", yn), input("dependents", "\uC801\uACA9 \uBD80\uC591\uAC00\uC871 \uC218 (\uBC30\uC6B0\uC790 \uC81C\uC678, \uC5C6\uC73C\uBA740)"), input("pension", "\uC2E4\uC81C \uAD6D\uBBFC\uC5F0\uAE08 \uB0A9\uC785\uC561 (\uC5C6\uC73C\uBA740)", true)), plain("evidence", "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85")), d.taxType === "corporate" && /* @__PURE__ */ React.createElement(React.Fragment, null, rows("credits", "\uAD6D\uB0B4 \uACF5\uC81C\xB7\uAC10\uBA74 \uBC1C\uC0DD/\uC774\uC6D4 \uC6D0\uC7A5", [
+    ["code", "\uACF5\uC81C \uD56D\uBAA9", "select", CREDIT_CODES],
+    ...vintageColumns.filter((c) => !["amount", "used"].includes(c[0])),
+    ["amount", "\uAC80\uD1A0\uB41C \uBC1C\uC0DD\uACF5\uC81C\uC561 (\uC6D0)", "money", null, (row) => row.code !== "sme_reduction"],
+    ["used", "\uACFC\uAC70 \uC2E4\uC81C \uACF5\uC81C\uC561 (\uC5C6\uC73C\uBA740)", "money", null, (row) => row.code !== "sme_reduction"],
+    ["business", "\uAD6C\uBD84\uACBD\uB9AC \uC0AC\uC5C5 \uC774\uB984"],
+    ["assets", "\uD22C\uC790\uC790\uC0B0 \uC774\uB984 (\uC5EC\uB7FF\uC774\uBA74 \uC27C\uD45C)"],
+    ["reductionIncome", "\uAC10\uBA74 \uB300\uC0C1 \uC18C\uB4DD (\uC6D0)", "money", null, (row) => row.code === "sme_reduction"],
+    ["percent", "\uD655\uC778\uB41C \uBC95\uC815\uAC10\uBA74\uC728", "select", [["5", "5%"], ["10", "10%"], ["15", "15%"], ["20", "20%"], ["30", "30%"]], (row) => row.code === "sme_reduction"]
+  ]), d.credits.some((x) => x.code === "sme_reduction") && input("decreased", "\uC0C1\uC2DC\uADFC\uB85C\uC790 \uAC10\uC18C \uC778\uC6D0 (\uC5C6\uC73C\uBA740)")), rows("foreign", "\uAD6D\uAC00\uBCC4 \uC9C1\uC811 \uC678\uAD6D\uC138 \uC6D0\uC7A5", [["country", "\uAD6D\uAC00 \uC774\uB984"], ["sourceIncome", "\uADF8 \uAD6D\uAC00\uC758 \uD55C\uB3C4\uC6A9 \uC870\uC815 \uD6C4 \uAD6D\uC678\uC18C\uB4DD (\uC6D0)", "money"], ...vintageColumns]), !!d.foreign.length && plain("countryEvidence", "\uAD6D\uAC00\uBCC4 \uC21C\uC18C\uB4DD \uBC30\uBD84 \uC790\uB8CC\uBA85"), d.taxType === "corporate" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uBC29 \uACFC\uD45C\uC758 \uACFC\uAC70 \uCC28\uAC10\uC561\uC740 \uAD6D\uC138 \uC678\uAD6D\uB0A9\uBD80\uC138\uC561\uACF5\uC81C \uC0AC\uC6A9\uC561\uACFC \uB2E4\uB985\uB2C8\uB2E4. \uB2F9\uAE30 \uC2E4\uC81C \uC678\uAD6D\uC138\uB294 \uC704 \uC6D0\uC7A5\uC5D0\uC11C \uAC00\uC838\uC624\uBBC0\uB85C \uC774 \uD45C\uC5D0\uB294 \uB2F9\uAE30 \uC774\uC804 \uC774\uC6D4\uBD84\uB9CC \uB123\uC2B5\uB2C8\uB2E4."), rows("local", "\uBC95\uC778 \uC9C0\uBC29\uC18C\uB4DD\uC138 \uC678\uAD6D\uC138 \uACFC\uD45C \uC774\uC6D4 \uC6D0\uC7A5", [["id", "\uC6D0\uC138\uC561 \uC774\uB984"], ["year", "\uC6D0\uC138\uC561 \uBC1C\uC0DD\uC5F0\uB3C4", "number"], ["amount", "\uC2E4\uC81C \uC678\uAD6D\uC138 \uC6D0\uAE08 (\uC6D0)", "money"], ["used", "\uACFC\uAC70 \uC9C0\uBC29 \uACFC\uD45C \uCC28\uAC10\uC561 (\uC5C6\uC73C\uBA740)", "money"], ["evidence", "\uC9C0\uBC29 \uACFC\uD45C \uC774\uC6D4\xB7\uAE30\uC0AC\uC6A9 \uADFC\uAC70"]])), /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, plain("order", "\uAC19\uC740 \uBC95\uC815\uC21C\uC704\uC5D0\uC11C \uC120\uD0DD\uD560 \uACF5\uC81C \uC774\uB984 \uC21C\uC11C (\uD544\uC694\uD560 \uB54C, \uC27C\uD45C)"), plain("choiceEvidence", "\uB3D9\uC77C\uC21C\uC704 \uC120\uD0DD \uADFC\uAC70")), /* @__PURE__ */ React.createElement("fieldset", null, /* @__PURE__ */ React.createElement("legend", null, "\uC801\uC6A9 \uC0AC\uC2E4 \uD655\uC778"), checks.map(([key, label]) => /* @__PURE__ */ React.createElement("label", { className: "jt-special-check", key }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", "data-testid": "credit-check-" + key, checked: d.checks[key] === true, onChange: (e) => check(key, e.target.checked) }), label))), /* @__PURE__ */ React.createElement("button", { type: "submit", className: "jt-btn jt-btn--primary", disabled: busy }, busy ? "\uC815\uC0B0 \uC911\u2026" : "\uD655\uC778\uD55C \uC6D0\uC7A5\uC73C\uB85C \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert", "data-testid": "credit-error" }, error), result && /* @__PURE__ */ React.createElement("section", { "aria-live": "polite", "data-testid": "credit-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uD655\uC778\uD55C \uD604\uC7AC \uC138\uC561"), /* @__PURE__ */ React.createElement("dl", null, ["\uC0B0\uCD9C\uC138\uC561", "\uAD6D\uC138\uACB0\uC815\uC138\uC561", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uC138\uBD80\uB2F4"].map((k) => /* @__PURE__ */ React.createElement(React.Fragment, { key: k }, /* @__PURE__ */ React.createElement("dt", null, k), /* @__PURE__ */ React.createElement("dd", null, won(result[k]))))), result["\uC0C1\uD0DC"] === "partial" && /* @__PURE__ */ React.createElement("p", { role: "status" }, "\uD604\uC7AC \uC138\uC561\uC740 \uD655\uC778\uD588\uC73C\uBA70, \uC77C\uBD80 \uC678\uAD6D\uC138\uC758 \uD6C4\uC18D \uCC98\uB9AC\xB7\uC774\uC6D4 \uBC30\uBD84\uC740 \uCD94\uAC00 \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "jt-credit-table" }, /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("caption", null, "\uACF5\uC81C\uBCC4 \uB2F9\uAE30 \uC0AC\uC6A9\uACFC \uC794\uC561"), /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC774\uB984"), /* @__PURE__ */ React.createElement("th", null, "\uB2F9\uAE30 \uC0AC\uC6A9"), /* @__PURE__ */ React.createElement("th", null, "\uC774\uC6D4 \uC794\uC561"), /* @__PURE__ */ React.createElement("th", null, "\uAE30\uD55C\uC885\uB8CC\xB7\uC18C\uBA78"), /* @__PURE__ */ React.createElement("th", null, "\uB2E4\uC74C\uC5F0\uB3C4 \uC190\uAE08\xB7\uD544\uC694\uACBD\uBE44 \uD6C4\uBCF4"))), /* @__PURE__ */ React.createElement("tbody", null, (_a = result["\uACF5\uC81C\uC6D0\uC7A5"]) == null ? void 0 : _a.map((row) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("tr", { key: row.id }, /* @__PURE__ */ React.createElement("td", null, row.id), /* @__PURE__ */ React.createElement("td", null, won(row.used)), /* @__PURE__ */ React.createElement("td", null, won(row.carryforward)), /* @__PURE__ */ React.createElement("td", null, won((_a2 = row.period_end_unused) != null ? _a2 : row.expired_amount)), /* @__PURE__ */ React.createElement("td", null, won(row.following_year_expense_candidate)));
+  })))), ((_b = result["\uC9C0\uBC29\uC678\uAD6D\uC138\uACFC\uD45C\uC6D0\uC7A5"]) == null ? void 0 : _b.length) > 0 && /* @__PURE__ */ React.createElement("div", { className: "jt-credit-table" }, /* @__PURE__ */ React.createElement("table", null, /* @__PURE__ */ React.createElement("caption", null, "\uBC95\uC778 \uC9C0\uBC29\uC18C\uB4DD\uC138 \uC678\uAD6D\uC138 \uACFC\uD45C \uCC28\uAC10\xB7\uC774\uC6D4"), /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC774\uB984"), /* @__PURE__ */ React.createElement("th", null, "\uB2F9\uAE30 \uACFC\uD45C \uCC28\uAC10"), /* @__PURE__ */ React.createElement("th", null, "\uCC28\uAE30 \uC774\uC6D4"), /* @__PURE__ */ React.createElement("th", null, "\uAE30\uAC04\uC885\uB8CC"))), /* @__PURE__ */ React.createElement("tbody", null, result["\uC9C0\uBC29\uC678\uAD6D\uC138\uACFC\uD45C\uC6D0\uC7A5"].map((row) => {
+    var _a2;
+    return /* @__PURE__ */ React.createElement("tr", { key: row.id }, /* @__PURE__ */ React.createElement("td", null, row.id === "current_foreign_tax" ? "\uB2F9\uAE30 \uC2E4\uC81C \uC678\uAD6D\uC138" : row.id), /* @__PURE__ */ React.createElement("td", null, won(row.used)), /* @__PURE__ */ React.createElement("td", null, won(row.carryforward)), /* @__PURE__ */ React.createElement("td", null, won((_a2 = row.period_end_unused) != null ? _a2 : row.expired_amount)));
+  })))), (_c = result["\uACBD\uACE0\uC0AC\uD56D"]) == null ? void 0 : _c.map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i }, w)))));
+}
+window.JTCreditSettlementDirect = JTCreditSettlementDirect;
+window.creditSettlementRequest = creditSettlementRequest;
+window.creditSettlementResult = creditSettlementResult;
 
 
 /* ────────── ReportConvert.jsx ────────── */
@@ -4909,10 +5175,22 @@ function JTReportCGT({ setRoute, onBack }) {
   const [directMode, setDirectMode] = useCgtState(null);
   const [directDrafts, setDirectDrafts] = useCgtState({});
   const [step, setStep] = useCgtState(0);
-  const [answers, setAnswers] = useCgtState(() => ({ transferDate: isoDate(/* @__PURE__ */ new Date()) }));
-  const [loading, setLoading] = useCgtState(false);
-  const [report, setReport] = useCgtState(null);
-  const [err, setErr] = useCgtState(null);
+  const [answers, rawSetAnswers] = useCgtState(() => ({ transferDate: isoDate(/* @__PURE__ */ new Date()) }));
+  const [loading, rawSetLoading] = useCgtState(false);
+  const [report, rawSetReport] = useCgtState(null);
+  const [err, rawSetErr] = useCgtState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
   const historicalOrdinary = answers.historicalOrdinary === "yes" && answers.transferDate >= "2018-01-01" && answers.transferDate < "2022-01-01";
   const visibleQs = CGT_QS.filter((q) => (!q.showIf || q.showIf(answers)) && !(historicalOrdinary && ["otherHouseSource", "newHouseDate", "inheritanceDate", "temp2Zone"].includes(q.id)));
   const total = visibleQs.length;
@@ -4948,17 +5226,22 @@ function JTReportCGT({ setRoute, onBack }) {
   };
   const runAnalysis = async () => {
     var _a;
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       if (cgtFallbackGaps(answers, { precise: true }).length > 0) {
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: false };
-        setReport(unknownRep);
+        setReport2(unknownRep);
         return;
       }
       if (answers.acquiredDate && answers.transferDate && answers.acquiredDate > answers.transferDate) {
-        setErr("\uCDE8\uB4DD\uC77C(" + answers.acquiredDate + ")\uC774 \uC591\uB3C4\uC77C(" + answers.transferDate + ")\uBCF4\uB2E4 \uB4A4\uC77C \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uB0A0\uC9DC\uB97C \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
-        setLoading(false);
+        setErr2("\uCDE8\uB4DD\uC77C(" + answers.acquiredDate + ")\uC774 \uC591\uB3C4\uC77C(" + answers.transferDate + ")\uBCF4\uB2E4 \uB4A4\uC77C \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uB0A0\uC9DC\uB97C \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+        setLoading2(false);
         return;
       }
       let calc;
@@ -4970,11 +5253,11 @@ function JTReportCGT({ setRoute, onBack }) {
       }
       if (cgtFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: false };
-        setReport(blockedRep);
+        setReport2(blockedRep);
         return;
       }
       if (answers.reviewed && (answers.reviewed.costLedgerEnabled || answers.reviewed.sangsaengEnabled || answers.reviewed.expensesEnabled || answers.reviewed.depreciationEnabled || answers.reviewed.reliefEnabled || answers.reviewed.lateEnabled || answers.reviewed.giftEnabled || answers.costMethod === "converted")) {
-        setReport({ calc, commentary: { headline: "\uC785\uB825\uD55C \uAC80\uD1A0 \uC790\uB8CC\uB97C \uBC18\uC601\uD55C \uACC4\uC0B0 \uACB0\uACFC\uC785\uB2C8\uB2E4.", cautions: [], saving_ideas: [], followup: [] }, quick: false });
+        setReport2({ calc, commentary: { headline: "\uC785\uB825\uD55C \uAC80\uD1A0 \uC790\uB8CC\uB97C \uBC18\uC601\uD55C \uACC4\uC0B0 \uACB0\uACFC\uC785\uB2C8\uB2E4.", cautions: [], saving_ideas: [], followup: [] }, quick: false });
         return;
       }
       const acquired = Number(answers.acquired) || 0;
@@ -5191,12 +5474,12 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
           followup: ["\uC815\uD655\uD55C \uCDE8\uB4DD\uC77C\xB7\uC591\uB3C4\uC77C", "\uD544\uC694\uACBD\uBE44 \uC601\uC218\uC99D", "\uC138\uB300 \uAD6C\uC131\xB7\uB2E4\uB978 \uBCF4\uC720\uC8FC\uD0DD"]
         };
       }
-      setReport({ calc, commentary });
+      setReport2({ calc, commentary });
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uBD84\uC11D \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uBD84\uC11D \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
   const goNext = () => {
@@ -5315,6 +5598,10 @@ cautions 3\uAC1C, saving_ideas 2~3\uAC1C.`;
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(
     JTReportShell,
     {
+      inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+        inputSession.invalidate();
+        setStep(index);
+      } },
       title: "\uC591\uB3C4\uC18C\uB4DD\uC138 \uAC04\uC774 \uACC4\uC0B0",
       subtitle: "\uCDE8\uB4DD\xB7\uC591\uB3C4\xB7\uBCF4\uC720\xB7\uAC70\uC8FC \uC815\uBCF4\uB85C \uCD94\uC815 \uC138\uC561\uC744 \uACC4\uC0B0\uD569\uB2C8\uB2E4.",
       stepIdx: safeStep,
@@ -7473,13 +7760,28 @@ function buildIncomeKakao(answers, calc) {
   return L.join("\n");
 }
 function JTReportIncome({ setRoute, onBack }) {
+  const [creditMode, setCreditMode] = useIncState(false);
   const [step, setStep] = useIncState(0);
-  const [answers, setAnswers] = useIncState({});
-  const [loading, setLoading] = useIncState(false);
-  const [report, setReport] = useIncState(null);
-  const [err, setErr] = useIncState(null);
+  const [answers, rawSetAnswers] = useIncState({});
+  const [loading, rawSetLoading] = useIncState(false);
+  const [report, rawSetReport] = useIncState(null);
+  const [err, rawSetErr] = useIncState(null);
   const [phase, setPhase] = useIncState("quick");
-  const [quickReport, setQuickReport] = useIncState(null);
+  const [quickReport, rawSetQuickReport] = useIncState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+    rawSetQuickReport(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
+  const setQuickReport = rawSetQuickReport;
   React.useEffect(() => {
     const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "";
     if (base) {
@@ -7504,8 +7806,14 @@ function JTReportIncome({ setRoute, onBack }) {
     return !!answers[cur.id];
   };
   const runAnalysis = async (targetPhase) => {
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    const setQuickReport2 = inputSession.sink(inputRequest, rawSetQuickReport);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       const clamp = (x) => Math.max(0, Math.round(Number(x) || 0));
       const biz = clamp(answers.businessIncome);
@@ -7521,20 +7829,20 @@ function JTReportIncome({ setRoute, onBack }) {
       const kids = clamp(answers.children);
       const extra = incomeExtraInputs(answers);
       if (biz + salary + fin + (extra.pension_income || 0) <= 0) {
-        setErr("\uC0AC\uC5C5\xB7\uADFC\uB85C\xB7\uAE08\uC735 \uC18C\uB4DD \uC911 \uD558\uB098 \uC774\uC0C1\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
-        setLoading(false);
+        setErr2("\uC0AC\uC5C5\xB7\uADFC\uB85C\xB7\uAE08\uC735 \uC18C\uB4DD \uC911 \uD558\uB098 \uC774\uC0C1\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+        setLoading2(false);
         return;
       }
       if (kids > deps) {
-        setErr("\uC790\uB140 \uC218(" + kids + "\uBA85)\uAC00 \uBD80\uC591\uAC00\uC871 \uC218(" + deps + "\uBA85)\uB97C \uCD08\uACFC\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC790\uB140\uB3C4 \uBD80\uC591\uAC00\uC871 \uC218\uC5D0 \uD3EC\uD568\uD574 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
-        setLoading(false);
+        setErr2("\uC790\uB140 \uC218(" + kids + "\uBA85)\uAC00 \uBD80\uC591\uAC00\uC871 \uC218(" + deps + "\uBA85)\uB97C \uCD08\uACFC\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC790\uB140\uB3C4 \uBD80\uC591\uAC00\uC871 \uC218\uC5D0 \uD3EC\uD568\uD574 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+        setLoading2(false);
         return;
       }
       let calc = { precise: false };
       if (incFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, quick: phase === "quick" };
-        setReport(blockedRep);
-        if (phase === "quick") setQuickReport(blockedRep);
+        setReport2(blockedRep);
+        if (phase === "quick") setQuickReport2(blockedRep);
         return;
       }
       try {
@@ -7584,15 +7892,16 @@ function JTReportIncome({ setRoute, onBack }) {
         calc.engineErr = true;
       }
       const rep = { calc, quick: (targetPhase || phase) === "quick" };
-      setReport(rep);
-      if ((targetPhase || phase) === "quick") setQuickReport(rep);
+      setReport2(rep);
+      if ((targetPhase || phase) === "quick") setQuickReport2(rep);
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
+  if (creditMode) return /* @__PURE__ */ React.createElement(JTCreditSettlementDirect, { initialKind: "income", onBack: () => setCreditMode(false) });
   const goDetail = () => {
     setReport(null);
     setPhase("detail");
@@ -7616,7 +7925,13 @@ function JTReportIncome({ setRoute, onBack }) {
     onBack();
   };
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0\uAE30", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+      inputSession.invalidate();
+      setCreditMode(true);
+    } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0"), inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0\uAE30", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "BOOKKEEPING" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uC18C\uB4DD\uC744 \uD569\uC0B0\uD574 \uC885\uD569\uC18C\uB4DD\uC138\uB97C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
@@ -7624,14 +7939,26 @@ function JTReportIncome({ setRoute, onBack }) {
     const incGaps = incFallbackGaps(answers, calc);
     const incBlocked = incGaps.length > 0;
     if (incBlocked) {
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "BOOKKEEPING" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: incGaps, onRetry: () => runAnalysis(), reason: incFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+        inputSession.invalidate();
+        setCreditMode(true);
+      } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0"), inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+        inputSession.invalidate();
+        setStep(index);
+      } }, title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "BOOKKEEPING" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: incGaps, onRetry: () => runAnalysis(), reason: incFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setPhase("quick");
         setStep(0);
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC0AC\uC5C5\xB7\uADFC\uB85C\xB7\uAE08\uC735 \uC18C\uB4DD \uD569\uC0B0 \uC885\uD569\uC18C\uB4DD\uC138", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "BOOKKEEPING" }, !calc.precise ? /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "14px 18px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, calc.engineReason && /* @__PURE__ */ React.createElement("p", { role: "alert" }, calc.engineReason), /* @__PURE__ */ React.createElement("strong", null, "\uC815\uBC00 \uACC4\uC0B0\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), " \uC885\uD569\uC18C\uB4DD\uC138\uB294 \uC5EC\uB7EC \uC18C\uB4DD\xB7\uACF5\uC81C\uB97C \uC815\uD655\uD788 \uD569\uC0B0\uD574\uC57C \uD574\uC11C, \uAC04\uC774 \uCD94\uC815\uC73C\uB85C\uB294 \uC138\uC561\uC744 \uC798\uBABB \uC548\uB0B4\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC785\uB825 \uBCF4\uC644 \uC548\uB0B4\uAC00 \uC788\uC73C\uBA74 \uD574\uB2F9 \uD56D\uBAA9\uC744 \uC218\uC815\uD558\uACE0, \uC5F0\uACB0 \uC624\uB958\uB77C\uBA74 \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => runAnalysis() }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))) : /* @__PURE__ */ React.createElement(React.Fragment, null, calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: "8px 0 0", paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, "1\uB144\uCE58 \uC608\uC0C1 \uC885\uD569\uC18C\uB4DD\uC138 (\uCD94\uC815)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.total)), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 } }, "\uC885\uD569\uC18C\uB4DD\uC138 ", formatWon(calc.determined), " + \uC9C0\uBC29\uC18C\uB4DD\uC138 ", formatWon(calc.local), ". \uACFC\uC138\uD45C\uC900 ", formatWon(calc.taxBase), " \xB7 \uC801\uC6A9\uC138\uC728 ", calc.rate || "-", "."), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 13, lineHeight: 1.55, color: "#b8860b" } }, "\u203B ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uBBF8 \uB0B8 \uC138\uAE08(\uD504\uB9AC\uB79C\uC11C 3.3% \uC6D0\uCC9C\uC9D5\uC218\xB7\uC911\uAC04\uC608\uB0A9\xB7\uC9C1\uC7A5\uC778 \uC5F0\uB9D0\uC815\uC0B0)\uC744 \uBE7C\uAE30 \uC804"), " 1\uB144\uCE58 \uC0B0\uC815\uC561\uC785\uB2C8\uB2E4. 5\uC6D4\uC5D0 \uC2E4\uC81C\uB85C \uB354 \uB0B4\uC2E4 \uB3C8\uC740 \uC774\uBCF4\uB2E4 \uC801\uACE0, \uC774\uBBF8 \uB0B8 \uC138\uAE08\uC774 \uB354 \uB9CE\uC73C\uBA74 \uD658\uAE09\uBC1B\uC2B5\uB2C8\uB2E4. \uC815\uD655\uD55C \uCD94\uAC00\uB0A9\uBD80\xB7\uD658\uAE09\uC561\uC740 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, ["\uC5F0\uAE08\uC18C\uB4DD\uAE08\uC561", "\uCD94\uAC00\uACF5\uC81C", "\uBCF4\uD5D8\uB8CC\uACF5\uC81C", "\uBC30\uB2F9\uC138\uC561\uACF5\uC81C"].map((key) => typeof (calc.detail || {})[key] === "number" ? /* @__PURE__ */ React.createElement("tr", { key }, /* @__PURE__ */ React.createElement("th", null, key), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.detail[key]))) : null), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561 ", calc.rate ? `(${calc.rate})` : ""), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.calculated))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACB0\uC815\uC138\uC561 (\uC138\uC561\uACF5\uC81C \uBC18\uC601)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.determined))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uC18C\uB4DD\uC138 (10%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.local))), /* @__PURE__ */ React.createElement("tr", { style: { background: "#f0f7f3" } }, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uBD80\uB2F4")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.total))))))), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", { style: { fontWeight: 400 } }, s.\uD56D\uBAA9, s.\uC870\uBB38 ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.6, fontSize: 12 } }, " [", s.\uC870\uBB38, "]") : null), /* @__PURE__ */ React.createElement("td", null, typeof s.\uAE08\uC561 === "number" ? formatWon(s.\uAE08\uC561) : s.\uAE08\uC561 || "")))))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px" } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC18C\uB4DD \uAE08\uC561\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uACC4\uC0B0\uC774\uC5D0\uC694."), " \uBD80\uC591\uAC00\uC871\xB7\uACF5\uC81C \uD56D\uBAA9\uC744 \uB123\uC73C\uBA74 \uC138\uAE08\uC774 \uB354 \uC904 \uC218 \uC788\uC2B5\uB2C8\uB2E4 \u2014"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uACF5\uC81C \uB123\uC5B4 \uC815\uD655\uD788 \uACC4\uC0B0 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #b8860b", padding: "14px 18px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 8px", fontWeight: 700 } }, "\uD754\uD788 \uB193\uCE58\uB294 \uC808\uC138 \uD56D\uBAA9 \u2014 \uB123\uC73C\uBA74 \uC138\uAE08\uC774 \uB354 \uC904 \uC218 \uC788\uC5B4\uC694"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18, lineHeight: 1.7, fontSize: 14 } }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uC5F0\uAE08\uC800\uCD95\xB7IRP"), ": \uC704\uC5D0 \uC785\uB825\uD558\uC168\uC73C\uBA74 \uC774\uBBF8 \uBC18\uC601\uB410\uC2B5\uB2C8\uB2E4. \uBBF8\uAC00\uC785\uC774\uBA74 \uC5F0 900\uB9CC\uC6D0\uAE4C\uC9C0 12~15% \uC138\uC561\uACF5\uC81C(\uC18C\uB4DD\uC138\uBC95 \xA759\uC7583) \u2014 \uC0AC\uC5C5\uC790\xB7\uD504\uB9AC\uB79C\uC11C\uC5D0\uAC8C \uD6A8\uACFC\uAC00 \uAC00\uC7A5 \uD070 \uC808\uC138\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uB178\uB780\uC6B0\uC0B0\uACF5\uC81C"), ": \uC18C\uC0C1\uACF5\uC778\xB7\uC0AC\uC5C5\uC790 \uC18C\uB4DD\uACF5\uC81C(\uC18C\uB4DD \uAD6C\uAC04\uBCC4 \uD55C\uB3C4). \uBCF8 \uACC4\uC0B0\uC5D0\uB294 \uBBF8\uBC18\uC601 \u2014 \uC0C1\uB2F4\uC5D0\uC11C \uBC18\uC601."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uC758\uB8CC\uBE44\xB7\uAE30\uBD80\uAE08\xB7\uAD50\uC721\uBE44\xB7\uC911\uC18C\uAE30\uC5C5\uD2B9\uBCC4\uC138\uC561\uAC10\uBA74"), ": \uC694\uAC74 \uCDA9\uC871 \uC2DC \uCD94\uAC00 \uC808\uC138. \uBCF8 \uACC4\uC0B0\uC5D0\uB294 \uBBF8\uBC18\uC601\uC774\uB2C8 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uC7A5\uBD80 \uC791\uC131(\uAE30\uC7A5)"), ": \uC7A5\uBD80 \uC5C6\uC774 \uCD94\uACC4\uC2E0\uACE0\uD558\uBA74 \uBB34\uAE30\uC7A5\uAC00\uC0B0\uC138\uAC00 \uBD99\uC744 \uC218 \uC788\uACE0, \uAC04\uD3B8\uC7A5\uBD80\uB300\uC0C1\uC790\uAC00 \uBCF5\uC2DD\uBD80\uAE30\uB85C \uAE30\uC7A5\uD558\uBA74 \uAE30\uC7A5\uC138\uC561\uACF5\uC81C(\uC0B0\uCD9C\uC138\uC561 20%\xB7\uD55C\uB3C4 100\uB9CC)\uB97C \uBC1B\uC2B5\uB2C8\uB2E4(\uC18C\uB4DD\uC138\uBC95 \xA756\uC7582). \uC5C5\uC885\uBCC4 \uACBD\uBE44\uC728\xB7\uAE30\uC7A5 \uC720\uBD88\uB9AC\uB294 \uC0C1\uB2F4\uC5D0\uC11C \uB530\uC838 \uB4DC\uB9BD\uB2C8\uB2E4."))), calc.precise && typeof JTReportConvert === "function" && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+      inputSession.invalidate();
+      setCreditMode(true);
+    } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0"), inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC0AC\uC5C5\xB7\uADFC\uB85C\xB7\uAE08\uC735 \uC18C\uB4DD \uD569\uC0B0 \uC885\uD569\uC18C\uB4DD\uC138", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "BOOKKEEPING" }, !calc.precise ? /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "14px 18px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, calc.engineReason && /* @__PURE__ */ React.createElement("p", { role: "alert" }, calc.engineReason), /* @__PURE__ */ React.createElement("strong", null, "\uC815\uBC00 \uACC4\uC0B0\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), " \uC885\uD569\uC18C\uB4DD\uC138\uB294 \uC5EC\uB7EC \uC18C\uB4DD\xB7\uACF5\uC81C\uB97C \uC815\uD655\uD788 \uD569\uC0B0\uD574\uC57C \uD574\uC11C, \uAC04\uC774 \uCD94\uC815\uC73C\uB85C\uB294 \uC138\uC561\uC744 \uC798\uBABB \uC548\uB0B4\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC785\uB825 \uBCF4\uC644 \uC548\uB0B4\uAC00 \uC788\uC73C\uBA74 \uD574\uB2F9 \uD56D\uBAA9\uC744 \uC218\uC815\uD558\uACE0, \uC5F0\uACB0 \uC624\uB958\uB77C\uBA74 \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => runAnalysis() }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))) : /* @__PURE__ */ React.createElement(React.Fragment, null, calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: "8px 0 0", paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, "1\uB144\uCE58 \uC608\uC0C1 \uC885\uD569\uC18C\uB4DD\uC138 (\uCD94\uC815)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.total)), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 } }, "\uC885\uD569\uC18C\uB4DD\uC138 ", formatWon(calc.determined), " + \uC9C0\uBC29\uC18C\uB4DD\uC138 ", formatWon(calc.local), ". \uACFC\uC138\uD45C\uC900 ", formatWon(calc.taxBase), " \xB7 \uC801\uC6A9\uC138\uC728 ", calc.rate || "-", "."), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 13, lineHeight: 1.55, color: "#b8860b" } }, "\u203B ", /* @__PURE__ */ React.createElement("strong", null, "\uC774\uBBF8 \uB0B8 \uC138\uAE08(\uD504\uB9AC\uB79C\uC11C 3.3% \uC6D0\uCC9C\uC9D5\uC218\xB7\uC911\uAC04\uC608\uB0A9\xB7\uC9C1\uC7A5\uC778 \uC5F0\uB9D0\uC815\uC0B0)\uC744 \uBE7C\uAE30 \uC804"), " 1\uB144\uCE58 \uC0B0\uC815\uC561\uC785\uB2C8\uB2E4. 5\uC6D4\uC5D0 \uC2E4\uC81C\uB85C \uB354 \uB0B4\uC2E4 \uB3C8\uC740 \uC774\uBCF4\uB2E4 \uC801\uACE0, \uC774\uBBF8 \uB0B8 \uC138\uAE08\uC774 \uB354 \uB9CE\uC73C\uBA74 \uD658\uAE09\uBC1B\uC2B5\uB2C8\uB2E4. \uC815\uD655\uD55C \uCD94\uAC00\uB0A9\uBD80\xB7\uD658\uAE09\uC561\uC740 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uACC4\uC0B0 \uB0B4\uC5ED"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, ["\uC5F0\uAE08\uC18C\uB4DD\uAE08\uC561", "\uCD94\uAC00\uACF5\uC81C", "\uBCF4\uD5D8\uB8CC\uACF5\uC81C", "\uBC30\uB2F9\uC138\uC561\uACF5\uC81C"].map((key) => typeof (calc.detail || {})[key] === "number" ? /* @__PURE__ */ React.createElement("tr", { key }, /* @__PURE__ */ React.createElement("th", null, key), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.detail[key]))) : null), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC0B0\uCD9C\uC138\uC561 ", calc.rate ? `(${calc.rate})` : ""), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.calculated))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACB0\uC815\uC138\uC561 (\uC138\uC561\uACF5\uC81C \uBC18\uC601)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.determined))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uC18C\uB4DD\uC138 (10%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.local))), /* @__PURE__ */ React.createElement("tr", { style: { background: "#f0f7f3" } }, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uC138\uBD80\uB2F4")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.total))))))), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", { style: { fontWeight: 400 } }, s.\uD56D\uBAA9, s.\uC870\uBB38 ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.6, fontSize: 12 } }, " [", s.\uC870\uBB38, "]") : null), /* @__PURE__ */ React.createElement("td", null, typeof s.\uAE08\uC561 === "number" ? formatWon(s.\uAE08\uC561) : s.\uAE08\uC561 || "")))))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px" } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC18C\uB4DD \uAE08\uC561\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uACC4\uC0B0\uC774\uC5D0\uC694."), " \uBD80\uC591\uAC00\uC871\xB7\uACF5\uC81C \uD56D\uBAA9\uC744 \uB123\uC73C\uBA74 \uC138\uAE08\uC774 \uB354 \uC904 \uC218 \uC788\uC2B5\uB2C8\uB2E4 \u2014"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uACF5\uC81C \uB123\uC5B4 \uC815\uD655\uD788 \uACC4\uC0B0 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #b8860b", padding: "14px 18px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 8px", fontWeight: 700 } }, "\uD754\uD788 \uB193\uCE58\uB294 \uC808\uC138 \uD56D\uBAA9 \u2014 \uB123\uC73C\uBA74 \uC138\uAE08\uC774 \uB354 \uC904 \uC218 \uC788\uC5B4\uC694"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18, lineHeight: 1.7, fontSize: 14 } }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uC5F0\uAE08\uC800\uCD95\xB7IRP"), ": \uC704\uC5D0 \uC785\uB825\uD558\uC168\uC73C\uBA74 \uC774\uBBF8 \uBC18\uC601\uB410\uC2B5\uB2C8\uB2E4. \uBBF8\uAC00\uC785\uC774\uBA74 \uC5F0 900\uB9CC\uC6D0\uAE4C\uC9C0 12~15% \uC138\uC561\uACF5\uC81C(\uC18C\uB4DD\uC138\uBC95 \xA759\uC7583) \u2014 \uC0AC\uC5C5\uC790\xB7\uD504\uB9AC\uB79C\uC11C\uC5D0\uAC8C \uD6A8\uACFC\uAC00 \uAC00\uC7A5 \uD070 \uC808\uC138\uC785\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uB178\uB780\uC6B0\uC0B0\uACF5\uC81C"), ": \uC18C\uC0C1\uACF5\uC778\xB7\uC0AC\uC5C5\uC790 \uC18C\uB4DD\uACF5\uC81C(\uC18C\uB4DD \uAD6C\uAC04\uBCC4 \uD55C\uB3C4). \uBCF8 \uACC4\uC0B0\uC5D0\uB294 \uBBF8\uBC18\uC601 \u2014 \uC0C1\uB2F4\uC5D0\uC11C \uBC18\uC601."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uC758\uB8CC\uBE44\xB7\uAE30\uBD80\uAE08\xB7\uAD50\uC721\uBE44\xB7\uC911\uC18C\uAE30\uC5C5\uD2B9\uBCC4\uC138\uC561\uAC10\uBA74"), ": \uC694\uAC74 \uCDA9\uC871 \uC2DC \uCD94\uAC00 \uC808\uC138. \uBCF8 \uACC4\uC0B0\uC5D0\uB294 \uBBF8\uBC18\uC601\uC774\uB2C8 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uC7A5\uBD80 \uC791\uC131(\uAE30\uC7A5)"), ": \uC7A5\uBD80 \uC5C6\uC774 \uCD94\uACC4\uC2E0\uACE0\uD558\uBA74 \uBB34\uAE30\uC7A5\uAC00\uC0B0\uC138\uAC00 \uBD99\uC744 \uC218 \uC788\uACE0, \uAC04\uD3B8\uC7A5\uBD80\uB300\uC0C1\uC790\uAC00 \uBCF5\uC2DD\uBD80\uAE30\uB85C \uAE30\uC7A5\uD558\uBA74 \uAE30\uC7A5\uC138\uC561\uACF5\uC81C(\uC0B0\uCD9C\uC138\uC561 20%\xB7\uD55C\uB3C4 100\uB9CC)\uB97C \uBC1B\uC2B5\uB2C8\uB2E4(\uC18C\uB4DD\uC138\uBC95 \xA756\uC7582). \uC5C5\uC885\uBCC4 \uACBD\uBE44\uC728\xB7\uAE30\uC7A5 \uC720\uBD88\uB9AC\uB294 \uC0C1\uB2F4\uC5D0\uC11C \uB530\uC838 \uB4DC\uB9BD\uB2C8\uB2E4."))), calc.precise && typeof JTReportConvert === "function" && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         calcId: "income",
@@ -7656,7 +7983,13 @@ function JTReportIncome({ setRoute, onBack }) {
     onBack();
     return null;
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0\uAE30", subtitle: phase === "quick" ? "\uC0AC\uC5C5\xB7\uADFC\uB85C\xB7\uAE08\uC735 \uC18C\uB4DD\uC744 \uB123\uC73C\uBA74 \uC608\uC0C1 \uC885\uD569\uC18C\uB4DD\uC138\uB97C \uBC14\uB85C \uACC4\uC0B0\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uACF5\uC81C \uD56D\uBAA9\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+    inputSession.invalidate();
+    setCreditMode(true);
+  } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0"), inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+    inputSession.invalidate();
+    setStep(index);
+  } }, title: "\uC885\uD569\uC18C\uB4DD\uC138 \uACC4\uC0B0\uAE30", subtitle: phase === "quick" ? "\uC0AC\uC5C5\xB7\uADFC\uB85C\xB7\uAE08\uC735 \uC18C\uB4DD\uC744 \uB123\uC73C\uBA74 \uC608\uC0C1 \uC885\uD569\uC18C\uB4DD\uC138\uB97C \uBC14\uB85C \uACC4\uC0B0\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uACF5\uC81C \uD56D\uBAA9\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
     JTNumericInput,
     {
       money: !!cur.money,
@@ -12936,10 +13269,10 @@ function JTReportGift({ setRoute, onBack }) {
   const [caseMode, setCaseMode] = useGiftState(false);
   const [caseValuation, setCaseValuation] = useGiftState(null);
   const [step, setStep] = useGiftState(0);
-  const [answers, setAnswers] = useGiftState({});
-  const [loading, setLoading] = useGiftState(false);
-  const [report, setReport] = useGiftState(null);
-  const [err, setErr] = useGiftState(null);
+  const [answers, rawSetAnswers] = useGiftState({});
+  const [loading, rawSetLoading] = useGiftState(false);
+  const [report, rawSetReport] = useGiftState(null);
+  const [err, rawSetErr] = useGiftState(null);
   const [lookupState, setLookupState] = useGiftState({ loading: false, result: null, err: null });
   const lookupSeq = React.useRef(0);
   const lookupKey = React.useRef("");
@@ -12950,7 +13283,21 @@ function JTReportGift({ setRoute, onBack }) {
     setAns(id, value);
   };
   const [phase, setPhase] = useGiftState("quick");
-  const [quickReport, setQuickReport] = useGiftState(null);
+  const [quickReport, rawSetQuickReport] = useGiftState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+    rawSetQuickReport(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
+  const setQuickReport = rawSetQuickReport;
   React.useEffect(() => {
     const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "";
     if (base) {
@@ -13016,13 +13363,19 @@ function JTReportGift({ setRoute, onBack }) {
     }
   };
   const runAnalysis = async () => {
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    const setQuickReport2 = inputSession.sink(inputRequest, rawSetQuickReport);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       if (giftFallbackGaps(answers, { precise: true }).length > 0) {
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === "quick" };
-        setReport(unknownRep);
-        if (phase === "quick") setQuickReport(unknownRep);
+        setReport2(unknownRep);
+        if (phase === "quick") setQuickReport2(unknownRep);
         return;
       }
       const isBurdened = answers.isBurdened === "yes" && answers.assetType === "realestate";
@@ -13071,8 +13424,8 @@ function JTReportGift({ setRoute, onBack }) {
       }
       if (giftFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === "quick" };
-        setReport(blockedRep);
-        if (phase === "quick") setQuickReport(blockedRep);
+        setReport2(blockedRep);
+        if (phase === "quick") setQuickReport2(blockedRep);
         return;
       }
       let commentary;
@@ -13095,13 +13448,13 @@ function JTReportGift({ setRoute, onBack }) {
         };
       }
       const rep = { calc, commentary, isBurdened, quick: phase === "quick" };
-      setReport(rep);
-      if (phase === "quick") setQuickReport(rep);
+      setReport2(rep);
+      if (phase === "quick") setQuickReport2(rep);
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
   const goDetail = () => {
@@ -13136,7 +13489,10 @@ function JTReportGift({ setRoute, onBack }) {
     setInstallmentMode(false);
   } });
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
@@ -13148,7 +13504,10 @@ function JTReportGift({ setRoute, onBack }) {
     if (giftBlocked) {
       const giftBlockReason = giftFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "refused" ? "refused" : "down";
       const giftBlockTag = giftBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : giftBlockReason === "refused" ? "\uC138\uBB34\uC0AC \uD655\uC778 \uD544\uC694" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328";
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: giftBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+        inputSession.invalidate();
+        setStep(index);
+      } }, title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: giftBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setQuickReport(null);
         setPhase("quick");
@@ -13160,7 +13519,10 @@ function JTReportGift({ setRoute, onBack }) {
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: isBurdened ? "\uBD80\uB2F4\uBD80\uC99D\uC5EC (\uC99D\uC5EC\uC138+\uC591\uB3C4\uC138+\uCDE8\uB4DD\uC138)" : (answers.giftDate || "2026\uB144 \uAE30\uBCF8\uAC12") + " \uC99D\uC5EC\uC138 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: isBurdened ? "\uBD80\uB2F4\uBD80\uC99D\uC5EC (\uC99D\uC5EC\uC138+\uC591\uB3C4\uC138+\uCDE8\uB4DD\uC138)" : (answers.giftDate || "2026\uB144 \uAE30\uBCF8\uAC12") + " \uC99D\uC5EC\uC138 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
       setReport(null);
       setQuickReport(null);
       setPhase("quick");
@@ -13182,7 +13544,10 @@ function JTReportGift({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC99D\uC5EC\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uC0AC\uC804\uC99D\uC5EC\xB7\uBD80\uB2F4\uBD80 \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-installment-direct", onClick: () => setInstallmentMode(true) }, "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", style: { marginBottom: 16 }, onClick: () => setCaseMode(true) }, "\uC0AC\uAC74 \uC800\uC7A5\xB7\uBD88\uB7EC\uC624\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && cur.id !== "reAddress" && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+    inputSession.invalidate();
+    setStep(index);
+  } }, title: "\uC99D\uC5EC\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uAD00\uACC4\xB7\uAE08\uC561\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC99D\uC5EC\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uC0AC\uC804\uC99D\uC5EC\xB7\uBD80\uB2F4\uBD80 \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-installment-direct", onClick: () => setInstallmentMode(true) }, "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", style: { marginBottom: 16 }, onClick: () => setCaseMode(true) }, "\uC0AC\uAC74 \uC800\uC7A5\xB7\uBD88\uB7EC\uC624\uAE30"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && cur.id !== "reAddress" && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -13857,12 +14222,26 @@ function JTReportInheritance({ setRoute, onBack }) {
   const [installmentMode, setInstallmentMode] = useInhState(false);
   const [installmentDraft, setInstallmentDraft] = useInhState({});
   const [step, setStep] = useInhState(0);
-  const [answers, setAnswers] = useInhState({});
-  const [loading, setLoading] = useInhState(false);
-  const [report, setReport] = useInhState(null);
-  const [err, setErr] = useInhState(null);
+  const [answers, rawSetAnswers] = useInhState({});
+  const [loading, rawSetLoading] = useInhState(false);
+  const [report, rawSetReport] = useInhState(null);
+  const [err, rawSetErr] = useInhState(null);
   const [phase, setPhase] = useInhState("quick");
-  const [quickReport, setQuickReport] = useInhState(null);
+  const [quickReport, rawSetQuickReport] = useInhState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+    rawSetQuickReport(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
+  const setQuickReport = rawSetQuickReport;
   React.useEffect(() => {
     const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "";
     if (base) {
@@ -13894,13 +14273,19 @@ function JTReportInheritance({ setRoute, onBack }) {
     return !!answers[cur.id];
   };
   const runAnalysis = async () => {
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    const setQuickReport2 = inputSession.sink(inputRequest, rawSetQuickReport);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       if (inhFallbackGaps(answers, { precise: true }).length > 0) {
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === "quick" };
-        setReport(unknownRep);
-        if (phase === "quick") setQuickReport(unknownRep);
+        setReport2(unknownRep);
+        if (phase === "quick") setQuickReport2(unknownRep);
         return;
       }
       const estate = Number(answers.estateValue) || 0;
@@ -13918,8 +14303,8 @@ function JTReportInheritance({ setRoute, onBack }) {
       }
       if (inhFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === "quick" };
-        setReport(blockedRep);
-        if (phase === "quick") setQuickReport(blockedRep);
+        setReport2(blockedRep);
+        if (phase === "quick") setQuickReport2(blockedRep);
         return;
       }
       let commentary;
@@ -13946,13 +14331,13 @@ function JTReportInheritance({ setRoute, onBack }) {
         };
       }
       const rep = { calc, commentary, quick: phase === "quick" };
-      setReport(rep);
-      if (phase === "quick") setQuickReport(rep);
+      setReport2(rep);
+      if (phase === "quick") setQuickReport2(rep);
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
   const goDetail = () => {
@@ -13982,7 +14367,10 @@ function JTReportInheritance({ setRoute, onBack }) {
     setInstallmentMode(false);
   } });
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
@@ -13993,7 +14381,10 @@ function JTReportInheritance({ setRoute, onBack }) {
     if (inhBlocked) {
       const inhBlockReason = inhFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "refused" ? "refused" : "down";
       const inhBlockTag = inhBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : inhBlockReason === "refused" ? "\uC785\uB825\uC774 \uB354 \uD544\uC694\uD569\uB2C8\uB2E4" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328";
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: inhBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+        inputSession.invalidate();
+        setStep(index);
+      } }, title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: inhBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setQuickReport(null);
         setPhase("quick");
@@ -14007,7 +14398,10 @@ function JTReportInheritance({ setRoute, onBack }) {
     }
     const dd = calc.deductions || {};
     const ddNum = (k) => typeof dd[k] === "number" && isFinite(dd[k]) ? dd[k] : null;
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: (answers.deathDate || "2026\uB144 \uAE30\uBCF8\uAC12") + " \uC0C1\uC18D\uC138 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: (answers.deathDate || "2026\uB144 \uAE30\uBCF8\uAC12") + " \uC0C1\uC18D\uC138 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
       setReport(null);
       setQuickReport(null);
       setPhase("quick");
@@ -14029,7 +14423,10 @@ function JTReportInheritance({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCD1D\uC7AC\uC0B0\xB7\uAC00\uC871\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC0C1\uC18D\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uACF5\uC81C\xB7\uC0AC\uC804\uC99D\uC5EC \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-installment-direct", onClick: () => setInstallmentMode(true) }, "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+    inputSession.invalidate();
+    setStep(index);
+  } }, title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCD1D\uC7AC\uC0B0\xB7\uAC00\uC871\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC0C1\uC18D\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uACF5\uC81C\xB7\uC0AC\uC804\uC99D\uC5EC \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-installment-direct", onClick: () => setInstallmentMode(true) }, "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -15075,15 +15472,29 @@ function JTReportAcquisition({ setRoute, onBack }) {
   const [extraMode, setExtraMode] = useAcqState(null);
   const [extraDrafts, setExtraDrafts] = useAcqState({});
   const [step, setStep] = useAcqState(0);
-  const [rawAnswers, setAnswers] = useAcqState({});
+  const [rawAnswers, rawSetAnswers] = useAcqState({});
   const acqNorm = acqNormalize(rawAnswers);
   const answers = acqNorm.answers;
   const acqDropped = acqNorm.dropped;
-  const [loading, setLoading] = useAcqState(false);
-  const [report, setReport] = useAcqState(null);
-  const [err, setErr] = useAcqState(null);
+  const [loading, rawSetLoading] = useAcqState(false);
+  const [report, rawSetReport] = useAcqState(null);
+  const [err, rawSetErr] = useAcqState(null);
   const [phase, setPhase] = useAcqState("quick");
-  const [quickReport, setQuickReport] = useAcqState(null);
+  const [quickReport, rawSetQuickReport] = useAcqState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+    rawSetQuickReport(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
+  const setQuickReport = rawSetQuickReport;
   const [laddr, setLaddr] = useAcqState("");
   const [lbusy, setLbusy] = useAcqState(false);
   const [linfo, setLinfo] = useAcqState(null);
@@ -15167,13 +15578,19 @@ function JTReportAcquisition({ setRoute, onBack }) {
     return !!answers[cur.id];
   };
   const runAnalysis = async () => {
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    const setQuickReport2 = inputSession.sink(inputRequest, rawSetQuickReport);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       if (acqFallbackGaps(answers, { precise: true }).length > 0) {
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === "quick" };
-        setReport(unknownRep);
-        if (phase === "quick") setQuickReport(unknownRep);
+        setReport2(unknownRep);
+        if (phase === "quick") setQuickReport2(unknownRep);
         return;
       }
       let calc;
@@ -15186,8 +15603,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
       }
       if (acqFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === "quick" };
-        setReport(blockedRep);
-        if (phase === "quick") setQuickReport(blockedRep);
+        setReport2(blockedRep);
+        if (phase === "quick") setQuickReport2(blockedRep);
         return;
       }
       const acqNewType = acqNewTypeSelected(answers);
@@ -15220,13 +15637,13 @@ function JTReportAcquisition({ setRoute, onBack }) {
         };
       }
       const rep = { calc, commentary, quick: phase === "quick" };
-      setReport(rep);
-      if (phase === "quick") setQuickReport(rep);
+      setReport2(rep);
+      if (phase === "quick") setQuickReport2(rep);
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
   const goDetail = () => {
@@ -15298,7 +15715,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
     setExtraMode(null);
   } });
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
@@ -15309,14 +15729,20 @@ function JTReportAcquisition({ setRoute, onBack }) {
     const acqOpenQ = acqFirstOpenQuestion(answers);
     if (acqBlocked) {
       const acqBlockReason = acqFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "refused" ? "refused" : "down";
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: acqBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : acqBlockReason === "refused" ? "\uC138\uBB34\uC0AC \uD655\uC778 \uD544\uC694" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTAcqDroppedNotice, { dropped: acqDropped }), /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: acqBlockReason === "input" ? acqGaps : [], onRetry: runAnalysis, reason: acqBlockReason }), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 14, lineHeight: 1.6 } }, acqOpenQ ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uBB38\uD56D: ", /* @__PURE__ */ React.createElement("strong", null, acqOpenQ.qFor ? acqOpenQ.qFor(answers) : acqOpenQ.q), /* @__PURE__ */ React.createElement("br", null), "\uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB2E4\uB978 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4.") : acqBlockReason === "down" ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC785\uB825\uC73C\uB85C \uB3CC\uC544\uAC00 \uC55E\uC120 \uB2F5", acqBlockReason === "input" ? "(\uD2B9\uD788 \uC8FC\uD0DD \uC218)" : "", "\uC744 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => goToQuestion(acqOpenQ) }, acqOpenQ ? "\uBE60\uC9C4 \uC9C8\uBB38\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30 \u2192" : "\uC785\uB825 \uC218\uC815\uD558\uB7EC \uB3CC\uC544\uAC00\uAE30 \u2192"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+        inputSession.invalidate();
+        setStep(index);
+      } }, title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: acqBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : acqBlockReason === "refused" ? "\uC138\uBB34\uC0AC \uD655\uC778 \uD544\uC694" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTAcqDroppedNotice, { dropped: acqDropped }), /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: acqBlockReason === "input" ? acqGaps : [], onRetry: runAnalysis, reason: acqBlockReason }), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 14, lineHeight: 1.6 } }, acqOpenQ ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uBB38\uD56D: ", /* @__PURE__ */ React.createElement("strong", null, acqOpenQ.qFor ? acqOpenQ.qFor(answers) : acqOpenQ.q), /* @__PURE__ */ React.createElement("br", null), "\uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB2E4\uB978 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4.") : acqBlockReason === "down" ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC785\uB825\uC73C\uB85C \uB3CC\uC544\uAC00 \uC55E\uC120 \uB2F5", acqBlockReason === "input" ? "(\uD2B9\uD788 \uC8FC\uD0DD \uC218)" : "", "\uC744 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC9C0\uAE08\uAE4C\uC9C0 \uB2F5\uD558\uC2E0 \uB0B4\uC6A9\uC740 \uADF8\uB300\uB85C \uB0A8\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: () => goToQuestion(acqOpenQ) }, acqOpenQ ? "\uBE60\uC9C4 \uC9C8\uBB38\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30 \u2192" : "\uC785\uB825 \uC218\uC815\uD558\uB7EC \uB3CC\uC544\uAC00\uAE30 \u2192"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setPhase("quick");
         setStep(0);
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uCDE8\uB4DD\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTAcqDroppedNotice, { dropped: acqDropped }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uCDE8\uB4DD\uC138(\uCD1D\uC561)" : "\uCD1D \uB0A9\uBD80\uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.totalTax > 0 && calc.appliedRate && calc.appliedRate !== "-" && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, color: "var(--jt-ink-700,#444)" } }, answers.acquisitionType, " \xB7 ", formatWon(Number(answers.propertyValue) || 0), " \xB7 ", answers.propertyType, " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", /* @__PURE__ */ React.createElement("strong", null, calc.appliedRate), "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), (answers.propertyType === "\uBD84\uC591\uAD8C" || answers.propertyType === "\uC785\uC8FC\uAD8C") && /* @__PURE__ */ React.createElement("div", { style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, answers.propertyType, "\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uAD8C\uB9AC\uB97C \uC0B4 \uB54C \uCDE8\uB4DD\uC138\uAC00 \uBD80\uACFC\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(0\uC6D0)"), " \u2014 \uC9C0\uBC29\uC138\uBC95 \xA77\u2460\uC0C1 \uCDE8\uB4DD\uC138 \uACFC\uC138\uB300\uC0C1(\uBD80\uB3D9\uC0B0\uB4F1)\uC5D0 \uBBF8\uD3EC\uD568. \uB098\uC911\uC5D0 ", /* @__PURE__ */ React.createElement("strong", null, "\uC900\uACF5\xB7\uC794\uAE08\uC73C\uB85C \uADF8 \uC8FC\uD0DD\uC744 \uCDE8\uB4DD\uD558\uB294 \uC2DC\uC810\uC5D0 \uADF8 \uC8FC\uD0DD\uBD84 \uCDE8\uB4DD\uC138"), "\uAC00 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC785\uC8FC\uAD8C\uC740 \uC815\uBE44\uC0AC\uC5C5\uC5D0 \uB530\uB77C \xA77\u246F \uBCC4\uB3C4 \uBC1C\uC0DD). \uB9E4\uB9E4\uAC00 \uC804\uCCB4\uC5D0 \uC8FC\uD0DD \uCDE8\uB4DD\uC138\uB97C \uB9E4\uAE30\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !report.quick && answers.acquisitionType === "\uC0C1\uC18D" && answers.propertyType === "\uC8FC\uD0DD" && answers.inheritOneHouse !== "yes" && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, "\uBB34\uC8FC\uD0DD 1\uAC00\uAD6C\uAC00 1\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uBC1B\uC73C\uBA74 ", /* @__PURE__ */ React.createElement("strong", null, "0.8% \uD2B9\uB840\uC138\uC728"), "(\uC9C0\uBC29\uC138\uBC95 \xA715\u2460)\uC774 \uC801\uC6A9\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD604\uC7AC \uACC4\uC0B0\uC740 \uC77C\uBC18 \uC0C1\uC18D ", /* @__PURE__ */ React.createElement("strong", null, "\uBCF8\uC138 2.8%"), "(\uC9C0\uBC29\uAD50\uC721\uC138\uB97C \uB354\uD574 \uC2E4\uD6A8 2.96%) \uAE30\uC900\uC774\uB2C8, \uD574\uB2F9\uB418\uBA74 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694."), answers.propertyType === "\uD1A0\uC9C0" && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, "\uD604\uC7AC \uACC4\uC0B0\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uC77C\uBC18 \uD1A0\uC9C0 \uBCF8\uC138 4%"), "(\uC9C0\uBC29\uAD50\uC721\uC138\uB97C \uB354\uD574 \uC2E4\uD6A8 4.6%) \uAE30\uC900\uC785\uB2C8\uB2E4. ", /* @__PURE__ */ React.createElement("strong", null, "\uB18D\uC9C0(\uC804\xB7\uB2F5\xB7\uACFC\uC218\uC6D0)"), "\uB294 \uC138\uC728\uC774 \uB2EC\uB77C \uBCC4\uB3C4 \uD56D\uBAA9\uC73C\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4 \u2014 \uB18D\uC9C0\uB77C\uBA74 \u300C\uBB34\uC5C7\uC744 \uCDE8\uB4DD\u300D \uBB38\uD56D\uC5D0\uC11C ", /* @__PURE__ */ React.createElement("strong", null, "\uB18D\uC9C0"), "\uB97C \uACE0\uB974\uC138\uC694(\uC9C0\uBC29\uC138\uBC95 \xA711\u24601\uD638\xB77\uD638)."), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), acqNewTypeSelected(answers) ? "\uAE08\uC561\uC740 \uAC80\uC99D \uC5D4\uC9C4\uC774 \uB0B8 \uAC12\uC785\uB2C8\uB2E4. \uB2E4\uB9CC \uBB3C\uAC74 \uAD6C\uBD84(\uC624\uD53C\uC2A4\uD154 \uC6A9\uB3C4\xB7\uB18D\uC9C0 \uC5EC\uBD80)\uACFC \uAC10\uBA74 \uC694\uAC74\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uD310\uC815\uD558\uC9C0 \uC54A\uC73C\uB2C8, \uC544\uB798 \u300C\uC774 \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC740 \uAC83\u300D\uC744 \uD568\uAED8 \uD655\uC778\uD558\uC138\uC694." : answers.acquisitionType === "\uC99D\uC5EC" ? "\uC99D\uC5EC \uC911\uACFC(\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\xB7\uC2DC\uAC00\uD45C\uC900\uC561 3\uC5B5\uC6D0 \uC774\uC0C1\uC774\uBA74 12%)\uB294 \uC55E\uC5D0\uC11C \uACE0\uB974\uC2E0 \uC870\uC815\uC9C0\uC5ED \uB2F5\uACFC \uC785\uB825\uD558\uC2E0 \uC2DC\uAC00\uD45C\uC900\uC561\uC73C\uB85C \uD310\uC815\uD588\uC5B4\uC694. \uC55E\uC758 \uCDE8\uB4DD\uAC00\uC561(\uC2DC\uAC00)\uC73C\uB85C \uB300\uC2E0 \uD310\uB2E8\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \u300C\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30\u300D\uC5D0\uC11C \uB0A8\uC740 \uD56D\uBAA9\uC744 \uCC44\uC6B0\uBA74 \uB354 \uC790\uC138\uD788 \uBCFC \uC218 \uC788\uC5B4\uC694." : answers.acquisitionType === "\uC0C1\uC18D" ? answers.propertyType === "\uC8FC\uD0DD" && answers.inheritOneHouse === "yes" ? "\u300C\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30\u300D\uC5D0\uC11C \uB0A8\uC740 \uD56D\uBAA9\uC744 \uCC44\uC6B0\uBA74 \uB354 \uC790\uC138\uD788 \uBCFC \uC218 \uC788\uC5B4\uC694." : "\uBB34\uC8FC\uD0DD \uAC00\uAD6C\uAC00 1\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uBC1B\uC73C\uBA74 0.8% \uD2B9\uB840\uC138\uC728\uC774 \uC801\uC6A9\uB420 \uC218 \uC788\uC5B4\uC694(\uD604\uC7AC\uB294 \uC77C\uBC18 2.8% \uAE30\uC900)." : answers.acquisitionType === "\uC2E0\uCD95" ? "\uC2E0\uCD95(\uC6D0\uC2DC\uCDE8\uB4DD)\uC740 \uBCF4\uD1B5 \uD45C\uC900\uC138\uC728 2.8%\uC608\uC694. \uD070 \uD3C9\uD615(85\u33A1 \uCD08\uACFC)\uC774\uBA74 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uAC00 \uC870\uAE08 \uB354 \uBD99\uC2B5\uB2C8\uB2E4." : "\uD070 \uD3C9\uD615(85\u33A1 \uCD08\uACFC)\uC774\uBA74 \uC138\uAE08\uC774 \uC870\uAE08 \uB298\uACE0, \uC0DD\uC560\uCD5C\uCD08\uBA74 \uCD5C\uB300 200\uB9CC\uC6D0 \uC904\uC5B4\uC694. \uC870\uC815\uC9C0\uC5ED\xB7\uC8FC\uD0DD \uC218\uC5D0 \uB530\uB77C \uC911\uACFC\uB420 \uC218\uB3C4 \uC788\uC73C\uB2C8 \uD655\uC778\uD574\uBCF4\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728", calc.heavyApplied ? " (\uC911\uACFC)" : ""), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.acqTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.farmTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", answers.propertyType === "\uC8FC\uD0DD" ? " (85\u33A1 \uCD08\uACFC)" : ""), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.farmTax))), calc.reductionAmt > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAC10\uBA74 (", calc.reductionType, ")"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.reductionAmt))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.heavyApplied && calc.heavyReason && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC911\uACFC \uC801\uC6A9: ", calc.heavyReason, ". ", ACQ_HEAVY_NOTICE[acqNoticeKey(answers)]), calc.deadline && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.8, marginTop: 8 } }, "\uC2E0\uACE0\xB7\uB0A9\uBD80 \uAE30\uD55C: ", calc.deadline)), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${acqFmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, acqFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"], s["\uBE44\uACE0"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC774 \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC740 \uAC83"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18, lineHeight: 1.75 } }, acqExcludedItems(answers).map((x, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 6 } }, x)))), /* @__PURE__ */ React.createElement(JTAcqOrdinanceCard, { region: answers.region }), typeof JTAcqHoldingForecast === "function" && /* @__PURE__ */ React.createElement(JTAcqHoldingForecast, { acqAnswers: answers, acqCalc: calc, setRoute }), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC9C0\uBC29\uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uACFC\uC138\uD45C\uC900(\uC2DC\uAC00\uD45C\uC900\uC561)\xB7\uC8FC\uD0DD \uC218\xB7\uC911\uACFC\xB7\uAC10\uBA74 \uC694\uAC74\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC720\uC0C1\uCDE8\uB4DD 60\uC77C\xB7\uC99D\uC5EC \uB4F1 \uBB34\uC0C1\uCDE8\uB4DD 3\uAC1C\uC6D4(\uCDE8\uB4DD\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130)\xB7\uC0C1\uC18D 6\uAC1C\uC6D4(\uC0C1\uC18D\uAC1C\uC2DC\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130, \uC678\uAD6D \uAC70\uC8FC \uC0C1\uC18D\uC778\uC774 \uC788\uC73C\uBA74 9\uAC1C\uC6D4)\uC774\uACE0, \uAE30\uD55C \uB9D0\uC77C\uC774 \uACF5\uD734\uC77C\uC774\uBA74 \uADF8 \uB2E4\uC74C \uB0A0\uAE4C\uC9C0\uC785\uB2C8\uB2E4. \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, marginTop: 12 } }, /* @__PURE__ */ React.createElement("a", { href: "#/report/acq-check" }, "\uC774\uBBF8 \uB0B8 \uCDE8\uB4DD\uC138\uB97C \uC810\uAC80\uBC1B\uACE0 \uC2F6\uB2E4\uBA74 \u2192 1\uCC28 \uC7AC\uAC80\uD1A0 \uC811\uC218(\uC11C\uB958 \uC5C6\uC774)")), /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uCDE8\uB4DD\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTAcqDroppedNotice, { dropped: acqDropped }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uCDE8\uB4DD\uC138(\uCD1D\uC561)" : "\uCD1D \uB0A9\uBD80\uC138\uC561 \xB7 \uC815\uBC00 \uACC4\uC0B0 (JT\uD0DD\uC2A4\uB7A9 \uC5D4\uC9C4)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.totalTax > 0 && calc.appliedRate && calc.appliedRate !== "-" && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, color: "var(--jt-ink-700,#444)" } }, answers.acquisitionType, " \xB7 ", formatWon(Number(answers.propertyValue) || 0), " \xB7 ", answers.propertyType, " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", /* @__PURE__ */ React.createElement("strong", null, calc.appliedRate), "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), (answers.propertyType === "\uBD84\uC591\uAD8C" || answers.propertyType === "\uC785\uC8FC\uAD8C") && /* @__PURE__ */ React.createElement("div", { style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, answers.propertyType, "\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uAD8C\uB9AC\uB97C \uC0B4 \uB54C \uCDE8\uB4DD\uC138\uAC00 \uBD80\uACFC\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(0\uC6D0)"), " \u2014 \uC9C0\uBC29\uC138\uBC95 \xA77\u2460\uC0C1 \uCDE8\uB4DD\uC138 \uACFC\uC138\uB300\uC0C1(\uBD80\uB3D9\uC0B0\uB4F1)\uC5D0 \uBBF8\uD3EC\uD568. \uB098\uC911\uC5D0 ", /* @__PURE__ */ React.createElement("strong", null, "\uC900\uACF5\xB7\uC794\uAE08\uC73C\uB85C \uADF8 \uC8FC\uD0DD\uC744 \uCDE8\uB4DD\uD558\uB294 \uC2DC\uC810\uC5D0 \uADF8 \uC8FC\uD0DD\uBD84 \uCDE8\uB4DD\uC138"), "\uAC00 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC785\uC8FC\uAD8C\uC740 \uC815\uBE44\uC0AC\uC5C5\uC5D0 \uB530\uB77C \xA77\u246F \uBCC4\uB3C4 \uBC1C\uC0DD). \uB9E4\uB9E4\uAC00 \uC804\uCCB4\uC5D0 \uC8FC\uD0DD \uCDE8\uB4DD\uC138\uB97C \uB9E4\uAE30\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), !report.quick && answers.acquisitionType === "\uC0C1\uC18D" && answers.propertyType === "\uC8FC\uD0DD" && answers.inheritOneHouse !== "yes" && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, "\uBB34\uC8FC\uD0DD 1\uAC00\uAD6C\uAC00 1\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uBC1B\uC73C\uBA74 ", /* @__PURE__ */ React.createElement("strong", null, "0.8% \uD2B9\uB840\uC138\uC728"), "(\uC9C0\uBC29\uC138\uBC95 \xA715\u2460)\uC774 \uC801\uC6A9\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD604\uC7AC \uACC4\uC0B0\uC740 \uC77C\uBC18 \uC0C1\uC18D ", /* @__PURE__ */ React.createElement("strong", null, "\uBCF8\uC138 2.8%"), "(\uC9C0\uBC29\uAD50\uC721\uC138\uB97C \uB354\uD574 \uC2E4\uD6A8 2.96%) \uAE30\uC900\uC774\uB2C8, \uD574\uB2F9\uB418\uBA74 \uC0C1\uB2F4\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694."), answers.propertyType === "\uD1A0\uC9C0" && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, "\uD604\uC7AC \uACC4\uC0B0\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uC77C\uBC18 \uD1A0\uC9C0 \uBCF8\uC138 4%"), "(\uC9C0\uBC29\uAD50\uC721\uC138\uB97C \uB354\uD574 \uC2E4\uD6A8 4.6%) \uAE30\uC900\uC785\uB2C8\uB2E4. ", /* @__PURE__ */ React.createElement("strong", null, "\uB18D\uC9C0(\uC804\xB7\uB2F5\xB7\uACFC\uC218\uC6D0)"), "\uB294 \uC138\uC728\uC774 \uB2EC\uB77C \uBCC4\uB3C4 \uD56D\uBAA9\uC73C\uB85C \uACC4\uC0B0\uD569\uB2C8\uB2E4 \u2014 \uB18D\uC9C0\uB77C\uBA74 \u300C\uBB34\uC5C7\uC744 \uCDE8\uB4DD\u300D \uBB38\uD56D\uC5D0\uC11C ", /* @__PURE__ */ React.createElement("strong", null, "\uB18D\uC9C0"), "\uB97C \uACE0\uB974\uC138\uC694(\uC9C0\uBC29\uC138\uBC95 \xA711\u24601\uD638\xB77\uD638)."), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uC544\uB798\uB97C \uBC18\uC601\uD558\uBA74 \uC138\uC561\uC774 \uD06C\uAC8C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694 \u2014", /* @__PURE__ */ React.createElement("br", null), acqNewTypeSelected(answers) ? "\uAE08\uC561\uC740 \uAC80\uC99D \uC5D4\uC9C4\uC774 \uB0B8 \uAC12\uC785\uB2C8\uB2E4. \uB2E4\uB9CC \uBB3C\uAC74 \uAD6C\uBD84(\uC624\uD53C\uC2A4\uD154 \uC6A9\uB3C4\xB7\uB18D\uC9C0 \uC5EC\uBD80)\uACFC \uAC10\uBA74 \uC694\uAC74\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uD310\uC815\uD558\uC9C0 \uC54A\uC73C\uB2C8, \uC544\uB798 \u300C\uC774 \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC740 \uAC83\u300D\uC744 \uD568\uAED8 \uD655\uC778\uD558\uC138\uC694." : answers.acquisitionType === "\uC99D\uC5EC" ? "\uC99D\uC5EC \uC911\uACFC(\uC870\uC815\uB300\uC0C1\uC9C0\uC5ED\xB7\uC2DC\uAC00\uD45C\uC900\uC561 3\uC5B5\uC6D0 \uC774\uC0C1\uC774\uBA74 12%)\uB294 \uC55E\uC5D0\uC11C \uACE0\uB974\uC2E0 \uC870\uC815\uC9C0\uC5ED \uB2F5\uACFC \uC785\uB825\uD558\uC2E0 \uC2DC\uAC00\uD45C\uC900\uC561\uC73C\uB85C \uD310\uC815\uD588\uC5B4\uC694. \uC55E\uC758 \uCDE8\uB4DD\uAC00\uC561(\uC2DC\uAC00)\uC73C\uB85C \uB300\uC2E0 \uD310\uB2E8\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \u300C\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30\u300D\uC5D0\uC11C \uB0A8\uC740 \uD56D\uBAA9\uC744 \uCC44\uC6B0\uBA74 \uB354 \uC790\uC138\uD788 \uBCFC \uC218 \uC788\uC5B4\uC694." : answers.acquisitionType === "\uC0C1\uC18D" ? answers.propertyType === "\uC8FC\uD0DD" && answers.inheritOneHouse === "yes" ? "\u300C\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30\u300D\uC5D0\uC11C \uB0A8\uC740 \uD56D\uBAA9\uC744 \uCC44\uC6B0\uBA74 \uB354 \uC790\uC138\uD788 \uBCFC \uC218 \uC788\uC5B4\uC694." : "\uBB34\uC8FC\uD0DD \uAC00\uAD6C\uAC00 1\uC8FC\uD0DD\uC744 \uC0C1\uC18D\uBC1B\uC73C\uBA74 0.8% \uD2B9\uB840\uC138\uC728\uC774 \uC801\uC6A9\uB420 \uC218 \uC788\uC5B4\uC694(\uD604\uC7AC\uB294 \uC77C\uBC18 2.8% \uAE30\uC900)." : answers.acquisitionType === "\uC2E0\uCD95" ? "\uC2E0\uCD95(\uC6D0\uC2DC\uCDE8\uB4DD)\uC740 \uBCF4\uD1B5 \uD45C\uC900\uC138\uC728 2.8%\uC608\uC694. \uD070 \uD3C9\uD615(85\u33A1 \uCD08\uACFC)\uC774\uBA74 \uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138\uAC00 \uC870\uAE08 \uB354 \uBD99\uC2B5\uB2C8\uB2E4." : "\uD070 \uD3C9\uD615(85\u33A1 \uCD08\uACFC)\uC774\uBA74 \uC138\uAE08\uC774 \uC870\uAE08 \uB298\uACE0, \uC0DD\uC560\uCD5C\uCD08\uBA74 \uCD5C\uB300 200\uB9CC\uC6D0 \uC904\uC5B4\uC694. \uC870\uC815\uC9C0\uC5ED\xB7\uC8FC\uD0DD \uC218\uC5D0 \uB530\uB77C \uC911\uACFC\uB420 \uC218\uB3C4 \uC788\uC73C\uB2C8 \uD655\uC778\uD574\uBCF4\uC138\uC694."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728", calc.heavyApplied ? " (\uC911\uACFC)" : ""), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uCDE8\uB4DD\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.acqTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.farmTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", answers.propertyType === "\uC8FC\uD0DD" ? " (85\u33A1 \uCD08\uACFC)" : ""), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.farmTax))), calc.reductionAmt > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uAC10\uBA74 (", calc.reductionType, ")"), /* @__PURE__ */ React.createElement("td", null, "\u2212 ", formatWon(calc.reductionAmt))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), calc.heavyApplied && calc.heavyReason && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC911\uACFC \uC801\uC6A9: ", calc.heavyReason, ". ", ACQ_HEAVY_NOTICE[acqNoticeKey(answers)]), calc.deadline && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, opacity: 0.8, marginTop: 8 } }, "\uC2E0\uACE0\xB7\uB0A9\uBD80 \uAE30\uD55C: ", calc.deadline)), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${acqFmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, acqFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"], s["\uBE44\uACE0"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC774 \uACC4\uC0B0\uC5D0 \uB123\uC9C0 \uC54A\uC740 \uAC83"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18, lineHeight: 1.75 } }, acqExcludedItems(answers).map((x, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 6 } }, x)))), /* @__PURE__ */ React.createElement(JTAcqOrdinanceCard, { region: answers.region }), typeof JTAcqHoldingForecast === "function" && /* @__PURE__ */ React.createElement(JTAcqHoldingForecast, { acqAnswers: answers, acqCalc: calc, setRoute }), commentary.cautions && commentary.cautions.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC8FC\uC758 \uD3EC\uC778\uD2B8"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.cautions.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), commentary.saving_ideas && commentary.saving_ideas.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC808\uC138 \uC5EC\uC9C0"), /* @__PURE__ */ React.createElement("ol", { className: "jt-report-reasons" }, commentary.saving_ideas.map((r, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-reasons__n" }, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h4", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.detail))))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12, opacity: 0.7, marginTop: 16, lineHeight: 1.6 } }, "\uBCF8 \uACC4\uC0B0\uC740 \uC785\uB825 \uC815\uBCF4\uC640 \uD604\uD589 \uC9C0\uBC29\uC138\uBC95\uC744 \uAE30\uC900\uC73C\uB85C \uD55C \uC608\uC0C1\uC561\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC138\uC561\uC740 \uACFC\uC138\uD45C\uC900(\uC2DC\uAC00\uD45C\uC900\uC561)\xB7\uC8FC\uD0DD \uC218\xB7\uC911\uACFC\xB7\uAC10\uBA74 \uC694\uAC74\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC73C\uBA70, \uC2E0\uACE0\uAE30\uD55C\uC740 \uC720\uC0C1\uCDE8\uB4DD 60\uC77C\xB7\uC99D\uC5EC \uB4F1 \uBB34\uC0C1\uCDE8\uB4DD 3\uAC1C\uC6D4(\uCDE8\uB4DD\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130)\xB7\uC0C1\uC18D 6\uAC1C\uC6D4(\uC0C1\uC18D\uAC1C\uC2DC\uC77C\uC774 \uC18D\uD55C \uB2EC \uB9D0\uC77C\uBD80\uD130, \uC678\uAD6D \uAC70\uC8FC \uC0C1\uC18D\uC778\uC774 \uC788\uC73C\uBA74 9\uAC1C\uC6D4)\uC774\uACE0, \uAE30\uD55C \uB9D0\uC77C\uC774 \uACF5\uD734\uC77C\uC774\uBA74 \uADF8 \uB2E4\uC74C \uB0A0\uAE4C\uC9C0\uC785\uB2C8\uB2E4. \uC815\uD655\uD55C \uC2E0\uACE0\uB294 \uB2F4\uB2F9 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, marginTop: 12 } }, /* @__PURE__ */ React.createElement("a", { href: "#/report/acq-check" }, "\uC774\uBBF8 \uB0B8 \uCDE8\uB4DD\uC138\uB97C \uC810\uAC80\uBC1B\uACE0 \uC2F6\uB2E4\uBA74 \u2192 1\uCC28 \uC7AC\uAC80\uD1A0 \uC811\uC218(\uC11C\uB958 \uC5C6\uC774)")), /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         setRoute,
@@ -15333,7 +15759,10 @@ function JTReportAcquisition({ setRoute, onBack }) {
       }
     )));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCDE8\uB4DD \uC6D0\uC778\xB7\uC885\uB958\xB7\uAC00\uC561\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uCDE8\uB4DD\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uBA74\uC801\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC10\uBA74\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setBasisInputs(true) }, "\uCDE8\uB4DD\uC77C\xB7\uC2E0\uCD95 \uACFC\uC138\uD45C\uC900 \uD655\uC778 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-special-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("special") }, "\uBC95\uC778 \uC911\uACFC\xB7\uCE35\uBCC4 \uC548\uBD84\xB7\uACFC\uC810\uC8FC\uC8FC\xB7\uC815\uB960 \uAC10\uBA74 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exclusion-direct", onClick: () => setExtraMode("exclusion") }, "\uC8FC\uD0DD \uCDE8\uB4DD \uC911\uACFC\uC81C\uC678"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-penalty-direct", onClick: () => setExtraMode("penalty") }, "\uCDE8\uB4DD\uC138 \uBCF8\uC138 \uAC00\uC0B0\uC138"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-reviewed-direct", className: "jt-btn jt-btn--ghost", onClick: () => setReviewedDirect(true) }, "\uC9C0\uBAA9\uBCC0\uACBD \uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-building-direct", className: "jt-btn jt-btn--ghost", onClick: () => setBuildingDirect(true) }, "\uC99D\uCD95\xB7\uB300\uC218\uC120 \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-value-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("value") }, "\uC9C0\uBAA9\uBCC0\uACBD \uC0B0\uC815\uC561\xB7\uC644\uACF5\uC8FC\uD0DD \uC9C1\uC811\uB9E4\uC218 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-court-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("court") }, "\uBC95\uC6D0\uACBD\uB9E4 \uD1A0\uC9C0 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exchange-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("exchange") }, "\uD1A0\uC9C0 \uAD50\uD658 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-divorce-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("divorce") }, "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-burdened-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("burdened") }, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.qFor ? cur.qFor(answers) : cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+    inputSession.invalidate();
+    setStep(index);
+  } }, title: "\uCDE8\uB4DD\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCDE8\uB4DD \uC6D0\uC778\xB7\uC885\uB958\xB7\uAC00\uC561\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uCDE8\uB4DD\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uBA74\uC801\xB7\uC870\uC815\uC9C0\uC5ED\xB7\uAC10\uBA74\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setBasisInputs(true) }, "\uCDE8\uB4DD\uC77C\xB7\uC2E0\uCD95 \uACFC\uC138\uD45C\uC900 \uD655\uC778 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-special-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("special") }, "\uBC95\uC778 \uC911\uACFC\xB7\uCE35\uBCC4 \uC548\uBD84\xB7\uACFC\uC810\uC8FC\uC8FC\xB7\uC815\uB960 \uAC10\uBA74 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exclusion-direct", onClick: () => setExtraMode("exclusion") }, "\uC8FC\uD0DD \uCDE8\uB4DD \uC911\uACFC\uC81C\uC678"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-penalty-direct", onClick: () => setExtraMode("penalty") }, "\uCDE8\uB4DD\uC138 \uBCF8\uC138 \uAC00\uC0B0\uC138"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-reviewed-direct", className: "jt-btn jt-btn--ghost", onClick: () => setReviewedDirect(true) }, "\uC9C0\uBAA9\uBCC0\uACBD \uC2E4\uC81C \uC99D\uAC00\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-building-direct", className: "jt-btn jt-btn--ghost", onClick: () => setBuildingDirect(true) }, "\uC99D\uCD95\xB7\uB300\uC218\uC120 \uC2E4\uC81C \uADC0\uC18D\uAC00\uACA9 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-value-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("value") }, "\uC9C0\uBAA9\uBCC0\uACBD \uC0B0\uC815\uC561\xB7\uC644\uACF5\uC8FC\uD0DD \uC9C1\uC811\uB9E4\uC218 \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-court-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("court") }, "\uBC95\uC6D0\uACBD\uB9E4 \uD1A0\uC9C0 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-exchange-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("exchange") }, "\uD1A0\uC9C0 \uAD50\uD658 \uCDE8\uB4DD \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-divorce-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("divorce") }, "\uC774\uD63C \uC7AC\uC0B0\uBD84\uD560 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-acq-burdened-direct", className: "jt-btn jt-btn--ghost", onClick: () => setExtraMode("burdened") }, "\uBD80\uB2F4\uBD80\uC99D\uC5EC \uCDE8\uB4DD\uC138 \uC6D0\uC790\uB8CC \uACC4\uC0B0 \u2192"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.qFor ? cur.qFor(answers) : cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -15545,6 +15974,47 @@ const ACQ_SPECIAL_CHECKS = {
   majority_shareholder: [["history_complete_confirmed", "\uC124\uB9BD \uC774\uD6C4 \uACFC\uC810\uC8FC\uC8FC \uC774\uB825\uC744 \uBE60\uC9D0\uC5C6\uC774 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["fixed_group_confirmed", "\uC804\uD6C4 \uB3D9\uC77C\uD55C \uD2B9\uC218\uAD00\uACC4\uC778 \uC9D1\uB2E8\uC785\uB2C8\uB2E4"], ["voting_rights_exercised_confirmed", "\uC8FC\uC8FC\uAD8C \uD589\uC0AC \uB4F1 \uC2E4\uC9C8\uC801 \uAD8C\uB9AC \uC694\uAC74\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"], ["no_treasury_or_nonvoting_shares_confirmed", "\uC790\uAE30\uC8FC\uC2DD\xB7\uC758\uACB0\uAD8C \uC5C6\uB294 \uC8FC\uC2DD\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["unlisted_corporation_confirmed", "\uBE44\uC0C1\uC7A5\uBC95\uC778\uC785\uB2C8\uB2E4"], ["stock_acquisition_confirmed", "\uC2E4\uC81C \uC8FC\uC2DD \uCDE8\uB4DD \uC0AC\uAC74\uC785\uB2C8\uB2E4"]],
   reviewed_reduction: [["eligibility_confirmed", "\uAE30\uC900\uC77C\uC758 \uD574\uB2F9 \uC870\uBB38\xB7\uD56D\xB7\uD638 \uAC10\uBA74 \uC694\uAC74\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["no_heavy_or_special_rates_confirmed", "\uC911\uACFC\xB7\uD2B9\uB840\uC138\uC728\uACFC \uD63C\uD569\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4"], ["price_confirmed", "\uD3EC\uD568\xB7\uC81C\uC678 \uBE44\uC6A9\uC744 \uBC18\uC601\uD55C \uCDE8\uB4DD\uAC00\uACA9\uC785\uB2C8\uB2E4"], ["minimum_review_confirmed", "\uCD5C\uC18C\uB0A9\uBD80\xB7\uC81C\uC678 \uC870\uBB38\xB7\uBD80\uCE59\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["aggregation_complete_confirmed", "\uC5F0\uBD80\uCDE8\uB4DD\xB7\uB3D9\uC77C \uC18C\uC720\uC790\xB7\uC5F0\uC811 \uCDE8\uB4DD \uB4F1\uC758 \uD569\uC0B0 \uBC94\uC704\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4"]]
 };
+const ACQ_MAJORITY_HISTORY_CHECKS = [["history_complete_confirmed", "\uACFC\uC138 \uD310\uB2E8\uC5D0 \uD544\uC694\uD55C \uC804\uCCB4 \uBCC0\uB3D9 \uC774\uB825\uC744 \uC6D0\uC790\uB8CC\uC640 \uB300\uC870\uD588\uC2B5\uB2C8\uB2E4"], ["ordinary_shares_only_confirmed", "\uC77C\uBC18 \uBCF4\uD1B5\uC8FC\xB7\uC790\uAE30\uC8FC\uC2DD\uB9CC \uC788\uC73C\uBA70 \uB2E4\uB978 \uBB34\uC758\uACB0\uAD8C \uC885\uB958\uC8FC\uC2DD\xB7\uC0C1\uD638\uBCF4\uC720 \uC81C\uD55C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"], ["rights_reviewed_confirmed", "\uC2E4\uC81C \uC8FC\uC8FC\uAD8C\xB7\uC758\uACB0\uAD8C\uACFC \uD574\uB2F9 \uC9D1\uB2E8\uC744 \uAC80\uD1A0\uD588\uC2B5\uB2C8\uB2E4"], ["unlisted_corporation_confirmed", "\uBE44\uC0C1\uC7A5\uBC95\uC778\uC785\uB2C8\uB2E4"], ["no_other_concurrent_event_confirmed", "\uAC19\uC740 \uB0A0 \uB2E4\uB978 \uCDE8\uB4DD\xB7\uC18C\uAC01\xB7\uBA85\uC758\uD658\uC6D0 \uB4F1\uC774 \uC11E\uC5EC \uC788\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4"], ["assets_complete_confirmed", "\uC804\uCCB4 \uC77C\uBC18 \uACFC\uC138\uC7AC\uC0B0\uACFC \uC7A5\uBD80\uC21C\uAC00\uC561\uC744 \uB300\uC870\uD588\uC2B5\uB2C8\uB2E4"]];
+const ACQ_MAJORITY_EVENTS = [["transfer", "\uC8FC\uC2DD \uC591\uC218"], ["capital_increase", "\uC124\uB9BD \uD6C4 \uC99D\uC790"], ["group_internal_transfer", "\uB3D9\uC77C \uC9D1\uB2E8 \uB0B4\uBD80 \uC774\uC804"], ["formation_issuance", "\uBC95\uC778\uC124\uB9BD \uC2DC \uBC1C\uD589\uC8FC\uC2DD"], ["treasury_acquisition_only", "\uC9D1\uB2E8 \uCDE8\uB4DD \uC5C6\uB294 \uC790\uAE30\uC8FC\uC2DD \uB9E4\uC785"], ["treasury_cancellation_only", "\uC790\uAE30\uC8FC\uC2DD \uC18C\uAC01\uB9CC \uBC1C\uC0DD"], ["relationship_change_only", "\uC8FC\uC2DD\uC218 \uBCC0\uB3D9 \uC5C6\uB294 \uAD00\uACC4\uBCC0\uD654\uB9CC \uBC1C\uC0DD"]];
+function acquisitionSpecialChecks(d) {
+  return d.kind === "majority_shareholder" && d.majorityMode === "history" ? ACQ_MAJORITY_HISTORY_CHECKS : ACQ_SPECIAL_CHECKS[d.kind];
+}
+function acquisitionMajorityHistoryFacts(d, f, helpers) {
+  const { text, number, yesNo, pick } = helpers;
+  const iso = (value, label) => {
+    const v = text(value, label);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || !Number.isFinite(Date.parse(v)) || new Date(v).toISOString().slice(0, 10) !== v) throw Error(label + "\uC744 \uC2E4\uC81C \uB0A0\uC9DC\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    return v;
+  };
+  const event = pick(d.historyEvent, ACQ_MAJORITY_EVENTS.map((x) => x[0]), "\uC8FC\uC2DD \uC0AC\uAC74 \uC885\uB958");
+  Object.assign(f, {
+    schema_version: "acquisition-special/2",
+    event_type: event,
+    formation_date: iso(d.formationDate, "\uBC95\uC778\uC124\uB9BD\uC77C"),
+    total_shares_before: number(d.totalBefore, "\uC804 \uBC1C\uD589\uCD1D\uC218", true),
+    total_shares_after: number(d.totalAfter, "\uD6C4 \uBC1C\uD589\uCD1D\uC218"),
+    same_group_confirmed: yesNo(d.sameGroup, "\uC804\uD6C4 \uB3D9\uC77C \uC9D1\uB2E8 \uC5EC\uBD80"),
+    stock_acquisition_confirmed: yesNo(d.actualAcquisition, "\uC9D1\uB2E8\uC758 \uC2E4\uC81C \uC8FC\uC2DD\uCDE8\uB4DD \uC5EC\uBD80"),
+    group_review_evidence: text(d.groupEvidence, "\uD2B9\uC218\uAD00\uACC4\uC778 \uC9D1\uB2E8 \uAC80\uD1A0 \uC790\uB8CC\uBA85"),
+    shareholders: (d.shareholders || []).map((row) => ({
+      id: text(row.id, "\uC8FC\uC8FC \uC774\uB984"),
+      before_shares: number(row.before, "\uC804 \uC8FC\uC2DD\uC218", true),
+      after_shares: number(row.after, "\uD6C4 \uC8FC\uC2DD\uC218", true),
+      in_group_before: yesNo(row.inGroup, "\uC804 \uC9D1\uB2E8 \uC18C\uC18D"),
+      in_group_after: event === "relationship_change_only" ? yesNo(row.inGroupAfter, "\uD6C4 \uC9D1\uB2E8 \uC18C\uC18D") : yesNo(row.inGroup, "\uB3D9\uC77C \uC9D1\uB2E8 \uC18C\uC18D"),
+      is_treasury: yesNo(row.isTreasury, "\uBC1C\uD589\uBC95\uC778 \uC790\uAE30\uC8FC\uC2DD \uC5EC\uBD80"),
+      evidence: text(row.evidence, "\uC8FC\uC8FC\uBA85\uC138 \uADFC\uAC70")
+    })),
+    history: (d.majorityHistory || []).map((row) => ({
+      date: iso(row.date, "\uC774\uB825 \uAE30\uC900\uC77C"),
+      issued_shares: number(row.issued, "\uC774\uB825 \uBC1C\uD589\uCD1D\uC218"),
+      treasury_shares: number(row.treasury, "\uC774\uB825 \uC790\uAE30\uC8FC\uC2DD\uC218", true),
+      group_shares: number(row.group, "\uC774\uB825 \uC9D1\uB2E8 \uBCF4\uC720\uB7C9", true),
+      evidence: text(row.evidence, "\uC774\uB825 \uADFC\uAC70")
+    })),
+    assets: (d.assets || []).map((row) => ({ id: text(row.id, "\uACFC\uC138\uC7AC\uC0B0 \uC774\uB984"), property_type: pick(row.type, ["\uD1A0\uC9C0", "\uAC74\uBB3C"], "\uC7AC\uC0B0 \uC885\uB958"), net_book_value: number(row.value, "\uC7A5\uBD80\uC21C\uAC00\uC561", true), jurisdiction: text(row.region, "\uC7AC\uC0B0 \uC18C\uC7AC\uC9C0"), evidence: text(row.evidence, "\uC7A5\uBD80 \uADFC\uAC70") }))
+  });
+}
 function acquisitionSpecialRequest(d) {
   var _a, _b;
   const text = (v, label) => {
@@ -15587,7 +16057,7 @@ function acquisitionSpecialRequest(d) {
     scope_confirmed: check("scope_confirmed", "\uD574\uB2F9 \uACC4\uC0B0 \uBC94\uC704"),
     evidence: text(d.evidence, "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85")
   };
-  for (const [key, label] of ACQ_SPECIAL_CHECKS[kind]) f[key] = check(key, label);
+  for (const [key, label] of acquisitionSpecialChecks(d)) f[key] = check(key, label);
   const origin = () => pick(d.origin, ["\uC720\uC0C1\uCDE8\uB4DD", "\uC6D0\uC2DC\uCDE8\uB4DD"], "\uCDE8\uB4DD \uC6D0\uC778");
   const prop = () => pick(d.propertyType, ["\uD1A0\uC9C0", "\uAC74\uBB3C"], "\uBE44\uC8FC\uD0DD \uBB3C\uAC74 \uC885\uB958");
   if (kind === "corporate_heavy") Object.assign(f, {
@@ -15616,7 +16086,8 @@ function acquisitionSpecialRequest(d) {
     rural_base_evidence: text(d.ruralBaseEvidence, "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70"),
     rural_reduction_evidence: text(d.ruralReductionEvidence, "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70")
   });
-  if (kind === "majority_shareholder") {
+  if (kind === "majority_shareholder" && d.majorityMode === "history") acquisitionMajorityHistoryFacts(d, f, { text, number, yesNo, pick });
+  if (kind === "majority_shareholder" && d.majorityMode !== "history") {
     Object.assign(f, {
       total_shares_before: number(d.totalBefore, "\uCDE8\uB4DD \uC804 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218", true),
       total_shares_after: number(d.totalAfter, "\uCDE8\uB4DD \uD6C4 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218"),
@@ -15680,7 +16151,8 @@ function JTAcquisitionSpecialDirect({ onBack, initialDraft }) {
     shareholders: (initialDraft == null ? void 0 : initialDraft.shareholders) || [{}, {}],
     assets: (initialDraft == null ? void 0 : initialDraft.assets) || [{}],
     groups: (initialDraft == null ? void 0 : initialDraft.groups) || [{}],
-    floors: (initialDraft == null ? void 0 : initialDraft.floors) || [{}, {}]
+    floors: (initialDraft == null ? void 0 : initialDraft.floors) || [{}, {}],
+    majorityHistory: (initialDraft == null ? void 0 : initialDraft.majorityHistory) || []
   }));
   const [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
   const sequence = React.useRef(0), pending = React.useRef(null);
@@ -15756,7 +16228,7 @@ function JTAcquisitionSpecialDirect({ onBack, initialDraft }) {
     }
   }
   const origin = select("origin", "\uCDE8\uB4DD \uC6D0\uC778", [["\uC720\uC0C1\uCDE8\uB4DD", "\uC720\uC0C1\uCDE8\uB4DD"], ["\uC6D0\uC2DC\uCDE8\uB4DD", "\uC6D0\uC2DC\uCDE8\uB4DD"]]);
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uC138\uBD80 \uC0AC\uC2E4 \uACC4\uC0B0", subtitle: "\uAE30\uC900\uC77C\xB7\uACFC\uC138\uB2E8\uC704\xB7\uAC80\uD1A0 \uADFC\uAC70\uB97C \uD655\uC778\uD55C \uACC4\uC0B0", tag: "CONSULTING", onBack: () => onBack(__spreadProps(__spreadValues({}, d), { checks: {} })) }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 10\uC6D4 28\uC77C\uAE4C\uC9C0 \uD655\uC778\uD55C \uBC95\uB839 \uBC94\uC704\uC785\uB2C8\uB2E4. \uC790\uB8CC\uBA85\uC740 \uC785\uB825\uC790\uAC00 \uAC80\uD1A0\uD55C \uADFC\uAC70\uC774\uBA70, \uC790\uB3D9\uC73C\uB85C \uC778\uC99D\uD55C \uC790\uB8CC\uAC00 \uC544\uB2D9\uB2C8\uB2E4. \uBAA8\uB974\uB294 \uC0AC\uC2E4\uC740 \uD655\uC778 \uD6C4 \uC785\uB825\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("kind", "\uACC4\uC0B0 \uC885\uB958", ACQ_SPECIAL_KINDS), field("date", "\uC2E4\uC81C \uCDE8\uB4DD\uC77C", "date"), field("evidence", "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85")), ["corporate_heavy", "reviewed_reduction", "floor_allocation"].includes(d.kind) && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, field("value", "\uC804\uCCB4 \uCDE8\uB4DD\uAC00\uACA9 (\uC6D0)", "text", "\uC608: 100000000"), origin, d.kind !== "floor_allocation" && select("propertyType", "\uBE44\uC8FC\uD0DD \uBB3C\uAC74 \uC885\uB958", [["\uD1A0\uC9C0", "\uBE44\uB18D\uC9C0 \uD1A0\uC9C0"], ["\uAC74\uBB3C", "\uBE44\uC8FC\uD0DD \uAC74\uBB3C"]])), d.kind === "corporate_heavy" && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("capitalGround", "\uBCF8\uC810\xB7\uACF5\uC7A5 \uC911\uACFC \uC0AC\uC720", [["none", "\uD574\uB2F9 \uC5C6\uC74C"], ["head_office_new_or_extension", "\uBCF8\uC810\xB7\uC8FC\uC0AC\uBB34\uC18C \uC2E0\uC99D\uCD95"], ["factory_new_or_extension", "\uACF5\uC7A5 \uC2E0\uC99D\uC124"]]), select("metro", "\uB300\uB3C4\uC2DC \uBC95\uC778 \uC911\uACFC \uB300\uC0C1\uC778\uAC00\uC694?", yn), select("luxury", "\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC778\uAC00\uC694?", yn), field("groundEvidence", "\uAD8C\uC5ED\xB7\uC2DC\uAE30\xB7\uC2DC\uC124\xB7\uC5C5\uC885 \uC608\uC678 \uAC80\uD1A0 \uADFC\uAC70")), d.kind === "reviewed_reduction" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95\uC758 \uC815\uB960 \uAC10\uBA74\uC785\uB2C8\uB2E4. \uC5C6\uB294 \uAC00\uC9C0 \uC870\xB7\uD56D\xB7\uD638\uB294 0\uC744 \uC785\uB825\uD558\uACE0, \uCD5C\uC18C\uB0A9\uBD80 \uD569\uC0B0 \uBC94\uC704\uC640 \uB18D\uD2B9\uC138 \uB450 \uBD80\uBD84\uC744 \uAC01\uAC01 \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, [["article", "\uAC10\uBA74 \uC870 \uBC88\uD638"], ["branch", "\uAC00\uC9C0 \uC870 \uBC88\uD638"], ["paragraph", "\uD56D \uBC88\uD638"], ["item", "\uD638 \uBC88\uD638"], ["reliefPercent", "\uBC95\uC815 \uAC10\uBA74\uC728 (%)"], ["eligibilityDate", "\uAC10\uBA74 \uC790\uACA9 \uAE30\uC900\uC77C", "date"], ["eligibilityEvidence", "\uAC10\uBA74 \uC790\uACA9 \uAC80\uD1A0 \uADFC\uAC70"], ["minimumEvidence", "\uCD5C\uC18C\uB0A9\uBD80\xB7\uBD80\uCE59 \uAC80\uD1A0 \uADFC\uAC70"], ["aggregationTax", "\uD569\uC0B0 \uBC94\uC704 \uAC10\uBA74 \uC804 \uCDE8\uB4DD\uC138 (\uC6D0)"], ["aggregationEvidence", "\uBC95\uC815 \uD569\uC0B0 \uBC94\uC704 \uADFC\uAC70"], ["ruralBaseEvidence", "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70"], ["ruralReductionEvidence", "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70"]].map(([k, l, t]) => field(k, l, t || "text")), select("ruralBaseExempt", "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138\uAC00 \uBE44\uACFC\uC138\uC778\uAC00\uC694?", yn), select("ruralReductionExempt", "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138\uAC00 \uBE44\uACFC\uC138\uC778\uAC00\uC694?", yn))), d.kind === "majority_shareholder" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, field("totalBefore", "\uCDE8\uB4DD \uC804 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218"), field("totalAfter", "\uCDE8\uB4DD \uD6C4 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218"), select("hadPrior", "\uACFC\uAC70 \uACFC\uC810\uC8FC\uC8FC\uC600\uB358 \uC774\uB825\uC774 \uC788\uB098\uC694?", yn), select("route", "\uC8FC\uC2DD \uCDE8\uB4DD \uACBD\uB85C", [["transfer", "\uC8FC\uC2DD \uC591\uC218"], ["capital_increase", "\uC99D\uC790"], ["formation_issuance", "\uC124\uB9BD \uC2DC \uBC1C\uD589"]])), d.hadPrior === "yes" && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, [["highNumerator", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uBD84\uC790"], ["highDenominator", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uBD84\uBAA8"], ["highDate", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uAE30\uC900\uC77C", "date"], ["previousNumerator", "\uC7AC\uC9C4\uC785 \uC804 \uC885\uC804 \uACFC\uC810 \uC9C0\uBD84 \uBD84\uC790 (\uD574\uB2F9 \uC2DC)"], ["previousDenominator", "\uC7AC\uC9C4\uC785 \uC804 \uC885\uC804 \uACFC\uC810 \uC9C0\uBD84 \uBD84\uBAA8 (\uD574\uB2F9 \uC2DC)"]].map(([k, l, t]) => field(k, l, t || "text"))), rows("shareholders", "\uC804\uCCB4 \uC8FC\uC8FC\uBA85\uBD80", [["id", "\uC8FC\uC8FC \uC774\uB984"], ["before", "\uC804 \uC8FC\uC2DD\uC218", "number"], ["after", "\uD6C4 \uC8FC\uC2DD\uC218", "number"], ["inGroup", "\uB3D9\uC77C \uC9D1\uB2E8 \uD3EC\uD568", yn], ["evidence", "\uC8FC\uC8FC\uBA85\uBD80 \uADFC\uAC70"]]), rows("assets", "\uBC95\uC778 \uCDE8\uB4DD\uC138 \uB300\uC0C1 \uC7AC\uC0B0", [["id", "\uC7AC\uC0B0 \uC774\uB984"], ["type", "\uC7AC\uC0B0 \uC885\uB958", [["\uD1A0\uC9C0", "\uBE44\uB18D\uC9C0 \uD1A0\uC9C0"], ["\uAC74\uBB3C", "\uBE44\uC8FC\uD0DD \uAC74\uBB3C"]]], ["value", "\uC21C\uC7A5\uBD80\uAC00\uC561 (\uC6D0)", "number"], ["region", "\uC18C\uC7AC\uC9C0"], ["evidence", "\uC7A5\uBD80 \uADFC\uAC70"]])), d.kind === "floor_allocation" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uAC1C\uC778\uC758 \uBE44\uB18D\uC9C0\xB7\uC804\uCCB4 \uCDE8\uB4DD \uC911 \uC77C\uBC18 \uBE44\uC8FC\uD0DD\xB7\uC8FC\uD0DD\xB7\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC744 \uAD6C\uBD84\uD569\uB2C8\uB2E4. \uAC19\uC740 \uC8FC\uD0DD \uD55C \uD638\uC758 \uC5EC\uB7EC \uCE35\uC740 \uAC19\uC740 \uACFC\uC138 \uBB36\uC74C\uC5D0 \uB123\uC73C\uC138\uC694. \uC8FC\uD0DD \uAC10\uBA74\xB7\uBC95\uC778 \uC911\uACFC\uC640 \uD63C\uD569\uD55C \uBB36\uC74C\uC740 \uB2F4\uB2F9\uC790 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("basis", "\uCE35\uBCC4 \uC548\uBD84 \uAE30\uC900", [["separate_prices", "\uCE35\uBCC4\uB85C \uAD6C\uBD84\uB41C \uC2E4\uC81C\uAC00\uACA9"], ["standard_ratio", "\uC2DC\uAC00\uD45C\uC900\uC561 \uBE44\uC728"], ["area_ratio", "\uC2E0\uCD95 \uBA74\uC801 \uBE44\uC728"]]), field("allocationEvidence", "\uC548\uBD84 \uC6D0\uC790\uB8CC\xB7\uBC95\uC815 \uAE30\uC900 \uAC80\uD1A0 \uADFC\uAC70")), rows("groups", "\uACFC\uC138 \uBB36\uC74C", [["id", "\uBB36\uC74C \uC774\uB984"], ["use", "\uC6A9\uB3C4", [["nonhousing", "\uC77C\uBC18 \uBE44\uC8FC\uD0DD"], ["luxury", "\uC0AC\uCE58\uC131 \uBE44\uC8FC\uD0DD"], ["housing", "\uC8FC\uD0DD"]]], ["houses", "\uC8FC\uD0DD\uC774\uBA74 \uC138\uB300 \uC8FC\uD0DD\uC218", "number"], ["regulated", "\uC8FC\uD0DD\uC774\uBA74 \uC870\uC815\uC9C0\uC5ED", yn], ["area", "\uC8FC\uD0DD \uC804\uCCB4 \uC804\uC6A9\uBA74\uC801 (\u33A1)", "number"], ["evidence", "\uBB36\uC74C \uC804\uCCB4 \uBC94\uC704 \uADFC\uAC70"]]), rows("floors", "\uCE35\uBCC4 \uC6D0\uC790\uB8CC", [["id", "\uCE35 \uC774\uB984"], ["group", "\uACFC\uC138 \uBB36\uC74C \uC774\uB984"], ["weight", d.basis === "area_ratio" ? "\uCD1D\uBA74\uC801 (\u33A1)" : d.basis === "standard_ratio" ? "\uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0)" : "\uC2E4\uC81C\uAC00\uACA9 (\uC6D0)", "number"], ["evidence", "\uCE35\uBCC4 \uADFC\uAC70"]]), confirmation("floor_personal", "\uAC1C\uC778\xB7\uBE44\uB18D\uC9C0\xB7\uD2B9\uC218\uAD00\uACC4 \uBC0F \uC870\uB840 \uC138\uC728 \uBCC0\uB3D9 \uC5C6\uB294 \uC804\uCCB4 \uCDE8\uB4DD\uC785\uB2C8\uB2E4"), d.groups.map((row, i) => confirmation("group:" + row.id, "\uACFC\uC138 \uBB36\uC74C \u2018" + (row.id || i + 1) + "\u2019\uC758 \uC804\uCCB4 \uBC94\uC704\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4(\uB3D9\uC77C \uC8FC\uD0DD\xB7\uBD80\uC18D\uD1A0\uC9C0 \uD3EC\uD568)"))), /* @__PURE__ */ React.createElement("fieldset", null, /* @__PURE__ */ React.createElement("legend", null, "\uC801\uC6A9 \uBC94\uC704 \uD655\uC778"), confirmation("scope_confirmed", "\uD604\uC7AC \uC120\uD0DD\uD55C \uACC4\uC0B0 \uBC94\uC704\uC640 \uC0AC\uC2E4\uC774 \uC77C\uCE58\uD569\uB2C8\uB2E4"), ACQ_SPECIAL_CHECKS[d.kind].map(([k, l]) => confirmation(k, l))), /* @__PURE__ */ React.createElement("p", null, "\uAE08\uC561\xB7\uB0A0\uC9DC\xB7\uC6A9\uB3C4\xB7\uC6D0\uC790\uB8CC\uB97C \uBC14\uAFB8\uBA74 \uAE30\uC874 \uACB0\uACFC\uC640 \uD655\uC778 \uD45C\uC2DC\uAC00 \uD574\uC81C\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { type: "submit", className: "jt-btn jt-btn--primary", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uD655\uC778\uD55C \uC0AC\uC2E4\uB85C \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert", "data-testid": "acq-special-error" }, error), result && /* @__PURE__ */ React.createElement("section", { "aria-live": "polite", "data-testid": "acq-special-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uD655\uC778\uD55C \uC0AC\uC2E4\uC758 \uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("p", null, "\uACFC\uC138\uD45C\uC900 ", result["\uACFC\uC138\uD45C\uC900"].toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("dl", null, ["\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"].map((k) => /* @__PURE__ */ React.createElement(React.Fragment, { key: k }, /* @__PURE__ */ React.createElement("dt", null, k === "\uC138\uC561" ? "\uD569\uACC4" : k), /* @__PURE__ */ React.createElement("dd", null, result[k].toLocaleString("ko-KR"), "\uC6D0")))), (_a = result["\uACBD\uACE0\uC0AC\uD56D"]) == null ? void 0 : _a.map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i }, w)))));
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uCDE8\uB4DD\uC138 \uC138\uBD80 \uC0AC\uC2E4 \uACC4\uC0B0", subtitle: "\uAE30\uC900\uC77C\xB7\uACFC\uC138\uB2E8\uC704\xB7\uAC80\uD1A0 \uADFC\uAC70\uB97C \uD655\uC778\uD55C \uACC4\uC0B0", tag: "CONSULTING", onBack: () => onBack(__spreadProps(__spreadValues({}, d), { checks: {} })) }, /* @__PURE__ */ React.createElement("p", null, "2026\uB144 10\uC6D4 28\uC77C\uAE4C\uC9C0 \uD655\uC778\uD55C \uBC95\uB839 \uBC94\uC704\uC785\uB2C8\uB2E4. \uC790\uB8CC\uBA85\uC740 \uC785\uB825\uC790\uAC00 \uAC80\uD1A0\uD55C \uADFC\uAC70\uC774\uBA70, \uC790\uB3D9\uC73C\uB85C \uC778\uC99D\uD55C \uC790\uB8CC\uAC00 \uC544\uB2D9\uB2C8\uB2E4. \uBAA8\uB974\uB294 \uC0AC\uC2E4\uC740 \uD655\uC778 \uD6C4 \uC785\uB825\uD574 \uC8FC\uC138\uC694."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("kind", "\uACC4\uC0B0 \uC885\uB958", ACQ_SPECIAL_KINDS), field("date", "\uC2E4\uC81C \uCDE8\uB4DD\uC77C", "date"), field("evidence", "\uC804\uCCB4 \uAC80\uD1A0 \uC790\uB8CC\uBA85")), ["corporate_heavy", "reviewed_reduction", "floor_allocation"].includes(d.kind) && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, field("value", "\uC804\uCCB4 \uCDE8\uB4DD\uAC00\uACA9 (\uC6D0)", "text", "\uC608: 100000000"), origin, d.kind !== "floor_allocation" && select("propertyType", "\uBE44\uC8FC\uD0DD \uBB3C\uAC74 \uC885\uB958", [["\uD1A0\uC9C0", "\uBE44\uB18D\uC9C0 \uD1A0\uC9C0"], ["\uAC74\uBB3C", "\uBE44\uC8FC\uD0DD \uAC74\uBB3C"]])), d.kind === "corporate_heavy" && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("capitalGround", "\uBCF8\uC810\xB7\uACF5\uC7A5 \uC911\uACFC \uC0AC\uC720", [["none", "\uD574\uB2F9 \uC5C6\uC74C"], ["head_office_new_or_extension", "\uBCF8\uC810\xB7\uC8FC\uC0AC\uBB34\uC18C \uC2E0\uC99D\uCD95"], ["factory_new_or_extension", "\uACF5\uC7A5 \uC2E0\uC99D\uC124"]]), select("metro", "\uB300\uB3C4\uC2DC \uBC95\uC778 \uC911\uACFC \uB300\uC0C1\uC778\uAC00\uC694?", yn), select("luxury", "\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC778\uAC00\uC694?", yn), field("groundEvidence", "\uAD8C\uC5ED\xB7\uC2DC\uAE30\xB7\uC2DC\uC124\xB7\uC5C5\uC885 \uC608\uC678 \uAC80\uD1A0 \uADFC\uAC70")), d.kind === "reviewed_reduction" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC9C0\uBC29\uC138\uD2B9\uB840\uC81C\uD55C\uBC95\uC758 \uC815\uB960 \uAC10\uBA74\uC785\uB2C8\uB2E4. \uC5C6\uB294 \uAC00\uC9C0 \uC870\xB7\uD56D\xB7\uD638\uB294 0\uC744 \uC785\uB825\uD558\uACE0, \uCD5C\uC18C\uB0A9\uBD80 \uD569\uC0B0 \uBC94\uC704\uC640 \uB18D\uD2B9\uC138 \uB450 \uBD80\uBD84\uC744 \uAC01\uAC01 \uD655\uC778\uD558\uC138\uC694."), /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, [["article", "\uAC10\uBA74 \uC870 \uBC88\uD638"], ["branch", "\uAC00\uC9C0 \uC870 \uBC88\uD638"], ["paragraph", "\uD56D \uBC88\uD638"], ["item", "\uD638 \uBC88\uD638"], ["reliefPercent", "\uBC95\uC815 \uAC10\uBA74\uC728 (%)"], ["eligibilityDate", "\uAC10\uBA74 \uC790\uACA9 \uAE30\uC900\uC77C", "date"], ["eligibilityEvidence", "\uAC10\uBA74 \uC790\uACA9 \uAC80\uD1A0 \uADFC\uAC70"], ["minimumEvidence", "\uCD5C\uC18C\uB0A9\uBD80\xB7\uBD80\uCE59 \uAC80\uD1A0 \uADFC\uAC70"], ["aggregationTax", "\uD569\uC0B0 \uBC94\uC704 \uAC10\uBA74 \uC804 \uCDE8\uB4DD\uC138 (\uC6D0)"], ["aggregationEvidence", "\uBC95\uC815 \uD569\uC0B0 \uBC94\uC704 \uADFC\uAC70"], ["ruralBaseEvidence", "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70"], ["ruralReductionEvidence", "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138 \uADFC\uAC70"]].map(([k, l, t]) => field(k, l, t || "text")), select("ruralBaseExempt", "\uBCF8\uC138\uBD84 \uB18D\uD2B9\uC138\uAC00 \uBE44\uACFC\uC138\uC778\uAC00\uC694?", yn), select("ruralReductionExempt", "\uAC10\uBA74\uBD84 \uB18D\uD2B9\uC138\uAC00 \uBE44\uACFC\uC138\uC778\uAC00\uC694?", yn))), d.kind === "majority_shareholder" && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, /* @__PURE__ */ React.createElement("label", { className: "jt-special-field" }, "\uACC4\uC0B0 \uBC29\uC2DD", /* @__PURE__ */ React.createElement("select", { "data-testid": "acq-special-majorityMode", value: d.majorityMode || "legacy", onChange: (e) => edit("majorityMode", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "legacy" }, "\uAE30\uBCF8 \uC804\uD6C4 \uBA85\uC138"), /* @__PURE__ */ React.createElement("option", { value: "history" }, "\uC804\uCCB4 \uBCC0\uB3D9 \uC774\uB825\xB7\uC790\uAE30\uC8FC\uC2DD \uC608\uC678")))), d.kind === "majority_shareholder" && d.majorityMode !== "history" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, field("totalBefore", "\uCDE8\uB4DD \uC804 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218"), field("totalAfter", "\uCDE8\uB4DD \uD6C4 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218"), select("hadPrior", "\uACFC\uAC70 \uACFC\uC810\uC8FC\uC8FC\uC600\uB358 \uC774\uB825\uC774 \uC788\uB098\uC694?", yn), select("route", "\uC8FC\uC2DD \uCDE8\uB4DD \uACBD\uB85C", [["transfer", "\uC8FC\uC2DD \uC591\uC218"], ["capital_increase", "\uC99D\uC790"], ["formation_issuance", "\uC124\uB9BD \uC2DC \uBC1C\uD589"]])), d.hadPrior === "yes" && /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, [["highNumerator", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uBD84\uC790"], ["highDenominator", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uBD84\uBAA8"], ["highDate", "\uACFC\uAC70 \uCD5C\uACE0 \uC9C0\uBD84 \uAE30\uC900\uC77C", "date"], ["previousNumerator", "\uC7AC\uC9C4\uC785 \uC804 \uC885\uC804 \uACFC\uC810 \uC9C0\uBD84 \uBD84\uC790 (\uD574\uB2F9 \uC2DC)"], ["previousDenominator", "\uC7AC\uC9C4\uC785 \uC804 \uC885\uC804 \uACFC\uC810 \uC9C0\uBD84 \uBD84\uBAA8 (\uD574\uB2F9 \uC2DC)"]].map(([k, l, t]) => field(k, l, t || "text"))), rows("shareholders", "\uC804\uCCB4 \uC8FC\uC8FC\uBA85\uBD80", [["id", "\uC8FC\uC8FC \uC774\uB984"], ["before", "\uC804 \uC8FC\uC2DD\uC218", "number"], ["after", "\uD6C4 \uC8FC\uC2DD\uC218", "number"], ["inGroup", "\uB3D9\uC77C \uC9D1\uB2E8 \uD3EC\uD568", yn], ["evidence", "\uC8FC\uC8FC\uBA85\uBD80 \uADFC\uAC70"]]), rows("assets", "\uBC95\uC778 \uCDE8\uB4DD\uC138 \uB300\uC0C1 \uC7AC\uC0B0", [["id", "\uC7AC\uC0B0 \uC774\uB984"], ["type", "\uC7AC\uC0B0 \uC885\uB958", [["\uD1A0\uC9C0", "\uBE44\uB18D\uC9C0 \uD1A0\uC9C0"], ["\uAC74\uBB3C", "\uBE44\uC8FC\uD0DD \uAC74\uBB3C"]]], ["value", "\uC21C\uC7A5\uBD80\uAC00\uC561 (\uC6D0)", "number"], ["region", "\uC18C\uC7AC\uC9C0"], ["evidence", "\uC7A5\uBD80 \uADFC\uAC70"]])), d.kind === "floor_allocation" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uAC1C\uC778\uC758 \uBE44\uB18D\uC9C0\xB7\uC804\uCCB4 \uCDE8\uB4DD \uC911 \uC77C\uBC18 \uBE44\uC8FC\uD0DD\xB7\uC8FC\uD0DD\xB7\uC0AC\uCE58\uC131 \uC7AC\uC0B0\uC744 \uAD6C\uBD84\uD569\uB2C8\uB2E4. \uAC19\uC740 \uC8FC\uD0DD \uD55C \uD638\uC758 \uC5EC\uB7EC \uCE35\uC740 \uAC19\uC740 \uACFC\uC138 \uBB36\uC74C\uC5D0 \uB123\uC73C\uC138\uC694. \uC8FC\uD0DD \uAC10\uBA74\xB7\uBC95\uC778 \uC911\uACFC\uC640 \uD63C\uD569\uD55C \uBB36\uC74C\uC740 \uB2F4\uB2F9\uC790 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("basis", "\uCE35\uBCC4 \uC548\uBD84 \uAE30\uC900", [["separate_prices", "\uCE35\uBCC4\uB85C \uAD6C\uBD84\uB41C \uC2E4\uC81C\uAC00\uACA9"], ["standard_ratio", "\uC2DC\uAC00\uD45C\uC900\uC561 \uBE44\uC728"], ["area_ratio", "\uC2E0\uCD95 \uBA74\uC801 \uBE44\uC728"]]), field("allocationEvidence", "\uC548\uBD84 \uC6D0\uC790\uB8CC\xB7\uBC95\uC815 \uAE30\uC900 \uAC80\uD1A0 \uADFC\uAC70")), rows("groups", "\uACFC\uC138 \uBB36\uC74C", [["id", "\uBB36\uC74C \uC774\uB984"], ["use", "\uC6A9\uB3C4", [["nonhousing", "\uC77C\uBC18 \uBE44\uC8FC\uD0DD"], ["luxury", "\uC0AC\uCE58\uC131 \uBE44\uC8FC\uD0DD"], ["housing", "\uC8FC\uD0DD"]]], ["houses", "\uC8FC\uD0DD\uC774\uBA74 \uC138\uB300 \uC8FC\uD0DD\uC218", "number"], ["regulated", "\uC8FC\uD0DD\uC774\uBA74 \uC870\uC815\uC9C0\uC5ED", yn], ["area", "\uC8FC\uD0DD \uC804\uCCB4 \uC804\uC6A9\uBA74\uC801 (\u33A1)", "number"], ["evidence", "\uBB36\uC74C \uC804\uCCB4 \uBC94\uC704 \uADFC\uAC70"]]), rows("floors", "\uCE35\uBCC4 \uC6D0\uC790\uB8CC", [["id", "\uCE35 \uC774\uB984"], ["group", "\uACFC\uC138 \uBB36\uC74C \uC774\uB984"], ["weight", d.basis === "area_ratio" ? "\uCD1D\uBA74\uC801 (\u33A1)" : d.basis === "standard_ratio" ? "\uC2DC\uAC00\uD45C\uC900\uC561 (\uC6D0)" : "\uC2E4\uC81C\uAC00\uACA9 (\uC6D0)", "number"], ["evidence", "\uCE35\uBCC4 \uADFC\uAC70"]]), confirmation("floor_personal", "\uAC1C\uC778\xB7\uBE44\uB18D\uC9C0\xB7\uD2B9\uC218\uAD00\uACC4 \uBC0F \uC870\uB840 \uC138\uC728 \uBCC0\uB3D9 \uC5C6\uB294 \uC804\uCCB4 \uCDE8\uB4DD\uC785\uB2C8\uB2E4"), d.groups.map((row, i) => confirmation("group:" + row.id, "\uACFC\uC138 \uBB36\uC74C \u2018" + (row.id || i + 1) + "\u2019\uC758 \uC804\uCCB4 \uBC94\uC704\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4(\uB3D9\uC77C \uC8FC\uD0DD\xB7\uBD80\uC18D\uD1A0\uC9C0 \uD3EC\uD568)"))), d.kind === "majority_shareholder" && d.majorityMode === "history" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "\uC9D1\uB2E8 \uC804\uCCB4 \uC8FC\uC8FC\uC9C0\uC704\uAC000\uC774 \uB41C \uACBD\uC6B0\uC640 \uAC1C\uC778\uB9CC \uC774\uD0C8\uD55C \uACBD\uC6B0\uB97C \uAD6C\uBCC4\uD569\uB2C8\uB2E4. \uC124\uB9BD\uC77C\uBD80\uD130 \uC0AC\uAC74 \uC804\uC77C\uAE4C\uC9C0 \uC774\uB825\uC744 \uB0A0\uC9DC\uC21C\uC73C\uB85C \uB123\uC5B4 \uC8FC\uC138\uC694. \uC8FC\uC2DD\uCDE8\uB4DD \uC5C6\uB294 \uB2E8\uB3C5 \uC0AC\uAC74\uC740 \uD604\uC7AC \uC804\uD6C4 \uBA85\uC138\uB85C \uD310\uB2E8\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { className: "jt-special-grid" }, select("historyEvent", "\uD604\uC7AC \uC0AC\uAC74 \uC885\uB958", ACQ_MAJORITY_EVENTS), field("formationDate", "\uBC95\uC778\uC124\uB9BD\uC77C", "date"), field("totalBefore", "\uC804 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218 (\uC790\uAE30\uC8FC\uC2DD \uD3EC\uD568)", "number"), field("totalAfter", "\uD6C4 \uBC1C\uD589\uC8FC\uC2DD\uCD1D\uC218 (\uC790\uAE30\uC8FC\uC2DD \uD3EC\uD568)", "number"), select("sameGroup", "\uC804\uD6C4 \uB3D9\uC77C \uD2B9\uC218\uAD00\uACC4\uC778 \uC9D1\uB2E8", yn), select("actualAcquisition", "\uC9D1\uB2E8\uC758 \uC2E4\uC81C \uC8FC\uC2DD\uCDE8\uB4DD\uC774 \uC788\uC2B5\uB2C8\uAE4C?", yn), field("groupEvidence", "\uC9D1\uB2E8\xB7\uAD8C\uB9AC \uAC80\uD1A0 \uC790\uB8CC\uBA85")), rows("shareholders", "\uC804\uCCB4 \uC8FC\uC8FC\uBA85\uC138 (\uBC1C\uD589\uBC95\uC778 \uC790\uAE30\uC8FC\uC2DD\uC740 \uBCC4\uB3C4 \uD589)", [["id", "\uC8FC\uC8FC \uC774\uB984"], ["before", "\uC804 \uBCF4\uD1B5\uC8FC \uC218", "number"], ["after", "\uD6C4 \uBCF4\uD1B5\uC8FC \uC218", "number"], ["inGroup", "\uC804 \uC9D1\uB2E8 \uC18C\uC18D", yn], ...d.historyEvent === "relationship_change_only" ? [["inGroupAfter", "\uD6C4 \uC9D1\uB2E8 \uC18C\uC18D", yn]] : [], ["isTreasury", "\uBC1C\uD589\uBC95\uC778 \uC790\uAE30\uC8FC\uC2DD", yn], ["evidence", "\uC8FC\uC8FC\uBA85\uC138 \uADFC\uAC70"]]), rows("majorityHistory", "\uC124\uB9BD\uBD80\uD130 \uC0AC\uAC74 \uC9C1\uC804\uAE4C\uC9C0 \uC804\uCCB4 \uBCC0\uB3D9 \uC774\uB825", [["date", "\uC774\uB825 \uAE30\uC900\uC77C", "date"], ["issued", "\uC804\uCCB4 \uBC1C\uD589\uCD1D\uC218", "number"], ["treasury", "\uC790\uAE30\uC8FC\uC2DD\uC218 (\uC5C6\uC73C\uBA740)", "number"], ["group", "\uC9D1\uB2E8 \uBCF4\uC720\uC8FC\uC2DD\uC218 (\uC5C6\uC73C\uBA740)", "number"], ["evidence", "\uC774\uB825 \uADFC\uAC70"]]), rows("assets", "\uC77C\uBC18 \uACFC\uC138\uC7AC\uC0B0 \uC804\uCCB4 \uC7A5\uBD80", [["id", "\uC7AC\uC0B0 \uC774\uB984"], ["type", "\uC885\uB958", "select", [["\uD1A0\uC9C0", "\uC77C\uBC18 \uBE44\uB18D\uC9C0 \uD1A0\uC9C0"], ["\uAC74\uBB3C", "\uC77C\uBC18 \uBE44\uC8FC\uD0DD \uAC74\uBB3C"]]], ["value", "\uC7A5\uBD80\uC21C\uAC00\uC561 (\uC6D0)", "number"], ["region", "\uC7AC\uC0B0 \uC18C\uC7AC\uC9C0"], ["evidence", "\uC7A5\uBD80 \uADFC\uAC70"]])), /* @__PURE__ */ React.createElement("fieldset", null, /* @__PURE__ */ React.createElement("legend", null, "\uC801\uC6A9 \uBC94\uC704 \uD655\uC778"), confirmation("scope_confirmed", "\uD604\uC7AC \uC120\uD0DD\uD55C \uACC4\uC0B0 \uBC94\uC704\uC640 \uC0AC\uC2E4\uC774 \uC77C\uCE58\uD569\uB2C8\uB2E4"), acquisitionSpecialChecks(d).map(([k, l]) => confirmation(k, l))), /* @__PURE__ */ React.createElement("p", null, "\uAE08\uC561\xB7\uB0A0\uC9DC\xB7\uC6A9\uB3C4\xB7\uC6D0\uC790\uB8CC\uB97C \uBC14\uAFB8\uBA74 \uAE30\uC874 \uACB0\uACFC\uC640 \uD655\uC778 \uD45C\uC2DC\uAC00 \uD574\uC81C\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { type: "submit", className: "jt-btn jt-btn--primary", disabled: busy }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uD655\uC778\uD55C \uC0AC\uC2E4\uB85C \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert", "data-testid": "acq-special-error" }, error), result && /* @__PURE__ */ React.createElement("section", { "aria-live": "polite", "data-testid": "acq-special-result" }, /* @__PURE__ */ React.createElement("h3", null, "\uD655\uC778\uD55C \uC0AC\uC2E4\uC758 \uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("p", null, "\uACFC\uC138\uD45C\uC900 ", result["\uACFC\uC138\uD45C\uC900"].toLocaleString("ko-KR"), "\uC6D0"), /* @__PURE__ */ React.createElement("dl", null, ["\uCDE8\uB4DD\uC138", "\uC9C0\uBC29\uAD50\uC721\uC138", "\uB18D\uC5B4\uCD0C\uD2B9\uBCC4\uC138", "\uC138\uC561"].map((k) => /* @__PURE__ */ React.createElement(React.Fragment, { key: k }, /* @__PURE__ */ React.createElement("dt", null, k === "\uC138\uC561" ? "\uD569\uACC4" : k), /* @__PURE__ */ React.createElement("dd", null, result[k].toLocaleString("ko-KR"), "\uC6D0")))), (_a = result["\uACBD\uACE0\uC0AC\uD56D"]) == null ? void 0 : _a.map((w, i) => /* @__PURE__ */ React.createElement("p", { key: i }, w)))));
 }
 window.JTAcquisitionSpecialDirect = JTAcquisitionSpecialDirect;
 
@@ -17262,12 +17734,26 @@ if (typeof window !== "undefined" && !window.JTUnitAsk) {
 }
 function JTReportProperty({ setRoute, onBack }) {
   const [step, setStep] = usePropState(0);
-  const [answers, setAnswers] = usePropState({});
-  const [loading, setLoading] = usePropState(false);
-  const [report, setReport] = usePropState(null);
-  const [err, setErr] = usePropState(null);
+  const [answers, rawSetAnswers] = usePropState({});
+  const [loading, rawSetLoading] = usePropState(false);
+  const [report, rawSetReport] = usePropState(null);
+  const [err, rawSetErr] = usePropState(null);
   const [phase, setPhase] = usePropState("quick");
-  const [quickReport, setQuickReport] = usePropState(null);
+  const [quickReport, rawSetQuickReport] = usePropState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+    rawSetQuickReport(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
+  const setQuickReport = rawSetQuickReport;
   const [laddr, setLaddr] = usePropState("");
   const [lbusy, setLbusy] = usePropState(false);
   const [linfo, setLinfo] = usePropState(null);
@@ -17399,13 +17885,19 @@ function JTReportProperty({ setRoute, onBack }) {
     }
   };
   const runAnalysis = async () => {
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    const setQuickReport2 = inputSession.sink(inputRequest, rawSetQuickReport);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       if (propFallbackGaps(answers, { precise: true }).length > 0) {
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === "quick" };
-        setReport(unknownRep);
-        if (phase === "quick") setQuickReport(unknownRep);
+        setReport2(unknownRep);
+        if (phase === "quick") setQuickReport2(unknownRep);
         return;
       }
       let calc;
@@ -17422,14 +17914,14 @@ function JTReportProperty({ setRoute, onBack }) {
       }
       if (propFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === "quick" };
-        setReport(blockedRep);
-        if (phase === "quick") setQuickReport(blockedRep);
+        setReport2(blockedRep);
+        if (phase === "quick") setQuickReport2(blockedRep);
         return;
       }
       if (answers.ownerType === "corporate") {
         const rep2 = { calc, commentary: { headline: "\uD655\uC778\uD55C \uBC95\uC778 \uC720\uD615\uACFC \uC785\uB825 \uC0AC\uC2E4\uC5D0 \uB530\uB978 \uACC4\uC0B0\uC785\uB2C8\uB2E4.", cautions: [], saving_ideas: [], followup: ["\uC8FC\uD0DD\uBCC4 \uACF5\uC2DC\uAC00\uACA9", "\uBC95\uC778 \uC720\uD615 \uD655\uC778 \uC790\uB8CC", "\uC804\uB144\uB3C4 \uACE0\uC9C0\uC11C"] }, quick: phase === "quick" };
-        setReport(rep2);
-        if (phase === "quick") setQuickReport(rep2);
+        setReport2(rep2);
+        if (phase === "quick") setQuickReport2(rep2);
         return;
       }
       let commentary;
@@ -17455,13 +17947,13 @@ function JTReportProperty({ setRoute, onBack }) {
         };
       }
       const rep = { calc, commentary, quick: phase === "quick" };
-      setReport(rep);
-      if (phase === "quick") setQuickReport(rep);
+      setReport2(rep);
+      if (phase === "quick") setQuickReport2(rep);
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
   const goDetail = () => {
@@ -17487,7 +17979,10 @@ function JTReportProperty({ setRoute, onBack }) {
     onBack();
   };
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
@@ -17497,14 +17992,20 @@ function JTReportProperty({ setRoute, onBack }) {
     if (propBlocked) {
       const propBlockReason = propFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "refused" ? "refused" : "down";
       const propBlockTag = propBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : propBlockReason === "refused" ? "\uC785\uB825\uC774 \uB354 \uD544\uC694\uD569\uB2C8\uB2E4" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328";
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: propBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: propBlockReason === "down" ? [] : propGaps, onRetry: runAnalysis, reason: propBlockReason }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+        inputSession.invalidate();
+        setStep(index);
+      } }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: propBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: propBlockReason === "down" ? [] : propGaps, onRetry: runAnalysis, reason: propBlockReason }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setPhase("quick");
         setStep(0);
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC7AC\uC0B0\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC7AC\uC0B0\uC138(\uC5F0\uAC04 \uCD1D\uC561)" : "\uC7AC\uC0B0\uC138\xB7\uBD80\uAC00\uC138\uBAA9 \uACC4\uC0B0 \uC18C\uACC4 (\uC9C0\uC6D0 \uBC94\uC704 \uD655\uC778 \uD544\uC694)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.appliedRate && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, opacity: 0.8 } }, answers.propertyKind, " \xB7 \uACF5\uC2DC\uAC00\uACA9 ", formatWon(Number(answers.standardValue) || 0), " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", calc.appliedRate, "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uB354 \uC815\uD655\uD788 \uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694. ", /* @__PURE__ */ React.createElement("strong", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84(0.14%)\uC740 \u300C\uB3C4\uC2DC\uC9C0\uC5ED\u300D\uC73C\uB85C \uAC00\uC815\uD574 \uC774\uBBF8 \uD3EC\uD568"), "\uD588\uC73C\uB2C8, \uBE44\uB3C4\uC2DC\uC9C0\uC5ED\uC774\uBA74 \uADF8\uB9CC\uD07C \uC904\uC5B4\uB4ED\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("br", null), answers.propertyKind === "\uC8FC\uD0DD" ? "\uC5EC\uB7EC \uCC44 \uD569\uC0B0 \uB4F1. 1\uC138\uB3001\uC8FC\uD0DD\uC774\uBA74 \uB0AE\uC740 \uACF5\uC815\uBE44\uC728(43~45%)\uC774 \uBC18\uC601\uB410\uC5B4\uC694 \u2014 \uACF5\uC2DC 9\uC5B5 \uC774\uD558\uBA74 \uC138\uC728 \uD2B9\uB840\uAE4C\uC9C0, 9\uC5B5 \uCD08\uACFC\uBA74 \uACF5\uC815\uBE44\uC728\uB9CC \uC801\uC6A9\uB429\uB2C8\uB2E4." : answers.propertyKind === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0 \uC885\uB958(\uC885\uD569/\uBCC4\uB3C4/\uBD84\uB9AC)\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)." : "\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900 (\uACF5\uC2DC\uAC00\uACA9 \xD7 \uACF5\uC815\uBE44\uC728 ", calc.fairRatio, ")"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728"), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7AC\uC0B0\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.mainTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138 (\uBCF8\uC138\uC758 20%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.urbanTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] ? "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uC138\uBD80\uB2F4 \uC0C1\uD55C \uC801\uC6A9 \uD6C4)" : "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uACFC\uD45C \xD7 0.14%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.urbanTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uC5F0\uAC04 \uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), (calc.firstHalf > 0 || calc.secondHalf > 0) && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uB0A9\uBD80 \uC2DC\uAE30:"), " ", calc.firstHalf > 0 && calc.secondHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} + 9\uC6D4 ${formatWon(calc.secondHalf)} (\uC808\uBC18\uC529 \uB098\uB220 \uB0A9\uBD80)` : calc.firstHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} (\uC804\uC561)` : `9\uC6D4 ${formatWon(calc.secondHalf)} (\uC804\uC561)`, " ", /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, "(\uC9C0\uBC29\uC138\uBC95 \xA7115)")), calc.baseCap && calc.baseCap["\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900\uC0C1\uD55C\uC561 \uC801\uC6A9(\xA7110\u2462):"), " \uACF5\uC2DC\uAC00\uACA9 \xD7 \uBE44\uC728 ", formatWon(calc.baseCap["\uC0C1\uD55C\uC804\uACFC\uC138\uD45C\uC900"]), " \u2192 \uC0C1\uD55C ", formatWon(calc.baseCap["\uC0C1\uD55C\uC561"])), calc.burdenApplied && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC138\uBD80\uB2F4 \uC0C1\uD55C\uC774 \uC801\uC6A9\uB418\uC5B4, \uC804\uB144 \uB300\uBE44 \uC77C\uC815 \uD55C\uB3C4\uAE4C\uC9C0\uB9CC \uC62C\uB790\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7122).", calc.burden && typeof calc.burden["\uADFC\uAC70"] === "string" && calc.burden["\uADFC\uAC70"] && /* @__PURE__ */ React.createElement("div", null, "\uADFC\uAC70: ", calc.burden["\uADFC\uAC70"], typeof calc.burden["\uC0C1\uD55C\uC728"] === "string" && calc.burden["\uC0C1\uD55C\uC728"] ? ` \xB7 \uC0C1\uD55C\uC728 ${calc.burden["\uC0C1\uD55C\uC728"]}` : ""), calc.burden && calc.burden["\uBCF8\uC138\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uBCF8\uC138 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uBCF8\uC138"]), " \u2192 ", formatWon(calc.mainTax)), calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uB3C4\uC2DC\uC9C0\uC5ED\uBD84"]), " \u2192 ", formatWon(calc.urbanTax))), calc.smallExempt && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, "2\uCC9C\uC6D0 \uBBF8\uB9CC\uC774\uB77C \uC9D5\uC218\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\xA7119)")), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${propFmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, propFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 } }, "\uC7AC\uC0B0\uC138\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uB9E4\uB144 6\uC6D4 1\uC77C \uAE30\uC900 \uC18C\uC720\uC790"), "\uC5D0\uAC8C \uADF8 \uD574 \uC804\uC561 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7114). 6\uC6D4 1\uC77C \uC9C1\uC804 \uB9E4\uB3C4\xB7\uC9C1\uD6C4 \uB9E4\uC218\uAC00 \uADF8 \uD574 \uC7AC\uC0B0\uC138 \uBD80\uB2F4 \uBA74\uC5D0\uC11C \uC720\uB9AC\uD569\uB2C8\uB2E4. \uACF5\uC2DC\uAC00\uACA9\uC740 \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), commentary && commentary.headline && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC790\uB3D9 \uBD84\uC11D"), /* @__PURE__ */ React.createElement("p", { style: { fontWeight: 600 } }, commentary.headline), (commentary.cautions || []).map((c, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { marginBottom: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\xB7 ", c.title), " \u2014 ", c.detail))), typeof JTReportConvert === "function" && !propBlocked && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC7AC\uC0B0\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC7AC\uC0B0\uC138(\uC5F0\uAC04 \uCD1D\uC561)" : "\uC7AC\uC0B0\uC138\xB7\uBD80\uAC00\uC138\uBAA9 \uACC4\uC0B0 \uC18C\uACC4 (\uC9C0\uC6D0 \uBC94\uC704 \uD655\uC778 \uD544\uC694)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.appliedRate && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, opacity: 0.8 } }, answers.propertyKind, " \xB7 \uACF5\uC2DC\uAC00\uACA9 ", formatWon(Number(answers.standardValue) || 0), " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", calc.appliedRate, "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uB354 \uC815\uD655\uD788 \uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694. ", /* @__PURE__ */ React.createElement("strong", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84(0.14%)\uC740 \u300C\uB3C4\uC2DC\uC9C0\uC5ED\u300D\uC73C\uB85C \uAC00\uC815\uD574 \uC774\uBBF8 \uD3EC\uD568"), "\uD588\uC73C\uB2C8, \uBE44\uB3C4\uC2DC\uC9C0\uC5ED\uC774\uBA74 \uADF8\uB9CC\uD07C \uC904\uC5B4\uB4ED\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("br", null), answers.propertyKind === "\uC8FC\uD0DD" ? "\uC5EC\uB7EC \uCC44 \uD569\uC0B0 \uB4F1. 1\uC138\uB3001\uC8FC\uD0DD\uC774\uBA74 \uB0AE\uC740 \uACF5\uC815\uBE44\uC728(43~45%)\uC774 \uBC18\uC601\uB410\uC5B4\uC694 \u2014 \uACF5\uC2DC 9\uC5B5 \uC774\uD558\uBA74 \uC138\uC728 \uD2B9\uB840\uAE4C\uC9C0, 9\uC5B5 \uCD08\uACFC\uBA74 \uACF5\uC815\uBE44\uC728\uB9CC \uC801\uC6A9\uB429\uB2C8\uB2E4." : answers.propertyKind === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0 \uC885\uB958(\uC885\uD569/\uBCC4\uB3C4/\uBD84\uB9AC)\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)." : "\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900 (\uACF5\uC2DC\uAC00\uACA9 \xD7 \uACF5\uC815\uBE44\uC728 ", calc.fairRatio, ")"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728"), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7AC\uC0B0\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.mainTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138 (\uBCF8\uC138\uC758 20%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.urbanTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] ? "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uC138\uBD80\uB2F4 \uC0C1\uD55C \uC801\uC6A9 \uD6C4)" : "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uACFC\uD45C \xD7 0.14%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.urbanTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uC5F0\uAC04 \uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), (calc.firstHalf > 0 || calc.secondHalf > 0) && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uB0A9\uBD80 \uC2DC\uAE30:"), " ", calc.firstHalf > 0 && calc.secondHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} + 9\uC6D4 ${formatWon(calc.secondHalf)} (\uC808\uBC18\uC529 \uB098\uB220 \uB0A9\uBD80)` : calc.firstHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} (\uC804\uC561)` : `9\uC6D4 ${formatWon(calc.secondHalf)} (\uC804\uC561)`, " ", /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, "(\uC9C0\uBC29\uC138\uBC95 \xA7115)")), calc.baseCap && calc.baseCap["\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900\uC0C1\uD55C\uC561 \uC801\uC6A9(\xA7110\u2462):"), " \uACF5\uC2DC\uAC00\uACA9 \xD7 \uBE44\uC728 ", formatWon(calc.baseCap["\uC0C1\uD55C\uC804\uACFC\uC138\uD45C\uC900"]), " \u2192 \uC0C1\uD55C ", formatWon(calc.baseCap["\uC0C1\uD55C\uC561"])), calc.burdenApplied && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC138\uBD80\uB2F4 \uC0C1\uD55C\uC774 \uC801\uC6A9\uB418\uC5B4, \uC804\uB144 \uB300\uBE44 \uC77C\uC815 \uD55C\uB3C4\uAE4C\uC9C0\uB9CC \uC62C\uB790\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7122).", calc.burden && typeof calc.burden["\uADFC\uAC70"] === "string" && calc.burden["\uADFC\uAC70"] && /* @__PURE__ */ React.createElement("div", null, "\uADFC\uAC70: ", calc.burden["\uADFC\uAC70"], typeof calc.burden["\uC0C1\uD55C\uC728"] === "string" && calc.burden["\uC0C1\uD55C\uC728"] ? ` \xB7 \uC0C1\uD55C\uC728 ${calc.burden["\uC0C1\uD55C\uC728"]}` : ""), calc.burden && calc.burden["\uBCF8\uC138\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uBCF8\uC138 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uBCF8\uC138"]), " \u2192 ", formatWon(calc.mainTax)), calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uB3C4\uC2DC\uC9C0\uC5ED\uBD84"]), " \u2192 ", formatWon(calc.urbanTax))), calc.smallExempt && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, "2\uCC9C\uC6D0 \uBBF8\uB9CC\uC774\uB77C \uC9D5\uC218\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\xA7119)")), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"], s["\uC870\uBB38"] ? ` \xB7 ${propFmtArticle(s["\uC870\uBB38"])}` : ""), /* @__PURE__ */ React.createElement("td", null, propFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 } }, "\uC7AC\uC0B0\uC138\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uB9E4\uB144 6\uC6D4 1\uC77C \uAE30\uC900 \uC18C\uC720\uC790"), "\uC5D0\uAC8C \uADF8 \uD574 \uC804\uC561 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7114). 6\uC6D4 1\uC77C \uC9C1\uC804 \uB9E4\uB3C4\xB7\uC9C1\uD6C4 \uB9E4\uC218\uAC00 \uADF8 \uD574 \uC7AC\uC0B0\uC138 \uBD80\uB2F4 \uBA74\uC5D0\uC11C \uC720\uB9AC\uD569\uB2C8\uB2E4. \uACF5\uC2DC\uAC00\uACA9\uC740 \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), commentary && commentary.headline && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC790\uB3D9 \uBD84\uC11D"), /* @__PURE__ */ React.createElement("p", { style: { fontWeight: 600 } }, commentary.headline), (commentary.cautions || []).map((c, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { marginBottom: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\xB7 ", c.title), " \u2014 ", c.detail))), typeof JTReportConvert === "function" && !propBlocked && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         calcId: "property",
@@ -17530,7 +18031,10 @@ function JTReportProperty({ setRoute, onBack }) {
   }
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
     window.location.hash = "/report/workspace";
-  } }, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5 \uC791\uC5C5\uB300 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTVWorldAttributes, { propertyKind: answers.propertyKind, onApplyValue: (value) => setAnswers((prior) => __spreadProps(__spreadValues({}, prior), { standardValue: String(value) })) }), err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
+  } }, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5 \uC791\uC5C5\uB300 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+    inputSession.invalidate();
+    setStep(index);
+  } }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTVWorldAttributes, { propertyKind: answers.propertyKind, onApplyValue: (value) => setAnswers((prior) => __spreadProps(__spreadValues({}, prior), { standardValue: String(value) })) }), err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
     if (cur.amountId) priorAutoRef.current = propPriorAutoUser(priorAutoRef.current, "option");
     setAns(cur.id, o[0]);
   } }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.amountId && answers[cur.id] === cur.amountWhen && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 12 } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontSize: 13, marginBottom: 4 } }, "\uC791\uB144 \uACF5\uC2DC\uAC00\uACA9 (\uC6D0)"), /* @__PURE__ */ React.createElement(
@@ -18145,12 +18649,26 @@ async function callCompEngine(body) {
 }
 function JTReportComprehensive({ setRoute, onBack }) {
   const [step, setStep] = useCompState(0);
-  const [answers, setAnswers] = useCompState({});
-  const [loading, setLoading] = useCompState(false);
-  const [report, setReport] = useCompState(null);
-  const [err, setErr] = useCompState(null);
+  const [answers, rawSetAnswers] = useCompState({});
+  const [loading, rawSetLoading] = useCompState(false);
+  const [report, rawSetReport] = useCompState(null);
+  const [err, rawSetErr] = useCompState(null);
   const [phase, setPhase] = useCompState("quick");
-  const [quickReport, setQuickReport] = useCompState(null);
+  const [quickReport, rawSetQuickReport] = useCompState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+    rawSetQuickReport(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
+  const setQuickReport = rawSetQuickReport;
   const [laddr, setLaddr] = useCompState("");
   const [lbusy, setLbusy] = useCompState(false);
   const [linfo, setLinfo] = useCompState(null);
@@ -18246,13 +18764,19 @@ function JTReportComprehensive({ setRoute, onBack }) {
     return !!answers[cur.id];
   };
   const runAnalysis = async () => {
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    const setQuickReport2 = inputSession.sink(inputRequest, rawSetQuickReport);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       if (compFallbackGaps(answers, { precise: true }).length > 0) {
         const unknownRep = { calc: { precise: true, preEngineBlock: true }, commentary: null, quick: phase === "quick" };
-        setReport(unknownRep);
-        if (phase === "quick") setQuickReport(unknownRep);
+        setReport2(unknownRep);
+        if (phase === "quick") setQuickReport2(unknownRep);
         return;
       }
       let calc;
@@ -18269,14 +18793,14 @@ function JTReportComprehensive({ setRoute, onBack }) {
       }
       if (compFallbackGaps(answers, calc).length > 0) {
         const blockedRep = { calc, commentary: null, quick: phase === "quick" };
-        setReport(blockedRep);
-        if (phase === "quick") setQuickReport(blockedRep);
+        setReport2(blockedRep);
+        if (phase === "quick") setQuickReport2(blockedRep);
         return;
       }
       if (answers.ownerType === "corporate") {
         const rep2 = { calc, commentary: { headline: "\uD655\uC778\uD55C \uBC95\uC778 \uC720\uD615\uACFC \uC785\uB825 \uC0AC\uC2E4\uC5D0 \uB530\uB978 \uACC4\uC0B0\uC785\uB2C8\uB2E4.", cautions: [], saving_ideas: [], followup: ["\uC8FC\uD0DD\uBCC4 \uACF5\uC2DC\uAC00\uACA9", "\uBC95\uC778 \uC720\uD615 \uD655\uC778 \uC790\uB8CC", "\uC804\uB144\uB3C4 \uACE0\uC9C0\uC11C"] }, quick: phase === "quick" };
-        setReport(rep2);
-        if (phase === "quick") setQuickReport(rep2);
+        setReport2(rep2);
+        if (phase === "quick") setQuickReport2(rep2);
         return;
       }
       let commentary;
@@ -18302,13 +18826,13 @@ function JTReportComprehensive({ setRoute, onBack }) {
         };
       }
       const rep = { calc, commentary, quick: phase === "quick" };
-      setReport(rep);
-      if (phase === "quick") setQuickReport(rep);
+      setReport2(rep);
+      if (phase === "quick") setQuickReport2(rep);
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
   const goDetail = () => {
@@ -18335,7 +18859,10 @@ function JTReportComprehensive({ setRoute, onBack }) {
   };
   const hasCredit = answers.ownerType !== "corporate" && (answers.housingCount === "one" || compIsDeemed(answers));
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
@@ -18345,7 +18872,10 @@ function JTReportComprehensive({ setRoute, onBack }) {
     if (compBlocked) {
       const compBlockReason = compFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "needs_input" || calc.engineState === "unsupported" || calc.engineState === "refused" ? "refused" : "down";
       const compBlockTag = compBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : calc.engineState === "needs_input" ? "\uC785\uB825 \uBCF4\uC644 \uD544\uC694" : "\uC138\uBB34\uC0AC \uD655\uC778 \uD544\uC694";
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: compBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+        inputSession.invalidate();
+        setStep(index);
+      } }, title: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: compBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setQuickReport(null);
         setPhase("quick");
@@ -18358,7 +18888,10 @@ function JTReportComprehensive({ setRoute, onBack }) {
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
     const deemedLabel = { temp: "\uC77C\uC2DC\uC801 2\uC8FC\uD0DD", inherit: "\uC0C1\uC18D\uC8FC\uD0DD", rural: "\uC9C0\uBC29 \uC800\uAC00\uC8FC\uD0DD", land: "\uB2E4\uB978 \uC8FC\uD0DD\uC758 \uBD80\uC18D\uD1A0\uC9C0" }[answers.deemedOneHouse];
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: (answers.taxYear || "2026") + "\uB144 \uC885\uBD80\uC138 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: (answers.taxYear || "2026") + "\uB144 \uC885\uBD80\uC138 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
       setReport(null);
       setQuickReport(null);
       setPhase("quick");
@@ -18393,7 +18926,10 @@ function JTReportComprehensive({ setRoute, onBack }) {
     onBack();
     return null;
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC8FC\uD0DD\uC218\xB7\uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC885\uBD80\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "1\uC138\uB300 1\uC8FC\uD0DD \uD2B9\uB840 \uC5EC\uBD80\xB7\uC5F0\uB839\xB7\uBCF4\uC720 \uC138\uC561\uACF5\uC81C\xB7\uC9C1\uC804 \uC5F0\uB3C4 \uC138\uC561\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.id === "totalValue" && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", border: "1px solid #dfe3dc", borderRadius: 10, padding: "14px 16px", marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: 6 } }, "\u{1F50E} \uC8FC\uC18C\uB85C \uACF5\uC2DC\uAC00\uACA9 \uC790\uB3D9 \uD569\uC0B0 ", /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 400, opacity: 0.7, fontSize: 13 } }, "(\uC120\uD0DD \u2014 \uC544\uD30C\uD2B8\xB7\uBE4C\uB77C\xB7\uB2E8\uB3C5\uC8FC\uD0DD)")), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 13, opacity: 0.8, lineHeight: 1.55 } }, "\uBCF4\uC720 \uC8FC\uD0DD \uC8FC\uC18C\uB97C \uB123\uACE0 \uC870\uD68C\uD558\uBA74 \uACF5\uC2DC\uAC00\uACA9\uC744 \uC544\uB798 \uD569\uACC4\uC5D0 \uB354\uD574\uB4DC\uB824\uC694. ", /* @__PURE__ */ React.createElement("strong", null, "\uC5EC\uB7EC \uCC44\uBA74 \uD55C \uCC44\uC529 \uC8FC\uC18C\uB97C \uB123\uC5B4 \uC870\uD68C\uB97C \uBC18\uBCF5"), "\uD558\uBA74 \uC790\uB3D9\uC73C\uB85C \uD569\uC0B0\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+    inputSession.invalidate();
+    setStep(index);
+  } }, title: "\uC885\uD569\uBD80\uB3D9\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC8FC\uD0DD\uC218\xB7\uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC885\uBD80\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "1\uC138\uB300 1\uC8FC\uD0DD \uD2B9\uB840 \uC5EC\uBD80\xB7\uC5F0\uB839\xB7\uBCF4\uC720 \uC138\uC561\uACF5\uC81C\xB7\uC9C1\uC804 \uC5F0\uB3C4 \uC138\uC561\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.id === "totalValue" && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", border: "1px solid #dfe3dc", borderRadius: 10, padding: "14px 16px", marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: 6 } }, "\u{1F50E} \uC8FC\uC18C\uB85C \uACF5\uC2DC\uAC00\uACA9 \uC790\uB3D9 \uD569\uC0B0 ", /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 400, opacity: 0.7, fontSize: 13 } }, "(\uC120\uD0DD \u2014 \uC544\uD30C\uD2B8\xB7\uBE4C\uB77C\xB7\uB2E8\uB3C5\uC8FC\uD0DD)")), /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 10px", fontSize: 13, opacity: 0.8, lineHeight: 1.55 } }, "\uBCF4\uC720 \uC8FC\uD0DD \uC8FC\uC18C\uB97C \uB123\uACE0 \uC870\uD68C\uD558\uBA74 \uACF5\uC2DC\uAC00\uACA9\uC744 \uC544\uB798 \uD569\uACC4\uC5D0 \uB354\uD574\uB4DC\uB824\uC694. ", /* @__PURE__ */ React.createElement("strong", null, "\uC5EC\uB7EC \uCC44\uBA74 \uD55C \uCC44\uC529 \uC8FC\uC18C\uB97C \uB123\uC5B4 \uC870\uD68C\uB97C \uBC18\uBCF5"), "\uD558\uBA74 \uC790\uB3D9\uC73C\uB85C \uD569\uC0B0\uB429\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(
     "input",
     {
       className: "jt-report-q__input",
@@ -18996,14 +19532,29 @@ function JTCorporateDirect({ onBack }) {
   }))), (result["\uACBD\uACE0\uC0AC\uD56D"] || []).map((s, i) => /* @__PURE__ */ React.createElement("p", { key: i }, s)))));
 }
 function JTReportCorporate({ setRoute, onBack }) {
+  const [creditMode, setCreditMode] = useCorpState(false);
   const [directMode, setDirectMode] = useCorpState(false);
   const [step, setStep] = useCorpState(0);
-  const [answers, setAnswers] = useCorpState({});
-  const [loading, setLoading] = useCorpState(false);
-  const [report, setReport] = useCorpState(null);
-  const [err, setErr] = useCorpState(null);
+  const [answers, rawSetAnswers] = useCorpState({});
+  const [loading, rawSetLoading] = useCorpState(false);
+  const [report, rawSetReport] = useCorpState(null);
+  const [err, rawSetErr] = useCorpState(null);
   const [phase, setPhase] = useCorpState("quick");
-  const [quickReport, setQuickReport] = useCorpState(null);
+  const [quickReport, rawSetQuickReport] = useCorpState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+    rawSetQuickReport(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
+  const setQuickReport = rawSetQuickReport;
   React.useEffect(() => {
     const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "";
     if (base) {
@@ -19029,14 +19580,20 @@ function JTReportCorporate({ setRoute, onBack }) {
     return !!answers[cur.id];
   };
   const runAnalysis = async () => {
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    const setQuickReport2 = inputSession.sink(inputRequest, rawSetQuickReport);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       const income = Math.round(Number(answers.businessIncome) || 0);
       if (corpFallbackGaps(answers, { precise: false }).length > 0) {
         const blockedRep = { calc: { precise: false }, commentary: null, quick: phase === "quick" };
-        setReport(blockedRep);
-        if (phase === "quick") setQuickReport(blockedRep);
+        setReport2(blockedRep);
+        if (phase === "quick") setQuickReport2(blockedRep);
         return;
       }
       const salary = Math.min(Math.round(Number(answers.ownerSalary) || 0), income);
@@ -19103,15 +19660,16 @@ function JTReportCorporate({ setRoute, onBack }) {
         };
       }
       const rep = { calc, commentary, quick: phase === "quick" };
-      setReport(rep);
-      if (phase === "quick") setQuickReport(rep);
+      setReport2(rep);
+      if (phase === "quick") setQuickReport2(rep);
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
+  if (creditMode) return /* @__PURE__ */ React.createElement(JTCreditSettlementDirect, { initialKind: "corporate", onBack: () => setCreditMode(false) });
   const goDetail = () => {
     setReport(null);
     setPhase("detail");
@@ -19136,7 +19694,13 @@ function JTReportCorporate({ setRoute, onBack }) {
   };
   if (directMode) return /* @__PURE__ */ React.createElement(JTCorporateDirect, { onBack: () => setDirectMode(false) });
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBC95\uC778 \uC804\uD658 \uC2DC\uBBAC\uB808\uC774\uD130", subtitle: "\uAC1C\uC778 vs \uBC95\uC778 \uBE44\uAD50 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+      inputSession.invalidate();
+      setCreditMode(true);
+    } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0"), inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uBC95\uC778 \uC804\uD658 \uC2DC\uBBAC\uB808\uC774\uD130", subtitle: "\uAC1C\uC778 vs \uBC95\uC778 \uBE44\uAD50 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC1C\uC778\xB7\uBC95\uC778 \uC138\uBD80\uB2F4\uC744 \uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uBE44\uAD50\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
@@ -19144,7 +19708,13 @@ function JTReportCorporate({ setRoute, onBack }) {
     const corpGaps = corpFallbackGaps(answers, calc);
     const corpBlocked = corpGaps.length > 0;
     if (corpBlocked) {
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBC95\uC778 \uC804\uD658 \uBE44\uAD50", subtitle: "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: corpGaps, onRetry: () => runAnalysis(), reason: corpFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+        inputSession.invalidate();
+        setCreditMode(true);
+      } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0"), inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+        inputSession.invalidate();
+        setStep(index);
+      } }, title: "\uBC95\uC778 \uC804\uD658 \uBE44\uAD50", subtitle: "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: corpGaps, onRetry: () => runAnalysis(), reason: corpFallbackGaps(answers, { precise: true }).length > 0 ? "input" : "engine" }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setPhase("quick");
         setStep(0);
@@ -19152,7 +19722,13 @@ function JTReportCorporate({ setRoute, onBack }) {
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
     const favorable = calc.precise && calc.corpTotal < calc.indivTotal;
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBC95\uC778 \uC804\uD658 \uC2DC\uBBAC\uB808\uC774\uD130 \uACB0\uACFC", subtitle: "\uAC1C\uC778\uC0AC\uC5C5\uC790 vs \uBC95\uC778 \uC138\uBD80\uB2F4 \uBE44\uAD50", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "CONSULTING" }, !calc.precise ? /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "14px 18px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC815\uBC00 \uACC4\uC0B0\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), " \uBC95\uC778 \uC804\uD658 \uBE44\uAD50\uB294 \uAC1C\uC778\xB7\uBC95\uC778 \uC138\uC561\uC744 \uB3D9\uC2DC\uC5D0 \uC815\uD655\uD788 \uACC4\uC0B0\uD574\uC57C \uD574\uC11C, \uAC04\uC774 \uCD94\uC815\uC73C\uB85C\uB294 \uC720\xB7\uBD88\uB9AC\uB97C \uC798\uBABB \uC548\uB0B4\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB410\uC73C\uB2C8 \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uAC70\uB098 \uC0C1\uB2F4\uC744 \uAD8C\uD569\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: runAnalysis }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, favorable ? "\uBC95\uC778 \uC804\uD658 \uC2DC \u300C\uC138\uAE08\uB9CC\u300D \uC5F0\uAC04 \uC808\uAC10(\uCD94\uC815)" : "\u300C\uC138\uAE08\uB9CC\u300D \uBE44\uAD50 \u2014 \uAC1C\uC778 \uC720\uC9C0\uAC00 \uC720\uB9AC(\uCD94\uC815)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(Math.abs(calc.indivTotal - calc.corpTotal))), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 } }, "\u203B \uC885\uD569\uC18C\uB4DD\uC138\xB7\uBC95\uC778\uC138\xB7\uADFC\uB85C\uC18C\uB4DD\uC138\uB9CC \uBE44\uAD50\uD55C \uC22B\uC790\uC785\uB2C8\uB2E4. ", /* @__PURE__ */ React.createElement("strong", null, "4\uB300\uBCF4\uD5D8\xB7\uC804\uD658\uBE44\uC6A9\xB7\uC720\uBCF4 \uC81C\uC57D\uC740 \uBE60\uC838 \uC788\uC5B4"), ", \uBC95\uC778 \uC804\uD658\uC758 \uC2E4\uC81C \uC720\xB7\uBD88\uB9AC\uB294 \uC774 \uBE44\uC6A9\uB4E4\uAE4C\uC9C0 \uB530\uC838\uC57C \uD569\uB2C8\uB2E4(\uC544\uB798 \uCC38\uC870).")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uAC1C\uC778 vs \uBC95\uC778 \uBE44\uAD50"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "[\uAC1C\uC778] \uC885\uD569\uC18C\uB4DD\uC138 \uCD1D\uBD80\uB2F4 ", calc.indivRate ? `(${calc.indivRate})` : ""), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.indivTotal))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "[\uBC95\uC778] \uBC95\uC778\uC138 ", calc.corpRate ? `(${calc.corpRate})` : ""), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.corpTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "[\uBC95\uC778] \uB300\uD45C \uAE09\uC5EC \uADFC\uB85C\uC18C\uB4DD\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.salaryTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "[\uBC95\uC778] \uD569\uACC4 (\uBC95\uC778\uC138 + \uB300\uD45C\uAE09\uC5EC\uC138)")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.corpTotal)))), /* @__PURE__ */ React.createElement("tr", { style: { background: favorable ? "#f0f7f3" : "#fff7ea" } }, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, favorable ? "\uBC95\uC778 \uC804\uD658 \uC2DC \uC808\uAC10\uC561" : "\uAC1C\uC778 \uC720\uC9C0 \uC2DC \uC808\uAC10\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(Math.abs(calc.indivTotal - calc.corpTotal)))))))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #b8860b", padding: "14px 18px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 8px", fontWeight: 700 } }, "\uC704 \uBE44\uAD50\uC5D0\uC11C \uBE60\uC9C4 \u300C\uC138\uAE08 \uC678\u300D \uBE44\uC6A9 \u2014 \uBC95\uC778 \uC804\uD658 \uACB0\uC815 \uC804 \uAF2D \uBCF4\uC138\uC694"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18, lineHeight: 1.7, fontSize: 14 } }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "4\uB300\uBCF4\uD5D8"), ": \uBC95\uC778 \uB300\uD45C\uAC00 \uB418\uBA74 \uAC74\uAC15\uBCF4\uD5D8\xB7\uAD6D\uBBFC\uC5F0\uAE08\uC774 \uAE09\uC5EC \uAE30\uC900\uC73C\uB85C \uC0C8\uB85C \uBD80\uACFC\uB3FC, \uAC1C\uC778 \uC9C0\uC5ED\uAC00\uC785 \uB54C\uBCF4\uB2E4 ", /* @__PURE__ */ React.createElement("strong", null, "\uC5F0 \uC218\uBC31\uB9CC\uC6D0 \uC774\uC0C1 \uB298 \uC218 \uC788\uC2B5\uB2C8\uB2E4"), "(\uB300\uD45C \uC5F0\uBD09\uC774 \uD074\uC218\uB85D \uCEE4\uC9D0). \uC774\uC775 1~2\uC5B5 \uAD6C\uAC04\uC5D0\uC120 \uC704 \uC138\uAE08 \uC808\uAC10\uC561\uC758 \uC0C1\uB2F9 \uBD80\uBD84\uC744 \uAE4E\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uBC95\uC778 \uB3C8\uC740 \u300C\uB0B4 \uB3C8\u300D\uC774 \uC544\uB2D9\uB2C8\uB2E4"), ": \uD68C\uC0AC\uC5D0 \uC313\uC778 \uB3C8\uC744 \uB300\uD45C\uAC00 \uC0AC\uC801\uC73C\uB85C \uC4F0\uBA74 \u300C\uAC00\uC9C0\uAE09\uAE08\u300D\uC73C\uB85C \uBCF4\uC544 \uC774\uC790\uB97C \uBB3C\uB9AC\uACE0 \uC0C1\uC5EC\uB85C \uACFC\uC138\uB429\uB2C8\uB2E4. \uACB0\uAD6D \uAE09\uC5EC\xB7\uBC30\uB2F9\uC73C\uB85C \uAEBC\uB0BC \uB54C \uC138\uAE08\uC774 \uB2E4\uC2DC \uBD99\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uC804\uD658\xB7\uC720\uC9C0 \uBE44\uC6A9"), ": \uC0AC\uC5C5\uC6A9 \uBD80\uB3D9\uC0B0\uC744 \uBC95\uC778\uC5D0 \uB118\uAE30\uBA74 \uC591\uB3C4\uC138\xB7\uCDE8\uB4DD\uC138, \uBC95\uC778 \uC804\uD658 \uD6C4 \uC77C\uC815 \uAE30\uAC04 \uC131\uC2E4\uC2E0\uACE0\uD655\uC778(\uC138\uBB34\uB300\uB9AC \uBE44\uC6A9), \uBC95\uC778\uC744 \uC811\uC744 \uB54C \uC794\uC5EC\uC7AC\uC0B0 \uACFC\uC138\uAC00 \uB354 \uB4ED\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uB300\uD45C \uC5F0\uBD09\uC744 \uBC14\uAFB8\uBA74 \uC774 \uBE44\uAD50\uB3C4 \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC704 \uC22B\uC790\uB294 \uC785\uB825\uD558\uC2E0 \uC5F0\uBD09 ", /* @__PURE__ */ React.createElement("strong", null, "\uD55C \uACBD\uC6B0"), "\uC77C \uBFD0, \uCD5C\uC801 \uC5F0\uBD09\xB7\uC804\uD658 \uC5EC\uBD80\uB294 \uC0C1\uB2F4\uC5D0\uC11C \uC885\uD569 \uD310\uB2E8\uD569\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px" } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, lineHeight: 1.65 } }, "\uBC95\uC778\uC5D0 \uB0A8\uB294 \uC774\uC775(\uBC95\uC778\uC138 \uB0B8 \uB4A4)\uC740 ", /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.retained)), "\uC774 \uD68C\uC0AC\uC5D0 \uC720\uBCF4\uB429\uB2C8\uB2E4.", " ", answers.dividend !== "dividend" ? "\uD68C\uC0AC\uC5D0 \uC7AC\uD22C\uC790(\uC720\uBCF4)\uD558\uBA74 \uCD94\uAC00 \uC138\uAE08 \uC5C6\uC774 \uBC95\uC778\uC774 \uC720\uB9AC\uD569\uB2C8\uB2E4. \uB300\uD45C\uAC00 \uAC00\uC838\uAC00\uB824\uBA74 \uBC30\uB2F9\uC18C\uB4DD\uC138\uAC00 \uCD94\uAC00\uB429\uB2C8\uB2E4." : calc.dividendComprehensive ? calc.dividendUnconfirmed ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uBC30\uB2F9 \uC794\uC5EC\uC774\uC775\uC740 2,000\uB9CC\uC6D0 \uC774\uD558\uC9C0\uB9CC, ", /* @__PURE__ */ React.createElement("strong", null, "\uB300\uD45C\uC790\uC5D0\uAC8C \uB2E4\uB978 \uC774\uC790\xB7\uBC30\uB2F9\uC18C\uB4DD\uC774 \uC788\uC73C\uBA74 \uD569\uC0B0 2,000\uB9CC\uC6D0\uC744 \uB118\uC5B4 \u300C\uAE08\uC735\uC18C\uB4DD\uC885\uD569\uACFC\uC138\u300D"), " \uB300\uC0C1\uC774 \uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uADF8 \uACBD\uC6B0 15.4%\uBCF4\uB2E4 \uC138\uBD80\uB2F4\uC774 \uCEE4\uC9C0\uBBC0\uB85C, \uB2E8\uC815\uB41C 15.4% \uB300\uC2E0 ", /* @__PURE__ */ React.createElement("strong", null, "\uBCC4\uB3C4 \uC815\uBC00 \uACC4\uC0B0"), "\uC774 \uD544\uC694\uD569\uB2C8\uB2E4(\uBCF8 \uD654\uBA74\uC5D0\uB294 \uBC30\uB2F9\uC138\uB97C \uD569\uC0B0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4).") : /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC774\uB97C ", /* @__PURE__ */ React.createElement("strong", null, "\uBC30\uB2F9\uC73C\uB85C \uAC00\uC838\uAC00\uBA74 \u300C\uAE08\uC735\uC18C\uB4DD\uC885\uD569\uACFC\uC138\u300D \uB300\uC0C1"), "\uC785\uB2C8\uB2E4(\uC5F0 2,000\uB9CC\uC6D0 \uCD08\uACFC). \uBC30\uB2F9\uC774 \uB300\uD45C\uC758 \uB2E4\uB978 \uC18C\uB4DD\uACFC \uD569\uC0B0\uB3FC \uB204\uC9C4\uC138\uC728(\uCD5C\uACE0 49.5%)\uB85C \uACFC\uC138\uB418\uBBC0\uB85C, \uB2E8\uC21C 15.4%\uBCF4\uB2E4 \uC138\uBD80\uB2F4\uC774 ", /* @__PURE__ */ React.createElement("strong", null, "\uD06C\uAC8C \uB298 \uC218 \uC788\uC2B5\uB2C8\uB2E4"), ". \uBC30\uB2F9 \uC2DC \uC2E4\uC81C \uC138\uC561\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uBCC4\uB3C4 \uC815\uBC00 \uACC4\uC0B0"), "\uC774 \uD544\uC694\uD574, \uBCF8 \uD654\uBA74\uC5D0\uB294 \uBC30\uB2F9\uC138\uB97C \uD569\uC0B0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC774\uB97C ", /* @__PURE__ */ React.createElement("strong", null, "\uBC30\uB2F9\uC73C\uB85C \uAC00\uC838\uAC00\uBA74 \uBC30\uB2F9\uC18C\uB4DD\uC138 \uC57D ", formatWon(calc.dividendTax)), "(2,000\uB9CC\uC6D0 \uC774\uD558 \uBD84\uB9AC\uACFC\uC138 15.4%)\uC774 \uB354 \uBD99\uC5B4, \uBC95\uC778 \uD569\uACC4\uAC00 \uC57D ", formatWon(calc.corpTotalWithDiv), "\uC774 \uB429\uB2C8\uB2E4."))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px" } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC775\xB7\uB300\uD45C\uC5F0\uBD09\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uBE44\uAD50\uC608\uC694."), " \uBD80\uC591\uAC00\uC871\xB7\uBC30\uB2F9 \uACC4\uD68D\uC744 \uB123\uC73C\uBA74 \uB354 \uC815\uD655\uD569\uB2C8\uB2E4 \u2014"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uBD80\uC591\uAC00\uC871\xB7\uBC30\uB2F9 \uB123\uC5B4 \uC815\uD655\uD788 \u2192"))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 } }, "\uBCF8 \uBE44\uAD50\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uC138\uC728 \uCC28\uC774(\uAC1C\uC778 \uC885\uC18C\uC138 vs \uBC95\uC778\uC138+\uB300\uD45C\uAE09\uC5EC\uC138)"), "\uB9CC \uBCF8 \uCD94\uC815\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC758\uC0AC\uACB0\uC815\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "4\uB300\uBCF4\uD5D8\xB7\uC131\uC2E4\uC2E0\uACE0\uD655\uC778\xB7\uBC95\uC778 \uC124\uB9BD/\uC804\uD658 \uBE44\uC6A9(\uD604\uBB3C\uCD9C\uC790 \uC591\uB3C4\uC138\xB7\uCDE8\uB4DD\uC138)\xB7\uC794\uC5EC\uC774\uC775 \uBC30\uB2F9 \uACC4\uD68D"), "\uAE4C\uC9C0 \uC885\uD569\uD574\uC57C \uD558\uB2C8, \uC815\uD655\uD55C \uD310\uB2E8\uC740 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694.")), commentary && commentary.headline && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC790\uB3D9 \uBD84\uC11D"), /* @__PURE__ */ React.createElement("p", { style: { fontWeight: 600 } }, commentary.headline), (commentary.cautions || []).map((c, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { marginBottom: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\xB7 ", c.title), " \u2014 ", c.detail))), calc.precise && typeof JTReportConvert === "function" && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+      inputSession.invalidate();
+      setCreditMode(true);
+    } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0"), inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uBC95\uC778 \uC804\uD658 \uC2DC\uBBAC\uB808\uC774\uD130 \uACB0\uACFC", subtitle: "\uAC1C\uC778\uC0AC\uC5C5\uC790 vs \uBC95\uC778 \uC138\uBD80\uB2F4 \uBE44\uAD50", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "CONSULTING" }, !calc.precise ? /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "14px 18px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC815\uBC00 \uACC4\uC0B0\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), " \uBC95\uC778 \uC804\uD658 \uBE44\uAD50\uB294 \uAC1C\uC778\xB7\uBC95\uC778 \uC138\uC561\uC744 \uB3D9\uC2DC\uC5D0 \uC815\uD655\uD788 \uACC4\uC0B0\uD574\uC57C \uD574\uC11C, \uAC04\uC774 \uCD94\uC815\uC73C\uB85C\uB294 \uC720\xB7\uBD88\uB9AC\uB97C \uC798\uBABB \uC548\uB0B4\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB410\uC73C\uB2C8 \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uAC70\uB098 \uC0C1\uB2F4\uC744 \uAD8C\uD569\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: runAnalysis }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, favorable ? "\uBC95\uC778 \uC804\uD658 \uC2DC \u300C\uC138\uAE08\uB9CC\u300D \uC5F0\uAC04 \uC808\uAC10(\uCD94\uC815)" : "\u300C\uC138\uAE08\uB9CC\u300D \uBE44\uAD50 \u2014 \uAC1C\uC778 \uC720\uC9C0\uAC00 \uC720\uB9AC(\uCD94\uC815)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(Math.abs(calc.indivTotal - calc.corpTotal))), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 } }, "\u203B \uC885\uD569\uC18C\uB4DD\uC138\xB7\uBC95\uC778\uC138\xB7\uADFC\uB85C\uC18C\uB4DD\uC138\uB9CC \uBE44\uAD50\uD55C \uC22B\uC790\uC785\uB2C8\uB2E4. ", /* @__PURE__ */ React.createElement("strong", null, "4\uB300\uBCF4\uD5D8\xB7\uC804\uD658\uBE44\uC6A9\xB7\uC720\uBCF4 \uC81C\uC57D\uC740 \uBE60\uC838 \uC788\uC5B4"), ", \uBC95\uC778 \uC804\uD658\uC758 \uC2E4\uC81C \uC720\xB7\uBD88\uB9AC\uB294 \uC774 \uBE44\uC6A9\uB4E4\uAE4C\uC9C0 \uB530\uC838\uC57C \uD569\uB2C8\uB2E4(\uC544\uB798 \uCC38\uC870).")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uAC1C\uC778 vs \uBC95\uC778 \uBE44\uAD50"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "[\uAC1C\uC778] \uC885\uD569\uC18C\uB4DD\uC138 \uCD1D\uBD80\uB2F4 ", calc.indivRate ? `(${calc.indivRate})` : ""), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.indivTotal))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "[\uBC95\uC778] \uBC95\uC778\uC138 ", calc.corpRate ? `(${calc.corpRate})` : ""), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.corpTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "[\uBC95\uC778] \uB300\uD45C \uAE09\uC5EC \uADFC\uB85C\uC18C\uB4DD\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.salaryTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "[\uBC95\uC778] \uD569\uACC4 (\uBC95\uC778\uC138 + \uB300\uD45C\uAE09\uC5EC\uC138)")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.corpTotal)))), /* @__PURE__ */ React.createElement("tr", { style: { background: favorable ? "#f0f7f3" : "#fff7ea" } }, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, favorable ? "\uBC95\uC778 \uC804\uD658 \uC2DC \uC808\uAC10\uC561" : "\uAC1C\uC778 \uC720\uC9C0 \uC2DC \uC808\uAC10\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(Math.abs(calc.indivTotal - calc.corpTotal)))))))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #b8860b", padding: "14px 18px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 8px", fontWeight: 700 } }, "\uC704 \uBE44\uAD50\uC5D0\uC11C \uBE60\uC9C4 \u300C\uC138\uAE08 \uC678\u300D \uBE44\uC6A9 \u2014 \uBC95\uC778 \uC804\uD658 \uACB0\uC815 \uC804 \uAF2D \uBCF4\uC138\uC694"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18, lineHeight: 1.7, fontSize: 14 } }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "4\uB300\uBCF4\uD5D8"), ": \uBC95\uC778 \uB300\uD45C\uAC00 \uB418\uBA74 \uAC74\uAC15\uBCF4\uD5D8\xB7\uAD6D\uBBFC\uC5F0\uAE08\uC774 \uAE09\uC5EC \uAE30\uC900\uC73C\uB85C \uC0C8\uB85C \uBD80\uACFC\uB3FC, \uAC1C\uC778 \uC9C0\uC5ED\uAC00\uC785 \uB54C\uBCF4\uB2E4 ", /* @__PURE__ */ React.createElement("strong", null, "\uC5F0 \uC218\uBC31\uB9CC\uC6D0 \uC774\uC0C1 \uB298 \uC218 \uC788\uC2B5\uB2C8\uB2E4"), "(\uB300\uD45C \uC5F0\uBD09\uC774 \uD074\uC218\uB85D \uCEE4\uC9D0). \uC774\uC775 1~2\uC5B5 \uAD6C\uAC04\uC5D0\uC120 \uC704 \uC138\uAE08 \uC808\uAC10\uC561\uC758 \uC0C1\uB2F9 \uBD80\uBD84\uC744 \uAE4E\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uBC95\uC778 \uB3C8\uC740 \u300C\uB0B4 \uB3C8\u300D\uC774 \uC544\uB2D9\uB2C8\uB2E4"), ": \uD68C\uC0AC\uC5D0 \uC313\uC778 \uB3C8\uC744 \uB300\uD45C\uAC00 \uC0AC\uC801\uC73C\uB85C \uC4F0\uBA74 \u300C\uAC00\uC9C0\uAE09\uAE08\u300D\uC73C\uB85C \uBCF4\uC544 \uC774\uC790\uB97C \uBB3C\uB9AC\uACE0 \uC0C1\uC5EC\uB85C \uACFC\uC138\uB429\uB2C8\uB2E4. \uACB0\uAD6D \uAE09\uC5EC\xB7\uBC30\uB2F9\uC73C\uB85C \uAEBC\uB0BC \uB54C \uC138\uAE08\uC774 \uB2E4\uC2DC \uBD99\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("strong", null, "\uC804\uD658\xB7\uC720\uC9C0 \uBE44\uC6A9"), ": \uC0AC\uC5C5\uC6A9 \uBD80\uB3D9\uC0B0\uC744 \uBC95\uC778\uC5D0 \uB118\uAE30\uBA74 \uC591\uB3C4\uC138\xB7\uCDE8\uB4DD\uC138, \uBC95\uC778 \uC804\uD658 \uD6C4 \uC77C\uC815 \uAE30\uAC04 \uC131\uC2E4\uC2E0\uACE0\uD655\uC778(\uC138\uBB34\uB300\uB9AC \uBE44\uC6A9), \uBC95\uC778\uC744 \uC811\uC744 \uB54C \uC794\uC5EC\uC7AC\uC0B0 \uACFC\uC138\uAC00 \uB354 \uB4ED\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("li", null, "\uB300\uD45C \uC5F0\uBD09\uC744 \uBC14\uAFB8\uBA74 \uC774 \uBE44\uAD50\uB3C4 \uB2EC\uB77C\uC9D1\uB2C8\uB2E4. \uC704 \uC22B\uC790\uB294 \uC785\uB825\uD558\uC2E0 \uC5F0\uBD09 ", /* @__PURE__ */ React.createElement("strong", null, "\uD55C \uACBD\uC6B0"), "\uC77C \uBFD0, \uCD5C\uC801 \uC5F0\uBD09\xB7\uC804\uD658 \uC5EC\uBD80\uB294 \uC0C1\uB2F4\uC5D0\uC11C \uC885\uD569 \uD310\uB2E8\uD569\uB2C8\uB2E4."))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px" } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, lineHeight: 1.65 } }, "\uBC95\uC778\uC5D0 \uB0A8\uB294 \uC774\uC775(\uBC95\uC778\uC138 \uB0B8 \uB4A4)\uC740 ", /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.retained)), "\uC774 \uD68C\uC0AC\uC5D0 \uC720\uBCF4\uB429\uB2C8\uB2E4.", " ", answers.dividend !== "dividend" ? "\uD68C\uC0AC\uC5D0 \uC7AC\uD22C\uC790(\uC720\uBCF4)\uD558\uBA74 \uCD94\uAC00 \uC138\uAE08 \uC5C6\uC774 \uBC95\uC778\uC774 \uC720\uB9AC\uD569\uB2C8\uB2E4. \uB300\uD45C\uAC00 \uAC00\uC838\uAC00\uB824\uBA74 \uBC30\uB2F9\uC18C\uB4DD\uC138\uAC00 \uCD94\uAC00\uB429\uB2C8\uB2E4." : calc.dividendComprehensive ? calc.dividendUnconfirmed ? /* @__PURE__ */ React.createElement(React.Fragment, null, "\uBC30\uB2F9 \uC794\uC5EC\uC774\uC775\uC740 2,000\uB9CC\uC6D0 \uC774\uD558\uC9C0\uB9CC, ", /* @__PURE__ */ React.createElement("strong", null, "\uB300\uD45C\uC790\uC5D0\uAC8C \uB2E4\uB978 \uC774\uC790\xB7\uBC30\uB2F9\uC18C\uB4DD\uC774 \uC788\uC73C\uBA74 \uD569\uC0B0 2,000\uB9CC\uC6D0\uC744 \uB118\uC5B4 \u300C\uAE08\uC735\uC18C\uB4DD\uC885\uD569\uACFC\uC138\u300D"), " \uB300\uC0C1\uC774 \uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uADF8 \uACBD\uC6B0 15.4%\uBCF4\uB2E4 \uC138\uBD80\uB2F4\uC774 \uCEE4\uC9C0\uBBC0\uB85C, \uB2E8\uC815\uB41C 15.4% \uB300\uC2E0 ", /* @__PURE__ */ React.createElement("strong", null, "\uBCC4\uB3C4 \uC815\uBC00 \uACC4\uC0B0"), "\uC774 \uD544\uC694\uD569\uB2C8\uB2E4(\uBCF8 \uD654\uBA74\uC5D0\uB294 \uBC30\uB2F9\uC138\uB97C \uD569\uC0B0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4).") : /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC774\uB97C ", /* @__PURE__ */ React.createElement("strong", null, "\uBC30\uB2F9\uC73C\uB85C \uAC00\uC838\uAC00\uBA74 \u300C\uAE08\uC735\uC18C\uB4DD\uC885\uD569\uACFC\uC138\u300D \uB300\uC0C1"), "\uC785\uB2C8\uB2E4(\uC5F0 2,000\uB9CC\uC6D0 \uCD08\uACFC). \uBC30\uB2F9\uC774 \uB300\uD45C\uC758 \uB2E4\uB978 \uC18C\uB4DD\uACFC \uD569\uC0B0\uB3FC \uB204\uC9C4\uC138\uC728(\uCD5C\uACE0 49.5%)\uB85C \uACFC\uC138\uB418\uBBC0\uB85C, \uB2E8\uC21C 15.4%\uBCF4\uB2E4 \uC138\uBD80\uB2F4\uC774 ", /* @__PURE__ */ React.createElement("strong", null, "\uD06C\uAC8C \uB298 \uC218 \uC788\uC2B5\uB2C8\uB2E4"), ". \uBC30\uB2F9 \uC2DC \uC2E4\uC81C \uC138\uC561\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "\uBCC4\uB3C4 \uC815\uBC00 \uACC4\uC0B0"), "\uC774 \uD544\uC694\uD574, \uBCF8 \uD654\uBA74\uC5D0\uB294 \uBC30\uB2F9\uC138\uB97C \uD569\uC0B0\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.") : /* @__PURE__ */ React.createElement(React.Fragment, null, "\uC774\uB97C ", /* @__PURE__ */ React.createElement("strong", null, "\uBC30\uB2F9\uC73C\uB85C \uAC00\uC838\uAC00\uBA74 \uBC30\uB2F9\uC18C\uB4DD\uC138 \uC57D ", formatWon(calc.dividendTax)), "(2,000\uB9CC\uC6D0 \uC774\uD558 \uBD84\uB9AC\uACFC\uC138 15.4%)\uC774 \uB354 \uBD99\uC5B4, \uBC95\uC778 \uD569\uACC4\uAC00 \uC57D ", formatWon(calc.corpTotalWithDiv), "\uC774 \uB429\uB2C8\uB2E4."))), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px" } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC774\uC775\xB7\uB300\uD45C\uC5F0\uBD09\uB9CC\uC73C\uB85C \uB0B8 \uBE60\uB978 \uBE44\uAD50\uC608\uC694."), " \uBD80\uC591\uAC00\uC871\xB7\uBC30\uB2F9 \uACC4\uD68D\uC744 \uB123\uC73C\uBA74 \uB354 \uC815\uD655\uD569\uB2C8\uB2E4 \u2014"), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uBD80\uC591\uAC00\uC871\xB7\uBC30\uB2F9 \uB123\uC5B4 \uC815\uD655\uD788 \u2192"))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 } }, "\uBCF8 \uBE44\uAD50\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uC138\uC728 \uCC28\uC774(\uAC1C\uC778 \uC885\uC18C\uC138 vs \uBC95\uC778\uC138+\uB300\uD45C\uAE09\uC5EC\uC138)"), "\uB9CC \uBCF8 \uCD94\uC815\uC785\uB2C8\uB2E4. \uC2E4\uC81C \uC758\uC0AC\uACB0\uC815\uC740 ", /* @__PURE__ */ React.createElement("strong", null, "4\uB300\uBCF4\uD5D8\xB7\uC131\uC2E4\uC2E0\uACE0\uD655\uC778\xB7\uBC95\uC778 \uC124\uB9BD/\uC804\uD658 \uBE44\uC6A9(\uD604\uBB3C\uCD9C\uC790 \uC591\uB3C4\uC138\xB7\uCDE8\uB4DD\uC138)\xB7\uC794\uC5EC\uC774\uC775 \uBC30\uB2F9 \uACC4\uD68D"), "\uAE4C\uC9C0 \uC885\uD569\uD574\uC57C \uD558\uB2C8, \uC815\uD655\uD55C \uD310\uB2E8\uC740 \uC0C1\uB2F4\uC73C\uB85C \uD655\uC778\uD558\uC138\uC694.")), commentary && commentary.headline && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC790\uB3D9 \uBD84\uC11D"), /* @__PURE__ */ React.createElement("p", { style: { fontWeight: 600 } }, commentary.headline), (commentary.cautions || []).map((c, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { marginBottom: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\xB7 ", c.title), " \u2014 ", c.detail))), calc.precise && typeof JTReportConvert === "function" && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         calcId: "corporate",
@@ -19176,7 +19752,13 @@ function JTReportCorporate({ setRoute, onBack }) {
     onBack();
     return null;
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBC95\uC778 \uC804\uD658 \uC2DC\uBBAC\uB808\uC774\uD130", subtitle: phase === "quick" ? "\uC0AC\uC5C5 \uC774\uC775\xB7\uB300\uD45C \uC5F0\uBD09\uB9CC \uB123\uC73C\uBA74 \uAC1C\uC778 vs \uBC95\uC778\uC744 \uBC14\uB85C \uBE44\uAD50\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uBC30\uB2F9 \uACC4\uD68D\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uBE44\uAD50\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setDirectMode(true) }, "\uBC95\uC778\uC138 \uC9C1\uC811 \uACC4\uC0B0 (\uC0AC\uC5C5\uC5F0\uB3C4\xB7\uACF5\uC81C \uC785\uB825) \u2192"), err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+    inputSession.invalidate();
+    setCreditMode(true);
+  } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5 \uACC4\uC0B0"), inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+    inputSession.invalidate();
+    setStep(index);
+  } }, title: "\uBC95\uC778 \uC804\uD658 \uC2DC\uBBAC\uB808\uC774\uD130", subtitle: phase === "quick" ? "\uC0AC\uC5C5 \uC774\uC775\xB7\uB300\uD45C \uC5F0\uBD09\uB9CC \uB123\uC73C\uBA74 \uAC1C\uC778 vs \uBC95\uC778\uC744 \uBC14\uB85C \uBE44\uAD50\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uBC30\uB2F9 \uACC4\uD68D\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uBE44\uAD50\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => setDirectMode(true) }, "\uBC95\uC778\uC138 \uC9C1\uC811 \uACC4\uC0B0 (\uC0AC\uC5C5\uC5F0\uB3C4\xB7\uACF5\uC81C \uC785\uB825) \u2192"), err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => setAns(cur.id, o[0]) }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
     JTNumericInput,
     {
       money: !!cur.money,
@@ -19825,10 +20407,22 @@ function buildVatKakao(answers, calc) {
 }
 function JTReportVat({ setRoute, onBack }) {
   const [step, setStep] = useVatState(0);
-  const [answers, setAnswers] = useVatState({});
-  const [loading, setLoading] = useVatState(false);
-  const [report, setReport] = useVatState(null);
-  const [err, setErr] = useVatState(null);
+  const [answers, rawSetAnswers] = useVatState({});
+  const [loading, rawSetLoading] = useVatState(false);
+  const [report, rawSetReport] = useVatState(null);
+  const [err, rawSetErr] = useVatState(null);
+  const inputSession = useJTInputSession(() => {
+    rawSetReport(null);
+    rawSetLoading(false);
+    rawSetErr(null);
+  });
+  const setAnswers = (update) => {
+    inputSession.invalidate();
+    rawSetAnswers(update);
+  };
+  const setReport = rawSetReport;
+  const setLoading = rawSetLoading;
+  const setErr = rawSetErr;
   React.useEffect(() => {
     const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "";
     if (base) {
@@ -19858,8 +20452,13 @@ function JTReportVat({ setRoute, onBack }) {
     return !!answers[cur.id];
   };
   const runAnalysis = async () => {
-    setLoading(true);
-    setErr(null);
+    const inputRequest = inputSession.begin();
+    const setReport2 = inputSession.sink(inputRequest, rawSetReport);
+    const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
+    const setErr2 = inputSession.sink(inputRequest, rawSetErr);
+    setReport2(null);
+    setLoading2(true);
+    setErr2(null);
     try {
       const clamp = (x) => Math.max(0, Math.round(Number(x) || 0));
       const bt = answers.businessType || "\uC77C\uBC18\uACFC\uC138\uC790";
@@ -19868,21 +20467,21 @@ function JTReportVat({ setRoute, onBack }) {
       if (bt !== "\uBA74\uC138\uC0AC\uC5C5\uC790") {
         const anySales = bt === "\uC77C\uBC18\uACFC\uC138\uC790" ? clamp(answers.salesAmount) + clamp(answers.purchaseAmount) + (extra.purchase_vat_paid || 0) + (extra.export_sales || 0) : clamp(answers.supplyPrice);
         if (anySales <= 0) {
-          setErr("\uB9E4\uCD9C\xB7\uB9E4\uC785 \uB610\uB294 \uC2E4\uC81C \uB9E4\uC785\uC138\uC561\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
-          setLoading(false);
+          setErr2("\uB9E4\uCD9C\xB7\uB9E4\uC785 \uB610\uB294 \uC2E4\uC81C \uB9E4\uC785\uC138\uC561\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+          setLoading2(false);
           return;
         }
       }
       const _card = clamp(answers.creditCardSales);
       if (_card > 0) {
         if (bt === "\uC77C\uBC18\uACFC\uC138\uC790" && _card > Math.round((clamp(answers.salesAmount) + clamp(answers.exportSales)) * 1.1)) {
-          setErr("\uC2E0\uC6A9\uCE74\uB4DC\xB7\uD604\uAE08\uC601\uC218\uC99D \uB9E4\uCD9C(\uBD80\uAC00\uC138 \uD3EC\uD568)\uC774 \uC804\uCCB4 \uB9E4\uCD9C\uC744 \uCD08\uACFC\uD569\uB2C8\uB2E4. \uCE74\uB4DC\uB9E4\uCD9C\uC740 \uB9E4\uCD9C \uACF5\uAE09\uAC00\uC561\uC758 \uC57D 1.1\uBC30 \uC774\uD558\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
-          setLoading(false);
+          setErr2("\uC2E0\uC6A9\uCE74\uB4DC\xB7\uD604\uAE08\uC601\uC218\uC99D \uB9E4\uCD9C(\uBD80\uAC00\uC138 \uD3EC\uD568)\uC774 \uC804\uCCB4 \uB9E4\uCD9C\uC744 \uCD08\uACFC\uD569\uB2C8\uB2E4. \uCE74\uB4DC\uB9E4\uCD9C\uC740 \uB9E4\uCD9C \uACF5\uAE09\uAC00\uC561\uC758 \uC57D 1.1\uBC30 \uC774\uD558\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+          setLoading2(false);
           return;
         }
         if (bt === "\uAC04\uC774\uACFC\uC138\uC790" && clamp(answers.supplyPrice) > 0 && _card > clamp(answers.supplyPrice)) {
-          setErr("\uC2E0\uC6A9\uCE74\uB4DC \uB9E4\uCD9C\uC774 \uC5F0\uAC04 \uACF5\uAE09\uB300\uAC00\uB97C \uCD08\uACFC\uD569\uB2C8\uB2E4.");
-          setLoading(false);
+          setErr2("\uC2E0\uC6A9\uCE74\uB4DC \uB9E4\uCD9C\uC774 \uC5F0\uAC04 \uACF5\uAE09\uB300\uAC00\uB97C \uCD08\uACFC\uD569\uB2C8\uB2E4.");
+          setLoading2(false);
           return;
         }
       }
@@ -19927,12 +20526,12 @@ function JTReportVat({ setRoute, onBack }) {
         console.warn("\uBD80\uAC00\uC138 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328", e);
         calc.engineErr = true;
       }
-      setReport({ calc });
+      setReport2({ calc });
     } catch (e) {
       console.error(e);
-      setErr(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
+      setErr2(e.message || "\uACC4\uC0B0 \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.");
     } finally {
-      setLoading(false);
+      setLoading2(false);
     }
   };
   const goNext = () => {
@@ -19944,14 +20543,20 @@ function JTReportVat({ setRoute, onBack }) {
     else onBack();
   };
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0\uAE30", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0\uAE30", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "BOOKKEEPING" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uB9E4\uCD9C\uC138\uC561\uC5D0\uC11C \uB9E4\uC785\uC138\uC561\xB7\uACF5\uC81C\uB97C \uBE7C \uBD80\uAC00\uAC00\uCE58\uC138\uB97C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
     const { calc } = report;
     const d = calc.detail || {};
     const deadline = VAT_DEADLINE[calc.periodType] || "\uAC01 \uACFC\uC138\uAE30\uAC04 \uC885\uB8CC \uD6C4 25\uC77C \uC774\uB0B4";
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uB9E4\uCD9C\uC138\uC561 \u2212 \uB9E4\uC785\uC138\uC561 \u2212 \uACF5\uC81C", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "BOOKKEEPING" }, !calc.precise ? /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "14px 18px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC815\uBC00 \uACC4\uC0B0\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), " ", calc.engineReason || "\uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB410\uC2B5\uB2C8\uB2E4.", " \uC798\uBABB\uB41C \uC138\uC561\uC744 \uC548\uB0B4\uD558\uC9C0 \uC54A\uAE30 \uC704\uD574 \uACB0\uACFC\uB97C \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC558\uC5B4\uC694. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uAC70\uB098 \uC0C1\uB2F4\uC744 \uAD8C\uD569\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => runAnalysis() }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))) : calc.isExempt ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-good" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, "\uBD80\uAC00\uAC00\uCE58\uC138 \uBA74\uC81C"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val", style: { fontSize: 28 } }, "\uBA74\uC138\uC0AC\uC5C5\uC790"), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 14, lineHeight: 1.6, opacity: 0.9 } }, calc.exemptReason || "\uBA74\uC138\uC0AC\uC5C5\uC790\uB294 \uBD80\uAC00\uAC00\uCE58\uC138 \uB0A9\uBD80\uC758\uBB34\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4(\uBD80\uAC00\uBC95 \xA726).", " \uB2E4\uB9CC \uB9E4\uB144 2\uC6D4 10\uC77C\uAE4C\uC9C0 ", /* @__PURE__ */ React.createElement("strong", null, "\uC0AC\uC5C5\uC7A5\uD604\uD669\uC2E0\uACE0"), "\uB294 \uD574\uC57C \uD558\uBA70, \uBA74\uC138 \uB9E4\uC785\uBD84\uC758 \uB9E4\uC785\uC138\uC561\uC740 \uD658\uAE09\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")), typeof JTReportConvert === "function" && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+      inputSession.invalidate();
+      setStep(index);
+    } }, title: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uB9E4\uCD9C\uC138\uC561 \u2212 \uB9E4\uC785\uC138\uC561 \u2212 \uACF5\uC81C", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "BOOKKEEPING" }, !calc.precise ? /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "14px 18px", marginBottom: 16, borderRadius: 8, lineHeight: 1.6 } }, /* @__PURE__ */ React.createElement("strong", null, "\uC815\uBC00 \uACC4\uC0B0\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."), " ", calc.engineReason || "\uC815\uBC00 \uC5D4\uC9C4 \uC5F0\uACB0\uC774 \uC9C0\uC5F0\uB410\uC2B5\uB2C8\uB2E4.", " \uC798\uBABB\uB41C \uC138\uC561\uC744 \uC548\uB0B4\uD558\uC9C0 \uC54A\uAE30 \uC704\uD574 \uACB0\uACFC\uB97C \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC558\uC5B4\uC694. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uAC70\uB098 \uC0C1\uB2F4\uC744 \uAD8C\uD569\uB2C8\uB2E4.", /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => runAnalysis() }, "\uC815\uBC00 \uACC4\uC0B0 \uB2E4\uC2DC \uC2DC\uB3C4 \u2192"))) : calc.isExempt ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-good" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, "\uBD80\uAC00\uAC00\uCE58\uC138 \uBA74\uC81C"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val", style: { fontSize: 28 } }, "\uBA74\uC138\uC0AC\uC5C5\uC790"), /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, fontSize: 14, lineHeight: 1.6, opacity: 0.9 } }, calc.exemptReason || "\uBA74\uC138\uC0AC\uC5C5\uC790\uB294 \uBD80\uAC00\uAC00\uCE58\uC138 \uB0A9\uBD80\uC758\uBB34\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4(\uBD80\uAC00\uBC95 \xA726).", " \uB2E4\uB9CC \uB9E4\uB144 2\uC6D4 10\uC77C\uAE4C\uC9C0 ", /* @__PURE__ */ React.createElement("strong", null, "\uC0AC\uC5C5\uC7A5\uD604\uD669\uC2E0\uACE0"), "\uB294 \uD574\uC57C \uD558\uBA70, \uBA74\uC138 \uB9E4\uC785\uBD84\uC758 \uB9E4\uC785\uC138\uC561\uC740 \uD658\uAE09\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")), typeof JTReportConvert === "function" && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         reportType: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0",
@@ -19991,7 +20596,10 @@ function JTReportVat({ setRoute, onBack }) {
     onBack();
     return null;
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0\uAE30", subtitle: "\uC0AC\uC5C5\uC790 \uC720\uD615\uACFC \uB9E4\uCD9C\xB7\uB9E4\uC785\uB9CC \uB123\uC73C\uBA74 \uB0BC \uBD80\uAC00\uC138\uB97C \uBC14\uB85C \uACC4\uC0B0\uD574\uC694.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
+    inputSession.invalidate();
+    setStep(index);
+  } }, title: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0\uAE30", subtitle: "\uC0AC\uC5C5\uC790 \uC720\uD615\uACFC \uB9E4\uCD9C\xB7\uB9E4\uC785\uB9CC \uB123\uC73C\uBA74 \uB0BC \uBD80\uAC00\uC138\uB97C \uBC14\uB85C \uACC4\uC0B0\uD574\uC694.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
     setAns(cur.id, o[0]);
   } }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
     JTNumericInput,

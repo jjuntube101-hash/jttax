@@ -238,13 +238,22 @@ function buildIncomeKakao(answers, calc) {
 }
 
 function JTReportIncome({ setRoute, onBack }) {
+  const [creditMode,setCreditMode]=useIncState(false);
+
   const [step, setStep] = useIncState(0);
-  const [answers, setAnswers] = useIncState({});
-  const [loading, setLoading] = useIncState(false);
-  const [report, setReport] = useIncState(null);
-  const [err, setErr] = useIncState(null);
+  const [answers, rawSetAnswers] = useIncState({});
+  const [loading, rawSetLoading] = useIncState(false);
+  const [report, rawSetReport] = useIncState(null);
+  const [err, rawSetErr] = useIncState(null);
   const [phase, setPhase] = useIncState('quick');
-  const [quickReport, setQuickReport] = useIncState(null);
+  const [quickReport, rawSetQuickReport] = useIncState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);rawSetQuickReport(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+  const setQuickReport=rawSetQuickReport;
+
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
@@ -266,6 +275,13 @@ function JTReportIncome({ setRoute, onBack }) {
   };
 
   const runAnalysis = async (targetPhase) => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    const setQuickReport=inputSession.sink(inputRequest,rawSetQuickReport);
+    setReport(null);
+
     setLoading(true); setErr(null);
     try {
       // 엔진은 정수·음수불가(ge=0) 필드 → 소수·지수·음수 입력 방지(견고성: 음수→0 클램프)
@@ -345,6 +361,8 @@ function JTReportIncome({ setRoute, onBack }) {
     } catch (e) { console.error(e); setErr(e.message || '계산 중 오류가 발생했습니다.'); }
     finally { setLoading(false); }
   };
+  if(creditMode)return <JTCreditSettlementDirect initialKind="income" onBack={()=>setCreditMode(false)}/>;
+
 
   const goDetail = () => { setReport(null); setPhase('detail'); setStep(0); };
   const goNext = () => { if (isLast) runAnalysis(); else setStep(s => s + 1); };
@@ -357,7 +375,7 @@ function JTReportIncome({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="종합소득세 계산기" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="BOOKKEEPING">
+        <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합소득세 계산기" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="BOOKKEEPING">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />소득을 합산해 종합소득세를 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -372,7 +390,7 @@ function JTReportIncome({ setRoute, onBack }) {
     if (incBlocked) {
       return (
         <div className="jt-container">
-          <JTReportShell title="종합소득세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
+          <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합소득세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
             <JTFallbackBlocked gaps={incGaps} onRetry={() => runAnalysis()} reason={incFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : 'engine'} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
@@ -383,7 +401,7 @@ function JTReportIncome({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell title="종합소득세 계산 결과" subtitle="사업·근로·금융 소득 합산 종합소득세" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
+        <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합소득세 계산 결과" subtitle="사업·근로·금융 소득 합산 종합소득세" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
           {!calc.precise ? (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               {calc.engineReason && <p role="alert">{calc.engineReason}</p>}<strong>정밀 계산이 필요합니다.</strong> 종합소득세는 여러 소득·공제를 정확히 합산해야 해서, 간이 추정으로는 세액을 잘못 안내할 수 있습니다. 입력 보완 안내가 있으면 해당 항목을 수정하고, 연결 오류라면 잠시 후 다시 시도해 주세요.
@@ -482,7 +500,7 @@ function JTReportIncome({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="종합소득세 계산기" subtitle={phase === 'quick' ? '사업·근로·금융 소득을 넣으면 예상 종합소득세를 바로 계산해요.' : '부양가족·공제 항목까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
+      <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합소득세 계산기" subtitle={phase === 'quick' ? '사업·근로·금융 소득을 넣으면 예상 종합소득세를 바로 계산해요.' : '부양가족·공제 항목까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="BOOKKEEPING">
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>

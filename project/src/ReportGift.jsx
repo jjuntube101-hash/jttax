@@ -685,10 +685,10 @@ function JTReportGift({ setRoute, onBack }) {
   const [caseMode, setCaseMode] = useGiftState(false);
   const [caseValuation, setCaseValuation] = useGiftState(null);
   const [step, setStep] = useGiftState(0);
-  const [answers, setAnswers] = useGiftState({});
-  const [loading, setLoading] = useGiftState(false);
-  const [report, setReport] = useGiftState(null);
-  const [err, setErr] = useGiftState(null);
+  const [answers, rawSetAnswers] = useGiftState({});
+  const [loading, rawSetLoading] = useGiftState(false);
+  const [report, rawSetReport] = useGiftState(null);
+  const [err, rawSetErr] = useGiftState(null);
   const [lookupState, setLookupState] = useGiftState({ loading: false, result: null, err: null });
   const lookupSeq = React.useRef(0);
   const lookupKey = React.useRef('');
@@ -696,7 +696,14 @@ function JTReportGift({ setRoute, onBack }) {
   const changeLookup = (id, value) => { lookupSeq.current += 1; setLookupState({ loading: false, result: null, err: null }); setAns(id, value); };
   // 빠른 계산 먼저: 'quick'(필수 5문항→즉시 예상세액) → '더 정확히' → 'detail'(사전증여·부담부·세대생략 등)
   const [phase, setPhase] = useGiftState('quick');
-  const [quickReport, setQuickReport] = useGiftState(null);
+  const [quickReport, rawSetQuickReport] = useGiftState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);rawSetQuickReport(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+  const setQuickReport=rawSetQuickReport;
+
 
   // 엔진 미리 깨우기(scale-to-zero 콜드스타트 대비) — 사용자가 문항을 입력하는 동안 엔진을 워밍해 두면
   // 결과 단계에서 정밀계산(단계별 법조문 포함)이 바로 나옴. fire-and-forget.
@@ -762,6 +769,13 @@ function JTReportGift({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    const setQuickReport=inputSession.sink(inputRequest,rawSetQuickReport);
+    setReport(null);
+
     setLoading(true); setErr(null);
     try {
       /* ★ «불확정 입력»은 엔진을 부르기 «전»에 막는다 (260806 Codex R20 P1).
@@ -878,7 +892,7 @@ function JTReportGift({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="증여세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="증여세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -907,7 +921,7 @@ function JTReportGift({ setRoute, onBack }) {
       const giftBlockTag = giftBlockReason === 'input' ? '정밀 계산 필요' : (giftBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패');
       return (
         <div className="jt-container">
-          <JTReportShell title="증여세 계산 결과" subtitle={giftBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="증여세 계산 결과" subtitle={giftBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
             {/* 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다.
                 단 부담부증여 엔진 실패(engineErr)의 사유 문구는 그대로 보인다(종전 동작) */}
@@ -921,7 +935,7 @@ function JTReportGift({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (answers.giftDate || '2026년 기본값') + ' 증여세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="증여세 계산 결과" subtitle={isBurdened ? '부담부증여 (증여세+양도세+취득세)' : (answers.giftDate || '2026년 기본값') + ' 증여세 계산'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
           <button className="jt-btn jt-btn--ghost" onClick={() => setCaseMode(true)}>사건 저장·불러오기</button>
           {nonResident && (
@@ -1068,7 +1082,7 @@ function JTReportGift({ setRoute, onBack }) {
   // 입력 화면
   return (
     <div className="jt-container">
-      <JTReportShell title="증여세 계산" subtitle={phase === 'quick' ? '관계·금액만 입력하면 예상 증여세를 바로 보여드려요.' : '사전증여·부담부 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="증여세 계산" subtitle={phase === 'quick' ? '관계·금액만 입력하면 예상 증여세를 바로 보여드려요.' : '사전증여·부담부 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <button type="button" data-testid="open-installment-direct" onClick={()=>setInstallmentMode(true)}>일반 연부연납 산식</button>
         <button className="jt-btn jt-btn--ghost" style={{ marginBottom: 16 }} onClick={() => setCaseMode(true)}>사건 저장·불러오기</button>
         <div className="jt-report-q">

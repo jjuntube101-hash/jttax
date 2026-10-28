@@ -1081,16 +1081,23 @@ function JTReportAcquisition({ setRoute, onBack }) {
   /* ★ 260921 R2: 상태에 담기는 것은 «원본 답»이고(setAns 는 병합만 한다), 화면·매퍼·차단
      검사가 보는 것은 정규화를 거친 답이다. 이름을 answers 로 둬서 «이 컴포넌트 안에서는
      정규화된 답만 answers 다»를 강제한다 — 아래 어디서도 rawAnswers 를 직접 쓰지 않는다. */
-  const [rawAnswers, setAnswers] = useAcqState({});
+  const [rawAnswers, rawSetAnswers] = useAcqState({});
   const acqNorm = acqNormalize(rawAnswers);
   const answers = acqNorm.answers;
   /* 정규화가 «실제로 입력했던» 답을 지운 목록 — 결과·차단 화면이 그대로 알린다 (R4-F1) */
   const acqDropped = acqNorm.dropped;
-  const [loading, setLoading] = useAcqState(false);
-  const [report, setReport] = useAcqState(null);
-  const [err, setErr] = useAcqState(null);
+  const [loading, rawSetLoading] = useAcqState(false);
+  const [report, rawSetReport] = useAcqState(null);
+  const [err, rawSetErr] = useAcqState(null);
   const [phase, setPhase] = useAcqState('quick');
-  const [quickReport, setQuickReport] = useAcqState(null);
+  const [quickReport, rawSetQuickReport] = useAcqState(null);
+  const inputSession=useJTInputSession(()=>{rawSetReport(null);rawSetLoading(false);rawSetErr(null);rawSetQuickReport(null);});
+  const setAnswers=update=>{inputSession.invalidate();rawSetAnswers(update);};
+  const setReport=rawSetReport;
+  const setLoading=rawSetLoading;
+  const setErr=rawSetErr;
+  const setQuickReport=rawSetQuickReport;
+
   const [laddr, setLaddr] = useAcqState('');
   const [lbusy, setLbusy] = useAcqState(false);
   const [linfo, setLinfo] = useAcqState(null);
@@ -1187,6 +1194,13 @@ function JTReportAcquisition({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const inputRequest=inputSession.begin();
+    const setReport=inputSession.sink(inputRequest,rawSetReport);
+    const setLoading=inputSession.sink(inputRequest,rawSetLoading);
+    const setErr=inputSession.sink(inputRequest,rawSetErr);
+    const setQuickReport=inputSession.sink(inputRequest,rawSetQuickReport);
+    setReport(null);
+
     setLoading(true); setErr(null);
     try {
       /* ★ «불확정 입력»은 엔진을 부르기 «전»에 막는다 (260806 Codex R20 P1).
@@ -1302,7 +1316,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell title="취득세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -1325,7 +1339,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       const acqBlockReason = acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
       return (
         <div className="jt-container">
-          <JTReportShell title="취득세 계산 결과" subtitle={acqBlockReason === 'input' ? '정밀 계산 필요' : (acqBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산 결과" subtitle={acqBlockReason === 'input' ? '정밀 계산 필요' : (acqBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
             <JTAcqDroppedNotice dropped={acqDropped} />
             {/* 261004: 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다 */}
             <JTFallbackBlocked gaps={acqBlockReason === 'input' ? acqGaps : []} onRetry={runAnalysis} reason={acqBlockReason} />
@@ -1350,7 +1364,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell title="취득세 계산 결과" subtitle="취득세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산 결과" subtitle="취득세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <JTAcqDroppedNotice dropped={acqDropped} />
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 취득세(총액)' : '총 납부세액 · 정밀 계산 (JT택스랩 엔진)'}</div>
@@ -1519,7 +1533,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
 
   return (
     <div className="jt-container">
-      <JTReportShell title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <button className="jt-btn jt-btn--ghost" onClick={() => setBasisInputs(true)}>취득일·신축 과세표준 확인 계산 →</button>
         <button type="button" data-testid="open-acq-special-direct" className="jt-btn jt-btn--ghost" onClick={()=>setExtraMode('special')}>법인 중과·층별 안분·과점주주·정률 감면 →</button>
         <button type="button" data-testid="open-acq-exclusion-direct" onClick={()=>setExtraMode('exclusion')}>주택 취득 중과제외</button>
