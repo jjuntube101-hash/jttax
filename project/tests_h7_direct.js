@@ -67,3 +67,13 @@ const jr={'총세부담':1,'장기보유특별공제':1,'토지공통비용':1,'
 assert.equal(c.valid('goodwill',jr,c.request('goodwill',buildingJoint)),false);
 assert.equal(c.valid('goodwill',{...jr,'건물공통비용':1,'건물양도차익':1,'건물장기보유특별공제':1,'토지장기보유특별공제':1},c.request('goodwill',buildingJoint)),true);
 console.log('H11 building payload, scope and response checks PASS');
+
+const noLand={...buildingJoint,include_land:'아니오',total_price:'200000000',common_sale_expenses:'2000000'};
+const nq=c.request('goodwill',noLand);
+assert.equal(nq.land_included,false);assert.equal(nq.land_acquisition_date,null);
+assert.equal(nq.land_price,0);assert.equal(nq.land_cost,0);assert.equal(nq.land_expenses,0);
+assert.equal(nq.business_land_joint_sale_confirmed,false);
+assert.throws(()=>c.request('goodwill',{...noLand,include_building:'아니오'}));
+assert.throws(()=>c.request('goodwill',{...noLand,ordinary_business_building_confirmed:false}));
+assert.equal(c.request('goodwill',{...noLand,include_land:'예'}).land_price,300000000);
+console.log('H12 no-land payload and stale-land exclusion PASS');

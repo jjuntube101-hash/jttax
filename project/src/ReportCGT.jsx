@@ -1727,7 +1727,7 @@ cautions 3개, saving_ideas 2~3개.`;
         tag="LIVE"
       >
         <button type="button" data-testid="open-annual-direct" onClick={()=>setAnnualMode(true)}>여러 부동산 연간 합산·기신고·납부 정산</button>
-        <button type="button" onClick={()=>setDirectMode('goodwill')}>영업권·사업용 토지 합산</button>
+        <button type="button" onClick={()=>setDirectMode('goodwill')}>영업권·사업용 부동산 합산</button>
         <button type="button" onClick={()=>setDirectMode('indirectStock')}>기타자산 주식 1단계 간접보유</button>
         <button type="button" data-testid="open-other-stock-direct" onClick={()=>setDirectMode('otherStock')}>기타자산 주식 양도 계산</button>
         <button type="button" data-testid="open-facility-direct" onClick={()=>setDirectMode('facility')}>회원권·시설물이용권 양도 계산</button>
