@@ -80,6 +80,8 @@ A씨는 다른 지역의 공유오피스를 계약해 사업자등록을 했지�
 
 [사업자등록·기장과 감면 검토 상담](https://pf.kakao.com/_CcxlJG)에 현재 상황을 남겨 주세요. 기존 사업 이력의 창업 해당 여부는 [기존 사업자의 유튜브 창업감면 검토](https://www.jttax.co.kr/insights/existing-business-youtuber-startup-tax-relief.html)에서 별도로 설명합니다.
 
+이 내용을 질문과 답변 형식으로 살펴보려면 [네이버 블로그의 유튜버 사업장·창업감면 안내](https://blog.naver.com/jt_tax/224456468565)를 함께 읽어 보세요.
+
 ## 확인한 근거와 적용 범위
 
 - [조세특례제한법 제6조](https://www.law.go.kr/법령/조세특례제한법/제6조): 창업 시기별 지역 규정과 창업 제외 사유
