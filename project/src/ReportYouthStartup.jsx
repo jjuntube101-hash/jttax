@@ -131,8 +131,8 @@ const YS_QS = [
   },
   {
     id: 'annualRevenue', tier: 'detail', section: '연 수입금액', numeric: true, money: true, optional: true,
-    q: '올해(' + YS_REVENUE_YEAR + '년) 연 수입금액(매출)은 대략 얼마인가요? (선택)',
-    sub: '청년이 아니어도 그 과세연도의 연 수입금액이 1억 4백만원 이하인 「소규모」 창업이면 청년과 같은 높은 감면율을 받습니다(§6⑥, 소규모 특례 — 2026년 1월 1일 이후 시작하는 과세연도 기준이며, 그 전에 시작한 과세연도는 8천만원). 올해 예상 연 매출을 넣으면 올해(' + YS_REVENUE_YEAR + '년) 과세연도 기준으로 판정합니다.',
+    q: '올해(' + YS_REVENUE_YEAR + '년) 연 수입금액(매출)은 대략 얼마인가요? (선택, 법인은 이번 사업연도)',
+    sub: '청년이 아니어도 그 과세연도의 연 수입금액이 1억 4백만원 이하인 「소규모」 창업이면 청년과 같은 높은 감면율을 받습니다(§6⑥, 소규모 특례 — 2026년 1월 1일 이후 시작하는 과세연도 기준이며, 그 전에 시작한 과세연도는 8천만원). 개인은 올해(' + YS_REVENUE_YEAR + '년) 과세연도 기준으로 판정합니다. 법인은 사업연도 시작일에 따라 기준이 달라 8천만원 초과 구간은 상담에서 확인합니다.',
     placeholder: '예: 80,000,000',
   },
   {
@@ -230,7 +230,9 @@ function mapAnswersToYouth(a, industryMatch, region) {
   }
   if (Number(a.annualRevenue) > 0) {
     body.annual_revenue = Number(a.annualRevenue);
-    body.tax_year = YS_REVENUE_YEAR;   // 질문이 «올해» 매출을 묻는다 — §6⑥ 한도는 과세연도 개시 시점으로 갈린다(부칙 제21223호 §2)
+    // 개인은 과세기간이 1.1~12.31 이라 «올해»가 곧 과세연도 개시 연도다. 법인은 사업연도가 역년이 아닐 수 있어 보내지 않는다
+    // (엔진이 8천만 초과~1억4백만 구간을 보수적으로 판정하고 안내) — §6⑥ 한도는 과세연도 개시 시점으로 갈린다(부칙 제21223호 §2).
+    if (a.entityType !== '법인') body.tax_year = YS_REVENUE_YEAR;
   }
   if (a.employeeCount !== undefined && a.employeeCount !== '') body.employee_count = Number(a.employeeCount);
   if (Number(a.expectedTax) > 0) body.expected_annual_tax = Number(a.expectedTax);
