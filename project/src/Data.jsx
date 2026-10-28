@@ -351,6 +351,7 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "youtuber-startup-business-location", tag: "크리에이터·창업감면", date: "2026.10.28", title: "유튜버 창업감면의 지역 판단: 등록 주소·실제 사업장·이전 이력을 대조하는 순서", excerpt: "유튜버의 등록 주소와 실제 업무 장소가 다르거나 작업실을 옮길 때 확인할 창업 시기·증빙·적용 규정" },
     { slug: "adsense-foreign-exchange-certificate-records", tag: "크리에이터·외화 증빙", date: "2026.10.27", title: "애드센스 신고자료 대조: 외국환매입증명서와 정산·입금 내역의 역할", excerpt: "발급 다음 단계인 자료 대조와 지급 경로별 세무 검토" },
     { slug: "coupang-partners-withholding-tax-filing", tag: "크리에이터·세금 신고", date: "2026.10.27", title: "쿠팡파트너스 3.3% 원천징수 후 신고: 정산자료와 장부를 맞추는 순서", excerpt: "미리 뗀 세금과 최종 신고를 구분하고 정산자료를 모으는 방법" },
     { slug: "existing-business-youtuber-startup-tax-relief", tag: "크리에이터·창업감면", date: "2026.10.27", title: "기존 사업자의 유튜브 창업감면 검토: 등록 이력과 실제 사업 개시를 구분해야 하는 이유", excerpt: "두 국세청 회신을 바탕으로 등록 이력과 실제 창업을 구분" },
