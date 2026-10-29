@@ -244,6 +244,11 @@ const ACQ_QS = [
       ['childbirth', '자녀 출산·양육 (출산양육 감면)', '지특법 §36의5'],
     ],
   },
+  {id:'fixedExemptionChoice',section:'생애최초 합산사실',q:'연부취득 및 1년 내 동일소유자·연접 부동산 취득 합산이 없음을 확인했나요?',
+    sub:'생애최초 자격과 별도 확인입니다. 엔진이 일반 200만원군의 정확한 전액면제 요건을 확인한 경우에만 반영합니다. 부분감면의 교육세를 확정하는 답이 아닙니다.',
+    optional:true,opts:[['yes','자료로 무합산 확인',''],['unknown','미확인 또는 합산사실 있음','확정 세액 보류']],showIf:a=>a.reduction==='first'},
+  {id:'fixedExemptionEvidence',section:'생애최초 합산사실',q:'무합산 사실을 확인한 자료·검토 근거를 적어 주세요.',
+    sub:'예: 연부계약 여부, 동일소유자·연접 취득내역 검토. 고객 이름·주민번호는 적지 마세요.',freeform:true,showIf:a=>a.reduction==='first'&&a.fixedExemptionChoice==='yes'},
   /* ★ 260921 R3-F1: 「1세대 1주택 증여 예외」를 시가표준액 «앞»으로 옮겼다.
      예외에 해당하면 조정지역이어도 중과가 없으므로 시가표준액을 물을 이유가 없다 —
      순서를 바꾸면 물어야 할 사람에게만 묻게 된다. */
@@ -499,8 +504,13 @@ function acqCalcFromEngine(ej) {
   if (!c || typeof c !== 'object' || Array.isArray(c)) return { precise: false, engineState: 'down' };
   if (c['오류'] || c['상태'] !== 'ok') return { precise: false, engineState: 'refused' };
   if (!window.jtValidCalc(c, ACQ_ENGINE_REQUIRED)) return { precise: false, engineState: 'down' };
+  const legacyUnresolved = ['생애최초','출산양육'].includes(c['감면유형']) && c['감면금액'] > 0
+    && (c['지방교육세'] > 0 || c['농어촌특별세'] > 0);
+  const review = ej.review || (legacyUnresolved ? {schema_version:'calculation-review/1',certainty:'provisional',can_present_amount:false,can_generate_commentary:false,can_share:false,required_facts:[],issues:[{code:'LEGACY_ACQ_UNRESOLVED',message:'감면 후 부가세목의 확정 여부와 계산기 버전을 확인해 주세요. 대표액은 신고·공유하지 않습니다.'}]} : null);
   return {
-    precise: true, engineVer: ej.version && ej.version.engine,
+    precise: !(review && review.can_present_amount !== true), ...(review && !review.can_present_amount ? {engineState:'review'} : {}),
+    calculationReview: review, engineVersion: ej.version || null,
+    engineVer: ej.version && ej.version.engine,
     totalTax: c['세액'], acqTax: c['취득세'], eduTax: c['지방교육세'],
     farmTax: c['농어촌특별세'] || 0, taxBase: c['과세표준'], appliedRate: c['적용세율'],
     heavyApplied: c['중과여부'], heavyReason: c['중과사유'], housingNum: c['주택수'],
@@ -568,6 +578,10 @@ function acqFallbackGaps(answers, calc) {
   /* ── ② 엔진 값이 없으면 어떤 입력이든 막는다 ──────────────────────────────
      이 화면에는 자체 계산식이 없으므로 «엔진이 준 금액»이 없으면 보여 줄 금액이 없다.
      사유는 «엔진이 거부했다(refused)»와 «연결하지 못했다(down·미지정)» 둘이다. */
+  if (calc.calculationReview && calc.calculationReview.can_present_amount !== true) {
+    return unknown.concat((calc.calculationReview.issues || []).map(x=>x.message).filter(Boolean),
+      (calc.calculationReview.issues || []).length ? [] : ['이 결과는 확정성 검토가 필요해 금액을 표시하지 않습니다.']);
+  }
   if (calc.precise) return unknown;
   return unknown.concat([calc.engineState === 'refused'
     ? '입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다 — 세무사 확인이 필요합니다.'
@@ -590,7 +604,11 @@ function acqIsQuick(q, answers) {
    ⚠️ «아직 묻지도 않은» 상세 단계 문항은 고르지 않는다 — 막은 이유와 무관한 곳으로
       보내면 「빠진 질문으로 돌아가기」가 거짓말이 된다.
    둘 다 없으면 null (앞선 답이 서로 모순인 경우 — 화면이 첫 문항으로 보내 훑게 한다). */
-function acqFirstOpenQuestion(answers) {
+function acqFirstOpenQuestion(answers, review) {
+  if(review && (review.required_facts||[]).includes('fixed_exemption_facts')) {
+    const id=answers.fixedExemptionChoice==='yes'&&!String(answers.fixedExemptionEvidence||'').trim()?'fixedExemptionEvidence':'fixedExemptionChoice';
+    return ACQ_QS.find(q=>q.id===id);
+  }
   const visible = ACQ_QS.filter((q) => !q.showIf || q.showIf(answers));
   const unsure = visible.find((q) => answers[q.id] === 'unsure');
   if (unsure) return unsure;
@@ -1234,7 +1252,16 @@ function JTReportAcquisition({ setRoute, onBack }) {
       let calc;
       const acqRequest = mapAnswersToAcquisition(answers);
       try {
-        calc = acqCalcFromEngine(await callAcqEngine(acqRequest));
+        let response = await callAcqEngine(acqRequest);
+        // Ask the engine about the exact pre-rounding exemption branch first.
+        // Never infer this branch from price or turn a user's missing fact into true.
+        if (response.review && (response.review.required_facts || []).includes('fixed_exemption_facts')
+            && answers.fixedExemptionChoice === 'yes') {
+          const evidence=String(answers.fixedExemptionEvidence||'').trim();
+          if(!evidence) throw new Error('무합산 사실을 확인한 자료·검토 근거를 입력해 주세요.');
+          response=await callAcqEngine({...acqRequest,fixed_exemption_facts:{ordinary_single_acquisition_confirmed:true,evidence_ref:evidence}});
+        }
+        calc = acqCalcFromEngine(response);
       } catch (e) {
         console.warn('취득세 엔진 호출 실패', e);
         calc = acqCalcFromEngineError(e);
@@ -1263,7 +1290,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
       try {
         if (acqNewType) throw new Error('신규 유형 — 자동 해설 미사용');
         if (!(window.claude && window.claude.complete)) throw new Error('claude 미가용');
-        const prompt = `너는 한국 세무사다. 아래 취득세 계산을 보고 JSON으로만 답하라.\n취득원인:${answers.acquisitionType} 종류:${answers.propertyType} 가액:${formatWon(Number(answers.propertyValue) || 0)} 총세액:${formatWon(calc.totalTax)}\n{"headline":"한줄요약","cautions":[{"title":"","detail":""}],"saving_ideas":[{"title":"","detail":""}],"followup":["필요자료"]}`;
+        const prompt = `너는 한국 세무사다. 아래 취득세 계산을 보고 JSON으로만 답하라.\n취득원인:${answers.acquisitionType} 종류:${answers.propertyType} 가액:${formatWon(Number(answers.propertyValue) || 0)} 총세액:${formatWon(calc.totalTax)}\n취득일:${answers.acquisitionDate} 감면선택:${answers.reduction||'none'}\n확인범위:${JSON.stringify(calc.calculationReview||{certainty:'legacy-version-unverified'})}\n요건·주의사항:${JSON.stringify(calc.engineWarnings||[])}\n계산버전:${JSON.stringify(calc.engineVersion||{})}\n{"headline":"한줄요약","cautions":[{"title":"","detail":""}],"saving_ideas":[{"title":"","detail":""}],"followup":["필요자료"]}`;
         const txt = await window.claude.complete(prompt);
         commentary = JSON.parse(txt.match(/\{[\s\S]*\}/)[0]);
       } catch (cErr) {
@@ -1340,13 +1367,13 @@ function JTReportAcquisition({ setRoute, onBack }) {
     const acqGaps = acqFallbackGaps(answers, calc);
     const acqBlocked = acqGaps.length > 0;
     /* 차단 화면에서 «돌아갈 문항» — 계산이 아니라 이동 대상만 고른다(acqFirstOpenQuestion 주석) */
-    const acqOpenQ = acqFirstOpenQuestion(answers);
+    const acqOpenQ = acqFirstOpenQuestion(answers, calc.calculationReview);
     /* ★ 차단이면 «결과 화면을 아예 만들지 않는다».
        가릴 것을 하나씩 세는 방식은 새 표현이 늘 때마다 샜다(260806: 계산표·공유버튼·
        AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
     if (acqBlocked) {
       /* 사유 구분: ①입력 불확정 → 'input' / 엔진이 거부 → 'refused' / 그 밖(연결 실패·미지정) → 'down' */
-      const acqBlockReason = acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
+      const acqBlockReason = calc.engineState === 'review' || acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
       return (
         <div className="jt-container">
           <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산 결과" subtitle={acqBlockReason === 'input' ? '정밀 계산 필요' : (acqBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
@@ -1360,7 +1387,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
                 ? <React.Fragment>확인이 필요한 문항: <strong>{acqOpenQ.qFor ? acqOpenQ.qFor(answers) : acqOpenQ.q}</strong><br />지금까지 답하신 다른 내용은 그대로 남습니다.</React.Fragment>
                 : (acqBlockReason === 'down'
                     ? <React.Fragment>지금까지 답하신 내용은 그대로 남습니다.</React.Fragment>
-                    : <React.Fragment>입력으로 돌아가 앞선 답{acqBlockReason === 'input' ? '(특히 주택 수)' : ''}을 다시 확인해 주세요. 지금까지 답하신 내용은 그대로 남습니다.</React.Fragment>)}
+                    : <React.Fragment>입력으로 돌아가 필요한 사실과 근거를 다시 확인해 주세요. 지금까지 답하신 내용은 그대로 남습니다.</React.Fragment>)}
             </p>
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--primary" onClick={() => goToQuestion(acqOpenQ)}>
@@ -1523,7 +1550,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
           {/* ★ 차단 중에는 «공유·전송»도 막는다 — 화면에서 금액을 가려도
               kakaoSummary·reportSummary·reportDetail 에 세액이 담겨 클립보드와
               Web3Forms 로 나간다 (260806 Codex P0). 위의 차단 조기 반환이 이 컴포넌트까지 오지 못하게 한다. */}
-          <JTReportConvert
+          <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
             setRoute={setRoute}
             calcId="acquisition"
             completeEligible={true}

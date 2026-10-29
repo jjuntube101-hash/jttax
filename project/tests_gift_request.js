@@ -195,7 +195,7 @@ console.log('════ giftCalcFromEngine — 엔진 값을 그대로 옮긴�
     주요공제: { 증여재산가액: 500000000, 납부세액공제: 4850000, 증여재산공제: 50000000, 혼인출산공제: 0, 가산한사전증여: 0, 채무공제: 0 },
     경고사항: ['[확인 필요] 세대생략 여부를 알 수 없어 «아님»으로 가정했습니다.'] }, version: { engine: 'e1' } }, 1));
   eq(calc, {
-    precise: true, engineVer: 'e1', taxBase: 450000000, calcTax: 85000000, genSkipSurcharge: 12000000, filingCredit: 2550000, totalTax: 82450000,
+    precise: true, engineVer: 'e1', engineVersion: {engine:'e1'}, calculationReview:null, taxBase: 450000000, calcTax: 85000000, genSkipSurcharge: 12000000, filingCredit: 2550000, totalTax: 82450000,
     giftValue: 500000000, giftCredit: 4850000, nonTaxableMsg: null, steps: [{ 항목: '과세표준', 금액: 450000000 }],
     engineWarnings: ['[확인 필요] 세대생략 여부를 알 수 없어 «아님»으로 가정했습니다.'],
   }, '유효 응답 → 금액 필드 전체(엔진 값 그대로)');

@@ -332,8 +332,13 @@ const PRECEDENT_BANK = {
   ],
 };
 
-function JTConvertPrecedents({ reportTag }) {
-  const cases = PRECEDENT_BANK[reportTag] || PRECEDENT_BANK.LEGACY;
+function JTConvertPrecedents({ reportTag, calcId }) {
+  const candidates = PRECEDENT_BANK[reportTag] || [];
+  // A marketing category is not a legal applicability decision for a tax.
+  // Existing source cards remain preserved until tax/scope/source review is recorded.
+  const cases = calcId ? candidates.filter(c=>Array.isArray(c.taxScope)&&c.taxScope.includes(calcId)
+    &&c.applicabilityReviewed===true&&typeof c.authorityUrl==='string'&&c.authorityUrl.startsWith('https://www.law.go.kr/')) : candidates;
+  if(!cases.length)return calcId ? <section className="jt-report-result__section" aria-label="판례·예규 적용 범위"><h3>판례·예규 적용은 별도 검토가 필요합니다</h3><p>이 계산의 사실관계·세목·적용시점을 확인한 자료만 연결합니다. 다른 세목의 일반 참고자료를 이번 계산의 적용 근거로 표시하지 않습니다.</p></section> : null;
   return (
     <section className="jt-report-result__section">
       <div style={{fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', color: '#888', marginBottom: 8}}>PUBLIC PRECEDENTS</div>
@@ -534,19 +539,29 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
 }
 window.JTConvertPdfGate = JTConvertPdfGate;
 
+function JTCalculationEvidence({engineVersion}) {
+  if(!engineVersion)return null;
+  return (<section className="jt-report-result__section" aria-label="적용 계산 버전"><h3>적용 계산과 확인 범위</h3><p>입력 사실과 지원 범위에 따른 계산입니다. 실제 사건의 적격 요건과 신고 내용을 확인하세요.</p><dl><dt>계산 규칙</dt><dd>{engineVersion.calculation_revision || '버전 미확인'}</dd><dt>실행 빌드</dt><dd>{engineVersion.build_id || '빌드 미확인'}</dd><dt>세율 자료</dt><dd>{engineVersion.tax_rates_version} · {engineVersion.tax_rates_effective_date}</dd></dl></section>);
+}
+window.JTCalculationEvidence=JTCalculationEvidence;
+
 // ===== 통합 랩퍼 =====
-function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, kakaoSummary, urgent, calcId, completeEligible, precise, quick }) {
+function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, kakaoSummary, urgent, calcId, completeEligible, precise, quick, engineVersion, calculationReview }) {
   // calc_complete — «결과가 확정된» 계산기에서만 발화 (jtCalcComplete 정의는 Report.jsx, 세션당 1회)
   useCvtEffect(function () {
-    if (completeEligible === true && calcId && window.jtCalcComplete) {
+    if ((!calculationReview || calculationReview.can_share === true) && completeEligible === true && calcId && window.jtCalcComplete) {
       window.jtCalcComplete(calcId, { precise: precise, quick: quick });
     }
-  }, [completeEligible, calcId, precise, quick]);
+  }, [completeEligible, calcId, precise, quick, calculationReview]);
+  if(calculationReview && calculationReview.can_share!==true)return <section role="status"><h3>확인이 필요한 계산입니다</h3><p>미확정 세액은 공유하거나 상담 요약으로 전송하지 않습니다. 필요한 사실과 근거를 먼저 확인해 주세요.</p></section>;
+  const versionText=engineVersion ? [engineVersion.engine,engineVersion.calculation_revision,engineVersion.build_id].filter(Boolean).join(' · ') : '';
+  if(versionText){if(kakaoSummary)kakaoSummary+='\n적용 계산 버전: '+versionText;reportSummary=(reportSummary||'')+' / 적용 계산 버전 '+versionText;reportDetail=(reportDetail||'')+'\n\n적용 계산 버전: '+versionText+'\n입력 사실과 지원 범위에 따른 조건부 계산이며 신고 확정이 아닙니다.';}
   return (
     <>
+      <JTCalculationEvidence engineVersion={engineVersion} />
       <JTConvertBanner setRoute={setRoute} urgent={urgent} reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} kakaoSummary={kakaoSummary} />
       <JTConvertLeadCapture reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} />
-      <JTConvertPrecedents reportTag={reportTag} />
+      <JTConvertPrecedents reportTag={reportTag} calcId={calcId} />
       <JTConvertTimeSlots setRoute={setRoute} urgent={urgent} />
       <JTConvertPdfGate reportType={reportType} reportSummary={reportSummary} />
     </>

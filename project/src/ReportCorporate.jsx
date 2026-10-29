@@ -197,7 +197,8 @@ function JTCorporateDirect({onBack,onCredits,initialDraft}) {
     try{
       const body=mapCorporateDirect(a),j=await callCorpEng('/v1/calc/corporate',body),c=j&&j.calc;
       if(!window.jtValidCalc(c,['과세표준','산출세액','납부법인세','지방소득세','총납부세액']))throw new Error(c&&['needs_input','unsupported'].includes(c['상태'])?window.jtEngineMessageForDisplay(c['오류']||c['메시지']||'입력 요건 또는 지원 범위를 확인해 주세요.'):'계산 응답을 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.');
-      setResult(c);
+      if(j.review && j.review.can_present_amount!==true)throw Error('계산 조건의 검토가 필요해 금액을 표시하지 않습니다.');
+      setResult({...c,calculationVersion:j.version||null,calculationReview:j.review||null});
     }catch(e){setError(e.message||'계산할 수 없습니다.');}finally{setBusy(false);}
   };
   return <div className="jt-container"><JTReportShell title="법인세 직접 계산" subtitle="확인한 사업연도 소득과 공제 입력" onBack={()=>{session.invalidate();onBack();}} tag="CONSULTING">
@@ -214,7 +215,8 @@ function JTCorporateDirect({onBack,onCredits,initialDraft}) {
       {input('foreignPaid','당기 직접 외국법인세액 (원)')}
       <p>외국세·연구·투자·고용 공제는 국가별·발생연도별 원자료가 필요합니다. 이 간이 계산에 합계액만 넣어 세액을 확정하지 않습니다.</p>
       {onCredits&&<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{session.invalidate();onCredits({...a,foreignConfirmed:false});}}>공제·이월 원장으로 이동</button>}
-      <p>기납부세액은 이 화면에 포함되지 않습니다. 소득공제·비과세소득의 최저한세 분류와 원장 미지원 감면은 별도 검토가 필요합니다.</p>
+      {result && typeof JTCalculationEvidence==='function' && <JTCalculationEvidence engineVersion={result.calculationVersion} />}
+    <p>기납부세액은 이 화면에 포함되지 않습니다. 소득공제·비과세소득의 최저한세 분류와 원장 미지원 감면은 별도 검토가 필요합니다.</p>
       <button className="jt-btn jt-btn--primary" disabled={busy} type="submit">{busy?'계산 중…':'법인세 계산'}</button>
     </form>
     {error&&<p role="alert">{error}</p>}
@@ -300,6 +302,10 @@ function JTReportCorporate({ setRoute, onBack }) {
           callCorpEng('/v1/calc/corporate', { net_income: Math.max(income - salary, 0) }),
           salary > 0 ? callCorpEng('/v1/calc/income', { salary_income: salary, spouse, dependents: deps, children_count: kids }) : Promise.resolve(null),
         ]);
+        const channels=[pj,cj,sj].filter(Boolean);
+        if(channels.some(j=>j.review&&j.review.can_present_amount!==true))throw Error('비교에 포함된 계산의 조건 검토가 필요합니다.');
+        const identities=channels.map(j=>j.version&&j.version.build_sha256).filter(Boolean);
+        if(identities.length && (identities.length!==channels.length||new Set(identities).size!==1))throw Error('비교 계산의 실행 버전이 다릅니다. 같은 버전으로 다시 계산해 주세요.');
         const pc = pj && pj.calc, cc = cj && cj.calc, sc = sj && sj.calc;
         // P1-4(코덱스): 정상 0원(소액 사업소득 종소세 0원)을 실패로 오판하지 않도록 '>0'이 아닌 공통 무결성 검증기 사용.
         // 오류·부분 응답·NaN·필드누락은 거부하되 0원은 정상 인정.
@@ -327,7 +333,7 @@ function JTReportCorporate({ setRoute, onBack }) {
               calc.dividendUnconfirmed = (calc.retained <= 20_000_000 && !noOther);
             }
           }
-          calc.precise = true; calc.engineVer = pj.version && pj.version.engine;
+          calc.precise = true; calc.engineVer = pj.version && pj.version.engine; calc.engineVersion = pj.version || null; calc.calculationReview = pj.review || null;
         }
       } catch (e) { console.warn('법인전환 엔진 연결 실패', e); calc.engineErr = true; }
 
@@ -475,7 +481,7 @@ function JTReportCorporate({ setRoute, onBack }) {
           )}
 
           {calc.precise && typeof JTReportConvert === 'function' && (
-            <JTReportConvert
+            <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
               calcId="corporate"
               completeEligible={true}
               precise={calc.precise}

@@ -998,7 +998,7 @@ function cgtCalcFromEngine(ej) {
     nonTaxableMsg = (c['비과세사유'] || '1세대 1주택 비과세') + ' — 전액 비과세 (정밀 엔진 판정)';
   }
   return {
-    precise: true, engineVer: ej.version && ej.version.engine,
+    precise: true, engineVer: ej.version && ej.version.engine, engineVersion: ej.version || null, calculationReview: ej.review || null,
     capGain: c['양도차익'], taxBase: c['과세표준'], ltDeduction: c['장기보유특별공제'], ltRate,
     basicDeduction: c['기본공제'], baseTax: c['세액'], localTax: c['지방소득세'], totalTax: c['총세부담'],
     ruralTax: c['농어촌특별세'], penaltyTax: c['가산세'], penaltyScope: c['가산세범위'],
@@ -1684,7 +1684,7 @@ cautions 3개, saving_ideas 2~3개.`;
             kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
             Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
         {!cgtBlocked && (
-        <JTReportConvert
+        <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
           setRoute={setRoute}
           calcId="cgt"
           completeEligible={true}

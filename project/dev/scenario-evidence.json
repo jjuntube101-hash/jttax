@@ -1,0 +1,4134 @@
+{
+  "schema_version": "scenario-evidence-index/1",
+  "source_as_of": "2026-10-29",
+  "sources": [
+    {
+      "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+      "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+      "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4"
+    },
+    {
+      "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+      "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+      "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255"
+    }
+  ],
+  "families": [
+    {
+      "id": "CGT01",
+      "tax": "양도소득세",
+      "title": "일반 토지·상가 단일 양도",
+      "required_facts": "양도·취득일, 실가·경비·등기·용도",
+      "recorded_supported_scope": "확인 사실의 일반 단일양도",
+      "recorded_boundary": "양도·취득일/실가·경비/용도/다른 양도·기본공제 공유 확인; 특례는 별도 검토",
+      "routes": [
+        "/v1/calc/transfer"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-TRANSFER-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/0"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT02",
+      "tax": "양도소득세",
+      "title": "일반 비주택 공동지분",
+      "required_facts": "전체/취득분 가액, 분수지분, 원가 귀속",
+      "recorded_supported_scope": "확인된전체가액→분수지분귀속을1회;양도대가/원가/경비의동일귀속범위;기본공제는지분안분하지않음",
+      "recorded_boundary": "원미만/주택/미확인소유/별도귀속비용/다른취득분·양도는대체금지",
+      "routes": [
+        "/v1/calc/transfer-share"
+      ],
+      "dev_mcp_tools": [
+        "transfer_share_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/transfer_share.py",
+          "symbol": null,
+          "archived_sha256": "e85d6d7012d25b684d522d1b88e383efb34d3c7573af879034079127c728145c",
+          "current_sha256": "e85d6d7012d25b684d522d1b88e383efb34d3c7573af879034079127c728145c",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "transfer_share_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT02-positive",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "8543e7342790c91255b7610a6deb001ff072fd93d1a088f2b306e080c0ef94bf",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/0"
+        },
+        {
+          "id": "CGT02-unconfirmed",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "e55711b18b111981edb13c22afb47018747f97875f082e4325c9950d5d4bfb1f",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/1"
+        },
+        {
+          "id": "CGT02-fractional",
+          "classification": "boundary",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "f066a2aeaa26ce76381307aa905a58297ef2b78006cec7f012ac0f731c53bb8c",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/2"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/0"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT03",
+      "tax": "양도소득세",
+      "title": "여러 취득분을 나누어 취득한 자산",
+      "required_facts": "취득분별 날짜·원가·경비와 양도가액",
+      "recorded_supported_scope": "출처있는비주택취득분각원가·날짜로차익/장특;합산후기본공제1회;split-public/1및별도annual-public/4",
+      "recorded_boundary": "단일취득양도와연간다른재산혼합/정밀원미만경계·손실·특수세율제한.구지원경로는중간값1000원/산출100원가드",
+      "routes": [
+        "/v1/calc/transfer-split"
+      ],
+      "dev_mcp_tools": [
+        "transfer_split_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/transfer_split.py",
+          "symbol": null,
+          "archived_sha256": "dbac71c0a344c1b72c19f45dc1539fc6ed8a239f9a59b53633be7f12f9e31eee",
+          "current_sha256": "dbac71c0a344c1b72c19f45dc1539fc6ed8a239f9a59b53633be7f12f9e31eee",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/workflows/transfer_split_common_facts.py",
+          "symbol": null,
+          "archived_sha256": "f3290a324451ad9860c5398e5a0d96e8dc41cdb5d04ce6e7d53003e8931c9c51",
+          "current_sha256": "f3290a324451ad9860c5398e5a0d96e8dc41cdb5d04ce6e7d53003e8931c9c51",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/transfer_annual_split.py",
+          "symbol": null,
+          "archived_sha256": "cec20e32b3b6e530b35610c64efc0e4ba1f73d75521956f697f339024baddf18",
+          "current_sha256": "cec20e32b3b6e530b35610c64efc0e4ba1f73d75521956f697f339024baddf18",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "transfer_split_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT03-positive",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "cf9de664f9fcc3d8491351925f447619a64034acf3f7b882d4782a07a93f3a95",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/21"
+        },
+        {
+          "id": "CGT03-missing-attribution",
+          "classification": "missing",
+          "recorded_status": "PUBLIC_SCHEMA_REJECT_422",
+          "recorded_passed": true,
+          "input_sha256": "47af8ec76fc0620be8919e4b0c2e28e69c56264146a81c7fb5e8f96a74b17b01",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/22"
+        },
+        {
+          "id": "CGT03-whole-price-conflict",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "3a0a58ff8c24d54a6e17918fac889ed574864b3e03f1ab558dd61d4522540319",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/23"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/7"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT04",
+      "tax": "양도소득세",
+      "title": "같은 해 여러 자산·선행 예정신고",
+      "required_facts": "해당 연도 전체 양도, 세율군, 선행 산출세액",
+      "recorded_supported_scope": "버전별당해전체주택/비주택·지분/한정취득분을받아기본공제1회.선행산출세액차감은별도원장,납부대사도별도",
+      "recorded_boundary": "다른연도/누락양도/중복공제·세율군미확정을일반합산하지않음;기납부현금=산출세액으로치환금지",
+      "routes": [
+        "/v1/calc/transfer-annual"
+      ],
+      "dev_mcp_tools": [
+        "transfer_annual_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/transfer_annual.py",
+          "symbol": null,
+          "archived_sha256": "5cb00880d813173b5bd2f7dd0cfcad0ef81da08208823e2e780db57fab070e9e",
+          "current_sha256": "5cb00880d813173b5bd2f7dd0cfcad0ef81da08208823e2e780db57fab070e9e",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/transfer_annual_prior_assessed.py",
+          "symbol": null,
+          "archived_sha256": "45b0ed9cd93df6b41430f247d28aee0a98eebe7de86dff29f7834c8f44694c79",
+          "current_sha256": "45b0ed9cd93df6b41430f247d28aee0a98eebe7de86dff29f7834c8f44694c79",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "transfer_annual_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT04-positive",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "2ed06a0261a070766bb4085bf180303e93ad785ba41e4a99c1b1641f2e319e0d",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/6"
+        },
+        {
+          "id": "CGT04-missing-annual",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "78fa9033fec8556540d1f81a6dd0b4bbd9d13b0a323bcc4c7316c8d93fe20a63",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/7"
+        },
+        {
+          "id": "CGT04-nonbusiness",
+          "classification": "boundary",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "4552478df5949a373cc6864754f5de5672cffe2c646718774f612db0d98138d3",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/8"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/2"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT05",
+      "tax": "양도소득세",
+      "title": "1세대1주택·일시적2주택·상속주택",
+      "required_facts": "세대·보유자산, 계약/취득/양도일, 거주와 지역",
+      "recorded_supported_scope": "확인 사실의 일반 단일양도",
+      "recorded_boundary": "양도·취득일/실가·경비/용도/다른 양도·기본공제 공유 확인; 특례는 별도 검토",
+      "routes": [
+        "/v1/calc/transfer"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "TRANSFER-MISSING-HOUSE-FACTS",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/4"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT06",
+      "tax": "양도소득세",
+      "title": "증여 후 양도·이월과세",
+      "required_facts": "증여 관계·날짜·전소유자 원가·증여세 원자료",
+      "recorded_supported_scope": "검토한배우자단일증여일반상가/별도한정2025주택계약.5/10년경과·비교갈래각보유기간·기증여산출세액원자료·상당액1회",
+      "recorded_boundary": "is_gifted만으로일반원가확정금지.사망/직계존비속/수용/부분증여/연간다른양도등을검증된배우자계약으로대체금지",
+      "routes": [
+        "/v1/calc/transfer"
+      ],
+      "dev_mcp_tools": [
+        "transfer_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/transfer_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "0ae770f6dbcd22e48da2e355902e011e33c09980c68616992ea23203dd16e15f",
+          "current_sha256": "0ae770f6dbcd22e48da2e355902e011e33c09980c68616992ea23203dd16e15f",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/carryover_gift_tax.py",
+          "symbol": null,
+          "archived_sha256": "7fb2df4f946a52475b76f1e4cf0177970600618a2445c434f1733fc9376b61a0",
+          "current_sha256": "7fb2df4f946a52475b76f1e4cf0177970600618a2445c434f1733fc9376b61a0",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/types/transfer_types.py",
+          "symbol": null,
+          "archived_sha256": "77f27ae72825dea342dc9891b3588cf77bddf85e81bb3c2e74ee9701373ff679",
+          "current_sha256": "77f27ae72825dea342dc9891b3588cf77bddf85e81bb3c2e74ee9701373ff679",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "transfer_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT06-positive",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "afb42ccac06fead4c6cf95c67a6a37549671255b94766b71093ad52864921e6b",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/3"
+        },
+        {
+          "id": "CGT06-missing-review",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "7eee4a1668e0fabffa186ac64d97a5c6b6a5ddf47614d62d5766f9fb16fe7e11",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/4"
+        },
+        {
+          "id": "CGT06-expense-conflict",
+          "classification": "boundary",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "bece4a9b3192f8c95192372667560fde7020071c958876dd899d3a6c17c4fa50",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/5"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/1"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT07",
+      "tax": "양도소득세",
+      "title": "상생임대·등록임대 양도 특례",
+      "required_facts": "계약갱신, 임대료·기간·등록말소, 거주",
+      "recorded_supported_scope": "registered임대raw이력은취득/등록/임대동일시점등최초정상범위.상생임대는법155의3자격을호출자가확인한flag계약",
+      "recorded_boundary": "상생flag가기간/직전임대료/신규계약자격자동심사아님.등록말소·부분임대기간·주년경계·미확인임대료변경가드보존",
+      "routes": [
+        "/v1/calc/transfer"
+      ],
+      "dev_mcp_tools": [
+        "transfer_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/transfer_rental.py",
+          "symbol": null,
+          "archived_sha256": "d921f803265448522f9e14aefda478010fc9463997c2743470526c2647458097",
+          "current_sha256": "d921f803265448522f9e14aefda478010fc9463997c2743470526c2647458097",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/exemption_rules.py",
+          "symbol": null,
+          "archived_sha256": "dea048cff5e45760bbcbf0b788b862d0511abbe7ebb24d31b9d4a7bf1a86240a",
+          "current_sha256": "dea048cff5e45760bbcbf0b788b862d0511abbe7ebb24d31b9d4a7bf1a86240a",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "transfer_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT07-registered8yr",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "7457b59ca34dce1b61755f0871c6500fe6c2b1a75055f30d14c22be692944aa5",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/52"
+        },
+        {
+          "id": "CGT07-missing-transition",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "47379b69513f7df5e7957723ac4b1c0f05b75a7968ae91b3e9e2166607210269",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/53"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/18"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT08",
+      "tax": "양도소득세",
+      "title": "한 건물의 주택·상가와 부속토지",
+      "required_facts": "용도별 면적·가액·시점·부속토지 범위",
+      "recorded_supported_scope": "단일전체겸용건물·실제용도면적·법정가액배분·부수토지배율·한번합산/기본공제1회",
+      "recorded_boundary": "주택면적우세+총액12억초과사례는직접해석미확정가드.초과토지/부분양도/용도변경/원미만은별도",
+      "routes": [
+        "/v1/calc/mixed-building-transfer"
+      ],
+      "dev_mcp_tools": [
+        "mixed_building_transfer_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/mixed_building.py",
+          "symbol": null,
+          "archived_sha256": "e6e31653798f7de306c43f67e79a7969d726f1bf694c07727510534b37728e9e",
+          "current_sha256": "e6e31653798f7de306c43f67e79a7969d726f1bf694c07727510534b37728e9e",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "mixed_building_transfer",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT08-positive",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "a4f419c310c493d698cc507fc9abd055d3d25534fadea979a83ea4d6d9023ea7",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/30"
+        },
+        {
+          "id": "CGT08-partial",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "bad30bfe72b4e58485a24420b6a49c3bbb87f6cc9dff14751663fda350805ce7",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/31"
+        },
+        {
+          "id": "CGT08-two-house",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "ce934b6d4a9725199b01ebe89bd3eac9fa8cacb7464cb7c6b9afa41af50a7d44",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/32"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/10"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT09",
+      "tax": "양도소득세",
+      "title": "분양권·입주권·재개발 정비사업",
+      "required_facts": "승계/원조합원, 권리가액, 인가·준공·취득일",
+      "recorded_supported_scope": "2026인가후준공전원조합원·확인인가전후평가/비용/청산금;인가전차익에만장특.별도등록권리경로존재",
+      "recorded_boundary": "주년±1일/단기/분양권·승계입주권/준공주택/비과세고가/양갈래손실·여러양도는동일계약으로대체금지",
+      "routes": [
+        "/v1/calc/original-member-right-transfer"
+      ],
+      "dev_mcp_tools": [
+        "original_member_right_transfer_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/original_member_rights.py",
+          "symbol": null,
+          "archived_sha256": "d8ebcd2da38f3772aa96e0971c3574a7fc88ff6aa6715e4ba2a9e9116bb9035e",
+          "current_sha256": "d8ebcd2da38f3772aa96e0971c3574a7fc88ff6aa6715e4ba2a9e9116bb9035e",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/real_estate_right_transfer.py",
+          "symbol": null,
+          "archived_sha256": "b005c0ff3af8e2fe2cce0e84080a5b0945ae36368516390d6b9a6fce2d042fe9",
+          "current_sha256": "b005c0ff3af8e2fe2cce0e84080a5b0945ae36368516390d6b9a6fce2d042fe9",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "original_member_right_transfer",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT09-original-member",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "9c8654f9fabef8c07d142f5fac0b14ed37207eece30c97cc26e31bc5fce9d75b",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/50"
+        },
+        {
+          "id": "CGT09-missing-qualification",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "4e9c243ca813da9a464c4c46070f8df54c34fe2f6a6bdf2af8a0a369c88f6c93",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/51"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/17"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT10",
+      "tax": "양도소득세",
+      "title": "시설물이용권·등기 권리·사업용 영업권",
+      "required_facts": "재산별 구분 대가·권리 성질·사업용 부동산",
+      "recorded_supported_scope": "구분대가사업용토지또는건물+영업권,상각원가·공통경비1회·기본공제1회.별도시설물이용권/등기권리",
+      "recorded_boundary": "혼합주택/불명확대가/양도차손/다른양도/부가세·기납부정산제외.보유주년경계는현가드범위로한정",
+      "routes": [
+        "/v1/calc/goodwill-joint-transfer"
+      ],
+      "dev_mcp_tools": [
+        "goodwill_joint_transfer_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/goodwill_joint.py",
+          "symbol": null,
+          "archived_sha256": "f293ac6311c89fd43104e6e1c219be5915486c59d593bca680d4d7f70b5d5e06",
+          "current_sha256": "f293ac6311c89fd43104e6e1c219be5915486c59d593bca680d4d7f70b5d5e06",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/facility_right_transfer.py",
+          "symbol": null,
+          "archived_sha256": "4587bd2b81374d107198cc6f84e6eb9e7de3d97b3b36a771c35df6926aea3300",
+          "current_sha256": "4587bd2b81374d107198cc6f84e6eb9e7de3d97b3b36a771c35df6926aea3300",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/real_estate_right_transfer.py",
+          "symbol": null,
+          "archived_sha256": "b005c0ff3af8e2fe2cce0e84080a5b0945ae36368516390d6b9a6fce2d042fe9",
+          "current_sha256": "b005c0ff3af8e2fe2cce0e84080a5b0945ae36368516390d6b9a6fce2d042fe9",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "goodwill_joint_transfer",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT10-goodwill-land",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "c4843ab39700cf91bf997421214ed2121dcf78ebd1362e5aaf1ef4ca60fdd8e1",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/82"
+        },
+        {
+          "id": "CGT10-unverified-separate-prices",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "6dc6723a3df67fa8bf45220d61ba95305cb3a9712f2411cacd0df29ed54cff13",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/83"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/32"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT11",
+      "tax": "양도소득세",
+      "title": "과거 공시 전 토지·등급가액·환산취득",
+      "required_facts": "공표가액·최초공시일·등급 시점·법정 선순위",
+      "recorded_supported_scope": "실제1985-01-01~1990-08-29취득토지의1990개별공시지가×취득시시가표준액/두시가표준액평균,정확분수",
+      "recorded_boundary": "등급번호조회/1985의제취득자동화/환산자격/실제취득원가/양도세액자동확정이아님.환산별도선순위검토",
+      "routes": [
+        "/v1/calc/land-standard-value"
+      ],
+      "dev_mcp_tools": [
+        "land_standard_value"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/land_standard_value.py",
+          "symbol": null,
+          "archived_sha256": "44be6cc2d7003dd08131ad29c62b030b170b5c1022069e0503a0934aaf202301",
+          "current_sha256": "44be6cc2d7003dd08131ad29c62b030b170b5c1022069e0503a0934aaf202301",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/converted_acquisition_context.py",
+          "symbol": null,
+          "archived_sha256": "f10e34b8491a06e560e1fe090d5bf88c62ef13ba0560d349b2f516dc9ac48ed0",
+          "current_sha256": "f10e34b8491a06e560e1fe090d5bf88c62ef13ba0560d349b2f516dc9ac48ed0",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "land_standard_value",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CGT11-pre1990-land",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "60131ecca606d4d656a2e9470c8a3cbd6505a60bf1eb2f7d1ee4cac0869b2832",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/57"
+        },
+        {
+          "id": "CGT11-missing-positive-taxvalue",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "2252ba397610083adc4ad0c7e2c8a9358ec2569403ea2466a4a7a4908f150b5d",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/58"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/20"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CGT12",
+      "tax": "양도소득세",
+      "title": "수정신고·경정청구의 세액 차이",
+      "required_facts": "원신고·정정 사실, 기납부/산출세액, 날짜",
+      "recorded_supported_scope": "기존 명시 계약 범위; 이번 전용 실무화면 재인증 없음",
+      "recorded_boundary": "선행 산출세액 차감이 수정신고 전체는 아님",
+      "routes": [
+        "/v1/calc/transfer"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "TRANSFER-APPROVED-CORRECTION",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/11"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ01",
+      "tax": "취득세",
+      "title": "일반 매매·상속·증여와 과표 선택",
+      "required_facts": "취득원인·취득일·시가인정액/표준액·납세자",
+      "recorded_supported_scope": "확인 취득일·취득원인·가액 경로",
+      "recorded_boundary": "날짜 필수 UI 추가; API 직접 결측일의 기존 현재일 기본값은 별도 경계. 조기등기는 일반기한보다 먼저 신고",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-ACQUISITION-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/12"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ02",
+      "tax": "취득세",
+      "title": "과거 일반 취득·주택 지분",
+      "required_facts": "과거 날짜·입증유형·전체/취득분 표준액",
+      "recorded_supported_scope": "history/1출처있는2014~2025일반취득;주택지분계약은대가이미취득분·전체가액환산후세율만판정",
+      "recorded_boundary": "역사적과표·경과계약일/분양예외·지분별면적·취득가액을현행값으로대용금지;감면중과조합제한",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [
+        "acquisition_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/acquisition_history.py",
+          "symbol": null,
+          "archived_sha256": "b38cc93252cdab871c7a36632537a71d4ddd12b2c17a7339134e4127447c7d52",
+          "current_sha256": "b38cc93252cdab871c7a36632537a71d4ddd12b2c17a7339134e4127447c7d52",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/acquisition_declared_facts.py",
+          "symbol": null,
+          "archived_sha256": "50f30aa29b4ae036013dd31cf87a7ada38cda5928327eaebdac512a7d04c2206",
+          "current_sha256": "50f30aa29b4ae036013dd31cf87a7ada38cda5928327eaebdac512a7d04c2206",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "acquisition_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "ACQ02-housing-share",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "0071352f9138e503cd96a47a83c1dd10a09f5512d6abf13e1fb2bff4c6d6f67a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/45"
+        },
+        {
+          "id": "ACQ02-contradict-share",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "468b4ef86b7cedafdd9044c8eb311224e7f8f4cb6569ed044f94123da5d434f8",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/46"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/15"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ03",
+      "tax": "취득세",
+      "title": "건물 신축 원가·비영리·2구성 안분",
+      "required_facts": "도급액·추가/제외·중복원가, 자격, 안분자료",
+      "recorded_supported_scope": "original-costs·nonprofit·components각명시원자료계약;제외/중복원가·자격·안분출처필수",
+      "recorded_boundary": "비영리명칭만으로세율감면판정아님;구성부분과평면가액혼합금지;정수원/전체지분/원인별범위한정",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [
+        "acquisition_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/acquisition_declared_facts.py",
+          "symbol": null,
+          "archived_sha256": "50f30aa29b4ae036013dd31cf87a7ada38cda5928327eaebdac512a7d04c2206",
+          "current_sha256": "50f30aa29b4ae036013dd31cf87a7ada38cda5928327eaebdac512a7d04c2206",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "acquisition_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "ACQ03-individual",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "10a8917d6b90259ba10e7c05bd7c47bf324cc0765b0339276a72a0f4c18bae56",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/47"
+        },
+        {
+          "id": "ACQ03-corporate",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "5cf78dbc9846fdf3b6e950ad93b27f4ab972e899cd4bb516f6ee1d63b59ab826",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/48"
+        },
+        {
+          "id": "ACQ03-missing-overlap",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "f76647395a6b5a00fc63cf3a7f0bfbcb113e4e31b93714d8daf1995d523798b9",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/49"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/16"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ04",
+      "tax": "취득세",
+      "title": "증축·대수선·지목변경·완공주택",
+      "required_facts": "증가가액·시설 성질·취득일·등기와 출처",
+      "recorded_supported_scope": "증축·대수선·지목변경·완공주택취득은별도case명·범위·취득일·증가가액·출처로계산",
+      "recorded_boundary": "일반매매과표로대용금지;실제공사종류/인허가/사용·등기/선행과세가액판정은검토원자료.역사/신축조합제한",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [
+        "acquisition_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/building_major_repair_acquisition.py",
+          "symbol": null,
+          "archived_sha256": "3ebfe32da809a8dd398084e5ec03b10ce753eb830d1de87a24048520a3e3a119",
+          "current_sha256": "3ebfe32da809a8dd398084e5ec03b10ce753eb830d1de87a24048520a3e3a119",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/land_category_change_acquisition.py",
+          "symbol": null,
+          "archived_sha256": "69a493f01d8b17908fbd9c3c7ae394431fff2d5e2347a2e9614f3044ef78e2fb",
+          "current_sha256": "69a493f01d8b17908fbd9c3c7ae394431fff2d5e2347a2e9614f3044ef78e2fb",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/workflows/consultation_facts.py",
+          "symbol": null,
+          "archived_sha256": "aa0d48e56df8334f3a4dac19bb8ce663a254273a4cbd43669f49fe1a374d4f2e",
+          "current_sha256": "aa0d48e56df8334f3a4dac19bb8ce663a254273a4cbd43669f49fe1a374d4f2e",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "acquisition_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "ACQ04-mixed-original",
+          "classification": "positive",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "6b05a321ef3cc063750e9467d78a5f8766e3461c705161fd95b6712e6b452b96",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/80"
+        },
+        {
+          "id": "ACQ04-zero-area",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "9f9caf861543fdb393aecb0cf50b68d0155b2cb5d220a215e7805c8945c8a67e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/81"
+        },
+        {
+          "id": "ACQ04-actual-extension",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "b8f9127d8aab4d105232f6bc7610ae25e013d36e2e04332f247f3f862488cd4e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/115"
+        },
+        {
+          "id": "ACQ04-extension-missing-increase",
+          "classification": "missing",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "5997460c591ba43db49894dbad67a56c83b6ba55ef3e4547644c394f3e8399bc",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/116"
+        },
+        {
+          "id": "ACQ04-actual-major-repair",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "a8f023b7de12542ae3782efe032c7edaec3ca7befa9947ec626d54a702ecf525",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/117"
+        },
+        {
+          "id": "ACQ04-actual-land-change",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "d8ba222e08c1dd803b31928a5911b4352e1994dc5a7976e1c4499db8ccecf97a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/118"
+        },
+        {
+          "id": "ACQ04-completed-developer",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "e74fc67a0befa071f7637a9407211b4426beaf5b713fcbf2d3fca1e262fd501c",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/119"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/31"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ05",
+      "tax": "취득세",
+      "title": "중과제외·생애최초·사후요건",
+      "required_facts": "주택수, 취득/처분·거주·지분·적격 예외 이력",
+      "recorded_supported_scope": "명시한 전용면적 60㎡ 초과/85초과 구간과 소형 300만원 확인의 모순을 차단. 인구감소지역 독립 요건과 구분.",
+      "recorded_boundary": "소형·생애최초·출산 적격은 검토한 사실 전제. 정액 감면 후 지방교육세 총액은 해석 미확정으로 확정 출시군에서 제외. 기존 ok 총액을 법령 정답으로 인증하지 않음.",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [
+        "acquisition_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/acquisition_reduction.py",
+          "symbol": null,
+          "archived_sha256": "efd064e7efa92d280cdaa60681ea75fd815c0db4bda655d328f99a4990ddfdf4",
+          "current_sha256": "efd064e7efa92d280cdaa60681ea75fd815c0db4bda655d328f99a4990ddfdf4",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/acquisition_heavy_exclusion.py",
+          "symbol": null,
+          "archived_sha256": "f2fdf01ea42970ee669d90a9fc07664d7343670655d2ff6e246507434640bb65",
+          "current_sha256": "f2fdf01ea42970ee669d90a9fc07664d7343670655d2ff6e246507434640bb65",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "acquisition_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "ACQ05-first-home",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "a989cb72cc78e5d5487d9c43ec26ed39ec9c7678ca87d8da47f229d9ff4fc811",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/27"
+        },
+        {
+          "id": "ACQ05-contradict-first",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "6754e89a6710a1c76031a31031857501bd916d92eadb382e976238e6af8f70c9",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/28"
+        },
+        {
+          "id": "ACQ05-temporary",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "eafb3beed9dd663e72d2f3422bd49d748a5784115f8569443e538e3dafdc8eb2",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/29"
+        },
+        {
+          "id": "ACQ05-conflict-area100",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "1c8a5b76cc31eca38d498b37e604967d2b8ab4a5defff0dfe8dfd3e20b3a22d1",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/112"
+        },
+        {
+          "id": "ACQ05-small-area60",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "c47e7295ab4f91b0f3f7e1aad2d6aea23e4c3a8401bd99df923f84fee613cd44",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/113"
+        },
+        {
+          "id": "ACQ05-ordinary-area100",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "0bfa4ec753abd2a09417d3532307a27150cd843d2e920cbf5a1f2b64b4716769",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/114"
+        },
+        {
+          "id": "ACQ05-area-class-over85",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "d1a589d558ea9c36ef687bf09f854baeb403065570436147a0aa150c0baae3ec",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/141"
+        },
+        {
+          "id": "ACQ05-reviewed-area-class-under85",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "bbc3796e6cb7ce17bb2069850ffeed0001cf7a945a6637af6d2be7a1a7a8c0dd",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/142"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/9"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ06",
+      "tax": "취득세",
+      "title": "과점주주 최초·증가·재진입",
+      "required_facts": "전체 전후 주주표·동일집단·최고지분·법인재산",
+      "recorded_supported_scope": "층별 동일주택 묶음·검토한 과점주주 이력 등",
+      "recorded_boundary": "복합 재진입은 명시 검토 계약 한정. 사실 미상/범위 밖은 전체세액 확정 금지",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "ACQUISITION-MISSING-MAJORITY-HISTORY",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "ACQUISITION-REVIEWED-REENTRY",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "ACQUISITION-REENTRY-REVIEW-MISSING",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/17"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ07",
+      "tax": "취득세",
+      "title": "N층별 안분·한 주택 묶음·감면",
+      "required_facts": "층별 원자료·법정 안분·실제 한 호/과세단위",
+      "recorded_supported_scope": "층별 동일주택 묶음·검토한 과점주주 이력 등",
+      "recorded_boundary": "복합 재진입은 명시 검토 계약 한정. 사실 미상/범위 밖은 전체세액 확정 금지",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "ACQUISITION-FLOOR-ONE-DWELLING",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/18"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ08",
+      "tax": "취득세",
+      "title": "법인 비주택 대도시·과밀 중과",
+      "required_facts": "시설·법인사건·지역·기간·예외업종의 확정 판정",
+      "recorded_supported_scope": "명시판정된2026법인비주택대도시/과밀사건·시설유형·제외검토·지역/기간·과표",
+      "recorded_boundary": "법인이라는사실만으로모든비주택중과아님;검토한확인값산식일뿐예외업종자동판정/주택혼합미지원",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [
+        "acquisition_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/acquisition_special_calculator.py",
+          "symbol": null,
+          "archived_sha256": "781313dfe547f4b2754c9caea38f0d4a70b95cec2d7be514ccc1fd1f7745288f",
+          "current_sha256": "781313dfe547f4b2754c9caea38f0d4a70b95cec2d7be514ccc1fd1f7745288f",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "acquisition_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "ACQ08-corporate-metro",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "a03d9282ac3574d226089b68392a2a65621abb0c1a76ed8e6708bae434dc5c1e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/68"
+        },
+        {
+          "id": "ACQ08-unreviewed-exception",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "e0098fcd20b71a02795ca9e5f71d7a58b3f6e70890d8585325eedb644d151e44",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/69"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/25"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ09",
+      "tax": "취득세",
+      "title": "정률감면·최저납부·농특세",
+      "required_facts": "정확 감면조항·정률·자격·법정 합산·농특 두 판정",
+      "recorded_supported_scope": "정확감면조항·자격일·율·법정합산원산출세액·농특독립판정확인후정률/최저납부계산",
+      "recorded_boundary": "현행조항자격자동검색/정률입력=자동적격아님.농특감면전/감면분2판정,부적격기간·불분명한합산가드",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [
+        "acquisition_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/acquisition_special_calculator.py",
+          "symbol": null,
+          "archived_sha256": "781313dfe547f4b2754c9caea38f0d4a70b95cec2d7be514ccc1fd1f7745288f",
+          "current_sha256": "781313dfe547f4b2754c9caea38f0d4a70b95cec2d7be514ccc1fd1f7745288f",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "acquisition_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "ACQ09-full-minimum",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "020cc9fdda8252894dfc76297e3c2cb52a5bf4910a208cd195fd180c50cb7b68",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/61"
+        },
+        {
+          "id": "ACQ09-half",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "d7c7d9dca711a44152a34407548c6baa5d99393c5cbdd921ed2f9153e97171ec",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/62"
+        },
+        {
+          "id": "ACQ09-missing-cohort",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "aea5794de98f5431bde64a193ad22d1f9052f1584f41bbe1e65a63aa289c9384",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/63"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/22"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ10",
+      "tax": "취득세",
+      "title": "취득 본세 가산세·납부 이력",
+      "required_facts": "신고/법정납기·실납일·본세·감면사유",
+      "recorded_supported_scope": "2019~2026취득본세의실제기한/신고/납부일·일정미납원금·최초기한후/수정·부정행위분리",
+      "recorded_boundary": "교육세/농특세포함총가산세아님;분할납부/고지/면제/정당사유/환급/이자상당액·반복수정미지원",
+      "routes": [
+        "/v1/calc/acquisition-penalty"
+      ],
+      "dev_mcp_tools": [
+        "acquisition_penalty_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/acquisition_penalty.py",
+          "symbol": null,
+          "archived_sha256": "c7b610b6e359e63c99c9fb134352dadadf505a274272dd31d9adf421be8fd5da",
+          "current_sha256": "c7b610b6e359e63c99c9fb134352dadadf505a274272dd31d9adf421be8fd5da",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "acquisition_penalty",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "ACQ10-penalty",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "b243bcb932de5e5028e43c6f50a5198324f3a6f80734b04dcefd7698c42d51f6",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/104"
+        },
+        {
+          "id": "ACQ10-unreviewed-penalty",
+          "classification": "missing",
+          "recorded_status": "PUBLIC_SCHEMA_REJECT_422",
+          "recorded_passed": true,
+          "input_sha256": "e056e33aa91f61e30c119d363377a8c6ef55f1afa8cc0796f2e7ed2620f04662",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/105"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/44"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "ACQ11",
+      "tax": "취득세",
+      "title": "합병·공유물 분할·환매·건물 이전",
+      "required_facts": "법정 원인·조직·지분초과·권리와 시점",
+      "recorded_supported_scope": "현재일반원인enum과별도case를확인;재산분할등기취득은별도확인계약존재",
+      "recorded_boundary": "합병/공유물분할/환매/건물이전을유상매매로대체금지.이명칭전용입력·산식포괄구현/재인증은확인되지않음",
+      "routes": [
+        "/v1/calc/acquisition"
+      ],
+      "dev_mcp_tools": [
+        "acquisition_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/types/acquisition_types.py",
+          "symbol": null,
+          "archived_sha256": "d63008d29e7198247412376c1a27150160157d6adbe7a9bbda9b599017f29034",
+          "current_sha256": "e35958bb10a524f54430d884b7a84a367155a7715f321a111901f5d7344878c6",
+          "file_changed_since_record": true
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/acquisition_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "17bf6b02d98ebc17e6d92637218dd7f2b4b99cb36975063ecc17f10d3636352c",
+          "current_sha256": "d3e44b854312920db18cd7342e8385bb1017bc3ebd04d2b01fc0316d7c7a9f7d",
+          "file_changed_since_record": true
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "acquisition_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "ACQ11-public-repurchase",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "2416fcb5b24e857519f798935b3ab3e269784820fba0988fad61b14c57dcbcb5",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/106"
+        },
+        {
+          "id": "ACQ11-repurchase-unconfirmed",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "8b0ba5457d8e6adb384a1abe0859848154ec6c9a9990b15419a94f1becfb6d2e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/107"
+        },
+        {
+          "id": "ACQ11-unsupported-합병",
+          "classification": "unsupported",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "2c8c8e299c5e825b03b4a16cb39ad20c53ad64a5c40dedbbde5062d36017511f",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/120"
+        },
+        {
+          "id": "ACQ11-unsupported-공유물분할",
+          "classification": "unsupported",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "13e157f22123a877c6e9214bfc0b4f3c2530e7fad898b2c0a40143b2b6c5a3ee",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/121"
+        },
+        {
+          "id": "ACQ11-unsupported-건물이전",
+          "classification": "unsupported",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "a8641ce315ec5be39eb27a054b5d82a2e9a5c1df2d7fd96447f125fb3f0ef1d3",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/122"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/45"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "GFT01",
+      "tax": "증여세",
+      "title": "일반 증여·관계·미성년·세대생략",
+      "required_facts": "수증자 관계·나이·거주자·재산·세대",
+      "recorded_supported_scope": "거주자 일반 증여의 확인한 입력",
+      "recorded_boundary": "시가/10년 합산/혼인출산기간·수증자 자격은 원자료 확인; 빠른 결과는 미입력 가정 포함",
+      "routes": [
+        "/v1/calc/gift"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-GIFT-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "GIFT-MISSING-RELATIONSHIP",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/23"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "GFT02",
+      "tax": "증여세",
+      "title": "재차증여·동일인 합산·기납부세액",
+      "required_facts": "이전 증여별 날짜·증여자·관계·과세가액·공제",
+      "recorded_supported_scope": "현재·과거 증여일/당사자·관계·실제공제·동일인/배우자 이력 전체성과 보통증여 확인으로 47합산과53그룹을 별도판정.",
+      "recorded_boundary": "혼인관계 변경교차·효력당일·특례/합산배제유형은 가드; 당시실납할증과산출세액 구별.",
+      "routes": [
+        "/v1/calc/gift"
+      ],
+      "dev_mcp_tools": [
+        "gift_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/gift_event_facts.py",
+          "symbol": null,
+          "archived_sha256": "d406ef7736d569102f71c5844045bbd5251cbdd09e6b9f3b4b6b226c14590472",
+          "current_sha256": "d406ef7736d569102f71c5844045bbd5251cbdd09e6b9f3b4b6b226c14590472",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "gift_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "GFT02-positive",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "6845dec0dd02c32c4514d86e73388ffc297a949e81ae0b966cb090595d7202f3",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/12"
+        },
+        {
+          "id": "GFT02-missing-deduction",
+          "classification": "missing",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "a3bc3afc8c55f1ce114bc29193521bcac2e94a3ad2e46d178a90eaa4e17582c0",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/13"
+        },
+        {
+          "id": "GFT02-conflicting-history",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "e484a78be0d8afe04976d33acae5ab125d566703a312a6e2c2fd049bf2f73ea7",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/14"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/4"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "GFT03",
+      "tax": "증여세",
+      "title": "혼인·출산·채무·감정비용",
+      "required_facts": "실제 날짜·관계·과거 공제·채무 증빙",
+      "recorded_supported_scope": "법53의2혼인관계증명서신고일전후2년/출생·입양일부터2년·거주자직계존속·기사용통합1억한도확인;채무/감정수수료별도요건.",
+      "recorded_boundary": "기존bool은기간자격을사용자가확인한선언이며실제날짜자동판정아님.반환/미혼·혼인무효사후조정은별도.",
+      "routes": [
+        "/v1/calc/gift"
+      ],
+      "dev_mcp_tools": [
+        "gift_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/gift_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "f5f15fd17f899403272abbe386e25b4b57741969e5bb88e3e70e0ec12603e545",
+          "current_sha256": "f5f15fd17f899403272abbe386e25b4b57741969e5bb88e3e70e0ec12603e545",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "gift_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "GFT03-combined-cap",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "e574e179a3f09d1777960f70e6d684680e16408c145651dbc4854835a936dc53",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/24"
+        },
+        {
+          "id": "GFT03-prior-used",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "f0b772c345b626895ee142665fe9b600d126d4498df73fd06d5be824d06222f0",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/25"
+        },
+        {
+          "id": "GFT03-overused",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "0760d5deb76582a52104f54400d0ba4e1b48c742dd311f9d5cb3f1359b80100e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/26"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/8"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "GFT04",
+      "tax": "증여세",
+      "title": "부동산·비상장주식·현금 혼합 증여",
+      "required_facts": "자산별 동일인·지분·평가일·평가목적",
+      "recorded_supported_scope": "각자산의법정평가목적/기준일·귀속지분·같은증여당사자/시점이확정된가액합계를일반증여에투입.",
+      "recorded_boundary": "금액합산기능은부동산/비상장평가자격전체를검증하지않음.비상장보충평가는공개차단,별도적격시가만지원.",
+      "routes": [
+        "/v1/calc/gift"
+      ],
+      "dev_mcp_tools": [
+        "gift_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/gift_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "f5f15fd17f899403272abbe386e25b4b57741969e5bb88e3e70e0ec12603e545",
+          "current_sha256": "f5f15fd17f899403272abbe386e25b4b57741969e5bb88e3e70e0ec12603e545",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "gift_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "GFT04-reviewed-total",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "46a784371e2e4783eb7e02317500d7a91ac3aaf2ad47e557c6f8913582a46778",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/70"
+        },
+        {
+          "id": "GFT04-unsupported-raw-assets",
+          "classification": "unsupported",
+          "recorded_status": "PUBLIC_SCHEMA_REJECT_422",
+          "recorded_passed": true,
+          "input_sha256": "c2500e9b4390d51dbe06073ce5a87d2b9b37a04d182454f57689d984e2db0577",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/71"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/26"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "GFT05",
+      "tax": "증여세",
+      "title": "저가양수·초과배당·증여의제",
+      "required_facts": "거래 관계·대가·시가·지분·이익 귀속·시점",
+      "recorded_supported_scope": "저가/고가35조의관계/적격시가/실제대가/정당사유와초과배당전체주주/배당원자료,일반증여연결을별도판정.",
+      "recorded_boundary": "특수증여전유형지원아님.초과배당은최초잠정신고/다음해실제소득세정산미실시.배당의제원인자/수익자복수는가드.",
+      "routes": [
+        "/v1/calc/special-gift"
+      ],
+      "dev_mcp_tools": [
+        "special_gift_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/special_gift.py",
+          "symbol": null,
+          "archived_sha256": "0e3b61dd82f2be96aa5cf3f80e972cda62a6f9a7de29e647c906118acd16ebaf",
+          "current_sha256": "0e3b61dd82f2be96aa5cf3f80e972cda62a6f9a7de29e647c906118acd16ebaf",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "special_gift_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "GFT05-low-price",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "cd5cbf16fa6f47dab9dfa1733a91aadf46e1454978df39480b00722086801570",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/92"
+        },
+        {
+          "id": "GFT05-unknown-legitimate-cause",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "7a1fdcd95e580edda92cb116d3aed50ceea7f334b37d80b10b4d447c1f3342fa",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/93"
+        },
+        {
+          "id": "GFT05-excess-dividend",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "a97610c6c26e8e73fbd014b822a4db639cb65580603c15713b9b8e90a25cd28e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/123"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/38"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "GFT06",
+      "tax": "증여세",
+      "title": "가업승계·창업자금·영농 특례",
+      "required_facts": "사업·지분·업력·승계·사후관리 이력",
+      "recorded_supported_scope": "창업자금/단일가업승계최초특례의부모60·수증18·적격업종/자산·특례신청/신고·사업지분/업력명세.",
+      "recorded_boundary": "영농증여특례를일반공제로대신지원하지않음(별도미지원).일반과세잔액은전체세액partial.미래2/3/4/5/10년사후관리완료아님.",
+      "routes": [
+        "/v1/calc/special-gift"
+      ],
+      "dev_mcp_tools": [
+        "special_gift_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/special_gift.py",
+          "symbol": null,
+          "archived_sha256": "0e3b61dd82f2be96aa5cf3f80e972cda62a6f9a7de29e647c906118acd16ebaf",
+          "current_sha256": "0e3b61dd82f2be96aa5cf3f80e972cda62a6f9a7de29e647c906118acd16ebaf",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "special_gift_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "GFT06-startup-funds",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "3320c2bd7510bd6d455bfda4f616c93f1a81c226e6ac2e7e27c9841ba3476778",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/94"
+        },
+        {
+          "id": "GFT06-unknown-industry",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "bb0624318f349e11318acfaa9ca8e726d9034a46ca7ae135471acea8f4ebc9f3",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/95"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/39"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INH01",
+      "tax": "상속세",
+      "title": "일반 상속·상속인·배우자 실제 귀속",
+      "required_facts": "상속인 구성·법정/실제 지분·분할·채무·비용",
+      "recorded_supported_scope": "거주자 일반 상속의 확인한 입력",
+      "recorded_boundary": "배우자 실제 수령·분할/기한·금융/동거주택·사전증여는 원자료 확인; 빠른 결과를 확정 신고액으로 사용하지 않음",
+      "routes": [
+        "/v1/calc/inheritance"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-INHERITANCE-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "INHERITANCE-MISSING-HEIRS",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/29"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INH02",
+      "tax": "상속세",
+      "title": "사전증여 합산·공제한도·보험금",
+      "required_facts": "수증자별 이전 증여·날짜·이전세액·보험 실납자",
+      "recorded_supported_scope": "포함대상 사전증여의 당시 공제·실제 산출세액 확인. 독립 일반증여는 명시한 가액·공제만으로 당시 과표가 완성된 경우에만 재구성.",
+      "recorded_boundary": "누적·특례·감면·채무·비과세·감정수수료 등 다른 과표조정은 실제 산출세액 경로. 미확정은 금액 없이 입력 보완. 화면은 1인·1회 실제자료 입력 범위.",
+      "routes": [
+        "/v1/calc/inheritance"
+      ],
+      "dev_mcp_tools": [
+        "inheritance_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/inheritance_gift_period.py",
+          "symbol": null,
+          "archived_sha256": "1124c25a4a9d265b72f4bdf1384e9c0110f7620fb75678cbcfcdf3f0b30c6199",
+          "current_sha256": "1124c25a4a9d265b72f4bdf1384e9c0110f7620fb75678cbcfcdf3f0b30c6199",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/inheritance_insurance.py",
+          "symbol": null,
+          "archived_sha256": "fd2aa22042f335f2163b4533d6d28065aa971b7375522f92f48892dc03c0d0c1",
+          "current_sha256": "fd2aa22042f335f2163b4533d6d28065aa971b7375522f92f48892dc03c0d0c1",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/inheritance_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "a045e03a239127f78ee22eed02cb82891a3f5e220eceac1ab970fa913c22f5b4",
+          "current_sha256": "a045e03a239127f78ee22eed02cb82891a3f5e220eceac1ab970fa913c22f5b4",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "inheritance_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "INH02-positive",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "28d95fd6eca0961b59c0ba3c3ef0672bf1d64db50946b85aa2054af91866add2",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/15"
+        },
+        {
+          "id": "INH02-missing-deduction",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "be50ae186fe238062b9dd5f7344c1cba085c81d11d381b096e1af187ba98cafe",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/16"
+        },
+        {
+          "id": "INH02-binding-cap",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "5e5f32288b81d9a4341fd4c466ec772a467cdf9990491057d1c8899e9cd9f9ec",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/17"
+        },
+        {
+          "id": "INH02-assessment-unknown",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "c8db15b2e76d2d76d0b5ba13e5b9534882be4f9c96427d32153eace1fab39f1a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/125"
+        },
+        {
+          "id": "INH02-actual-assessment20m",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "9a8073cc73a0b2d0383df18c7e4d50bba4f4875c0e781887380cf7afd26decd7",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/126"
+        },
+        {
+          "id": "INH02-actual-assessment-zero",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "a58eab615da0be238e23bb65f836a86f0dc56cf949ad8172c2a42fad96ea3d0a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/127"
+        },
+        {
+          "id": "INH02-post2024-mc-unknown",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "225d31545de90d16d6bb50283d63ab67b1f5f2184395195f26ba58d77028de67",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/128"
+        },
+        {
+          "id": "INH02-post2024-mc-zero",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "fb430da1496f11bdb1bd5ab9d62e0e70e0800a354f5d594b6796fef15e6c83de",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/129"
+        },
+        {
+          "id": "INH02-total-deduction-explicit",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "302a0b15a7e2a437d49cb46d0add434d741335ea4474cb9442d9946ad61ee599",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/130"
+        },
+        {
+          "id": "INH02-outside10years-unknown-assessment",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "2d9876c309fcc988f2d33efd305474599514ddd3f13ae346ce948d43124421f6",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/131"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/5"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INH03",
+      "tax": "상속세",
+      "title": "단기 재상속공제·실제 선행 상속일",
+      "required_facts": "실제 전후 상속일·전의 세액/재산·재상속재산",
+      "recorded_supported_scope": "실제 선행 상속일 또는 확인한 법정 구간의 1 이상 정수로 공제율 판정. 실제 재상속 재산비율·잔액한도 반영.",
+      "recorded_boundary": "날짜·구간 누락/0은 금액 없이 입력 보완. 과거연도는 기존 별도 지원조건 유지.",
+      "routes": [
+        "/v1/calc/inheritance"
+      ],
+      "dev_mcp_tools": [
+        "inheritance_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/inheritance_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "a045e03a239127f78ee22eed02cb82891a3f5e220eceac1ab970fa913c22f5b4",
+          "current_sha256": "a045e03a239127f78ee22eed02cb82891a3f5e220eceac1ab970fa913c22f5b4",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "inheritance_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "INH03-within1yr",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "4a3b63d44ac23a987c3489fb7b5a4be8325752e4323e38ab2a2cc9fecf7a2e56",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/72"
+        },
+        {
+          "id": "INH03-missing-date",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "20c608aa86cc19fc65b4e0f9317137dfe1a1778832166e852cdad377a91199ef",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/73"
+        },
+        {
+          "id": "INH03-zero-interval",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "43e1be06a2690bf56d6b14159a47d8b729536fad08b79efdf3fbaa61b6b190d1",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/132"
+        },
+        {
+          "id": "INH03-reviewed-interval1",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "73c4cd22a758436653f006054c9fc8c3a40274d30cbb0b9054a57b829400c39e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/133"
+        },
+        {
+          "id": "INH03-negative-year-with-actual-date",
+          "classification": "boundary",
+          "recorded_status": "RAW_NEEDS_INPUT_PUBLIC_SCHEMA_REJECT_422",
+          "recorded_passed": true,
+          "input_sha256": null,
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/146"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/27"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INH04",
+      "tax": "상속세",
+      "title": "동거주택·금융재산·외국납부",
+      "required_facts": "실거주/주택보유·금융순재산·외국 원천별 세액",
+      "recorded_supported_scope": "확정순금융재산·동거주택법정자격·외국법령과표/외국세액이있는정상공제.외국과표미상은needs.",
+      "recorded_boundary": "동거자격bool·장애기대여명·금융재산법정분류의실제검토는자동판정아님.자격미상을공제0확정으로해석하지않음.",
+      "routes": [
+        "/v1/calc/inheritance"
+      ],
+      "dev_mcp_tools": [
+        "inheritance_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/inheritance_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "a045e03a239127f78ee22eed02cb82891a3f5e220eceac1ab970fa913c22f5b4",
+          "current_sha256": "a045e03a239127f78ee22eed02cb82891a3f5e220eceac1ab970fa913c22f5b4",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "inheritance_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "INH04-foreign",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "7c2a5f80c0630a7fa3bae1788fdabebbfe886f8c0907720c15b30a11c2270867",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/43"
+        },
+        {
+          "id": "INH04-missing-foreign-base",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "46aa17c794ff7e7228c83fa7f1ba419ab8eb5082a4881641eec089b1d98d9a3e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/44"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/14"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INH05",
+      "tax": "상속세",
+      "title": "가업·영농·비거주·영리법인 특례",
+      "required_facts": "납세자/상속재산 범위·사업·승계·사후관리",
+      "recorded_supported_scope": "법인가업/개인영농상속공제는실제업력·취업/임원/대표·지분·사업무관자산·소득연도명세와24한도분리.",
+      "recorded_boundary": "비거주/영리법인상속은일반거주자공제재사용안함.특구·중견·법인영농·예외기간·소득제외통산·복합원장별도미지원.",
+      "routes": [
+        "/v1/calc/inheritance"
+      ],
+      "dev_mcp_tools": [
+        "inheritance_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/inheritance_special.py",
+          "symbol": null,
+          "archived_sha256": "b68c98c3992ecb92bc27d9fcbb2870b2d08b7aecf607aa2dcdd4d0e1a925d0b4",
+          "current_sha256": "b68c98c3992ecb92bc27d9fcbb2870b2d08b7aecf607aa2dcdd4d0e1a925d0b4",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "inheritance_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "INH05-business",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "ff435d5425b1cea4a78111bc8ac634a3295ff4b20b35b07c3f7df5867add69ec",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/100"
+        },
+        {
+          "id": "INH05-below-shares",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "53e31807f83a03d75b0ebd7381ff1c95bba30317fe21030d4c6f680ea01ca01b",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/101"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/42"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "PRP01",
+      "tax": "재산세",
+      "title": "주택 과세표준·특례·직전 연도",
+      "required_facts": "당해/직전 공시·동일 납세자·실제 직전 상당액",
+      "recorded_supported_scope": "당년 주택·일반 물건의 확인한 과세자료",
+      "recorded_boundary": "직전 공시가·본세/도시분·법정 상한 검토; 도시지역 등 빠른 화면 가정과 지역자원시설세 미포함 구분",
+      "routes": [
+        "/v1/calc/property"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-PROPERTY-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "PROPERTY-MISSING-PRIOR-VALUE",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/34"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "PRP02",
+      "tax": "재산세",
+      "title": "토지 종합·별도·분리 및 건축물",
+      "required_facts": "용도별 가액·세부유형·도시지역",
+      "recorded_supported_scope": "납세자·시군구별법정합산단위를먼저확정한일반토지분류와건축물세부유형·도시분분리.",
+      "recorded_boundary": "서로다른물건군을1스칼라로합산하지않음.토지종합/별도/분리는용도자동법적분류아님;지방조례/감면은별도.",
+      "routes": [
+        "/v1/calc/property"
+      ],
+      "dev_mcp_tools": [
+        "property_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/property_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "1922d42348314bffac885e1fe4fad6c3553a66fa9810dde0a87a81b64d644483",
+          "current_sha256": "1922d42348314bffac885e1fe4fad6c3553a66fa9810dde0a87a81b64d644483",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "property_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "PRP02-building",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "7638da31bf13bd2be00912e788dc46a4ae52b03be04573e7af56cd1818fe05f9",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/39"
+        },
+        {
+          "id": "PRP02-missing-type",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "c7028bd6fdef83c7a7dc8a03121808ec2f77e60b5c648286b268e2efa3972b8b",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/40"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/12"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "PRP03",
+      "tax": "재산세",
+      "title": "납세자·용도·가액 변경 이력",
+      "required_facts": "분할/합병·납세자 변경·직전 과세 자료",
+      "recorded_supported_scope": "납세자/과세단위/소유변경을확인한cap_facts와직전법정본세/도시분상당액,현재전체공시가액계약.",
+      "recorded_boundary": "전년현금납부액=법정상당액으로복제하지않음.과세단위변경상당액자동법률판정은미지원;사건저장I06PARKED.",
+      "routes": [
+        "/v1/calc/property"
+      ],
+      "dev_mcp_tools": [
+        "property_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/holding_facts.py",
+          "symbol": null,
+          "archived_sha256": "4887c2a39cad2bdab64388dba6a4f1ddc977477d6c1ac0ac5e5ec42267618078",
+          "current_sha256": "4887c2a39cad2bdab64388dba6a4f1ddc977477d6c1ac0ac5e5ec42267618078",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "property_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "PRP03-value-change",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "938343872bc2841c277bc2c792ee43b4d18df9719ba973954adfc96be48e8381",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/41"
+        },
+        {
+          "id": "PRP03-unknown-prior-value",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "1d5fe772a0f39caeef205e537dc5df55139dc58c2f08c827049fda84129c05cd",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/42"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/37"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CMP01",
+      "tax": "종합부동산세",
+      "title": "주택·토지 기본 계산과 재산세 공제",
+      "required_facts": "물건별 가액·세액·과표·지분·직전 세액",
+      "recorded_supported_scope": "납세자 본인 지분가액·검토한 재산세공제",
+      "recorded_boundary": "부부 공동1주택 비교만 전체가액; 세대 다른 주택은 자격 사실. 실제재산세 없는316800원은 추정 재현",
+      "routes": [
+        "/v1/calc/comprehensive"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-COMPREHENSIVE-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "COMPREHENSIVE-FUTURE-YEAR",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "COMPREHENSIVE-ACTUAL-PROPERTY-TAX",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/37"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CMP02",
+      "tax": "종합부동산세",
+      "title": "공동명의·1주택 의제·고령/장기보유",
+      "required_facts": "지분·나이·기간·상속/일시2주택·지방저가",
+      "recorded_supported_scope": "공동소유자 간 합의로 정한 신청자의 나이·보유기간으로 특례를 비교. 전체 주택가액에 지분을 한 번 적용.",
+      "recorded_boundary": "지분이 큰 사람 자동선택 없음. 신청자·사실 미확인은 공제 확정으로 취급하지 않음.",
+      "routes": [
+        "/v1/calc/comprehensive"
+      ],
+      "dev_mcp_tools": [
+        "comprehensive_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/comprehensive_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "a647807d62960a3f04bca6d494a3e7cba229e91d6dfa06fbf30671148a375e8c",
+          "current_sha256": "a647807d62960a3f04bca6d494a3e7cba229e91d6dfa06fbf30671148a375e8c",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "comprehensive_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CMP02-positive-zero",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "3265562cc164533389bd2fc4cc1eeb31b8248b43fac7ac5824bc34e29605ec0d",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/18"
+        },
+        {
+          "id": "CMP02-age-holding",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "a10246ce5ad449397a833d8d9bcfcfecc19c8ac43e84f0ba1e43605d9638173f",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/19"
+        },
+        {
+          "id": "CMP02-contradict-count",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "08d5fc5a35785d61e6c70a1d6b77ba0f268dc3efd89157a12a4b7b29badc1a71",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/20"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/6"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CMP03",
+      "tax": "종합부동산세",
+      "title": "임대주택 합산배제·사후요건",
+      "required_facts": "임대등록·취득/등록/말소일·가격·임대기간",
+      "recorded_supported_scope": "6/1전체물건납세자·합산배제/주택수의제·가격/임대등록/기간/이력분리.구매입임대2018등록좁은정상범위.",
+      "recorded_boundary": "부분상속지분·기간주년±1일·기간후위반·30호이상등은가드.미확정물건있으면전체세액확정False·partial.",
+      "routes": [
+        "/v1/calc/comprehensive-housing"
+      ],
+      "dev_mcp_tools": [
+        "comprehensive_housing_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/housing_holdings.py",
+          "symbol": null,
+          "archived_sha256": "f56adbe5e76a06e49563cc488546708aa8608f786204256525d91f6f9f382715",
+          "current_sha256": "f56adbe5e76a06e49563cc488546708aa8608f786204256525d91f6f9f382715",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "comprehensive_housing_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CMP03-legacy-rental",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "c01a65bb5398c85d19be2bb329c5b014e55fd10d349d6220d3bdb7ff57393543",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/86"
+        },
+        {
+          "id": "CMP03-incomplete-rents",
+          "classification": "missing",
+          "recorded_status": "partial",
+          "recorded_passed": true,
+          "input_sha256": "8c342b48c35d8348b7835d70ee26cfedebf7ad192dbbd906343828f5157af466",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/87"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/34"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "STK01",
+      "tax": "주식양도",
+      "title": "일반 국내·국외 주식 연간 양도",
+      "required_facts": "시장·법인·대주주·장내외·날짜·원가·손익",
+      "recorded_supported_scope": "확인한 국내 주식 양도 원자료의 명시 날짜 범위",
+      "recorded_boundary": "2026 일반 전체 지원으로 확대 금지; 원자료·대주주/유형·비용 구분, 미지원 날짜·특례 차단",
+      "routes": [],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "STOCK-ANNUAL-NORMAL",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "STOCK-MISSING-TAX-YEAR",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "STOCK-UNSUPPORTED-YEAR",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/40"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "STK02",
+      "tax": "주식양도",
+      "title": "기타자산 주식·특수취득·부담부 주식",
+      "required_facts": "부동산비중·주주집단·누적양도·취득유형",
+      "recorded_supported_scope": "확인특정주식/부동산과다/주식형시설이용권.원자산총액·법정평가·집단주식수·외부양도·단층간접비율",
+      "recorded_boundary": "일반stockannual은특수취득차단.별도helper도다층/3년다른양도/비사업용/상속증여·부담부취득자동판정/증권거래세미지원",
+      "routes": [
+        "/v1/calc/other-asset-stock-transfer"
+      ],
+      "dev_mcp_tools": [
+        "other_asset_stock_transfer_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/other_asset_stock.py",
+          "symbol": null,
+          "archived_sha256": "ac772e4599df34e84007b7344775f8ae2c5e8f67c47b4a454b46b60b80fdd9b6",
+          "current_sha256": "ac772e4599df34e84007b7344775f8ae2c5e8f67c47b4a454b46b60b80fdd9b6",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/stock_transfer_calculator.py",
+          "symbol": null,
+          "archived_sha256": "6851bd4cdbda789b3dc2e20932223e0d50eb613ca87b50cffafe59bba3dea22f",
+          "current_sha256": "6851bd4cdbda789b3dc2e20932223e0d50eb613ca87b50cffafe59bba3dea22f",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "other_asset_stock_transfer",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "STK02-other-asset-stock",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "1ec5eaa8e3f2358278cf14b55338271015068c8b612e8024bf6795d90802462d",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/96"
+        },
+        {
+          "id": "STK02-group-notmajor",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "ff3f3f17f2a42655d82ae3ea4f518a6c226d33a14c7fc280fc90ff6a28a6e9e5",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/97"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/40"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "STK03",
+      "tax": "주식양도",
+      "title": "국외전출 의제양도·유예",
+      "required_facts": "거주/전출·대주주 이력·평가·외국세·환입",
+      "recorded_supported_scope": "2026-01-01~10-28최초출국의제국세;국내주식·전년말대주주·10년중5년거주검토·출국시가/원가·별도250만",
+      "recorded_boundary": "유예/후행실양도/외국세/재입국환급/지방세미포함.2027개정자동채택금지;거주일수1825는법적5년의대체판정아님",
+      "routes": [
+        "/v1/calc/tax-event"
+      ],
+      "dev_mcp_tools": [
+        "tax_event_calculation_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/tax_events.py",
+          "symbol": null,
+          "archived_sha256": "6738355e70988145359ff57d791df7c8691f1ae9381fb6d1b9826165053f3d30",
+          "current_sha256": "6738355e70988145359ff57d791df7c8691f1ae9381fb6d1b9826165053f3d30",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "tax_event_calculation",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "STK03-exit",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "7614a9c07884342654b06ca61349fbc452d255f0a32016bba483f955becb61d3",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/98"
+        },
+        {
+          "id": "STK03-deferral-outside",
+          "classification": "unsupported",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "1de6e3dcdc5866890380286fcea57a8e53dac2169d3e8fd236efa7c2aa0d5aa1",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/99"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/41"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "VAL01",
+      "tax": "재산평가",
+      "title": "비상장주식 보충적 평가",
+      "required_facts": "평가일·3년 손익·순자산·주식변동·법인유형",
+      "recorded_supported_scope": "적격 매매 시가 후보가 선택된 공개 경로만",
+      "recorded_boundary": "보충적 평가는 공개 차단. 80%순자산 특례·자산 장부하한·증자 월수 조정 미인증. 시가 경로의 보충평가 중간 0은 미실행 초기값",
+      "routes": [],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "UNLISTED-MISSING-REVIEW",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "UNLISTED-ZERO-SUPPLEMENT-EXCLUDED",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "UNLISTED-SUPPLEMENT-EXCLUDED",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "UNLISTED-ELIGIBLE-MARKET",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "UNLISTED-OBJECTIVELY-UNFAIR-MARKET",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/43"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "VAL02",
+      "tax": "재산평가",
+      "title": "시가 우선·매매/감정 적격성",
+      "required_facts": "거래/평가 시점·상대방·거래규모·특수관계",
+      "recorded_supported_scope": "적격 매매 시가 후보가 선택된 공개 경로만",
+      "recorded_boundary": "보충적 평가는 공개 차단. 80%순자산 특례·자산 장부하한·증자 월수 조정 미인증. 시가 경로의 보충평가 중간 0은 미실행 초기값",
+      "routes": [],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "UNLISTED-MISSING-REVIEW",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "UNLISTED-ZERO-SUPPLEMENT-EXCLUDED",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "UNLISTED-SUPPLEMENT-EXCLUDED",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "UNLISTED-ELIGIBLE-MARKET",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "UNLISTED-OBJECTIVELY-UNFAIR-MARKET",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/44"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "VAL03",
+      "tax": "재산평가",
+      "title": "공동주택 비교사례·공시가격 연결",
+      "required_facts": "동호·면적·가액·공시연도·실거래시점·관계",
+      "recorded_supported_scope": "합성 제공자료를 주입한 내부 평가 경로 검증. 시가 우선과 보충평가 참고액을 구분.",
+      "recorded_boundary": "현재 독립 공개 경로 없음. 공시가가 유효한 시가의 법정 하한이라는 뜻이 아님. 추정값·공급자 실제자료 정확성 인증 제외.",
+      "routes": [],
+      "dev_mcp_tools": [],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/valuation/valuation_glue.py",
+          "symbol": "evaluate_apartment_by_address",
+          "archived_sha256": "0121ce27e25f4c0e362ba4e4352634b255f5f5f32d41c93db087cb412ccb2c1a",
+          "current_sha256": "0121ce27e25f4c0e362ba4e4352634b255f5f5f32d41c93db087cb412ccb2c1a",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/valuation/valuation_glue.py",
+          "symbol": "evaluate_apartment_by_address",
+          "archived_sha256": "0121ce27e25f4c0e362ba4e4352634b255f5f5f32d41c93db087cb412ccb2c1a",
+          "current_sha256": "0121ce27e25f4c0e362ba4e4352634b255f5f5f32d41c93db087cb412ccb2c1a",
+          "file_changed_since_record": false
+        }
+      ],
+      "cases": [
+        {
+          "id": "VAL03-selected-market",
+          "classification": "core-only",
+          "recorded_status": "CORE_ONLY_SYNTHETIC_PROVIDER",
+          "recorded_passed": true,
+          "input_sha256": "17bde85f745195ff3870835bf57c7e762bded92aff5fad3a3adb619fac181d49",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/90"
+        },
+        {
+          "id": "VAL03-official-fallback",
+          "classification": "core-only",
+          "recorded_status": "CORE_ONLY_SYNTHETIC_PROVIDER",
+          "recorded_passed": true,
+          "input_sha256": "62fd4c6f31e8467b8965bfd75d34952aada657327b5377f586ef1bc75edc41ba",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/91"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/36"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "VAL04",
+      "tax": "재산평가",
+      "title": "건물 기준시가·취득 시가표준액 산정",
+      "required_facts": "기준연도·구조/용도/위치지수·잔가율·면적",
+      "recorded_supported_scope": "nts-building/1의2025/26공표연도·평가목적·구조/용도·위치/잔가·면적·조정분류를확인한국세청일반건물기준시가.",
+      "recorded_boundary": "지방세시가표준액·시가·토지가액과별개.다른일괄고시물건·공공시설·특수재건축·고시충돌5000㎡이상조정은가드.",
+      "routes": [
+        "/v1/calc/building-standard-value"
+      ],
+      "dev_mcp_tools": [
+        "building_standard_value_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/valuation/building_standard.py",
+          "symbol": null,
+          "archived_sha256": "87789b9bf92a5ab136b2d8f8779cb43d7d2be76859712916dd46461074307d80",
+          "current_sha256": "87789b9bf92a5ab136b2d8f8779cb43d7d2be76859712916dd46461074307d80",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "building_standard_value",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "VAL04-nts2026-building",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "44f3040fcdf6f58320b3284957202d882b3778e972cfa9c60d89b609e9c9d68c",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/78"
+        },
+        {
+          "id": "VAL04-missing-scope",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "a2a16d344aa5d826b920cd8c2de1e6c57fca8d1eb30b19fe2edc1a23624d2946",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/79"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/30"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "VAT01",
+      "tax": "부가가치세",
+      "title": "일반·간이·면세·영세율 기본 계산",
+      "required_facts": "사업자유형·과세기간·공급/매입·불공제·공제",
+      "recorded_supported_scope": "일반 과세 공급가액·증빙 매입세액",
+      "recorded_boundary": "간이는 공급대가 별도; 과면세 공통매입/의제매입·가산세·특수기간은 별도 검토. 기본UI 기말 미전송 기한은 별도 인증 아님",
+      "routes": [
+        "/v1/calc/vat"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-VAT-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "VAT-FUTURE-YEAR",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/47"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "VAT02",
+      "tax": "부가가치세",
+      "title": "과세·면세 겸영 공통매입 안분",
+      "required_facts": "직접귀속/공통매입·공급가액·예정/확정·사용",
+      "recorded_supported_scope": "직접귀속·공통/불공제전체행과합계대조,공급/매입/예정면적법정순서,정산과감가재계산을별도행으로1회반영.",
+      "recorded_boundary": "81②소액예외/④한쪽공급부재적용불명은가드;원미만정수불명·다사업장특례·자가공급중복미확정은미지원.",
+      "routes": [
+        "/v1/calc/vat"
+      ],
+      "dev_mcp_tools": [
+        "vat_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/vat_input.py",
+          "symbol": null,
+          "archived_sha256": "0c776156470b62f4632ab663ce3b7fd44fb76a1e0c4c08e7d378cfc65abbd1b9",
+          "current_sha256": "0c776156470b62f4632ab663ce3b7fd44fb76a1e0c4c08e7d378cfc65abbd1b9",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "vat_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "VAT02-positive",
+          "classification": "positive",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "7d75a6656dc1d90c7dc33ac91f7e77ee166f89873c67cdf61a10b8512372c441",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/33"
+        },
+        {
+          "id": "VAT02-missing-classification",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "1289a5c0b90e5a9ee80cda18a5b26b14e4246a5f83921b6f4e77088e3536fac5",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/34"
+        },
+        {
+          "id": "VAT02-unreviewed-fraction",
+          "classification": "boundary",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "0a0a2cbe40b81f219f6f84dc23a08f75b488e382c60ba49c980250447a8f7d55",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/35"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/11"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "VAT03",
+      "tax": "부가가치세",
+      "title": "의제매입·카드·전자세금계산서 공제",
+      "required_facts": "업종·직전매출·증빙·한도·유형",
+      "recorded_supported_scope": "적격 업종·거래금액·적기 전자발급·직전 공급가액/신규개업·연간 기사용액을 검토한 정상 단일사업장. 연간 잔액과 납부세액 한도 내 실제공제만 반영.",
+      "recorded_boundary": "복수사업장·유형전환·변경/기한후신고는 본 계약 제외. 간이 양수 카드공제는 연중 12개월·신규/휴폐업/재고추가세액 없음 확인 필수. 의제매입 겸업의 관련매출 경계는 별도 검토.",
+      "routes": [
+        "/v1/calc/vat"
+      ],
+      "dev_mcp_tools": [
+        "vat_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/vat_calculator.py",
+          "symbol": null,
+          "archived_sha256": "3078c593c0e4731ec039c0f1e4a0f9273ddb930c9eaae8d3220dbe1b815c5c8a",
+          "current_sha256": "caf8bd0d6ee211e6730ab564de5ffab05c6d555314c2e07c73e045d6bd5577bd",
+          "file_changed_since_record": true
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "vat_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "VAT03-deemed",
+          "classification": "positive",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "e093ffb5ae91a2351adce1dc0cabb79c5ec38c1092cfb4c46f65790906d67d57",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/54"
+        },
+        {
+          "id": "VAT03-unreviewed-card",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "20c0af5dde607d9f11e8df94a45a5ba5a890f538190079173b2c48f76bd8d800",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/55"
+        },
+        {
+          "id": "VAT03-unreviewed-invoice",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "ad92cc32255c2e12a50377e3c8a7f2e1d263bfca0571cd18ba2c34882fa0dde3",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/56"
+        },
+        {
+          "id": "VAT03-reviewed-card",
+          "classification": "positive",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "2e31e7eaaf630e9eeb719f0f07169b3029b1906fd02415485054913a1818de1c",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/134"
+        },
+        {
+          "id": "VAT03-annual-card-remaining",
+          "classification": "boundary",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "595f213a557be7aa63c1f61ab6fd12b5e96ca3cd6f27d2469a14a09fffaa7e3e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/135"
+        },
+        {
+          "id": "VAT03-annual-electronic-remaining",
+          "classification": "boundary",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "618dcca3c65b343d5da9a77bd658645df58f94546ef065a4bde2c11ef3127989",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/136"
+        },
+        {
+          "id": "VAT03-both-remaining",
+          "classification": "boundary",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "6e733c568ccd33f3c2f07972acfad4ad4158d42fc20d89297d53c0b04217c502",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/137"
+        },
+        {
+          "id": "VAT03-unknown-annual-history",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "4f58d9e1cd8375f6e90548e96baf472897e6d705de52fb21f96860ac673f7c1f",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/138"
+        },
+        {
+          "id": "VAT03-prior-turnover-excluded",
+          "classification": "boundary",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "3f3c1705d5c246dfec06cfe78f11a8343dd12768ec09f23aedb95e6210fce80c",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/139"
+        },
+        {
+          "id": "VAT03-electronic300m-excluded",
+          "classification": "boundary",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "8f7bf676d11344ffa756b024a1ddf058feb4a63f9263efe6e98a7636ef3b9602",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/140"
+        },
+        {
+          "id": "VAT03-simplified-actual-used",
+          "classification": "boundary",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "c0d251c10d4d089cd02588f50e6dc05b413de5ae5c2455fd06e355fbf850c1ce",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/143"
+        },
+        {
+          "id": "VAT03-simplified-exempt-knownzero",
+          "classification": "boundary",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "b0e40716717a691de41921a6a9c2fceb365dbb869ef4dbd2f6dfc1d97183d27e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/144"
+        },
+        {
+          "id": "VAT03-simplified-year-unknown",
+          "classification": "boundary",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "b278a7cc488342ed5467dfe34adac42ca185f65e6e163938e5313bf701fd17cc",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/145"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/19"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "VAT04",
+      "tax": "부가가치세",
+      "title": "폐업·유형전환·고정자산·추가 가산세",
+      "required_facts": "전환/폐업일·재고/자산·이전 공제·신고납부",
+      "recorded_supported_scope": "일반신고매출/매입·기납부·가산세와input_facts감가상각재계산을서로구분.종료/전환은전용계약없으면확정하지않음.",
+      "recorded_boundary": "폐업잔존재화·일반간이전환재고납부/재고매입·고정자산자가공급은일반VAT금액만으로지원아님;추가가산세는별도법정사실.",
+      "routes": [
+        "/v1/calc/vat"
+      ],
+      "dev_mcp_tools": [
+        "vat_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/vat_calculator.py",
+          "symbol": null,
+          "archived_sha256": "3078c593c0e4731ec039c0f1e4a0f9273ddb930c9eaae8d3220dbe1b815c5c8a",
+          "current_sha256": "caf8bd0d6ee211e6730ab564de5ffab05c6d555314c2e07c73e045d6bd5577bd",
+          "file_changed_since_record": true
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/tax_events.py",
+          "symbol": null,
+          "archived_sha256": "6738355e70988145359ff57d791df7c8691f1ae9381fb6d1b9826165053f3d30",
+          "current_sha256": "6738355e70988145359ff57d791df7c8691f1ae9381fb6d1b9826165053f3d30",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "vat_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "VAT04-capital-recalc",
+          "classification": "positive",
+          "recorded_status": "LEGACY_NO_STATUS_KEY_VALID_NUMERIC_RESPONSE",
+          "recorded_passed": true,
+          "input_sha256": "5cc22b3b15acf8274df0f89c77be2806f4162431baf7b3cf98cd1f558a539a4a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/102"
+        },
+        {
+          "id": "VAT04-deemed-supply-unknown",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "ebbe19114c1c2101d37d23784a8809ef5ebd3c484399120869b2c6b5b3695c91",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/103"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/43"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "COR01",
+      "tax": "법인세",
+      "title": "당기순이익→세무조정→각사업연도",
+      "required_facts": "개시/종료일·유형·수입/손금조정·기납부",
+      "recorded_supported_scope": "검토한 사업연도 소득·법인 유형·공제 원장",
+      "recorded_boundary": "장부 순이익과 세무조정 후 소득 구별. 외국·고용·투자공제는 원자료/최저한세 분류가 확인된 경로만",
+      "routes": [
+        "/v1/calc/corporate"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-CORPORATE-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/51"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "COR02",
+      "tax": "법인세",
+      "title": "세액공제·감면·최저한세 경합",
+      "required_facts": "연구/투자/고용·기업구분·세액공제 이력",
+      "recorded_supported_scope": "검토한 사업연도 소득·법인 유형·공제 원장",
+      "recorded_boundary": "장부 순이익과 세무조정 후 소득 구별. 외국·고용·투자공제는 원자료/최저한세 분류가 확인된 경로만",
+      "routes": [
+        "/v1/calc/corporate"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "CORPORATE-LEGACY-FOREIGN-TOTAL",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "CREDIT-RD-INCREASE",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "CREDIT-RD-OLD-FIFO-CURRENT-GENERATED",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        },
+        {
+          "id": "CREDIT-EMP-AUTO-ACTUAL-YEAR-AMBIGUOUS",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/52"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "COR03",
+      "tax": "법인세",
+      "title": "외국납부·합병·분할·청산 특수",
+      "required_facts": "국가/원천별 소득·세액·연도·조직변경 사실",
+      "recorded_supported_scope": "검토한 사업연도 소득·법인 유형·공제 원장",
+      "recorded_boundary": "장부 순이익과 세무조정 후 소득 구별. 외국·고용·투자공제는 원자료/최저한세 분류가 확인된 경로만",
+      "routes": [
+        "/v1/calc/corporate"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "CORPORATE-LEGACY-FOREIGN-TOTAL",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/53"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INC01",
+      "tax": "종합소득세",
+      "title": "사업·근로·연금·기타·금융소득 합산",
+      "required_facts": "소득유형별 수입/경비·공제·기납부·과세연도",
+      "recorded_supported_scope": "2026 확인 순소득·공제 적격 인원",
+      "recorded_boundary": "자녀 count는 기본공제·2016말 이전 출생 적격 확인, 가족 원자료 자동심사/2027 적용 아님; 일부공제 조합 미지원",
+      "routes": [
+        "/v1/calc/income"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "PRACTICAL-INCOME-BASIC",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/54"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INC02",
+      "tax": "종합소득세",
+      "title": "주택임대소득 분리·종합 비교",
+      "required_facts": "주택별 임대수입·보유·보증금·등록·타소득",
+      "recorded_supported_scope": "2026본인·배우자전체주택수와본인귀속월세분리,국내1주택12억초과/국외주택,과세수입2천만원이하분리14%와기납부전종합결정액비교.",
+      "recorded_boundary": "보증금·공동지분·명의/실질차·결손통산·등록위반추징·외국세복합은가드.등록형경비/추가차감은별도증빙확인.",
+      "routes": [
+        "/v1/calc/rental-income"
+      ],
+      "dev_mcp_tools": [
+        "rental_income_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/rental_income.py",
+          "symbol": null,
+          "archived_sha256": "be1c6f99cada464ca85d412dc739ee83434db459e38c531d057386458489389a",
+          "current_sha256": "be1c6f99cada464ca85d412dc739ee83434db459e38c531d057386458489389a",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "rental_income_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "INC02-registered",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "52b6e926a90e886609af972f2edb9413954c3ce7914a13dfdc2affa9568a897f",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/36"
+        },
+        {
+          "id": "INC02-missing-household",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "2465358260b2583cc70f97228cf2b07871fdd2e1d8c15584f2001c77dd251b1a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/37"
+        },
+        {
+          "id": "INC02-over20m",
+          "classification": "boundary",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "f525226407d9f2386577b3d7f5e8bb3d31f6c381757cd657336730383f059a5f",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/38"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/13"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INC03",
+      "tax": "종합소득세",
+      "title": "금융소득 비교·배당·외국납부",
+      "required_facts": "금융소득 구분·배당연도·원천세·외국소득",
+      "recorded_supported_scope": "2026 확인 순소득·공제 적격 인원",
+      "recorded_boundary": "자녀 count는 기본공제·2016말 이전 출생 적격 확인, 가족 원자료 자동심사/2027 적용 아님; 일부공제 조합 미지원",
+      "routes": [
+        "/v1/calc/income"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "INCOME-LEGACY-FOREIGN-TOTAL",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/56"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INC04",
+      "tax": "종합소득세",
+      "title": "부동산매매업 예정·추계·비교과세",
+      "required_facts": "사업성·재고자산·거래별 소득·추계/장부·예정신고",
+      "recorded_supported_scope": "원자료확정일반비주택실가단일매매업예정국세:원가상당/건설이자/법정매도공과·장특·예정기본공제0.",
+      "recorded_boundary": "연간64비교과세·추계·지방/부가/취득세는미포함.장특주년±1일은가드,일반종합소득facade만으로매매업전범위지원이라하지않음.",
+      "routes": [
+        "/v1/calc/tax-event"
+      ],
+      "dev_mcp_tools": [
+        "tax_event_calculation_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/tax_events.py",
+          "symbol": null,
+          "archived_sha256": "6738355e70988145359ff57d791df7c8691f1ae9381fb6d1b9826165053f3d30",
+          "current_sha256": "6738355e70988145359ff57d791df7c8691f1ae9381fb6d1b9826165053f3d30",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "tax_event_calculation",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "INC04-dealer-provisional",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "1246715b11ee9e683253101c214a8c628a863b59acfd99d10fdd8dbb0b3c3297",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/66"
+        },
+        {
+          "id": "INC04-outside-year",
+          "classification": "boundary",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "d501dc5e8971f60f3b3ad63a2590164660354797a828ee9f6a6d973615e038a4",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/67"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/24"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "INC05",
+      "tax": "종합소득세",
+      "title": "청년창업·창업배제·업종 적격 진단",
+      "required_facts": "창업일·연령·업종·지역·승계/재개업 등 실제 사실",
+      "recorded_supported_scope": "창업일/대표자생년/병역·개인법인/최대주주·지역/업종/동종재개·승계자산을확인하는읽기전용진단.",
+      "recorded_boundary": "감면율진단과실제세액감면·최저한세·연간한도원장정산은별도.추정산출세액×비율을실제신고납부액으로인증하지않음.",
+      "routes": [
+        "/v1/calc/youth-startup"
+      ],
+      "dev_mcp_tools": [
+        "youth_startup_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_startup/youth_startup.py",
+          "symbol": "assess",
+          "archived_sha256": "dbb293f6e71a8b9572344d143594656611b90202eadc6cecba98c67a9853fe19",
+          "current_sha256": "dbb293f6e71a8b9572344d143594656611b90202eadc6cecba98c67a9853fe19",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_startup/youth_startup.py",
+          "symbol": "assess",
+          "archived_sha256": "dbb293f6e71a8b9572344d143594656611b90202eadc6cecba98c67a9853fe19",
+          "current_sha256": "dbb293f6e71a8b9572344d143594656611b90202eadc6cecba98c67a9853fe19",
+          "file_changed_since_record": false
+        }
+      ],
+      "cases": [
+        {
+          "id": "INC05-youth-noncapital",
+          "classification": "positive",
+          "recorded_status": "eligible",
+          "recorded_passed": true,
+          "input_sha256": "361b7e22d5a82e91cf5899634a68ab79f776a4fd0e636deb93de3870cfa373c8",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/84"
+        },
+        {
+          "id": "INC05-youth-capital",
+          "classification": "boundary",
+          "recorded_status": "eligible",
+          "recorded_passed": true,
+          "input_sha256": "153df74a8f2ffc0481b45bd5baa06a68fd500e93aef06c1b09987b5195d1935e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/85"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/33"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CNS01",
+      "tax": "복합컨설팅",
+      "title": "매매·증여·상속 대안 비교",
+      "required_facts": "동일 자산·사람·시점별 가치·취득원가·관계",
+      "recorded_supported_scope": "매매/증여/상속대안마다같은확정공통사실과선택가정을분리하여기존함수유지검증.",
+      "recorded_boundary": "현금원가/시가/국세·지방세가액·실제상속구성/공제미상을임의동일대입하면확정최적아님.실패시나리오는0원최적화에서제외.",
+      "routes": [
+        "/v1/calc/compare-disposal"
+      ],
+      "dev_mcp_tools": [
+        "compare_disposal_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/workflows/disposal_comparison.py",
+          "symbol": null,
+          "archived_sha256": "ff75b9cdf79263346494e84e0b7fe676011ee117cf0653cf028a03212a70790c",
+          "current_sha256": "ff75b9cdf79263346494e84e0b7fe676011ee117cf0653cf028a03212a70790c",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "compare_disposal",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CNS01-alternatives",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "dd78e43c8748969d801cc630e07acd74d5219fc816a9ae79387d1645e91d7f5e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/74"
+        },
+        {
+          "id": "CNS01-unconfirmed-alternatives",
+          "classification": "missing",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "bef3255531ab88016cf3d06b50213bc23458e74d20818725e2417c66010b4b44",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/75"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/28"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CNS02",
+      "tax": "복합컨설팅",
+      "title": "부담부증여 3세목·최적 채무",
+      "required_facts": "채무 인수·변제능력·시가/표준액·지분·날짜",
+      "recorded_supported_scope": "세목별 적격가액·실인수채무·증여자원가/귀속경비·날짜를 독립확인한 일반사건. 국세채무 인정과 지방세 유상인정은 분리한다.",
+      "recorded_boundary": "가족 자력/저가예외 미확정은 partial, 취득세와전체합계None; 임의최적채무를 실제가능채무로 보지 않음.",
+      "routes": [
+        "/v1/calc/burdened-gift"
+      ],
+      "dev_mcp_tools": [
+        "burdened_gift_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/workflows/burdened_gift.py",
+          "symbol": null,
+          "archived_sha256": "45a786fe51cb4a889aa395cbf63c46370f25e4f752b3decc8a42eb99c5058aab",
+          "current_sha256": "45a786fe51cb4a889aa395cbf63c46370f25e4f752b3decc8a42eb99c5058aab",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "burdened_gift",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CNS02-zero-debt",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "3ac5f47c3ea929a0ae677fd02f67ab24e3917762cac507f516347fd7777fd005",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/9"
+        },
+        {
+          "id": "CNS02-missing-relation",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "8d8d71ab47ba1616177af02a69722e6e694b00ee0fdfc0b8b4a63bd5ff6cfb1a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/10"
+        },
+        {
+          "id": "CNS02-repay-unknown",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "ceb007b29ed6e6fe5bceb52be1422fe84a9676fca67085cbfbae8e689262039e",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/11"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/3"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CNS03",
+      "tax": "복합컨설팅",
+      "title": "증여/상속+취득·취득 후 양도 연결",
+      "required_facts": "단계별 동일 물건·취득원가·평가목적·납세자",
+      "recorded_supported_scope": "동일물건·사람·국세/지방세평가목적·취득일/원가·당사자지분을명시common_facts로연결한기존좁은사건.",
+      "recorded_boundary": "상증가액=취득세시가표준액=후일양도원가로무조건복제하지않기.미확정세목합계를0으로확정하지않음.",
+      "routes": [
+        "/v1/calc/gift-acquisition"
+      ],
+      "dev_mcp_tools": [
+        "gift_acquisition_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/workflows/consultation_facts.py",
+          "symbol": null,
+          "archived_sha256": "aa0d48e56df8334f3a4dac19bb8ce663a254273a4cbd43669f49fe1a374d4f2e",
+          "current_sha256": "aa0d48e56df8334f3a4dac19bb8ce663a254273a4cbd43669f49fe1a374d4f2e",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/workflows/gift_acquisition.py",
+          "symbol": null,
+          "archived_sha256": "d5401da3a672788ddc0b00fc34b23a47656ab79552465c48c71891210aaf5749",
+          "current_sha256": "d5401da3a672788ddc0b00fc34b23a47656ab79552465c48c71891210aaf5749",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/workflows/inheritance_acquisition.py",
+          "symbol": null,
+          "archived_sha256": "97934f6267771e8fa222c910a3c4cdf9121757bc10a75ffea41e4ff86181bfea",
+          "current_sha256": "97934f6267771e8fa222c910a3c4cdf9121757bc10a75ffea41e4ff86181bfea",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "gift_with_acquisition",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CNS03-gift-acquisition",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "17d24a2ae1f11131174953aa20c64464db9216a48b7b168ff0f8ccbfbf5dd617",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/59"
+        },
+        {
+          "id": "CNS03-missing-value",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "586e929c61cde099c63cdb5a32f7a91bb806816186093a43c6fe58aed3ff6aeb",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/60"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/21"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CNS04",
+      "tax": "복합컨설팅",
+      "title": "여러 수증자 분산증여",
+      "required_facts": "관계·나이·사전증여·재산·공제잔액",
+      "recorded_supported_scope": "성년1~10수증자·단일증여자·동일인/공제그룹사전이력없음·가족관계불변,2026법고정의분산후보가정.",
+      "recorded_boundary": "미래법령예측/전역최적보증아님.10년경계는주년뒤로배치,새증여·관계변화·미성년전환·특례는범위밖.",
+      "routes": [
+        "/v1/calc/gift-distribution-plan"
+      ],
+      "dev_mcp_tools": [
+        "gift_distribution_plan_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/gift_distribution_plan.py",
+          "symbol": null,
+          "archived_sha256": "5584eb7ef82a58d1fefcb99fa82d9ae7409dabeed2b43cbf35c19667625d757b",
+          "current_sha256": "5584eb7ef82a58d1fefcb99fa82d9ae7409dabeed2b43cbf35c19667625d757b",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "gift_distribution_plan",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CNS04-frozen-plan",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "010ef2bbec5a2ddee241d8e0e2431c03c9be36fc242a7fe40db8f0a322a7ab54",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/76"
+        },
+        {
+          "id": "CNS04-future-law-unknown",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "ce280940ff0727c3dd7faf117d47bdb456d8b7413d30bbc581ec6fa6316e4398",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/77"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/29"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "CNS05",
+      "tax": "복합컨설팅",
+      "title": "복수 자산의 양도 순서·연간 계획",
+      "required_facts": "기간·실제 취득·가정 매도일/가액·연간세율군",
+      "recorded_supported_scope": "2026동일연도2~5개일반사업용토지/비주거상가·법정원가/기양도없음전체성을명시한기존연간순서비교.",
+      "recorded_boundary": "미래연도법령/주택/특례/환산/기신고세액/불완전원가·합산전체성은미지원.고객사건저장확장없음.",
+      "routes": [
+        "/v1/calc/transfer-order-annual-plan"
+      ],
+      "dev_mcp_tools": [
+        "transfer_order_annual_plan_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/optimize/transfer_order_optimizer.py",
+          "symbol": null,
+          "archived_sha256": "2674bf058051348b7fcf2f4ed8b9e3b4a867c6c3cf832812d57276abd31a7443",
+          "current_sha256": "2674bf058051348b7fcf2f4ed8b9e3b4a867c6c3cf832812d57276abd31a7443",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "optimize_transfer_order_annual_plan",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "CNS05-hypothetical-order",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "abf572fcbf4208b5a08487947e903df890e9398cb4c20e5570c954e2ede4b357",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/88"
+        },
+        {
+          "id": "CNS05-unconfirmed-other-sales",
+          "classification": "missing",
+          "recorded_status": "unsupported",
+          "recorded_passed": true,
+          "input_sha256": "daab3aee4f8711fa79c2a805da63e20b513397caff9c22c8d9a8e8f3f775dbc2",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/89"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/35"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "COM01",
+      "tax": "공통 품질",
+      "title": "세목별 날짜·신고/납부·가산세·연부연납",
+      "required_facts": "사건/신고/납기/고지/실납 날짜·허가/적용이율",
+      "recorded_supported_scope": "확인허가/기한·일별확인이율입력연부연납분수표,날짜별특정세목가산세한정계약",
+      "recorded_boundary": "허가담보·실납·징수끝수자동확정아님;rounding_status=unverified유지.국세가산세법인/양도수입금액경합등미지원구분",
+      "routes": [
+        "/v1/calc/general-installment",
+        "/v1/calc/tax-event"
+      ],
+      "dev_mcp_tools": [
+        "general_installment_dev",
+        "tax_event_calculation_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/deadline/installment_general.py",
+          "symbol": null,
+          "archived_sha256": "7e69301cf71bc005749c9476019d522773c517afa2507ffc3a7c1f106a213594",
+          "current_sha256": "7e69301cf71bc005749c9476019d522773c517afa2507ffc3a7c1f106a213594",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/tax_events.py",
+          "symbol": null,
+          "archived_sha256": "6738355e70988145359ff57d791df7c8691f1ae9381fb6d1b9826165053f3d30",
+          "current_sha256": "6738355e70988145359ff57d791df7c8691f1ae9381fb6d1b9826165053f3d30",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/acquisition_penalty.py",
+          "symbol": null,
+          "archived_sha256": "c7b610b6e359e63c99c9fb134352dadadf505a274272dd31d9adf421be8fd5da",
+          "current_sha256": "c7b610b6e359e63c99c9fb134352dadadf505a274272dd31d9adf421be8fd5da",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "general_installment",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "tax_event_calculation",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "COM01-installment",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "b178cb2d1e9f9f7dcb6a17aa8cc337a9e822e3e5ffcd74a6b1fbfb39fe7572e7",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/64"
+        },
+        {
+          "id": "COM01-unverified-due",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "1484dbf663823f7958700d9bb63bf98b74cfaf1b11d39cb217822a26004dff36",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/65"
+        },
+        {
+          "id": "COM01-national-penalty",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "7b38815e70ef42e100ee364a4cab92e008a72854c5b3759cef6818bbb37366cb",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/124"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/23"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "COM02",
+      "tax": "공통 품질",
+      "title": "예규·판례 조건과 계산분기 연결",
+      "required_facts": "사실·법령 버전·문서 원문·판단·적용/배제",
+      "recorded_supported_scope": "원문보존91누8548·NTS2482등실존전문/재인용범위를구분하여취득일초일산입및현재95/104문언에연결",
+      "recorded_boundary": "모든예규/판례망자동반영/소송확정성/모든연도·모든특례완전성인증아님;목록·발췌전문승격금지",
+      "routes": [
+        "/v1/calc/transfer"
+      ],
+      "dev_mcp_tools": [
+        "transfer_tax_dev"
+      ],
+      "sources": [
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/support/exemption_rules.py",
+          "symbol": null,
+          "archived_sha256": "dea048cff5e45760bbcbf0b788b862d0511abbe7ebb24d31b9d4a7bf1a86240a",
+          "current_sha256": "dea048cff5e45760bbcbf0b788b862d0511abbe7ebb24d31b9d4a7bf1a86240a",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_core_sources",
+          "file": "jt_tax_engine/core/transfer_tax_calculator.py",
+          "symbol": null,
+          "archived_sha256": "0ae770f6dbcd22e48da2e355902e011e33c09980c68616992ea23203dd16e15f",
+          "current_sha256": "0ae770f6dbcd22e48da2e355902e011e33c09980c68616992ea23203dd16e15f",
+          "file_changed_since_record": false
+        },
+        {
+          "role": "current_facade_sources",
+          "file": "jt_tax_engine/calculator_api.py",
+          "symbol": "transfer_tax",
+          "archived_sha256": "216dee24793624a2a66def312a3b299b74649212262900935e0147c1a44f8ba2",
+          "current_sha256": "b6c8ed527b70858266e28a00bfe34aaf03364f7dabdfc607035fba963d2fee11",
+          "file_changed_since_record": true
+        }
+      ],
+      "cases": [
+        {
+          "id": "COM02-rule-evidence-conflict",
+          "classification": "missing",
+          "recorded_status": "needs_input",
+          "recorded_passed": true,
+          "input_sha256": "9e598be97eed679dfedbb5cb08b5bb4c50bc2e6eb5993364aa20cd32430e00a3",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/108"
+        },
+        {
+          "id": "COM02-evidenced-carryover",
+          "classification": "positive",
+          "recorded_status": "ok",
+          "recorded_passed": true,
+          "input_sha256": "afb42ccac06fead4c6cf95c67a6a37549671255b94766b71093ad52864921e6b",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/109"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/46"
+      },
+      "legal_review_record": "law_remaining48_transfer_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "COM03",
+      "tax": "공통 품질",
+      "title": "골든 차이·오류/차단·원장 신뢰",
+      "required_facts": "기준/현행 입력·중간값·법정 이유·근거 해시",
+      "recorded_supported_scope": "확인 사실의 일반 단일양도",
+      "recorded_boundary": "양도·취득일/실가·경비/용도/다른 양도·기본공제 공유 확인; 특례는 별도 검토",
+      "routes": [],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "TRANSFER-APPROVED-CORRECTION",
+          "classification": "archived_basic_contract",
+          "recorded_passed": null
+        }
+      ],
+      "record_source": {
+        "file": "PRACTICAL_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-INTEGRATION-20261029",
+        "sha256": "e18cd676dae391011bd62a55a3c8ef85d3ce4a2992c369dea5723dcd10a417d4",
+        "pointer": "#/case_families/66"
+      },
+      "legal_review_record": null,
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    },
+    {
+      "id": "COM04",
+      "tax": "공통 품질",
+      "title": "신고서·사건 저장·전자신고·운영 공개",
+      "required_facts": "등록권한·스키마·법정서식·운영 승인",
+      "recorded_supported_scope": "계산기존유지보수·구조연결확인만수행.",
+      "recorded_boundary": "신고서/사건저장/전자신고/운영공개새작업PARKED.계산HTTP존재가전자신고구현/출시증거가아님.",
+      "routes": [
+        "/v1/calc/electronic-filing",
+        "/v1/calc/save-case"
+      ],
+      "dev_mcp_tools": [],
+      "sources": [],
+      "cases": [
+        {
+          "id": "COM04-no-calc-filing",
+          "classification": "PARKED",
+          "recorded_status": "PARKED_NONMUTATING_404",
+          "recorded_passed": true,
+          "input_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/110"
+        },
+        {
+          "id": "COM04-no-calc-save",
+          "classification": "PARKED",
+          "recorded_status": "PARKED_NONMUTATING_404",
+          "recorded_passed": true,
+          "input_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "evidence_pointer": "calc_remaining48_FINAL_REPLAY_ACTUAL_20261029.json#/cases/111"
+        }
+      ],
+      "record_source": {
+        "file": "REMAINING48_SCENARIO_MAP_20261029.json",
+        "question_id": "JT-PRACTICAL-REMAINING48-20261029",
+        "sha256": "617daaa7358bd08e5ab70ca87551d8edfd0c3c7711a10da15e1ade7481ee6255",
+        "pointer": "#/case_families/47"
+      },
+      "legal_review_record": "law_remaining48_assets_FINAL_STATIC_20261029.json",
+      "record_scope": "기존 한정 합성 검증 기록의 인덱스; 현재 버전 전응답 재실행이나 사례군 전체의 법률적 완전성을 인증하지 않음",
+      "whole_family_certified": false
+    }
+  ],
+  "family_count": 68,
+  "tax_categories": {
+    "양도소득세": 12,
+    "취득세": 11,
+    "증여세": 6,
+    "상속세": 5,
+    "재산세": 3,
+    "종합부동산세": 3,
+    "주식양도": 3,
+    "재산평가": 4,
+    "부가가치세": 4,
+    "법인세": 3,
+    "종합소득세": 5,
+    "복합컨설팅": 5,
+    "공통 품질": 4
+  },
+  "case_identifiers_indexed": 181,
+  "current_followup_note": "현재 API의 두 검토 규칙군은 별도로 표시합니다. 기존 취득세 교육세·의제매입 기록의 과거 제외 문구를 현재 한정 지원보다 우선하지 않습니다.",
+  "scope": "기존 전 세목 실무지도와 후속48군 자료의 출처·사실·지원경계·합성ID를 연결. 과거 금액을 새 정답으로 복사하지 않음. 소스 변경 표시는 파일 수준이며 규칙 변경 판정이 아님."
+}

@@ -324,7 +324,7 @@ function compCalcFromEngine(ej) {
   const lim = obj(h['세부담상한']);
   const j = obj(c['공동명의']);
   return {
-    precise: true, engineVer: ej.version && ej.version.engine,
+    precise: true, engineVer: ej.version && ej.version.engine, engineVersion: ej.version || null, calculationReview: ej.review || null,
     totalTax: c['세액'], compTotal: c['종부세합계'], ruralTax: c['농어촌특별세'],
     taxBase: h['과세표준'], grossTax: h['세액'], propTaxCredit: num(h['재산세공제']), taxCredit: num(h['세액공제']),
     creditExcluded: num(h['세액공제제외분']), beforeLimit: num(h['상한전세액']),
@@ -786,7 +786,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
           )}
 
           {typeof JTReportConvert === 'function' && (
-            <JTReportConvert
+            <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
               calcId="comprehensive"
               completeEligible={true}
               precise={true}

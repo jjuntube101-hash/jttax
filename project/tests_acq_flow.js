@@ -986,7 +986,7 @@ console.log('\n════ ⑧-a 폴백 삭제 — 소스에 자체 계산식�
     eq(`소스에 「${gone}」 가 없다`, code.includes(gone), false);
   }
   const ra = code.slice(code.indexOf('const runAnalysis'), code.indexOf('const goDetail'));
-  eq('runAnalysis 가 엔진 응답을 acqCalcFromEngine 으로 분류한다', /acqCalcFromEngine\(await callAcqEngine\(/.test(ra), true);
+  eq('runAnalysis 가 엔진 응답을 acqCalcFromEngine 으로 분류한다', /acqCalcFromEngine\(response\)/.test(ra), true);
   eq('엔진 호출 예외는 acqCalcFromEngineError 로 분류한다', /acqCalcFromEngineError\(e\)/.test(ra), true);
   eq('runAnalysis 가 totalTax 를 직접 대입하지 않는다', /\.totalTax\s*=|totalTax:/.test(ra), false);
 }

@@ -330,7 +330,7 @@ function propCalcFromEngine(ej) {
   const obj = (x) => (x && typeof x === 'object' && !Array.isArray(x)) ? x : {};
   const np = obj(c['납부시기']);
   return {
-    precise: true, engineVer: ej.version && ej.version.engine,
+    precise: true, engineVer: ej.version && ej.version.engine, engineVersion: ej.version || null, calculationReview: ej.review || null,
     totalTax: c['세액'], mainTax: c['재산세본세'], eduTax: c['지방교육세'], urbanTax: c['도시지역분'] || 0,
     taxBase: c['과세표준'], appliedRate: c['적용세율'], fairRatio: c['공정시장가액비율'],
     burdenApplied: c['세부담상한적용'] === true, burden: obj(c['세부담상한']), baseCap: obj(c['과세표준상한']),
@@ -1052,7 +1052,7 @@ function JTReportProperty({ setRoute, onBack }) {
               kakaoSummary·reportSummary·reportDetail 에 폴백 세액이 담겨 클립보드와
               Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
           {typeof JTReportConvert === 'function' && !propBlocked && (
-            <JTReportConvert
+            <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
               calcId="property"
               completeEligible={true}
               precise={calc.precise}

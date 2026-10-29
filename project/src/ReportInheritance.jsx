@@ -580,7 +580,7 @@ function inhCalcFromEngine(ej) {
   if (verdict !== 'ok') return { precise: false, engineState: verdict };
   const mj = (c['주요공제'] && typeof c['주요공제'] === 'object' && !Array.isArray(c['주요공제'])) ? c['주요공제'] : {};
   return {
-    precise: true, engineVer: ej.version && ej.version.engine,
+    precise: true, engineVer: ej.version && ej.version.engine, engineVersion: ej.version || null, calculationReview: ej.review || null,
     taxBase: c['과세표준'], calcTax: c['산출세액'], totalTax: c['세액'],
     deductions: mj,
     steps: c['단계별계산'] || [],
@@ -880,7 +880,7 @@ function JTReportInheritance({ setRoute, onBack }) {
           {/* 차단 중에는 위 조기 반환으로 이 화면에 오지 않으므로 «공유·전송»도 열리지 않는다 —
               화면에서 금액을 가려도 kakaoSummary·reportSummary·reportDetail 에 세액이 담겨 클립보드와
               Web3Forms 로 나가던 경로 (260806 Codex P0). */}
-          <JTReportConvert
+          <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
             setRoute={setRoute}
             calcId="inheritance"
             completeEligible={true}

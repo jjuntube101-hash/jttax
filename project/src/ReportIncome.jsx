@@ -351,7 +351,7 @@ function JTReportIncome({ setRoute, onBack }) {
           calc.detail = c['주요내역'] || {};
           calc.engineWarnings = c['경고사항'] || [];
           calc.precise = true;
-          calc.engineVer = j.version && j.version.engine;
+          calc.engineVer = j.version && j.version.engine; calc.engineVersion = j.version || null; calc.calculationReview = j.review || null;
         } else if (c) { calc.engineReason = ['needs_input','unsupported'].includes(c['상태']) ? window.jtEngineMessageForDisplay(c['오류'] || c['메시지'] || c['사유'] || '입력 요건 또는 지원 범위를 확인해 주세요.') : ''; calc.engineErr = true; console.warn('종소세 엔진 응답 무결성 실패', c); }
       } catch (e) { console.warn('종소세 엔진 연결 실패', e); calc.engineErr = true; }
 
@@ -471,7 +471,7 @@ function JTReportIncome({ setRoute, onBack }) {
               </section>
 
               {calc.precise && typeof JTReportConvert === 'function' && (
-                <JTReportConvert
+                <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
                   calcId="income"
                   completeEligible={true}
                   precise={calc.precise}

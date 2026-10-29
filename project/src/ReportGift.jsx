@@ -578,7 +578,7 @@ function giftCalcFromEngine(ej, inputValue) {
   if (verdict !== 'ok') return { precise: false, engineState: verdict };
   const mj = c['주요공제'] || {};
   return {
-    precise: true, engineVer: ej.version && ej.version.engine,
+    precise: true, engineVer: ej.version && ej.version.engine, engineVersion: ej.version || null, calculationReview: ej.review || null,
     taxBase: c['과세표준'], calcTax: c['산출세액'],
     genSkipSurcharge: c['세대생략할증'], filingCredit: c['신고세액공제'],
     totalTax: c['세액'],
@@ -1060,7 +1060,7 @@ function JTReportGift({ setRoute, onBack }) {
               kakaoSummary·reportSummary·reportDetail 에 세액이 담겨 클립보드와
               Web3Forms 로 나간다 (260806 Codex P0). 막은 척이 되는 대표 경로다. */}
           {!giftBlocked && (
-          <JTReportConvert
+          <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
             setRoute={setRoute}
             calcId="gift"
             completeEligible={true}
