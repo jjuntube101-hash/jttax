@@ -131,11 +131,13 @@ function walkQuick(scenario, label) {
 }
 
 const SC_2HOUSE = {
+  acquisitionDate: '2026-10-01',
   acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual',
   propertyValue: '800000000', housingCount: '2', exclusiveArea: '84',
   isRegulatedArea: 'no', temporaryTwoHouse: 'no', region: '경기도',
 };
 const SC_GIFT = {
+  acquisitionDate: '2026-10-01',
   acquisitionType: '증여', propertyType: '주택',
   propertyValue: '400000000', exclusiveArea: '84',
   isRegulatedArea: 'no', region: '경기도',
@@ -153,6 +155,7 @@ for (const [label, sc] of [['2주택 매매', SC_2HOUSE], ['주택 증여', SC_G
    묻지 않아도 되는 것을 묻는 과잉 질문이 된다. */
 {
   const { answers, asked } = walkQuick({
+  acquisitionDate: '2026-10-01',
     acquisitionType: '매매', propertyType: '주택', acquirerType: 'individual',
     propertyValue: '500000000', housingCount: '1', exclusiveArea: '84', region: 'unknown',
   }, '1주택 매매');
@@ -1162,7 +1165,7 @@ console.log('\n════ ⑧-d 문항 정의 — inheritOneHouse · propertyV
     eq(`상속 주택 · ${lab} · 「돌아갈 문항」이 없다 (다른 문항으로 보내지 않는다)`, OPENQ(a), null);
   }
   eq('상속 주택 · 면적이 비어 있으면 돌아갈 문항은 면적이다 (이 문항이 아니다)', (OPENQ({ ...inh, exclusiveArea: '' }) || {}).id, 'exclusiveArea');
-  const walked = walkQuick({ ...inh, inheritOneHouse: 'unknown' }, '상속 주택');
+  const walked = walkQuick({ ...inh, acquisitionDate:'2026-10-01', inheritOneHouse: 'unknown' }, '상속 주택');
   eq('상속 주택 · 빠른 계산 단계에서 1주택 특례를 묻는다', walked.asked.includes('inheritOneHouse'), true);
   eq('상속 주택 · 빠른 계산을 마치면 입력 차단이 0건이다', GAPS(walked.answers, ENGINE_OK).length, 0);
   eq('상속 주택 · 매퍼는 inheritance_one_house 키를 보내지 않는다 (모르겠어요)', 'inheritance_one_house' in M.mapAnswersToAcquisition(walked.answers), false);

@@ -413,7 +413,7 @@ function JTReportVat({ setRoute, onBack }) {
                     <tbody>
                       {calc.steps.map((s, i) => (
                         <tr key={i}>
-                          <th style={{ fontWeight: 400 }}>{s.항목}{s.조문 ? <span style={{ opacity: 0.6, fontSize: 12 }}> [{s.조문}]</span> : null}</th>
+                          <th style={{ fontWeight: 400 }}><JTCalculationStepLabel step={s} /></th>
                           <td>{typeof s.금액 === 'number' ? vatWon(s.금액) : (s.금액 || '')}</td>
                         </tr>
                       ))}

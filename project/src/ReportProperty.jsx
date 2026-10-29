@@ -1018,7 +1018,7 @@ function JTReportProperty({ setRoute, onBack }) {
               <table className="jt-report-calc">
                 <tbody>
                   {calc.steps.map((s, i) => (
-                    <tr key={i}><th>{s['항목']}{s['조문'] ? ` · ${propFmtArticle(s['조문'])}` : ''}</th><td>{propFormatStepValue(s['항목'], s['금액'])}</td></tr>
+                    <tr key={i}><th><JTCalculationStepLabel step={s} formatArticle={propFmtArticle} /></th><td>{propFormatStepValue(s['항목'], s['금액'])}</td></tr>
                   ))}
                 </tbody>
               </table>

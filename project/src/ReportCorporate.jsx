@@ -44,8 +44,8 @@ const CORP_QS = [
   {
     id: 'children',
     section: '부양가족',
-    q: '그 중 13세 이상 자녀는 몇 명인가요? (자녀세액공제)',
-    sub: '13세 이상 자녀는 자녀세액공제(1명 25만·2명 55만·3명+ 55만+초과 1명당 40만, 소법 §59의2)가 개인·법인 대표 양쪽 소득세에서 차감됩니다. 위 부양가족 중 13세 이상 자녀만. 없으면 0.',
+    q: window.jtLaw('childTaxCredit.question2026', '2026년 귀속 자녀세액공제 대상 자녀·손자녀는 몇 명인가요?'),
+    sub: window.jtLaw('childTaxCredit.guidance2026', '2026년 기본공제대상인 자녀(입양자·위탁아동 포함)와 손자녀 중 2016년 12월 31일 이전 출생자로 공제요건을 확인한 인원만 입력하세요. 부칙상 2026년은 9세 이상이지만 2017년 출생자는 연령단계 특례에서 제외됩니다. 기본공제의 소득·나이·장애인 예외 등 요건도 확인하세요. 출산·입양 추가공제 인원과 구별합니다. 없으면 0.'),
     numeric: true, optional: true,
     placeholder: '예: 1 (없으면 0)',
   },
@@ -191,7 +191,7 @@ function JTCorporateDirect({onBack,onCredits,initialDraft}) {
   const setResult=rawSetResult,setError=rawSetError;
   const set=(key,value)=>{session.invalidate();update(key,value);};
   const update=(key,value)=>{setA(old=>({...old,[key]:value,...(key==='foreignConfirmed'?{}:{foreignConfirmed:false})}));setResult(null);setError('');};
-  const input=(key,label,type='text')=><label key={key} style={{display:'block',margin:'12px 0'}}>{label}<input className="jt-report-q__input" type={type} inputMode={type==='text'?'numeric':undefined} value={a[key]??''} onChange={e=>set(key,e.target.value)} disabled={busy}/></label>;
+  const input=(key,label,type='text')=><label key={key} style={{display:'block',margin:'12px 0'}}>{label}{type==='date'?<input className="jt-report-q__input" type="date" value={a[key]??''} onChange={e=>set(key,e.target.value)} disabled={busy}/>:<JTNumericInput className="jt-report-q__input" money={key!=='year'} value={a[key]??''} onChange={e=>set(key,e.target.value)} disabled={busy}/>}</label>;
   const submit=async e=>{
     e.preventDefault();session.invalidate();const token=session.begin();const setResult=session.sink(token,rawSetResult),setError=session.sink(token,rawSetError),setBusy=session.sink(token,rawSetBusy);setBusy(true);
     try{
@@ -220,7 +220,7 @@ function JTCorporateDirect({onBack,onCredits,initialDraft}) {
     {error&&<p role="alert">{error}</p>}
     {result&&<section className="jt-report-result__section"><h3>{result['적용연도']}년 계산 결과</h3><table className="jt-report-calc"><tbody>{['각사업연도소득','과세표준','산출세액','공제감면합계','납부법인세','지방소득세','총납부세액'].map(key=><tr key={key}><th>{key}</th><td>{Number(result[key]).toLocaleString('ko-KR')}원</td></tr>)}</tbody></table>
       <p>최저한세 적용: {result['최저한세적용']?'예':'아니오'}</p>
-      <h3>단계별 계산</h3><table className="jt-report-calc"><tbody>{(result['단계별계산']||[]).map((s,i)=><tr key={i}><th>{s['항목']}</th><td>{typeof s['금액']==='number'?s['금액'].toLocaleString('ko-KR')+'원':String(s['금액']??'')}</td></tr>)}</tbody></table>
+      <h3>단계별 계산</h3><table className="jt-report-calc"><tbody>{(result['단계별계산']||[]).map((s,i)=><tr key={i}><th><JTCalculationStepLabel step={s} /></th><td>{formatStepValue(s['항목'],s['금액'])}</td></tr>)}</tbody></table>
       {(result['경고사항']||[]).map((s,i)=><p key={i}>{s}</p>)}
     </section>}
   </JTReportShell></div>;
@@ -291,7 +291,7 @@ function JTReportCorporate({ setRoute, onBack }) {
       const salary = Math.min(Math.round(Number(answers.ownerSalary) || 0), income);
       const spouse = answers.spouse === 'yes';
       const deps = Number(answers.dependents) || 0;
-      const kids = Number(answers.children) || 0;   // 수정 260628(CORPORATE-R2-01): 13세 이상 자녀세액공제(§59의2) 개인·법인대표 대칭 반영
+      const kids = Number(answers.children) || 0;   // 수정 260628(CORPORATE-R2-01): 적격 자녀·손자녀 세액공제(§59의2) 개인·법인대표 대칭 반영
       let calc = { precise: false };
       try {
         const [pj, cj, sj] = await Promise.all([

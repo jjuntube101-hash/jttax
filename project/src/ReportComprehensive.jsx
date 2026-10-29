@@ -35,10 +35,10 @@ const COMP_QS = [
     showIf: a => a.ownerType !== 'corporate',
     tier: 'quick',
     section: '주택 보유 현황',
-    q: '본인 세대가 보유한 주택은 몇 채인가요?',
-    sub: '종합부동산세는 매년 6월 1일 기준, 세대가 보유한 주택의 공시가격을 합산해 해당 연도 공제(2022년 1세대1주택 11억·그 외 6억, 2023년 이후 12억·9억)를 넘는 부분에 부과됩니다(종부세법 §7·§8). 1세대 1주택이면 공제도 크고, 만 60세 이상·5년 이상 보유 시 세액공제까지 받습니다.',
+    q: '본인이 지분을 소유한 주택은 몇 채인가요?',
+    sub: '종합부동산세는 매년 6월 1일 기준, 본인 소유 지분에 해당하는 주택 공시가격을 합산해 해당 연도 공제(2022년 1세대1주택 11억·그 외 6억, 2023년 이후 12억·9억)를 넘는 부분에 부과됩니다(종부세법 §7·§8). 1세대 1주택이면 공제도 크고, 만 60세 이상·5년 이상 보유 시 세액공제까지 받습니다.',
     opts: [
-      ['one', '1채 (1세대 1주택)', '해당 연도 1세대1주택 공제 · 연령·보유 세액공제'],
+      ['one', '1채 — 1세대 1주택 자격 확인', '배우자·세대원의 다른 주택 등 법정 자격까지 확인한 경우'],
       ['two', '2채', '해당 연도 일반 공제·세율'],
       ['three', '3채 이상', '해당 연도 다주택 세율·요건 확인'],
     ],
@@ -47,12 +47,12 @@ const COMP_QS = [
     id: 'totalValue',
     tier: 'quick',
     section: '공시가격 합계',
-    q: '보유 주택의 공시가격을 모두 더하면 얼마인가요? (원)',
-    sub: '실거래가가 아니라 정부가 매년 고시하는 공시가격의 합계입니다. 여러 채면 전부 더해 주세요. 부동산공시가격알리미(realtyprice.kr)에서 조회됩니다. 해당 연도 공제(2022년 1세대1주택 11억·그 외 6억, 2023년 이후 12억·9억) 이하이면 종부세는 0원입니다.',
+    q: '주택 공시가격 합계는 얼마인가요? (일반: 본인지분 / 부부 공동1주택 비교: 전체, 원)',
+    sub: '납세자 본인의 소유 지분에 해당하는 공시가격만 합산하세요. 배우자·세대원의 별도 소유 지분은 더하지 않습니다. 일반 계산은 공동소유 주택 공시가격에 본인 지분율을 곱합니다. 단, 부부 공동명의 1주택의 두 과세방식 비교를 선택할 예정이면 두 사람 지분을 합한 주택 전체 공시가격을 입력하세요. 엔진이 그 전체가액에 지분율을 한 번 적용합니다. 세대의 다른 주택은 1세대 1주택 자격을 별도로 확인합니다. 부동산공시가격알리미(realtyprice.kr)에서 조회됩니다. 해당 연도 공제(2022년 1세대1주택 11억·그 외 6억, 2023년 이후 12억·9억) 이하이면 종부세는 0원입니다.',
     numeric: true, money: true,
     placeholder: '예: 1,500,000,000',
   },
-  {id:'historicalHousingValues',tier:'quick',section:'물건별 공시가격',q:'본인 소유 주택 각각의 공시가격을 원 단위로 입력하세요.',sub:'쉼표로 구분합니다. 예: 800000000, 700000000. 앞에서 입력한 합계와 같아야 합니다.',freeform:true,showIf:a=>a.taxYear && Number(a.taxYear)<2026 && a.ownerType==='person' && ['two','three'].includes(a.housingCount)},
+  {id:'historicalHousingValues',tier:'quick',section:'물건별 공시가격',q:'본인 소유 지분에 해당하는 주택별 공시가격을 원 단위로 입력하세요.',sub:'쉼표로 구분합니다. 예: 800000000, 700000000. 앞에서 입력한 합계와 같아야 합니다.',freeform:true,showIf:a=>a.taxYear && Number(a.taxYear)<2026 && a.ownerType==='person' && ['two','three'].includes(a.housingCount)},
   /* 2채일 때만 묻는다. 「아니요」가 아니면 아래 secondValue 로 특례 대상 주택의 공시가격을 따로 받는다(합계 − 그 금액 = 주된 주택).
      「모름」은 차단(①층) — 공제 12억/9억과 세액공제가 이 답에 따라 갈리므로 짐작으로 채우지 않는다. */
   {
@@ -102,7 +102,7 @@ const COMP_QS = [
     id: 'ownership',
     section: '명의 (단독 / 부부 공동)',
     q: '이 주택의 명의는 어떻게 되어 있나요?',
-    sub: '부부 공동명의 공제는 연도별로 다릅니다. 과거연도 공동명의는 현재 지원 범위에서 제외되어 금액 없이 안내합니다. 다만 1세대1주택 연령·보유 세액공제는 공동명의 1주택자 특례(§10의2) 신청 시 받을 수 있어, 둘 중 유리한 쪽을 자동 비교해 드립니다. 2채 특례(의제)인 경우의 부부 공동명의는 이 계산기가 지원하지 않아 세무사 확인을 안내합니다.',
+    sub: '부부 공동명의 1주택 비교를 선택하면 앞서 입력한 공시가격은 두 사람 지분을 합한 주택 전체 가액이어야 합니다. 본인 지분가액을 넣었다면 입력 확인에서 공시가격 합계를 수정하세요. 부부 공동명의 공제는 연도별로 다릅니다. 과거연도 공동명의는 현재 지원 범위에서 제외되어 금액 없이 안내합니다. 다만 1세대1주택 연령·보유 세액공제는 공동명의 1주택자 특례(§10의2) 신청 시 받을 수 있어, 둘 중 유리한 쪽을 자동 비교해 드립니다. 2채 특례(의제)인 경우의 부부 공동명의는 이 계산기가 지원하지 않아 세무사 확인을 안내합니다.',
     showIf: (a) => a.ownerType !== 'corporate' && (a.housingCount === 'one' || compIsDeemed(a)),
     opts: [
       ['single', '단독명의', '해당 연도 1세대1주택 공제'],
@@ -598,7 +598,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
         commentary = JSON.parse(txt.match(/\{[\s\S]*\}/)[0]);
       } catch (cErr) {
         commentary = {
-          headline: '종합부동산세는 매년 6월 1일 기준, 세대 보유 주택 공시가격 합계에서 공제를 뺀 금액에 부과됩니다.',
+          headline: '종합부동산세는 매년 6월 1일 기준, 납세자 본인 소유 지분의 주택 공시가격 합계에서 공제를 뺀 금액에 부과됩니다.',
           cautions: [
             { title: '과세기준일 6월 1일', detail: '6월 1일 현재 보유한 주택으로 그 해 종부세가 정해집니다. 직전 매도·직후 매수가 그 해 부담 면에서 유리합니다(종부세법 §3).' },
             { title: '부부 공동명의', detail: '부부가 각자 공제(각 9억, 합 18억)를 받을 수 있어 1주택 공동명의가 단독명의(12억)보다 유리할 수 있습니다. 단 1세대1주택 세액공제(연령·보유)는 단독명의가 유리할 수 있어 비교가 필요합니다.' },
@@ -755,7 +755,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
               <table className="jt-report-calc">
                 <tbody>
                   {calc.steps.map((s, i) => (
-                    <tr key={i}><th>{s['항목']}{s['조문'] ? ` · ${compFmtArticle(s['조문'])}` : ''}</th><td>{compFormatStepValue(s['항목'], s['금액'])}</td></tr>
+                    <tr key={i}><th><JTCalculationStepLabel step={s} formatArticle={compFmtArticle} /></th><td>{compFormatStepValue(s['항목'], s['금액'])}</td></tr>
                   ))}
                 </tbody>
               </table>
@@ -833,7 +833,7 @@ function JTReportComprehensive({ setRoute, onBack }) {
           {cur.id === 'totalValue' && (
             <div style={{ background: 'var(--bg-1,#f7f5f0)', border: '1px solid #dfe3dc', borderRadius: 10, padding: '14px 16px', marginBottom: 14 }}>
               <div style={{ fontWeight: 600, marginBottom: 6 }}>🔎 주소로 공시가격 자동 합산 <span style={{ fontWeight: 400, opacity: 0.7, fontSize: 13 }}>(선택 — 아파트·빌라·단독주택)</span></div>
-              <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8, lineHeight: 1.55 }}>보유 주택 주소를 넣고 조회하면 공시가격을 아래 합계에 더해드려요. <strong>여러 채면 한 채씩 주소를 넣어 조회를 반복</strong>하면 자동으로 합산됩니다.</p>
+              <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.8, lineHeight: 1.55 }}>주소 조회는 주택 전체 공시가격을 합산합니다. 일반 공동소유는 조회 후 본인 지분가액으로 직접 수정하세요. 부부 공동명의 1주택 비교에서는 전체 가액을 유지하세요. <strong>여러 채면 한 채씩 주소를 넣어 조회를 반복</strong>하면 자동으로 합산됩니다.</p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
                   placeholder="예: 서울 종로구 자하문로36길 16-14"

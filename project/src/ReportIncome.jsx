@@ -43,8 +43,8 @@ const INC_QS = [
   {
     id: 'children',
     section: '부양가족',
-    q: `그중 ${window.jtLaw('childTaxCredit.minAge', 13)}세 이상 자녀는 몇 명인가요? (자녀세액공제)`,
-    sub: `위 부양가족 중 ${window.jtLaw('childTaxCredit.minAge', 13)}세 이상~${window.jtLaw('childTaxCredit.maxAge', 20)}세 이하 자녀 수. 1명 25만원·2명 55만원 등 자녀세액공제가 추가됩니다(소득세법 §59의2 · 2026.4.21 시행 ${window.jtLaw('childTaxCredit.minAge', 13)}세 상향, ${window.jtLaw('childTaxCredit.minAge', 13) - 1}세 이하는 대상 아님). 없으면 0.`,
+    q: window.jtLaw('childTaxCredit.question2026', '2026년 귀속 자녀세액공제 대상 자녀·손자녀는 몇 명인가요?'),
+    sub: window.jtLaw('childTaxCredit.guidance2026', '2026년 기본공제대상인 자녀(입양자·위탁아동 포함)와 손자녀 중 2016년 12월 31일 이전 출생자로 공제요건을 확인한 인원만 입력하세요. 부칙상 2026년은 9세 이상이지만 2017년 출생자는 연령단계 특례에서 제외됩니다. 기본공제의 소득·나이·장애인 예외 등 요건도 확인하세요. 출산·입양 추가공제 인원과 구별합니다. 없으면 0.'),
     numeric: true, optional: true,
     placeholder: '예: 1 (없으면 0)',
   },
@@ -444,7 +444,7 @@ function JTReportIncome({ setRoute, onBack }) {
                     <tbody>
                       {calc.steps.map((s, i) => (
                         <tr key={i}>
-                          <th style={{ fontWeight: 400 }}>{s.항목}{s.조문 ? <span style={{ opacity: 0.6, fontSize: 12 }}> [{s.조문}]</span> : null}</th>
+                          <th style={{ fontWeight: 400 }}><JTCalculationStepLabel step={s} /></th>
                           <td>{typeof s.금액 === 'number' ? formatWon(s.금액) : (s.금액 || '')}</td>
                         </tr>
                       ))}

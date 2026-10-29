@@ -638,12 +638,7 @@ const CGT_QS = [
 
 function formatWon(n) {
   if (!n || isNaN(n)) return '0원';
-  const eok = Math.floor(n / 100_000_000);
-  const man = Math.floor((n % 100_000_000) / 10_000);
-  if (eok > 0 && man > 0) return `${eok}억 ${man.toLocaleString()}만원`;
-  if (eok > 0) return `${eok}억원`;
-  if (man > 0) return `${man.toLocaleString()}만원`;
-  return `${n.toLocaleString()}원`;
+  return Number(n).toLocaleString('ko-KR', { maximumFractionDigits: 20 }) + '원';
 }
 
 /* 상담 요청 시 담당 세무사에게 전달할 상세 — 고객 입력 전체 + 계산 결과 + 자동 분석 */
@@ -1633,7 +1628,7 @@ cautions 3개, saving_ideas 2~3개.`;
               <tbody>
                 {calc.steps.map((s, i) => (
                   <tr key={i}>
-                    <th>{s['항목']}{s['조문'] ? ` · ${s['조문']}` : ''}</th>
+                    <th><JTCalculationStepLabel step={s} /></th>
                     <td>{formatStepValue(s['항목'], s['금액'])}</td>
                   </tr>
                 ))}

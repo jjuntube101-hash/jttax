@@ -70,6 +70,7 @@ const ACQ_REGIONS = ['서울특별시', '부산광역시', '대구광역시', '�
   '경상북도', '경상남도', '제주특별자치도'];
 
 const ACQ_QS = [
+  {id:'acquisitionDate',tier:'quick',section:'취득 시점',q:'실제 취득일은 언제인가요?',sub:'확인한 취득일을 입력하세요. 이 날짜의 연도와 규칙으로 계산하며 신고기한도 달라집니다. 잔금·등기 중 취득시기 판단이 필요하면 취득일·과세표준 확인 계산을 이용하세요.',date:true,freeform:true,placeholder:'YYYY-MM-DD'},
   {
     id: 'acquisitionType',
     tier: 'quick',
@@ -400,6 +401,12 @@ function mapAnswersToAcquisition(rawA) {
     property_type: ACQ_PROPERTY_TYPE[a.propertyType] || '상가사무실',
     is_housing: isHousing,
   };
+  if (a.acquisitionDate) {
+    const d=String(a.acquisitionDate);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!Number.isFinite(Date.parse(d))||new Date(d).toISOString().slice(0,10)!==d)throw new Error('실제 취득일을 YYYY-MM-DD로 확인해 주세요.');
+    if(a.giftChoiceDate && a.giftChoiceDate!==d)throw new Error('취득일과 증여 취득일이 다릅니다. 같은 사건의 날짜를 확인해 주세요.');
+    body.acquisition_date=d;
+  }
   if (a.propertyType === '농지') body.is_farmland = true;   // ← 세율을 가르는 것은 이 플래그다(위 주석)
   if (isHousing && Number(a.exclusiveArea) > 0) body.exclusive_area = Number(a.exclusiveArea);
   // 법인·단체 명의 주택 유상취득(지§13의2①1호)은 주택 수·조정지역·감면과 무관하게 판정된다.
@@ -630,7 +637,7 @@ function buildAcqDetail(answers, calc, commentary) {
   if (calc.heavyApplied) L.push('  · 중과 적용: ' + (calc.heavyReason || '예'));
   if (calc.reductionAmt > 0) L.push('  · 감면: ' + formatWon(calc.reductionAmt) + ' (' + (calc.reductionType || '') + ')');
   L.push('  · 총 납부세액: ' + formatWon(calc.totalTax));
-  if (calc.deadline) L.push('  · 신고기한: ' + calc.deadline);
+  if (calc.deadline) L.push('  · 일반 신고기한: ' + calc.deadline + ' (그 전에 등기·등록 신청 시 신청서 접수일까지 신고·납부, 지방세법 §20④)');
   const ew = calc.engineWarnings || [];
   if (ew.length) { L.push('', '■ 경고'); ew.forEach(w => L.push('  · ' + w)); }
   L.push('', '■ 자동 분석');
@@ -982,7 +989,7 @@ function JTAcqDeclaredInputs({onBack}) {
     {result&&<section aria-label="명시 사실 취득세 결과"><h2>취득세 계산 결과</h2><p>본세 계산이며 신고기한·기납부·추징은 포함하지 않습니다.</p>
       <table className="jt-report-calc"><tbody>{[['과세표준',result.taxBase],['취득세',result.acqTax],['지방교육세',result.eduTax],['농어촌특별세',result.farmTax],['총 납부세액',result.totalTax]].map(([k,v])=><tr key={k}><th>{k}</th><td>{Number(v).toLocaleString('ko-KR')}원</td></tr>)}</tbody></table>
       {(result.engineWarnings||[]).map((w,i)=><p key={i}>{window.jtEngineMessageForDisplay(w)}</p>)}
-      <h3>계산 과정</h3><table className="jt-report-calc"><tbody>{result.steps.map((s,i)=><tr key={i}><th>{s.항목}</th><td>{acqFormatStepValue(s.항목,s.금액,s.비고)}</td></tr>)}</tbody></table>
+      <h3>계산 과정</h3><table className="jt-report-calc"><tbody>{result.steps.map((s,i)=><tr key={i}><th><JTCalculationStepLabel step={s} formatArticle={acqFmtArticle} /></th><td>{acqFormatStepValue(s.항목,s.금액,s.비고)}</td></tr>)}</tbody></table>
     </section>}
   </JTReportShell></div>;
 }
@@ -1062,7 +1069,7 @@ function JTAcqBasisInputs({ onBack }) {
     {result && <section aria-label="취득세 계산 결과" className="jt-report-result__section">
       <h2>취득세 계산 결과</h2><p>입력 취득일: {a.date} · 입력한 사실관계를 기준으로 한 추정이며 증빙 진위를 자동 확인하지 않습니다.</p>
       <table className="jt-report-calc"><tbody>{[['과세표준',result.taxBase],['취득세',result.acqTax],['지방교육세',result.eduTax],['농어촌특별세',result.farmTax],['총 납부세액',result.totalTax]].map(([label,value]) => <tr key={label}><th>{label}</th><td>{won(value)}</td></tr>)}</tbody></table>
-      {result.deadline && <p>일반 신고기한: {result.deadline} — 조기 등기신청 등 실제 신고 조건은 별도로 확인하세요.</p>}
+      {result.deadline && <p>일반 신고기한: {result.deadline} — 그 전에 등기·등록을 신청하면 신청서 접수일까지 신고·납부해야 합니다(지방세법 §20④). 특수 기산일은 별도로 확인하세요.</p>}
       {(result.engineWarnings || []).map((w,i) => <p key={i}>{window.jtEngineMessageForDisplay(w)}</p>)}
       <h3>계산 과정</h3><table className="jt-report-calc"><tbody>{result.steps.map((s,i) => <tr key={i}><th>{s.항목}{s.비고 && <small style={{display:'block',fontWeight:400}}>{window.jtEngineMessageForDisplay(s.비고)}</small>}</th><td>{acqFormatStepValue(s.항목,s.금액,s.비고)}</td></tr>)}</tbody></table>
     </section>}
@@ -1186,6 +1193,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
   const setAns = (id, v) => setAnswers(a => ({ ...a, [id]: v }));
 
   const canNext = () => {
+    if(cur.date){const d=String(answers[cur.id]||'');return /^\d{4}-\d{2}-\d{2}$/.test(d)&&Number.isFinite(Date.parse(d))&&new Date(d).toISOString().slice(0,10)===d;}
     if (cur.freeform) return true;
     if (cur.numeric) { if (cur.optional) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
     /* answers 는 정규화된 답이다 — 분기를 바꿔 «못 고르게 된» 옛 선택지는 여기서 비어 있고,
@@ -1203,6 +1211,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
 
     setLoading(true); setErr(null);
     try {
+      const knownDate=String(answers.acquisitionDate||'');
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(knownDate)||!Number.isFinite(Date.parse(knownDate))||new Date(knownDate).toISOString().slice(0,10)!==knownDate)throw new Error('실제 취득일을 먼저 확인해 주세요. 날짜를 모르면 세액·신고기한을 확정하지 않습니다.');
       /* ★ «불확정 입력»은 엔진을 부르기 «전»에 막는다 (260806 Codex R20 P1).
          판정 함수는 2층인데 ①불확정 층은 calc.precise 와 무관하다 — 그래서 여기서
          precise:true 로 불러 ①층만 본다. 못 낼 값이면 요청 자체가 낭비이고,
@@ -1441,7 +1451,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
                 ⚠️ 중과 적용: {calc.heavyReason}. {ACQ_HEAVY_NOTICE[acqNoticeKey(answers)]}
               </div>
             )}
-            {calc.deadline && <p style={{ fontSize: 13, opacity: 0.8, marginTop: 8 }}>신고·납부 기한: {calc.deadline}</p>}
+            {calc.deadline && <p style={{ fontSize: 13, opacity: 0.8, marginTop: 8 }}>일반 신고·납부 기한: {calc.deadline} — 그 전에 등기·등록을 신청하면 신청서 접수일까지 신고·납부해야 합니다(지방세법 §20④). 특수 기산일은 별도 확인하세요.</p>}
           </section>
 
           {calc.steps && calc.steps.length > 0 && (
@@ -1450,7 +1460,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
               <table className="jt-report-calc">
                 <tbody>
                   {calc.steps.map((s, i) => (
-                    <tr key={i}><th>{s['항목']}{s['조문'] ? ` · ${acqFmtArticle(s['조문'])}` : ''}</th><td>{acqFormatStepValue(s['항목'], s['금액'], s['비고'])}</td></tr>
+                    <tr key={i}><th><JTCalculationStepLabel step={s} formatArticle={acqFmtArticle} /></th><td>{acqFormatStepValue(s['항목'], s['금액'], s['비고'])}</td></tr>
                   ))}
                 </tbody>
               </table>
@@ -1551,7 +1561,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
           <h2>{cur.qFor ? cur.qFor(answers) : cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
-          {cur.freeform && (
+          {cur.date && <input className="jt-report-q__input" type="date" value={answers[cur.id]||''} onChange={e=>setAns(cur.id,e.target.value)} />}
+          {cur.freeform && !cur.date && (
             <textarea className="jt-report-q__textarea" maxLength={cur.id === 'context' ? 200 : 120}
               placeholder={cur.placeholder || ''} value={answers[cur.id] || ''} onChange={(e) => setAns(cur.id, e.target.value)} />
           )}
