@@ -46,6 +46,7 @@ export const ORDER = [
   'Legal.jsx',
   'Report.jsx',
   'InputReview.jsx',
+  'CreditGenerationInputs.jsx',
   'CreditSettlementDirect.jsx',
   'ReportConvert.jsx',
   'ReportAppeal.jsx',

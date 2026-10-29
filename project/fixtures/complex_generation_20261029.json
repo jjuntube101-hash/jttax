@@ -1,0 +1,2125 @@
+{
+  "credits": [
+    {
+      "id": "RD-ZERO",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 0,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 0,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-FIRST",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 100000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 25000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-INCREASE",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 200000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 50000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 40000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 40000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 30000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 75000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-PREV-BELOW-AVG",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 200000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 20000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 60000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 60000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 60000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 50000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-TIE",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 200000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 50000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-DECREASE",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 50000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 12500000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-NET-ELIGIBLE-CURRENT",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 80000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 50000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 40000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 40000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 30000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 20000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-OCCURRENCE-DENOMINATOR",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 200000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 80000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 50000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-FRACTION-AVERAGE",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 400,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 1,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 2,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 2,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 100,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-ZERO",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 0,
+              "paid_to_date": 0,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 0,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-AVERAGE-ZERO-NO-ADDITIONAL",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 300000000,
+              "paid_to_date": 300000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "일반법인",
+      "expected_amount": 3000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-FIRST-SME",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 100000000,
+              "paid_to_date": 100000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 10000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-SME-INCREASE",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 80000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 60000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 40000000,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 100000000,
+              "paid_to_date": 100000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 14000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-CAP-BINDS",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 300000000,
+              "paid_to_date": 300000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "일반법인",
+      "expected_amount": 9000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-MEDIUM",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 300000000,
+              "paid_to_date": 300000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중견기업",
+      "expected_amount": 35000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-DECREASE",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 150000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 150000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 150000000,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 100000000,
+              "paid_to_date": 100000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 10000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-GRANT-NET80",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 100000000,
+              "grant_amount": 20000000,
+              "grant_kind": "designated_research",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C",
+              "grant_evidence": "SYNTH:연구출연귀속"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 50000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 40000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 40000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 30000000,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 20000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-SUM-BEFORE-RATE",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 101,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            },
+            {
+              "id": "C2",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 103,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W2",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C2"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 51,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-RETIREMENT-EXCLUDED",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "retirement_pension",
+              "amount": 100000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 0,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-ADMIN-EXCLUDED",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "auto_max",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 100000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "administration",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            },
+            {
+              "year": 2022,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액",
+              "months": 12
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 0,
+      "expected_status": "ok"
+    },
+    {
+      "id": "RD-CURRENT-NO-UNNEEDED-HISTORY",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "research": {
+          "id": "RD",
+          "business_id": "BUS",
+          "evidence": "SYNTH:연구비전체",
+          "method": "current",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_research_costs_confirmed": true,
+          "labs": [
+            {
+              "id": "L",
+              "type": "inhouse_lab",
+              "recognition_number": "SYNTH-REG",
+              "valid_from": "2020-01-01",
+              "valid_to": "2026-12-31",
+              "retrospective_revocation": false,
+              "evidence": "SYNTH:인정증"
+            }
+          ],
+          "projects": [
+            {
+              "id": "P",
+              "lab_id": "L",
+              "nature": "scientific_technical",
+              "description": "SYNTH:신공정개발",
+              "start_date": "2026-01-01",
+              "end_date": "2026-12-31",
+              "plan_evidence": "SYNTH:계획",
+              "report_evidence": "SYNTH:수행"
+            }
+          ],
+          "costs": [
+            {
+              "id": "C",
+              "project_id": "P",
+              "period_start": "2026-01-01",
+              "period_end": "2026-12-31",
+              "category": "salary",
+              "amount": 100000000,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "evidence": "SYNTH:급여원행",
+              "book_cost_basis_confirmed": true,
+              "worker_id": "W",
+              "role": "researcher",
+              "is_officer": false,
+              "dedicated_research": true,
+              "payroll_reference": "PAY-C"
+            }
+          ],
+          "prior_years": []
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 25000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-GRANT-AND-CONTRIBUTION",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 100000000,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 300000000,
+              "paid_to_date": 300000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 50000000,
+              "grant_kind": "direct_investment",
+              "construction_contribution": 10000000,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가",
+              "grant_evidence": "SYNTH:직접지원",
+              "contribution_evidence": "SYNTH:공사부담"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 38000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-SUM-BEFORE-RATE",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 51,
+              "paid_to_date": 51,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            },
+            {
+              "id": "AS2",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 49,
+              "paid_to_date": 49,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 10,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-COMPLETED-NOT-CASH-LIMIT",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 100000000,
+              "paid_to_date": 0,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 10000000,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-ORDINARY-VEHICLE-EXCLUDED",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "ordinary_eligible",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "vehicle",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 100000000,
+              "paid_to_date": 100000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 0,
+      "expected_status": "ok"
+    },
+    {
+      "id": "INV-INDUSTRY-EXCLUDED",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:법인원자료",
+        "investment": {
+          "id": "INV",
+          "business_id": "BUS",
+          "evidence": "SYNTH:투자전체",
+          "industry": "real_estate_rental_supply",
+          "first_investment_date": "2020-01-01",
+          "scope_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "no_other_asset_regimes_confirmed": true,
+          "no_other_current_investments_confirmed": true,
+          "prior_support_absent_confirmed": true,
+          "prior_years": [
+            {
+              "year": 2025,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2024,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            },
+            {
+              "year": 2023,
+              "amount": 0,
+              "evidence": "SYNTH:기신고적격순액"
+            }
+          ],
+          "assets": [
+            {
+              "id": "AS",
+              "asset_type": "ordinary_machinery",
+              "investment_start_date": "2026-01-01",
+              "acquired_date": "2026-06-01",
+              "completed_date": "2026-06-01",
+              "ready_date": "2026-06-01",
+              "purchase_cost": 100000000,
+              "paid_to_date": 100000000,
+              "is_new": true,
+              "direct_own_use": true,
+              "lease_type": "none",
+              "special_asset_or_exception": false,
+              "interest_support": false,
+              "grant_amount": 0,
+              "grant_kind": "none",
+              "construction_contribution": 0,
+              "book_cost_basis_confirmed": true,
+              "evidence": "SYNTH:송장설치원가"
+            }
+          ]
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_amount": 0,
+      "expected_status": "ok"
+    }
+  ],
+  "majority": [
+    {
+      "id": "MAJ-ORDER-A",
+      "input": {
+        "schema_version": "acquisition-special/3",
+        "kind": "majority_shareholder",
+        "acquisition_date": "2026-10-29",
+        "scope_confirmed": true,
+        "evidence": "SYNTH:원자료",
+        "complex_mode": "ordered_ordinary_events",
+        "formation_date": "2010-01-01",
+        "history": [
+          {
+            "date": "2010-01-01",
+            "sequence": 0,
+            "issued_shares": 100,
+            "treasury_shares": 0,
+            "group_shares": 40,
+            "evidence": "SYNTH:설립"
+          },
+          {
+            "date": "2025-01-01",
+            "sequence": 0,
+            "issued_shares": 100,
+            "treasury_shares": 20,
+            "group_shares": 40,
+            "evidence": "SYNTH:사건전"
+          }
+        ],
+        "assets": [
+          {
+            "id": "LAND",
+            "property_type": "토지",
+            "net_book_value": 350000000,
+            "jurisdiction": "서울",
+            "evidence": "SYNTH:일반비농지토지"
+          }
+        ],
+        "group_review_evidence": "SYNTH:동일집단",
+        "order_confirmed": true,
+        "ordering_evidence": "SYNTH:실제효력순서",
+        "atomic_concurrent": false,
+        "assets_unchanged_within_day_confirmed": true,
+        "history_complete_confirmed": true,
+        "same_group_confirmed": true,
+        "ordinary_shares_only_confirmed": true,
+        "rights_reviewed_confirmed": true,
+        "unlisted_corporation_confirmed": true,
+        "assets_complete_confirmed": true,
+        "events": [
+          {
+            "sequence": 1,
+            "effective_time": "09:00:00",
+            "event_type": "treasury_acquisition_only",
+            "total_shares_before": 100,
+            "total_shares_after": 100,
+            "shareholders": [
+              {
+                "id": "A",
+                "before_shares": 40,
+                "after_shares": 40,
+                "in_group_before": true,
+                "in_group_after": true,
+                "is_treasury": false,
+                "evidence": "SYNTH:단계주주명세"
+              },
+              {
+                "id": "B",
+                "before_shares": 40,
+                "after_shares": 30,
+                "in_group_before": false,
+                "in_group_after": false,
+                "is_treasury": false,
+                "evidence": "SYNTH:단계주주명세"
+              },
+              {
+                "id": "T",
+                "before_shares": 20,
+                "after_shares": 30,
+                "in_group_before": false,
+                "in_group_after": false,
+                "is_treasury": true,
+                "evidence": "SYNTH:단계주주명세"
+              }
+            ],
+            "evidence": "SYNTH:독립효력문서"
+          },
+          {
+            "sequence": 2,
+            "effective_time": "10:00:00",
+            "event_type": "transfer",
+            "total_shares_before": 100,
+            "total_shares_after": 100,
+            "shareholders": [
+              {
+                "id": "A",
+                "before_shares": 40,
+                "after_shares": 42,
+                "in_group_before": true,
+                "in_group_after": true,
+                "is_treasury": false,
+                "evidence": "SYNTH:단계주주명세"
+              },
+              {
+                "id": "B",
+                "before_shares": 30,
+                "after_shares": 28,
+                "in_group_before": false,
+                "in_group_after": false,
+                "is_treasury": false,
+                "evidence": "SYNTH:단계주주명세"
+              },
+              {
+                "id": "T",
+                "before_shares": 30,
+                "after_shares": 30,
+                "in_group_before": false,
+                "in_group_after": false,
+                "is_treasury": true,
+                "evidence": "SYNTH:단계주주명세"
+              }
+            ],
+            "evidence": "SYNTH:독립효력문서"
+          }
+        ]
+      },
+      "expected_status": "ok",
+      "expected_total": 220000
+    }
+  ]
+}

@@ -42,6 +42,7 @@ function creditSettlementRequest(d){
   credit_order:String(d.order||'').split(',').map(x=>x.trim()).filter(Boolean),review,evidence:text(d.evidence,'전체 검토 자료명')};
  if(d.choiceEvidence)request.choice_evidence=text(d.choiceEvidence,'동순위 선택 근거');
  if(credits.some(x=>x.code==='sme_reduction'))request.decreased_regular_employees=n(d.decreased,'상시근로자 감소 인원');
+ if(d.generate===true){if(kind!=='corporate')throw Error('원자료 발생액은 법인세에서 계산합니다.');request.schema_version='credit-settlement/2';request.generation_facts=creditGenerationRequest(d.generation);}
  return {request};
 }
 function creditSettlementResult(calc){
@@ -75,9 +76,10 @@ function JTCreditSettlementDirect({onBack,initialKind='corporate'}){
  const won=v=>v===null?'확인 필요':Number.isSafeInteger(v)?v.toLocaleString('ko-KR')+'원':'—';
  const checks=[...CREDIT_REVIEW_CHECKS,...(d.foreign.length?CREDIT_SOURCE_CHECKS:[]),...(d.taxType==='corporate'?[['ordinary_minimum_status_confirmed','졸업 유예·특수 최저한세가 없는 일반 지위입니다'],['separate_businesses_reconciled','사업별 소득·투자자산이 구분되어 있습니다']]:[])];
  return <div className="jt-special-direct"><JTReportShell title="공제·이월 원장 계산" subtitle="발생액, 당기 사용액과 잔액을 분리하고 국세·지방세를 따로 계산합니다." tag="2026 공제 정산" onBack={onBack}>
-  <p>2026 달력연도 정상범위입니다. 연구·투자·고용은 적격 검토를 마친 발생공제액을 넣습니다. 투자액·연구비 지출총액과 다릅니다. 중소기업 특별감면은 대상 소득과 법정 감면율로 계산합니다.</p>
+  <p>2026 달력연도 정상범위입니다. 연구·투자·고용은 검토된 발생액을 넣거나 아래 원자료 자동산정을 선택합니다. 투자액·연구비 지출총액과 다릅니다. 중소기업 특별감면은 대상 소득과 법정 감면율로 계산합니다.</p>
   <form onSubmit={submit}><div className="jt-special-grid">{select('taxType','세목',[['corporate','법인세'],['income','개인 사업소득 외국납부 공제']])}{input('income',d.taxType==='corporate'?'당기순이익 (원)':'필요경비 후 사업소득금액 (원)',true)}
    {d.taxType==='corporate'?<>{select('corporateType','법인 유형',[['중소기업','중소기업'],['중견기업','중견기업'],['일반법인','일반법인']])}{input('loss','적격 검토된 이월결손금 (없으면0)',true)}</>:<>{select('spouse','배우자 공제 자격',yn)}{input('dependents','적격 부양가족 수 (배우자 제외, 없으면0)')}{input('pension','실제 국민연금 납입액 (없으면0)',true)}</>}{plain('evidence','전체 검토 자료명')}</div>
+   {d.taxType==='corporate'&&<><label><input type="checkbox" data-testid="credit-generate" checked={d.generate===true} onChange={e=>edit('generate',e.target.checked)}/>원자료에서 당기 발생액 계산</label>{d.generate&&<JTCreditGenerationInputs value={d.generation||{}} onChange={v=>edit('generation',v)}/>}</>}
    {d.taxType==='corporate'&&<>{rows('credits','국내 공제·감면 발생/이월 원장',[
     ['code','공제 항목','select',CREDIT_CODES],...vintageColumns.filter(c=>!['amount','used'].includes(c[0])),
     ['amount','검토된 발생공제액 (원)','money',null,row=>row.code!=='sme_reduction'],['used','과거 실제 공제액 (없으면0)','money',null,row=>row.code!=='sme_reduction'],
@@ -93,6 +95,7 @@ function JTCreditSettlementDirect({onBack,initialKind='corporate'}){
   </form>
   {error&&<p role="alert" data-testid="credit-error">{error}</p>}
   {result&&<section aria-live="polite" data-testid="credit-result"><h3>확인한 현재 세액</h3><dl>{['산출세액','국세결정세액','지방소득세','총세부담'].map(k=><React.Fragment key={k}><dt>{k}</dt><dd>{won(result[k])}</dd></React.Fragment>)}</dl>
+   {result['발생공제자동산정']?.map(row=><p key={row.id}>{row.id} 발생액: {won(row.generated_amount)} · 원자료에서 계산한 당기 발생액이며 아래 사용액·잔액과 구분합니다.{row.qualification_mode==='reviewed_months'?' 직원 적격월 판정은 입력된 검토 근거를 사용했습니다.':''}</p>)}
    {result['상태']==='partial'&&<p role="status">현재 세액은 확인했으며, 일부 외국세의 후속 처리·이월 배분은 추가 확인이 필요합니다.</p>}
    <div className="jt-credit-table"><table><caption>공제별 당기 사용과 잔액</caption><thead><tr><th>이름</th><th>당기 사용</th><th>이월 잔액</th><th>기한종료·소멸</th><th>다음연도 손금·필요경비 후보</th></tr></thead><tbody>{result['공제원장']?.map(row=><tr key={row.id}><td>{row.id}</td><td>{won(row.used)}</td><td>{won(row.carryforward)}</td><td>{won(row.period_end_unused??row.expired_amount)}</td><td>{won(row.following_year_expense_candidate)}</td></tr>)}</tbody></table></div>
    {result['지방외국세과표원장']?.length>0&&<div className="jt-credit-table"><table><caption>법인 지방소득세 외국세 과표 차감·이월</caption><thead><tr><th>이름</th><th>당기 과표 차감</th><th>차기 이월</th><th>기간종료</th></tr></thead><tbody>{result['지방외국세과표원장'].map(row=><tr key={row.id}><td>{row.id==='current_foreign_tax'?'당기 실제 외국세':row.id}</td><td>{won(row.used)}</td><td>{won(row.carryforward)}</td><td>{won(row.period_end_unused??row.expired_amount)}</td></tr>)}</tbody></table></div>}
