@@ -173,11 +173,8 @@ function mapCorporateDirect(a) {
   for(const [key,field,label] of [['loss','carried_forward_loss','공제 가능한 이월결손금'],['deduction','income_deduction','소득공제'],['foreignPaid','foreign_tax_paid','직접 외국법인세액']]){
     const value=n(key,label);if(value!==undefined)body[field]=value;
   }
-  if(body.foreign_tax_paid>0){
-    body.foreign_source_income=n('foreignIncome','국외원천소득',true);
-    if(a.foreignConfirmed!==true)throw new Error('당기 직접 외국세만 있고 이월·손금산입·간접투자 외국세가 없는지 확인해 주세요.');
-    body.foreign_tax_simple_case_confirmed=true;
-  }
+  if(body.foreign_tax_paid>0)throw new Error('외국납부세액공제는 국가별 조정소득·발생연도·기사용액을 확인하는 공제·이월 원장에서 계산해 주세요.');
+  if(body.income_deduction>0)throw new Error('소득공제의 법적 종류와 최저한세 적용 구분을 별도로 확인해야 합니다. 이 간이 화면과 현재 공제 원장에서는 계산을 확정할 수 없습니다.');
   if(a.start||a.end){
     if(!a.start||!a.end)throw new Error('사업연도 시작일과 종료일을 함께 입력해 주세요.');
     for(const date of [a.start,a.end])if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date))||new Date(date).toISOString().slice(0,10)!==date)throw new Error('사업연도 날짜를 확인해 주세요.');
@@ -187,20 +184,23 @@ function mapCorporateDirect(a) {
   return body;
 }
 
-function JTCorporateDirect({onBack}) {
-  const [a,setA]=React.useState({year:'2026',type:'중소기업'});
-  const [result,setResult]=React.useState(null),[error,setError]=React.useState(''),[busy,setBusy]=React.useState(false);
-  const set=(key,value)=>{setA(old=>({...old,[key]:value,...(key==='foreignConfirmed'?{}:{foreignConfirmed:false})}));setResult(null);setError('');};
+function JTCorporateDirect({onBack,onCredits,initialDraft}) {
+  const [a,setA]=React.useState(()=>({...{year:'2026',type:'중소기업'},...initialDraft,foreignConfirmed:false}));
+  const [result,rawSetResult]=React.useState(null),[error,rawSetError]=React.useState(''),[busy,rawSetBusy]=React.useState(false);
+  const session=useJTInputSession(()=>{rawSetResult(null);rawSetError('');rawSetBusy(false);});
+  const setResult=rawSetResult,setError=rawSetError;
+  const set=(key,value)=>{session.invalidate();update(key,value);};
+  const update=(key,value)=>{setA(old=>({...old,[key]:value,...(key==='foreignConfirmed'?{}:{foreignConfirmed:false})}));setResult(null);setError('');};
   const input=(key,label,type='text')=><label key={key} style={{display:'block',margin:'12px 0'}}>{label}<input className="jt-report-q__input" type={type} inputMode={type==='text'?'numeric':undefined} value={a[key]??''} onChange={e=>set(key,e.target.value)} disabled={busy}/></label>;
   const submit=async e=>{
-    e.preventDefault();setError('');setResult(null);setBusy(true);
+    e.preventDefault();session.invalidate();const token=session.begin();const setResult=session.sink(token,rawSetResult),setError=session.sink(token,rawSetError),setBusy=session.sink(token,rawSetBusy);setBusy(true);
     try{
       const body=mapCorporateDirect(a),j=await callCorpEng('/v1/calc/corporate',body),c=j&&j.calc;
       if(!window.jtValidCalc(c,['과세표준','산출세액','납부법인세','지방소득세','총납부세액']))throw new Error(c&&['needs_input','unsupported'].includes(c['상태'])?window.jtEngineMessageForDisplay(c['오류']||c['메시지']||'입력 요건 또는 지원 범위를 확인해 주세요.'):'계산 응답을 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.');
       setResult(c);
     }catch(e){setError(e.message||'계산할 수 없습니다.');}finally{setBusy(false);}
   };
-  return <div className="jt-container"><JTReportShell title="법인세 직접 계산" subtitle="확인한 사업연도 소득과 공제 입력" onBack={onBack} tag="CONSULTING">
+  return <div className="jt-container"><JTReportShell title="법인세 직접 계산" subtitle="확인한 사업연도 소득과 공제 입력" onBack={()=>{session.invalidate();onBack();}} tag="CONSULTING">
     <p>세무조정 후 각 사업연도 소득을 입력하세요. 청산·특수 사업연도와 공제 조합은 엔진이 지원 여부를 확인하며, 미지원이면 세액을 표시하지 않습니다.</p>
     <form onSubmit={submit}>
       {input('year','사업연도 개시연도 (2023~2026)')}
@@ -212,8 +212,9 @@ function JTCorporateDirect({onBack}) {
       {input('loss','해당 연도 공제 가능한 이월결손금 (원)')}
       {input('deduction','확인된 소득공제 (원)')}
       {input('foreignPaid','당기 직접 외국법인세액 (원)')}
-      {Number(a.foreignPaid)>0&&<>{input('foreignIncome','국세 과세표준에 포함된 국외원천소득 (원)')}<label><input type="checkbox" disabled={busy} checked={a.foreignConfirmed===true} onChange={e=>set('foreignConfirmed',e.target.checked)}/> 당기 직접 외국법인세만 있고 이월·손금산입·간접투자 외국세가 없음을 확인했습니다.</label></>}
-      <p>기납부세액·기타 세액공제는 이 화면에 포함되지 않습니다. 입력한 공제는 자격과 귀속연도를 확인한 금액이어야 합니다.</p>
+      <p>외국세·연구·투자·고용 공제는 국가별·발생연도별 원자료가 필요합니다. 이 간이 계산에 합계액만 넣어 세액을 확정하지 않습니다.</p>
+      {onCredits&&<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{session.invalidate();onCredits({...a,foreignConfirmed:false});}}>공제·이월 원장으로 이동</button>}
+      <p>기납부세액은 이 화면에 포함되지 않습니다. 소득공제·비과세소득의 최저한세 분류와 원장 미지원 감면은 별도 검토가 필요합니다.</p>
       <button className="jt-btn jt-btn--primary" disabled={busy} type="submit">{busy?'계산 중…':'법인세 계산'}</button>
     </form>
     {error&&<p role="alert">{error}</p>}
@@ -229,6 +230,7 @@ function JTReportCorporate({ setRoute, onBack }) {
   const [creditMode,setCreditMode]=useCorpState(false);
 
   const [directMode,setDirectMode]=useCorpState(false);
+  const [directDraft,setDirectDraft]=useCorpState(null);
   const [step, setStep] = useCorpState(0);
   const [answers, rawSetAnswers] = useCorpState({});
   const [loading, rawSetLoading] = useCorpState(false);
@@ -367,7 +369,7 @@ function JTReportCorporate({ setRoute, onBack }) {
     onBack();
   };
 
-  if(directMode) return <JTCorporateDirect onBack={()=>setDirectMode(false)}/>;
+  if(directMode) return <JTCorporateDirect initialDraft={directDraft} onBack={()=>{setDirectMode(false);setDirectDraft(null);}} onCredits={draft=>{setDirectDraft(draft);setCreditMode(true);}}/>;
   if (loading) {
     return (
       <div className="jt-container">

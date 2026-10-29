@@ -19485,11 +19485,8 @@ function mapCorporateDirect(a) {
     const value = n(key, label);
     if (value !== void 0) body[field] = value;
   }
-  if (body.foreign_tax_paid > 0) {
-    body.foreign_source_income = n("foreignIncome", "\uAD6D\uC678\uC6D0\uCC9C\uC18C\uB4DD", true);
-    if (a.foreignConfirmed !== true) throw new Error("\uB2F9\uAE30 \uC9C1\uC811 \uC678\uAD6D\uC138\uB9CC \uC788\uACE0 \uC774\uC6D4\xB7\uC190\uAE08\uC0B0\uC785\xB7\uAC04\uC811\uD22C\uC790 \uC678\uAD6D\uC138\uAC00 \uC5C6\uB294\uC9C0 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
-    body.foreign_tax_simple_case_confirmed = true;
-  }
+  if (body.foreign_tax_paid > 0) throw new Error("\uC678\uAD6D\uB0A9\uBD80\uC138\uC561\uACF5\uC81C\uB294 \uAD6D\uAC00\uBCC4 \uC870\uC815\uC18C\uB4DD\xB7\uBC1C\uC0DD\uC5F0\uB3C4\xB7\uAE30\uC0AC\uC6A9\uC561\uC744 \uD655\uC778\uD558\uB294 \uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5\uC5D0\uC11C \uACC4\uC0B0\uD574 \uC8FC\uC138\uC694.");
+  if (body.income_deduction > 0) throw new Error("\uC18C\uB4DD\uACF5\uC81C\uC758 \uBC95\uC801 \uC885\uB958\uC640 \uCD5C\uC800\uD55C\uC138 \uC801\uC6A9 \uAD6C\uBD84\uC744 \uBCC4\uB3C4\uB85C \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4. \uC774 \uAC04\uC774 \uD654\uBA74\uACFC \uD604\uC7AC \uACF5\uC81C \uC6D0\uC7A5\uC5D0\uC11C\uB294 \uACC4\uC0B0\uC744 \uD655\uC815\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
   if (a.start || a.end) {
     if (!a.start || !a.end) throw new Error("\uC0AC\uC5C5\uC5F0\uB3C4 \uC2DC\uC791\uC77C\uACFC \uC885\uB8CC\uC77C\uC744 \uD568\uAED8 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
     for (const date of [a.start, a.end]) if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(Date.parse(date)) || new Date(date).toISOString().slice(0, 10) !== date) throw new Error("\uC0AC\uC5C5\uC5F0\uB3C4 \uB0A0\uC9DC\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
@@ -19499,10 +19496,20 @@ function mapCorporateDirect(a) {
   }
   return body;
 }
-function JTCorporateDirect({ onBack }) {
-  const [a, setA] = React.useState({ year: "2026", type: "\uC911\uC18C\uAE30\uC5C5" });
-  const [result, setResult] = React.useState(null), [error, setError] = React.useState(""), [busy, setBusy] = React.useState(false);
+function JTCorporateDirect({ onBack, onCredits, initialDraft }) {
+  const [a, setA] = React.useState(() => __spreadProps(__spreadValues(__spreadValues({}, { year: "2026", type: "\uC911\uC18C\uAE30\uC5C5" }), initialDraft), { foreignConfirmed: false }));
+  const [result, rawSetResult] = React.useState(null), [error, rawSetError] = React.useState(""), [busy, rawSetBusy] = React.useState(false);
+  const session = useJTInputSession(() => {
+    rawSetResult(null);
+    rawSetError("");
+    rawSetBusy(false);
+  });
+  const setResult = rawSetResult, setError = rawSetError;
   const set = (key, value) => {
+    session.invalidate();
+    update(key, value);
+  };
+  const update = (key, value) => {
     setA((old) => __spreadValues(__spreadProps(__spreadValues({}, old), { [key]: value }), key === "foreignConfirmed" ? {} : { foreignConfirmed: false }));
     setResult(null);
     setError("");
@@ -19513,20 +19520,27 @@ function JTCorporateDirect({ onBack }) {
   };
   const submit = async (e) => {
     e.preventDefault();
-    setError("");
-    setResult(null);
+    session.invalidate();
+    const token = session.begin();
+    const setResult2 = session.sink(token, rawSetResult), setError2 = session.sink(token, rawSetError), setBusy = session.sink(token, rawSetBusy);
     setBusy(true);
     try {
       const body = mapCorporateDirect(a), j = await callCorpEng("/v1/calc/corporate", body), c = j && j.calc;
       if (!window.jtValidCalc(c, ["\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uB0A9\uBD80\uBC95\uC778\uC138", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uB0A9\uBD80\uC138\uC561"])) throw new Error(c && ["needs_input", "unsupported"].includes(c["\uC0C1\uD0DC"]) ? window.jtEngineMessageForDisplay(c["\uC624\uB958"] || c["\uBA54\uC2DC\uC9C0"] || "\uC785\uB825 \uC694\uAC74 \uB610\uB294 \uC9C0\uC6D0 \uBC94\uC704\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694.") : "\uACC4\uC0B0 \uC751\uB2F5\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.");
-      setResult(c);
+      setResult2(c);
     } catch (e2) {
-      setError(e2.message || "\uACC4\uC0B0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+      setError2(e2.message || "\uACC4\uC0B0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
     } finally {
       setBusy(false);
     }
   };
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBC95\uC778\uC138 \uC9C1\uC811 \uACC4\uC0B0", subtitle: "\uD655\uC778\uD55C \uC0AC\uC5C5\uC5F0\uB3C4 \uC18C\uB4DD\uACFC \uACF5\uC81C \uC785\uB825", onBack, tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("p", null, "\uC138\uBB34\uC870\uC815 \uD6C4 \uAC01 \uC0AC\uC5C5\uC5F0\uB3C4 \uC18C\uB4DD\uC744 \uC785\uB825\uD558\uC138\uC694. \uCCAD\uC0B0\xB7\uD2B9\uC218 \uC0AC\uC5C5\uC5F0\uB3C4\uC640 \uACF5\uC81C \uC870\uD569\uC740 \uC5D4\uC9C4\uC774 \uC9C0\uC6D0 \uC5EC\uBD80\uB97C \uD655\uC778\uD558\uBA70, \uBBF8\uC9C0\uC6D0\uC774\uBA74 \uC138\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, input("year", "\uC0AC\uC5C5\uC5F0\uB3C4 \uAC1C\uC2DC\uC5F0\uB3C4 (2023~2026)"), input("start", "\uC0AC\uC5C5\uC5F0\uB3C4 \uC2DC\uC791\uC77C (\uC0DD\uB7B5 \uC2DC \uD574\uB2F9 \uC5F0\uB3C4 1\uC6D4 1\uC77C)", "date"), input("end", "\uC0AC\uC5C5\uC5F0\uB3C4 \uC885\uB8CC\uC77C (\uC0DD\uB7B5 \uC2DC \uD574\uB2F9 \uC5F0\uB3C4 12\uC6D4 31\uC77C)", "date"), input("netIncome", "\uAC01 \uC0AC\uC5C5\uC5F0\uB3C4 \uC18C\uB4DD (\uC6D0)"), /* @__PURE__ */ React.createElement("label", null, "\uBC95\uC778 \uC720\uD615", /* @__PURE__ */ React.createElement("select", { className: "jt-report-q__input", value: a.type, disabled: busy, onChange: (e) => set("type", e.target.value) }, ["\uC911\uC18C\uAE30\uC5C5", "\uC911\uACAC\uAE30\uC5C5", "\uC77C\uBC18\uBC95\uC778"].map((x) => /* @__PURE__ */ React.createElement("option", { key: x }, x)))), /* @__PURE__ */ React.createElement("label", { style: { display: "block", margin: "12px 0" } }, "\uC18C\uADDC\uBAA8 \uBD80\uB3D9\uC0B0\uC784\uB300 \uB4F1 \uBCC4\uB3C4 \uC138\uC728 \uC801\uC6A9 \uBC95\uC778\uC778\uAC00\uC694?", /* @__PURE__ */ React.createElement("select", { className: "jt-report-q__input", disabled: busy, value: a.smallPassive || "", onChange: (e) => set("smallPassive", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD655\uC778 \uD6C4 \uC120\uD0DD"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uC544\uB2C8\uC624"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uC608 \u2014 \uC801\uC6A9 \uC694\uAC74 \uD655\uC778"))), input("loss", "\uD574\uB2F9 \uC5F0\uB3C4 \uACF5\uC81C \uAC00\uB2A5\uD55C \uC774\uC6D4\uACB0\uC190\uAE08 (\uC6D0)"), input("deduction", "\uD655\uC778\uB41C \uC18C\uB4DD\uACF5\uC81C (\uC6D0)"), input("foreignPaid", "\uB2F9\uAE30 \uC9C1\uC811 \uC678\uAD6D\uBC95\uC778\uC138\uC561 (\uC6D0)"), Number(a.foreignPaid) > 0 && /* @__PURE__ */ React.createElement(React.Fragment, null, input("foreignIncome", "\uAD6D\uC138 \uACFC\uC138\uD45C\uC900\uC5D0 \uD3EC\uD568\uB41C \uAD6D\uC678\uC6D0\uCC9C\uC18C\uB4DD (\uC6D0)"), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", disabled: busy, checked: a.foreignConfirmed === true, onChange: (e) => set("foreignConfirmed", e.target.checked) }), " \uB2F9\uAE30 \uC9C1\uC811 \uC678\uAD6D\uBC95\uC778\uC138\uB9CC \uC788\uACE0 \uC774\uC6D4\xB7\uC190\uAE08\uC0B0\uC785\xB7\uAC04\uC811\uD22C\uC790 \uC678\uAD6D\uC138\uAC00 \uC5C6\uC74C\uC744 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4.")), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uB0A9\uBD80\uC138\uC561\xB7\uAE30\uD0C0 \uC138\uC561\uACF5\uC81C\uB294 \uC774 \uD654\uBA74\uC5D0 \uD3EC\uD568\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC785\uB825\uD55C \uACF5\uC81C\uB294 \uC790\uACA9\uACFC \uADC0\uC18D\uC5F0\uB3C4\uB97C \uD655\uC778\uD55C \uAE08\uC561\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: busy, type: "submit" }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uBC95\uC778\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, result["\uC801\uC6A9\uC5F0\uB3C4"], "\uB144 \uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, ["\uAC01\uC0AC\uC5C5\uC5F0\uB3C4\uC18C\uB4DD", "\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uACF5\uC81C\uAC10\uBA74\uD569\uACC4", "\uB0A9\uBD80\uBC95\uC778\uC138", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uB0A9\uBD80\uC138\uC561"].map((key) => /* @__PURE__ */ React.createElement("tr", { key }, /* @__PURE__ */ React.createElement("th", null, key), /* @__PURE__ */ React.createElement("td", null, Number(result[key]).toLocaleString("ko-KR"), "\uC6D0"))))), /* @__PURE__ */ React.createElement("p", null, "\uCD5C\uC800\uD55C\uC138 \uC801\uC6A9: ", result["\uCD5C\uC800\uD55C\uC138\uC801\uC6A9"] ? "\uC608" : "\uC544\uB2C8\uC624"), /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, (result["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || []).map((s, i) => {
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uBC95\uC778\uC138 \uC9C1\uC811 \uACC4\uC0B0", subtitle: "\uD655\uC778\uD55C \uC0AC\uC5C5\uC5F0\uB3C4 \uC18C\uB4DD\uACFC \uACF5\uC81C \uC785\uB825", onBack: () => {
+    session.invalidate();
+    onBack();
+  }, tag: "CONSULTING" }, /* @__PURE__ */ React.createElement("p", null, "\uC138\uBB34\uC870\uC815 \uD6C4 \uAC01 \uC0AC\uC5C5\uC5F0\uB3C4 \uC18C\uB4DD\uC744 \uC785\uB825\uD558\uC138\uC694. \uCCAD\uC0B0\xB7\uD2B9\uC218 \uC0AC\uC5C5\uC5F0\uB3C4\uC640 \uACF5\uC81C \uC870\uD569\uC740 \uC5D4\uC9C4\uC774 \uC9C0\uC6D0 \uC5EC\uBD80\uB97C \uD655\uC778\uD558\uBA70, \uBBF8\uC9C0\uC6D0\uC774\uBA74 \uC138\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, input("year", "\uC0AC\uC5C5\uC5F0\uB3C4 \uAC1C\uC2DC\uC5F0\uB3C4 (2023~2026)"), input("start", "\uC0AC\uC5C5\uC5F0\uB3C4 \uC2DC\uC791\uC77C (\uC0DD\uB7B5 \uC2DC \uD574\uB2F9 \uC5F0\uB3C4 1\uC6D4 1\uC77C)", "date"), input("end", "\uC0AC\uC5C5\uC5F0\uB3C4 \uC885\uB8CC\uC77C (\uC0DD\uB7B5 \uC2DC \uD574\uB2F9 \uC5F0\uB3C4 12\uC6D4 31\uC77C)", "date"), input("netIncome", "\uAC01 \uC0AC\uC5C5\uC5F0\uB3C4 \uC18C\uB4DD (\uC6D0)"), /* @__PURE__ */ React.createElement("label", null, "\uBC95\uC778 \uC720\uD615", /* @__PURE__ */ React.createElement("select", { className: "jt-report-q__input", value: a.type, disabled: busy, onChange: (e) => set("type", e.target.value) }, ["\uC911\uC18C\uAE30\uC5C5", "\uC911\uACAC\uAE30\uC5C5", "\uC77C\uBC18\uBC95\uC778"].map((x) => /* @__PURE__ */ React.createElement("option", { key: x }, x)))), /* @__PURE__ */ React.createElement("label", { style: { display: "block", margin: "12px 0" } }, "\uC18C\uADDC\uBAA8 \uBD80\uB3D9\uC0B0\uC784\uB300 \uB4F1 \uBCC4\uB3C4 \uC138\uC728 \uC801\uC6A9 \uBC95\uC778\uC778\uAC00\uC694?", /* @__PURE__ */ React.createElement("select", { className: "jt-report-q__input", disabled: busy, value: a.smallPassive || "", onChange: (e) => set("smallPassive", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "\uD655\uC778 \uD6C4 \uC120\uD0DD"), /* @__PURE__ */ React.createElement("option", { value: "no" }, "\uC544\uB2C8\uC624"), /* @__PURE__ */ React.createElement("option", { value: "yes" }, "\uC608 \u2014 \uC801\uC6A9 \uC694\uAC74 \uD655\uC778"))), input("loss", "\uD574\uB2F9 \uC5F0\uB3C4 \uACF5\uC81C \uAC00\uB2A5\uD55C \uC774\uC6D4\uACB0\uC190\uAE08 (\uC6D0)"), input("deduction", "\uD655\uC778\uB41C \uC18C\uB4DD\uACF5\uC81C (\uC6D0)"), input("foreignPaid", "\uB2F9\uAE30 \uC9C1\uC811 \uC678\uAD6D\uBC95\uC778\uC138\uC561 (\uC6D0)"), /* @__PURE__ */ React.createElement("p", null, "\uC678\uAD6D\uC138\xB7\uC5F0\uAD6C\xB7\uD22C\uC790\xB7\uACE0\uC6A9 \uACF5\uC81C\uB294 \uAD6D\uAC00\uBCC4\xB7\uBC1C\uC0DD\uC5F0\uB3C4\uBCC4 \uC6D0\uC790\uB8CC\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4. \uC774 \uAC04\uC774 \uACC4\uC0B0\uC5D0 \uD569\uACC4\uC561\uB9CC \uB123\uC5B4 \uC138\uC561\uC744 \uD655\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), onCredits && /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
+    session.invalidate();
+    onCredits(__spreadProps(__spreadValues({}, a), { foreignConfirmed: false }));
+  } }, "\uACF5\uC81C\xB7\uC774\uC6D4 \uC6D0\uC7A5\uC73C\uB85C \uC774\uB3D9"), /* @__PURE__ */ React.createElement("p", null, "\uAE30\uB0A9\uBD80\uC138\uC561\uC740 \uC774 \uD654\uBA74\uC5D0 \uD3EC\uD568\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC18C\uB4DD\uACF5\uC81C\xB7\uBE44\uACFC\uC138\uC18C\uB4DD\uC758 \uCD5C\uC800\uD55C\uC138 \uBD84\uB958\uC640 \uC6D0\uC7A5 \uBBF8\uC9C0\uC6D0 \uAC10\uBA74\uC740 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", disabled: busy, type: "submit" }, busy ? "\uACC4\uC0B0 \uC911\u2026" : "\uBC95\uC778\uC138 \uACC4\uC0B0")), error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, error), result && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, result["\uC801\uC6A9\uC5F0\uB3C4"], "\uB144 \uACC4\uC0B0 \uACB0\uACFC"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, ["\uAC01\uC0AC\uC5C5\uC5F0\uB3C4\uC18C\uB4DD", "\uACFC\uC138\uD45C\uC900", "\uC0B0\uCD9C\uC138\uC561", "\uACF5\uC81C\uAC10\uBA74\uD569\uACC4", "\uB0A9\uBD80\uBC95\uC778\uC138", "\uC9C0\uBC29\uC18C\uB4DD\uC138", "\uCD1D\uB0A9\uBD80\uC138\uC561"].map((key) => /* @__PURE__ */ React.createElement("tr", { key }, /* @__PURE__ */ React.createElement("th", null, key), /* @__PURE__ */ React.createElement("td", null, Number(result[key]).toLocaleString("ko-KR"), "\uC6D0"))))), /* @__PURE__ */ React.createElement("p", null, "\uCD5C\uC800\uD55C\uC138 \uC801\uC6A9: ", result["\uCD5C\uC800\uD55C\uC138\uC801\uC6A9"] ? "\uC608" : "\uC544\uB2C8\uC624"), /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, (result["\uB2E8\uACC4\uBCC4\uACC4\uC0B0"] || []).map((s, i) => {
     var _a;
     return /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, s["\uD56D\uBAA9"]), /* @__PURE__ */ React.createElement("td", null, typeof s["\uAE08\uC561"] === "number" ? s["\uAE08\uC561"].toLocaleString("ko-KR") + "\uC6D0" : String((_a = s["\uAE08\uC561"]) != null ? _a : "")));
   }))), (result["\uACBD\uACE0\uC0AC\uD56D"] || []).map((s, i) => /* @__PURE__ */ React.createElement("p", { key: i }, s)))));
@@ -19534,6 +19548,7 @@ function JTCorporateDirect({ onBack }) {
 function JTReportCorporate({ setRoute, onBack }) {
   const [creditMode, setCreditMode] = useCorpState(false);
   const [directMode, setDirectMode] = useCorpState(false);
+  const [directDraft, setDirectDraft] = useCorpState(null);
   const [step, setStep] = useCorpState(0);
   const [answers, rawSetAnswers] = useCorpState({});
   const [loading, rawSetLoading] = useCorpState(false);
@@ -19692,7 +19707,13 @@ function JTReportCorporate({ setRoute, onBack }) {
     }
     onBack();
   };
-  if (directMode) return /* @__PURE__ */ React.createElement(JTCorporateDirect, { onBack: () => setDirectMode(false) });
+  if (directMode) return /* @__PURE__ */ React.createElement(JTCorporateDirect, { initialDraft: directDraft, onBack: () => {
+    setDirectMode(false);
+    setDirectDraft(null);
+  }, onCredits: (draft) => {
+    setDirectDraft(draft);
+    setCreditMode(true);
+  } });
   if (loading) {
     return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { extraActions: /* @__PURE__ */ React.createElement("button", { type: "button", className: "jt-btn jt-btn--ghost", onClick: () => {
       inputSession.invalidate();

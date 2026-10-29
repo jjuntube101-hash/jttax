@@ -27,3 +27,18 @@ function verify(text,name){const tree=parser.parse(text,{sourceType:'script',plu
 }
 for(const tax of taxes){const text=fs.readFileSync(path.join(__dirname,'src/Report'+tax+'.jsx'),'utf8');verify(text,tax);assert.throws(()=>verify(text.replace('inputSession.sink(inputRequest,rawSetReport)','inputSession.sink(inputRequest,rawSetErr)'),tax));}
 console.log('Input review: nine tax wizards, explicit zero/unknown, units/date validation, edit invalidation, late/unmounted/retried response rejection and wiring negative controls PASS');
+const directSource=fs.readFileSync(path.join(__dirname,'src/ReportCorporate.jsx'),'utf8');
+function directLifetime(text){
+ const tree=parser.parse(text,{sourceType:'script',plugins:['jsx']});
+ const direct=tree.program.body.find(n=>n.type==='FunctionDeclaration'&&n.id.name==='JTCorporateDirect');
+ const section=text.slice(direct.start,direct.end);const sinks=new Set();let hook=false,entry=false;
+ walk(direct,n=>{if(n.type==='CallExpression'&&n.callee.name==='useJTInputSession')hook=true;
+  if(n.type==='CallExpression'&&n.callee.type==='MemberExpression'&&n.callee.object.name==='session'&&n.callee.property.name==='sink')sinks.add(n.arguments[1].name);
+  if(n.type==='JSXOpeningElement'&&n.name.name==='button'){const click=n.attributes.find(a=>a.name?.name==='onClick');if(click){const handler=text.slice(click.start,click.end);if(handler.includes('onCredits'))entry=handler.includes('session.invalidate()');}}
+ });assert(hook&&entry);for(const name of ['rawSetResult','rawSetError','rawSetBusy'])assert(sinks.has(name),'direct request must guard '+name);
+ assert(section.includes('initialDraft')&&section.includes('foreignConfirmed:false'));
+}
+directLifetime(directSource);
+assert.throws(()=>directLifetime(directSource.replace('session.sink(token,rawSetResult)','session.sink(token,rawSetError)')));
+assert.throws(()=>directLifetime(directSource.replace('session.invalidate();onCredits','onCredits')));
+console.log('Corporate direct ledger entry, preserved unconfirmed draft and stale-response wiring positive/negative controls PASS');
