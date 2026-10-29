@@ -1,0 +1,98 @@
+{
+  "schema_version": "acquisition-special/3",
+  "kind": "majority_shareholder",
+  "acquisition_date": "2026-10-29",
+  "formation_date": "2010-01-01",
+  "scope_confirmed": true,
+  "evidence": "SYNTH:보통주 전체명세",
+  "event_type": "transfer",
+  "total_shares_before": 100,
+  "total_shares_after": 100,
+  "shareholders": [
+    {
+      "id": "A",
+      "before_shares": 40,
+      "after_shares": 85,
+      "in_group_before": true,
+      "in_group_after": true,
+      "is_treasury": false,
+      "evidence": "SYNTH"
+    },
+    {
+      "id": "B",
+      "before_shares": 60,
+      "after_shares": 15,
+      "in_group_before": false,
+      "in_group_after": false,
+      "is_treasury": false,
+      "evidence": "SYNTH"
+    },
+    {
+      "id": "issuer",
+      "before_shares": 0,
+      "after_shares": 0,
+      "in_group_before": false,
+      "in_group_after": false,
+      "is_treasury": true,
+      "evidence": "SYNTH"
+    }
+  ],
+  "history": [
+    {
+      "date": "2010-01-01",
+      "issued_shares": 100,
+      "treasury_shares": 0,
+      "group_shares": 40,
+      "evidence": "SYNTH:완전이력"
+    },
+    {
+      "date": "2015-01-01",
+      "issued_shares": 100,
+      "treasury_shares": 0,
+      "group_shares": 60,
+      "evidence": "SYNTH:완전이력"
+    },
+    {
+      "date": "2018-01-01",
+      "issued_shares": 100,
+      "treasury_shares": 0,
+      "group_shares": 80,
+      "evidence": "SYNTH:완전이력"
+    },
+    {
+      "date": "2020-01-01",
+      "issued_shares": 100,
+      "treasury_shares": 0,
+      "group_shares": 70,
+      "evidence": "SYNTH:완전이력"
+    },
+    {
+      "date": "2025-01-01",
+      "issued_shares": 100,
+      "treasury_shares": 0,
+      "group_shares": 40,
+      "evidence": "SYNTH:완전이력"
+    }
+  ],
+  "history_complete_confirmed": true,
+  "same_group_confirmed": true,
+  "ordinary_shares_only_confirmed": true,
+  "rights_reviewed_confirmed": true,
+  "unlisted_corporation_confirmed": true,
+  "no_other_concurrent_event_confirmed": true,
+  "stock_acquisition_confirmed": true,
+  "group_review_evidence": "SYNTH:시행령10의2 동일집단 검토",
+  "assets_complete_confirmed": true,
+  "assets": [
+    {
+      "id": "land",
+      "property_type": "토지",
+      "net_book_value": 1000000000,
+      "jurisdiction": "서울",
+      "evidence": "SYNTH:일반비농지전체"
+    }
+  ],
+  "complex_mode": "reviewed_highest_reentry",
+  "current_scope_review_confirmed": true,
+  "current_scope_review_evidence": "SYNTH:현행11조·공식2016적용요령·계속일부보유 사실군 검토"
+}

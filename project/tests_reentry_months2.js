@@ -1,0 +1,12 @@
+const fs=require('fs'),vm=require('vm'),path=require('path'),assert=require('assert');
+const source=fs.readFileSync(path.join(__dirname,'src/AcquisitionSpecialDirect.jsx'),'utf8'),box={};vm.createContext(box);vm.runInContext(source.split('function JTAcquisitionSpecialDirect')[0]+';this.make=acquisitionSpecialRequest;this.checks=acquisitionSpecialChecks;',box);
+const f=JSON.parse(fs.readFileSync(path.join(__dirname,'fixtures/reentry_months2_20261029.json'),'utf8'));
+const d={kind:'majority_shareholder',majorityMode:'reentry_highest',date:f.acquisition_date,evidence:f.evidence,formationDate:f.formation_date,sameGroup:'yes',actualAcquisition:'yes',groupEvidence:f.group_review_evidence,currentScopeReviewEvidence:f.current_scope_review_evidence,totalBefore:String(f.total_shares_before),totalAfter:String(f.total_shares_after),checks:{scope_confirmed:true},shareholders:f.shareholders.map(v=>({id:v.id,before:String(v.before_shares),after:String(v.after_shares),inGroup:v.in_group_before?'yes':'no',isTreasury:v.is_treasury?'yes':'no',evidence:v.evidence})),majorityHistory:f.history.map(v=>({date:v.date,issued:String(v.issued_shares),treasury:String(v.treasury_shares),group:String(v.group_shares),evidence:v.evidence})),assets:f.assets.map(v=>({id:v.id,type:v.property_type,value:String(v.net_book_value),region:v.jurisdiction,evidence:v.evidence}))};
+for(const [key]of box.checks(d))d.checks[key]=true;
+const payload=box.make(d);assert.deepStrictEqual(JSON.parse(JSON.stringify(payload.special_facts)),f);
+for(const [key]of box.checks(d))assert.throws(()=>box.make({...d,checks:{...d.checks,[key]:false}}));
+assert.throws(()=>box.make({...d,currentScopeReviewEvidence:''}));assert.throws(()=>box.make({...d,date:'2026-10-30'}),/2026-10-29/);
+assert.throws(()=>box.make({...d,majorityMode:'history',historyEvent:'transfer',date:'2026-10-29'}),/2026-10-28/);
+assert(source.includes('동일한 비율 조합의 직접 판례 인증은 아닙니다'));
+if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(payload,null,2));
+console.log('Reviewed reentry web: raw F/H/L history, explicit application evidence, all checks, default date scope and corrected range error PASS');
