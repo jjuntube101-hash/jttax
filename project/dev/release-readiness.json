@@ -1,6 +1,6 @@
 {
   "schema_version": "release-readiness/1",
-  "question_id": "JT-RELEASE-CHANNELS-SCENARIOS-20261030",
+  "question_id": "JT-RELEASE-HARDENING-20261030",
   "as_of_kst": "2026-10-30",
   "family_count": 68,
   "unique_cases": 181,
@@ -38,10 +38,10 @@
     "schema_version": "calculation-contracts/1",
     "version": {
       "engine": "jt-tax-engine/7.0.0",
-      "calculation_revision": "rules-8e717e0fef6d40bf6144",
-      "ruleset_sha256": "8e717e0fef6d40bf6144cc92fed40b11b777a36d76106ae01b5f8bd29af91f55",
-      "build_id": "build-c2bd45bc5c8b03a55ac9",
-      "build_sha256": "c2bd45bc5c8b03a55ac91d25e3daa0bd940c067b41069f946bbc9abc5ec8e75a",
+      "calculation_revision": "rules-c4b65a502e82ee29d4c4",
+      "ruleset_sha256": "c4b65a502e82ee29d4c4afe4d330508e4b90987b5358d4d46895bf9ef80e7754",
+      "build_id": "build-e46af81ad9006c2cbd94",
+      "build_sha256": "e46af81ad9006c2cbd940b9e063b0dba32a19c5294735ac95d5367a79efe85aa",
       "tax_rates_version": "7.0.0",
       "tax_rates_effective_date": "2026-05-02"
     },
@@ -552,10 +552,12 @@
     }
   },
   "provenance": {
-    "replay_file": "calc_REPLAY_final_nested_20261030.json",
-    "replay_sha256": "d9f93237801f488cd16829f6b7dcf000ae85388a5c68ea3d484a66f8d8a2e1fd",
+    "replay_file": "calc_REPLAY_final_20261030.json",
+    "replay_sha256": "85aca39728f779599eaaa46b2979c017abce6d42de3292eca4f98bf6777616b3",
     "archived_index_sha256": "b53f8d899cd90ddc8f161eeedf937ec42395413b0d0745156a6898ffb4e6c2c8",
-    "law_constraints_sha256": "208e5b00b7087f58a1d7e58501d66175feaea0abea1c83b8e22e023ede69d935"
+    "law_constraints_sha256": "208e5b00b7087f58a1d7e58501d66175feaea0abea1c83b8e22e023ede69d935",
+    "law_constraints_file": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_candidate_20261030\\law_FAMILY_CONSTRAINTS_20261030.json",
+    "prior_consumer_observation": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_candidate_20261030\\RELEASE_DELIVERY_20261030.md"
   },
   "families": [
     {
@@ -25336,5 +25338,136 @@
       "scope": "검증한 합성 입력 계약만의 판정. 실제 신고·적격·법령 전체 인증이 아니며 미확정 대표세액은 표시하지 않습니다."
     }
   ],
-  "scope": "개발 경로의 개별 합성 입력계약 준비도와 실제 소비채널 확인을 구분합니다. 운영 공개 승인·설치 교체·상용 동등성·전체 법령 인증 아님."
+  "scope": "개발 경로의 개별 합성 입력계약 준비도와 실제 소비채널 확인을 구분합니다. 운영 공개 승인·설치 교체·상용 동등성·전체 법령 인증 아님.",
+  "supplemental_validation": {
+    "population": "separate_spouse8_not_added_to181",
+    "total": 8,
+    "positive": 5,
+    "guards": 3,
+    "checks": 115,
+    "excluded_from181": true,
+    "scope": "2026-10-10 거주자 상속의 외부 적격 확인을 전제로 실제액·0·최저공제·법정분 한도·30억원 한도와 누락/음수 가드를 합성 검증. 실제 분할·등기·신고 적격을 엔진이 확인한 뜻은 아닙니다.",
+    "source_sha256": "e82e1fa6a5889ad31b8254c2a79cf855ba736156b7dde03be818ee8d41f4f448",
+    "cases": [
+      {
+        "id": "SPOUSE-ACTUAL600M",
+        "kind": "positive",
+        "status": "ok",
+        "can_present_amount": true,
+        "observed_result": {
+          "상태": "ok",
+          "과세표준": 895000000,
+          "산출세액": 208500000,
+          "세액": 202245000,
+          "주요공제.배우자공제": 600000000,
+          "주요공제.선택공제": 500000000,
+          "주요공제.공제한도초과": 0,
+          "주요공제.신고세액공제": 6255000
+        }
+      },
+      {
+        "id": "SPOUSE-LEGAL-CAP",
+        "kind": "positive",
+        "status": "ok",
+        "can_present_amount": true,
+        "observed_result": {
+          "상태": "ok",
+          "과세표준": 637857143,
+          "산출세액": 131357142,
+          "세액": 127416420,
+          "주요공제.배우자공제": 857142857,
+          "주요공제.선택공제": 500000000,
+          "주요공제.공제한도초과": 0,
+          "주요공제.신고세액공제": 3940714
+        }
+      },
+      {
+        "id": "SPOUSE-EXPLICIT-ZERO",
+        "kind": "positive",
+        "status": "ok",
+        "can_present_amount": true,
+        "observed_result": {
+          "상태": "ok",
+          "과세표준": 995000000,
+          "산출세액": 238500000,
+          "세액": 231345000,
+          "주요공제.배우자공제": 500000000,
+          "주요공제.선택공제": 500000000,
+          "주요공제.공제한도초과": 0,
+          "주요공제.신고세액공제": 7155000
+        }
+      },
+      {
+        "id": "SPOUSE-ACTUAL100M-MINIMUM",
+        "kind": "positive",
+        "status": "ok",
+        "can_present_amount": true,
+        "observed_result": {
+          "상태": "ok",
+          "과세표준": 995000000,
+          "산출세액": 238500000,
+          "세액": 231345000,
+          "주요공제.배우자공제": 500000000,
+          "주요공제.선택공제": 500000000,
+          "주요공제.공제한도초과": 0,
+          "주요공제.신고세액공제": 7155000
+        }
+      },
+      {
+        "id": "SPOUSE-UNKNOWN-OMITTED",
+        "kind": "unknown_guard",
+        "status": "needs_input",
+        "can_present_amount": false,
+        "observed_result": {
+          "상태": "needs_input",
+          "안내": "추가 입력 필요 · 세액 표시 차단"
+        }
+      },
+      {
+        "id": "SPOUSE-UNKNOWN-NULL",
+        "kind": "unknown_guard",
+        "status": "needs_input",
+        "can_present_amount": false,
+        "observed_result": {
+          "상태": "needs_input",
+          "안내": "추가 입력 필요 · 세액 표시 차단"
+        }
+      },
+      {
+        "id": "SPOUSE-NEGATIVE-GUARD",
+        "kind": "schema_guard",
+        "status": "needs_input",
+        "can_present_amount": false,
+        "observed_result": {
+          "상태": "needs_input",
+          "안내": "추가 입력 필요 · 세액 표시 차단"
+        }
+      },
+      {
+        "id": "SPOUSE-THREE-BILLION-CAP",
+        "kind": "positive",
+        "status": "ok",
+        "can_present_amount": true,
+        "observed_result": {
+          "상태": "ok",
+          "과세표준": 6495000000,
+          "산출세액": 2787500000,
+          "세액": 2703875000,
+          "주요공제.배우자공제": 3000000000,
+          "주요공제.선택공제": 500000000,
+          "주요공제.공제한도초과": 0,
+          "주요공제.신고세액공제": 83625000
+        }
+      }
+    ]
+  },
+  "citation_metadata_review": {
+    "status": "owner_designated_field_approval_pending",
+    "affected_cases": 362,
+    "designated_text_fields": 605,
+    "numeric_or_structure_changes": 0,
+    "production_source_changed": false,
+    "source_sha256": "feadafaf38d18636ad27e6437442fe6623d8c0929daa7f3a7c04e019d320f23c",
+    "note": "현 출력 기초공제/세율의 항·호 표시에 원문과 다른 좌표가 있습니다. 별도 승인 전에는 문구 기준을 바꾸지 않으며 금액 불변과 근거를 검토안에 제시했습니다."
+  }
 }
