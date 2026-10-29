@@ -1,0 +1,145 @@
+{
+  "treasury": {
+    "schema_version": "acquisition-special/3",
+    "kind": "majority_shareholder",
+    "acquisition_date": "2026-10-29",
+    "formation_date": "2010-01-01",
+    "scope_confirmed": true,
+    "evidence": "SYNTH:보통주 전체명세",
+    "event_type": "treasury_transfer_to_group",
+    "total_shares_before": 100,
+    "total_shares_after": 100,
+    "shareholders": [
+      {
+        "id": "A",
+        "before_shares": 40,
+        "after_shares": 50,
+        "in_group_before": true,
+        "in_group_after": true,
+        "is_treasury": false,
+        "evidence": "SYNTH"
+      },
+      {
+        "id": "B",
+        "before_shares": 40,
+        "after_shares": 40,
+        "in_group_before": false,
+        "in_group_after": false,
+        "is_treasury": false,
+        "evidence": "SYNTH"
+      },
+      {
+        "id": "issuer",
+        "before_shares": 20,
+        "after_shares": 10,
+        "in_group_before": false,
+        "in_group_after": false,
+        "is_treasury": true,
+        "evidence": "SYNTH"
+      }
+    ],
+    "history": [
+      {
+        "date": "2010-01-01",
+        "issued_shares": 100,
+        "treasury_shares": 0,
+        "group_shares": 40,
+        "evidence": "SYNTH:완전이력"
+      },
+      {
+        "date": "2025-01-01",
+        "issued_shares": 100,
+        "treasury_shares": 20,
+        "group_shares": 40,
+        "evidence": "SYNTH:완전이력"
+      }
+    ],
+    "history_complete_confirmed": true,
+    "same_group_confirmed": true,
+    "ordinary_shares_only_confirmed": true,
+    "rights_reviewed_confirmed": true,
+    "unlisted_corporation_confirmed": true,
+    "no_other_concurrent_event_confirmed": true,
+    "stock_acquisition_confirmed": true,
+    "group_review_evidence": "SYNTH:시행령10의2 동일집단 검토",
+    "assets_complete_confirmed": true,
+    "assets": [
+      {
+        "id": "land",
+        "property_type": "토지",
+        "net_book_value": 900000000,
+        "jurisdiction": "서울",
+        "evidence": "SYNTH:일반비농지전체"
+      }
+    ],
+    "complex_mode": "treasury_transfer_first_majority",
+    "lawful_treasury_transfer_confirmed": true,
+    "treasury_transfer_evidence": "SYNTH:유효한 단일 자기주식 양수"
+  },
+  "employment": {
+    "schema_version": "credit-generation/1",
+    "company_established_date": "2010-01-01",
+    "evidence": "SYNTH:회사",
+    "employment": {
+      "id": "EMP",
+      "business_id": "B",
+      "evidence": "SYNTH:전사고용",
+      "qualification_mode": "automatic_dates",
+      "industry": "ordinary_eligible",
+      "region": "capital",
+      "workplace_evidence": "SYNTH:실제단일사업장",
+      "workers": [
+        {
+          "id": "W",
+          "birth_date": "1990-01-01",
+          "hire_date": "2024-01-01",
+          "resident": true,
+          "officer": false,
+          "largest_shareholder_or_related": false,
+          "regular_full_time": true,
+          "contract_one_year_or_more": true,
+          "continuous_employment_confirmed": true,
+          "ordinary_indefinite_safe_employment_confirmed": true,
+          "special_youth_category": false,
+          "military_age_adjustment": false,
+          "wage_or_insurance_evidence": "SYNTH:원천징수부",
+          "evidence": "SYNTH:실근로계약"
+        }
+      ],
+      "prior_years": [
+        {
+          "year": 2023,
+          "total_hundredths": 100,
+          "youth_hundredths": 0,
+          "other_hundredths": 100,
+          "original_evidence": "SYNTH:과거원행",
+          "comparison_review_evidence": "SYNTH:2026비교 적격기간·분류 보정"
+        },
+        {
+          "year": 2024,
+          "total_hundredths": 100,
+          "youth_hundredths": 100,
+          "other_hundredths": 0,
+          "original_evidence": "SYNTH:과거원행",
+          "comparison_review_evidence": "SYNTH:2026비교 적격기간·분류 보정"
+        },
+        {
+          "year": 2025,
+          "total_hundredths": 100,
+          "youth_hundredths": 0,
+          "other_hundredths": 100,
+          "original_evidence": "SYNTH:과거원행",
+          "comparison_review_evidence": "SYNTH:2026비교 적격기간·분류 보정"
+        }
+      ],
+      "scope_confirmed": true,
+      "single_workplace_confirmed": true,
+      "no_reorganization_confirmed": true,
+      "comparison_population_reviewed": true,
+      "no_legacy_cohort_confirmed": true,
+      "legacy_cohort_evidence": "SYNTH:계속공제/추징원장없음",
+      "first_claim_year": 2026,
+      "first_claim_evidence": "SYNTH:2023~25미신청·통합고용최초공제"
+    }
+  }
+}

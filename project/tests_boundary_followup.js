@@ -1,0 +1,14 @@
+const fs=require('fs'),vm=require('vm'),path=require('path'),assert=require('assert');
+const read=n=>fs.readFileSync(path.join(__dirname,'src',n),'utf8');
+const box={};vm.createContext(box);vm.runInContext(read('AcquisitionSpecialDirect.jsx').split('function JTAcquisitionSpecialDirect')[0]+read('CreditGenerationInputs.jsx').split('function JTCreditGenerationInputs')[0]+';this.make=acquisitionSpecialRequest;this.checks=acquisitionSpecialChecks;this.gen=creditGenerationRequest;',box);
+const fixture=JSON.parse(fs.readFileSync(path.join(__dirname,'fixtures/boundary_followup_20261029.json'),'utf8')),f=fixture.treasury;
+const d={kind:'majority_shareholder',majorityMode:'treasury_first',date:f.acquisition_date,evidence:f.evidence,formationDate:f.formation_date,sameGroup:'yes',actualAcquisition:'yes',groupEvidence:f.group_review_evidence,treasuryTransferEvidence:f.treasury_transfer_evidence,totalBefore:String(f.total_shares_before),totalAfter:String(f.total_shares_after),checks:{scope_confirmed:true},shareholders:f.shareholders.map(v=>({id:v.id,before:String(v.before_shares),after:String(v.after_shares),inGroup:v.in_group_before?'yes':'no',isTreasury:v.is_treasury?'yes':'no',evidence:v.evidence})),majorityHistory:f.history.map(v=>({date:v.date,issued:String(v.issued_shares),treasury:String(v.treasury_shares),group:String(v.group_shares),evidence:v.evidence})),assets:f.assets.map(v=>({id:v.id,type:v.property_type,value:String(v.net_book_value),region:v.jurisdiction,evidence:v.evidence}))};
+for(const [key]of box.checks(d))d.checks[key]=true;
+assert.deepStrictEqual(JSON.parse(JSON.stringify(box.make(d).special_facts)),f);
+for(const [key]of box.checks(d))assert.throws(()=>box.make({...d,checks:{...d.checks,[key]:false}}));
+assert.throws(()=>box.make({...d,treasuryTransferEvidence:''}));assert.throws(()=>box.make({...d,date:'2026-10-30'}));
+const draft=v=>Array.isArray(v)?v.map(draft):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).map(([k,x])=>[k,typeof x==='boolean'?(k.endsWith('_confirmed')||k==='comparison_population_reviewed'?x:x?'yes':'no'):draft(x)])):typeof v==='number'?String(v):v;
+const e=draft(fixture.employment);e.employmentEnabled=true;const raw=box.gen(e);assert.deepStrictEqual(JSON.parse(JSON.stringify(raw)),fixture.employment);
+assert.equal(raw.employment.first_claim_year,2026);assert(raw.employment.first_claim_evidence.includes('SYNTH'));
+if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify({treasury:box.make(d),employment:{generation_facts:raw}},null,2));
+console.log('Boundary web payloads: treasury direct-single-cause /3, source/rights checks, first-claim facts and comparison-ledger mapping PASS');
