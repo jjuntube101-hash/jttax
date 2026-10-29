@@ -84,6 +84,8 @@ B씨는 통장에 들어온 금액을 모아 직접 신고했습니다. 나중�
 
 [기장·신고 상담](https://pf.kakao.com/_CcxlJG)에는 “쿠팡파트너스 자료 불일치 검토를 원합니다. 확인할 연도는 ○○이며, 신고 여부는 ○○, 지급처 확인은 ○○까지 진행했습니다.”라고 남겨 주세요. 상세 자료는 전달 방법을 안내받은 뒤 보내시면 됩니다.
 
+이 내용을 질문과 답변 형식으로 살펴보려면 [네이버 블로그의 쿠팡파트너스 자료 대조 안내](https://blog.naver.com/jt_tax/224457532737)를 함께 읽어 보세요.
+
 ## 함께 읽을 글과 근거
 
 원천징수와 신고의 기본 관계는 [쿠팡파트너스 원천징수 후 신고 안내](https://www.jttax.co.kr/insights/coupang-partners-withholding-tax-filing.html), 기장을 시작하며 자료를 전달하는 방법은 [유튜버 기장 인계 안내](https://www.jttax.co.kr/insights/youtuber-bookkeeping-handover.html)에서 확인할 수 있습니다. [제이티 기장 업무 안내](https://www.jttax.co.kr/services/bookkeeping.html)도 함께 참고하세요.
