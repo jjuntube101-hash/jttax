@@ -1990,6 +1990,91 @@
       "corporate_type": "중소기업",
       "expected_amount": 0,
       "expected_status": "ok"
+    },
+    {
+      "id": "EMP-REVIEWED-YOUTH-CAPITAL",
+      "input": {
+        "schema_version": "credit-generation/1",
+        "company_established_date": "2010-01-01",
+        "evidence": "SYNTH:발생원자료",
+        "employment": {
+          "id": "EMP",
+          "business_id": "BUS",
+          "evidence": "SYNTH:급여근무전체",
+          "qualification_mode": "reviewed_months",
+          "industry": "ordinary_eligible",
+          "region": "capital",
+          "workplace_evidence": "SYNTH:단일사업장",
+          "workers": [
+            {
+              "id": "W",
+              "birth_date": "2000-01-01",
+              "hire_date": "2026-01-01",
+              "resident": true,
+              "officer": false,
+              "largest_shareholder_or_related": false,
+              "regular_full_time": true,
+              "contract_one_year_or_more": true,
+              "continuous_employment_confirmed": true,
+              "ordinary_indefinite_safe_employment_confirmed": true,
+              "special_youth_category": false,
+              "military_age_adjustment": false,
+              "wage_or_insurance_evidence": "SYNTH:임금/보험자료",
+              "evidence": "SYNTH:실근로계약",
+              "eligible_months": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "qualification_review_evidence": "SYNTH:실제1년 적격월에 대한 외부 법률판정이 제공됐다는 조건부 계산; 자동 자격판정 아님"
+            }
+          ],
+          "prior_years": [
+            {
+              "year": 2023,
+              "total_hundredths": 0,
+              "youth_hundredths": 0,
+              "other_hundredths": 0,
+              "original_evidence": "SYNTH:기신고인원",
+              "comparison_review_evidence": "SYNTH:2026 비교모집단 보정근거"
+            },
+            {
+              "year": 2024,
+              "total_hundredths": 0,
+              "youth_hundredths": 0,
+              "other_hundredths": 0,
+              "original_evidence": "SYNTH:기신고인원",
+              "comparison_review_evidence": "SYNTH:2026 비교모집단 보정근거"
+            },
+            {
+              "year": 2025,
+              "total_hundredths": 0,
+              "youth_hundredths": 0,
+              "other_hundredths": 0,
+              "original_evidence": "SYNTH:기신고인원",
+              "comparison_review_evidence": "SYNTH:2026 비교모집단 보정근거"
+            }
+          ],
+          "scope_confirmed": true,
+          "single_workplace_confirmed": true,
+          "no_reorganization_confirmed": true,
+          "comparison_population_reviewed": true,
+          "no_legacy_cohort_confirmed": true,
+          "legacy_cohort_evidence": "SYNTH:종전24/25증가코호트없음원장"
+        }
+      },
+      "corporate_type": "중소기업",
+      "expected_status": "ok",
+      "expected_amount": 7000000
     }
   ],
   "majority": [

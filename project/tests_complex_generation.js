@@ -36,3 +36,5 @@ assert.equal(current.company_established_date,'2010-01-01');assert.equal(current
 console.log('ISO date edit/sibling retention and source edit invalidation PASS');
 
 tree=render();find(tree,'generation-company_established_date').props.onChange({target:{value:'20100101'}});assert.equal(current.company_established_date,'2010-01-01');console.log('Eight-digit date paste normalized to ISO PASS');
+
+const emp=draft(fixture.credits.find(x=>x.id==='EMP-REVIEWED-YOUTH-CAPITAL').input);emp.employmentEnabled=true;emp.employment.workers[0].eligible_months='none';assert.equal(box.gen(emp).employment.workers[0].eligible_months.length,0);emp.employment.workers[0].eligible_months='1,1';assert.throws(()=>box.gen(emp));emp.employment.workers[0].eligible_months='13';assert.throws(()=>box.gen(emp));console.log('Employment reviewed-month source mapping, empty months and duplicate/range guards PASS');
