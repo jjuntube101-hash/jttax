@@ -125,7 +125,16 @@ const VAT_QS = [
   {"id": "nonDeductibleInput", "section": "추가 계산 입력", "q": "위 매입세액 중 불공제 세액 (원)", "sub": "공제할 수 없는 매입세액을 입력하세요. 실제 매입세액 합계에서 차감합니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType==='일반과세자'},
   {"id": "exportSales", "section": "추가 계산 입력", "q": "별도 영세율 매출 (원)", "sub": "앞의 10% 과세 매출에 포함하지 않은 영세율 매출입니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType==='일반과세자'},
   {"id": "eInvoiceCount", "section": "추가 계산 입력", "q": "공제 대상 전자세금계산서 발급 건수", "sub": "발급공제 요건을 확인한 건수만 입력하세요. 직전연도 공급가액 입력이 함께 필요합니다.", "numeric": true, "money": false, "optional": true, showIf: (a) => a.businessType==='일반과세자' && a.isCorporate!=='yes'},
-  {"id": "priorInvoiceRevenue", "section": "추가 계산 입력", "q": "직전연도 사업장별 공급가액 (면세 포함, 원)", "sub": "전자세금계산서 발급공제 판정에 필요합니다. 실제 0원이면 0을 입력하세요.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType==='일반과세자' && a.isCorporate!=='yes' && Number(a.eInvoiceCount)>0},
+  {id:'creditScope',section:'공제 요건 확인',q:'단일 사업장의 정상신고이며 올해 앞선 공제 이력을 모두 확인했나요?',sub:'간이는 연중 계속 12개월 영업, 신규·휴폐업·유형전환·재고 추가납부가 없는 경우입니다. 다른 사업장·수정신고나 연간 이력 미확인은 공제를 확정할 수 없습니다.',opts:[['yes','확인했어요',''],['no','아직 확인하지 못했어요','금액 확정 보류']],showIf:a=>Number(a.creditCardSales)>0||Number(a.eInvoiceCount)>0},
+  {id:'creditPeriodEnd',section:'공제 요건 확인',q:'이 신고 과세기간의 마지막 날은 언제인가요?',sub:'2026년 1기 확정은 6월 30일, 2기 확정·간이는 12월 31일입니다.',date:true,showIf:a=>Number(a.creditCardSales)>0||Number(a.eInvoiceCount)>0},
+  {id:'creditEvidence',section:'공제 요건 확인',q:'공제 요건·올해 기사용액을 확인한 자료를 적어 주세요.',sub:'예: 직전연도 매출원장, 올해 1기 신고서, 적기 전송내역. 고객 이름·식별번호는 쓰지 마세요.',freeform:true,showIf:a=>Number(a.creditCardSales)>0||Number(a.eInvoiceCount)>0},
+  {id:'cardEligible',section:'카드 공제',q:'공제 대상 업종·과세거래의 적격 발급금액임을 확인했나요?',sub:'소비자 상대 업종 등 법정 대상인지, 면세거래가 포함되지 않았는지 확인하세요.',opts:[['yes','적격으로 확인',''],['no','공제 대상 아님','공제 0']],showIf:a=>Number(a.creditCardSales)>0},
+  {id:'cardPriorSupply',section:'카드 공제',q:'직전연도 이 사업장의 공급가액은 얼마인가요? (원)',sub:'실제 금액을 확인해 입력하세요. 신규개업 등 실제 0원이면 0을 입력합니다.',numeric:true,money:true,allowZero:true,showIf:a=>Number(a.creditCardSales)>0},
+  {id:'cardPriorUsed',section:'카드 공제',q:'올해 앞선 신고에서 이미 사용한 카드 공제액은? (원)',sub:'연 1천만원 한도에서 차감합니다. 앞선 사용액이 실제 없으면 0을 입력하세요.',numeric:true,money:true,allowZero:true,showIf:a=>Number(a.creditCardSales)>0},
+  {id:'invoiceNewBusiness',section:'전자발급 공제',q:'올해 실제로 신규 개업한 사업장인가요?',opts:[['yes','네',''],['no','아니오','직전연도 과세·면세 공급가액 확인']],showIf:a=>Number(a.eInvoiceCount)>0},
+  {"id": "priorInvoiceRevenue", "section": "추가 계산 입력", "q": "직전연도 사업장별 공급가액 (면세 포함, 원)", "sub": "전자세금계산서 발급공제 판정에 필요합니다. 실제 0원이면 0을 입력하세요.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType==='일반과세자' && a.isCorporate!=='yes' && Number(a.eInvoiceCount)>0 && a.invoiceNewBusiness!=='yes'},
+  {id:'invoiceTimely',section:'전자발급 공제',q:'입력한 전자세금계산서의 법정 발급·전송기한을 충족했나요?',opts:[['yes','모두 충족',''],['no','충족하지 않음','공제 0']],showIf:a=>Number(a.eInvoiceCount)>0},
+  {id:'invoicePriorUsed',section:'전자발급 공제',q:'올해 앞선 신고에서 이미 사용한 전자발급 공제액은? (원)',sub:'연 100만원에서 차감합니다. 실제 없으면 0을 입력하세요.',numeric:true,money:true,allowZero:true,showIf:a=>Number(a.eInvoiceCount)>0},
   {"id": "priorPeriodTax", "section": "추가 계산 입력", "q": "이미 납부한 예정고지 세액 (원)", "sub": "이 확정신고에서 차감할 예정고지 납부액입니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType==='일반과세자'},
   {"id": "previouslyPaid", "section": "추가 계산 입력", "q": "그 밖의 기납부세액 (원)", "sub": "바로 앞에서 입력한 예정고지 세액을 중복 포함하지 마세요.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType==='일반과세자'},
   {
@@ -146,10 +155,26 @@ function vatExtraInputs(a) {
     const n=Number(a[key]); if(!Number.isSafeInteger(n)||n<0) throw new Error('추가 금액과 건수는 0 이상의 정수로 입력해 주세요.');
     out[field]=n;
   }
-  if((out.e_invoice_count||0)>0 && out.prior_e_invoice_revenue===undefined) throw new Error('전자세금계산서 공제를 위해 직전연도 공급가액을 입력해 주세요.');
+  if(a.invoiceNewBusiness==='yes') delete out.prior_e_invoice_revenue;
+  if((out.e_invoice_count||0)>0 && a.invoiceNewBusiness!=='yes' && out.prior_e_invoice_revenue===undefined) throw new Error('전자세금계산서 공제를 위해 직전연도 공급가액을 입력해 주세요.');
   const input=out.purchase_vat_paid===undefined?Math.round((Number(a.purchaseAmount)||0)*0.1):out.purchase_vat_paid;
   if((out.non_deductible_input||0)>input) throw new Error('불공제 세액은 매입세액 합계를 넘을 수 없습니다.');
   return out;
+}
+
+function vatCreditInputs(a,body) {
+  const card=body.credit_card_sales||0,count=body.e_invoice_count||0;
+  if(!card&&!count) return {};
+  if(a.creditScope!=='yes') throw new Error('단일'+' 사업장 정상신고와 올해 앞선 공제이력을 먼저 확인해 주세요.');
+  const n=(key,label)=>{if(a[key]==null||String(a[key]).trim()==='') throw new Error(label+'을 입력해 주세요. 실제 없으면 0을 입력하세요.');const v=Number(a[key]);if(!Number.isSafeInteger(v)||v<0) throw new Error(label+'은 0 이상의 정수여야 합니다.');return v;};
+  const yesno=(key,label)=>{if(!['yes','no'].includes(a[key])) throw new Error(label+'을 확인해 주세요.');return a[key]==='yes';};
+  const end=String(a.creditPeriodEnd||'');
+  if(!/^2026-\d{2}-\d{2}$/.test(end)||!a.creditEvidence||!String(a.creditEvidence).trim()) throw new Error('2026년 과세기간 종료일과 공제 확인자료를 입력해 주세요.');
+  const f={schema_version:'vat-credits/1',tax_year:2026,period_end:end,ordinary_single_business_confirmed:true,annual_history_complete_confirmed:true,evidence_ref:String(a.creditEvidence).trim()};
+  if(a.businessType==='간이과세자') f.full_year_simplified_confirmed=true;
+  if(card) f.card={eligible_business_confirmed:yesno('cardEligible','카드공제 대상 업종·거래'),prior_year_supply:n('cardPriorSupply','직전 공급가액'),eligible_gross_sales:card,prior_used:n('cardPriorUsed','올해 기사용 카드공제')};
+  if(count) {const fresh=yesno('invoiceNewBusiness','올해 신규개업 여부');f.e_invoice={new_business_this_year:fresh,timely_issue_transmission_confirmed:yesno('invoiceTimely','적기 발급·전송'),eligible_count:count,prior_used:n('invoicePriorUsed','올해 기사용 전자공제')};if(!fresh) f.e_invoice.prior_year_revenue=n('priorInvoiceRevenue','직전 과세·면세 공급가액');}
+  return {period_end:end,credit_facts:f};
 }
 
 async function callVatEng(body) {
@@ -243,7 +268,12 @@ function JTReportVat({ setRoute, onBack }) {
 
   const canNext = () => {
     if (!cur) return false;
-    if (cur.freeform) return true;
+    if (cur.date) {
+      const v=String(answers[cur.id]||'');
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+      const d=new Date(v+'T00:00:00Z');return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===v;
+    }
+    if (cur.freeform) return !!cur.optional || String(answers[cur.id]||'').trim().length>0;
     if (cur.allowZero) {
       const raw = answers[cur.id];
       const v = Number(raw);
@@ -299,6 +329,7 @@ function JTReportVat({ setRoute, onBack }) {
         ...extra,
       };
 
+      try {Object.assign(body,vatCreditInputs(answers,body));} catch(e) {setErr(e.message);setLoading(false);return;}
       let calc = { precise: false };
       try {
         const j = await callVatEng(body);
@@ -479,6 +510,7 @@ function JTReportVat({ setRoute, onBack }) {
             </div>
           )}
 
+          {cur.date && <input className="jt-report-q__input" type="date" value={answers[cur.id] || ''} onChange={e=>setAns(cur.id,e.target.value)} />}
           {cur.numeric && (
             <div>
               <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}

@@ -213,7 +213,7 @@ const INHERITANCE_QS = [
     id: 'priorGiftHas',
     section: '사전증여',
     q: '돌아가신 분이 상속인에게 10년 안에, 또는 상속인이 아닌 사람에게 5년 안에 증여한 재산이 있나요?',
-    sub: '상속 개시 전 10년 이내(상속인 외의 사람은 5년) 증여한 재산은 상속재산에 합산됩니다(상증법 §13). 이미 낸 증여세는 공제됩니다. 합산 누락은 가산세 사고로 이어지니 꼭 확인하세요.',
+    sub: '상속 개시 전 10년 이내(상속인 외의 사람은 5년) 증여한 재산은 상속재산에 합산됩니다(상증법 §13). 가산대상 증여재산의 증여세 산출세액은 법정 한도 내에서 공제됩니다. 합산 누락은 가산세 사고로 이어지니 꼭 확인하세요.',
     opts: [
       ['yes', '네, 있습니다', '상속재산에 합산(§13)'],
       ['no', '아니오 / 없습니다', ''],
@@ -224,19 +224,19 @@ const INHERITANCE_QS = [
   {
     id: 'priorGiftOneRecipient',
     section: '사전증여',
-    q: '그 기간 안에 증여받은 사람이 한 명인가요?',
-    sub: '이 계산기는 한 사람이 받은 증여만 계산합니다. 증여받은 사람이 여러 명이면 사람별 증여재산공제와 증여세액공제가 달라져 화면에서 계산하지 않고, 상담으로 안내해 드립니다.',
+    q: '그 기간 안에 한 사람에게 한 번 증여한 건인가요?',
+    sub: '이 화면은 한 사람이 한 번 받은 증여만 계산합니다. 여러 차례 증여를 합치지 마세요. 증여받은 사람이 여러 명이면 사람별 증여재산공제와 증여세액공제가 달라져 화면에서 계산하지 않고, 상담으로 안내해 드립니다.',
     showIf: (a) => a.priorGiftHas === 'yes',
     opts: [
-      ['one', '한 명입니다', '한 사람 기준으로 계산'],
-      ['many', '여러 명입니다', '⚠️ 금액 대신 상담 안내를 드립니다'],
+      ['one', '한 명·한 번입니다', '한 사람 기준으로 계산'],
+      ['many', '여러 명 또는 여러 차례입니다', '⚠️ 금액 대신 상담 안내를 드립니다'],
     ],
   },
   {
     id: 'priorGiftValue',
     section: '사전증여',
-    q: '그 한 사람이 증여받은 재산은 모두 얼마인가요? (증여 당시 평가액 · 원)',
-    sub: '한 사람이 여러 건을 받았다면 합산 금액을 입력하세요. 증여 당시의 평가액 기준입니다.',
+    q: '그 한 번의 증여재산가액은 얼마인가요? (증여 당시 평가액 · 원)',
+    sub: '한 차례 증여의 증여 당시 평가액입니다. 여러 차례 증여를 합치지 말고 별도 검토하세요.',
     showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one',
     numeric: true, money: true, optional: true,
     requiredIf: (a) => a.priorGiftHas === 'yes',   // '있음' 선택 시 금액 필수 — 빈칸 방치로 §13 가산 누락(세금 과소) 방지
@@ -246,12 +246,12 @@ const INHERITANCE_QS = [
     id: 'priorGiftRelation',
     section: '사전증여',
     q: '그 증여를 받은 분은 고인과 어떤 사이였나요?',
-    sub: '증여 당시 적용된 증여재산공제(§53)를 가늠해, 이미 낸 증여세를 상속세에서 정확히 빼기(증여세액공제 §28) 위함입니다. 보통 자녀·손자녀가 받았으면 「직계비속」입니다. 배우자가 받은 증여는 배우자상속공제 한도 계산에도 반영됩니다(§19). 직계비속·배우자는 상속인으로 봅니다. 「그 외」(상속인이 아닌 친족·타인 포함)를 고르시면 상속인 여부와 증여 시기를 추가로 여쭙니다.',
+    sub: '상속세법상 상속인 여부와 배우자 귀속을 확인합니다. 상속인인 자녀·손자녀만 첫 항목을 선택하세요. 상속인이 아닌 손자녀 등은 「그 외」에서 여부를 확인합니다. 관계만으로 실제 공제액을 추정하지 않으며 당시 공제·산출세액은 다음 자료에서 입력합니다. 배우자 증여는 배우자공제 한도에도 반영됩니다. 「그 외」(상속인이 아닌 친족·타인 포함)를 고르시면 상속인 여부와 증여 시기를 추가로 여쭙니다.',
     showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one',
     opts: [
-      ['직계비속', '자녀·손자녀가 받음 (직계비속 · 상속인)', '증여공제 5천만 기준'],
-      ['배우자', '배우자가 받음 (상속인)', '증여공제 6억 기준'],
-      ['기타', '그 외 — 상속인이 아닌 친족·타인 포함', '상속인 여부를 추가로 여쭙니다 · 증여공제 1천만 기준'],
+      ['직계비속', '상속인인 자녀·손자녀가 받음 (직계비속)', '상속인 여부를 확인한 경우'],
+      ['배우자', '배우자가 받음 (상속인)', '배우자 사전증여 귀속'],
+      ['기타', '그 외 — 상속인이 아닌 손자녀·친족·타인 포함', '상속인 여부와 가산기간을 추가 확인합니다'],
     ],
   },
   {
@@ -280,20 +280,24 @@ const INHERITANCE_QS = [
     id: 'priorGiftMinor',
     section: '사전증여',
     q: '증여받은 분이 증여 당시 미성년자(만 19세 미만)였나요?',
-    sub: '미성년 자녀·손자녀가 직계존속(고인)에게서 증여받았다면 증여재산공제가 2천만원으로 줄어듭니다(상증법 §53②단서). 이미 낸 증여세 계산에 반영됩니다.',
+    sub: '미성년 자녀·손자녀가 직계존속(고인)에게서 증여받았다면 증여재산공제 한도가 2천만원으로 줄어듭니다(상증법 §53②단서). 실제 공제·산출세액은 다음 확인자료의 금액을 사용합니다.',
     showIf: (a) => a.priorGiftHas === 'yes' && a.priorGiftOneRecipient === 'one' && a.priorGiftRelation === '직계비속',
     opts: [
-      ['no', '아니오 (성년이었음)', '증여공제 5천만'],
-      ['yes', '네, 미성년이었습니다', '증여공제 2천만'],
+      ['no', '아니오 (성년이었음)', '증여공제 한도 5천만원'],
+      ['yes', '네, 미성년이었습니다', '증여공제 한도 2천만원'],
     ],
   },
+  {id:'priorGiftDate',section:'사전증여 확인자료',q:'이 한 건의 실제 증여일은 언제인가요?',sub:'여러 차례 증여를 한 건으로 합치지 마세요. 상속인 10년·비상속인 5년 가산기간을 실제 날짜로 판정합니다.',date:true,showIf:a=>a.priorGiftHas==='yes'&&a.priorGiftOneRecipient==='one'&&!inhPriorGiftDropped(a)},
+  {id:'priorGiftDeduction',section:'사전증여 확인자료',q:'당시 실제 적용한 증여 공제합계는? (원)',sub:'당시 §53·§53의2·§54 공제합계입니다. 관계별 최대한도가 아닌 실제 적용액을 입력하세요. 채무·비과세·감정수수료는 여기에 합치지 않습니다. 실제 공제 없으면 0.',numeric:true,money:true,allowZero:true,showIf:a=>a.priorGiftHas==='yes'&&a.priorGiftOneRecipient==='one'&&!inhPriorGiftDropped(a)},
+  {id:'priorGiftAssessed',section:'사전증여 확인자료',q:'그 증여의 실제 증여세 산출세액은? (원)',sub:'당시 신고서의 산출세액을 확인하세요. 신고세액공제 후 납부액이나 세대생략 할증을 넣지 않습니다. 입력한 가산대상 재산에 해당하는 산출세액입니다. 한 건이라도 당시 누적과세·특례·감면 등 복합이면 별도 검토하세요. 실제 0이면 0을 입력합니다.',numeric:true,money:true,allowZero:true,showIf:a=>a.priorGiftHas==='yes'&&a.priorGiftOneRecipient==='one'&&!inhPriorGiftDropped(a)},
+  {id:'priorGiftBeforeDeath',section:'사전증여 확인자료',q:'같은 날 증여가 상속개시보다 실제로 먼저 이루어졌나요?',sub:'상속개시 후이면 사전증여 가산만 제외합니다. 사망 당시 고인 소유 재산이었는지는 총상속재산 범위에서 별도로 확인하세요.',opts:[['yes','상속개시 전 증여',''],['no','상속개시 후','상속 사전증여에서 제외']],showIf:a=>a.priorGiftHas==='yes'&&a.priorGiftOneRecipient==='one'&&!!a.priorGiftDate&&a.priorGiftDate===a.deathDate},
   {"id": "appraisalFee", "section": "추가 계산 입력", "q": "공제 대상 감정평가 수수료 (원)", "sub": "감정평가액으로 신고하는 등 공제 요건을 확인한 수수료만 입력하세요.", "numeric": true, "money": true, "optional": true, showIf: (a) => true},
   {"id": "foreignTaxPaid", "section": "추가 계산 입력", "q": "외국에서 부과된 상속세 (원)", "sub": "외국 과세표준과 함께 입력해야 공제 한도를 계산합니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => true},
   {"id": "foreignTaxBase", "section": "추가 계산 입력", "q": "해당 재산의 외국 법령상 과세표준 (원)", "sub": "국내 평가액이 아닌 외국에서 실제 적용한 과세표준입니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => true && Number(a.foreignTaxPaid)>0},
   {"id": "bequestNonHeirs", "section": "추가 계산 입력", "q": "상속인 아닌 수유자에게 유증한 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
   {"id": "renouncedNext", "section": "추가 계산 입력", "q": "선순위 상속 포기로 다음 순위가 받은 재산가액 (원)", "sub": "총상속재산에 포함된 금액입니다. 상속공제 한도 계산에 반영합니다.", "numeric": true, "money": true, "optional": true},
   {"id": "reinherit", "section": "추가 계산 조건", "q": "단기 재상속공제를 신청하나요?", "opts": [["no", "아니오", ""], ["yes", "예 — 이전 상속 자료 확인", ""]], showIf:a=>true},
-  {id:'priorInheritanceDate', section:'추가 계산 조건', q:'전의 상속개시일 (2020~2025년 필수, 2026년은 날짜 또는 다음 경과연수)', placeholder:'2025-01-01', freeform:true, optional:true, showIf:a=>a.reinherit==='yes'},
+  {id:'priorInheritanceDate', section:'추가 계산 조건', q:'전의 상속개시일 (2020~2025년 필수, 2026년은 날짜 또는 확인한 경과연수)', placeholder:'2025-01-01', date:true, optional:true, showIf:a=>a.reinherit==='yes'},
   {"id": "reinheritYears", "section": "추가 계산 조건", "q": "전의 상속부터 이번 상속까지 올림한 연수 (1년 이내=1)", "numeric": true, "money": false, "optional": true, showIf:a=>a.reinherit==='yes'},
   {"id": "priorInheritanceTax", "section": "추가 계산 조건", "q": "전의 상속세 산출세액 (납부세액 아님, 원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
   {"id": "priorEstate", "section": "추가 계산 조건", "q": "전의 총상속재산가액 (원)", "numeric": true, "money": true, "optional": true, showIf:a=>a.reinherit==='yes'},
@@ -360,15 +364,15 @@ function mapAnswersToInheritance(a) {
   }
   if (a.priorGiftHas === 'yes' && (!(Number(a.priorGiftValue) > 0) || !['직계비속', '배우자', '기타'].includes(a.priorGiftRelation))) return null;   // 금액·관계가 비었다 — 기본값(상속인·기본 공제)으로 채우지 않는다
   if (a.priorGiftHas === 'yes' && !inhPriorGiftDropped(a)) {
-    // gift_history(사실입력) 경로 — 엔진이 §58 증여세 산출세액을 자동도출해 §28 증여세액공제를 정상 반영.
-    // (prior_gift_values만 보내면 §13 가산만 되고 §28 공제가 0이 되어 상속세가 과대추정됨)
-    const pv = Number(a.priorGiftValue);
-    // 수정 260628(INHERITANCE-R2-05): 미성년 직계비속이 직계존속(고인)에게서 수증 시 증여재산공제 2천만(상증법 §53②단서). 성년 5천만.
-    const isMinorGift = a.priorGiftMinor === 'yes' && a.priorGiftRelation === '직계비속';
-    const dedByRel = { '배우자': 600000000, '직계비속': 50000000, '기타': 10000000 };
-    const baseDed = isMinorGift ? 20000000 : dedByRel[a.priorGiftRelation];   // 관계는 위에서 세 값 중 하나로 확인했다 — 기본 공제액으로 메우지 않는다
-    const ded = Math.min(baseDed, pv);
-    const item = { value: pv, deduction_used: ded, is_heir: true, is_minor: isMinorGift };
+    // Actual source amounts: relationship-based deduction ceilings are not actual past deductions.
+    const pv=Number(a.priorGiftValue);
+    const known=k=>a[k]!=null&&String(a[k]).trim()!==''&&Number.isSafeInteger(Number(a[k]))&&Number(a[k])>=0;
+    const gd=String(a.priorGiftDate||''),dt=new Date(gd+'T00:00:00Z');
+    if(!known('priorGiftDeduction')||!known('priorGiftAssessed')||Number(a.priorGiftDeduction)>pv
+       ||!/^\d{4}-\d{2}-\d{2}$/.test(gd)||!Number.isFinite(dt.getTime())||dt.toISOString().slice(0,10)!==gd) return null;
+    const isMinorGift=a.priorGiftMinor==='yes'&&a.priorGiftRelation==='직계비속';
+    const item={value:pv,total_deduction_used:Number(a.priorGiftDeduction),gift_tax_assessed:Number(a.priorGiftAssessed),gift_date:gd,is_heir:true,is_minor:isMinorGift};
+    if(gd===a.deathDate){if(!['yes','no'].includes(a.priorGiftBeforeDeath))return null;item.before_death_confirmed=a.priorGiftBeforeDeath==='yes';}
     if (a.priorGiftRelation === '배우자') item.to_spouse = true;
     if (a.priorGiftRelation === '기타') {
       if (a.priorGiftHeir === 'yes') item.is_heir = true;
@@ -452,9 +456,12 @@ function inhFallbackGaps(answers, calc) {
         && (!(Number(answers.priorGiftValue) > 0) || !['직계비속', '배우자', '기타'].includes(answers.priorGiftRelation)),
       why: '10년 내 사전증여를 받은 한 사람의 증여 금액 또는 고인과의 관계(직계비속·배우자·그 외)가 비어 있습니다 — 상속인 여부와 증여재산공제가 관계로 갈려 짐작으로 채울 수 없습니다.' },
     { when: answers.priorGiftHas === 'yes' && answers.priorGiftOneRecipient !== 'one' && answers.priorGiftOneRecipient !== 'many',
-      why: '10년 내 사전증여를 받은 사람이 한 명인지 여러 명인지 정해지지 않았습니다 — 이 계산기는 한 사람이 받은 증여만 계산합니다.' },
+      why: '10년 내 사전증여를 받은 사람이 한 명인지 여러 명인지 정해지지 않았습니다 — 이 화면은 한 사람이 한 번 받은 증여만 계산합니다. 여러 차례 증여를 합치지 마세요.' },
     { when: giftOther && !giftHeirResolved,
       why: '10년 내 사전증여를 받은 «그 외» 한 사람이 상속인인지(그리고 아니라면 5년 이내 증여인지) 정해지지 않았습니다 — 합산 기간(상속인 10년·비상속인 5년)이 달라집니다.' },
+    {when:answers.priorGiftHas==='yes'&&!inhPriorGiftDropped(answers)&&answers.priorGiftOneRecipient==='one'&&Number(answers.priorGiftValue)>0&&['직계비속','배우자','기타'].includes(answers.priorGiftRelation)&&(!giftOther||giftHeirResolved)&&
+      (['priorGiftDeduction','priorGiftAssessed'].some(k=>answers[k]==null||String(answers[k]).trim()==='')||!answers.priorGiftDate),
+      why:'사전증여의 실제 당시 공제합계·증여세 산출세액·증여일이 필요합니다. 관계별 최대공제나 0원으로 추정하지 않습니다.'},
   ]);
   /* ── ② 엔진 값이 없으면 어떤 입력이든 막는다 ──────────────────────────────
      이 화면에는 자체 계산식이 없으므로 «엔진이 준 금액»이 없으면 보여 줄 금액이 없다.
@@ -628,6 +635,11 @@ function JTReportInheritance({ setRoute, onBack }) {
       const parts = String(answers.historicalChildAges || '').trim() ? String(answers.historicalChildAges).split(',').map(x=>x.trim()) : [];
       return parts.length === inhChildCount(answers) && parts.every(x=>/^\d{1,3}$/.test(x));
     }
+    if (cur.date) {
+      const v=String(answers[cur.id]||'');if(!v&&cur.optional)return true;
+      const d=new Date(v+'T00:00:00Z');return /^\d{4}-\d{2}-\d{2}$/.test(v)&&Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===v;
+    }
+    if(cur.allowZero){const v=answers[cur.id];return v!=null&&String(v).trim()!==''&&Number.isSafeInteger(Number(v))&&Number(v)>=0;}
     if (cur.freeform) return true;
     if (cur.numeric) {
       const mustFill = cur.requiredIf && cur.requiredIf(answers);   // 조건부 필수(예: 사전증여 '있음' 시 금액)
@@ -897,6 +909,7 @@ function JTReportInheritance({ setRoute, onBack }) {
           <h2>{cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
+          {cur.date && <input className="jt-report-q__input" type="date" value={answers[cur.id]||''} onChange={e=>setAns(cur.id,e.target.value)} />}
           {cur.freeform && (
             <textarea className="jt-report-q__textarea" maxLength={cur.id === 'context' ? 200 : 120}
               placeholder={cur.placeholder || ''} value={answers[cur.id] || ''}

@@ -14018,7 +14018,7 @@ const INHERITANCE_QS = [
     id: "priorGiftHas",
     section: "\uC0AC\uC804\uC99D\uC5EC",
     q: "\uB3CC\uC544\uAC00\uC2E0 \uBD84\uC774 \uC0C1\uC18D\uC778\uC5D0\uAC8C 10\uB144 \uC548\uC5D0, \uB610\uB294 \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uC0AC\uB78C\uC5D0\uAC8C 5\uB144 \uC548\uC5D0 \uC99D\uC5EC\uD55C \uC7AC\uC0B0\uC774 \uC788\uB098\uC694?",
-    sub: "\uC0C1\uC18D \uAC1C\uC2DC \uC804 10\uB144 \uC774\uB0B4(\uC0C1\uC18D\uC778 \uC678\uC758 \uC0AC\uB78C\uC740 5\uB144) \uC99D\uC5EC\uD55C \uC7AC\uC0B0\uC740 \uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA713). \uC774\uBBF8 \uB0B8 \uC99D\uC5EC\uC138\uB294 \uACF5\uC81C\uB429\uB2C8\uB2E4. \uD569\uC0B0 \uB204\uB77D\uC740 \uAC00\uC0B0\uC138 \uC0AC\uACE0\uB85C \uC774\uC5B4\uC9C0\uB2C8 \uAF2D \uD655\uC778\uD558\uC138\uC694.",
+    sub: "\uC0C1\uC18D \uAC1C\uC2DC \uC804 10\uB144 \uC774\uB0B4(\uC0C1\uC18D\uC778 \uC678\uC758 \uC0AC\uB78C\uC740 5\uB144) \uC99D\uC5EC\uD55C \uC7AC\uC0B0\uC740 \uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0\uB429\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA713). \uAC00\uC0B0\uB300\uC0C1 \uC99D\uC5EC\uC7AC\uC0B0\uC758 \uC99D\uC5EC\uC138 \uC0B0\uCD9C\uC138\uC561\uC740 \uBC95\uC815 \uD55C\uB3C4 \uB0B4\uC5D0\uC11C \uACF5\uC81C\uB429\uB2C8\uB2E4. \uD569\uC0B0 \uB204\uB77D\uC740 \uAC00\uC0B0\uC138 \uC0AC\uACE0\uB85C \uC774\uC5B4\uC9C0\uB2C8 \uAF2D \uD655\uC778\uD558\uC138\uC694.",
     opts: [
       ["yes", "\uB124, \uC788\uC2B5\uB2C8\uB2E4", "\uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD569\uC0B0(\xA713)"],
       ["no", "\uC544\uB2C8\uC624 / \uC5C6\uC2B5\uB2C8\uB2E4", ""]
@@ -14029,19 +14029,19 @@ const INHERITANCE_QS = [
   {
     id: "priorGiftOneRecipient",
     section: "\uC0AC\uC804\uC99D\uC5EC",
-    q: "\uADF8 \uAE30\uAC04 \uC548\uC5D0 \uC99D\uC5EC\uBC1B\uC740 \uC0AC\uB78C\uC774 \uD55C \uBA85\uC778\uAC00\uC694?",
-    sub: "\uC774 \uACC4\uC0B0\uAE30\uB294 \uD55C \uC0AC\uB78C\uC774 \uBC1B\uC740 \uC99D\uC5EC\uB9CC \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uC99D\uC5EC\uBC1B\uC740 \uC0AC\uB78C\uC774 \uC5EC\uB7EC \uBA85\uC774\uBA74 \uC0AC\uB78C\uBCC4 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uC640 \uC99D\uC5EC\uC138\uC561\uACF5\uC81C\uAC00 \uB2EC\uB77C\uC838 \uD654\uBA74\uC5D0\uC11C \uACC4\uC0B0\uD558\uC9C0 \uC54A\uACE0, \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4.",
+    q: "\uADF8 \uAE30\uAC04 \uC548\uC5D0 \uD55C \uC0AC\uB78C\uC5D0\uAC8C \uD55C \uBC88 \uC99D\uC5EC\uD55C \uAC74\uC778\uAC00\uC694?",
+    sub: "\uC774 \uD654\uBA74\uC740 \uD55C \uC0AC\uB78C\uC774 \uD55C \uBC88 \uBC1B\uC740 \uC99D\uC5EC\uB9CC \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uC5EC\uB7EC \uCC28\uB840 \uC99D\uC5EC\uB97C \uD569\uCE58\uC9C0 \uB9C8\uC138\uC694. \uC99D\uC5EC\uBC1B\uC740 \uC0AC\uB78C\uC774 \uC5EC\uB7EC \uBA85\uC774\uBA74 \uC0AC\uB78C\uBCC4 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uC640 \uC99D\uC5EC\uC138\uC561\uACF5\uC81C\uAC00 \uB2EC\uB77C\uC838 \uD654\uBA74\uC5D0\uC11C \uACC4\uC0B0\uD558\uC9C0 \uC54A\uACE0, \uC0C1\uB2F4\uC73C\uB85C \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4.",
     showIf: (a) => a.priorGiftHas === "yes",
     opts: [
-      ["one", "\uD55C \uBA85\uC785\uB2C8\uB2E4", "\uD55C \uC0AC\uB78C \uAE30\uC900\uC73C\uB85C \uACC4\uC0B0"],
-      ["many", "\uC5EC\uB7EC \uBA85\uC785\uB2C8\uB2E4", "\u26A0\uFE0F \uAE08\uC561 \uB300\uC2E0 \uC0C1\uB2F4 \uC548\uB0B4\uB97C \uB4DC\uB9BD\uB2C8\uB2E4"]
+      ["one", "\uD55C \uBA85\xB7\uD55C \uBC88\uC785\uB2C8\uB2E4", "\uD55C \uC0AC\uB78C \uAE30\uC900\uC73C\uB85C \uACC4\uC0B0"],
+      ["many", "\uC5EC\uB7EC \uBA85 \uB610\uB294 \uC5EC\uB7EC \uCC28\uB840\uC785\uB2C8\uB2E4", "\u26A0\uFE0F \uAE08\uC561 \uB300\uC2E0 \uC0C1\uB2F4 \uC548\uB0B4\uB97C \uB4DC\uB9BD\uB2C8\uB2E4"]
     ]
   },
   {
     id: "priorGiftValue",
     section: "\uC0AC\uC804\uC99D\uC5EC",
-    q: "\uADF8 \uD55C \uC0AC\uB78C\uC774 \uC99D\uC5EC\uBC1B\uC740 \uC7AC\uC0B0\uC740 \uBAA8\uB450 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC99D\uC5EC \uB2F9\uC2DC \uD3C9\uAC00\uC561 \xB7 \uC6D0)",
-    sub: "\uD55C \uC0AC\uB78C\uC774 \uC5EC\uB7EC \uAC74\uC744 \uBC1B\uC558\uB2E4\uBA74 \uD569\uC0B0 \uAE08\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uC99D\uC5EC \uB2F9\uC2DC\uC758 \uD3C9\uAC00\uC561 \uAE30\uC900\uC785\uB2C8\uB2E4.",
+    q: "\uADF8 \uD55C \uBC88\uC758 \uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561\uC740 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC99D\uC5EC \uB2F9\uC2DC \uD3C9\uAC00\uC561 \xB7 \uC6D0)",
+    sub: "\uD55C \uCC28\uB840 \uC99D\uC5EC\uC758 \uC99D\uC5EC \uB2F9\uC2DC \uD3C9\uAC00\uC561\uC785\uB2C8\uB2E4. \uC5EC\uB7EC \uCC28\uB840 \uC99D\uC5EC\uB97C \uD569\uCE58\uC9C0 \uB9D0\uACE0 \uBCC4\uB3C4 \uAC80\uD1A0\uD558\uC138\uC694.",
     showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one",
     numeric: true,
     money: true,
@@ -14054,12 +14054,12 @@ const INHERITANCE_QS = [
     id: "priorGiftRelation",
     section: "\uC0AC\uC804\uC99D\uC5EC",
     q: "\uADF8 \uC99D\uC5EC\uB97C \uBC1B\uC740 \uBD84\uC740 \uACE0\uC778\uACFC \uC5B4\uB5A4 \uC0AC\uC774\uC600\uB098\uC694?",
-    sub: "\uC99D\uC5EC \uB2F9\uC2DC \uC801\uC6A9\uB41C \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C(\xA753)\uB97C \uAC00\uB2A0\uD574, \uC774\uBBF8 \uB0B8 \uC99D\uC5EC\uC138\uB97C \uC0C1\uC18D\uC138\uC5D0\uC11C \uC815\uD655\uD788 \uBE7C\uAE30(\uC99D\uC5EC\uC138\uC561\uACF5\uC81C \xA728) \uC704\uD568\uC785\uB2C8\uB2E4. \uBCF4\uD1B5 \uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uBC1B\uC558\uC73C\uBA74 \u300C\uC9C1\uACC4\uBE44\uC18D\u300D\uC785\uB2C8\uB2E4. \uBC30\uC6B0\uC790\uAC00 \uBC1B\uC740 \uC99D\uC5EC\uB294 \uBC30\uC6B0\uC790\uC0C1\uC18D\uACF5\uC81C \uD55C\uB3C4 \uACC4\uC0B0\uC5D0\uB3C4 \uBC18\uC601\uB429\uB2C8\uB2E4(\xA719). \uC9C1\uACC4\uBE44\uC18D\xB7\uBC30\uC6B0\uC790\uB294 \uC0C1\uC18D\uC778\uC73C\uB85C \uBD05\uB2C8\uB2E4. \u300C\uADF8 \uC678\u300D(\uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uCE5C\uC871\xB7\uD0C0\uC778 \uD3EC\uD568)\uB97C \uACE0\uB974\uC2DC\uBA74 \uC0C1\uC18D\uC778 \uC5EC\uBD80\uC640 \uC99D\uC5EC \uC2DC\uAE30\uB97C \uCD94\uAC00\uB85C \uC5EC\uCB59\uB2C8\uB2E4.",
+    sub: "\uC0C1\uC18D\uC138\uBC95\uC0C1 \uC0C1\uC18D\uC778 \uC5EC\uBD80\uC640 \uBC30\uC6B0\uC790 \uADC0\uC18D\uC744 \uD655\uC778\uD569\uB2C8\uB2E4. \uC0C1\uC18D\uC778\uC778 \uC790\uB140\xB7\uC190\uC790\uB140\uB9CC \uCCAB \uD56D\uBAA9\uC744 \uC120\uD0DD\uD558\uC138\uC694. \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uC190\uC790\uB140 \uB4F1\uC740 \u300C\uADF8 \uC678\u300D\uC5D0\uC11C \uC5EC\uBD80\uB97C \uD655\uC778\uD569\uB2C8\uB2E4. \uAD00\uACC4\uB9CC\uC73C\uB85C \uC2E4\uC81C \uACF5\uC81C\uC561\uC744 \uCD94\uC815\uD558\uC9C0 \uC54A\uC73C\uBA70 \uB2F9\uC2DC \uACF5\uC81C\xB7\uC0B0\uCD9C\uC138\uC561\uC740 \uB2E4\uC74C \uC790\uB8CC\uC5D0\uC11C \uC785\uB825\uD569\uB2C8\uB2E4. \uBC30\uC6B0\uC790 \uC99D\uC5EC\uB294 \uBC30\uC6B0\uC790\uACF5\uC81C \uD55C\uB3C4\uC5D0\uB3C4 \uBC18\uC601\uB429\uB2C8\uB2E4. \u300C\uADF8 \uC678\u300D(\uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uCE5C\uC871\xB7\uD0C0\uC778 \uD3EC\uD568)\uB97C \uACE0\uB974\uC2DC\uBA74 \uC0C1\uC18D\uC778 \uC5EC\uBD80\uC640 \uC99D\uC5EC \uC2DC\uAE30\uB97C \uCD94\uAC00\uB85C \uC5EC\uCB59\uB2C8\uB2E4.",
     showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one",
     opts: [
-      ["\uC9C1\uACC4\uBE44\uC18D", "\uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uBC1B\uC74C (\uC9C1\uACC4\uBE44\uC18D \xB7 \uC0C1\uC18D\uC778)", "\uC99D\uC5EC\uACF5\uC81C 5\uCC9C\uB9CC \uAE30\uC900"],
-      ["\uBC30\uC6B0\uC790", "\uBC30\uC6B0\uC790\uAC00 \uBC1B\uC74C (\uC0C1\uC18D\uC778)", "\uC99D\uC5EC\uACF5\uC81C 6\uC5B5 \uAE30\uC900"],
-      ["\uAE30\uD0C0", "\uADF8 \uC678 \u2014 \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uCE5C\uC871\xB7\uD0C0\uC778 \uD3EC\uD568", "\uC0C1\uC18D\uC778 \uC5EC\uBD80\uB97C \uCD94\uAC00\uB85C \uC5EC\uCB59\uB2C8\uB2E4 \xB7 \uC99D\uC5EC\uACF5\uC81C 1\uCC9C\uB9CC \uAE30\uC900"]
+      ["\uC9C1\uACC4\uBE44\uC18D", "\uC0C1\uC18D\uC778\uC778 \uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uBC1B\uC74C (\uC9C1\uACC4\uBE44\uC18D)", "\uC0C1\uC18D\uC778 \uC5EC\uBD80\uB97C \uD655\uC778\uD55C \uACBD\uC6B0"],
+      ["\uBC30\uC6B0\uC790", "\uBC30\uC6B0\uC790\uAC00 \uBC1B\uC74C (\uC0C1\uC18D\uC778)", "\uBC30\uC6B0\uC790 \uC0AC\uC804\uC99D\uC5EC \uADC0\uC18D"],
+      ["\uAE30\uD0C0", "\uADF8 \uC678 \u2014 \uC0C1\uC18D\uC778\uC774 \uC544\uB2CC \uC190\uC790\uB140\xB7\uCE5C\uC871\xB7\uD0C0\uC778 \uD3EC\uD568", "\uC0C1\uC18D\uC778 \uC5EC\uBD80\uC640 \uAC00\uC0B0\uAE30\uAC04\uC744 \uCD94\uAC00 \uD655\uC778\uD569\uB2C8\uB2E4"]
     ]
   },
   {
@@ -14088,20 +14088,24 @@ const INHERITANCE_QS = [
     id: "priorGiftMinor",
     section: "\uC0AC\uC804\uC99D\uC5EC",
     q: "\uC99D\uC5EC\uBC1B\uC740 \uBD84\uC774 \uC99D\uC5EC \uB2F9\uC2DC \uBBF8\uC131\uB144\uC790(\uB9CC 19\uC138 \uBBF8\uB9CC)\uC600\uB098\uC694?",
-    sub: "\uBBF8\uC131\uB144 \uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uC9C1\uACC4\uC874\uC18D(\uACE0\uC778)\uC5D0\uAC8C\uC11C \uC99D\uC5EC\uBC1B\uC558\uB2E4\uBA74 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uAC00 2\uCC9C\uB9CC\uC6D0\uC73C\uB85C \uC904\uC5B4\uB4ED\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA753\u2461\uB2E8\uC11C). \uC774\uBBF8 \uB0B8 \uC99D\uC5EC\uC138 \uACC4\uC0B0\uC5D0 \uBC18\uC601\uB429\uB2C8\uB2E4.",
+    sub: "\uBBF8\uC131\uB144 \uC790\uB140\xB7\uC190\uC790\uB140\uAC00 \uC9C1\uACC4\uC874\uC18D(\uACE0\uC778)\uC5D0\uAC8C\uC11C \uC99D\uC5EC\uBC1B\uC558\uB2E4\uBA74 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uD55C\uB3C4\uAC00 2\uCC9C\uB9CC\uC6D0\uC73C\uB85C \uC904\uC5B4\uB4ED\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA753\u2461\uB2E8\uC11C). \uC2E4\uC81C \uACF5\uC81C\xB7\uC0B0\uCD9C\uC138\uC561\uC740 \uB2E4\uC74C \uD655\uC778\uC790\uB8CC\uC758 \uAE08\uC561\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4.",
     showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && a.priorGiftRelation === "\uC9C1\uACC4\uBE44\uC18D",
     opts: [
-      ["no", "\uC544\uB2C8\uC624 (\uC131\uB144\uC774\uC5C8\uC74C)", "\uC99D\uC5EC\uACF5\uC81C 5\uCC9C\uB9CC"],
-      ["yes", "\uB124, \uBBF8\uC131\uB144\uC774\uC5C8\uC2B5\uB2C8\uB2E4", "\uC99D\uC5EC\uACF5\uC81C 2\uCC9C\uB9CC"]
+      ["no", "\uC544\uB2C8\uC624 (\uC131\uB144\uC774\uC5C8\uC74C)", "\uC99D\uC5EC\uACF5\uC81C \uD55C\uB3C4 5\uCC9C\uB9CC\uC6D0"],
+      ["yes", "\uB124, \uBBF8\uC131\uB144\uC774\uC5C8\uC2B5\uB2C8\uB2E4", "\uC99D\uC5EC\uACF5\uC81C \uD55C\uB3C4 2\uCC9C\uB9CC\uC6D0"]
     ]
   },
+  { id: "priorGiftDate", section: "\uC0AC\uC804\uC99D\uC5EC \uD655\uC778\uC790\uB8CC", q: "\uC774 \uD55C \uAC74\uC758 \uC2E4\uC81C \uC99D\uC5EC\uC77C\uC740 \uC5B8\uC81C\uC778\uAC00\uC694?", sub: "\uC5EC\uB7EC \uCC28\uB840 \uC99D\uC5EC\uB97C \uD55C \uAC74\uC73C\uB85C \uD569\uCE58\uC9C0 \uB9C8\uC138\uC694. \uC0C1\uC18D\uC778 10\uB144\xB7\uBE44\uC0C1\uC18D\uC778 5\uB144 \uAC00\uC0B0\uAE30\uAC04\uC744 \uC2E4\uC81C \uB0A0\uC9DC\uB85C \uD310\uC815\uD569\uB2C8\uB2E4.", date: true, showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && !inhPriorGiftDropped(a) },
+  { id: "priorGiftDeduction", section: "\uC0AC\uC804\uC99D\uC5EC \uD655\uC778\uC790\uB8CC", q: "\uB2F9\uC2DC \uC2E4\uC81C \uC801\uC6A9\uD55C \uC99D\uC5EC \uACF5\uC81C\uD569\uACC4\uB294? (\uC6D0)", sub: "\uB2F9\uC2DC \xA753\xB7\xA753\uC7582\xB7\xA754 \uACF5\uC81C\uD569\uACC4\uC785\uB2C8\uB2E4. \uAD00\uACC4\uBCC4 \uCD5C\uB300\uD55C\uB3C4\uAC00 \uC544\uB2CC \uC2E4\uC81C \uC801\uC6A9\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uCC44\uBB34\xB7\uBE44\uACFC\uC138\xB7\uAC10\uC815\uC218\uC218\uB8CC\uB294 \uC5EC\uAE30\uC5D0 \uD569\uCE58\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uACF5\uC81C \uC5C6\uC73C\uBA74 0.", numeric: true, money: true, allowZero: true, showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && !inhPriorGiftDropped(a) },
+  { id: "priorGiftAssessed", section: "\uC0AC\uC804\uC99D\uC5EC \uD655\uC778\uC790\uB8CC", q: "\uADF8 \uC99D\uC5EC\uC758 \uC2E4\uC81C \uC99D\uC5EC\uC138 \uC0B0\uCD9C\uC138\uC561\uC740? (\uC6D0)", sub: "\uB2F9\uC2DC \uC2E0\uACE0\uC11C\uC758 \uC0B0\uCD9C\uC138\uC561\uC744 \uD655\uC778\uD558\uC138\uC694. \uC2E0\uACE0\uC138\uC561\uACF5\uC81C \uD6C4 \uB0A9\uBD80\uC561\uC774\uB098 \uC138\uB300\uC0DD\uB7B5 \uD560\uC99D\uC744 \uB123\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC785\uB825\uD55C \uAC00\uC0B0\uB300\uC0C1 \uC7AC\uC0B0\uC5D0 \uD574\uB2F9\uD558\uB294 \uC0B0\uCD9C\uC138\uC561\uC785\uB2C8\uB2E4. \uD55C \uAC74\uC774\uB77C\uB3C4 \uB2F9\uC2DC \uB204\uC801\uACFC\uC138\xB7\uD2B9\uB840\xB7\uAC10\uBA74 \uB4F1 \uBCF5\uD569\uC774\uBA74 \uBCC4\uB3C4 \uAC80\uD1A0\uD558\uC138\uC694. \uC2E4\uC81C 0\uC774\uBA74 0\uC744 \uC785\uB825\uD569\uB2C8\uB2E4.", numeric: true, money: true, allowZero: true, showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && !inhPriorGiftDropped(a) },
+  { id: "priorGiftBeforeDeath", section: "\uC0AC\uC804\uC99D\uC5EC \uD655\uC778\uC790\uB8CC", q: "\uAC19\uC740 \uB0A0 \uC99D\uC5EC\uAC00 \uC0C1\uC18D\uAC1C\uC2DC\uBCF4\uB2E4 \uC2E4\uC81C\uB85C \uBA3C\uC800 \uC774\uB8E8\uC5B4\uC84C\uB098\uC694?", sub: "\uC0C1\uC18D\uAC1C\uC2DC \uD6C4\uC774\uBA74 \uC0AC\uC804\uC99D\uC5EC \uAC00\uC0B0\uB9CC \uC81C\uC678\uD569\uB2C8\uB2E4. \uC0AC\uB9DD \uB2F9\uC2DC \uACE0\uC778 \uC18C\uC720 \uC7AC\uC0B0\uC774\uC5C8\uB294\uC9C0\uB294 \uCD1D\uC0C1\uC18D\uC7AC\uC0B0 \uBC94\uC704\uC5D0\uC11C \uBCC4\uB3C4\uB85C \uD655\uC778\uD558\uC138\uC694.", opts: [["yes", "\uC0C1\uC18D\uAC1C\uC2DC \uC804 \uC99D\uC5EC", ""], ["no", "\uC0C1\uC18D\uAC1C\uC2DC \uD6C4", "\uC0C1\uC18D \uC0AC\uC804\uC99D\uC5EC\uC5D0\uC11C \uC81C\uC678"]], showIf: (a) => a.priorGiftHas === "yes" && a.priorGiftOneRecipient === "one" && !!a.priorGiftDate && a.priorGiftDate === a.deathDate },
   { "id": "appraisalFee", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uACF5\uC81C \uB300\uC0C1 \uAC10\uC815\uD3C9\uAC00 \uC218\uC218\uB8CC (\uC6D0)", "sub": "\uAC10\uC815\uD3C9\uAC00\uC561\uC73C\uB85C \uC2E0\uACE0\uD558\uB294 \uB4F1 \uACF5\uC81C \uC694\uAC74\uC744 \uD655\uC778\uD55C \uC218\uC218\uB8CC\uB9CC \uC785\uB825\uD558\uC138\uC694.", "numeric": true, "money": true, "optional": true, showIf: (a) => true },
   { "id": "foreignTaxPaid", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC678\uAD6D\uC5D0\uC11C \uBD80\uACFC\uB41C \uC0C1\uC18D\uC138 (\uC6D0)", "sub": "\uC678\uAD6D \uACFC\uC138\uD45C\uC900\uACFC \uD568\uAED8 \uC785\uB825\uD574\uC57C \uACF5\uC81C \uD55C\uB3C4\uB97C \uACC4\uC0B0\uD569\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true, showIf: (a) => true },
   { "id": "foreignTaxBase", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uD574\uB2F9 \uC7AC\uC0B0\uC758 \uC678\uAD6D \uBC95\uB839\uC0C1 \uACFC\uC138\uD45C\uC900 (\uC6D0)", "sub": "\uAD6D\uB0B4 \uD3C9\uAC00\uC561\uC774 \uC544\uB2CC \uC678\uAD6D\uC5D0\uC11C \uC2E4\uC81C \uC801\uC6A9\uD55C \uACFC\uC138\uD45C\uC900\uC785\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true, showIf: (a) => Number(a.foreignTaxPaid) > 0 },
   { "id": "bequestNonHeirs", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC0C1\uC18D\uC778 \uC544\uB2CC \uC218\uC720\uC790\uC5D0\uAC8C \uC720\uC99D\uD55C \uC7AC\uC0B0\uAC00\uC561 (\uC6D0)", "sub": "\uCD1D\uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD3EC\uD568\uB41C \uAE08\uC561\uC785\uB2C8\uB2E4. \uC0C1\uC18D\uACF5\uC81C \uD55C\uB3C4 \uACC4\uC0B0\uC5D0 \uBC18\uC601\uD569\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true },
   { "id": "renouncedNext", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC120\uC21C\uC704 \uC0C1\uC18D \uD3EC\uAE30\uB85C \uB2E4\uC74C \uC21C\uC704\uAC00 \uBC1B\uC740 \uC7AC\uC0B0\uAC00\uC561 (\uC6D0)", "sub": "\uCD1D\uC0C1\uC18D\uC7AC\uC0B0\uC5D0 \uD3EC\uD568\uB41C \uAE08\uC561\uC785\uB2C8\uB2E4. \uC0C1\uC18D\uACF5\uC81C \uD55C\uB3C4 \uACC4\uC0B0\uC5D0 \uBC18\uC601\uD569\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true },
   { "id": "reinherit", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", "q": "\uB2E8\uAE30 \uC7AC\uC0C1\uC18D\uACF5\uC81C\uB97C \uC2E0\uCCAD\uD558\uB098\uC694?", "opts": [["no", "\uC544\uB2C8\uC624", ""], ["yes", "\uC608 \u2014 \uC774\uC804 \uC0C1\uC18D \uC790\uB8CC \uD655\uC778", ""]], showIf: (a) => true },
-  { id: "priorInheritanceDate", section: "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", q: "\uC804\uC758 \uC0C1\uC18D\uAC1C\uC2DC\uC77C (2020~2025\uB144 \uD544\uC218, 2026\uB144\uC740 \uB0A0\uC9DC \uB610\uB294 \uB2E4\uC74C \uACBD\uACFC\uC5F0\uC218)", placeholder: "2025-01-01", freeform: true, optional: true, showIf: (a) => a.reinherit === "yes" },
+  { id: "priorInheritanceDate", section: "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", q: "\uC804\uC758 \uC0C1\uC18D\uAC1C\uC2DC\uC77C (2020~2025\uB144 \uD544\uC218, 2026\uB144\uC740 \uB0A0\uC9DC \uB610\uB294 \uD655\uC778\uD55C \uACBD\uACFC\uC5F0\uC218)", placeholder: "2025-01-01", date: true, optional: true, showIf: (a) => a.reinherit === "yes" },
   { "id": "reinheritYears", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", "q": "\uC804\uC758 \uC0C1\uC18D\uBD80\uD130 \uC774\uBC88 \uC0C1\uC18D\uAE4C\uC9C0 \uC62C\uB9BC\uD55C \uC5F0\uC218 (1\uB144 \uC774\uB0B4=1)", "numeric": true, "money": false, "optional": true, showIf: (a) => a.reinherit === "yes" },
   { "id": "priorInheritanceTax", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", "q": "\uC804\uC758 \uC0C1\uC18D\uC138 \uC0B0\uCD9C\uC138\uC561 (\uB0A9\uBD80\uC138\uC561 \uC544\uB2D8, \uC6D0)", "numeric": true, "money": true, "optional": true, showIf: (a) => a.reinherit === "yes" },
   { "id": "priorEstate", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC870\uAC74", "q": "\uC804\uC758 \uCD1D\uC0C1\uC18D\uC7AC\uC0B0\uAC00\uC561 (\uC6D0)", "numeric": true, "money": true, "optional": true, showIf: (a) => a.reinherit === "yes" },
@@ -14158,11 +14162,15 @@ function mapAnswersToInheritance(a) {
   if (a.priorGiftHas === "yes" && (!(Number(a.priorGiftValue) > 0) || !["\uC9C1\uACC4\uBE44\uC18D", "\uBC30\uC6B0\uC790", "\uAE30\uD0C0"].includes(a.priorGiftRelation))) return null;
   if (a.priorGiftHas === "yes" && !inhPriorGiftDropped(a)) {
     const pv = Number(a.priorGiftValue);
+    const known = (k) => a[k] != null && String(a[k]).trim() !== "" && Number.isSafeInteger(Number(a[k])) && Number(a[k]) >= 0;
+    const gd = String(a.priorGiftDate || ""), dt = /* @__PURE__ */ new Date(gd + "T00:00:00Z");
+    if (!known("priorGiftDeduction") || !known("priorGiftAssessed") || Number(a.priorGiftDeduction) > pv || !/^\d{4}-\d{2}-\d{2}$/.test(gd) || !Number.isFinite(dt.getTime()) || dt.toISOString().slice(0, 10) !== gd) return null;
     const isMinorGift = a.priorGiftMinor === "yes" && a.priorGiftRelation === "\uC9C1\uACC4\uBE44\uC18D";
-    const dedByRel = { "\uBC30\uC6B0\uC790": 6e8, "\uC9C1\uACC4\uBE44\uC18D": 5e7, "\uAE30\uD0C0": 1e7 };
-    const baseDed = isMinorGift ? 2e7 : dedByRel[a.priorGiftRelation];
-    const ded = Math.min(baseDed, pv);
-    const item = { value: pv, deduction_used: ded, is_heir: true, is_minor: isMinorGift };
+    const item = { value: pv, total_deduction_used: Number(a.priorGiftDeduction), gift_tax_assessed: Number(a.priorGiftAssessed), gift_date: gd, is_heir: true, is_minor: isMinorGift };
+    if (gd === a.deathDate) {
+      if (!["yes", "no"].includes(a.priorGiftBeforeDeath)) return null;
+      item.before_death_confirmed = a.priorGiftBeforeDeath === "yes";
+    }
     if (a.priorGiftRelation === "\uBC30\uC6B0\uC790") item.to_spouse = true;
     if (a.priorGiftRelation === "\uAE30\uD0C0") {
       if (a.priorGiftHeir === "yes") item.is_heir = true;
@@ -14239,11 +14247,15 @@ function inhFallbackGaps(answers, calc) {
     },
     {
       when: answers.priorGiftHas === "yes" && answers.priorGiftOneRecipient !== "one" && answers.priorGiftOneRecipient !== "many",
-      why: "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC\uB97C \uBC1B\uC740 \uC0AC\uB78C\uC774 \uD55C \uBA85\uC778\uC9C0 \uC5EC\uB7EC \uBA85\uC778\uC9C0 \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uC774 \uACC4\uC0B0\uAE30\uB294 \uD55C \uC0AC\uB78C\uC774 \uBC1B\uC740 \uC99D\uC5EC\uB9CC \uACC4\uC0B0\uD569\uB2C8\uB2E4."
+      why: "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC\uB97C \uBC1B\uC740 \uC0AC\uB78C\uC774 \uD55C \uBA85\uC778\uC9C0 \uC5EC\uB7EC \uBA85\uC778\uC9C0 \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uC774 \uD654\uBA74\uC740 \uD55C \uC0AC\uB78C\uC774 \uD55C \uBC88 \uBC1B\uC740 \uC99D\uC5EC\uB9CC \uACC4\uC0B0\uD569\uB2C8\uB2E4. \uC5EC\uB7EC \uCC28\uB840 \uC99D\uC5EC\uB97C \uD569\uCE58\uC9C0 \uB9C8\uC138\uC694."
     },
     {
       when: giftOther && !giftHeirResolved,
       why: "10\uB144 \uB0B4 \uC0AC\uC804\uC99D\uC5EC\uB97C \uBC1B\uC740 \xAB\uADF8 \uC678\xBB \uD55C \uC0AC\uB78C\uC774 \uC0C1\uC18D\uC778\uC778\uC9C0(\uADF8\uB9AC\uACE0 \uC544\uB2C8\uB77C\uBA74 5\uB144 \uC774\uB0B4 \uC99D\uC5EC\uC778\uC9C0) \uC815\uD574\uC9C0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uD569\uC0B0 \uAE30\uAC04(\uC0C1\uC18D\uC778 10\uB144\xB7\uBE44\uC0C1\uC18D\uC778 5\uB144)\uC774 \uB2EC\uB77C\uC9D1\uB2C8\uB2E4."
+    },
+    {
+      when: answers.priorGiftHas === "yes" && !inhPriorGiftDropped(answers) && answers.priorGiftOneRecipient === "one" && Number(answers.priorGiftValue) > 0 && ["\uC9C1\uACC4\uBE44\uC18D", "\uBC30\uC6B0\uC790", "\uAE30\uD0C0"].includes(answers.priorGiftRelation) && (!giftOther || giftHeirResolved) && (["priorGiftDeduction", "priorGiftAssessed"].some((k) => answers[k] == null || String(answers[k]).trim() === "") || !answers.priorGiftDate),
+      why: "\uC0AC\uC804\uC99D\uC5EC\uC758 \uC2E4\uC81C \uB2F9\uC2DC \uACF5\uC81C\uD569\uACC4\xB7\uC99D\uC5EC\uC138 \uC0B0\uCD9C\uC138\uC561\xB7\uC99D\uC5EC\uC77C\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uAD00\uACC4\uBCC4 \uCD5C\uB300\uACF5\uC81C\uB098 0\uC6D0\uC73C\uB85C \uCD94\uC815\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
     }
   ]);
   if (calc.precise) return unknown;
@@ -14409,6 +14421,16 @@ function JTReportInheritance({ setRoute, onBack }) {
       const parts = String(answers.historicalChildAges || "").trim() ? String(answers.historicalChildAges).split(",").map((x) => x.trim()) : [];
       return parts.length === inhChildCount(answers) && parts.every((x) => /^\d{1,3}$/.test(x));
     }
+    if (cur.date) {
+      const v = String(answers[cur.id] || "");
+      if (!v && cur.optional) return true;
+      const d = /* @__PURE__ */ new Date(v + "T00:00:00Z");
+      return /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(d.getTime()) && d.toISOString().slice(0, 10) === v;
+    }
+    if (cur.allowZero) {
+      const v = answers[cur.id];
+      return v != null && String(v).trim() !== "" && Number.isSafeInteger(Number(v)) && Number(v) >= 0;
+    }
     if (cur.freeform) return true;
     if (cur.numeric) {
       const mustFill = cur.requiredIf && cur.requiredIf(answers);
@@ -14572,7 +14594,7 @@ function JTReportInheritance({ setRoute, onBack }) {
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
     inputSession.invalidate();
     setStep(index);
-  } }, title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCD1D\uC7AC\uC0B0\xB7\uAC00\uC871\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC0C1\uC18D\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uACF5\uC81C\xB7\uC0AC\uC804\uC99D\uC5EC \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-installment-direct", onClick: () => setInstallmentMode(true) }, "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.freeform && /* @__PURE__ */ React.createElement(
+  } }, title: "\uC0C1\uC18D\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uCD1D\uC7AC\uC0B0\xB7\uAC00\uC871\uB9CC \uC785\uB825\uD558\uBA74 \uC608\uC0C1 \uC0C1\uC18D\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uACF5\uC81C\xB7\uC0AC\uC804\uC99D\uC5EC \uB4F1\uC744 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement("button", { type: "button", "data-testid": "open-installment-direct", onClick: () => setInstallmentMode(true) }, "\uC77C\uBC18 \uC5F0\uBD80\uC5F0\uB0A9 \uC0B0\uC2DD"), err && /* @__PURE__ */ React.createElement("p", { role: "alert" }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, cur.section && /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "ui-monospace,monospace", fontSize: 10, letterSpacing: "0.18em", opacity: 0.6, marginBottom: 8 } }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.date && /* @__PURE__ */ React.createElement("input", { className: "jt-report-q__input", type: "date", value: answers[cur.id] || "", onChange: (e) => setAns(cur.id, e.target.value) }), cur.freeform && /* @__PURE__ */ React.createElement(
     "textarea",
     {
       className: "jt-report-q__textarea",
@@ -18525,7 +18547,7 @@ const COMP_QS = [
   {
     id: "ownerAge",
     section: "\uB098\uC774 (\uC138\uC561\uACF5\uC81C)",
-    q: "\uC8FC\uD0DD \uC18C\uC720\uC790\uC758 \uB098\uC774\uAC00 \uC5B4\uB5BB\uAC8C \uB418\uB098\uC694? (\uB9CC \uB098\uC774)",
+    q: "\uC18C\uC720\uC790(\uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758 \uD2B9\uB840\uB294 \uD569\uC758\uD55C \uC2E0\uCCAD\uC790)\uC758 \uB9CC \uB098\uC774\uB294?",
     sub: "1\uC138\uB300 1\uC8FC\uD0DD\uC790\uB294 \uB9CC 60\uC138 \uC774\uC0C1\uC774\uBA74 \uC5F0\uB839\uBCC4 \uC138\uC561\uACF5\uC81C\uB97C \uBC1B\uC2B5\uB2C8\uB2E4(60~65\uC138 20%, 65~70\uC138 30%, 70\uC138 \uC774\uC0C1 40%, \uC885\uBD80\uC138\uBC95 \xA79\u2465). \uC544\uB798 \uBCF4\uC720\uAE30\uAC04 \uACF5\uC81C\uC640 \uD569\uCCD0 \uCD5C\uB300 80%\uAE4C\uC9C0 \uACF5\uC81C\uB429\uB2C8\uB2E4. 60\uC138 \uBBF8\uB9CC\uC774\uBA74 \uADF8\uB300\uB85C \uC785\uB825\uD558\uC138\uC694. \uB098\uC774\uB97C \uBAA8\uB974\uBA74 \u300C\uBAA8\uB984\u300D\uC744 \uB20C\uB7EC \uC8FC\uC138\uC694 \u2014 \uC5F0\uB839 \uACF5\uC81C \uC5C6\uC774 \uACC4\uC0B0\uD558\uACE0 \uC54C\uB824 \uB4DC\uB9BD\uB2C8\uB2E4.",
     showIf: (a) => a.ownerType !== "corporate" && (a.housingCount === "one" || compIsDeemed(a)),
     numeric: true,
@@ -18537,7 +18559,7 @@ const COMP_QS = [
   {
     id: "holdingYears",
     section: "\uBCF4\uC720\uAE30\uAC04 (\uC138\uC561\uACF5\uC81C)",
-    q: "\uADF8 \uC8FC\uD0DD\uC744 \uBA87 \uB144 \uBCF4\uC720\uD558\uC168\uB098\uC694?",
+    q: "\uC18C\uC720\uC790(\uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758 \uD2B9\uB840\uB294 \uD569\uC758\uD55C \uC2E0\uCCAD\uC790)\uAC00 \uBCF4\uC720\uD55C \uAE30\uAC04\uC740?",
     sub: "1\uC138\uB300 1\uC8FC\uD0DD\uC790\uB294 5\uB144 \uC774\uC0C1 \uBCF4\uC720\uD558\uBA74 \uBCF4\uC720\uAE30\uAC04\uBCC4 \uC138\uC561\uACF5\uC81C\uB97C \uBC1B\uC2B5\uB2C8\uB2E4(5~10\uB144 20%, 10~15\uB144 40%, 15\uB144 \uC774\uC0C1 50%, \uC885\uBD80\uC138\uBC95 \xA79\u2467). \uC704 \uC5F0\uB839 \uACF5\uC81C\uC640 \uD569\uCCD0 \uCD5C\uB300 80%\uAE4C\uC9C0 \uACF5\uC81C\uB429\uB2C8\uB2E4. 5\uB144 \uBBF8\uB9CC\uC774\uBA74 \uADF8\uB300\uB85C \uC785\uB825\uD558\uC138\uC694(1\uB144 \uBBF8\uB9CC\uC774\uBA74 0). \uBAA8\uB974\uBA74 \u300C\uBAA8\uB984\u300D\uC744 \uB20C\uB7EC \uC8FC\uC138\uC694 \u2014 \uBCF4\uC720 \uACF5\uC81C \uC5C6\uC774 \uACC4\uC0B0\uD558\uACE0 \uC54C\uB824 \uB4DC\uB9BD\uB2C8\uB2E4.",
     showIf: (a) => a.ownerType !== "corporate" && (a.housingCount === "one" || compIsDeemed(a)),
     numeric: true,
@@ -18549,7 +18571,7 @@ const COMP_QS = [
     id: "ownership",
     section: "\uBA85\uC758 (\uB2E8\uB3C5 / \uBD80\uBD80 \uACF5\uB3D9)",
     q: "\uC774 \uC8FC\uD0DD\uC758 \uBA85\uC758\uB294 \uC5B4\uB5BB\uAC8C \uB418\uC5B4 \uC788\uB098\uC694?",
-    sub: "\uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758 1\uC8FC\uD0DD \uBE44\uAD50\uB97C \uC120\uD0DD\uD558\uBA74 \uC55E\uC11C \uC785\uB825\uD55C \uACF5\uC2DC\uAC00\uACA9\uC740 \uB450 \uC0AC\uB78C \uC9C0\uBD84\uC744 \uD569\uD55C \uC8FC\uD0DD \uC804\uCCB4 \uAC00\uC561\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4. \uBCF8\uC778 \uC9C0\uBD84\uAC00\uC561\uC744 \uB123\uC5C8\uB2E4\uBA74 \uC785\uB825 \uD655\uC778\uC5D0\uC11C \uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uB97C \uC218\uC815\uD558\uC138\uC694. \uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758 \uACF5\uC81C\uB294 \uC5F0\uB3C4\uBCC4\uB85C \uB2E4\uB985\uB2C8\uB2E4. \uACFC\uAC70\uC5F0\uB3C4 \uACF5\uB3D9\uBA85\uC758\uB294 \uD604\uC7AC \uC9C0\uC6D0 \uBC94\uC704\uC5D0\uC11C \uC81C\uC678\uB418\uC5B4 \uAE08\uC561 \uC5C6\uC774 \uC548\uB0B4\uD569\uB2C8\uB2E4. \uB2E4\uB9CC 1\uC138\uB3001\uC8FC\uD0DD \uC5F0\uB839\xB7\uBCF4\uC720 \uC138\uC561\uACF5\uC81C\uB294 \uACF5\uB3D9\uBA85\uC758 1\uC8FC\uD0DD\uC790 \uD2B9\uB840(\xA710\uC7582) \uC2E0\uCCAD \uC2DC \uBC1B\uC744 \uC218 \uC788\uC5B4, \uB458 \uC911 \uC720\uB9AC\uD55C \uCABD\uC744 \uC790\uB3D9 \uBE44\uAD50\uD574 \uB4DC\uB9BD\uB2C8\uB2E4. 2\uCC44 \uD2B9\uB840(\uC758\uC81C)\uC778 \uACBD\uC6B0\uC758 \uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758\uB294 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC544 \uC138\uBB34\uC0AC \uD655\uC778\uC744 \uC548\uB0B4\uD569\uB2C8\uB2E4.",
+    sub: "\uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758 1\uC8FC\uD0DD \uBE44\uAD50\uB97C \uC120\uD0DD\uD558\uBA74 \uC55E\uC11C \uC785\uB825\uD55C \uACF5\uC2DC\uAC00\uACA9\uC740 \uB450 \uC0AC\uB78C \uC9C0\uBD84\uC744 \uD569\uD55C \uC8FC\uD0DD \uC804\uCCB4 \uAC00\uC561\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4. \uBCF8\uC778 \uC9C0\uBD84\uAC00\uC561\uC744 \uB123\uC5C8\uB2E4\uBA74 \uC785\uB825 \uD655\uC778\uC5D0\uC11C \uACF5\uC2DC\uAC00\uACA9 \uD569\uACC4\uB97C \uC218\uC815\uD558\uC138\uC694. \uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758 \uACF5\uC81C\uB294 \uC5F0\uB3C4\uBCC4\uB85C \uB2E4\uB985\uB2C8\uB2E4. \uACFC\uAC70\uC5F0\uB3C4 \uACF5\uB3D9\uBA85\uC758\uB294 \uD604\uC7AC \uC9C0\uC6D0 \uBC94\uC704\uC5D0\uC11C \uC81C\uC678\uB418\uC5B4 \uAE08\uC561 \uC5C6\uC774 \uC548\uB0B4\uD569\uB2C8\uB2E4. \uB2E4\uB9CC 1\uC138\uB3001\uC8FC\uD0DD \uC5F0\uB839\xB7\uBCF4\uC720 \uC138\uC561\uACF5\uC81C\uB294 \uACF5\uB3D9\uBA85\uC758 1\uC8FC\uD0DD\uC790 \uD2B9\uB840(\xA710\uC7582) \uC2E0\uCCAD \uC2DC \uBC1B\uC744 \uC218 \uC788\uC5B4, \uACF5\uB3D9\uC18C\uC720\uC790 \uAC04 \uD569\uC758\uB85C \uC815\uD55C \uC2E0\uCCAD\uC790\uC758 \uB098\uC774\xB7\uBCF4\uC720\uAE30\uAC04\uC744 \uC55E \uD56D\uBAA9\uC5D0 \uC785\uB825\uD574\uC57C \uD569\uB2C8\uB2E4(\uC9C0\uBD84\uC774 \uD070 \uC0AC\uB78C\uC744 \uC790\uB3D9 \uC120\uD0DD\uD558\uC9C0 \uC54A\uC74C). \uADF8 \uC2E0\uCCAD\uC790\uB97C \uAE30\uC900\uC73C\uB85C \uB450 \uACFC\uC138\uBC29\uC2DD\uC744 \uBE44\uAD50\uD569\uB2C8\uB2E4. 2\uCC44 \uD2B9\uB840(\uC758\uC81C)\uC778 \uACBD\uC6B0\uC758 \uBD80\uBD80 \uACF5\uB3D9\uBA85\uC758\uB294 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uC9C0\uC6D0\uD558\uC9C0 \uC54A\uC544 \uC138\uBB34\uC0AC \uD655\uC778\uC744 \uC548\uB0B4\uD569\uB2C8\uB2E4.",
     showIf: (a) => a.ownerType !== "corporate" && (a.housingCount === "one" || compIsDeemed(a)),
     opts: [
       ["single", "\uB2E8\uB3C5\uBA85\uC758", "\uD574\uB2F9 \uC5F0\uB3C4 1\uC138\uB3001\uC8FC\uD0DD \uACF5\uC81C"],
@@ -20528,7 +20550,16 @@ const VAT_QS = [
   { "id": "nonDeductibleInput", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC704 \uB9E4\uC785\uC138\uC561 \uC911 \uBD88\uACF5\uC81C \uC138\uC561 (\uC6D0)", "sub": "\uACF5\uC81C\uD560 \uC218 \uC5C6\uB294 \uB9E4\uC785\uC138\uC561\uC744 \uC785\uB825\uD558\uC138\uC694. \uC2E4\uC81C \uB9E4\uC785\uC138\uC561 \uD569\uACC4\uC5D0\uC11C \uCC28\uAC10\uD569\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType === "\uC77C\uBC18\uACFC\uC138\uC790" },
   { "id": "exportSales", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uBCC4\uB3C4 \uC601\uC138\uC728 \uB9E4\uCD9C (\uC6D0)", "sub": "\uC55E\uC758 10% \uACFC\uC138 \uB9E4\uCD9C\uC5D0 \uD3EC\uD568\uD558\uC9C0 \uC54A\uC740 \uC601\uC138\uC728 \uB9E4\uCD9C\uC785\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType === "\uC77C\uBC18\uACFC\uC138\uC790" },
   { "id": "eInvoiceCount", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uACF5\uC81C \uB300\uC0C1 \uC804\uC790\uC138\uAE08\uACC4\uC0B0\uC11C \uBC1C\uAE09 \uAC74\uC218", "sub": "\uBC1C\uAE09\uACF5\uC81C \uC694\uAC74\uC744 \uD655\uC778\uD55C \uAC74\uC218\uB9CC \uC785\uB825\uD558\uC138\uC694. \uC9C1\uC804\uC5F0\uB3C4 \uACF5\uAE09\uAC00\uC561 \uC785\uB825\uC774 \uD568\uAED8 \uD544\uC694\uD569\uB2C8\uB2E4.", "numeric": true, "money": false, "optional": true, showIf: (a) => a.businessType === "\uC77C\uBC18\uACFC\uC138\uC790" && a.isCorporate !== "yes" },
-  { "id": "priorInvoiceRevenue", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC9C1\uC804\uC5F0\uB3C4 \uC0AC\uC5C5\uC7A5\uBCC4 \uACF5\uAE09\uAC00\uC561 (\uBA74\uC138 \uD3EC\uD568, \uC6D0)", "sub": "\uC804\uC790\uC138\uAE08\uACC4\uC0B0\uC11C \uBC1C\uAE09\uACF5\uC81C \uD310\uC815\uC5D0 \uD544\uC694\uD569\uB2C8\uB2E4. \uC2E4\uC81C 0\uC6D0\uC774\uBA74 0\uC744 \uC785\uB825\uD558\uC138\uC694.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType === "\uC77C\uBC18\uACFC\uC138\uC790" && a.isCorporate !== "yes" && Number(a.eInvoiceCount) > 0 },
+  { id: "creditScope", section: "\uACF5\uC81C \uC694\uAC74 \uD655\uC778", q: "\uB2E8\uC77C \uC0AC\uC5C5\uC7A5\uC758 \uC815\uC0C1\uC2E0\uACE0\uC774\uBA70 \uC62C\uD574 \uC55E\uC120 \uACF5\uC81C \uC774\uB825\uC744 \uBAA8\uB450 \uD655\uC778\uD588\uB098\uC694?", sub: "\uAC04\uC774\uB294 \uC5F0\uC911 \uACC4\uC18D 12\uAC1C\uC6D4 \uC601\uC5C5, \uC2E0\uADDC\xB7\uD734\uD3D0\uC5C5\xB7\uC720\uD615\uC804\uD658\xB7\uC7AC\uACE0 \uCD94\uAC00\uB0A9\uBD80\uAC00 \uC5C6\uB294 \uACBD\uC6B0\uC785\uB2C8\uB2E4. \uB2E4\uB978 \uC0AC\uC5C5\uC7A5\xB7\uC218\uC815\uC2E0\uACE0\uB098 \uC5F0\uAC04 \uC774\uB825 \uBBF8\uD655\uC778\uC740 \uACF5\uC81C\uB97C \uD655\uC815\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.", opts: [["yes", "\uD655\uC778\uD588\uC5B4\uC694", ""], ["no", "\uC544\uC9C1 \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC5B4\uC694", "\uAE08\uC561 \uD655\uC815 \uBCF4\uB958"]], showIf: (a) => Number(a.creditCardSales) > 0 || Number(a.eInvoiceCount) > 0 },
+  { id: "creditPeriodEnd", section: "\uACF5\uC81C \uC694\uAC74 \uD655\uC778", q: "\uC774 \uC2E0\uACE0 \uACFC\uC138\uAE30\uAC04\uC758 \uB9C8\uC9C0\uB9C9 \uB0A0\uC740 \uC5B8\uC81C\uC778\uAC00\uC694?", sub: "2026\uB144 1\uAE30 \uD655\uC815\uC740 6\uC6D4 30\uC77C, 2\uAE30 \uD655\uC815\xB7\uAC04\uC774\uB294 12\uC6D4 31\uC77C\uC785\uB2C8\uB2E4.", date: true, showIf: (a) => Number(a.creditCardSales) > 0 || Number(a.eInvoiceCount) > 0 },
+  { id: "creditEvidence", section: "\uACF5\uC81C \uC694\uAC74 \uD655\uC778", q: "\uACF5\uC81C \uC694\uAC74\xB7\uC62C\uD574 \uAE30\uC0AC\uC6A9\uC561\uC744 \uD655\uC778\uD55C \uC790\uB8CC\uB97C \uC801\uC5B4 \uC8FC\uC138\uC694.", sub: "\uC608: \uC9C1\uC804\uC5F0\uB3C4 \uB9E4\uCD9C\uC6D0\uC7A5, \uC62C\uD574 1\uAE30 \uC2E0\uACE0\uC11C, \uC801\uAE30 \uC804\uC1A1\uB0B4\uC5ED. \uACE0\uAC1D \uC774\uB984\xB7\uC2DD\uBCC4\uBC88\uD638\uB294 \uC4F0\uC9C0 \uB9C8\uC138\uC694.", freeform: true, showIf: (a) => Number(a.creditCardSales) > 0 || Number(a.eInvoiceCount) > 0 },
+  { id: "cardEligible", section: "\uCE74\uB4DC \uACF5\uC81C", q: "\uACF5\uC81C \uB300\uC0C1 \uC5C5\uC885\xB7\uACFC\uC138\uAC70\uB798\uC758 \uC801\uACA9 \uBC1C\uAE09\uAE08\uC561\uC784\uC744 \uD655\uC778\uD588\uB098\uC694?", sub: "\uC18C\uBE44\uC790 \uC0C1\uB300 \uC5C5\uC885 \uB4F1 \uBC95\uC815 \uB300\uC0C1\uC778\uC9C0, \uBA74\uC138\uAC70\uB798\uAC00 \uD3EC\uD568\uB418\uC9C0 \uC54A\uC558\uB294\uC9C0 \uD655\uC778\uD558\uC138\uC694.", opts: [["yes", "\uC801\uACA9\uC73C\uB85C \uD655\uC778", ""], ["no", "\uACF5\uC81C \uB300\uC0C1 \uC544\uB2D8", "\uACF5\uC81C 0"]], showIf: (a) => Number(a.creditCardSales) > 0 },
+  { id: "cardPriorSupply", section: "\uCE74\uB4DC \uACF5\uC81C", q: "\uC9C1\uC804\uC5F0\uB3C4 \uC774 \uC0AC\uC5C5\uC7A5\uC758 \uACF5\uAE09\uAC00\uC561\uC740 \uC5BC\uB9C8\uC778\uAC00\uC694? (\uC6D0)", sub: "\uC2E4\uC81C \uAE08\uC561\uC744 \uD655\uC778\uD574 \uC785\uB825\uD558\uC138\uC694. \uC2E0\uADDC\uAC1C\uC5C5 \uB4F1 \uC2E4\uC81C 0\uC6D0\uC774\uBA74 0\uC744 \uC785\uB825\uD569\uB2C8\uB2E4.", numeric: true, money: true, allowZero: true, showIf: (a) => Number(a.creditCardSales) > 0 },
+  { id: "cardPriorUsed", section: "\uCE74\uB4DC \uACF5\uC81C", q: "\uC62C\uD574 \uC55E\uC120 \uC2E0\uACE0\uC5D0\uC11C \uC774\uBBF8 \uC0AC\uC6A9\uD55C \uCE74\uB4DC \uACF5\uC81C\uC561\uC740? (\uC6D0)", sub: "\uC5F0 1\uCC9C\uB9CC\uC6D0 \uD55C\uB3C4\uC5D0\uC11C \uCC28\uAC10\uD569\uB2C8\uB2E4. \uC55E\uC120 \uC0AC\uC6A9\uC561\uC774 \uC2E4\uC81C \uC5C6\uC73C\uBA74 0\uC744 \uC785\uB825\uD558\uC138\uC694.", numeric: true, money: true, allowZero: true, showIf: (a) => Number(a.creditCardSales) > 0 },
+  { id: "invoiceNewBusiness", section: "\uC804\uC790\uBC1C\uAE09 \uACF5\uC81C", q: "\uC62C\uD574 \uC2E4\uC81C\uB85C \uC2E0\uADDC \uAC1C\uC5C5\uD55C \uC0AC\uC5C5\uC7A5\uC778\uAC00\uC694?", opts: [["yes", "\uB124", ""], ["no", "\uC544\uB2C8\uC624", "\uC9C1\uC804\uC5F0\uB3C4 \uACFC\uC138\xB7\uBA74\uC138 \uACF5\uAE09\uAC00\uC561 \uD655\uC778"]], showIf: (a) => Number(a.eInvoiceCount) > 0 },
+  { "id": "priorInvoiceRevenue", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC9C1\uC804\uC5F0\uB3C4 \uC0AC\uC5C5\uC7A5\uBCC4 \uACF5\uAE09\uAC00\uC561 (\uBA74\uC138 \uD3EC\uD568, \uC6D0)", "sub": "\uC804\uC790\uC138\uAE08\uACC4\uC0B0\uC11C \uBC1C\uAE09\uACF5\uC81C \uD310\uC815\uC5D0 \uD544\uC694\uD569\uB2C8\uB2E4. \uC2E4\uC81C 0\uC6D0\uC774\uBA74 0\uC744 \uC785\uB825\uD558\uC138\uC694.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType === "\uC77C\uBC18\uACFC\uC138\uC790" && a.isCorporate !== "yes" && Number(a.eInvoiceCount) > 0 && a.invoiceNewBusiness !== "yes" },
+  { id: "invoiceTimely", section: "\uC804\uC790\uBC1C\uAE09 \uACF5\uC81C", q: "\uC785\uB825\uD55C \uC804\uC790\uC138\uAE08\uACC4\uC0B0\uC11C\uC758 \uBC95\uC815 \uBC1C\uAE09\xB7\uC804\uC1A1\uAE30\uD55C\uC744 \uCDA9\uC871\uD588\uB098\uC694?", opts: [["yes", "\uBAA8\uB450 \uCDA9\uC871", ""], ["no", "\uCDA9\uC871\uD558\uC9C0 \uC54A\uC74C", "\uACF5\uC81C 0"]], showIf: (a) => Number(a.eInvoiceCount) > 0 },
+  { id: "invoicePriorUsed", section: "\uC804\uC790\uBC1C\uAE09 \uACF5\uC81C", q: "\uC62C\uD574 \uC55E\uC120 \uC2E0\uACE0\uC5D0\uC11C \uC774\uBBF8 \uC0AC\uC6A9\uD55C \uC804\uC790\uBC1C\uAE09 \uACF5\uC81C\uC561\uC740? (\uC6D0)", sub: "\uC5F0 100\uB9CC\uC6D0\uC5D0\uC11C \uCC28\uAC10\uD569\uB2C8\uB2E4. \uC2E4\uC81C \uC5C6\uC73C\uBA74 0\uC744 \uC785\uB825\uD558\uC138\uC694.", numeric: true, money: true, allowZero: true, showIf: (a) => Number(a.eInvoiceCount) > 0 },
   { "id": "priorPeriodTax", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uC774\uBBF8 \uB0A9\uBD80\uD55C \uC608\uC815\uACE0\uC9C0 \uC138\uC561 (\uC6D0)", "sub": "\uC774 \uD655\uC815\uC2E0\uACE0\uC5D0\uC11C \uCC28\uAC10\uD560 \uC608\uC815\uACE0\uC9C0 \uB0A9\uBD80\uC561\uC785\uB2C8\uB2E4.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType === "\uC77C\uBC18\uACFC\uC138\uC790" },
   { "id": "previouslyPaid", "section": "\uCD94\uAC00 \uACC4\uC0B0 \uC785\uB825", "q": "\uADF8 \uBC16\uC758 \uAE30\uB0A9\uBD80\uC138\uC561 (\uC6D0)", "sub": "\uBC14\uB85C \uC55E\uC5D0\uC11C \uC785\uB825\uD55C \uC608\uC815\uACE0\uC9C0 \uC138\uC561\uC744 \uC911\uBCF5 \uD3EC\uD568\uD558\uC9C0 \uB9C8\uC138\uC694.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType === "\uC77C\uBC18\uACFC\uC138\uC790" },
   {
@@ -20551,10 +20582,37 @@ function vatExtraInputs(a) {
     if (!Number.isSafeInteger(n) || n < 0) throw new Error("\uCD94\uAC00 \uAE08\uC561\uACFC \uAC74\uC218\uB294 0 \uC774\uC0C1\uC758 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
     out[field] = n;
   }
-  if ((out.e_invoice_count || 0) > 0 && out.prior_e_invoice_revenue === void 0) throw new Error("\uC804\uC790\uC138\uAE08\uACC4\uC0B0\uC11C \uACF5\uC81C\uB97C \uC704\uD574 \uC9C1\uC804\uC5F0\uB3C4 \uACF5\uAE09\uAC00\uC561\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+  if (a.invoiceNewBusiness === "yes") delete out.prior_e_invoice_revenue;
+  if ((out.e_invoice_count || 0) > 0 && a.invoiceNewBusiness !== "yes" && out.prior_e_invoice_revenue === void 0) throw new Error("\uC804\uC790\uC138\uAE08\uACC4\uC0B0\uC11C \uACF5\uC81C\uB97C \uC704\uD574 \uC9C1\uC804\uC5F0\uB3C4 \uACF5\uAE09\uAC00\uC561\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
   const input = out.purchase_vat_paid === void 0 ? Math.round((Number(a.purchaseAmount) || 0) * 0.1) : out.purchase_vat_paid;
   if ((out.non_deductible_input || 0) > input) throw new Error("\uBD88\uACF5\uC81C \uC138\uC561\uC740 \uB9E4\uC785\uC138\uC561 \uD569\uACC4\uB97C \uB118\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
   return out;
+}
+function vatCreditInputs(a, body) {
+  const card = body.credit_card_sales || 0, count = body.e_invoice_count || 0;
+  if (!card && !count) return {};
+  if (a.creditScope !== "yes") throw new Error("\uB2E8\uC77C \uC0AC\uC5C5\uC7A5 \uC815\uC0C1\uC2E0\uACE0\uC640 \uC62C\uD574 \uC55E\uC120 \uACF5\uC81C\uC774\uB825\uC744 \uBA3C\uC800 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+  const n = (key, label) => {
+    if (a[key] == null || String(a[key]).trim() === "") throw new Error(label + "\uC744 \uC785\uB825\uD574 \uC8FC\uC138\uC694. \uC2E4\uC81C \uC5C6\uC73C\uBA74 0\uC744 \uC785\uB825\uD558\uC138\uC694.");
+    const v = Number(a[key]);
+    if (!Number.isSafeInteger(v) || v < 0) throw new Error(label + "\uC740 0 \uC774\uC0C1\uC758 \uC815\uC218\uC5EC\uC57C \uD569\uB2C8\uB2E4.");
+    return v;
+  };
+  const yesno = (key, label) => {
+    if (!["yes", "no"].includes(a[key])) throw new Error(label + "\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.");
+    return a[key] === "yes";
+  };
+  const end = String(a.creditPeriodEnd || "");
+  if (!/^2026-\d{2}-\d{2}$/.test(end) || !a.creditEvidence || !String(a.creditEvidence).trim()) throw new Error("2026\uB144 \uACFC\uC138\uAE30\uAC04 \uC885\uB8CC\uC77C\uACFC \uACF5\uC81C \uD655\uC778\uC790\uB8CC\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+  const f = { schema_version: "vat-credits/1", tax_year: 2026, period_end: end, ordinary_single_business_confirmed: true, annual_history_complete_confirmed: true, evidence_ref: String(a.creditEvidence).trim() };
+  if (a.businessType === "\uAC04\uC774\uACFC\uC138\uC790") f.full_year_simplified_confirmed = true;
+  if (card) f.card = { eligible_business_confirmed: yesno("cardEligible", "\uCE74\uB4DC\uACF5\uC81C \uB300\uC0C1 \uC5C5\uC885\xB7\uAC70\uB798"), prior_year_supply: n("cardPriorSupply", "\uC9C1\uC804 \uACF5\uAE09\uAC00\uC561"), eligible_gross_sales: card, prior_used: n("cardPriorUsed", "\uC62C\uD574 \uAE30\uC0AC\uC6A9 \uCE74\uB4DC\uACF5\uC81C") };
+  if (count) {
+    const fresh = yesno("invoiceNewBusiness", "\uC62C\uD574 \uC2E0\uADDC\uAC1C\uC5C5 \uC5EC\uBD80");
+    f.e_invoice = { new_business_this_year: fresh, timely_issue_transmission_confirmed: yesno("invoiceTimely", "\uC801\uAE30 \uBC1C\uAE09\xB7\uC804\uC1A1"), eligible_count: count, prior_used: n("invoicePriorUsed", "\uC62C\uD574 \uAE30\uC0AC\uC6A9 \uC804\uC790\uACF5\uC81C") };
+    if (!fresh) f.e_invoice.prior_year_revenue = n("priorInvoiceRevenue", "\uC9C1\uC804 \uACFC\uC138\xB7\uBA74\uC138 \uACF5\uAE09\uAC00\uC561");
+  }
+  return { period_end: end, credit_facts: f };
 }
 async function callVatEng(body) {
   const base = typeof window !== "undefined" && window.JT_ENGINE_BASE || "http://127.0.0.1:8000";
@@ -20664,7 +20722,13 @@ function JTReportVat({ setRoute, onBack }) {
   const setAns = (id, v) => setAnswers((a) => __spreadProps(__spreadValues({}, a), { [id]: v }));
   const canNext = () => {
     if (!cur) return false;
-    if (cur.freeform) return true;
+    if (cur.date) {
+      const v = String(answers[cur.id] || "");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+      const d = /* @__PURE__ */ new Date(v + "T00:00:00Z");
+      return Number.isFinite(d.getTime()) && d.toISOString().slice(0, 10) === v;
+    }
+    if (cur.freeform) return !!cur.optional || String(answers[cur.id] || "").trim().length > 0;
     if (cur.allowZero) {
       const raw = answers[cur.id];
       const v = Number(raw);
@@ -20726,6 +20790,13 @@ function JTReportVat({ setRoute, onBack }) {
         simplified_value_sector: answers.simplifiedSector || "\uB3C4\uC18C\uB9E4\uC5C5",
         simplified_input_supply: clamp(answers.simplifiedInput)
       }, extra);
+      try {
+        Object.assign(body, vatCreditInputs(answers, body));
+      } catch (e) {
+        setErr2(e.message);
+        setLoading2(false);
+        return;
+      }
       let calc = { precise: false };
       try {
         const j = await callVatEng(body);
@@ -20827,7 +20898,7 @@ function JTReportVat({ setRoute, onBack }) {
     setStep(index);
   } }, title: "\uBD80\uAC00\uAC00\uCE58\uC138 \uACC4\uC0B0\uAE30", subtitle: "\uC0AC\uC5C5\uC790 \uC720\uD615\uACFC \uB9E4\uCD9C\xB7\uB9E4\uC785\uB9CC \uB123\uC73C\uBA74 \uB0BC \uBD80\uAC00\uC138\uB97C \uBC14\uB85C \uACC4\uC0B0\uD574\uC694.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
     setAns(cur.id, o[0]);
-  } }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+  } }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.date && /* @__PURE__ */ React.createElement("input", { className: "jt-report-q__input", type: "date", value: answers[cur.id] || "", onChange: (e) => setAns(cur.id, e.target.value) }), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
     JTNumericInput,
     {
       money: !!cur.money,

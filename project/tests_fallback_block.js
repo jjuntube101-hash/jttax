@@ -58,6 +58,7 @@ function loadGapFn(file, fnName) {
   return eval(`(${s.slice(i, j)})`);
 }
 
+const inhPriorGiftDropped = eval('('+fs.readFileSync(SRC('ReportInheritance.jsx'),'utf8').match(/function inhPriorGiftDropped\(a\) {[\s\S]*?\n}/)[0]+')');
 const inhFallbackGaps = loadGapFn('ReportInheritance.jsx', 'inhFallbackGaps');
 const giftFallbackGaps = loadGapFn('ReportGift.jsx', 'giftFallbackGaps');
 const acqFallbackGaps = loadGapFn('ReportAcquisition.jsx', 'acqFallbackGaps');
@@ -92,7 +93,7 @@ const RES = { isResident: 'yes' };
 
 console.log('\n════ 상속세 ════');
 /* 평범한 입력 — 거주자 확인 + 배우자 있음(법정상속분대로) + 자녀 2명 */
-const INH_BASE = { ...RES, hasSpouse: 'yes', numChildren: '2', spouseActual: 'legal' };
+const INH_BASE = { ...RES, hasSpouse: 'yes', numChildren: '2', spouseActual: 'legal' ,priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'5000000'};
 /* ① 입력 불확정 층 — 엔진 값이 있어도(OK) 막는다 */
 eq('비거주자 → 차단', INH({ ...INH_BASE, isResident: 'no' }).length > 0, true);
 eq('거주자 미확인(미입력) → 차단', INH({ ...INH_BASE, isResident: undefined }).length > 0, true);
@@ -114,13 +115,13 @@ eq('평범한 입력 → 통과(숫자 표시)', INH(INH_BASE).length, 0);
    (다시 이 목록이 생기면 «폴백이 되살아난» 것이므로 여기서 울린다.) */
 eq('순금융재산 + 엔진 값 있음 → 통과', INH({ ...INH_BASE, netFinancialAssets: '500000000' }).length, 0);
 eq('동거주택 + 엔진 값 있음 → 통과', INH({ ...INH_BASE, hasCohabitationHouse: 'yes' }).length, 0);
-eq('사전증여(직계비속) + 엔진 값 있음 → 통과', INH({ ...INH_BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000', priorGiftRelation: '직계비속' }).length, 0);
+eq('사전증여(직계비속) + 엔진 값 있음 → 통과', INH({ ...INH_BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000',priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'5000000', priorGiftRelation: '직계비속' }).length, 0);
 eq('사전증여 «있음·한 명» + 관계 비움 → 차단', INH({ ...INH_BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000' }).length > 0, true);
 eq('사전증여 «있음·한 명» + 금액 비움 → 차단', INH({ ...INH_BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftRelation: '직계비속' }).length > 0, true);
 eq('배우자 비수령 + 엔진 값 있음 → 통과', INH({ ...INH_BASE, spouseActual: 'none' }).length, 0);
 /* ② 엔진 값이 없으면 입력과 무관하게 항상 사유 한 건 */
 const INH_REFUSED = { precise: false, engineState: 'refused', engineMessage: '배우자 실제 상속액이 필요합니다' };
-for (const ans of [INH_BASE, { ...INH_BASE, spouseActual: 'none' }, { ...INH_BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000', priorGiftRelation: '직계비속' }, { ...INH_BASE, netFinancialAssets: '500000000' }]) {
+for (const ans of [INH_BASE, { ...INH_BASE, spouseActual: 'none' }, { ...INH_BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000',priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'5000000', priorGiftRelation: '직계비속' }, { ...INH_BASE, netFinancialAssets: '500000000' }]) {
   eq('엔진 연결 실패(DOWN) → 어떤 입력이든 사유 1건: ' + JSON.stringify(ans), inhFallbackGaps(ans, DOWN).length, 1);
   eq('엔진 거부(REFUSED) → 어떤 입력이든 사유 1건: ' + JSON.stringify(ans), inhFallbackGaps(ans, INH_REFUSED).length, 1);
 }
@@ -277,7 +278,7 @@ eq('양도세 · 취득당시 조정을 «아니오»로 답하면 precise 에�
 console.log('\n════ 엔진 성공(precise)이면 «폴백 한계»로는 막지 않는다 — 정상 이용자를 막는 게 더 큰 사고다 ════');
 /* ⚠️ 여기 입력에 «비거주자»를 넣으면 안 된다 — 그건 폴백 한계가 아니라 엔진 미지원이라
    precise 에서도 막는 게 «의도»다. 위 «모른다» 블록에서 따로 고정한다. */
-[['상속세', inhFallbackGaps, { ...RES, hasSpouse: 'yes', numChildren: '2', spouseActual: 'none', priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000', priorGiftRelation: '직계비속' }],
+[['상속세', inhFallbackGaps, { ...RES, hasSpouse: 'yes', numChildren: '2', spouseActual: 'none', priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000',priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'5000000', priorGiftRelation: '직계비속' }],
  ['증여세', giftFallbackGaps, { ...RES, genSkip: 'yes', priorGiftHas: 'yes' }],
  ['취득세', acqFallbackGaps, { propertyType: '토지', reduction: 'first' }],
  ['재산세', propFallbackGaps, { propertyKind: '건축물', buildingType: '일반' }],
@@ -340,7 +341,7 @@ console.log('\n════ 과잉 차단 방지 — 평범한 입력은 8개 �
 console.log('\n════ 엔진 전 게이트: precise=true 면 ①불확정 층만 남는가 ════');
 [['상속 · 비거주자', inhFallbackGaps, { isResident: 'no' }, 1],
  ['상속 · 배우자 모름', inhFallbackGaps, { isResident: 'yes', hasSpouse: 'yes', spouseActual: 'unsure' }, 1],
- ['상속 · 사전증여(엔진이 계산 — ①층 아님)', inhFallbackGaps, { isResident: 'yes', priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000', priorGiftRelation: '직계비속' }, 0],
+ ['상속 · 사전증여(엔진이 계산 — ①층 아님)', inhFallbackGaps, { isResident: 'yes', priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000',priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'5000000', priorGiftRelation: '직계비속' }, 0],
  ['증여 · 비거주자', giftFallbackGaps, { isResident: 'no' }, 1],
  ['증여 · 세대생략(엔진이 계산 — ①층 아님)', giftFallbackGaps, { isResident: 'yes', genSkip: 'yes' }, 0],
  ['취득 · 조정 모름', acqFallbackGaps, { propertyType: '주택', acquisitionType: '증여', exclusiveArea: '84', isRegulatedArea: 'unsure' }, 1],

@@ -148,23 +148,23 @@ console.log('════ 종전 키 — 답한 값만 ════');
 // ───────────────────────── 사전증여 ─────────────────────────
 console.log('════ gift_history — 직계비속 · 배우자(to_spouse) · 그 외 친족(is_heir) ════');
 {
-  const P = { ...BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000' };
+  const P = { ...BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000',priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'5000000' };
   const child = body({ ...P, priorGiftRelation: '직계비속' }).gift_history;
-  eq(child, [{ value: 100000000, deduction_used: 50000000, is_heir: true, is_minor: false }], '직계비속 → 공제 5천만, 상속인, to_spouse 없음');
-  eq(body({ ...P, priorGiftRelation: '직계비속', priorGiftMinor: 'yes' }).gift_history[0].deduction_used, 20000000, '미성년 직계비속 → 공제 2천만');
+  eq(child, [{ value: 100000000, total_deduction_used: 50000000, gift_tax_assessed:5000000, gift_date:"2021-10-10", is_heir: true, is_minor: false }], '직계비속 → 공제 5천만, 상속인, to_spouse 없음');
+  eq(body({ ...P, priorGiftRelation: '직계비속', priorGiftMinor: 'yes',priorGiftDeduction:'20000000',priorGiftAssessed:'8000000' }).gift_history[0].total_deduction_used, 20000000, '미성년 공제도 실제 2천만원 확인값 전달');
   eq(body({ ...P, priorGiftRelation: '직계비속', priorGiftMinor: 'yes' }).gift_history[0].is_minor, true, '미성년 직계비속 → is_minor:true');
-  eq(body({ ...P, priorGiftValue: '30000000', priorGiftRelation: '직계비속' }).gift_history[0].deduction_used, 30000000, '공제는 증여액을 넘지 않는다 (min)');
+  eq(body({ ...P, priorGiftValue: '30000000', priorGiftDeduction:'30000000',priorGiftAssessed:'0',priorGiftRelation: '직계비속' }).gift_history[0].total_deduction_used, 30000000, '공제는 증여액을 넘지 않는다 (min)');
 
-  const spouse = body({ ...P, priorGiftValue: '900000000', priorGiftRelation: '배우자' }).gift_history;
-  eq(spouse, [{ value: 900000000, deduction_used: 600000000, is_heir: true, is_minor: false, to_spouse: true }], '배우자 → to_spouse:true, 공제 6억(증여세 화면과 같은 값), 상속인');
+  const spouse = body({ ...P, priorGiftValue: '900000000',priorGiftDeduction:'600000000',priorGiftAssessed:'50000000',priorGiftRelation: '배우자' }).gift_history;
+  eq(spouse, [{ value: 900000000, total_deduction_used: 600000000, gift_tax_assessed:50000000, gift_date:"2021-10-10", is_heir: true, is_minor: false, to_spouse: true }], '배우자 → to_spouse:true, 공제 6억(증여세 화면과 같은 값), 상속인');
   eq(body({ ...P, priorGiftRelation: '배우자', priorGiftMinor: 'yes' }).gift_history[0].is_minor, false, '배우자는 미성년 답이 남아 있어도 is_minor:false');
   ok(!('to_spouse' in body({ ...P, priorGiftRelation: '직계비속' }).gift_history[0]), '직계비속은 to_spouse 를 보내지 않는다');
   ok(!('to_spouse' in body({ ...P, priorGiftRelation: '기타', priorGiftHeir: 'yes' }).gift_history[0]), '그 외 친족도 to_spouse 를 보내지 않는다');
 
   const heir = body({ ...P, priorGiftRelation: '기타', priorGiftHeir: 'yes' }).gift_history;
-  eq(heir, [{ value: 100000000, deduction_used: 10000000, is_heir: true, is_minor: false }], '그 외 친족 + 상속인 → is_heir:true, 공제 1천만');
+  eq(heir, [{ value: 100000000, total_deduction_used: 50000000, gift_tax_assessed:5000000, gift_date:"2021-10-10", is_heir: true, is_minor: false }], '그 외 친족 + 상속인 → is_heir:true, 공제 1천만');
   const within = body({ ...P, priorGiftRelation: '기타', priorGiftHeir: 'no', priorGiftWithin5y: 'yes' }).gift_history;
-  eq(within, [{ value: 100000000, deduction_used: 10000000, is_heir: false, is_minor: false }], '그 외 친족 + 상속인 아님 + 5년 이내 → is_heir:false 로 보낸다');
+  eq(within, [{ value: 100000000, total_deduction_used: 50000000, gift_tax_assessed:5000000, gift_date:"2021-10-10", is_heir: false, is_minor: false }], '그 외 친족 + 상속인 아님 + 5년 이내 → is_heir:false 로 보낸다');
   const past = body({ ...P, priorGiftRelation: '기타', priorGiftHeir: 'no', priorGiftWithin5y: 'no' });
   ok(!('gift_history' in past), '그 외 친족 + 상속인 아님 + 5년 밖 → 사전증여를 보내지 않는다');
   ok(F.inhPriorGiftDropped({ ...P, priorGiftRelation: '기타', priorGiftHeir: 'no', priorGiftWithin5y: 'no' }) === true, '… 이 경우 결과 화면이 안내하도록 inhPriorGiftDropped 가 참');
@@ -196,7 +196,7 @@ console.log('════ gift_history — 직계비속 · 배우자(to_spouse) 
   ok(isNull({ ...P, priorGiftRelation: '기타', priorGiftHeir: 'no', priorGiftWithin5y: undefined }), '기타 · 상속인 아님인데 5년 여부 비움 → 요청 null');
   ok(F.inhFallbackGaps({ ...P, priorGiftRelation: '기타' }, { precise: true }).length === 1, '기타인데 상속인 여부 비움 → 게이트 사유 1건');
   ok(F.inhFallbackGaps({ ...P, priorGiftValue: '' }, { precise: true }).length === 1, '금액 비움 → 게이트 사유 1건');
-  ok(Object.keys(body({ ...P, priorGiftRelation: '배우자' }).gift_history[0]).every((k) => ['value', 'deduction_used', 'is_heir', 'is_minor', 'to_spouse'].includes(k)),
+  ok(Object.keys(body({ ...P, priorGiftRelation: '배우자' }).gift_history[0]).every((k) => ['value','total_deduction_used','gift_tax_assessed','gift_date','before_death_confirmed','is_heir','is_minor','to_spouse'].includes(k)),
     '이력 항목의 키는 엔진이 받는 사실만(세액·일자를 지어내지 않는다)');
 }
 
@@ -228,10 +228,10 @@ console.log('════ 문항 구조 ════');
   ok(bf.numeric && bf.money && bf.optional, '봉안비 문항은 선택 입력(원)');
   ok(byId('funeralExpenses').sub.includes('1,000만원') && byId('funeralExpenses').sub.includes('500만원'), '장례비 안내에 1,000만원 상한과 봉안비 별도 500만원을 적는다');
   ok(bf.sub.includes('500만원') && bf.sub.includes('1,000만원'), '봉안비 안내에도 한도를 적는다');
-  eq(visible({ priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftRelation: '기타' }, 'detail').filter((i) => i.startsWith('priorGift')), ['priorGiftHas', 'priorGiftOneRecipient', 'priorGiftValue', 'priorGiftRelation', 'priorGiftHeir'], '그 외 친족 → 상속인 여부 문항');
-  eq(visible({ priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftRelation: '기타', priorGiftHeir: 'no' }, 'detail').filter((i) => i.startsWith('priorGift')), ['priorGiftHas', 'priorGiftOneRecipient', 'priorGiftValue', 'priorGiftRelation', 'priorGiftHeir', 'priorGiftWithin5y'], '상속인 아님 → 5년 이내 문항');
+  eq(visible({ priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftRelation: '기타' }, 'detail').filter((i) => i.startsWith('priorGift')), ['priorGiftHas', 'priorGiftOneRecipient', 'priorGiftValue', 'priorGiftRelation', 'priorGiftHeir', 'priorGiftDate', 'priorGiftDeduction', 'priorGiftAssessed'], '그 외 친족 → 상속인 여부 문항');
+  eq(visible({ priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftRelation: '기타', priorGiftHeir: 'no' }, 'detail').filter((i) => i.startsWith('priorGift')), ['priorGiftHas', 'priorGiftOneRecipient', 'priorGiftValue', 'priorGiftRelation', 'priorGiftHeir', 'priorGiftWithin5y', 'priorGiftDate', 'priorGiftDeduction', 'priorGiftAssessed'], '상속인 아님 → 5년 이내 문항');
   eq(visible({ priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftRelation: '기타', priorGiftHeir: 'yes' }, 'detail').includes('priorGiftWithin5y'), false, '상속인이면 5년 문항이 안 뜬다');
-  eq(visible({ priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftRelation: '배우자' }, 'detail').filter((i) => i.startsWith('priorGift')), ['priorGiftHas', 'priorGiftOneRecipient', 'priorGiftValue', 'priorGiftRelation'], '배우자 → 추가 문항 없음');
+  eq(visible({ priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftRelation: '배우자' }, 'detail').filter((i) => i.startsWith('priorGift')), ['priorGiftHas', 'priorGiftOneRecipient', 'priorGiftValue', 'priorGiftRelation', 'priorGiftDate', 'priorGiftDeduction', 'priorGiftAssessed'], '배우자 → 추가 문항 없음');
 }
 
 // ───────────────────────── 엔진 응답 판정 ─────────────────────────
@@ -318,7 +318,7 @@ console.log('════ inhFallbackGaps — ①입력 불확정 · ②엔진 �
   ok(MANY[0].includes('사람별 공제와 증여세액공제가 달라져 화면에서 계산하지 않습니다') && MANY[0].includes('상담 문의로 사람별 금액을 적어 주십시오'), '… 안내 문구');
   eq(G({ ...BASE, priorGiftHas: 'yes' }, OK).length, 1, '한 명/여러 명 미응답 → 차단');
   eq(G({ ...BASE, priorGiftHas: 'no', priorGiftOneRecipient: 'many' }, OK).length, 0, '사전증여 없음이면 낡은 «여러 명» 답은 막지 않는다');
-  const P = { ...BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000' };
+  const P = { ...BASE, priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000',priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'5000000' };
   eq(G({ ...P, priorGiftRelation: '기타' }, OK).length, 1, '그 외 친족 + 상속인 여부 미응답 → 차단');
   eq(G({ ...P, priorGiftRelation: '기타', priorGiftHeir: 'no' }, OK).length, 1, '상속인 아님 + 5년 여부 미응답 → 차단');
   eq(G({ ...P, priorGiftRelation: '기타', priorGiftHeir: 'yes' }, OK).length, 0, '상속인 → 통과');
@@ -435,3 +435,10 @@ console.log('════ 엔진 호출 → 판정 (fetch 대역) ════')
 
   console.log(`\nOK inheritance request: ${checks} checks`);
 })().catch((e) => { console.error(e); process.exit(1); });
+
+{const p={...BASE,priorGiftHas:'yes',priorGiftOneRecipient:'one',priorGiftValue:'300000000',priorGiftRelation:'직계비속',priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'40000000'};
+eq(body(p).gift_history[0].gift_tax_assessed,40000000,'확인한 실제 산출세액 전달');
+for(const key of ['priorGiftDate','priorGiftDeduction','priorGiftAssessed']){const x={...p};delete x[key];ok(isNull(x),'미확정 사전증여 '+key+' 거부');}
+eq(body({...p,priorGiftDeduction:'0',priorGiftAssessed:'0'}).gift_history[0].total_deduction_used,0,'실제 0원 공제와 산출세액 허용');
+ok(isNull({...p,priorGiftDeduction:'400000000'}),'실제 공제가 증여액을 넘으면 거부');
+ok(isNull({...p,priorGiftDate:'2025-02-29'}),'유효하지 않은 증여일 거부');}
