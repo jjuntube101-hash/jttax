@@ -2059,8 +2059,16 @@ if (typeof window !== "undefined" && !window.jtValidCalc) {
   window.jtValidCalc = function(c, requiredKeys) {
     if (!c || typeof c !== "object" || Array.isArray(c)) return false;
     if (c["\uC624\uB958"] || c.error || c.errors || c.detail || c.success === false) return false;
-    if (Object.prototype.hasOwnProperty.call(c, "\uC0C1\uD0DC") && c["\uC0C1\uD0DC"] !== "ok") return false;
     const keys = requiredKeys && requiredKeys.length ? requiredKeys : ["\uCD1D\uC138\uBD80\uB2F4"];
+    const accepted = keys.length === 1 && keys[0] === "reduction_rate" ? ["ok", "eligible", "conditional", "ineligible"] : ["ok"];
+    const statuses = ["\uC0C1\uD0DC", "status"].filter(function(key) {
+      return Object.prototype.hasOwnProperty.call(c, key);
+    }).map(function(key) {
+      return c[key];
+    });
+    if (!statuses.every(function(value) {
+      return typeof value === "string" && accepted.includes(value) && value === statuses[0];
+    })) return false;
     return keys.every(function(k) {
       const v = c[k];
       return typeof v === "number" && isFinite(v) && v >= 0;

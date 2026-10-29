@@ -396,9 +396,16 @@ if (typeof window !== 'undefined' && !window.jtValidCalc) {
   window.jtValidCalc = function (c, requiredKeys) {
     if (!c || typeof c !== 'object' || Array.isArray(c)) return false;
     if (c['오류'] || c.error || c.errors || c.detail || c.success === false) return false;
-    // A refusal remains a refusal even when a partial response includes numeric fields.
-    if (Object.prototype.hasOwnProperty.call(c, '상태') && c['상태'] !== 'ok') return false;
+    // Both result dialects must agree. Diagnostic percentages are not tax amounts.
     const keys = (requiredKeys && requiredKeys.length) ? requiredKeys : ['총세부담'];
+    const accepted = keys.length === 1 && keys[0] === 'reduction_rate'
+      ? ['ok', 'eligible', 'conditional', 'ineligible'] : ['ok'];
+    const statuses = ['상태', 'status'].filter(function (key) {
+      return Object.prototype.hasOwnProperty.call(c, key);
+    }).map(function (key) { return c[key]; });
+    if (!statuses.every(function (value) {
+      return typeof value === 'string' && accepted.includes(value) && value === statuses[0];
+    })) return false;
     return keys.every(function (k) {
       const v = c[k];
       return typeof v === 'number' && isFinite(v) && v >= 0;         // NaN·무한대·문자·누락 거부, 0은 정상
