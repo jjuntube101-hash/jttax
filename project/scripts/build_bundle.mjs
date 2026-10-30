@@ -25,6 +25,7 @@
 
 import esbuild from 'esbuild';
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -207,7 +208,11 @@ export function buildBundle({ write = true } = {}) {
   const ordinance = '\n/* ────────── project/data/ordinance-cards.json (읽기 전용 원문 안내 · 세액 미반영) ────────── */\n'
     + 'window.JT_ORDINANCE_CARDS = ' + JSON.stringify(readOrdinanceCards({ warn: write })) + ';\n';
 
-  const bundle = header + ordinance + parts.join('\n');
+  // Fingerprint the executable payload before embedding its identity (no self-hash).
+  const payload = ordinance + parts.join('\n');
+  const payloadHash = createHash('sha256').update(payload).digest('hex');
+  const identity = { schema_version: 'frontend-build/1', build_id: 'frontend-' + payloadHash.slice(0, 20), payload_sha256: payloadHash };
+  const bundle = header + 'window.JT_FRONTEND_BUILD = Object.freeze(' + JSON.stringify(identity) + ');\n' + payload;
 
   if (write) {
     fs.mkdirSync(OUT_DIR, { recursive: true });

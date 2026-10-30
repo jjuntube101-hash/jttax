@@ -219,7 +219,7 @@ const ACQ_QS = [
     id: 'isRegulatedArea',
     section: '조정대상지역',
     q: '취득한 주택이 조정대상지역에 있나요?',
-    sub: '조정대상지역은 다주택 중과(매매·공매)·증여 중과(시가표준 3억↑)가 적용되는 지역입니다. 현재 서울 강남·서초·송파·용산만 해당(수시 변경 — 국토부 고시 확인). 확실하지 않으면 「모르겠어요」를 고르세요 — 중과 여부가 갈리는 경우에는 금액을 내지 않고 상담으로 안내합니다.',
+    sub: '조정대상지역은 다주택 중과(매매·공매)·증여 중과(시가표준 3억↑)가 적용되는 지역입니다. 실제 취득일 당시 국토교통부 지정·해제 공고로 확인하세요. 현재 지정 목록으로 과거 취득일의 상태를 판단하지 않습니다. 확실하지 않으면 「모르겠어요」를 고르세요 — 중과 여부가 갈리는 경우에는 금액을 내지 않고 상담으로 안내합니다.',
     showIf: (a) => a.propertyType === '주택' && (acqIsPaid(a) || a.acquisitionType === '증여') && !acqIsCorporate(a),
     /* ★ 260921 (Astra R1-F5): 이 답이 «없으면 계산 전 게이트가 막는» 분기에서는 quick 으로
        올린다. 종전에는 상세 단계에만 있어서, 2주택 매매·주택 증여로 빠른 계산을 누르면
@@ -1633,9 +1633,9 @@ function JTReportAcquisition({ setRoute, onBack }) {
           <h2>{cur.qFor ? cur.qFor(answers) : cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
-          {cur.date && <input className="jt-report-q__input" type="date" value={answers[cur.id]||''} onChange={e=>setAns(cur.id,e.target.value)} />}
+          {cur.date && <input aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input" type="date" value={answers[cur.id]||''} onChange={e=>setAns(cur.id,e.target.value)} />}
           {cur.freeform && !cur.date && (
-            <textarea className="jt-report-q__textarea" maxLength={cur.id === 'context' ? 200 : 120}
+            <textarea aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__textarea" maxLength={cur.id === 'context' ? 200 : 120}
               placeholder={cur.placeholder || ''} value={answers[cur.id] || ''} onChange={(e) => setAns(cur.id, e.target.value)} />
           )}
           {cur.id === 'standardValue' && (
@@ -1648,7 +1648,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
                   ? ' 지금은 조정대상지역 증여라 이 값이 있어야 중과 여부를 판정할 수 있어요 — 비워 두면 금액 대신 안내를 보여 드립니다.'
                   : ' 이 분기에서는 중과 판정에 쓰이지 않으므로 모르면 비워두셔도 됩니다.'}</p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
+                <input aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text"
                   placeholder="예: 서울 종로구 자하문로36길 16-14"
                   value={laddr} onChange={e => setLaddrSync(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter' && !lbusy) doAddrLookup(); }} />
@@ -1673,7 +1673,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
             </div>
           )}
           {cur.numeric && (
-            <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
+            <JTNumericInput money={!!cur.money} aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input" type="text" inputMode={cur.money ? "numeric" : "decimal"} placeholder={cur.placeholder}
               value={answers[cur.id]}
               onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)} />
           )}

@@ -68,8 +68,8 @@ const VAT_QS = [
   {
     id: 'purchaseAmount', section: '매입', tier: 'core',
     q: '사업 관련 매입(공급가액)은 얼마인가요? (원)',
-    sub: '세금계산서·사업용 신용카드로 산 사업 경비(부가세 별도). 이 금액의 10%를 매입세액으로 돌려받아 낼 세금이 줄어요. 인건비·면세 농수산물처럼 부가세 없는 매입은 빼고 넣으세요. 모르면 0.',
-    numeric: true, money: true, optional: true,
+    sub: '세금계산서·사업용 신용카드로 산 사업 경비(부가세 별도). 이 금액의 10%를 매입세액으로 돌려받아 낼 세금이 줄어요. 인건비·면세 농수산물처럼 부가세 없는 매입은 빼고 넣으세요. 실제 매입이 없으면 0을 입력하고, 금액을 확인하지 못했다면 자료를 먼저 확인해 주세요.',
+    numeric: true, money: true, allowZero: true,
     showIf: (a) => a.businessType === '일반과세자',
     placeholder: '예: 60,000,000 (없으면 0)',
   },
@@ -546,10 +546,10 @@ function JTReportVat({ setRoute, onBack }) {
             </div>
           )}
 
-          {cur.date && <input className="jt-report-q__input" type="date" value={answers[cur.id] || ''} onChange={e=>setAns(cur.id,e.target.value)} />}
+          {cur.date && <input aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input" type="date" value={answers[cur.id] || ''} onChange={e=>setAns(cur.id,e.target.value)} />}
           {cur.numeric && (
             <div>
-              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
+              <JTNumericInput money={!!cur.money} aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {vatKorean(Number(answers[cur.id]))}</div>
@@ -558,7 +558,7 @@ function JTReportVat({ setRoute, onBack }) {
           )}
 
           {cur.freeform && (
-            <textarea className="jt-report-q__input" rows={3} placeholder={cur.placeholder || ''}
+            <textarea aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input" rows={3} placeholder={cur.placeholder || ''}
               value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
           )}
 

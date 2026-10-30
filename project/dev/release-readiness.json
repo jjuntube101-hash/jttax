@@ -25919,5 +25919,1326 @@
     "no_new_numeric_golden": true,
     "law_evidence_sha256": "8d999b648a92d1603b7d5b1f38112a3732eecf744f5f32094735a8ac570a8aa2",
     "official_question_sent": false
+  },
+  "release_candidate": {
+    "schema_version": "release-candidate/1",
+    "id": "rc-87a9f10dcc763ba439e9",
+    "as_of_kst": "2026-10-30",
+    "contract": {
+      "schema_version": "calculation-contracts/1",
+      "version": {
+        "engine": "jt-tax-engine/7.0.0",
+        "calculation_revision": "rules-42e26039ef9f8ef6e025",
+        "ruleset_sha256": "42e26039ef9f8ef6e0250d69883767d060a8c488a045b79c63a08a10430240fb",
+        "build_id": "build-907f22c8a12703578061",
+        "build_sha256": "907f22c8a12703578061c2312af6ad9141b86df614df2e7bb35f998ac4c589ee",
+        "tax_rates_version": "7.0.0",
+        "tax_rates_effective_date": "2026-05-02"
+      },
+      "review_schema_version": "calculation-review/1",
+      "taxes": [
+        {
+          "tax": "transfer",
+          "label": "양도소득세",
+          "route": "/v1/calc/transfer",
+          "dev_mcp_tool": "transfer_tax_dev",
+          "request_schema_sha256": "904c30766bb4636d9629c9648d7d62075057caffd8618028e93cd4b3323bb1ca",
+          "request_fields": [
+            "rental_facts",
+            "cost_facts",
+            "whole_house_value",
+            "transfer_price",
+            "acquisition_price",
+            "property_type",
+            "address",
+            "acquisition_date",
+            "transfer_date",
+            "housing_count",
+            "is_regulated_area",
+            "regulated_at_acquisition",
+            "move_in_date",
+            "move_out_date",
+            "is_sangsaeng_rental",
+            "sangsaeng_no_residence",
+            "exclusive_area",
+            "expenses_total",
+            "expenses",
+            "use_converted_price",
+            "converted_context",
+            "converted_expense_method",
+            "is_inherited",
+            "is_gifted",
+            "is_non_business_land",
+            "is_preliminary_return",
+            "acquired_from_member",
+            "is_original_member",
+            "management_approval_date",
+            "rights_value",
+            "former_house_exemption_qualified",
+            "no_other_house_or_presale_at_transfer",
+            "one_house_acquisition_date",
+            "no_presale_right_at_transfer",
+            "held_right_type",
+            "right_acquisition_date",
+            "decedent_acquisition_date",
+            "is_deferred",
+            "donor_acquisition_price",
+            "donor_acquisition_date",
+            "gift_date",
+            "donor_gift_tax_paid",
+            "carryover_gift_tax_context",
+            "donor_relationship",
+            "inherited_house_count",
+            "exemption_special_type",
+            "new_house_acquisition_date",
+            "temp2_both_regulated",
+            "new_house_contract_date",
+            "new_house_before_designation",
+            "departure_date",
+            "overseas_departure_confirmed",
+            "departure_housing_count",
+            "residence_carryover",
+            "temp2_one_year_waived",
+            "inheritance_start_date",
+            "project_approval_date",
+            "completion_date",
+            "standard_price_at_acq",
+            "standard_price_at_transfer",
+            "depreciation_recaptured",
+            "residential_conversion_date",
+            "is_unregistered",
+            "is_designated_area",
+            "reduction_type",
+            "reduction_rate",
+            "reduction_limit",
+            "reduction_context",
+            "preserve_ordinary_loss",
+            "is_expropriated",
+            "business_approval_notice_date",
+            "marriage_date",
+            "merge_date",
+            "parent_age",
+            "simulate_penalty",
+            "penalty_type",
+            "overdue_days",
+            "late_payment_context",
+            "filing_penalty_context",
+            "historical_ordinary_sale_confirmed"
+          ],
+          "example": {
+            "transfer_price": 300000000,
+            "acquisition_price": 100000000,
+            "property_type": "토지",
+            "acquisition_date": "2019-01-01",
+            "transfer_date": "2026-10-20"
+          },
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        },
+        {
+          "tax": "acquisition",
+          "label": "취득세",
+          "route": "/v1/calc/acquisition",
+          "dev_mcp_tool": "acquisition_tax_dev",
+          "request_schema_sha256": "f9c511c6f098a5d6c4bdb9854ef075e45080ebc2dd8387cccb40e34eb482037e",
+          "request_fields": [
+            "special_facts",
+            "heavy_exclusion_type",
+            "heavy_exclusion_facts",
+            "historical_facts",
+            "share_facts",
+            "original_cost_facts",
+            "area_class",
+            "nonprofit_facts",
+            "composition_facts",
+            "property_value",
+            "acquisition_type",
+            "property_type",
+            "is_housing",
+            "exclusive_area",
+            "housing_count",
+            "is_regulated_area",
+            "is_corporate",
+            "is_farmland",
+            "standard_value",
+            "whole_property_standard_value",
+            "gift_tax_base_choice",
+            "original_tax_base_context",
+            "common_facts",
+            "consultation_context",
+            "reduction_type",
+            "fixed_exemption_facts",
+            "rural_housing_facts",
+            "is_first_home_buyer",
+            "is_newlywed",
+            "is_childbirth",
+            "is_small_housing",
+            "acquisition_date",
+            "gift_regulated_over_3b",
+            "gift_one_house_exception",
+            "is_luxury",
+            "is_temporary_two_house",
+            "is_capital_area",
+            "inheritance_one_house",
+            "whole_house_acquisition_value",
+            "is_population_decline_area",
+            "redev_land_excess_value",
+            "prior_land_area",
+            "acquired_land_area",
+            "redev_land_unit_price",
+            "redev_building_value"
+          ],
+          "example": {
+            "property_value": 150000000,
+            "exclusive_area": 84,
+            "housing_count": 1,
+            "is_regulated_area": false,
+            "acquisition_date": "2026-10-20"
+          },
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        },
+        {
+          "tax": "gift",
+          "label": "증여세",
+          "route": "/v1/calc/gift",
+          "dev_mcp_tool": "gift_tax_dev",
+          "request_schema_sha256": "69aceeab4bd1b4c42430dcd4bcb04c68599173b2e2e691b0938e6c30c551115c",
+          "request_fields": [
+            "gift_event_facts",
+            "tax_year",
+            "value",
+            "relationship",
+            "donee_age",
+            "is_minor",
+            "is_generation_skip",
+            "donor_child_deceased",
+            "debt_assumed",
+            "is_family_debt",
+            "prior_gift_values",
+            "prior_gift_taxes",
+            "prior_gift_deductions",
+            "prior_deduction_used",
+            "prior_surcharge_paid",
+            "gift_history",
+            "marriage_deduction",
+            "childbirth_deduction",
+            "prior_marriage_child_deduction_used",
+            "non_taxable",
+            "appraisal_fee",
+            "foreign_tax_paid",
+            "foreign_tax_base"
+          ],
+          "example": {
+            "value": 300000000
+          },
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        },
+        {
+          "tax": "inheritance",
+          "label": "상속세",
+          "route": "/v1/calc/inheritance",
+          "dev_mcp_tool": "inheritance_tax_dev",
+          "request_schema_sha256": "4c974fe8e95200c68de5cda9a457f737da9f48697ee0b21cff421319bba3e85c",
+          "request_fields": [
+            "prior_gift_dates",
+            "prior_gift_deductions",
+            "prior_gift_before_death",
+            "insurance_facts",
+            "special_deduction_facts",
+            "estate_value",
+            "has_spouse",
+            "num_children",
+            "spouse_inheritance",
+            "spouse_no_inheritance",
+            "spouse_legal_share",
+            "heirs",
+            "insurance_amount",
+            "retirement_pay",
+            "funeral_expenses",
+            "burial_facility_expenses",
+            "debts",
+            "public_charges",
+            "net_financial_assets",
+            "has_cohabitation_house",
+            "cohabitation_house_value",
+            "prior_gift_values",
+            "prior_gift_taxes",
+            "prior_gift_is_heir",
+            "prior_gift_recipients",
+            "gift_history",
+            "death_date",
+            "appraisal_fee",
+            "foreign_tax_paid",
+            "foreign_tax_base",
+            "short_term_re_inheritance",
+            "prior_inheritance_tax",
+            "years_since_prior",
+            "prior_inheritance_date",
+            "re_inherited_value",
+            "prior_estate_value",
+            "bequest_to_non_heirs",
+            "renounced_to_next_rank"
+          ],
+          "example": {
+            "estate_value": 1000000000
+          },
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        },
+        {
+          "tax": "property",
+          "label": "재산세",
+          "route": "/v1/calc/property",
+          "dev_mcp_tool": "property_tax_dev",
+          "request_schema_sha256": "19146dc85b5b5f6c574c5fbf9e678de37c9ba15aad116926df9b00a7aa67f2a1",
+          "request_fields": [
+            "cap_facts",
+            "standard_value",
+            "category",
+            "is_one_house",
+            "prior_year_tax",
+            "prior_year_urban_tax",
+            "is_urban_area",
+            "tax_year",
+            "exclusive_area",
+            "land_divided_type",
+            "building_type",
+            "prior_year_standard_value",
+            "no_prior_year_standard_value",
+            "housing_taxed_before_2024",
+            "owner_is_corporation"
+          ],
+          "example": {
+            "standard_value": 300000000
+          },
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        },
+        {
+          "tax": "comprehensive",
+          "label": "종합부동산세",
+          "route": "/v1/calc/comprehensive",
+          "dev_mcp_tool": "comprehensive_tax_dev",
+          "request_schema_sha256": "cc73199b4c7e151b5db405f756df2612342ce47916c2646e95ffcba14a1921ff",
+          "request_fields": [
+            "housing_credit_facts",
+            "housing_values",
+            "land_general_values",
+            "land_separate_values",
+            "land_general_property_tax_paid",
+            "land_general_property_tax_base",
+            "land_separate_property_tax_paid",
+            "land_separate_property_tax_base",
+            "prior_year_land_general_total_tax",
+            "prior_year_land_separate_total_tax",
+            "property_tax_one_house",
+            "housing_count",
+            "is_one_house",
+            "one_house_exceptions",
+            "owner_age",
+            "holding_years",
+            "is_corporate",
+            "corporate_type",
+            "property_tax_paid",
+            "prior_year_total_tax",
+            "tax_year",
+            "ownership_share"
+          ],
+          "example": {},
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        },
+        {
+          "tax": "corporate",
+          "label": "법인세",
+          "route": "/v1/calc/corporate",
+          "dev_mcp_tool": "corporate_tax_dev",
+          "request_schema_sha256": "f5961bf5a85a9d7636a37d08335fa63fc2a229908d6ce0330fdb4049b20711d7",
+          "request_fields": [
+            "foreign_tax_paid",
+            "foreign_source_income",
+            "foreign_tax_simple_case_confirmed",
+            "tax_year",
+            "fiscal_year_start",
+            "fiscal_year_end",
+            "is_small_passive_corporation",
+            "net_income",
+            "corporate_type",
+            "carried_forward_loss",
+            "income_deduction"
+          ],
+          "example": {
+            "net_income": 300000000
+          },
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        },
+        {
+          "tax": "income",
+          "label": "종합소득세",
+          "route": "/v1/calc/income",
+          "dev_mcp_tool": "income_tax_dev",
+          "request_schema_sha256": "ce424d5beed648ee5b985136e6a74feb95ace3d4817fb27ac28026ce84d0c9ba",
+          "request_fields": [
+            "business_revenue",
+            "business_expenses",
+            "salary_income",
+            "is_salary_earner",
+            "interest_income",
+            "dividend_income",
+            "is_dividend_grossup",
+            "dividend_paid_year",
+            "grossup_eligible_dividend",
+            "pension_income",
+            "spouse",
+            "dependents",
+            "elderly_dependents",
+            "disabled_dependents",
+            "children_count",
+            "national_pension",
+            "health_insurance",
+            "pension_savings",
+            "irp_contribution",
+            "tax_year"
+          ],
+          "example": {},
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        },
+        {
+          "tax": "vat",
+          "label": "부가가치세",
+          "route": "/v1/calc/vat",
+          "dev_mcp_tool": "vat_tax_dev",
+          "request_schema_sha256": "ddacde7b95a6f7c0f79c979af4f57ab5232df98ed8392cbc01436eb1a2b4de65",
+          "request_fields": [
+            "tax_year",
+            "business_type",
+            "period_type",
+            "period_end",
+            "is_corporate",
+            "sector",
+            "sales_amount",
+            "purchase_amount",
+            "purchase_vat_paid",
+            "non_deductible_input",
+            "input_facts",
+            "export_sales",
+            "exempt_sales",
+            "credit_facts",
+            "credit_card_sales",
+            "e_invoice_count",
+            "prior_e_invoice_revenue",
+            "deemed_purchase_facts",
+            "deemed_purchase_amount",
+            "deemed_purchase_sector",
+            "sales_supply_price",
+            "simplified_value_sector",
+            "simplified_input_supply",
+            "prior_period_tax",
+            "previously_paid",
+            "is_late_filing",
+            "is_fraudulent",
+            "days_overdue"
+          ],
+          "example": {
+            "sales_amount": 100000000,
+            "purchase_amount": 20000000
+          },
+          "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+        }
+      ],
+      "authority_graph": [
+        {
+          "id": "acq-ordinary-full-exemption",
+          "tax": "acquisition",
+          "label": "일반 생애최초 전액면제와 무합산 사실",
+          "facts": [
+            "fixed_exemption_facts"
+          ],
+          "authorities": [
+            {
+              "law": "지방세특례제한법",
+              "article": "제36조의3",
+              "url": "https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%ED%8A%B9%EB%A1%80%EC%A0%9C%ED%95%9C%EB%B2%95/%EC%A0%9C36%EC%A1%B0%EC%9D%983"
+            },
+            {
+              "law": "지방세특례제한법",
+              "article": "제177조의2",
+              "url": "https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%ED%8A%B9%EB%A1%80%EC%A0%9C%ED%95%9C%EB%B2%95/%EC%A0%9C177%EC%A1%B0%EC%9D%982"
+            },
+            {
+              "law": "지방세법",
+              "article": "제151조",
+              "url": "https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%EB%B2%95/%EC%A0%9C151%EC%A1%B0"
+            }
+          ],
+          "scope": "2026 개인 일반 유상주택·정확한 절사전 전액면제·명시 무합산 및 근거; 감면 적격은 별도 확인",
+          "boundaries": [
+            "부분 정액감면 교육세",
+            "합산사실 있는 최소납부",
+            "농특세 미확정 결합"
+          ],
+          "effective_date_review": "177의2 시행일 도구 미확정은 원문 부칙 검토와 별도 표시; 전체 법령 시행일을 조문 적용일로 대체하지 않음",
+          "synthetic_tests": [
+            "test_acquisition_review_exact_branch",
+            "test_acquisition_review_does_not_change_legacy_fields"
+          ]
+        },
+        {
+          "id": "vat-deemed-normal-half",
+          "tax": "vat",
+          "label": "의제매입 정상 반기 사실 확인",
+          "facts": [
+            "deemed_purchase_facts"
+          ],
+          "authorities": [
+            {
+              "law": "부가가치세법",
+              "article": "제42조",
+              "url": "https://www.law.go.kr/법령/%EB%B6%80%EA%B0%80%EA%B0%80%EC%B9%98%EC%84%B8%EB%B2%95/%EC%A0%9C42%EC%A1%B0"
+            },
+            {
+              "law": "부가가치세법시행령",
+              "article": "제84조",
+              "url": "https://www.law.go.kr/법령/%EB%B6%80%EA%B0%80%EA%B0%80%EC%B9%98%EC%84%B8%EB%B2%95%EC%8B%9C%ED%96%89%EB%A0%B9/%EC%A0%9C84%EC%A1%B0"
+            }
+          ],
+          "scope": "정상 단일사업장 반기·실제 예정조기신고 없음·기공제 실제0·관련과표/적격매입·정수원 완결; 법인제조 중소기업 여부 명시",
+          "boundaries": [
+            "분수 끝수",
+            "예정·조기 실제 신고 정산",
+            "음식점 겸업2억원 충돌",
+            "과세면세 겸영",
+            "제조 연간특례"
+          ],
+          "synthetic_tests": [
+            "test_vat_deemed_actual_ui_contract",
+            "test_vat_deemed_guards"
+          ]
+        }
+      ],
+      "authority_source_bundle_sha256": "883838e01476e6b4493bf2ede553b6c80622f7978c4805339dd6dd0554500a38",
+      "authority_scope": "두 한정 규칙의 검증 근거 연결; 전 세목·모든 예규판례 적용을 인증하지 않음",
+      "operational_scope": "현재 개발 HTTP/개발 MCP 계약. 설치판 교체·운영배포 승인 아님"
+    },
+    "frontend": {
+      "schema_version": "frontend-build/1",
+      "build_id": "frontend-99d937b5c82d0d55bb25",
+      "payload_sha256": "99d937b5c82d0d55bb25434a95a4726d20c2a7a040512868cb16263c26eb5755"
+    },
+    "backend_source_base_commit": "99a0bcacea9ccf8f417e69f369b5944012ebbfee",
+    "frontend_source_base_commit": "abcdbf5478195634d876e5717165373db8e30762",
+    "commit_scope": "base commits identify review branch ancestry; candidate identity binds actual code payload; final commit receipts are separate",
+    "live_installed_snapshot_promoted": false,
+    "public_web_deployment_verified": false,
+    "historical181_regraded": false,
+    "workflow20_scope": "separate actual input UI validation; final run evidence recorded after execution",
+    "supersedes_candidate_id": "rc-5119008878ed1a7d5a64"
+  },
+  "hold_reason_classification": {
+    "schema_version": "hold-reasons/1",
+    "total": 92,
+    "category_labels": {
+      "facts": "추가 사실·검토 확인",
+      "contradiction": "입력 모순·값 범위·적격 불충족",
+      "implementation": "입력 계약·지원 기능 보완",
+      "legal": "법령 해석·끝수 미확정",
+      "excluded": "내부 전용·중단 범위",
+      "period": "지원 연도·시점 밖"
+    },
+    "category_counts": {
+      "facts": 53,
+      "contradiction": 13,
+      "implementation": 11,
+      "legal": 7,
+      "excluded": 4,
+      "period": 4
+    },
+    "candidate_version": {
+      "engine": "jt-tax-engine/7.0.0",
+      "calculation_revision": "rules-42e26039ef9f8ef6e025",
+      "ruleset_sha256": "42e26039ef9f8ef6e0250d69883767d060a8c488a045b79c63a08a10430240fb",
+      "build_id": "build-907f22c8a12703578061",
+      "build_sha256": "907f22c8a12703578061c2312af6ad9141b86df614df2e7bb35f998ac4c589ee",
+      "tax_rates_version": "7.0.0",
+      "tax_rates_effective_date": "2026-05-02"
+    },
+    "classification_scope": "기존92 보류의 원인 분류; 등급·금액·입력·기대 기준 변경 없음. 분포를 미구현 기능 수나 확정 버그 수로 해석하지 않음.",
+    "source_sha256": "c4429a5806902ff3960f4eefeb7d93dd24f4092c1debf2277031d795bfeb36a1",
+    "cases": [
+      {
+        "id": "PRACTICAL-ACQUISITION-BASIC",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "TRANSFER-MISSING-HOUSE-FACTS",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "1세대 1주택 비과세의 거주요건(취득 당시 조정대상지역이면 2년 거주) 적용 여부을 확정할 수 없다 — 필요: regulated_at_acquisition(취득 당시 조정대상지역 여부) [소득세법 시행령 §154①] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "ACQUISITION-MISSING-MAJORITY-HISTORY",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "scope_confirmed을 확정할 수 없다 — 필요: 기준일의 사실·금액·출처 확인 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "GIFT-MISSING-RELATIONSHIP",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "증여재산공제(배우자 6억원·직계존속 5천만원 등)을 확정할 수 없다 — 필요: relationship(수증자 기준 증여자와의 관계) [상증법 §53] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "INHERITANCE-MISSING-HEIRS",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "일괄공제·배우자상속공제를 가르는 상속인 구성(배우자 유무·자녀 수)을 확정할 수 없다 — 필요: has_spouse 와 num_children 또는 heirs(상속인 목록) [상증법 §19·§20·§21] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "PROPERTY-MISSING-PRIOR-VALUE",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "주택 과세표준상한액(지방세법 §110③) — 직전 연도 시가표준액(공시가격)에 따라 과세표준이 갈린다(직전 연도 시가표준액 x 당해 공정시장가액비율 + 당해 과세표준 x 5%를 넘지 못한다)을 확정할 수 없다 — 필요: prior_year_standard_value(직전 연도 공시가격) 또는 no_prior_year_standard_value=True(직전 연도 공시가격이 없는 주택 — 당해 공시가격으로 본다) [지SS110(3), 시행령SS109의2] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "COMPREHENSIVE-FUTURE-YEAR",
+        "category": "period",
+        "category_label": "지원 연도·시점 밖",
+        "secondary_categories": [],
+        "reason": "tax_year: 지원하지 않는 값 2027. 허용: 2022 / 2023 / 2024 / 2025 / 2026 [해당 연도의 법령 적용 범위 미지원; 현행 규정 대체 금지] — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "검증된 연도·시점만 선택; 다른 시점의 현행 규정 대체 금지"
+      },
+      {
+        "id": "CORPORATE-LEGACY-FOREIGN-TOTAL",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "간이 계산에서는 합계 금액만으로 공제·감면을 확정할 수 없습니다. 국가별 한도·원장·적격 사실을 확인해 주세요. 2026년 일반 범위는 공제·이월 원장 계산을 이용하고, 그 밖의 조건은 별도 검토가 필요합니다.",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "VAT-FUTURE-YEAR",
+        "category": "period",
+        "category_label": "지원 연도·시점 밖",
+        "secondary_categories": [],
+        "reason": "tax_year: 지원하지 않는 값 2027. 허용: 2026 [해당 연도의 법령 적용 범위 미지원; 현행 규정 대체 금지] — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "검증된 연도·시점만 선택; 다른 시점의 현행 규정 대체 금지"
+      },
+      {
+        "id": "INCOME-LEGACY-FOREIGN-TOTAL",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "[{\"type\": \"extra_forbidden\", \"loc\": [\"body\", \"foreign_tax_paid\"], \"msg\": \"Extra inputs are not permitted\", \"input\": 1000000}]",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "STOCK-MISSING-TAX-YEAR",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "{\"status\": \"needs_input\", \"issues\": [{\"code\": \"MISSING_FACT\", \"path\": \"tax_year\", \"message\": \"Explicit fact is unknown; null is not zero/False/empty list\"}]}",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "STOCK-UNSUPPORTED-YEAR",
+        "category": "period",
+        "category_label": "지원 연도·시점 밖",
+        "secondary_categories": [],
+        "reason": "{\"status\": \"unsupported\", \"issues\": [{\"code\": \"SCOPE_UNSUPPORTED\", \"path\": \"tax_year\", \"message\": \"Only bounded 2024/2025 history and existing 2026 policy are reviewed\"}]}",
+        "next_action": "검증된 연도·시점만 선택; 다른 시점의 현행 규정 대체 금지"
+      },
+      {
+        "id": "UNLISTED-MISSING-REVIEW",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "시가 후보·최대주주 적격성 검토 자료 market_facts; 보충적 평가는 공개 미지원을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "UNLISTED-ZERO-SUPPLEMENT-EXCLUDED",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "적격 시가가 없습니다. 보충적 평가는 순자산 특례·자산평가 기준·증자 조정 검증 전 공개 지원하지 않습니다.",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "UNLISTED-SUPPLEMENT-EXCLUDED",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "적격 시가가 없습니다. 보충적 평가는 순자산 특례·자산평가 기준·증자 조정 검증 전 공개 지원하지 않습니다.",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "CREDIT-EMP-AUTO-ACTUAL-YEAR-AMBIGUOUS",
+        "category": "legal",
+        "category_label": "법령 해석·끝수 미확정",
+        "secondary_categories": [],
+        "reason": "산정 기준일이1주년 전날인 실제1년 충족 판정을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "기준일 원문·해석·끝수 처리 근거 확보 전 금액과 공유 차단"
+      },
+      {
+        "id": "ACQUISITION-REENTRY-REVIEW-MISSING",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "현행11조·공식2016적용요령의 사실군 적용 검토 근거을 확정할 수 없다 — 필요: 기준일의 사실·금액·출처 확인 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "UNLISTED-OBJECTIVELY-UNFAIR-MARKET",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "적격 시가가 없습니다. 보충적 평가는 순자산 특례·자산평가 기준·증자 조정 검증 전 공개 지원하지 않습니다.",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "CGT02-unconfirmed",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "일반 단일양도·지분 귀속·세무조정 원가 확인을 확정할 수 없다 — 필요: ordinary_sale_confirmed=True — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CGT02-fractional",
+        "category": "legal",
+        "category_label": "법령 해석·끝수 미확정",
+        "secondary_categories": [],
+        "reason": "지분 귀속액의 원 미만: 지원하지 않는 값 'expenses_total'. 허용: 정수 원으로 정확한 귀속 금액; 불분명한 끝수는 임의 절사하지 않음 — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "기준일 원문·해석·끝수 처리 근거 확보 전 금액과 공유 차단"
+      },
+      {
+        "id": "CGT06-missing-review",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "양수 증여세 이월과세 구조화 사실을 확정할 수 없다 — 필요: carryover_gift_tax_context(같은 과세건·현재/과거 구성·수동 검토) — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CGT06-expense-conflict",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "증여세 상당액 확인 범위: 지원하지 않는 값 'same_expenses_apply_to_both_branches=False'. 허용: 각 검토 사실 명시 True — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "CGT04-missing-annual",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "all_annual_subject_transfers_included 확인 필요",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CGT04-nonbusiness",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "business_land 지원 범위 밖",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "CNS02-missing-relation",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "증여재산공제(배우자 6억원·직계존속 5천만원 등)와 채무 인정 기준을 확정할 수 없다 — 필요: relationship(수증자 기준 증여자와의 관계) [상증SS53·SS47(3)] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CNS02-repay-unknown",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "취득 당시 자력 증명 여부가 미확인입니다. 본인 소득·재산과 증여 목적물 제외 심사가 필요합니다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "GFT02-conflicting-history",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: prior_deduction_used(0)가 사전증여별 증여재산공제 합계(50,000,000)보다 작다 — prior_deduction_used 는 10년 내 같은 공제 그룹에서 공제받은 금액의 «합계»다 [상증법 §53]",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "INH02-missing-deduction",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "사전증여 당시 실제 공제액을 확정할 수 없다 — 필요: total_deduction_used 또는 당시 일반공제와 혼인·출산공제(실제 0 포함) [상증법 §24·§28] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CMP02-contradict-count",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "1세대 1주택자 여부(주택 2건 이상)을 확정할 수 없다 — 필요: one_house_exceptions(부속토지/일시적2주택_신규/상속주택/지방저가주택 — 종부SS8(4) 의제 주택 표시) 또는 is_one_house=False(일반 다주택) [종부SS8(1)1호·SS8(4), 령SS2의3(1)] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "실제 다주택 여부와 예외주택 사실을 확인하여 해당 입력을 정정; 예외를 임의로 가정하지 않음",
+        "subreason": "one_house_flag_or_exception_facts_review"
+      },
+      {
+        "id": "CGT03-missing-attribution",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "[{\"type\": \"bool_type\", \"loc\": [\"body\", \"consultation_context\", \"facts\", \"known_lot_attribution\"], \"msg\": \"Input should be a valid boolean\", \"input\": null}]",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CGT03-whole-price-conflict",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: 필지별 양도가액 합계와 전체 양도가액이 다릅니다",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "GFT03-overused",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: 이미 공제받은 혼인·출산공제(prior_marriage_child_deduction_used 150,000,000)가 한도 100,000,000원을 넘는다 [상증법 §53의2③]",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "ACQ05-first-home",
+        "category": "legal",
+        "category_label": "법령 해석·끝수 미확정",
+        "secondary_categories": [],
+        "reason": "부분 정액감면의 지방교육세 산식은 추가 법령 확인이 필요합니다. 대표액으로 신고·공유하지 마세요.",
+        "next_action": "기준일 원문·해석·끝수 처리 근거 확보 전 금액과 공유 차단"
+      },
+      {
+        "id": "ACQ05-contradict-first",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: reduction_type='생애최초' 인데 is_first_home_buyer=False 다 — 본인과 배우자가 주택을 소유한 사실이 없는 경우에만 감면 대상이다 [지특법 §36의3①]",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "CGT08-partial",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "겸용 정상범위:whole_ownership_and_disposal=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "VAT02-missing-classification",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "과세·면세 겸영 매입세액 귀속: input_facts(분류 또는 검토한 불공제 총액)을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "VAT02-unreviewed-fraction",
+        "category": "legal",
+        "category_label": "법령 해석·끝수 미확정",
+        "secondary_categories": [],
+        "reason": "공통매입 안분 원 미만: 지원하지 않는 값 '10000000/3'. 허용: 원 미만 끝수 별도 검증이 필요 없는 정수 결과 — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "기준일 원문·해석·끝수 처리 근거 확보 전 금액과 공유 차단"
+      },
+      {
+        "id": "INC02-missing-household",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "household_complete=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "PRP02-missing-type",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "건축물 세부유형(지방세법 §111①2호 — 일반 0.25% / 주거지역 등 공장용 0.5% / 골프장·고급오락장용 4%)을 확정할 수 없다 — 필요: building_type(일반 / 공장_주거지역 / 골프장_고급오락장) [지SS111(1)2호] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "PRP03-unknown-prior-value",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "주택 과세표준상한액(지방세법 §110③) — 직전 연도 시가표준액(공시가격)에 따라 과세표준이 갈린다(직전 연도 시가표준액 x 당해 공정시장가액비율 + 당해 과세표준 x 5%를 넘지 못한다)을 확정할 수 없다 — 필요: prior_year_standard_value(직전 연도 공시가격) 또는 no_prior_year_standard_value=True(직전 연도 공시가격이 없는 주택 — 당해 공시가격으로 본다) [지SS110(3), 시행령SS109의2] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "INH04-missing-foreign-base",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "외국납부세액공제의 한도(상속세산출세액 × 외국 법령에 따른 과세표준 / 상속세 과세표준)을 확정할 수 없다 — 필요: foreign_tax_base(외국 법령에 따른 상속세 과세표준) [상증법 §29, 시행령 §21①] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "ACQ02-housing-share",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "ACQ02-contradict-share",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: 취득 지분과 전체·취득분 시가표준액 비율이 맞지 않습니다",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "ACQ03-missing-overlap",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "도급액에 포함됐는지 여부을 확정할 수 없다 — 필요: 명시 사실 및 증빙 확인 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CGT09-missing-qualification",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "원조합원 정상범위:basic_rate_eligibility_reviewed=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CGT07-missing-transition",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "임대 법정유형·경과조치:pre2023_97_3_transition_reviewed=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "VAT03-deemed",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "deemed_purchase_facts을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "VAT03-unreviewed-card",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "credit_facts을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "VAT03-unreviewed-invoice",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "credit_facts을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CGT11-missing-positive-taxvalue",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "취득 당시 시가표준액: 0보다 크고 10^15 이하인 원 단위 정수여야 합니다.",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "CNS03-missing-value",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "AI 상담 증여·취득 공통 사실을 확정할 수 없다 — 필요: property_value — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "ACQ09-missing-cohort",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "aggregation_complete_confirmed을 확정할 수 없다 — 필요: 기준일의 사실·금액·출처 확인 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "COM01-unverified-due",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "{\"status\": \"needs_input\", \"reason\": \"각 회차 법정 납부기한 확인 및 고지 근거가 필요합니다\"}",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "INC04-outside-year",
+        "category": "period",
+        "category_label": "지원 연도·시점 밖",
+        "secondary_categories": [],
+        "reason": "매매일: 지원하지 않는 값 '2027-01-01'. 허용: 2026-01-01~10-28 — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "검증된 연도·시점만 선택; 다른 시점의 현행 규정 대체 금지"
+      },
+      {
+        "id": "ACQ08-unreviewed-exception",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "exceptions_reviewed_confirmed을 확정할 수 없다 — 필요: 기준일의 사실·금액·출처 확인 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "GFT04-unsupported-raw-assets",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "[{\"type\": \"extra_forbidden\", \"loc\": [\"body\", \"assets\"], \"msg\": \"Extra inputs are not permitted\", \"input\": [{\"type\": \"현금\", \"value\": 200000000}]}]",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "INH03-missing-date",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "단기재상속 기간을 확정할 수 없다 — 필요: prior_inheritance_date 또는 실제 법정구간을 확인한 years_since_prior(1 이상 정수) [상증법 §30] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CNS01-unconfirmed-alternatives",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "consultation_context.conditional_same_day_alternatives_confirmed: 지원하지 않는 값 False. 허용: True — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CNS04-future-law-unknown",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "증여계획 가정:frozen_2026_law_hypothesis=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "미확인인 경우 원자료 확인; 실제 유예·다른 양도·미동결 가정이면 지원 경로와 한정 범위를 검토하며 사실을 True로 바꿔 가드를 우회하지 않음"
+      },
+      {
+        "id": "VAL04-missing-scope",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "단일 구조·용도·건물 귀속면적 및 공식 고시 적용범위 검토=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "ACQ04-zero-area",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: 연면적 범위를 확인하세요",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "CGT10-unverified-separate-prices",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "사업용 토지와 영업권 동시양도·거주자 일반거래·구분가액·순취득원가·연간 다른 양도 없음 확인이 필요합니다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CMP03-incomplete-rents",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "{\"상태\": \"partial\"}",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "CNS05-unconfirmed-other-sales",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "consultation_context.no_other_2026_transfers_confirmed: 지원하지 않는 값 False. 허용: True — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "미확인인 경우 원자료 확인; 실제 유예·다른 양도·미동결 가정이면 지원 경로와 한정 범위를 검토하며 사실을 True로 바꿔 가드를 우회하지 않음"
+      },
+      {
+        "id": "VAL03-selected-market",
+        "category": "excluded",
+        "category_label": "내부 전용·중단 범위",
+        "secondary_categories": [],
+        "reason": "내부 근거 탐색 전용",
+        "next_action": "내부 전용·PARKED 상태 유지; 신규 업무 기능을 열지 않음"
+      },
+      {
+        "id": "VAL03-official-fallback",
+        "category": "excluded",
+        "category_label": "내부 전용·중단 범위",
+        "secondary_categories": [],
+        "reason": "내부 근거 탐색 전용",
+        "next_action": "내부 전용·PARKED 상태 유지; 신규 업무 기능을 열지 않음"
+      },
+      {
+        "id": "GFT05-unknown-legitimate-cause",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "비특수관계 거래관행상 정당사유: True/False을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "GFT06-unknown-industry",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "창업자금 자격:qualified_sme_and_industry=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "STK02-group-notmajor",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "특정주식 요건(부동산등50% 이상·과점주주50% 초과·외부양도50% 이상)이 충족되지 않습니다. 일반주식으로 자동 전환하지 않습니다.",
+        "next_action": "입력 사실이 맞는지 확인; 실제 적격 미충족이면 일반 경로의 지원 범위를 별도 검토하며 사실을 바꿔 진행하지 않음",
+        "subreason": "eligibility_not_met"
+      },
+      {
+        "id": "STK03-deferral-outside",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "국외전출 적격·과표:no_deferral_later_sale_foreign_credit_or_return=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "미확인인 경우 원자료 확인; 실제 유예·다른 양도·미동결 가정이면 지원 경로와 한정 범위를 검토하며 사실을 True로 바꿔 가드를 우회하지 않음"
+      },
+      {
+        "id": "INH05-below-shares",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: 가업지분비율 미달",
+        "next_action": "입력 사실이 맞는지 확인; 실제 적격 미충족이면 일반 경로의 지원 범위를 별도 검토하며 사실을 바꿔 진행하지 않음",
+        "subreason": "eligibility_not_met"
+      },
+      {
+        "id": "VAT04-deemed-supply-unknown",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "66조 자가공급 중복 아님 확인=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "ACQ10-unreviewed-penalty",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "[{\"type\": \"bool_type\", \"loc\": [\"body\", \"ordinary_case_confirmed\"], \"msg\": \"Input should be a valid boolean\", \"input\": null}]",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "ACQ11-repurchase-unconfirmed",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "중과제외주택을 확정할 수 없다 — 필요: repurchase_from_land_lease_buyer [지방세법 시행령 제28조의2 제15호 나목] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "COM02-rule-evidence-conflict",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "증여세 상당액 검토 사실 정정을 확정할 수 없다 — 필요: same_assessment_confirmed — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "COM04-no-calc-filing",
+        "category": "excluded",
+        "category_label": "내부 전용·중단 범위",
+        "secondary_categories": [],
+        "reason": "오너 지시로 중단한 신고·사건 저장 경로",
+        "next_action": "내부 전용·PARKED 상태 유지; 신규 업무 기능을 열지 않음"
+      },
+      {
+        "id": "COM04-no-calc-save",
+        "category": "excluded",
+        "category_label": "내부 전용·중단 범위",
+        "secondary_categories": [],
+        "reason": "오너 지시로 중단한 신고·사건 저장 경로",
+        "next_action": "내부 전용·PARKED 상태 유지; 신규 업무 기능을 열지 않음"
+      },
+      {
+        "id": "ACQ05-conflict-area100",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: 소형주택 300만원 감면 확인과 전용면적 60㎡ 초과가 모순됩니다. 주택 종류·가액·지역 요건도 별도 확인하세요 [지특법 §36의3①1]",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "ACQ05-small-area60",
+        "category": "legal",
+        "category_label": "법령 해석·끝수 미확정",
+        "secondary_categories": [],
+        "reason": "부분 정액감면의 지방교육세 산식은 추가 법령 확인이 필요합니다. 대표액으로 신고·공유하지 마세요.",
+        "next_action": "기준일 원문·해석·끝수 처리 근거 확보 전 금액과 공유 차단"
+      },
+      {
+        "id": "ACQ05-ordinary-area100",
+        "category": "legal",
+        "category_label": "법령 해석·끝수 미확정",
+        "secondary_categories": [
+          "facts"
+        ],
+        "reason": "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.; 감면과 결합된 농어촌특별세 산식은 추가 검토가 필요합니다.; 부분 정액감면의 지방교육세 산식은 추가 법령 확인이 필요합니다. 대표액으로 신고·공유하지 마세요.",
+        "next_action": "기준일 원문·해석·끝수 처리 근거 확보 전 금액과 공유 차단"
+      },
+      {
+        "id": "ACQ04-extension-missing-increase",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "common_facts.amounts: 지원하지 않는 값 0. 허용: 1 — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "이미 지원하는 증축 증가가액 원자료를 확인하고 실제 귀속 증가가액 금액행을 입력"
+      },
+      {
+        "id": "ACQ11-unsupported-합병",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "acquisition_type: 지원하지 않는 값 '합병'. 허용: 유상취득 / 상속 / 증여 / 원시취득 / 공매 / 재산분할 [지§11·§15①] — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "ACQ11-unsupported-공유물분할",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "acquisition_type: 지원하지 않는 값 '공유물분할'. 허용: 유상취득 / 상속 / 증여 / 원시취득 / 공매 / 재산분할 [지§11·§15①] — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "ACQ11-unsupported-건물이전",
+        "category": "implementation",
+        "category_label": "입력 계약·지원 기능 보완",
+        "secondary_categories": [],
+        "reason": "acquisition_type: 지원하지 않는 값 '건물이전'. 허용: 유상취득 / 상속 / 증여 / 원시취득 / 공매 / 재산분할 [지§11·§15①] — 미지원 값을 기본값으로 대체하면 «틀린 세액»이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "지원하는 구조화 입력으로 연결하거나 구현·독립 검증 전 범위 제한"
+      },
+      {
+        "id": "INH02-assessment-unknown",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "사전증여 산출세액 재구성 범위을 확정할 수 없다 — 필요: 실제 gift_tax_assessed 또는 독립된 일반 증여과세 확인 independent_assessment_confirmed=True; 누적·특례·감면·채무·비과세·감정수수료 등 다른 과표조정은 실제 산출세액 경로 [상증법 §28] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "INH02-post2024-mc-unknown",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "사전증여 당시 실제 공제액을 확정할 수 없다 — 필요: total_deduction_used 또는 당시 일반공제와 혼인·출산공제(실제 0 포함) [상증법 §24·§28] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "INH03-zero-interval",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "단기재상속 기간을 확정할 수 없다 — 필요: prior_inheritance_date 또는 실제 법정구간을 확인한 years_since_prior(1 이상 정수) [상증법 §30] — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "VAT03-unknown-annual-history",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "해당 연도 앞선 기간의 공제이력 확인=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "ACQ05-area-class-over85",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "모순된 입력: 소형주택 300만원 감면 확인과 전용면적 60㎡ 초과가 모순됩니다. 주택 종류·가액·지역 요건도 별도 확인하세요 [지특법 §36의3①1]",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      },
+      {
+        "id": "ACQ05-reviewed-area-class-under85",
+        "category": "legal",
+        "category_label": "법령 해석·끝수 미확정",
+        "secondary_categories": [],
+        "reason": "부분 정액감면의 지방교육세 산식은 추가 법령 확인이 필요합니다. 대표액으로 신고·공유하지 마세요.",
+        "next_action": "기준일 원문·해석·끝수 처리 근거 확보 전 금액과 공유 차단"
+      },
+      {
+        "id": "VAT03-simplified-year-unknown",
+        "category": "facts",
+        "category_label": "추가 사실·검토 확인",
+        "secondary_categories": [],
+        "reason": "간이 연중계속 12개월·신규/휴폐업/유형전환/재고추가납부 없음 확인=True을 확정할 수 없다 — 필요: 사실·출처 확인 후 입력 — 확정할 수 없는 값을 0으로 두면 「세액 0원」이 정상 결과처럼 반환되므로 차단한다.",
+        "next_action": "확인할 사실·자료를 구체적인 질문으로 받고 해당 입력으로 안내"
+      },
+      {
+        "id": "INH03-negative-year-with-actual-date",
+        "category": "contradiction",
+        "category_label": "입력 모순·값 범위·적격 불충족",
+        "secondary_categories": [],
+        "reason": "[{\"type\": \"greater_than_equal\", \"loc\": [\"body\", \"years_since_prior\"], \"msg\": \"Input should be greater than or equal to 0\", \"input\": -1, \"ctx\": {\"ge\": 0}}]",
+        "next_action": "모순·범위 오류를 입력 위치에서 설명하고 정정 전 금액 차단"
+      }
+    ]
+  },
+  "workflow20_validation": {
+    "question_id": "JT-RELEASE-WORKFLOWS20-20261030",
+    "candidate_id": "rc-87a9f10dcc763ba439e9",
+    "total": 20,
+    "amount_cases": 14,
+    "guard_cases": 6,
+    "real_product_input_ui": true,
+    "backend_mcp_cases": 20,
+    "backend_mcp_checks": 238,
+    "independent_ui_review_sha256": "edfdb86c247dc1d8012402624eb59fc4633af80b4fca7f7ba5bcbc7d9ad28584",
+    "case_ids": [
+      "WF20-HOUSE-N01",
+      "WF20-HOUSE-N02",
+      "WF20-HOUSE-B01",
+      "WF20-HOUSE-B02",
+      "WF20-HOUSE-R01",
+      "WF20-ACQUISITION-N01",
+      "WF20-ACQUISITION-N02",
+      "WF20-ACQUISITION-B01",
+      "WF20-ACQUISITION-B02",
+      "WF20-ACQUISITION-R01",
+      "WF20-INHERITANCE-N01",
+      "WF20-INHERITANCE-N02",
+      "WF20-INHERITANCE-B01",
+      "WF20-INHERITANCE-B02",
+      "WF20-INHERITANCE-R01",
+      "WF20-VAT-N01",
+      "WF20-VAT-N02",
+      "WF20-VAT-B01",
+      "WF20-VAT-B02",
+      "WF20-VAT-R01"
+    ],
+    "not_added_to_original181": true,
+    "original_grades_preserved": true,
+    "education_partial_fixed_confirmed": false,
+    "installed_mcp_snapshot_unchanged": true
   }
 }

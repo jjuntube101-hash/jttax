@@ -451,7 +451,7 @@ const CGT_QS = [
     id: 'adjustedZone',
     section: '주택 상황',
     q: '양도 대상은 조정대상지역 소재 주택입니까?',
-    sub: '조정대상지역은 집값 과열을 막으려 정부가 따로 지정한 지역으로, 여기 집을 여러 채 가진 분이 팔면 세금이 더 무겁습니다. 현재 서울 전역(25개 자치구)과 경기 12곳(과천·광명·성남·수원·안양 동안·용인 수지·의왕·하남 등)이 해당됩니다. (수시 변경되므로 파실 시점에 국토교통부 고시로 확인하세요.) ※ 「예」를 고르면 1세대1주택 비과세에 거주 2년 요건(시행령 §154①)을 보수적으로 적용합니다. 다만 이 요건은 「취득 당시」 조정대상지역이었는지로 결정되며, 취득 당시 비조정지역이었다면(나중에 조정지역으로 지정) 거주요건이 면제되어 비과세될 수 있습니다 — 이 경우 전입일을 입력하시거나 상담으로 확인하세요.',
+    sub: '조정대상지역은 집값 과열을 막으려 정부가 따로 지정한 지역으로, 여기 집을 여러 채 가진 분이 팔면 세금이 더 무겁습니다. 지역 지정은 바뀔 수 있으므로 실제 양도일 당시 국토교통부 지정·해제 공고로 확인하세요. 취득 당시 지정 여부는 다음 문항에서 따로 확인합니다. ※ 「예」를 고르면 1세대1주택 비과세에 거주 2년 요건(시행령 §154①)을 보수적으로 적용합니다. 다만 이 요건은 「취득 당시」 조정대상지역이었는지로 결정되며, 취득 당시 비조정지역이었다면(나중에 조정지역으로 지정) 거주요건이 면제되어 비과세될 수 있습니다 — 이 경우 전입일을 입력하시거나 상담으로 확인하세요.',
     showIf: (a) => a.assetType === 'house_1' || a.assetType === 'house_2' || a.assetType === 'house_3',
     opts: [
       ['yes', '네, 조정대상지역입니다', '다주택자 중과세율 적용 대상'],
@@ -659,7 +659,7 @@ function cgtFallbackGaps(answers, calc) {
      팔지 말라는 이유가 되어 의사결정을 바꾼다 — 과소 못지않은 사고다. */
   const unknown = window.jtFallbackGaps([
     { when: answers.assetType === 'house_1' && answers.acqAdjustedZone === 'unsure',
-      why: '살 때 조정대상지역이었는지 «모름» — 1세대1주택 비과세의 거주 2년 요건이 이 사실로 갈립니다(실측 2,484만원 ↔ 2억 997만원). 등기부·매매계약서의 취득일과 당시 고시를 확인해 주세요.' },
+      why: '살 때 조정대상지역이었는지 «모름» — 1세대1주택 비과세의 거주 2년 요건이 이 사실에 따라 달라집니다. 확인 전에는 현재 입력의 세액을 표시하지 않습니다. 등기부·매매계약서의 취득일과 당시 고시를 확인해 주세요.' },
   ]);
   /* ── ② 엔진 값이 없으면 어떤 입력이든 막는다 ──────────────────────────────
      이 화면에는 자체 계산식이 없으므로 «엔진이 준 금액»이 없으면 보여 줄 금액이 없다.
@@ -1755,7 +1755,7 @@ cautions 3개, saving_ideas 2~3개.`;
           {cur.reviewed && <><CGTReviewedInputs value={{...(answers.reviewed||{}),convertedEnabled:answers.assetType==='commercial'&&answers.costMethod==='converted'}} onChange={v=>setAns('reviewed',v)} />{reviewedIssue && <p role="alert" style={{color:'#a62323',marginTop:16}}>{reviewedIssue}</p>}</>}
           {cur.freeform && (
             <textarea
-              className="jt-report-q__textarea"
+              aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__textarea"
               maxLength={200}
               placeholder="예: 조정대상지역이며 분양권을 보유한 상태입니다"
               value={answers[cur.id] || ''}
@@ -1765,7 +1765,7 @@ cautions 3개, saving_ideas 2~3개.`;
 
           {cur.numeric && (
             <JTNumericInput
-              className="jt-report-q__input"
+              aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input"
               type="text"
               inputMode="numeric"
               placeholder={cur.placeholder}
@@ -1776,7 +1776,7 @@ cautions 3개, saving_ideas 2~3개.`;
 
           {cur.date && (
             <input
-              className="jt-report-q__input"
+              aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input"
               type="text"
               inputMode="numeric"
               placeholder="예: 2018-03-15 (숫자 8자리로 입력)"

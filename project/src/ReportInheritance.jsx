@@ -40,7 +40,7 @@ function fmtArticle(s) {
 }
 
 const INHERITANCE_QS = [
-  {id: 'deathDate', tier: 'quick', section: '상속 시점', q: '상속개시일(사망일)은 언제인가요?', placeholder: '2025-06-01', freeform: true},
+  {id: 'deathDate', tier: 'quick', section: '상속 시점', q: '상속개시일(사망일)은 언제인가요?', placeholder: '2025-06-01', date: true, freeform: true},
   // ── 빠른 계산 (필수 3문항 → 즉시 예상) ──
   {
     id: 'estateValue',
@@ -909,15 +909,15 @@ function JTReportInheritance({ setRoute, onBack }) {
           <h2>{cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
-          {cur.date && <input className="jt-report-q__input" type="date" value={answers[cur.id]||''} onChange={e=>setAns(cur.id,e.target.value)} />}
-          {cur.freeform && (
-            <textarea className="jt-report-q__textarea" maxLength={cur.id === 'context' ? 200 : 120}
+          {cur.date && <input aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input" type="date" value={answers[cur.id]||''} onChange={e=>setAns(cur.id,e.target.value)} />}
+          {cur.freeform && !cur.date && (
+            <textarea aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__textarea" maxLength={cur.id === 'context' ? 200 : 120}
               placeholder={cur.placeholder || ''} value={answers[cur.id] || ''}
               onChange={(e) => setAns(cur.id, e.target.value)} />
           )}
 
           {cur.numeric && (
-            <JTNumericInput className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
+            <JTNumericInput aria-label={cur.qFor ? cur.qFor(answers) : cur.q} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder}
               value={answers[cur.id]}
               onChange={(e) => window.jtSetNumericAns(setAns, cur.id, e.target.value, true)} />
           )}
