@@ -54,3 +54,13 @@ assert.throws(()=>map(env.api.cgtApplyAnswer(gift,'sold',1100000000)));
 assert.equal(map({...gift,reviewed:{...gift.reviewed,giftTax:'0'}}).carryover_gift_tax_context,undefined);
 assert.equal(map({...gift,reviewed:{...gift.reviewed,giftEnabled:false}}).carryover_gift_tax_context,undefined);
 console.log('PASS positive assessed gift tax: current/prior composition, all explicit reviews, stale opt-out and edit reset');
+
+const separate={...gift,expenses:'10000000',reviewed:{...gift.reviewed,giftDifferentExpenses:true,giftCarryExpenses:'20000000',giftNoncarryExpenses:'10000000',giftCarrySource:'SYNTH:carry',giftNoncarrySource:'SYNTH:noncarry',giftBranchCompleteConfirmed:true,giftTaxExcludedConfirmed:true}};
+assert.equal(map(separate).carryover_gift_tax_context.schema_version,2);
+assert.equal(map(separate).expenses_total,10000000);
+assert.equal(map(separate).carryover_gift_tax_context.branch_expenses.carryover_amount,20000000);
+assert.throws(()=>map({...separate,expenses:'9000000'}),/경비 합계/);
+const detailedSeparate={...separate,expenses:'0',reviewed:{...separate.reviewed,expensesEnabled:true,expensesConfirmed:true,...Object.fromEntries(['취득세','등기비','법무사비','취득중개비','양도중개비','자본적지출','기타비용'].map(k=>['expense_'+k,k==='취득세'?'10000000':'0']))}};
+assert.equal(map(detailedSeparate).carryover_gift_tax_context.branch_expenses.noncarryover_amount,10000000);
+for(const key of ['giftBranchCompleteConfirmed','giftTaxExcludedConfirmed'])assert.throws(()=>map({...separate,reviewed:{...separate.reviewed,[key]:false}}));
+console.log('Support11 distinct expense branch: common10m/detail10m accepted; mismatch/missing qualification refused.');

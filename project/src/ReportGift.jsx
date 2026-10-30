@@ -680,6 +680,8 @@ function buildGiftKakao(answers, calc) {
 }
 
 function JTReportGift({ setRoute, onBack }) {
+  const [supportMode,setSupportMode]=useGiftState(null);
+  const [supportDraft,setSupportDraft]=useGiftState(null);
   const [installmentMode,setInstallmentMode] = useGiftState(false);
   const [installmentDraft,setInstallmentDraft] = useGiftState({});
   const [caseMode, setCaseMode] = useGiftState(false);
@@ -895,6 +897,7 @@ function JTReportGift({ setRoute, onBack }) {
     onBack();
   };
 
+  if(supportMode)return <JTSupportReviewDirect initialMode={supportMode} initialDraft={supportDraft} onBack={draft=>{setSupportDraft(draft);setSupportMode(null);}}/>;
   if (caseMode) return <JTGiftCases initialAnswers={answers} initialValuation={caseValuation} onAnswers={next => { setAnswers(next); setReport(null); setQuickReport(null); }} onExit={() => setCaseMode(false)} />;
 
   if (installmentMode) return <JTH7TaxDirect mode="installment" initialDraft={installmentDraft} onBack={draft=>{setInstallmentDraft(draft);setInstallmentMode(false);}} />;
@@ -1092,6 +1095,7 @@ function JTReportGift({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="증여세 계산" subtitle={phase === 'quick' ? '관계·금액만 입력하면 예상 증여세를 바로 보여드려요.' : '사전증여·부담부 등을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+        <button type="button" onClick={()=>{inputSession.invalidate();setSupportMode('gift');}}>증여 재산명세·비상장 보충평가</button>
         <button type="button" data-testid="open-installment-direct" onClick={()=>setInstallmentMode(true)}>일반 연부연납 산식</button>
         <button className="jt-btn jt-btn--ghost" style={{ marginBottom: 16 }} onClick={() => setCaseMode(true)}>사건 저장·불러오기</button>
         <div className="jt-report-q">

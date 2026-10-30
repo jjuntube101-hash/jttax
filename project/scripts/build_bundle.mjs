@@ -49,6 +49,7 @@ export const ORDER = [
   'InputReview.jsx',
   'CreditGenerationInputs.jsx',
   'CreditSettlementDirect.jsx',
+  'SupportReviewDirect.jsx',
   'ReportConvert.jsx',
   'ReportAppeal.jsx',
   'TransferAnnualDirect.jsx',

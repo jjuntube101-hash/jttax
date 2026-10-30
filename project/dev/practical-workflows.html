@@ -2,7 +2,7 @@
 window.JT_ENGINE_BASE='http://127.0.0.1:19421';window.__qa_requests=[];window.__qa_ai_prompts=[];window.__qa_case='manual';
 window.claude={complete:async prompt=>{window.__qa_ai_prompts.push(prompt);return JSON.stringify({headline:'개발 검증용 고정 해설',cautions:[],saving_ideas:[],followup:[]});}};
 const qaFetch=window.fetch;window.fetch=async(url,options)=>{const u=new URL(typeof url==='string'?url:url.url,location.href);if(!(u.origin===location.origin&&(!options||!options.method||options.method==='GET'))&&!(u.origin===window.JT_ENGINE_BASE&&(/^\/v1\/calc\//.test(u.pathname)||['/health','/v1/calculation-contracts'].includes(u.pathname))))throw Error('검증 화면은 계산·정체성 확인만 허용합니다.');const init={...options};if(init.method==='POST')init.headers={...init.headers,'x-qa-case':window.__qa_case};const r=await qaFetch(url,init);if(init.method==='POST'){const copy=await r.clone().json();window.__qa_requests.push({case:window.__qa_case,path:u.pathname,input:JSON.parse(init.body),status:r.status,response:copy});}return r;};
-</script><script src="../dist/app.js?v=135"></script><script>
+</script><script src="../dist/app.js?v=137"></script><script>
 const uiRoot=ReactDOM.createRoot(document.getElementById('workflows-root'));
 const workflows={transfer:window.JTReportCGT,acquisition:window.JTReportAcquisition,inheritance:window.JTReportInheritance,vat:window.JTReportVat};let sequence=0;
 function openWorkflow(key){uiRoot.render(React.createElement(workflows[key],{key:++sequence,onBack:()=>{},setRoute:()=>{}}));}

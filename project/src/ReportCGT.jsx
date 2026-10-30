@@ -199,8 +199,10 @@ function cgtReviewedPayload(a) {
       const total=money(r.giftV47,'증여세 과세가액');
       if(!total||current.reduce((s,v)=>s+v.taxable_value,0)+prior.reduce((s,v)=>s+v.included_value,0)!==total)throw new Error('현재 재산과 과거 합산 과세가액 합계가 증여세 과세가액과 같아야 합니다.');
       const manual_review={review_reference:ref(r.giftReviewSource,'증여세 검토 자료명')};
-      for(const [key,label] of CGT_GIFT_REVIEWS){confirm(r['gift_'+key+'Confirmed'],label);manual_review[key]=true;}
-      out.carryover_gift_tax_context={schema_version:1,assessment:{assessment_ref:assessment,t56_source_assessment_ref:assessment,v47_source_assessment_ref:assessment,gift_date:out.gift_date,v47_taxable_value:total},target_asset_ref:target,current_assets:current,prior_aggregated_gifts:prior,manual_review};
+      for(const [key,label] of CGT_GIFT_REVIEWS){if(key==='same_expenses_apply_to_both_branches'&&r.giftDifferentExpenses===true){manual_review[key]=false;continue;}confirm(r['gift_'+key+'Confirmed'],label);manual_review[key]=true;}
+      let branch_expenses;
+      if(r.giftDifferentExpenses===true){const carry=money(r.giftCarryExpenses,'적용 갈래 경비'),noncarry=money(r.giftNoncarryExpenses,'미적용 갈래 경비');if(carry===noncarry)throw Error('같은 경비는 기존 공통 경비 확인을 사용하세요.');const effectiveRegularExpenses=r.expensesEnabled?Object.values(out.expenses).reduce((sum,v)=>sum+v,0):money(a.expenses??'0','앞의 필요경비 합계');if(!Number.isSafeInteger(effectiveRegularExpenses)||effectiveRegularExpenses!==noncarry)throw Error('앞의 필요경비 합계를 미적용 갈래의 실제 경비와 맞춰 주세요.');confirm(r.giftBranchCompleteConfirmed,'양쪽 경비의 적격·원가 비중복');confirm(r.giftTaxExcludedConfirmed,'증여세 상당액 제외');branch_expenses={carryover_amount:carry,noncarryover_amount:noncarry,carryover_evidence:ref(r.giftCarrySource,'적용 경비 근거'),noncarryover_evidence:ref(r.giftNoncarrySource,'미적용 경비 근거'),complete_and_qualified:true,gift_tax_excluded:true};}
+      out.carryover_gift_tax_context={...(branch_expenses?{branch_expenses}:{}),schema_version:branch_expenses?2:1,assessment:{assessment_ref:assessment,t56_source_assessment_ref:assessment,v47_source_assessment_ref:assessment,gift_date:out.gift_date,v47_taxable_value:total},target_asset_ref:target,current_assets:current,prior_aggregated_gifts:prior,manual_review};
     }
   }
   if (r.reliefEnabled) {
@@ -322,7 +324,7 @@ function CGTReviewedInputs({value,onChange}) {
         <button type="button" onClick={()=>set('giftAssets',[...(r.giftAssets||[]),{}])}>현재 증여재산 추가</button>
         {select('giftPriorMode','과거 증여 합산 여부',[['none','합산 없음 — 확인 완료'],['list','합산 있음 — 명세 입력']])}
         {r.giftPriorMode==='list'&&<>{(r.giftPrior||[]).map((v,i)=><fieldset key={i}><legend>과거 합산 증여 {i+1}</legend><label>과거 증여 식별명<input value={v.ref||''} onChange={e=>rowChange('giftPrior',i,'ref',e.target.value)}/></label><label>과거 증여일<input type="date" value={v.date||''} onChange={e=>rowChange('giftPrior',i,'date',e.target.value)}/></label><label>과거 합산 과세가액 (원)<input value={v.amount??''} onChange={e=>rowChange('giftPrior',i,'amount',e.target.value)}/></label><button type="button" onClick={()=>set('giftPrior',r.giftPrior.filter((_,j)=>i!==j))}>과거 증여 {i+1} 삭제</button></fieldset>)}<button type="button" onClick={()=>set('giftPrior',[...(r.giftPrior||[]),{}])}>과거 합산 증여 추가</button></>}
-        {field('giftReviewSource','증여세 검토 자료명')}{CGT_GIFT_REVIEWS.map(([key,label])=><React.Fragment key={key}>{check('gift_'+key+'Confirmed',label)}</React.Fragment>)}
+        {check('giftDifferentExpenses','이월과세 적용·미적용 갈래의 적격 경비가 서로 다릅니다')}{r.giftDifferentExpenses&&<fieldset><legend>갈래별 실제 적격 경비 (증여세 상당액 제외)</legend>{field('giftCarryExpenses','적용 갈래 경비 (원)')}{field('giftNoncarryExpenses','미적용 갈래 경비 (원)')}{field('giftCarrySource','적용 갈래 경비 근거')}{field('giftNoncarrySource','미적용 갈래 경비 근거')}{check('giftBranchCompleteConfirmed','양쪽 경비의 적격·취득가액과의 비중복을 확인했습니다')}{check('giftTaxExcludedConfirmed','입력 경비에 증여세 상당액을 넣지 않았습니다')}<p>앞의 필요경비는 미적용 갈래 금액과 같아야 합니다. 증여세 상당액은 적용 갈래에만 엔진이 한 번 더합니다.</p></fieldset>}{field('giftReviewSource','증여세 검토 자료명')}{CGT_GIFT_REVIEWS.filter(([key])=>!r.giftDifferentExpenses||key!=='same_expenses_apply_to_both_branches').map(([key,label])=><React.Fragment key={key}>{check('gift_'+key+'Confirmed',label)}</React.Fragment>)}
       </fieldset>}
     </fieldset>}
     {check('reliefEnabled','토지 양도소득세 감면 신청')}
@@ -1441,6 +1443,7 @@ cautions 3개, saving_ideas 2~3개.`;
   if (directMode === 'facility') return <JTH7TaxDirect mode="facility" initialDraft={directDrafts.facility} onBack={draft=>{setDirectDrafts(old=>({...old,facility:draft}));setDirectMode(null);}} />;
   if (directMode === 'rights') return <JTH7TaxDirect mode="rights" initialDraft={directDrafts.rights} onBack={draft=>{setDirectDrafts(old=>({...old,rights:draft}));setDirectMode(null);}} />;
   if (directMode === 'landValue') return <JTLandStandardValueDirect initialDraft={directDrafts.landValue} onBack={draft=>{setDirectDrafts(old=>({...old,landValue:draft}));setDirectMode(null);}} />;
+  if (directMode === 'nonbusiness') return <JTSupportReviewDirect initialMode="annual" initialDraft={directDrafts.nonbusiness} onBack={draft=>{setDirectDrafts(old=>({...old,nonbusiness:draft}));setDirectMode(null);}}/>;
   if (directMode === 'stock') return <JTStockTransferDirect initialDraft={directDrafts.stock} onBack={draft=>{setDirectDrafts(old=>({...old,stock:draft}));setDirectMode(null);}} />;
   if (directMode === 'split') return <JTTransferSplitDirect initialDraft={directDrafts.split} onBack={draft=>{setDirectDrafts(old=>({...old,split:draft}));setDirectMode(null);}} />;
   if (directMode === 'burdened') return <JTBurdenedGiftDirect initialDraft={directDrafts.burdened} onBack={draft=>{setDirectDrafts(old=>({...old,burdened:draft}));setDirectMode(null);}} />;
@@ -1733,6 +1736,7 @@ cautions 3개, saving_ideas 2~3개.`;
         onBack={goPrev}
         tag="LIVE"
       >
+        <button type="button" onClick={()=>{inputSession.invalidate();setDirectMode('nonbusiness');}}>비사업용 토지만 연간합산</button>
         <button type="button" data-testid="open-annual-direct" onClick={()=>setAnnualMode(true)}>여러 부동산 연간 합산·기신고·납부 정산</button>
         <button type="button" onClick={()=>setDirectMode('goodwill')}>영업권·사업용 부동산 합산</button>
         <button type="button" onClick={()=>setDirectMode('indirectStock')}>기타자산 주식 1단계 간접보유</button>

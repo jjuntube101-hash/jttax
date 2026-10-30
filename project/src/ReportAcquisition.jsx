@@ -1388,6 +1388,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
   if (basisInputs) return <JTAcqBasisInputs onBack={() => setBasisInputs(false)}/>;
   if (reviewedDirect) return <JTAcquisitionReviewedDirect initialDraft={reviewedDraft} onBack={draft=>{setReviewedDraft(draft);setReviewedDirect(false);}} />;
   if (buildingDirect) return <JTAcquisitionBuildingDirect initialDraft={buildingDraft} onBack={draft=>{setBuildingDraft(draft);setBuildingDirect(false);}} />;
+  if (extraMode === 'reorganization') return <JTSupportReviewDirect initialMode="acquisition" initialDraft={extraDrafts.reorganization} onBack={draft=>{setExtraDrafts(old=>({...old,reorganization:draft}));setExtraMode(null);}}/>;
   if (extraMode === 'special') return <JTAcquisitionSpecialDirect initialDraft={extraDrafts.special} onBack={draft=>{setExtraDrafts(old=>({...old,special:draft}));setExtraMode(null);}} />;
   if (extraMode === 'penalty' || extraMode === 'exclusion') return <JTH7TaxDirect mode={extraMode} initialDraft={extraDrafts[extraMode]} onBack={draft=>{setExtraDrafts(old=>({...old,[extraMode]:draft}));setExtraMode(null);}} />;
   if (extraMode === 'value') return <JTAcquisitionValueDirect initialDraft={extraDrafts.value} onBack={draft=>{setExtraDrafts(old=>({...old,value:draft}));setExtraMode(null);}} />;
@@ -1617,6 +1618,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
     <div className="jt-container">
       <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산" subtitle={phase === 'quick' ? '취득 원인·종류·가액만 넣으면 예상 취득세를 바로 보여드려요.' : '면적·조정지역·감면을 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
         <button className="jt-btn jt-btn--ghost" onClick={() => setBasisInputs(true)}>취득일·신축 과세표준 확인 계산 →</button>
+        <button type="button" onClick={()=>{inputSession.invalidate();setExtraMode('reorganization');}}>합병·공유분할·물리적 건물이전</button>
         <button type="button" data-testid="open-acq-special-direct" className="jt-btn jt-btn--ghost" onClick={()=>setExtraMode('special')}>법인 중과·층별 안분·과점주주·정률 감면 →</button>
         <button type="button" data-testid="open-acq-exclusion-direct" onClick={()=>setExtraMode('exclusion')}>주택 취득 중과제외</button>
         <button type="button" data-testid="open-acq-penalty-direct" onClick={()=>setExtraMode('penalty')}>취득세 본세 가산세</button>

@@ -364,7 +364,7 @@ function JTReportCorporate({ setRoute, onBack }) {
     } catch (e) { console.error(e); setErr(e.message || '계산 중 오류가 발생했습니다.'); }
     finally { setLoading(false); }
   };
-  if(creditMode)return <JTCreditSettlementDirect initialKind="corporate" onBack={()=>setCreditMode(false)}/>;
+  if(creditMode)return <JTCreditSettlementDirect initialKind="corporate" initialDraft={directDraft} onBack={()=>setCreditMode(false)}/>;
 
 
   const goDetail = () => { setReport(null); setPhase('detail'); setStep(0); };

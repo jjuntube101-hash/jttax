@@ -11,7 +11,7 @@ function creditSettlementRequest(d){
  const kind=chosen(d.taxType,['corporate','income'],'세목'),review={};
  for(const [key,label] of CREDIT_REVIEW_CHECKS)review[key]=check(key,label);
  const base=kind==='corporate'?{net_income:n(d.income,'당기순이익'),corporate_type:chosen(d.corporateType,['중소기업','중견기업','일반법인'],'법인 유형'),carried_forward_loss:n(d.loss,'적격 검토된 이월결손금')}:
-  {business_income:n(d.income,'필요경비 후 사업소득금액'),spouse:yn(d.spouse,'배우자 공제 자격'),dependents:n(d.dependents,'적격 부양가족 수'),national_pension:n(d.pension,'국민연금 납입액')};
+  {...(d.incomeMode==='salary'?{income_mode:'salary',salary_income:n(d.income,'비과세 제외 과세 총급여')}:{business_income:n(d.income,'필요경비 후 사업소득금액')}),spouse:yn(d.spouse,'배우자 공제 자격'),dependents:n(d.dependents,'적격 부양가족 수'),national_pension:n(d.pension,'국민연금 납입액')};
  if(kind==='corporate'){
   review.ordinary_minimum_status_confirmed=check('ordinary_minimum_status_confirmed','중소기업 졸업유예·특수 최저한세가 없는 지위');
   review.separate_businesses_reconciled=check('separate_businesses_reconciled','사업별 소득과 자산 구분경리');
@@ -38,7 +38,8 @@ function creditSettlementRequest(d){
   countryMap.get(country).taxes.push(tax);
  }
  const local=kind==='corporate'?(d.local||[]).map(row=>({id:text(row.id,'지방 원세액 이름'),origin_year:n(row.year,'지방 원세액 발생연도'),foreign_tax_amount:n(row.amount,'이월된 지방 원세액'),used_before:n(row.used,'과거 지방 과표 차감액'),evidence:text(row.evidence,'지방 원장 근거')})):[];
- const request={schema_version:'credit-settlement/1',tax_type:kind,tax_year:2026,base,credits,foreign_countries:[...countryMap.values()],local_foreign_carryovers:local,
+ if(kind==='income'&&d.incomeMode==='salary'){review.salary_worldwide_scope_and_treaty_costs_confirmed=check('salary_worldwide_scope_and_treaty_costs_confirmed','총급여·국가별 근로공제·대응비용·조약제한세율·다른소득없음');review.no_special_salary_deductions_claimed=check('no_special_salary_deductions_claimed','특별소득·특별세액·월세 공제 미신청');}
+ const request={schema_version:kind==='income'&&d.incomeMode==='salary'?'credit-settlement/3':'credit-settlement/1',tax_type:kind,tax_year:2026,base,credits,foreign_countries:[...countryMap.values()],local_foreign_carryovers:local,
   credit_order:String(d.order||'').split(',').map(x=>x.trim()).filter(Boolean),review,evidence:text(d.evidence,'전체 검토 자료명')};
  if(d.choiceEvidence)request.choice_evidence=text(d.choiceEvidence,'동순위 선택 근거');
  if(credits.some(x=>x.code==='sme_reduction'))request.decreased_regular_employees=n(d.decreased,'상시근로자 감소 인원');
@@ -51,8 +52,8 @@ function creditSettlementResult(calc){
  if(calc['국세결정세액']+calc['지방소득세']!==calc['총세부담'])throw Error('국세·지방세 합계 응답을 확인할 수 없습니다.');
  return calc;
 }
-function JTCreditSettlementDirect({onBack,initialKind='corporate'}){
- const [d,setD]=React.useState({taxType:initialKind,credits:[],foreign:[],local:[],checks:{}});
+function JTCreditSettlementDirect({onBack,initialKind='corporate',initialDraft}){
+ const [d,setD]=React.useState({taxType:initialKind,...(initialKind==='corporate'&&initialDraft?{income:initialDraft.income,corporateType:initialDraft.type,loss:initialDraft.loss}:{}),credits:[],foreign:[],local:[],checks:{}});
  const [result,setResult]=React.useState(null),[error,setError]=React.useState(''),[busy,setBusy]=React.useState(false);
  const ids=React.useRef(0),session=useJTInputSession(()=>{setResult(null);setError('');setBusy(false);});
  const edit=(key,value)=>{session.invalidate();setD(old=>key==='taxType'?{taxType:value,credits:[],foreign:[],local:[],checks:{}}:{...old,[key]:value,checks:{}});};
@@ -74,10 +75,10 @@ function JTCreditSettlementDirect({onBack,initialKind='corporate'}){
   }catch(e){fail(e.message||'계산을 완료하지 못했습니다.');}finally{loading(false);}
  };
  const won=v=>v===null?'확인 필요':Number.isSafeInteger(v)?v.toLocaleString('ko-KR')+'원':'—';
- const checks=[...CREDIT_REVIEW_CHECKS,...(d.foreign.length?CREDIT_SOURCE_CHECKS:[]),...(d.taxType==='corporate'?[['ordinary_minimum_status_confirmed','졸업 유예·특수 최저한세가 없는 일반 지위입니다'],['separate_businesses_reconciled','사업별 소득·투자자산이 구분되어 있습니다']]:[])];
+ const checks=[...CREDIT_REVIEW_CHECKS,...(d.taxType==='income'&&d.incomeMode==='salary'?[['salary_worldwide_scope_and_treaty_costs_confirmed','비과세 제외 총급여·다른 소득없음·국가별 근로공제/대응비용 배분·직접세/조약제한세율·가산세제외를 확인했습니다'],['no_special_salary_deductions_claimed','특별소득·특별세액·월세 공제를 신청하지 않습니다 (표준공제 범위)']]:[]),...(d.foreign.length?CREDIT_SOURCE_CHECKS:[]),...(d.taxType==='corporate'?[['ordinary_minimum_status_confirmed','졸업 유예·특수 최저한세가 없는 일반 지위입니다'],['separate_businesses_reconciled','사업별 소득·투자자산이 구분되어 있습니다']]:[])];
  return <div className="jt-special-direct"><JTReportShell title="공제·이월 원장 계산" subtitle="발생액, 당기 사용액과 잔액을 분리하고 국세·지방세를 따로 계산합니다." tag="2026 공제 정산" onBack={onBack}>
   <p>2026 달력연도 정상범위입니다. 연구·투자·고용은 검토된 발생액을 넣거나 아래 원자료 자동산정을 선택합니다. 투자액·연구비 지출총액과 다릅니다. 중소기업 특별감면은 대상 소득과 법정 감면율로 계산합니다.</p>
-  <form onSubmit={submit}><div className="jt-special-grid">{select('taxType','세목',[['corporate','법인세'],['income','개인 사업소득 외국납부 공제']])}{input('income',d.taxType==='corporate'?'당기순이익 (원)':'필요경비 후 사업소득금액 (원)',true)}
+  <form onSubmit={submit}><div className="jt-special-grid">{select('taxType','세목',[['corporate','법인세'],['income','개인 외국납부 공제']])}{d.taxType==='income'&&select('incomeMode','소득 유형',[['business','개인 사업소득'],['salary','단일 근로소득']])}{input('income',d.taxType==='corporate'?'당기순이익 (원)':d.incomeMode==='salary'?'비과세를 제외한 과세 총급여 (원)':'필요경비 후 사업소득금액 (원)',true)}
    {d.taxType==='corporate'?<>{select('corporateType','법인 유형',[['중소기업','중소기업'],['중견기업','중견기업'],['일반법인','일반법인']])}{input('loss','적격 검토된 이월결손금 (없으면0)',true)}</>:<>{select('spouse','배우자 공제 자격',yn)}{input('dependents','적격 부양가족 수 (배우자 제외, 없으면0)')}{input('pension','실제 국민연금 납입액 (없으면0)',true)}</>}{plain('evidence','전체 검토 자료명')}</div>
    {d.taxType==='corporate'&&<><label><input type="checkbox" data-testid="credit-generate" checked={d.generate===true} onChange={e=>edit('generate',e.target.checked)}/>원자료에서 당기 발생액 계산</label>{d.generate&&<JTCreditGenerationInputs value={d.generation||{}} onChange={v=>edit('generation',v)}/>}</>}
    {d.taxType==='corporate'&&<>{rows('credits','국내 공제·감면 발생/이월 원장',[
