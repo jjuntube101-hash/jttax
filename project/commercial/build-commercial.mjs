@@ -191,7 +191,7 @@ const KAKAO_QR = `    <div class="jt-cc-kqr">
     </div>`;
 
 const CTA_BOTTOM = `    <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','commercial')">상담 예약 →</a>
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','commercial')">상담 신청 →</a>
       <a href="${KAKAO_URL}" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','commercial')">카톡 상담</a>
       <a href="tel:02-554-6405" class="jt-btn jt-btn--outline" onclick="jtTrackCta('call','commercial')">02-554-6405</a>
     </div>
@@ -204,7 +204,7 @@ const DISCLAIMER = `    <div class="jt-cc-disc">
 
 function leadCard(e, note) {
   return `    <section class="jt-cc-sec">
-      <h2>관련 대표세무사 프로필</h2>
+      <h2>관련 실무 경험을 확인하세요</h2>
       <div class="jt-cm-lead">
         <span class="r">Managing Partner</span>
         <span class="n">${esc(e.name)} 대표세무사</span>
@@ -261,7 +261,7 @@ function extraSectionsHtml(s) {
         <ul class="jt-cc-links jt-cr-links">
 ${links}
         </ul>
-        <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtCreatorPath('${p.id}');jtTrackCta('booking','creators_${p.id}')">이 상황으로 상담 예약 →</a>
+        <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtCreatorPath('${p.id}');jtTrackCta('booking','creators_${p.id}')">이 상황으로 상담 신청 →</a>
       </div>`;
     }).join('\n');
     out.push(`${CREATOR_PATH_SCRIPT}
@@ -328,7 +328,7 @@ ${g.slugs.map(sl => insightLi(sl, null, `services/${s.slug}.insightGroups`)).joi
     <p class="jt-cc-lede">${esc(s.lede)}</p>
 ${s.proof ? `    <p class="jt-cr-proof">${esc(s.proof)}</p>\n` : ''}
     <div class="jt-cc-cta">
-      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','svc_top')">이 분야 상담 예약 →</a>
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','svc_top')">이 분야 상담 신청 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','svc_top')">카톡 상담</a>
     </div>
 
@@ -348,7 +348,7 @@ ${s.handoff ? `      <p style="font-size:14px;color:#666;">${esc(s.handoff)}</p>
 ${s.creatorsLink ? `      <p style="font-size:14px;"><a href="/creators.html" style="color:#1a1a1a;">크리에이터·유튜버라면 — 지금 단계에 맞는 세금 경로부터 확인하기 →</a></p>` : ''}
     </section>
 
-${leadCard(lead)}
+${leadCard(lead, '대표별 경력을 소개합니다. 실제 업무 담당과 검토 범위는 상담 후 안내합니다.')}
 
 ${(calcsHtml || deepLink) ? `    <section class="jt-cc-sec">
       <h2>직접 계산해 보기</h2>
@@ -358,7 +358,7 @@ ${[calcsHtml, deepLink].filter(Boolean).join('\n')}
     </section>` : ''}
 
 ${(insightsHtml || groupsHtml) ? `    <section class="jt-cc-sec">
-      <h2>관련 인사이트</h2>
+      <h2>관련 세금 가이드</h2>
 ${[insightsHtml ? `      <ul class="jt-cc-links">\n${insightsHtml}\n      </ul>` : '', groupsHtml].filter(Boolean).join('\n')}
     </section>` : ''}
 
@@ -396,13 +396,13 @@ function renderServicesIndex() {
     .map(s => card(serviceHref(s), s.kr, s.cardLede || s.lede)).join('\n');
   return headHtml({
     title: `업무분야 — 양도상속증여·세무조사·기장·컨설팅·경정청구·취득세·크리에이터 | ${FIRM}`,
-    desc: '기장·세금 신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구, 취득세, 크리에이터 세금까지 사업과 재산의 세무 업무를 안내합니다.',
+    desc: '세무기장·세금 신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구, 취득세, 크리에이터 세금까지 사업과 재산의 세무 업무를 안내합니다.',
     keywords: '강남 세무법인, 세무법인 업무, 상속 세무, 세무조사 대응, 기장 대행, 경정청구, 취득세 세무사, 크리에이터 세무', url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['업무분야', url]])],
   }) + `
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › 업무분야</nav>
-    <h1>일곱 개의 전문 영역. 하나의 호흡.</h1>
+    <h1>지금 필요한 업무부터 찾아보세요.</h1>
     <p class="jt-cc-lede">기장·신고, 양도·상속·증여, 기업 자문, 세무조사 대응과 경정청구, 그리고 취득세와 크리에이터 세금까지 사업과 재산의 세금 문제를 폭넓게 살핍니다.</p>
     <div class="jt-cc-grid">
 ${cards}
@@ -449,7 +449,7 @@ function renderExpertPage(e) {
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/experts/">전문가</a> › ${esc(e.name)} 세무사</nav>
     <div class="jt-cc-expert-intro">
-      <img class="jt-cc-portrait" src="${esc(e.photo)}" alt="${esc(e.name)} 대표세무사" width="180" height="240">
+      <figure class="jt-renewal-person-photo"><img class="jt-cc-portrait" src="${esc(e.photo.replace('-work.jpg', '-studio.jpg'))}" alt="${esc(e.name)} 대표세무사 인물 사진" width="1200" height="1600"></figure>
       <div>
         <p style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#999;margin:0 0 8px;">Managing Partner · 대표세무사</p>
         <h1>${esc(e.name)} 대표세무사 · ${esc(e.headline)}</h1>
@@ -459,6 +459,7 @@ function renderExpertPage(e) {
 
     <section class="jt-cc-sec">
       <h2>주요 실무</h2>
+      <img class="jt-renewal-expert-work" src="${esc(e.photo)}" alt="${esc(e.name)} 대표세무사 업무 모습" width="1536" height="1024" loading="lazy" decoding="async">
       <p style="font-size:16px;line-height:1.7;color:#333;">${esc(e.focus)}</p>
       <div class="jt-cc-chips" style="margin-top:12px;">
 ${svcChips}
@@ -488,7 +489,7 @@ function renderExpertsIndex() {
   const listLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `전문가 — ${FIRM}`,
+    name: `대표세무사 소개 — ${FIRM}`,
     image: ogImageHref(),
     url,
     mainEntity: {
@@ -506,7 +507,7 @@ function renderExpertsIndex() {
         <p style="margin-top:10px;font-weight:600;font-size:13px;">프로필 보기 →</p>
       </a>`).join('\n');
   return headHtml({
-    title: `전문가 — 세 명의 대표세무사 | ${FIRM}`,
+    title: `대표세무사 소개 | ${FIRM}`,
     desc: '김민석·이현준·김가환 대표세무사의 실무 경력과 활동을 소개합니다. 세 대표 모두 사업과 재산의 세금 문제를 폭넓게 다룹니다.',
     keywords: '강남 세무사, 제이티 세무법인 세무사, 대표세무사, 김민석 세무사, 이현준 세무사, 김가환 세무사', url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['전문가', url]])],
@@ -553,10 +554,12 @@ function renderAboutPage() {
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › 회사소개</nav>
     <h1>${esc(ABOUT.h1)}</h1>
-    <p class="jt-cc-lede">${esc(ABOUT.story)}</p>
+    <p class="jt-cc-lede">${esc(ABOUT.metaDesc)}</p>
+    <p>${esc(ABOUT.story)}</p>
+    <figure class="jt-renewal-team-photo"><img src="/project/assets/people/renewal/team-front.jpg" alt="제이티 세 대표세무사 소개 이미지" width="1536" height="1024"></figure>
 
     <section class="jt-cc-sec">
-      <h2>합치면서 달라진 것</h2>
+      <h2>각자의 실무 경험을 함께 살핍니다</h2>
       <div class="jt-cc-grid">
 ${ABOUT.synergy.map(s => `      <div class="jt-cc-card"><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p></div>`).join('\n')}
       </div>
@@ -605,15 +608,15 @@ function renderConsultPage() {
   };
   return headHtml({
     title: `${CONSULT.metaTitle} | ${FIRM}`, desc: CONSULT.metaDesc, keywords: CONSULT.keywords, url,
-    ldBlocks: [faqLd, crumbLd([['홈', `${SITE}/`], ['상담 예약', url]])],
+    ldBlocks: [faqLd, crumbLd([['홈', `${SITE}/`], ['상담 안내', url]])],
   }) + `
   <main class="jt-cc-wrap">
-    <nav class="jt-cc-crumb"><a href="/">홈</a> › 상담 예약</nav>
+    <nav class="jt-cc-crumb"><a href="/">홈</a> › 상담 안내</nav>
     <h1>${esc(CONSULT.h1)}</h1>
     <p class="jt-cc-lede">${esc(CONSULT.lede)}</p>
 
     <div class="jt-cc-cta">
-      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','consult_top')">상담 예약 폼 열기 →</a>
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','consult_top')">상담 신청서 열기 →</a>
       <a href="${L.kakaoChatUrl}" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','consult_top')">카톡 상담</a>
       <a href="tel:${L.phone}" class="jt-btn jt-btn--outline" onclick="jtTrackCta('call','consult_top')">${L.phone}</a>
     </div>

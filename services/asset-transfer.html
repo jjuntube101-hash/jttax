@@ -23,7 +23,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/project/assets/favicon32.png?v=21">
   <link rel="icon" type="image/png" sizes="16x16" href="/project/assets/favicon16.png?v=21">
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
-  <link rel="stylesheet" href="/project/src/styles.css?v=32">
+  <link rel="stylesheet" href="/project/src/styles.css?v=33">
   <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
   <script>
     // 운영 도메인 외 로컬·미리보기는 수집하지 않는다. 기존 방문자 수집 거부도 유지한다.
@@ -97,14 +97,14 @@
     .jt-cr-links{margin:4px 0 0;line-height:2.0;font-size:14px;}
     .jt-cr-proof{font-size:14px;color:#666;border-left:3px solid #0B0B0F;padding:6px 0 6px 14px;margin:0 0 28px;}
   </style>
+<link rel="stylesheet" href="/project/src/renewal.css?v=7">
+<link rel="stylesheet" href="/project/src/renewal-pages.css?v=7">
+<link rel="stylesheet" href="/project/src/renewal-flow.css?v=7">
+<link rel="stylesheet" href="/project/src/renewal-motion.css?v=7">
+<link rel="stylesheet" href="/project/src/renewal-static.css?v=7">
 </head>
-<body style="background:#fff;">
-  <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
-    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
-      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무법인"/> 제이티 세무법인
-    </a>
-    <span style="margin-left:auto;font-size:13px;"><a href="/" style="color:#666;text-decoration:none;">홈 →</a></span>
-  </header>
+<body class="jt-renewal-static">
+  <header class="jt-renewal-header"><a class="jt-renewal-skip" href="#content">본문으로 바로가기</a><a class="jt-renewal-brand" href="/#/" aria-label="제이티 세무법인 홈"><img src="/project/assets/logo_symbol.png" width="46" height="32" alt=""><span>제이티 세무법인</span></a><nav class="jt-renewal-desktop" aria-label="주 메뉴"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세금 계산기</a><a href="/insights/">세금 가이드</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a></nav><a class="jt-renewal-book" href="/#/booking" onclick="jtTrackCta('booking','nav')">상담 신청</a><details class="jt-renewal-menu"><summary aria-label="주 메뉴 열기">메뉴</summary><nav aria-label="모바일 주 메뉴"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세금 계산기</a><a href="/insights/">세금 가이드</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a><a href="/#/booking">상담 신청</a></nav></details></header>
 
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/services/">업무분야</a> › 양도·상속·증여</nav>
@@ -112,7 +112,7 @@
     <p class="jt-cc-lede">자산이 움직이는 순간 — 팔고, 물려주고, 받는 순간 — 세금이 결정됩니다. 신고서를 쓰기 전에, 어느 길이 유리한지부터 숫자로 비교합니다.</p>
 
     <div class="jt-cc-cta">
-      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','svc_top')">이 분야 상담 예약 →</a>
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','svc_top')">이 분야 상담 신청 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','svc_top')">카톡 상담</a>
     </div>
 
@@ -140,12 +140,12 @@
     </section>
 
     <section class="jt-cc-sec">
-      <h2>관련 대표세무사 프로필</h2>
+      <h2>관련 실무 경험을 확인하세요</h2>
       <div class="jt-cm-lead">
         <span class="r">Managing Partner</span>
         <span class="n">김민석 대표세무사</span>
         <p>양도·상속·증여 신고·검토 · 소득·법인세 검토 · 세무조사·조세불복 · 경정청구 · 비상장주식 평가·기업진단</p>
-        
+        <p style="color:#777;">대표별 경력을 소개합니다. 실제 업무 담당과 검토 범위는 상담 후 안내합니다.</p>
         <p><a href="/experts/kim-minseok.html" style="color:#1a1a1a;">프로필 보기 →</a></p>
       </div>
     </section>
@@ -161,7 +161,7 @@
     </section>
 
     <section class="jt-cc-sec">
-      <h2>관련 인사이트</h2>
+      <h2>관련 세금 가이드</h2>
       <ul class="jt-cc-links">
         <li><a href="/insights/gift-tax-exemption-limit.html">증여세 면제한도 2026 — 자녀·배우자 얼마까지 비과세? →</a></li>
         <li><a href="/insights/inheritance-tax-exemption-limit.html">상속세 면제한도 2026 — 배우자 10억·무배우자 5억 →</a></li>
@@ -175,7 +175,7 @@
       <p>본 페이지는 업무 소개를 위한 일반 정보이며, 특정 사안에 대한 확정적 세무 자문이 아닙니다. 세법은 개별 사실관계에 따라 결과가 달라지므로, 정확한 판단은 상담을 통해 진행하시기 바랍니다.</p>
     </div>
     <div class="jt-cc-cta" style="margin-top:24px;">
-      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','commercial')">상담 예약 →</a>
+      <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','commercial')">상담 신청 →</a>
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','commercial')">카톡 상담</a>
       <a href="tel:02-554-6405" class="jt-btn jt-btn--outline" onclick="jtTrackCta('call','commercial')">02-554-6405</a>
     </div>
@@ -185,10 +185,12 @@
     </div>
   </main>
 
-  <footer style="margin-top:80px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;line-height:1.9;">
+  <footer class="jt-renewal-footer">
     <!-- jt-shell v1 -->
     <div>제이티 세무법인 · 광고책임세무사 이현준 대표세무사</div>
     <div>© 2026 JT TAX CORP. — www.jttax.co.kr</div>
-  </footer>
+  <nav class="jt-renewal-footer-links" aria-label="이용 안내"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세금 계산기</a><a href="/insights/">세금 가이드</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a><a href="/#/privacy">개인정보처리방침</a><a href="/#/terms">이용약관</a></nav></footer>
+<script src="/project/src/renewal-static.js?v=1" defer></script>
+<nav class="jt-renewal-mobile-cta" aria-label="빠른 상담"><a href="tel:02-554-6405" onclick="jtTrackCta('call','sticky')">전화</a><a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','sticky')">카카오톡</a><a href="/#/booking" onclick="jtTrackCta('booking','sticky')">상담 신청 →</a></nav>
 </body>
 </html>

@@ -300,13 +300,13 @@ ${GA_HEAD_SNIPPET}
       <img src="/project/assets/logo_symbol.png" width="28" alt=""/> 제이티 세무법인
     </a>
     <span style="margin-left:auto;font-size:13px;color:#666;">
-      <a href="/insights/" style="color:inherit;">← 모든 인사이트</a>
+      <a href="/insights/" style="color:inherit;">← 모든 세금 가이드</a>
     </span>
   </header>
 
   <!-- jt-publication:${a.sourceHash} -->
   <article class="jt-editorial">
-    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">인사이트</a> / ${esc(a.tag)}</nav>
+    <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">세금 가이드</a> / ${esc(a.tag)}</nav>
     <h1>${esc(a.title)}</h1>
     <p class="jt-ed-deck">${esc(a.excerpt)}</p>
     <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a><span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
@@ -343,7 +343,7 @@ function renderInsightsIndex(arts) {
   const listLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `인사이트 — 제이티 세무법인`,
+    name: `세금 가이드 — 제이티 세무법인`,
     image: ogImageHref(),
     url,
     description: DESC,
@@ -359,7 +359,7 @@ function renderInsightsIndex(arts) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: '홈', item: `${SITE}/` },
-      { '@type': 'ListItem', position: 2, name: '인사이트', item: url },
+      { '@type': 'ListItem', position: 2, name: '세금 가이드', item: url },
     ],
   };
   const cards = arts.map((a) => `      <a class="jt-ih-card" href="/insights/${a.slug}.html">
@@ -372,18 +372,18 @@ ${a.hero ? `<img src="${esc(a.hero)}" alt="${esc(a.heroAlt)}" width="1536" heigh
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>인사이트 — 세금 실무 해설 | 제이티 세무법인</title>
+  <title>세금 가이드 — 신고·계산·상담 전 확인할 사항 | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="${esc(DESC)}">
   <link rel="canonical" href="${url}">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="인사이트 — 세금 실무 해설 | 제이티 세무법인">
+  <meta property="og:title" content="세금 가이드 — 신고·계산·상담 전 확인할 사항 | 제이티 세무법인">
   <meta property="og:description" content="${esc(DESC)}">
   <meta property="og:url" content="${url}">
   <meta property="og:image" content="${ogImageHref()}">
   <meta property="og:locale" content="ko_KR">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="인사이트 — 세금 실무 해설 | 제이티 세무법인">
+  <meta name="twitter:title" content="세금 가이드 — 신고·계산·상담 전 확인할 사항 | 제이티 세무법인">
   <meta name="twitter:description" content="${esc(DESC)}">
   <meta name="twitter:image" content="${ogImageHref()}">
 ${faviconHtml()}
@@ -415,8 +415,8 @@ ${GA_HEAD_SNIPPET}
     <span style="margin-left:auto;font-size:13px;"><a href="/" style="color:#666;text-decoration:none;">홈 →</a></span>
   </header>
   <main class="jt-ih-wrap">
-    <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 인사이트</nav>
-    <h1>인사이트</h1>
+    <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 세금 가이드</nav>
+    <h1>세금 가이드</h1>
     <p class="jt-ih-lede">${esc(DESC)}</p>
     <div class="jt-ih-grid">
 ${cards}

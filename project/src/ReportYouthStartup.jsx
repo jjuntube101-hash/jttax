@@ -32,6 +32,9 @@ if (typeof window !== 'undefined' && !window.jtLookupRegion) {
   };
 }
 
+// 연 수입금액 질문의 기준 과세연도(올해). §6⑥ 소규모 특례 한도는 과세연도 개시 시점으로 갈린다 — 2026.1.1 이후 1억4백만원, 그 전 8천만원.
+const YS_REVENUE_YEAR = new Date().getFullYear();
+
 const YS_QS = [
   {
     id: 'mode', tier: 'quick', section: '시작하기',
@@ -128,8 +131,8 @@ const YS_QS = [
   },
   {
     id: 'annualRevenue', tier: 'detail', section: '연 수입금액', numeric: true, money: true, optional: true,
-    q: '연 수입금액(매출)은 대략 얼마인가요? (선택)',
-    sub: '청년이 아니어도 연 수입금액이 8천만원 이하인 「소규모」 창업이면 청년과 같은 높은 감면율을 받습니다(§6⑥, 소규모 특례). 대략적인 연 매출을 넣으면 이 특례 적용 여부를 판정합니다.',
+    q: '올해(' + YS_REVENUE_YEAR + '년) 연 수입금액(매출)은 대략 얼마인가요? (선택, 법인은 이번 사업연도)',
+    sub: '청년이 아니어도 그 과세연도의 연 수입금액이 1억 4백만원 이하인 「소규모」 창업이면 청년과 같은 높은 감면율을 받습니다(§6⑥, 소규모 특례 — 2026년 1월 1일 이후 시작하는 과세연도 기준이며, 그 전에 시작한 과세연도는 8천만원). 개인은 올해(' + YS_REVENUE_YEAR + '년) 과세연도 기준으로 판정합니다. 법인은 사업연도 시작일에 따라 기준이 달라 8천만원 초과 구간은 상담에서 확인합니다.',
     placeholder: '예: 80,000,000',
   },
   {
@@ -225,7 +228,12 @@ function mapAnswersToYouth(a, industryMatch, region) {
     body.overcrowding_uncertain = !!region.overcrowding_uncertain;   // 과밀 부분지정(남양주·시흥·인천 경제자유구역 등)
     if (region.sigungu_code) body.sigungu_code = region.sigungu_code;
   }
-  if (Number(a.annualRevenue) > 0) body.annual_revenue = Number(a.annualRevenue);
+  if (Number(a.annualRevenue) > 0) {
+    body.annual_revenue = Number(a.annualRevenue);
+    // 개인은 과세기간이 1.1~12.31 이라 «올해»가 곧 과세연도 개시 연도다. 법인은 사업연도가 역년이 아닐 수 있어 보내지 않는다
+    // (엔진이 8천만 초과~1억4백만 구간을 보수적으로 판정하고 안내) — §6⑥ 한도는 과세연도 개시 시점으로 갈린다(부칙 제21223호 §2).
+    if (a.entityType !== '법인') body.tax_year = YS_REVENUE_YEAR;
+  }
   if (a.employeeCount !== undefined && a.employeeCount !== '') body.employee_count = Number(a.employeeCount);
   if (Number(a.expectedTax) > 0) body.expected_annual_tax = Number(a.expectedTax);
   return body;
@@ -456,7 +464,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                   {calc.is_youth ? '청년창업중소기업' : (calc.small_scale_applied ? '소규모 창업 특례(§6⑥)' : '일반 창업중소기업')} · {calc.area}
                 </div>
                 {!calc.is_youth && !calc.small_scale_applied && (
-                  <div style={{ fontSize: 12.5, opacity: 0.75, marginTop: 6, lineHeight: 1.5 }}>※ 청년이 아니면 일반율입니다. <strong>연 수입금액 8천만원 이하 소규모</strong>로 창업하면 청년과 같은 높은 율(§6⑥)을 받을 수 있어요 — 정밀 단계에서 매출을 넣어 확인하세요.</div>
+                  <div style={{ fontSize: 12.5, opacity: 0.75, marginTop: 6, lineHeight: 1.5 }}>※ 청년이 아니면 일반율입니다. <strong>연 수입금액 1억 4백만원 이하 소규모</strong>로 창업하면 청년과 같은 높은 율(§6⑥)을 받을 수 있어요 — 정밀 단계에서 매출을 넣어 확인하세요.</div>
                 )}
                 {calc.estimated_annual_reduction != null && (
                   <div style={{ marginTop: 10, fontSize: 15 }}>예상 감면액(연) <strong style={{ color: meta.color }}>{formatWon(calc.estimated_annual_reduction)}</strong>{calc.cap_applied ? ' (5억 한도)' : ''}</div>
@@ -502,7 +510,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                   ))}
                 </tbody>
               </table>
-              <p style={{ fontSize: 12.5, opacity: 0.7, marginTop: 8 }}>※ 수도권 인구감소지역 = 인천 강화·옹진, 경기 가평·연천 (2026년 이후 창업 기준). 청년이 아니어도 연 수입 8천만원 이하 소규모면 청년과 같은 율을 받습니다.</p>
+              <p style={{ fontSize: 12.5, opacity: 0.7, marginTop: 8 }}>※ 수도권 인구감소지역 = 인천 강화·옹진, 경기 가평·연천 (2026년 이후 창업 기준). 청년이 아니어도 연 수입 1억 4백만원 이하 소규모면 청년과 같은 율을 받습니다(2026년 이후 시작하는 과세연도 기준).</p>
             </section>
           )}
 

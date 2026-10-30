@@ -528,21 +528,544 @@
   },
   "consumers": {
     "installed": {
-      "status": "different_contract",
-      "exact_basic_inputs_observed": 7,
-      "exact_basic_amount_differences": 0,
-      "unrepresentable_basic_inputs": 2,
-      "candidate_only_fields_by_tax": {
-        "transfer": 18,
-        "acquisition": 14,
-        "gift": 2,
-        "inheritance": 6,
-        "property": 1,
-        "comprehensive": 2,
-        "corporate": 5,
-        "income": 0,
-        "vat": 4
-      }
+      "status": "current22_actual_app_verified49",
+      "as_of": "2026-10-30",
+      "channel": "owner_codex_mcp",
+      "source_commit": "11ffe2a596208773eff01ae317c85aeed98d82a4",
+      "current_tools": 22,
+      "basic_tools": 9,
+      "composite_tools": 9,
+      "information_tools": 4,
+      "legacy_engine_tools": 0,
+      "actual_app_cases": 49,
+      "actual_app_passed": 49,
+      "actual_app_checks": 398,
+      "independent_checks": 755,
+      "isolated_venv_cases": 49,
+      "isolated_venv_checks": 462,
+      "amount_success_cases": 21,
+      "held_cases": 21,
+      "information_success_cases": 7,
+      "input_values_equal": 49,
+      "input_original_representation_sha_equal": 46,
+      "input_numeric_notation_differences": 3,
+      "structured_numeric_notation_differences": 7,
+      "initial_strict_audit": {
+        "passed": 39,
+        "total": 49,
+        "exit_code": 1,
+        "preserved": true
+      },
+      "version": {
+        "build_sha256": "772450152ac5637c59129138e194e87078779eb9537ca3b5fb373c58a2fc3e90",
+        "input_contract_sha256": "5b531c5308d212f509e908748226be0cfc42710b1e5db9aad620221d26cf4828"
+      },
+      "evidence_hashes": {
+        "ACTUAL_APP49_RAW_20261030.json": "f3fd6fb7126099e13528cbcb7b1b0bdb024c8dbe97c61f99de46409b90957928",
+        "ACTUAL_APP49_INPUTS_20261030.json": "1acf65749dc6d757cebb2f277674ee6a09fba20de50f42f7ef16c7757e125ff3",
+        "calc_FINAL_RECONNECTED49_20261030.json": "46764d3c4016874de25e899a0fd847ec4e428e74adc275cdd57677c6e8477a0b",
+        "law_FINAL_RECONNECTED49_20261030.json": "1c6ee01ccc45855c5da4d747faa8b250a6fd484a24e6d19c4667e75736ee8e35"
+      },
+      "installed_applied": true,
+      "all22_tax_correctness_certified": false,
+      "all_legacy_inputs_supported": false,
+      "merged_pr_head_runtime_equivalence_verified": false,
+      "deployed_web_identity_verified": false,
+      "partial_fixed_education_formula_confirmed": false,
+      "partial_fixed_education_amount_withheld": true,
+      "new_numeric_golden": false,
+      "cases": [
+        {
+          "id": "PRACTICAL-TRANSFER-BASIC",
+          "tool": "transfer_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "PRACTICAL-ACQUISITION-BASIC",
+          "tool": "acquisition_tax",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "PRACTICAL-GIFT-BASIC",
+          "tool": "gift_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "PRACTICAL-INHERITANCE-BASIC",
+          "tool": "inheritance_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "PRACTICAL-PROPERTY-BASIC",
+          "tool": "property_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "PRACTICAL-COMPREHENSIVE-BASIC",
+          "tool": "comprehensive_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "PRACTICAL-CORPORATE-BASIC",
+          "tool": "corporate_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "PRACTICAL-VAT-BASIC",
+          "tool": "vat_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "PRACTICAL-INCOME-BASIC",
+          "tool": "comprehensive_income_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "CNS02-zero-debt",
+          "tool": "burdened_gift",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": false
+        },
+        {
+          "id": "CNS02-missing-relation",
+          "tool": "burdened_gift",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": false
+        },
+        {
+          "id": "BURDENED-BOOL-DEBT",
+          "tool": "burdened_gift",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": false
+        },
+        {
+          "id": "CNS03-gift-acquisition",
+          "tool": "gift_with_acquisition",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "CNS03-missing-value",
+          "tool": "gift_with_acquisition",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "INHERITANCE-CURRENT-CONTEXT",
+          "tool": "inheritance_with_acquisition",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "INHERITANCE-MISSING-CONTEXT",
+          "tool": "inheritance_with_acquisition",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "SALE-CURRENT-CONTEXT",
+          "tool": "sale_workflow",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "SALE-MISSING-CONTEXT",
+          "tool": "sale_workflow",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "SALE-LEGACY-HOUSE-PARTIAL-REFUSED",
+          "tool": "sale_workflow",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "CNS01-alternatives",
+          "tool": "compare_disposal",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "CNS01-unconfirmed-alternatives",
+          "tool": "compare_disposal",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "OPTIMIZE-BURDENED-CURRENT",
+          "tool": "optimize_burdened_gift",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "OPTIMIZE-BURDENED-MISSING-RELATION",
+          "tool": "optimize_burdened_gift",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "OPTIMIZE-BURDENED-EXPLICIT-ZERO-LIMIT",
+          "tool": "optimize_burdened_gift",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DISTRIBUTION-EXPLICIT-FROZEN-PLAN",
+          "tool": "optimize_distribution",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DISTRIBUTION-GENUINE-ZERO-PLAN",
+          "tool": "optimize_distribution",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DISTRIBUTION-LEGACY-DEFAULTS-REFUSED",
+          "tool": "optimize_distribution",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "ORDER-ANNUAL-CURRENT-PLAN",
+          "tool": "optimize_transfer_order",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "ORDER-LEGACY-FLAT-REFUSED",
+          "tool": "optimize_transfer_order",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "ORDER-INCOMPLETE-ANNUAL-SCOPE",
+          "tool": "optimize_transfer_order",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "STOCK-ELIGIBLE-MARKET",
+          "tool": "evaluate_unlisted_stock",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "STOCK-LEGACY-MARKET-ZERO-REFUSED",
+          "tool": "evaluate_unlisted_stock",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "STOCK-MISSING-FACTS-NOT-ZERO",
+          "tool": "evaluate_unlisted_stock",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DEADLINE-HOLIDAY-CHAIN",
+          "tool": "tax_deadline",
+          "outcome": "information",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DEADLINE-OUTSIDE-CURRENT-EVENT-YEAR",
+          "tool": "tax_deadline",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "SYSTEM-INFO-CURRENT-IDENTITY",
+          "tool": "get_system_info",
+          "outcome": "information",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "SYSTEM-INFO-UNKNOWN-KEY",
+          "tool": "get_system_info",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "TABLE-CURRENT-INHERITANCE-CITATION",
+          "tool": "render_tax_bracket_table",
+          "outcome": "information",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "TABLE-UNSUPPORTED-TAX",
+          "tool": "render_tax_bracket_table",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "SERVER-VERSION-CURRENT-IDENTITY",
+          "tool": "server_version",
+          "outcome": "information",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "SERVER-VERSION-UNKNOWN-KEY",
+          "tool": "server_version",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DEADLINE-TRANSFER-PRINCIPLE-AND-ACTUAL",
+          "tool": "tax_deadline",
+          "outcome": "information",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DEADLINE-GIFT-PRINCIPLE-AND-ACTUAL",
+          "tool": "tax_deadline",
+          "outcome": "information",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DEADLINE-INHERITANCE-PRINCIPLE-AND-ACTUAL",
+          "tool": "tax_deadline",
+          "outcome": "information",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DEADLINE-COMPACT-DATE-REFUSED",
+          "tool": "tax_deadline",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "DEADLINE-TIMESTAMP-DATE-REFUSED",
+          "tool": "tax_deadline",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "BASIC9-RURAL-NORELIEF95",
+          "tool": "acquisition_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "BASIC9-RURAL-FIRST-FULL95",
+          "tool": "acquisition_tax",
+          "outcome": "amount",
+          "can_present_amount": true,
+          "can_generate_commentary": true,
+          "can_share": true,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        },
+        {
+          "id": "BASIC9-RURAL-FIRST-PARTIAL95",
+          "tool": "acquisition_tax",
+          "outcome": "held",
+          "can_present_amount": false,
+          "can_generate_commentary": false,
+          "can_share": false,
+          "input_value_equal": true,
+          "original_input_representation_sha_equal": true
+        }
+      ]
     },
     "deployed_web_engine": {
       "status": "identity_unverified",
@@ -568,7 +1091,9 @@
       "installed_applied": false,
       "all22_tax_correctness_certified": false,
       "evidence_sha256": "031cef2a301c67064c9bf886101ed4aad65d229df28d91d0cbb1a6e790ad8c5e",
-      "package_evidence_sha256": "ab73fb833f5060f1c941f54e3b933c39fd925b86abc154167d3584964c29d499"
+      "package_evidence_sha256": "ab73fb833f5060f1c941f54e3b933c39fd925b86abc154167d3584964c29d499",
+      "historical_observation": true,
+      "superseded_by": "consumers.installed"
     },
     "historical_transition_candidate": {
       "status": "uninstalled_current_basic9_legacy13_passthrough",
@@ -578,6 +1103,24 @@
       "actual_calls": 19,
       "legacy13_schemas_preserved": true,
       "all22_tax_correctness_certified": false
+    },
+    "installed_legacy_observation": {
+      "status": "different_contract",
+      "exact_basic_inputs_observed": 7,
+      "exact_basic_amount_differences": 0,
+      "unrepresentable_basic_inputs": 2,
+      "candidate_only_fields_by_tax": {
+        "transfer": 18,
+        "acquisition": 14,
+        "gift": 2,
+        "inheritance": 6,
+        "property": 1,
+        "comprehensive": 2,
+        "corporate": 5,
+        "income": 0,
+        "vat": 4
+      },
+      "historical_observation": true
     }
   },
   "provenance": {
@@ -585,13 +1128,25 @@
     "replay_sha256": "ed4ea552cfee2bb7c612d1eb6f129d2c9cfbabb33e10dd4e41947b6a8c9fb4ac",
     "archived_index_sha256": "b53f8d899cd90ddc8f161eeedf937ec42395413b0d0745156a6898ffb4e6c2c8",
     "law_constraints_sha256": "208e5b00b7087f58a1d7e58501d66175feaea0abea1c83b8e22e023ede69d935",
-    "law_constraints_file": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_candidate_20261030\\law_FAMILY_CONSTRAINTS_20261030.json",
-    "prior_consumer_observation": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_candidate_20261030\\RELEASE_DELIVERY_20261030.md",
-    "replay_directory": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\education_mcp13_20261030",
+    "law_constraints_file": "local-retained-evidence:law_FAMILY_CONSTRAINTS_20261030.json",
+    "prior_consumer_observation": "local-retained-evidence:RELEASE_DELIVERY_20261030.md",
+    "replay_directory": "local-retained-evidence:education_mcp13_20261030",
     "prior_hardening_snapshot_sha256": "07544a321c6ade58a52f16966dbc4c70a60b29072c73115c2e67b0556cc0f02a",
     "prior_citation_readiness_sha256": "abc2d2ebe7014bb638056aa9ce9097c0ea4892466477bb9a5c9503ad2d8f251e",
     "prior_rural_readiness_sha256": "613a87e44523c26d7dea11b58ab8dd801c6be4c9bcee5e6bd26dbc4e8a523f2e",
-    "unchanged_existing181_calc_and_review": true
+    "unchanged_existing181_calc_and_review": true,
+    "current22_actual_app_verification": {
+      "status": "current22_actual_app_verified49",
+      "snapshot_source_commit": "11ffe2a596208773eff01ae317c85aeed98d82a4",
+      "separate_from_existing181": true,
+      "input_value_comparison": "49 value equal;46 original notation SHA equal;bool differs from number,integer tax enforced",
+      "raw_evidence_hashes": {
+        "ACTUAL_APP49_RAW_20261030.json": "f3fd6fb7126099e13528cbcb7b1b0bdb024c8dbe97c61f99de46409b90957928",
+        "ACTUAL_APP49_INPUTS_20261030.json": "1acf65749dc6d757cebb2f277674ee6a09fba20de50f42f7ef16c7757e125ff3",
+        "calc_FINAL_RECONNECTED49_20261030.json": "46764d3c4016874de25e899a0fd847ec4e428e74adc275cdd57677c6e8477a0b",
+        "law_FINAL_RECONNECTED49_20261030.json": "1c6ee01ccc45855c5da4d747faa8b250a6fd484a24e6d19c4667e75736ee8e35"
+      }
+    }
   },
   "families": [
     {

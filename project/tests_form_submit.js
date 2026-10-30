@@ -649,10 +649,13 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
      ⚠️ 호스트·스킴은 대소문자를 가리지 않는다 — URL 로 정규화해 비교한다 (R5 P2). */
   /* ⚠️ host·path 만 보면 «어느 컨테이너인지»가 안 잠긴다 — `?id=GTM-ATTACKER` 로 바꾸면
      그 컨테이너가 임의 태그를 실행할 수 있다 (260809 Codex R10 P0). 전체 URL 을 고정한다. */
-  const SRC_OK = ['https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE', 'https://www.jttax.co.kr/desk/partner-form.js?v=1'];
+  const SRC_OK = ['https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE', 'https://www.jttax.co.kr/desk/partner-form.js?v=1', 'https://www.jttax.co.kr/project/src/renewal-static.js?v=1'];
   // Reviewed submission handler: pin contents as well as the URL; runtime cases live in tests_partner_form.js.
   const partnerJs = fs.readFileSync(path.join(__dirname, '../desk/partner-form.js'), 'utf8').replace(/\r\n/g, '\n');
   eq('desk: reviewed partner handler hash', require('crypto').createHash('sha256').update(partnerJs).digest('hex'), '077dab1dd03c9724e49d623f2340afb5086075ce75ae321f30062d03bf863f98');
+  // Independently reviewed: skip-link focus and Escape-to-close navigation only; no form, storage, or network access.
+  const renewalUiJs = fs.readFileSync(path.join(__dirname, 'src/renewal-static.js'), 'utf8').replace(/\r\n/g, '\n');
+  eq('desk: reviewed navigation-only handler hash', require('crypto').createHash('sha256').update(renewalUiJs).digest('hex'), 'e4bf3f113f5c6122697b64f3b9fa4b99e70a0e33601286b91912b1e9fac8708f');
   /* ⚠️ 수신 계정도 «이름»이 아니라 «값»으로 고정한다 — access_key 를 다른 Web3Forms 키로
      바꾸면 action 은 그대로인 채 제출 내용이 «남의 계정»으로 간다 (R10 P0). */
   const HIDDEN_PIN = {

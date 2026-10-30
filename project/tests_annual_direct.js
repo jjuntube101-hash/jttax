@@ -22,8 +22,10 @@ module.exports={draft,fixtures};console.log(`${checks} annual direct checks PASS
 for(const [value,expected] of [[0,'0원'],[-10,'-10원'],[{numerator:'150000000',denominator:'1'},'150,000,000원'],[{numerator:'2',denominator:'2'},'1원'],[{numerator:'1',denominator:'3'},'1 / 3원 (정확분수)'],[{numerator:'1',denominator:'0'},'금액 확인 필요'],[null,'금액 확인 필요']]) test('exact amount display '+JSON.stringify(value),()=>assert.equal(env.api.annualStepAmount(value),expected));
 const report=fs.readFileSync(path.join(__dirname,'src/Report.jsx'),'utf8');
 const shellSource=report.slice(report.indexOf('function JTReportShell('),report.indexOf('window.JTReportShell = JTReportShell;'));
-const shellEnv=vm.createContext({React:{createElement:(tag,props,...children)=>({tag,props,children})},JT_PRIVACY_NOTE:{engine:'privacy'}});
-vm.runInContext(esbuild.transformSync(shellSource,{loader:'jsx'}).code+';globalThis.shell=JTReportShell',shellEnv);
+const chrome=fs.readFileSync(path.join(__dirname,'src/Chrome.jsx'),'utf8');
+const motionSource=chrome.slice(chrome.indexOf('function useJTContentMotion('),chrome.indexOf('window.useJTContentMotion = useJTContentMotion;'));
+const shellEnv=vm.createContext({React:{createElement:(tag,props,...children)=>({tag,props,children}),useRef:value=>({current:value}),useLayoutEffect:()=>{}},JT_PRIVACY_NOTE:{engine:'privacy'}});
+vm.runInContext(esbuild.transformSync(motionSource+'\n'+shellSource,{loader:'jsx'}).code+';globalThis.shell=JTReportShell',shellEnv);
 function textOf(node){return node==null||typeof node==='boolean'?'':typeof node==='object'?(node.children||[]).map(textOf).join(''):String(node);}
 test('direct form hides undefined progress',()=>{const out=JSON.stringify(shellEnv.shell({}));assert(!out.includes('NaN'));assert(!out.includes('Step '));assert(!out.includes('jt-report-shell__bar'));});
 test('wizard progress remains visible and clamped',()=>{assert(textOf(shellEnv.shell({stepIdx:1,stepTotal:3})).includes('Step 2 / 3'));assert(textOf(shellEnv.shell({stepIdx:3,stepTotal:3})).includes('Step 3 / 3'));});

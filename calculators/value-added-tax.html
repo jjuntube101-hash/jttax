@@ -23,7 +23,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/project/assets/favicon32.png?v=21">
   <link rel="icon" type="image/png" sizes="16x16" href="/project/assets/favicon16.png?v=21">
   <link rel="apple-touch-icon" sizes="180x180" href="/project/assets/appletouchicon.png?v=21">
-  <link rel="stylesheet" href="/project/src/styles.css?v=32">
+  <link rel="stylesheet" href="/project/src/styles.css?v=33">
   <!-- Google Analytics 4 (GA4) + 상담 CTA 통일 계측(cta_click) -->
   <script>
     // 운영 도메인 외 로컬·미리보기는 수집하지 않는다. 기존 방문자 수집 거부도 유지한다.
@@ -47,9 +47,9 @@
       } catch (_e) {}
     };
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"부가가치세(VAT) 계산기","url":"https://www.jttax.co.kr/calculators/value-added-tax.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"provider":{"@type":"Organization","name":"제이티 세무법인","url":"https://www.jttax.co.kr"},"description":"일반·간이과세자의 매출·매입만 넣으면 낼 부가가치세(또는 환급액)를 검증 엔진으로 바로 계산합니다. 매입세액·신용카드 공제와 신고기한, 간이과세 납부면제까지 반영합니다.","image":"https://www.jttax.co.kr/project/assets/og-image.png?v=2"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"부가가치세(부가세) 계산기","url":"https://www.jttax.co.kr/calculators/value-added-tax.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"provider":{"@type":"Organization","name":"제이티 세무법인","url":"https://www.jttax.co.kr"},"description":"일반·간이과세자의 매출·매입만 넣으면 낼 부가가치세(또는 환급액)를 검증 엔진으로 바로 계산합니다. 매입세액·신용카드 공제와 신고기한, 간이과세 납부면제까지 반영합니다.","image":"https://www.jttax.co.kr/project/assets/og-image.png?v=2"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"부가가치세는 언제 신고하나요?","acceptedAnswer":{"@type":"Answer","text":"일반과세자는 1년에 두 번 확정신고합니다. 상반기(1~6월)분은 7월 25일까지, 하반기(7~12월)분은 다음 해 1월 25일까지입니다. 간이과세자는 1년치를 다음 해 1월 25일까지 한 번 신고합니다."}},{"@type":"Question","name":"일반과세자와 간이과세자는 무엇이 다른가요?","acceptedAnswer":{"@type":"Answer","text":"간이과세자는 연 매출이 일정 기준 미만인 소규모 사업자로, 업종별 부가가치율을 적용하는 간편한 방식으로 계산하고 환급이 없습니다. 일반과세자는 매출세액에서 매입세액을 빼서 계산하며 매입이 많으면 환급도 가능합니다."}},{"@type":"Question","name":"간이과세자는 세금을 안 내도 되나요?","acceptedAnswer":{"@type":"Answer","text":"1년 공급대가가 4,800만원 미만이면 납부의무가 면제됩니다(부가가치세법 §69). 다만 신고 자체는 해야 합니다. 4,800만원 이상이면 업종별 부가가치율로 계산한 부가세를 냅니다."}},{"@type":"Question","name":"매입세액 공제를 받으려면 어떻게 해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"세금계산서를 받거나 사업용 신용카드로 결제해야 매입세액(매입액의 10%)을 공제받습니다. 간이영수증이나 인건비, 면세 농수산물 매입은 공제 대상이 아닙니다."}}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.jttax.co.kr/"},{"@type":"ListItem","position":2,"name":"세금 계산기","item":"https://www.jttax.co.kr/calculators/"},{"@type":"ListItem","position":3,"name":"부가가치세(VAT) 계산기","item":"https://www.jttax.co.kr/calculators/value-added-tax.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.jttax.co.kr/"},{"@type":"ListItem","position":2,"name":"세금 계산기","item":"https://www.jttax.co.kr/calculators/"},{"@type":"ListItem","position":3,"name":"부가가치세(부가세) 계산기","item":"https://www.jttax.co.kr/calculators/value-added-tax.html"}]}</script>
   <style>
     .jt-cc-wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;color:#0B0B0F;}
     .jt-cc-crumb{font-size:13px;color:#888;margin-bottom:20px;}
@@ -76,18 +76,18 @@
     .jt-cc-disc .l{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;}
     .jt-cc-disc p{font-size:13px;color:#5a5a5a;margin:8px 0 0;line-height:1.7;}
   </style>
+<link rel="stylesheet" href="/project/src/renewal.css?v=7">
+<link rel="stylesheet" href="/project/src/renewal-pages.css?v=7">
+<link rel="stylesheet" href="/project/src/renewal-flow.css?v=7">
+<link rel="stylesheet" href="/project/src/renewal-motion.css?v=7">
+<link rel="stylesheet" href="/project/src/renewal-static.css?v=7">
 </head>
-<body style="background:#fff;">
-  <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
-    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#0B0B0F;font-weight:700;letter-spacing:-0.01em;">
-      <img src="/project/assets/logo_symbol.png" width="28" alt="제이티 세무법인"/> 제이티 세무법인
-    </a>
-    <span style="margin-left:auto;font-size:13px;"><a href="/calculators/" style="color:#666;text-decoration:none;">← 모든 계산기</a></span>
-  </header>
+<body class="jt-renewal-static">
+  <header class="jt-renewal-header"><a class="jt-renewal-skip" href="#content">본문으로 바로가기</a><a class="jt-renewal-brand" href="/#/" aria-label="제이티 세무법인 홈"><img src="/project/assets/logo_symbol.png" width="46" height="32" alt=""><span>제이티 세무법인</span></a><nav class="jt-renewal-desktop" aria-label="주 메뉴"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세금 계산기</a><a href="/insights/">세금 가이드</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a></nav><a class="jt-renewal-book" href="/#/booking" onclick="jtTrackCta('booking','nav')">상담 신청</a><details class="jt-renewal-menu"><summary aria-label="주 메뉴 열기">메뉴</summary><nav aria-label="모바일 주 메뉴"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세금 계산기</a><a href="/insights/">세금 가이드</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a><a href="/#/booking">상담 신청</a></nav></details></header>
 
   <main class="jt-cc-wrap">
-    <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/calculators/">세금 계산기</a> › 부가가치세(VAT) 계산기</nav>
-    <h1>부가가치세(VAT) 계산기</h1>
+    <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/calculators/">세금 계산기</a> › 부가가치세(부가세) 계산기</nav>
+    <h1>부가가치세(부가세) 계산기</h1>
     <p class="jt-cc-lede">사업자가 가장 자주 마주치는 세금이 부가가치세입니다. 사업자 유형과 매출·매입만 넣으면, 이번 기에 낼 부가세(또는 돌려받을 환급액)를 바로 계산합니다. 7월·1월 신고를 미리 준비해 보세요.</p>
 
     <div class="jt-cc-cta">
@@ -118,7 +118,7 @@
     </section>
 
     <section class="jt-cc-sec">
-      <h2>부가가치세(VAT), 이렇게 계산됩니다</h2>
+      <h2>부가가치세(부가세), 이렇게 계산됩니다</h2>
       <ul>
       <li>① 일반과세자: 매출 공급가액에 10%를 곱해 매출세액을 구합니다(부가가치세법 §30).</li>
       <li>② 매입 세금계산서·사업용 카드 매입의 매입세액(매입액의 10%)과 신용카드 발행세액공제를 뺍니다.</li>
@@ -146,13 +146,13 @@
     </section>
 
     <div class="jt-cc-cta" style="margin-top:8px;">
-      <a href="/#/report/vat" class="jt-btn jt-btn--primary">부가가치세(VAT) 계산기로 계산하기 →</a>
+      <a href="/#/report/vat" class="jt-btn jt-btn--primary">부가가치세(부가세) 계산기로 계산하기 →</a>
     </div>
 
 
 
     <section class="jt-cc-sec">
-      <h2>관련 인사이트</h2>
+      <h2>관련 세금 가이드</h2>
       <ul class="jt-cc-links">
         <li><a href="/insights/vat-basics.html">사업자라면 알아야 할 부가가치세 기초 →</a></li>
         <li><a href="/insights/side-job-income-tax.html">부업 소득, 종합소득세 신고는 어떻게 →</a></li>
@@ -163,8 +163,8 @@
       <h2>다른 세금 계산기</h2>
       <div class="jt-cc-chips">
         <a class="jt-cc-chip" href="/calculators/income-tax.html">종합소득세 계산기</a>
-        <a class="jt-cc-chip" href="/calculators/incorporation-simulator.html">법인 전환 시뮬레이터</a>
-        <a class="jt-cc-chip" href="/calculators/net-salary.html">4대보험·실수령 계산기</a>
+        <a class="jt-cc-chip" href="/calculators/incorporation-simulator.html">개인사업자·법인 세금 비교</a>
+        <a class="jt-cc-chip" href="/calculators/net-salary.html">월급 실수령액 계산기</a>
         <a class="jt-cc-chip" href="/calculators/youthstartup.html">청년창업 세액감면 계산기</a>
         <a class="jt-cc-chip" href="/calculators/capital-gains-tax.html">양도소득세 계산기</a>
         <a class="jt-cc-chip" href="/calculators/property-tax.html">재산세 계산기</a>
@@ -182,10 +182,12 @@
     </div>
   </main>
 
-  <footer style="margin-top:80px;padding:32px 24px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;color:#888;text-align:center;line-height:1.9;">
+  <footer class="jt-renewal-footer">
     <!-- jt-shell v1 -->
     <div>제이티 세무법인 · 광고책임세무사 이현준 대표세무사</div>
     <div>© 2026 JT TAX CORP. — www.jttax.co.kr</div>
-  </footer>
+  <nav class="jt-renewal-footer-links" aria-label="이용 안내"><a href="/about/">제이티 소개</a><a href="/services/">업무분야</a><a href="/calculators/">세금 계산기</a><a href="/insights/">세금 가이드</a><a href="/desk/">법무사·중개사</a><a href="/#/contact">상담 안내</a><a href="/#/privacy">개인정보처리방침</a><a href="/#/terms">이용약관</a></nav></footer>
+<script src="/project/src/renewal-static.js?v=1" defer></script>
+<nav class="jt-renewal-mobile-cta" aria-label="빠른 상담"><a href="tel:02-554-6405" onclick="jtTrackCta('call','sticky')">전화</a><a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','sticky')">카카오톡</a><a href="/#/booking" onclick="jtTrackCta('booking','sticky')">상담 신청 →</a></nav>
 </body>
 </html>

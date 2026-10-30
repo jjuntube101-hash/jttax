@@ -1,0 +1,144 @@
+/* Gesture input belongs only to the grip; links retain native scrolling. */
+.jt-menu-clip{position:absolute;top:100%;left:0;right:0;height:0;overflow:hidden;pointer-events:none}
+.jt-navmenu.jt-menu-panel{position:relative;top:auto;left:auto;right:auto;display:flex;flex-direction:column;gap:0;padding:.5rem 1.25rem 1.25rem;max-height:calc(100dvh - 5rem);overflow-y:auto;overscroll-behavior:contain;pointer-events:auto;background:rgba(246,243,235,.98);border-bottom:1px solid #c5d3ca;box-shadow:0 12px 24px #183f3514;transform:translate3d(0,-110%,0);will-change:transform;transition:none;animation:none}
+.jt-menu-panel[inert]{pointer-events:none}
+.jt-menu-panel a{font-size:1.0625rem;line-height:1.5;padding:.75rem .25rem;min-height:44px;overflow-wrap:anywhere}
+.jt-menu-panel .jt-btn{margin-top:.75rem;flex-shrink:0}
+.jt-menu-grip{display:flex;align-items:center;justify-content:center;min-height:44px;width:100%;flex-shrink:0;border:0;background:transparent;touch-action:none;cursor:grab;color:var(--brand)}
+.jt-menu-grip span{width:2.5rem;height:4px;border-radius:3px;background:#6e8d82}
+.jt-menu-grip:active{cursor:grabbing}
+.jt-nav__burger:active,.jt-btn:active{filter:brightness(.93);scale:.98}
+.jt-nav__burger,.jt-btn{touch-action:manipulation}
+@media(min-width:1025px){.jt-menu-clip{display:none}}
+@media(prefers-reduced-motion:reduce){.jt-nav__burger:active,.jt-btn:active{scale:1}.jt-nav__burger span{transition:none}}
+@media(prefers-reduced-transparency:reduce){.jt-navmenu.jt-menu-panel{background:#f6f3eb}}
+@media(prefers-contrast:more){.jt-navmenu.jt-menu-panel{background:#f6f3eb;border-bottom:2px solid #234d49}}
+
+.jt-menu-grip{flex-direction:column;gap:.35rem}.jt-menu-grip small{font:500 .8125rem/1.4 var(--font-sans-kr);color:#47675e}
+
+/* Reading content arrives together; controls respond without a queued entrance. */
+
+
+
+
+/* Shared surface and interaction language. Content and calculation contracts are untouched. */
+:root{--jt-fluid-ease:cubic-bezier(.16,1,.3,1);--jt-control-radius:16px;--jt-panel-radius:24px;--jt-surface:#fffdf7;--jt-surface-line:rgba(35,77,73,.12)}
+.jt-app,.jt-renewal-static{font-optical-sizing:auto}
+/* No nested entrance animation: the shared React hook owns SPA page and step changes. */
+.jt-page-hero__crumb,.jt-page-hero h1,.jt-page-hero__sub{animation:none}
+.rn-button,.jt-btn,.jt-renewal-book{border-radius:var(--jt-control-radius)}
+:is(.rn-button,.jt-btn,.rn-situation,.rn-choice,.jt-renew-tool,.jt-renew-topic-grid .jt-service,.rn-about-tabs button,.jt-renew-filter button,.jt-mcta__btn,.jt-renewal-mobile-cta a,.jt-renewal-book){touch-action:manipulation;transition:scale 320ms var(--jt-fluid-ease),background-color 180ms ease,box-shadow 240ms ease,color 180ms ease}
+:is(.rn-button,.jt-btn,.rn-situation,.rn-choice,.jt-renew-tool,.jt-renew-topic-grid .jt-service,.rn-about-tabs button,.jt-renew-filter button,.jt-mcta__btn,.jt-renewal-mobile-cta a,.jt-renewal-book):not(:disabled):active{scale:.975;transform:none;filter:none;transition-duration:80ms}
+:is(.rn-situation,.rn-service,.rn-choice,.rn-final-prompt,.rn-prepare,.jt-renew-tool,.jt-renew-channel-grid article,.jt-renew-topic-grid .jt-service,.jt-booking-summary,.jt-renew-preparation){border-radius:var(--jt-panel-radius)}
+.rn-situation,.rn-service,.jt-renew-tool,.jt-renew-channel-grid article{background:var(--jt-surface);box-shadow:inset 0 0 0 1px var(--jt-surface-line),0 4px 16px rgba(35,77,73,.025)}
+.rn-situation>span:last-child,.jt-renew-tool-open>span{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#e7ece3;font-size:20px;color:#234d49;transition:translate 240ms var(--jt-fluid-ease)}
+@media(min-width:1025px){.rn-situation{grid-template-columns:180px 1fr 36px}}
+@media(min-width:1025px){.rn-hero{padding-block:76px 88px;gap:60px}}
+.rn-hero-copy h1{font-size:clamp(44px,4.9vw,72px);letter-spacing:-.055em;line-height:1.18}
+.rn-hero-copy .rn-lead{max-width:30em}
+.rn-hero-people{align-items:center}
+.rn-hero-people img{border-radius:20px;box-shadow:0 8px 24px rgba(35,77,73,.07)}
+.rn-hero-people figcaption{padding-inline:4px}
+.rn-team-figure img,.rn-method-layout figure img,.rn-profile-body>.rn-profile-work{border-radius:20px}
+.rn-profile{border-radius:24px;background:var(--jt-surface);box-shadow:inset 0 0 0 1px var(--jt-surface-line)}
+.rn-profile-studio{border-radius:24px 24px 0 0}
+@media(min-width:1025px){.rn-profile-body{padding:28px}}
+.rn-about-tabs{position:relative;isolation:isolate;display:grid;grid-template-columns:1fr 1fr;gap:4px;width:min(380px,calc(100% - 40px));margin-left:max(48px,calc((100% - 1240px)/2));margin-bottom:32px;padding:5px;border-radius:20px;background:#e4e8df}
+.rn-about-tabs::before{content:'';position:absolute;z-index:-1;left:5px;top:5px;bottom:5px;width:calc(50% - 7px);border-radius:15px;background:#fffdf7;box-shadow:0 2px 6px #173f3b12;transition:translate 320ms var(--jt-fluid-ease)}
+.rn-about-tabs:has(button:last-child[aria-selected=true])::before{translate:calc(100% + 4px) 0}
+.rn-about-tabs button,.rn-about-tabs button[aria-selected=true]{border:0;cursor:pointer;padding:12px 10px;background:transparent;color:#234d49;border-radius:15px;font-size:15px;min-height:48px}
+.rn-about-tabs button[aria-selected=true]{font-weight:700}
+.jt-renew-tool-search input,.rn-insight-controls input,.rn-insight-controls select{border-radius:16px}
+.jt-renew-filter button{border-radius:999px}
+.jt-renew-flow-intro{border-radius:0 0 32px 32px}
+.jt-renew-booking .jt-page-hero{border-radius:0 0 32px 32px}
+.jt-renew-tool-open{align-items:center}
+.jt-renew-topic-grid .jt-service{box-shadow:inset 0 0 0 1px var(--jt-surface-line)}
+.jt-renew-booking .jt-stepper__num{border-radius:50%;transition:background-color 200ms ease,color 200ms ease}
+.jt-renew-booking .jt-kakao-cta{border-radius:18px}
+.jt-field :is(input:not([type=checkbox]):not([type=radio]),textarea,select){border-radius:14px;background:#fffdf7;font-size:16px;transition:border-color 180ms ease,box-shadow 180ms ease}
+.jt-field :is(input,textarea,select):focus{border-color:#376b60;box-shadow:0 0 0 3px #376b6018;outline-offset:3px}
+.jt-report-shell__bar{height:4px;border-radius:4px;background:#e0e5da}
+.jt-report-shell__bar>div{background:#234d49;border-radius:inherit;transition:width 360ms var(--jt-fluid-ease)}
+.jt-report-shell__back{min-height:44px;padding-inline:14px;border-radius:14px;background:#e7ece3;font-size:14px}
+.jt-report-shell__body{padding:28px;border-radius:24px;background:#fffdf7;box-shadow:inset 0 0 0 1px var(--jt-surface-line)}
+.jt-nav--scrolled{box-shadow:0 3px 18px #173f3b0b}
+.jt-navmenu.jt-menu-panel{border-radius:0 0 24px 24px}
+@supports(backdrop-filter:blur(20px)){
+ .jt-nav.jt-nav--scrolled:not(.jt-nav--menu-open){background:rgba(246,243,235,.88)!important;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+}
+@media(hover:hover) and (pointer:fine){
+ .rn-situation:hover>span:last-child,.jt-renew-tool:hover .jt-renew-tool-open>span{translate:3px 0}
+ .rn-situation:hover,.jt-renew-tool:hover{background:#f2f5ed;transform:none;box-shadow:inset 0 0 0 1px #a8bcb0,0 6px 20px #234d4907}
+}
+/* A compact, safe-area-aware dock; preserve room below the last footer link. */
+@media(min-width:641px) and (max-width:1024px){
+ .rn-about-tabs{margin-left:32px}
+ .rn-hero{padding-block:44px 56px;gap:32px}
+ .jt-mcta,.jt-renewal-static .jt-renewal-mobile-cta{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:7px;gap:5px;max-width:520px;margin-inline:auto;border:1px solid #d7ded0;border-radius:24px;background:rgba(246,243,235,.96)!important;box-shadow:0 6px 28px #173f3b20}
+ .jt-mcta__btn,.jt-renewal-static .jt-renewal-mobile-cta a{min-height:48px;border:0;border-radius:17px;background:transparent!important;color:#234d49!important;font-size:14px;padding:8px;flex-direction:row;gap:6px}
+ .jt-mcta__btn--primary,.jt-renewal-static .jt-renewal-mobile-cta a:last-child{background:#234d49!important;color:#fffdf7!important}
+ body.jt-renewal-static{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+ .jt-app:has(input:not([type=checkbox]):not([type=radio]):focus,textarea:focus,select:focus) .jt-mcta{display:none}
+}
+@media(max-width:640px){
+ .rn-about-tabs{margin-left:32px}
+ .rn-hero{padding-block:44px 56px;gap:32px}
+ .jt-mcta,.jt-renewal-static .jt-renewal-mobile-cta{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:7px;gap:5px;max-width:520px;margin-inline:auto;border:1px solid #d7ded0;border-radius:24px;background:rgba(246,243,235,.96)!important;box-shadow:0 6px 28px #173f3b20}
+ .jt-mcta__btn,.jt-renewal-static .jt-renewal-mobile-cta a{min-height:48px;border:0;border-radius:17px;background:transparent!important;color:#234d49!important;font-size:14px;padding:8px;flex-direction:row;gap:6px}
+ .jt-mcta__btn--primary,.jt-renewal-static .jt-renewal-mobile-cta a:last-child{background:#234d49!important;color:#fffdf7!important}
+ body.jt-renewal-static{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+ .jt-app:has(input:not([type=checkbox]):not([type=radio]):focus,textarea:focus,select:focus) .jt-mcta{display:none}
+}
+@media(max-width:640px){
+ .rn-hero{padding-block:32px 36px;gap:30px}
+ .rn-hero-copy h1{font-size:clamp(36px,10.6vw,46px);line-height:1.2}
+ .rn-home .rn-hero .rn-lead{margin-top:20px;line-height:1.8}
+ .rn-home .rn-hero .rn-actions{margin-top:24px;gap:18px}
+ .rn-hero-people{gap:9px}
+ .rn-hero-people img{border-radius:15px}
+ .rn-hero-people figcaption{padding-inline:1px}
+ .rn-hero-people figcaption a{font-size:17px}
+ .rn-about-tabs{margin-left:20px;margin-bottom:28px}
+ .rn-situation{grid-template-columns:1fr 36px;padding:22px}
+ .rn-page-intro{padding-block:36px 28px}
+ .rn-profile-body{padding:24px}
+ .jt-renew-flow-intro,.jt-renew-booking .jt-page-hero{border-radius:0 0 24px 24px}
+ .jt-report-shell{padding-inline:20px;margin-top:28px}
+ .jt-report-shell__head{flex-wrap:wrap;gap:12px}
+ .jt-report-shell__body{padding:20px 16px;border-radius:20px;margin-inline:-4px}
+ .jt-report-shell__title{margin-bottom:28px}
+ .jt-report-shell__bar{margin-bottom:28px}
+}
+@media(max-width:359px){.rn-about-tabs{margin-left:16px;width:calc(100% - 32px)}.jt-mcta__btn{font-size:13px;gap:4px}.jt-mcta__ico svg{width:18px;height:18px}}
+/* Static article/expert/calculator entry pages share the same materials, without modifying their bodies. */
+body.jt-renewal-static :is(.jt-cc-card,.jt-ci-card,.jt-cc-pick,.jt-ed-toc,.jt-ed-related,.jt-ed-diagram,.jt-ed-summary,.jt-ed-cell){border-radius:20px}
+body.jt-renewal-static :is(.jt-ci-card,.jt-cc-card){background:#fffdf7}
+body.jt-renewal-static :is(.jt-cc-portrait,.jt-renewal-expert-work,.jt-renewal-team-photo img){border-radius:20px}
+body.jt-renewal-static .jt-renewal-menu summary{border-radius:14px}
+body.jt-renewal-static .jt-renewal-menu nav{border-radius:0 0 24px 24px}
+body.jt-renewal-static .jt-renewal-menu[open] nav{animation:jt-fluid-enter 240ms var(--jt-fluid-ease)}
+body.jt-renewal-static main{animation:jt-fluid-enter 360ms var(--jt-fluid-ease)}
+@keyframes jt-fluid-enter{from{opacity:.72;translate:0 10px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:reduce){
+ .jt-app *,.jt-renewal-static *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+ .jt-app :active,.jt-renewal-static :active{scale:1!important}
+}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
+ .jt-nav.jt-nav--scrolled:not(.jt-nav--menu-open),.jt-nav.jt-nav--scrolled,.jt-mcta,.jt-renewal-static .jt-renewal-mobile-cta{background:#f6f3eb!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+ .rn-situation,.jt-renew-tool,.jt-report-shell__body{border:1px solid #678479}
+}
+
+.jt-mcta .jt-mcta__btn{background:transparent!important;color:#234d49!important}
+.jt-mcta .jt-mcta__btn:is(:hover,:active){background:#e7ece3!important}
+.jt-mcta .jt-mcta__btn--primary,.jt-mcta .jt-mcta__btn--primary:is(:hover,:active){background:#234d49!important;color:#fffdf7!important}
+
+/* Keep navigation accessible on short screens and provide older-browser tab feedback. */
+.jt-nav--menu-open ~ .jt-mcta{display:none}
+body.jt-renewal-static:has(.jt-renewal-menu[open],input:not([type=checkbox]):not([type=radio]):focus,textarea:focus,select:focus) .jt-renewal-mobile-cta{display:none}
+.rn-about-tabs button[aria-selected=true]{background:#fffdf7}
+@supports selector(:has(*)){.rn-about-tabs button[aria-selected=true]{background:transparent}}
+@media(min-width:641px) and (max-width:1024px){
+ .jt-mcta{display:flex}
+ .jt-main,.jt-footer{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+}

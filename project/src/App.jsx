@@ -19,7 +19,7 @@ const { useState: useAppState, useEffect: useAppEffect } = React;
 
 // ============ 해시 라우터 (#/route/sub) — 계산기 딥링크·공유·뒤로가기 ============
 // 형식: '#/' 홈 · '#/report' 허브 · '#/report/cgt' 양도세 계산기 · '#/services' 등
-// '#/' 로 시작하는 해시만 라우터로 인식 → 회사소개 탭(#team)·인사이트 등 레거시 해시와 충돌 없음.
+// '#/' 로 시작하는 해시만 라우터로 인식 → 회사소개 탭(#team)·세금 가이드 등 레거시 해시와 충돌 없음.
 const JTRouter = {
   parse() {
     try {
@@ -61,7 +61,7 @@ function App() {
   const [aboutTab, setAboutTab] = useAppState(() => {
     try {
       const h = (window.location.hash || '').replace('#', '');
-      if (h === 'team') return 'team';
+      if (h === 'team' || h === '/about/team') return 'team';
     } catch (e) {}
     return 'company';
   });
@@ -73,14 +73,14 @@ function App() {
     if (name === 'team') {
       setAboutTab('team');
       setRouteRaw('about');
-      JTRouter.set('about');
+      JTRouter.set('about', 'team');
       return;
     }
     if (name === 'about') {
       setAboutTab(tab === 'team' ? 'team' : 'company');
     }
     setRouteRaw(name);
-    JTRouter.set(name);
+    JTRouter.set(name, name === 'about' && tab === 'team' ? 'team' : '');
   }, []);
 
   useAppEffect(() => {
@@ -92,7 +92,7 @@ function App() {
   useAppEffect(() => {
     const onHash = () => {
       const r = JTRouter.parse();
-      if (r.router && r.route) setRouteRaw(jtNormRoute(r.route));
+      if (r.router && r.route) { setRouteRaw(jtNormRoute(r.route)); if(r.route === 'about') setAboutTab(r.sub === 'team' ? 'team' : 'company'); }
     };
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
@@ -146,26 +146,15 @@ function App() {
   }, [route]);
 
   const pageClass = `jt-app jt-page-${route}`;
+  const contentMotion = useJTContentMotion(route);
   window.useSeoMeta(route);
 
   return (
     <div className={pageClass}>
+      <a className="jt-renewal-skip" href="#jt-main" onClick={e => { e.preventDefault(); const main=document.getElementById('jt-main'); main?.focus(); main?.scrollIntoView(); }}>본문으로 바로가기</a>
       <JTNav route={route} setRoute={setRoute} />
-      <main className="jt-main">
-        {route === 'home' && (
-          <div className="jt-home-ledger">
-            <JTBrandMoment setRoute={setRoute} />
-            <JTCreds setRoute={setRoute} />
-            <JTHero setRoute={setRoute} />
-            <JTMethod />
-            {tweaks.showQuote && <JTQuote />}
-            {tweaks.showProof !== false && <JTProof setRoute={setRoute} />}
-            <JTInsightsPreview setRoute={setRoute} limit={3} />
-            <JTFaq setRoute={setRoute} />
-            <JTCta setRoute={setRoute} />
-            <JTChannels setRoute={setRoute} />
-          </div>
-        )}
+      <main ref={contentMotion} id="jt-main" className="jt-main" tabIndex={-1}>
+        {route === 'home' && <JTRebuildHome setRoute={setRoute} />}
         {route === 'services' && <div><JTServicesPage setRoute={setRoute} /></div>}
         {route === 'team' && <div><JTAbout setRoute={setRoute} initialTab="team" /></div>}
         {route === 'about' && <div><JTAbout setRoute={setRoute} initialTab={aboutTab} /></div>}
@@ -215,7 +204,7 @@ function App() {
             <div className="jt-tweaks__group">
               <label>바로가기 (페이지 이동)</label>
               <div className="jt-tweaks__opts">
-                {[['home','홈'],['about','회사소개'],['services','업무분야'],['report','세금 계산기'],['insights','인사이트'],['contact','오시는 길'],['booking','상담 예약']].map(([v, l]) => (
+                {[['home','홈'],['about','회사소개'],['services','업무분야'],['report','세금 계산기'],['insights','세금 가이드'],['contact','오시는 길'],['booking','상담 예약']].map(([v, l]) => (
                   <button key={v} className={`jt-tweaks__opt ${route === v ? 'is-active' : ''}`} onClick={() => setRoute(v)}>{l}</button>
                 ))}
               </div>

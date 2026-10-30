@@ -73,7 +73,7 @@ function renderCalcPage(c) {
   ).join('\n');
   const relatedHtml = (c.related && c.related.length)
     ? `    <section class="jt-cc-sec">
-      <h2>관련 인사이트</h2>
+      <h2>관련 세금 가이드</h2>
       <ul class="jt-cc-links">
 ${c.related.map(r => `        <li><a href="/insights/${r.slug}.html">${esc(r.title)} →</a></li>`).join('\n')}
       </ul>
@@ -262,20 +262,20 @@ function renderIndexPage() {
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>세금 계산기 — 양도·증여·상속·취득·재산세·종부세·종소세 | 제이티 세무법인</title>
+  <title>세금 계산기 — 양도소득세·증여세·상속세 등 | 제이티 세무법인</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="양도소득세·증여세·상속세·취득세·재산세·종합부동산세·종합소득세·법인전환·4대보험 실수령까지, 검증된 계산 엔진으로 5분 만에 계산하는 세금 계산기 모음.">
+  <meta name="description" content="양도소득세·증여세·상속세 등 예상 세금과 4대보험을 계산하고, 개인사업자·법인 및 증여 방법별 세금을 비교해 보세요. 결과는 입력 조건에 따른 참고 자료입니다.">
   <meta name="keywords" content="세금 계산기, 양도소득세 계산기, 증여세 계산기, 상속세 계산기, 취득세 계산기, 재산세 계산기, 종합부동산세 계산기, 종합소득세 계산기, 실수령액 계산기">
   <link rel="canonical" href="${url}">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="세금 계산기 모음 | 제이티 세무법인">
-  <meta property="og:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 세금 계산기.">
+  <meta property="og:title" content="세금 계산기 — 양도소득세·증여세·상속세 등 | 제이티 세무법인">
+  <meta property="og:description" content="양도소득세·증여세·상속세 등 예상 세금과 4대보험을 계산하고, 개인사업자·법인 및 증여 방법별 세금을 비교해 보세요. 결과는 입력 조건에 따른 참고 자료입니다.">
   <meta property="og:url" content="${url}">
   <meta property="og:image" content="${ogImageHref()}">
   <meta property="og:locale" content="ko_KR">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="세금 계산기 모음 | 제이티 세무법인">
-  <meta name="twitter:description" content="양도·증여·상속·취득·재산세·종부세·종소세·법인전환·4대보험까지 검증 엔진으로 계산하는 세금 계산기.">
+  <meta name="twitter:title" content="세금 계산기 — 양도소득세·증여세·상속세 등 | 제이티 세무법인">
+  <meta name="twitter:description" content="양도소득세·증여세·상속세 등 예상 세금과 4대보험을 계산하고, 개인사업자·법인 및 증여 방법별 세금을 비교해 보세요. 결과는 입력 조건에 따른 참고 자료입니다.">
   <meta name="twitter:image" content="${ogImageHref()}">
 ${faviconHtml()}
   <link rel="stylesheet" href="${stylesHref()}">
@@ -303,7 +303,7 @@ ${GA_HEAD_SNIPPET}
   <main class="jt-ci-wrap">
     <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 세금 계산기</nav>
     <h1>세금 계산기</h1>
-    <p class="jt-ci-lede">양도·증여·상속·취득·재산세·종합부동산세 + 종합소득세·법인전환·4대보험 실수령까지. 검증된 계산 엔진으로 로그인 없이 5분 만에 계산하고, 바로 담당 세무사 상담으로 이어집니다.</p>
+    <p class="jt-ci-lede">세금과 4대보험 등 궁금한 항목을 골라 입력 조건에 따른 참고 결과를 확인해 보세요. 개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p>
     <div class="jt-ci-grid">
 ${cards}
     </div>
@@ -314,10 +314,10 @@ ${cards}
       <a href="/acquisition-tax/" style="color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">취득세, 내 상황부터 확인하기 →</a>
     </p>
     <p style="margin:10px 0 0;font-size:15px;line-height:1.7;color:#444;">
-      세금 주제별 해설은 <a href="/insights/" style="color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">인사이트</a>에 모아 두었습니다.
+      세금 주제별 해설은 <a href="/insights/" style="color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">세금 가이드</a>에 모아 두었습니다.
     </p>
     <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;">
-      <a href="/#/report" class="jt-btn jt-btn--primary">계산기 허브 열기 →</a>
+      <a href="/#/report" class="jt-btn jt-btn--primary">계산기·진단 도구 보기 →</a>
       <a href="/#/booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_index')">세무사 상담</a>
     </div>
   </main>

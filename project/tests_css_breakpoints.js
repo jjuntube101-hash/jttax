@@ -47,17 +47,17 @@ const BANDS = [
 const KNOWN = [   // 260906 C1 실측: 13종 · 규칙 147개 (키 = 루트 상대경로 | and-조각을 정렬한 절)
   { key: 'project/src/redesign.css | (max-height: 720px) and (min-width: 641px)', n: 1 },
   { key: 'project/src/redesign.css | (max-height: 900px) and (min-width: 641px)', n: 1 },
-  { key: 'project/src/redesign.css | (max-width: 1024px)', n: 7 },
-  { key: 'project/src/redesign.css | (max-width: 760px)', n: 32 },
+  { key: 'project/src/redesign.css | (max-width: 1024px)', n: 1 },
+  { key: 'project/src/redesign.css | (max-width: 760px)', n: 28 },
   { key: 'project/src/redesign.css | (max-width: 820px)', n: 1 },
   { key: 'project/src/redesign.css | (max-width: 860px)', n: 1 },
   { key: 'project/src/redesign.css | (max-width: 920px)', n: 1 },
   { key: 'project/src/redesign.css | (max-width: 960px)', n: 2 },
   { key: 'project/src/styles.css | (max-width: 1024px) and (min-width: 761px)', n: 4 },
-  { key: 'project/src/styles.css | (max-width: 1100px)', n: 16 },
-  { key: 'project/src/styles.css | (max-width: 720px)', n: 18 },
-  { key: 'project/src/styles.css | (max-width: 760px)', n: 37 },
-  { key: 'project/src/styles.css | (max-width: 960px)', n: 16 },
+  { key: 'project/src/styles.css | (max-width: 1100px)', n: 13 },
+  { key: 'project/src/styles.css | (max-width: 720px)', n: 12 },
+  { key: 'project/src/styles.css | (max-width: 760px)', n: 36 },
+  { key: 'project/src/styles.css | (max-width: 960px)', n: 15 },
 ];
 const knownMap = new Map(KNOWN.map((k) => [k.key, k.n]));
 
