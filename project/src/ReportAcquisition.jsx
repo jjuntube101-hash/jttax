@@ -69,6 +69,28 @@ const ACQ_REGIONS = ['서울특별시', '부산광역시', '대구광역시', '�
   '세종특별자치시', '경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도',
   '경상북도', '경상남도', '제주특별자치도'];
 
+function acqRuralScope(a) {
+  return a.propertyType==='주택' && acqIsPaid(a) && !acqIsCorporate(a)
+    && a.housingCount==='1' && a.acquisitionDate>='2026-01-01' && a.acquisitionDate<='2026-10-30'
+    && Number(a.exclusiveArea)>85 && Number(a.exclusiveArea)<=100;
+}
+function acqRuralActive(a) { return acqRuralScope(a) && a.ruralReview==='yes'; }
+function acqRuralNonextension(a) { return a.ruralCapital==='yes' || a.ruralUrban==='yes' || ['동','기타'].includes(a.ruralUnit); }
+function acqRuralInputs(a) {
+  if(!acqRuralActive(a))return {};
+  const bool=k=>{if(!['yes','no'].includes(a[k]))throw new Error('농특세 확인: 위치·용도·토지 사실을 모두 확인해 주세요.');return a[k]==='yes';};
+  const area=k=>{const v=String(a[k]??'').trim();if(!v||!Number.isFinite(Number(v))||Number(v)<=0)throw new Error('농특세 확인: 실제 면적을 양수로 입력해 주세요.');return Number(v);};
+  const facts={schema_version:'rural-housing/1',is_capital_region:bool('ruralCapital'),is_urban_area:bool('ruralUrban'),
+    administrative_unit:a.ruralUnit,wholly_residential:bool('ruralResidential'),includes_appurtenant_land:bool('ruralLand'),
+    evidence_ref:String(a.ruralEvidence||'').trim()};
+  if(!['읍','면','동','기타'].includes(facts.administrative_unit)||!facts.evidence_ref)throw new Error('농특세 확인: 행정구역과 자료 출처를 입력해 주세요.');
+  if(!facts.wholly_residential)throw new Error('농특세 확인은 순수 주거용 전체 취득만 지원합니다.');
+  facts.acquired_appurtenant_land_area=facts.includes_appurtenant_land?area('ruralLandArea'):0;
+  if(facts.includes_appurtenant_land)facts.dwelling_footprint_area=area('ruralFloorArea');
+  if(acqRuralNonextension(a)){if(a.ruralOther!=='yes')throw new Error('농가주택 등 다른 농특세 비과세가 없다는 검토가 필요합니다.');facts.other_rural_exemptions_absent=true;}
+  return {rural_housing_facts:facts};
+}
+
 const ACQ_QS = [
   {id:'acquisitionDate',tier:'quick',section:'취득 시점',q:'실제 취득일은 언제인가요?',sub:'확인한 취득일을 입력하세요. 이 날짜의 연도와 규칙으로 계산하며 신고기한도 달라집니다. 잔금·등기 중 취득시기 판단이 필요하면 취득일·과세표준 확인 계산을 이용하세요.',date:true,freeform:true,placeholder:'YYYY-MM-DD'},
   {
@@ -153,11 +175,25 @@ const ACQ_QS = [
     section: '면적',
     q: '전용면적은 몇 ㎡인가요? (농어촌특별세 판정용)',
     /* 「84로 가정」은 실제 동작과 어긋난다 — 공란이면 가정하지 않고 ①층이 차단한다 (Codex P2) */
-    sub: '전용면적 85㎡(약 25.7평) 초과 주택에는 농어촌특별세(취득세 표준세율분의 10%)가 추가됩니다. 85㎡ 이하면 농특세가 없습니다. 등기부·분양계약서에 적힌 숫자예요.',
+    sub: '전용면적 85㎡ 이하 주택은 농특세 비과세 대상입니다. 85㎡ 초과100㎡ 이하는 수도권 밖 비도시 읍·면 등 사실에 따라 달라지므로 다음 자료 확인이 필요합니다. 등기부·분양계약서의 실제 면적을 입력해 주세요.',
     showIf: (a) => a.propertyType === '주택',
     numeric: true, optional: true,
     placeholder: '예: 84.96',
   },
+  {id:'ruralReview',tier:'quick',section:'농특세 지역·주택 확인',q:'지역·주택·부속토지 자료로 농특세 예외를 확인할까요?',
+    sub:'2026-01-01~10-30 개인 일반 1주택 전체 유상취득 중 전용85㎡ 초과100㎡ 이하만 지원합니다. 자료가 없으면 합계·해설·공유를 확정하지 않습니다. 감면 후 교육세의 미확정은 별도로 남습니다.',
+    showIf:acqRuralScope,blocksNothing:true,opts:[['yes','자료를 확인해 입력','취득일 현재 자료'],['unknown','아직 확인하지 못했어요','금액 확정 보류']]},
+  {id:'ruralCapital',tier:'quick',section:'농특세 위치',q:'취득일 현재 수도권에 있나요?',showIf:acqRuralActive,opts:[['yes','수도권',''],['no','수도권 밖','']]},
+  {id:'ruralUrban',tier:'quick',section:'농특세 위치',q:'토지이용계획상 도시지역인가요?',showIf:acqRuralActive,opts:[['yes','도시지역',''],['no','도시지역 아님','']]},
+  {id:'ruralUnit',tier:'quick',section:'농특세 위치',q:'취득일 현재 행정구역은 어디인가요?',showIf:acqRuralActive,opts:[['읍','읍',''],['면','면',''],['동','동',''],['기타','읍·면이 아님을 확인한 기타','미확인 선택 아님']]},
+  {id:'ruralResidential',tier:'quick',section:'농특세 용도',q:'한 호·한 세대의 순수 주거용 주택 전체 취득인가요?',showIf:acqRuralActive,opts:[['yes','네','겸용·일부 지분 제외'],['no','아니오','상세 검토 필요']]},
+  {id:'ruralLand',tier:'quick',section:'농특세 부속토지',q:'이번 취득에 주택의 부속토지도 포함되나요?',showIf:acqRuralActive,opts:[['yes','포함됩니다','실제 취득면적 입력'],['no','포함되지 않습니다','취득 부속토지면적 0㎡ 확인']]},
+  {id:'ruralLandArea',tier:'quick',section:'농특세 부속토지',q:'실제 취득한 부속토지면적은 몇 ㎡인가요?',numeric:true,showIf:a=>acqRuralActive(a)&&a.ruralLand==='yes'},
+  {id:'ruralFloorArea',tier:'quick',section:'농특세 주택바닥면적',q:'자료로 확인한 법정 주택바닥면적은 몇 ㎡인가요?',numeric:true,
+    sub:'공동주택은 1세대가 독립해 구분·사용할 수 있도록 구획된 부분의 바닥면적입니다. 건물 1층 면적으로 일괄 입력하거나 전용면적으로 자동 대체하지 않습니다. 비도시 읍·면의 7배 범위를 확인하고, 확장 비해당 위치는 보수적으로 3배 이내만 지원합니다. 초과토지 안분은 지원하지 않습니다.',showIf:a=>acqRuralActive(a)&&a.ruralLand==='yes'},
+  {id:'ruralOther',tier:'quick',section:'농특세 다른 비과세',q:'농가주택 등 다른 농특세 비과세가 없음을 별도로 검토했나요?',showIf:a=>acqRuralActive(a)&&acqRuralNonextension(a),opts:[['yes','자료로 확인했어요','다른 비과세 없음'],['unknown','확인하지 못했어요','확정 보류']]},
+  {id:'ruralEvidence',tier:'quick',section:'농특세 자료 출처',q:'지역·용도·주택·토지 범위를 확인한 자료 출처를 적어 주세요.',freeform:true,
+    sub:'취득일 현재 토지이용계획·건축물대장·계약서와 검토사항. 개인정보를 적지 마세요. 입력만으로 자료 진위가 인증되지는 않습니다.',showIf:acqRuralActive},
   /* ★ 261004 신설 — 상속 주택의 1가구 1주택 특례(0.8%) 판정용 답.
      값은 엔진 `inheritance_one_house`(true/false)로만 간다. «모르겠어요»는 키를 보내지 않는다 —
      엔진이 2.8% 로 계산하고 경고를 붙인다(그래서 이 문항은 «차단 사유»가 아니다).
@@ -412,6 +448,7 @@ function mapAnswersToAcquisition(rawA) {
     if(a.giftChoiceDate && a.giftChoiceDate!==d)throw new Error('취득일과 증여 취득일이 다릅니다. 같은 사건의 날짜를 확인해 주세요.');
     body.acquisition_date=d;
   }
+  Object.assign(body, acqRuralInputs(a));
   if (a.propertyType === '농지') body.is_farmland = true;   // ← 세율을 가르는 것은 이 플래그다(위 주석)
   if (isHousing && Number(a.exclusiveArea) > 0) body.exclusive_area = Number(a.exclusiveArea);
   // 법인·단체 명의 주택 유상취득(지§13의2①1호)은 주택 수·조정지역·감면과 무관하게 판정된다.
@@ -541,7 +578,7 @@ function acqFallbackGaps(answers, calc) {
      아래 수치는 260806 에 실제 엔진(POST /v1/calc/acquisition)을 때려서 얻은 것이다. */
   const unknown = window.jtFallbackGaps([
     { when: answers.propertyType === '주택' && acqArea === 0,
-      why: '전용면적을 넣지 않으셨습니다 — 85㎡ 초과면 농어촌특별세가 붙는데, 85㎡ 이하면 붙지 않으므로, 면적을 모르면 금액을 확정할 수 없습니다(실측: 100㎡면 160만원 차이).' },
+      why: '전용면적을 넣지 않으셨습니다. 농어촌특별세는 실제 면적과 지역·주택·부속토지 사실에 따라 달라지므로 면적 확인 전에는 금액을 확정할 수 없습니다.' },
     { when: answers.propertyType === '주택' && answers.acquisitionType === '매매' && hc >= 2 && regUnknown,
       why: '다주택인데 조정대상지역 여부가 정해지지 않았습니다 — 중과 여부가 갈립니다(8% ↔ 1~3%).' },
     { when: answers.propertyType === '주택' && answers.acquisitionType === '증여' && regUnknown,
@@ -605,6 +642,14 @@ function acqIsQuick(q, answers) {
       보내면 「빠진 질문으로 돌아가기」가 거짓말이 된다.
    둘 다 없으면 null (앞선 답이 서로 모순인 경우 — 화면이 첫 문항으로 보내 훑게 한다). */
 function acqFirstOpenQuestion(answers, review) {
+  if(review && (review.required_facts||[]).includes('exclusive_area'))return ACQ_QS.find(q=>q.id==='exclusiveArea');
+  if(review && (review.required_facts||[]).includes('rural_housing_facts') && acqRuralScope(answers)) {
+    if(answers.ruralReview!=='yes')return ACQ_QS.find(q=>q.id==='ruralReview');
+    const missing=ACQ_QS.find(q=>q.id.startsWith('rural')&&q.id!=='ruralReview'&&(!q.showIf||q.showIf(answers))
+      && (answers[q.id]===undefined||answers[q.id]===null||String(answers[q.id]).trim()===''||answers[q.id]==='unknown'));
+    if(missing)return missing;
+  }
+
   if(review && (review.required_facts||[]).includes('fixed_exemption_facts')) {
     const id=answers.fixedExemptionChoice==='yes'&&!String(answers.fixedExemptionEvidence||'').trim()?'fixedExemptionEvidence':'fixedExemptionChoice';
     return ACQ_QS.find(q=>q.id===id);
@@ -1300,7 +1345,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
           cautions: [
             { title: '취득세 신고·납부 기한', detail: '유상취득(매매)은 취득일부터 60일, 증여 등 무상취득은 취득일이 속한 달 말일부터 3개월, 상속은 상속개시일이 속한 달 말일부터 6개월(외국에 주소를 둔 상속인이 있으면 9개월) 이내에 신고·납부해야 합니다. 기한 말일이 토요일·공휴일·대체공휴일이면 그 다음 날까지입니다. 늦으면 가산세가 붙습니다(지방세법 §20①, 지방세기본법 §24).' },
             { title: '다주택 중과', detail: '조정대상지역 2주택 8%·3주택 이상 12%까지 중과될 수 있어, 보유 주택 수를 정확히 확인해야 합니다(§13의2).' },
-            { title: '농어촌특별세·지방교육세', detail: '취득세 외에 지방교육세(취득세의 일부)와, 85㎡ 초과 주택은 농어촌특별세가 추가됩니다.' },
+            { title: '농어촌특별세·지방교육세', detail: '지방교육세와 농어촌특별세는 취득 원인·면적·지역·주택과 부속토지 범위·감면에 따라 달라집니다. 입력한 자료와 단계별 판정 근거를 확인하세요.' },
           ],
           saving_ideas: [
             /* 260921: 종전 제목은 「생애최초·신혼부부 감면」이었다 — 신혼부부 경감(지특법 §36의2①)은 조문에
@@ -1452,8 +1497,8 @@ function JTReportAcquisition({ setRoute, onBack }) {
                     ? '「더 정확히 계산하기」에서 남은 항목을 채우면 더 자세히 볼 수 있어요.'
                     : '무주택 가구가 1주택을 상속받으면 0.8% 특례세율이 적용될 수 있어요(현재는 일반 2.8% 기준).')
                   : answers.acquisitionType === '신축'
-                  ? '신축(원시취득)은 보통 표준세율 2.8%예요. 큰 평형(85㎡ 초과)이면 농어촌특별세가 조금 더 붙습니다.'
-                  : '큰 평형(85㎡ 초과)이면 세금이 조금 늘고, 생애최초면 최대 200만원 줄어요. 조정지역·주택 수에 따라 중과될 수도 있으니 확인해보세요.'}
+                  ? '신축(원시취득)은 보통 표준세율 2.8%예요. 농어촌특별세는 실제 면적·지역·주택과 부속토지 사실을 별도로 확인해야 합니다.'
+                  : '농어촌특별세의 지역·주택·부속토지 사실과 감면·중과 요건을 확인하세요. 이미 입력한 사실은 계산에 반영됐으며, 빠진 사실에 따라 금액이 달라질 수 있습니다.'}
               </p>
               <button className="jt-btn jt-btn--primary" onClick={goDetail}>더 정확히 계산하기 →</button>
             </div>

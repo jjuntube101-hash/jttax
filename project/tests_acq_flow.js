@@ -68,6 +68,7 @@ function loadDecls(names) {
 
 const M = loadDecls([
   'acqIsPaid', 'acqIsCorporate', 'acqNewTypeSelected',
+  'acqRuralScope', 'acqRuralActive', 'acqRuralNonextension', 'acqRuralInputs',
   'ACQ_REDUCTION_NOTE', 'ACQ_REGIONS', 'ACQ_QS',
   'ACQ_PROPERTY_TYPE', 'ACQ_ACQUISITION_TYPE',
   'acqOptionAvailable', 'acqVisibleOpts', 'acqAnswerLabel', 'acqNormalize', 'acqNormalizeAnswers',
@@ -1111,7 +1112,7 @@ console.log('\n════ ⑧-d 문항 정의 — inheritOneHouse · propertyV
   const ih = M.ACQ_QS.find((q) => q.id === 'inheritOneHouse');
   eq('inheritOneHouse 문항이 있다', !!ih, true);
   const ids = M.ACQ_QS.map((q) => q.id);
-  eq('exclusiveArea 문항 바로 뒤에 있다', ids[ids.indexOf('exclusiveArea') + 1], 'inheritOneHouse');
+  eq('exclusiveArea 문항 바로 뒤에 있다', ids.filter(id=>!id.startsWith('rural'))[ids.filter(id=>!id.startsWith('rural')).indexOf('exclusiveArea') + 1], 'inheritOneHouse');
   eq('tier 는 quick', ih.tier, 'quick');
   eq('section', ih.section, '상속 1주택 특례');
   eq('q', ih.q, '상속받는 분의 가구가 이 집을 포함해 국내에 주택을 1채만 갖게 되나요?');

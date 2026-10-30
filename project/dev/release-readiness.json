@@ -1,20 +1,20 @@
 {
   "schema_version": "release-readiness/1",
-  "question_id": "JT-CITATION-APPROVED-20261030",
+  "question_id": "JT-RELEASE-FOLLOWUP-20261030",
   "as_of_kst": "2026-10-30",
   "family_count": 68,
   "unique_cases": 181,
   "family_case_references": 188,
   "grade_counts": {
-    "general": 9,
-    "hold": 90,
-    "conditional": 82
+    "general": 8,
+    "hold": 92,
+    "conditional": 81
   },
   "channel_counts": {
-    "conditional_numeric_or_assessment": 89,
+    "conditional_numeric_or_assessment": 87,
+    "provisional_amount_withheld": 6,
     "calculation_refusal": 77,
     "schema_422_guard": 5,
-    "provisional_amount_withheld": 4,
     "eligibility_diagnostic": 2,
     "internal_only": 2,
     "PARKED_404": 2
@@ -38,10 +38,10 @@
     "schema_version": "calculation-contracts/1",
     "version": {
       "engine": "jt-tax-engine/7.0.0",
-      "calculation_revision": "rules-83d8c1d819fe94ca0add",
-      "ruleset_sha256": "83d8c1d819fe94ca0add01d7d5a977deed657db898c47f6751d4bf86245b2de2",
-      "build_id": "build-d625da3808f5511a7efa",
-      "build_sha256": "d625da3808f5511a7efad2dd52458d185f320ccd604c7bb8bea602dca9aebef9",
+      "calculation_revision": "rules-2540f84efcea9952a8d5",
+      "ruleset_sha256": "2540f84efcea9952a8d5f8de6110e7a1b40fbb934c6cc8753b51617879b69a49",
+      "build_id": "build-8660f138ba86bc815a3d",
+      "build_sha256": "8660f138ba86bc815a3d3e99fc297123b13b0de978793204fbf0668a8cfbdb8c",
       "tax_rates_version": "7.0.0",
       "tax_rates_effective_date": "2026-05-02"
     },
@@ -149,7 +149,7 @@
         "label": "취득세",
         "route": "/v1/calc/acquisition",
         "dev_mcp_tool": "acquisition_tax_dev",
-        "request_schema_sha256": "0cd65e31a19d479b7c00da4990bad8931fea07e038505176eb26813a5ea3de67",
+        "request_schema_sha256": "f9c511c6f098a5d6c4bdb9854ef075e45080ebc2dd8387cccb40e34eb482037e",
         "request_fields": [
           "special_facts",
           "heavy_exclusion_type",
@@ -177,6 +177,7 @@
           "consultation_context",
           "reduction_type",
           "fixed_exemption_facts",
+          "rural_housing_facts",
           "is_first_home_buyer",
           "is_newlywed",
           "is_childbirth",
@@ -548,18 +549,29 @@
       "health_http": 200,
       "contract_http": 404,
       "openapi_http": 404,
-      "observed_revision": "2026-10-25.historical-years.1"
+      "observed_revision": "2026-10-25.historical-years.1",
+      "observed_in_current_turn": false
+    },
+    "transition_candidate": {
+      "status": "uninstalled_current_basic9_legacy13_passthrough",
+      "catalog": 22,
+      "current_basic_tools": 9,
+      "legacy_tools": 13,
+      "actual_calls": 19,
+      "legacy13_schemas_preserved": true,
+      "all22_tax_correctness_certified": false
     }
   },
   "provenance": {
     "replay_file": "calc_REPLAY_final_20261030.json",
-    "replay_sha256": "1221b744809ad5aa70be8c558856af4e0a947494a644c634f10007e86c750bf7",
+    "replay_sha256": "74979de53eb46b5e001d9d89a3fa7e2d3119b00f438b740ceac0caa2acfaf263",
     "archived_index_sha256": "b53f8d899cd90ddc8f161eeedf937ec42395413b0d0745156a6898ffb4e6c2c8",
     "law_constraints_sha256": "208e5b00b7087f58a1d7e58501d66175feaea0abea1c83b8e22e023ede69d935",
     "law_constraints_file": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_candidate_20261030\\law_FAMILY_CONSTRAINTS_20261030.json",
     "prior_consumer_observation": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_candidate_20261030\\RELEASE_DELIVERY_20261030.md",
-    "replay_directory": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_hardening_20261030\\citation_approved",
-    "prior_hardening_snapshot_sha256": "07544a321c6ade58a52f16966dbc4c70a60b29072c73115c2e67b0556cc0f02a"
+    "replay_directory": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_readiness_followup_20261030",
+    "prior_hardening_snapshot_sha256": "07544a321c6ade58a52f16966dbc4c70a60b29072c73115c2e67b0556cc0f02a",
+    "prior_citation_readiness_sha256": "abc2d2ebe7014bb638056aa9ce9097c0ea4892466477bb9a5c9503ad2d8f251e"
   },
   "families": [
     {
@@ -786,7 +798,7 @@
         "PRACTICAL-ACQUISITION-BASIC"
       ],
       "grade_counts": {
-        "general": 1
+        "hold": 1
       },
       "legal_limit": "일반계산도 원인별·취득일·과세표준 선택을 각각 확인. 이 군의1사례로 매매·상속·증여 전체를 인증하지 않음.",
       "legal_review_kind": "archive_title_broader_than_case",
@@ -803,8 +815,7 @@
         "ACQ02-contradict-share"
       ],
       "grade_counts": {
-        "conditional": 1,
-        "hold": 1
+        "hold": 2
       },
       "legal_limit": "검증한 개별입력·사건기준일·원자료와 지원경계에 한정. 역사적과표·경과계약일/분양예외·지분별면적·취득가액을현행값으로대용금지;감면중과조합제한",
       "legal_review_kind": "archived_bounded_contract",
@@ -2036,21 +2047,35 @@
       "families": [
         "ACQ01"
       ],
-      "grade": "general",
-      "result_kind": "calculation",
-      "channel_kind": "conditional_numeric_or_assessment",
+      "grade": "hold",
+      "result_kind": "withheld",
+      "channel_kind": "provisional_amount_withheld",
       "http_status": 200,
       "route": "/v1/calc/acquisition",
       "dev_mcp": "acquisition_tax_dev",
       "current_status": "ok",
       "review": {
         "schema_version": "calculation-review/1",
-        "certainty": "conditional",
-        "can_present_amount": true,
-        "can_generate_commentary": true,
-        "can_share": true,
-        "issues": [],
-        "required_facts": [],
+        "certainty": "provisional",
+        "can_present_amount": false,
+        "can_generate_commentary": false,
+        "can_share": false,
+        "issues": [
+          {
+            "code": "ACQ_RURAL_HOUSING_FACTS",
+            "message": "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.",
+            "affected_fields": [
+              "농어촌특별세",
+              "세액"
+            ],
+            "required_facts": [
+              "rural_housing_facts"
+            ]
+          }
+        ],
+        "required_facts": [
+          "rural_housing_facts"
+        ],
         "scope": "입력 사실과 지원 범위에 따른 계산이며 실제 사건의 법적 적격·신고 확정을 인증하지 않습니다."
       },
       "input": {
@@ -2068,126 +2093,9 @@
       "three_channel_response_match": true,
       "input_hash_record_status": "unrecorded",
       "observed_result": {
-        "세목": "취득세",
         "상태": "ok",
-        "세액": 1300000,
-        "취득세": 1000000,
-        "지방교육세": 100000,
-        "농어촌특별세": 200000,
-        "과세표준": 100000000,
-        "적용세율": "1.0%",
-        "중과여부": false,
-        "중과사유": "",
-        "주택수": 1,
-        "감면유형": "",
-        "감면금액": 0,
-        "신고기한": "2026-12-29",
-        "단계별계산": [
-          {
-            "항목": "1. 취득가액",
-            "금액": 100000000,
-            "조문": "지§10",
-            "비고": "사실상 취득가격 (신고가액)"
-          },
-          {
-            "항목": "2. 시가표준액",
-            "금액": 0,
-            "조문": "지§10의2",
-            "비고": "미입력 (유상취득시 취득가액 기준)"
-          },
-          {
-            "항목": "3. 과세표준",
-            "금액": 100000000,
-            "조문": "지§10, §10의2",
-            "비고": "취득가액(신고가액) 적용"
-          },
-          {
-            "항목": "4. 취득유형",
-            "금액": 0,
-            "조문": "지§6, §7",
-            "비고": "취득유형: 유상취득"
-          },
-          {
-            "항목": "5. 부동산유형",
-            "금액": 0,
-            "조문": "지§6",
-            "비고": "부동산유형: 주택"
-          },
-          {
-            "항목": "6. 주택 가액구간",
-            "금액": 100000000,
-            "조문": "지§11①8호",
-            "비고": "6억원 이하 구간 (100,000,000원)"
-          },
-          {
-            "항목": "7. 주택수 판정",
-            "금액": 1,
-            "조문": "지§13, §13의2",
-            "비고": "1주택 (본건)"
-          },
-          {
-            "항목": "8. 기본세율",
-            "금액": 100,
-            "조문": "지§11①8호가",
-            "비고": "주택유상_6억이하: 1.00%"
-          },
-          {
-            "항목": "9. 중과세율",
-            "금액": 0,
-            "조문": "-",
-            "비고": "중과 미해당"
-          },
-          {
-            "항목": "10. 중과유예",
-            "금액": 0,
-            "조문": "-",
-            "비고": "현행법 기준 적용 (유예 미적용)"
-          },
-          {
-            "항목": "11. 1세대1주택 특례",
-            "금액": 0,
-            "조문": "지§13의2",
-            "비고": "1주택"
-          },
-          {
-            "항목": "12. 최종 취득세율",
-            "금액": 100,
-            "조문": "지§11①8호가",
-            "비고": "적용세율: 1.00%"
-          },
-          {
-            "항목": "13. 취득세 본세",
-            "금액": 1000000,
-            "조문": "지§11",
-            "비고": "100,000,000 x 1.00% = 1,000,000원"
-          },
-          {
-            "항목": "14. 감면",
-            "금액": 0,
-            "조문": "-",
-            "비고": "감면 미적용"
-          },
-          {
-            "항목": "15. 농어촌특별세",
-            "금액": 200000,
-            "조문": "농특세법§5",
-            "비고": "(과표 100,000,000 x 표준2% = 2,000,000) x 10% = 200,000원 [§5①6호]"
-          },
-          {
-            "항목": "16. 지방교육세",
-            "금액": 100000,
-            "조문": "지§151①1호",
-            "비고": "(100,000,000 x 0.50%) x 20% = 100,000원"
-          },
-          {
-            "항목": "17. 총 납부세액",
-            "금액": 1300000,
-            "조문": "지§20",
-            "비고": "본세 1,000,000 + 농특세 200,000 + 교육세 100,000, 신고기한: 2026-12-29"
-          }
-        ],
-        "경고사항": [
-          "수도권 밖의 도시지역이 아닌 읍·면 지역에 있는 주택은 전용 100㎡ 이하까지 국민주택 규모여서 농어촌특별세가 비과세입니다(농어촌특별세법 시행령 §4⑤, 주택법 §2 6호). 이 계산은 85㎡를 기준으로 과세했습니다."
+        "안내": [
+          "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다."
         ]
       },
       "source": {
@@ -12964,21 +12872,35 @@
       "families": [
         "ACQ02"
       ],
-      "grade": "conditional",
-      "result_kind": "calculation",
-      "channel_kind": "conditional_numeric_or_assessment",
+      "grade": "hold",
+      "result_kind": "withheld",
+      "channel_kind": "provisional_amount_withheld",
       "http_status": 200,
       "route": "/v1/calc/acquisition",
       "dev_mcp": "acquisition_tax_dev",
       "current_status": "ok",
       "review": {
         "schema_version": "calculation-review/1",
-        "certainty": "conditional",
-        "can_present_amount": true,
-        "can_generate_commentary": true,
-        "can_share": true,
-        "issues": [],
-        "required_facts": [],
+        "certainty": "provisional",
+        "can_present_amount": false,
+        "can_generate_commentary": false,
+        "can_share": false,
+        "issues": [
+          {
+            "code": "ACQ_RURAL_HOUSING_FACTS",
+            "message": "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.",
+            "affected_fields": [
+              "농어촌특별세",
+              "세액"
+            ],
+            "required_facts": [
+              "rural_housing_facts"
+            ]
+          }
+        ],
+        "required_facts": [
+          "rural_housing_facts"
+        ],
         "scope": "입력 사실과 지원 범위에 따른 계산이며 실제 사건의 법적 적격·신고 확정을 인증하지 않습니다."
       },
       "input": {
@@ -13008,127 +12930,9 @@
       "three_channel_response_match": true,
       "input_hash_record_status": "matched",
       "observed_result": {
-        "세목": "취득세",
         "상태": "ok",
-        "전체주택환산가액": 1000000000,
-        "세액": 17500000,
-        "취득세": 15000000,
-        "지방교육세": 1500000,
-        "농어촌특별세": 1000000,
-        "과세표준": 500000000,
-        "적용세율": "3.0%",
-        "중과여부": false,
-        "중과사유": "",
-        "주택수": 1,
-        "감면유형": "",
-        "감면금액": 0,
-        "신고기한": "2026-12-24",
-        "단계별계산": [
-          {
-            "항목": "1. 취득가액",
-            "금액": 500000000,
-            "조문": "지§10",
-            "비고": "사실상 취득가격 (신고가액)"
-          },
-          {
-            "항목": "2. 시가표준액",
-            "금액": 0,
-            "조문": "지§10의2",
-            "비고": "미입력 (유상취득시 취득가액 기준)"
-          },
-          {
-            "항목": "3. 과세표준",
-            "금액": 500000000,
-            "조문": "지§10, §10의2",
-            "비고": "취득가액(신고가액) 적용"
-          },
-          {
-            "항목": "4. 취득유형",
-            "금액": 0,
-            "조문": "지§6, §7",
-            "비고": "취득유형: 유상취득"
-          },
-          {
-            "항목": "5. 부동산유형",
-            "금액": 0,
-            "조문": "지§6",
-            "비고": "부동산유형: 주택"
-          },
-          {
-            "항목": "6. 주택 가액구간",
-            "금액": 500000000,
-            "조문": "지§11①8호",
-            "비고": "6억원 이하 구간 (500,000,000원)"
-          },
-          {
-            "항목": "7. 주택수 판정",
-            "금액": 1,
-            "조문": "지§13, §13의2",
-            "비고": "1주택 (본건)"
-          },
-          {
-            "항목": "8. 기본세율",
-            "금액": 300,
-            "조문": "지§11①8호다",
-            "비고": "주택유상_9억초과: 3.00%"
-          },
-          {
-            "항목": "9. 중과세율",
-            "금액": 0,
-            "조문": "-",
-            "비고": "중과 미해당"
-          },
-          {
-            "항목": "10. 중과유예",
-            "금액": 0,
-            "조문": "-",
-            "비고": "현행법 기준 적용 (유예 미적용)"
-          },
-          {
-            "항목": "11. 1세대1주택 특례",
-            "금액": 0,
-            "조문": "지§13의2",
-            "비고": "1주택"
-          },
-          {
-            "항목": "12. 최종 취득세율",
-            "금액": 300,
-            "조문": "지§11①8호다",
-            "비고": "적용세율: 3.00%"
-          },
-          {
-            "항목": "13. 취득세 본세",
-            "금액": 15000000,
-            "조문": "지§11",
-            "비고": "500,000,000 x 3.00% = 15,000,000원"
-          },
-          {
-            "항목": "14. 감면",
-            "금액": 0,
-            "조문": "-",
-            "비고": "감면 미적용"
-          },
-          {
-            "항목": "15. 농어촌특별세",
-            "금액": 1000000,
-            "조문": "농특세법§5",
-            "비고": "(과표 500,000,000 x 표준2% = 10,000,000) x 10% = 1,000,000원 [§5①6호]"
-          },
-          {
-            "항목": "16. 지방교육세",
-            "금액": 1500000,
-            "조문": "지§151①1호",
-            "비고": "(500,000,000 x 1.50%) x 20% = 1,500,000원"
-          },
-          {
-            "항목": "17. 총 납부세액",
-            "금액": 17500000,
-            "조문": "지§20",
-            "비고": "본세 15,000,000 + 농특세 1,000,000 + 교육세 1,500,000, 신고기한: 2026-12-24"
-          }
-        ],
-        "경고사항": [
-          "수도권 밖의 도시지역이 아닌 읍·면 지역에 있는 주택은 전용 100㎡ 이하까지 국민주택 규모여서 농어촌특별세가 비과세입니다(농어촌특별세법 시행령 §4⑤, 주택법 §2 6호). 이 계산은 85㎡를 기준으로 과세했습니다."
+        "안내": [
+          "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다."
         ]
       },
       "source": {
@@ -21402,6 +21206,17 @@
         "can_share": false,
         "issues": [
           {
+            "code": "ACQ_RURAL_HOUSING_FACTS",
+            "message": "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.",
+            "affected_fields": [
+              "농어촌특별세",
+              "세액"
+            ],
+            "required_facts": [
+              "rural_housing_facts"
+            ]
+          },
+          {
             "code": "ACQ_REDUCTION_RURAL",
             "message": "감면과 결합된 농어촌특별세 산식은 추가 검토가 필요합니다.",
             "affected_fields": [
@@ -21420,7 +21235,9 @@
             "required_facts": []
           }
         ],
-        "required_facts": [],
+        "required_facts": [
+          "rural_housing_facts"
+        ],
         "scope": "입력 사실과 지원 범위에 따른 계산이며 실제 사건의 법적 적격·신고 확정을 인증하지 않습니다."
       },
       "input": {
@@ -21445,6 +21262,7 @@
       "observed_result": {
         "상태": "ok",
         "안내": [
+          "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.",
           "감면과 결합된 농어촌특별세 산식은 추가 검토가 필요합니다.",
           "부분 정액감면의 지방교육세 산식은 추가 법령 확인이 필요합니다. 대표액으로 신고·공유하지 마세요."
         ]
@@ -25349,7 +25167,7 @@
     "checks": 115,
     "excluded_from181": true,
     "scope": "2026-10-10 거주자 상속의 외부 적격 확인을 전제로 실제액·0·최저공제·법정분 한도·30억원 한도와 누락/음수 가드를 합성 검증. 실제 분할·등기·신고 적격을 엔진이 확인한 뜻은 아닙니다.",
-    "source_sha256": "8096fb90a3d086fc71ef0ae6e03e0b8b1b3580a8ea37740da8f759ff3856db0d",
+    "source_sha256": "f25f94aba0f569ca0a4d65a3247fe283e265dd7df37bb52c420ac594210db4d9",
     "cases": [
       {
         "id": "SPOUSE-ACTUAL600M",
@@ -25474,5 +25292,50 @@
     "operational_deployment": false,
     "approval_receipt_sha256": "b9320ee65f245a27ca47032c180ebfefd39c2904048e1c1d6471db7d05326da0",
     "approved_contract_sha256": "d721a65b18856fe3c9f1fa711e6bdf83a154a6388168d07395f120c2ac29b1f4"
+  },
+  "rural_housing_review": {
+    "scope": "85초과100이하 주택의 미확인 농특세·합계 차단과 명시한 지역·용도·부속토지 한정 계약",
+    "regraded_cases": [
+      {
+        "id": "PRACTICAL-ACQUISITION-BASIC",
+        "before": "general",
+        "after": "hold",
+        "issues": [
+          {
+            "code": "ACQ_RURAL_HOUSING_FACTS",
+            "message": "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.",
+            "affected_fields": [
+              "농어촌특별세",
+              "세액"
+            ],
+            "required_facts": [
+              "rural_housing_facts"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ACQ02-housing-share",
+        "before": "conditional",
+        "after": "hold",
+        "issues": [
+          {
+            "code": "ACQ_RURAL_HOUSING_FACTS",
+            "message": "주택 전용면적과 수도권·도시·읍면·부속토지 사실 확인 전에는 농어촌특별세와 합계를 확정할 수 없습니다.",
+            "affected_fields": [
+              "농어촌특별세",
+              "세액"
+            ],
+            "required_facts": [
+              "rural_housing_facts"
+            ]
+          }
+        ]
+      }
+    ],
+    "independent_cases": 66,
+    "independent_checks": 652,
+    "partial_fixed_education": "unresolved",
+    "operational_deployment": false
   }
 }
