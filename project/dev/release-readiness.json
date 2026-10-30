@@ -1,6 +1,6 @@
 {
   "schema_version": "release-readiness/1",
-  "question_id": "JT-RELEASE-FOLLOWUP-20261030",
+  "question_id": "JT-EDUCATION-MCP13-20261030",
   "as_of_kst": "2026-10-30",
   "family_count": 68,
   "unique_cases": 181,
@@ -40,8 +40,8 @@
       "engine": "jt-tax-engine/7.0.0",
       "calculation_revision": "rules-2540f84efcea9952a8d5",
       "ruleset_sha256": "2540f84efcea9952a8d5f8de6110e7a1b40fbb934c6cc8753b51617879b69a49",
-      "build_id": "build-8660f138ba86bc815a3d",
-      "build_sha256": "8660f138ba86bc815a3d3e99fc297123b13b0de978793204fbf0668a8cfbdb8c",
+      "build_id": "build-772450152ac5637c5912",
+      "build_sha256": "772450152ac5637c59129138e194e87078779eb9537ca3b5fb373c58a2fc3e90",
       "tax_rates_version": "7.0.0",
       "tax_rates_effective_date": "2026-05-02"
     },
@@ -553,6 +553,24 @@
       "observed_in_current_turn": false
     },
     "transition_candidate": {
+      "status": "uninstalled_current22_strict_engine",
+      "catalog": 22,
+      "current_tools": 22,
+      "current_basic_tools": 9,
+      "current_auxiliary_tools": 13,
+      "legacy_engine_tools": 0,
+      "independent_auxiliary_cases": 37,
+      "independent_auxiliary_checks": 399,
+      "separate_nested_unit_cases": 2,
+      "separate_nested_unit_checks": 14,
+      "isolated_package_calls": 41,
+      "json_string_output_preserved_for13": true,
+      "installed_applied": false,
+      "all22_tax_correctness_certified": false,
+      "evidence_sha256": "031cef2a301c67064c9bf886101ed4aad65d229df28d91d0cbb1a6e790ad8c5e",
+      "package_evidence_sha256": "ab73fb833f5060f1c941f54e3b933c39fd925b86abc154167d3584964c29d499"
+    },
+    "historical_transition_candidate": {
       "status": "uninstalled_current_basic9_legacy13_passthrough",
       "catalog": 22,
       "current_basic_tools": 9,
@@ -564,14 +582,16 @@
   },
   "provenance": {
     "replay_file": "calc_REPLAY_final_20261030.json",
-    "replay_sha256": "74979de53eb46b5e001d9d89a3fa7e2d3119b00f438b740ceac0caa2acfaf263",
+    "replay_sha256": "ed4ea552cfee2bb7c612d1eb6f129d2c9cfbabb33e10dd4e41947b6a8c9fb4ac",
     "archived_index_sha256": "b53f8d899cd90ddc8f161eeedf937ec42395413b0d0745156a6898ffb4e6c2c8",
     "law_constraints_sha256": "208e5b00b7087f58a1d7e58501d66175feaea0abea1c83b8e22e023ede69d935",
     "law_constraints_file": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_candidate_20261030\\law_FAMILY_CONSTRAINTS_20261030.json",
     "prior_consumer_observation": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_candidate_20261030\\RELEASE_DELIVERY_20261030.md",
-    "replay_directory": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\release_readiness_followup_20261030",
+    "replay_directory": "D:\\jt-data\\jt-taxlab-worktrees\\commercial\\analysis\\parity_transfer\\education_mcp13_20261030",
     "prior_hardening_snapshot_sha256": "07544a321c6ade58a52f16966dbc4c70a60b29072c73115c2e67b0556cc0f02a",
-    "prior_citation_readiness_sha256": "abc2d2ebe7014bb638056aa9ce9097c0ea4892466477bb9a5c9503ad2d8f251e"
+    "prior_citation_readiness_sha256": "abc2d2ebe7014bb638056aa9ce9097c0ea4892466477bb9a5c9503ad2d8f251e",
+    "prior_rural_readiness_sha256": "613a87e44523c26d7dea11b58ab8dd801c6be4c9bcee5e6bd26dbc4e8a523f2e",
+    "unchanged_existing181_calc_and_review": true
   },
   "families": [
     {
@@ -25167,7 +25187,7 @@
     "checks": 115,
     "excluded_from181": true,
     "scope": "2026-10-10 거주자 상속의 외부 적격 확인을 전제로 실제액·0·최저공제·법정분 한도·30억원 한도와 누락/음수 가드를 합성 검증. 실제 분할·등기·신고 적격을 엔진이 확인한 뜻은 아닙니다.",
-    "source_sha256": "f25f94aba0f569ca0a4d65a3247fe283e265dd7df37bb52c420ac594210db4d9",
+    "source_sha256": "0346bfa0d89948e933d85cba69071ac8b3c847e27b97d65d4b884d5a1cae8bd8",
     "cases": [
       {
         "id": "SPOUSE-ACTUAL600M",
@@ -25337,5 +25357,12 @@
     "independent_checks": 652,
     "partial_fixed_education": "unresolved",
     "operational_deployment": false
+  },
+  "partial_fixed_education_followup": {
+    "status": "unresolved_formula_provisional_preserved",
+    "new_primary_api_responses": 15,
+    "no_new_numeric_golden": true,
+    "law_evidence_sha256": "8d999b648a92d1603b7d5b1f38112a3732eecf744f5f32094735a8ac570a8aa2",
+    "official_question_sent": false
   }
 }
