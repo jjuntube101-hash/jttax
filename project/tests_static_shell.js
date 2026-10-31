@@ -748,6 +748,20 @@ const ROOT = path.join(__dirname, '..');
   generatedOnly.forEach((f) => checkPage(f, { requireShellMarker: true }));
   handwritten.forEach((f) => checkPage(f, { requireShellMarker: true }));
 
+  /* ── 검색 메타 빈칸 (261031) ─────────────────────────────────────
+     빌더의 head 인자 줄이 주석에 먹혀 전문가 3장의 description 이 비고 canonical 이 "undefined" 가 됐는데
+     위 검사는 모두 통과했다. 생성 페이지마다 제목·설명·canonical 이 실제 값인지 본다. */
+  for (const rel of generatedOnly) {
+    const h = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    const title = (h.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
+    const desc = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
+    const canon = (h.match(/<link rel="canonical" href="([^"]*)"/) || [])[1] || '';
+    const page = rel.endsWith('/index.html') ? rel.slice(0, -'index.html'.length) : rel;
+    if (!title.trim() || /undefined|null/.test(title)) bad.push(`${rel} — <title> 이 비었거나 undefined 입니다`);
+    if (desc.trim().length < 20 || /undefined|null/.test(desc)) bad.push(`${rel} — meta description 이 비었거나 너무 짧습니다`);
+    if (canon !== `https://www.jttax.co.kr/${page}`) bad.push(`${rel} — canonical 이 이 페이지 주소가 아닙니다: "${canon.slice(0, 80)}"`);
+  }
+
   /* ── 결과 ───────────────────────────────────────────────────────── */
   const total = generatedOnly.length + handwritten.length;
   console.log(`대상: 생성 ${generatedOnly.length}장 + 수기 ${handwritten.length}장 (custom ${customSlugs.length} + desk ${desk.length}) · 원고 ${postSlugs.length}건`);

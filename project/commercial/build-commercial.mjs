@@ -443,7 +443,8 @@ function renderExpertPage(e) {
     ['자격', e.qualifications],
   ].filter(([, entries]) => entries && entries.length);
   return headHtml({
-    title: `${e.name} 세무사 — ${e.headline} | ${FIRM}`, desc: e.metaDesc, keywords: e.keywords, url,
+    // metaTitle: 검색결과 제목만 따로 정할 때 (261031 SEO 1-0b)
+    title: `${e.metaTitle || `${e.name} 세무사 — ${e.headline}`} | ${FIRM}`, desc: e.metaDesc, keywords: e.keywords, url,
     ldBlocks: [personLd, crumbLd([['홈', `${SITE}/`], ['전문가', `${SITE}/experts/`], [`${e.name} 세무사`, url]])],
   }) + `
   <main class="jt-cc-wrap">

@@ -176,7 +176,9 @@ export const EXPERTS = [
     qualifications: ['세무사', '공인중개사'],
     closing: '사안의 사실관계와 근거를 확인하고, 필요한 절차와 기한을 함께 살핍니다.',
     services: ['asset-transfer', 'tax-audit', 'tax-refund'],
-    metaDesc: '김민석 세무사 — 제이티 세무법인 대표세무사. 사무소 운영과 재산세제, 소득·법인세 검토, 조세불복 실무 경력을 소개합니다.',
+    /* 261031 SEO 1-0b: 네이버 노출 463·클릭 1 — 이름으로 찾는 분이 옛 사무소 이름으로도 알아보게. «(전)»으로 현재 소속과 구분. */
+    metaTitle: '김민석 세무사(전 수석세무회계 대표) — 재산·기업 세무와 조세불복',
+    metaDesc: '김민석 세무사는 제이티 세무법인 대표세무사입니다. 수석세무회계를 운영했고, 세무법인·회계법인에서 재산세제·조세불복·소득·법인세 검토 실무를 맡았습니다. 양도·상속·증여, 세무조사·경정청구를 상담합니다.',
     keywords: '김민석 세무사, 제이티 세무법인, 상속 세무사, 조세불복, 경정청구, 강남 세무사',
   },
   {
@@ -413,7 +415,7 @@ export const SERVICE_EXTRA = [
     relatedCalcs: ['acquisition-tax'],
     appDeepLink: { href: '/#/report/appeal', label: '경정청구 가능성 진단' },
     relatedInsights: [
-      { slug: 'acquisition-tax-basics', title: '2026 주택 취득세율 — 6억 이하 1%·6억~9억 계산식·9억 초과 3%' },
+      { slug: 'acquisition-tax-basics', title: '주택 취득세율 2026 — 6억 이하 1%·9억 초과 3%, 지방교육세·농특세 합계까지' },
       { slug: 'acquisition-tax-rate-guide', title: '아파트 취득세 얼마? 2026 — 5억 550만·7억 1,286만·10억 3,300만' },
     ],
     /* 260921 글 묶음 1차(근거표 GT-1·GT-2) — slug 만 적는다. 제목은 빌더가 원고(md)의
