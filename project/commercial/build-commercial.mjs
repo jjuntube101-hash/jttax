@@ -22,7 +22,7 @@ import { SERVICES, SERVICE_DETAILS, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, C
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
-import { footerHtml, stylesHref, ogImageHref, faviconHtml, ORG_ID, ORG_REF, ORG_GEO, ORG_HOURS, ORG_SAME_AS, personId } from '../_shared/site-meta.mjs';
+import { footerHtml, stylesHref, ogImageHref, faviconHtml, ORG_ID, ORG_REF, ORG_GEO, ORG_HOURS, ORG_PRICE_RANGE, ORG_SAME_AS, personId } from '../_shared/site-meta.mjs';
 import { insightSlug } from '../_shared/insight-slug.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));   // project/commercial
@@ -600,6 +600,7 @@ function orgLdBlock() {
     },
     geo: ORG_GEO,
     openingHoursSpecification: ORG_HOURS,
+    priceRange: ORG_PRICE_RANGE,   // 리치 결과 테스트 «priceRange 누락» 경고 (261101)
     sameAs: ORG_SAME_AS,
     hasMap: [CONSULT.location.kakaoMapUrl, CONSULT.location.naverMapUrl],
     founder: EXPERTS.map(e => ({ '@type': 'Person', '@id': personId(e.slug), name: e.name, jobTitle: '세무사', url: `${SITE}/experts/${e.slug}.html` })),

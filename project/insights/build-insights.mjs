@@ -247,6 +247,14 @@ for (const s of SERVICES) for (const r of s.relatedInsights || []) SERVICE_BY_IN
    name 은 사람 이름만(직함은 jobTitle), /experts/ 면의 Person 이름과 같게(Codex R1-F2). */
 const REVIEWER = { name: '이현준', slug: 'lee-hyunjun', href: '/experts/lee-hyunjun.html' };
 
+/* 기계용 날짜 (261101 SEO 2-4 후속): 리치 결과 테스트가 날짜만 적힌 datePublished·dateModified 에
+   «시간대 누락» 경고를 낸다. 원고는 날짜만 있으므로 그날 0시 한국 시간으로 적는다.
+   화면의 <time datetime> 은 날짜만 그대로 둔다(유효한 HTML 날짜). */
+const kstDateTime = (d) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) throw new Error(`[date] 형식은 YYYY-MM-DD — "${d}"`);
+  return `${d}T00:00:00+09:00`;
+};
+
 const SERVICE_BY_ARTICLE = new Map([
   ['gift-tax-saving', 'asset-transfer'],
   ['burdened-gift', 'asset-transfer'],
@@ -312,8 +320,8 @@ function renderArticlePage(a) {
   <meta property="og:image" content="${imageUrl}">
   <meta property="og:image:alt" content="${esc(a.heroAlt || a.title)}">
   <meta property="og:locale" content="ko_KR">
-  <meta property="article:published_time" content="${a.dateISO}">
-  <meta property="article:modified_time" content="${a.updatedISO}">
+  <meta property="article:published_time" content="${kstDateTime(a.dateISO)}">
+  <meta property="article:modified_time" content="${kstDateTime(a.updatedISO)}">
   <meta property="article:author" content="${esc(a.author)}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(a.title)}">
@@ -339,8 +347,8 @@ ${GA_HEAD_SNIPPET}
     "@type": "Article",
     "headline": ${JSON.stringify(a.title)},
     "image": ${JSON.stringify(imageUrl)},
-    "datePublished": ${JSON.stringify(a.dateISO)},
-    "dateModified": ${JSON.stringify(a.updatedISO)},
+    "datePublished": ${JSON.stringify(kstDateTime(a.dateISO))},
+    "dateModified": ${JSON.stringify(kstDateTime(a.updatedISO))},
     "author": { "@type": "Organization",${a.author === FIRM ? ` "@id": "${ORG_ID}",` : ''} "name": ${JSON.stringify(a.author)}, "url": "${a.author === FIRM ? SITE : `${SITE}/about/`}" },
     "editor": { "@type": "Person", "@id": "${personId(REVIEWER.slug)}", "name": ${JSON.stringify(REVIEWER.name)}, "jobTitle": "세무사", "url": "${SITE}${REVIEWER.href}" },
     "publisher": { "@type": "Organization", "@id": "${ORG_ID}", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },

@@ -46,6 +46,8 @@ export const ORG_HOURS = [{
   dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
   opens: '09:30', closes: '17:30',
 }];
+/* 가격대 — 홈이 260830 부터 쓰던 «$$» 그대로. 금액이 아니라 상대 등급 표시라 보수 비공개 결재(0-3)와 부딪히지 않는다 (261101) */
+export const ORG_PRICE_RANGE = '$$';
 export const ORG_SAME_AS = [
   'https://pf.kakao.com/_CcxlJG',                          // 카카오톡 채널
   'https://blog.naver.com/jt_tax',                         // 네이버 블로그

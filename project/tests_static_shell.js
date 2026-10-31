@@ -881,7 +881,7 @@ const ROOT = path.join(__dirname, '..');
      ② 모든 면의 JSON-LD 를 끝까지 내려가며, 법인 이름을 단 Organization·AccountingService 는 회사 @id 를,
         /experts/ 주소를 단 Person 은 그 사람의 @id 를 갖는지 본다 — 한 면만 @id 를 빠뜨려도 엔티티가 둘로 갈린다. */
   {
-    const want = { '@id': meta.ORG_ID, geo: meta.ORG_GEO, openingHoursSpecification: meta.ORG_HOURS, sameAs: meta.ORG_SAME_AS };
+    const want = { '@id': meta.ORG_ID, geo: meta.ORG_GEO, openingHoursSpecification: meta.ORG_HOURS, priceRange: meta.ORG_PRICE_RANGE, sameAs: meta.ORG_SAME_AS };
     for (const rel of ['index.html', 'about/index.html', 'consult.html']) {
       const h = fs.readFileSync(path.join(ROOT, rel), 'utf8');
       for (const m of h.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
