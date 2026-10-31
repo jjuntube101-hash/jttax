@@ -415,7 +415,7 @@ export const SERVICE_EXTRA = [
     relatedCalcs: ['acquisition-tax'],
     appDeepLink: { href: '/#/report/appeal', label: '경정청구 가능성 진단' },
     relatedInsights: [
-      { slug: 'acquisition-tax-basics', title: '주택 취득세율 2026 — 6억 이하 1%·9억 초과 3%, 지방교육세·농특세 합계까지' },
+      { slug: 'acquisition-tax-basics', title: '주택 매매 취득세율 2026 — 6억 이하 1%·9억 초과 3%, 지방교육세·농특세 합계까지' },
       { slug: 'acquisition-tax-rate-guide', title: '아파트 취득세 얼마? 2026 — 5억 550만·7억 1,286만·10억 3,300만' },
     ],
     /* 260921 글 묶음 1차(근거표 GT-1·GT-2) — slug 만 적는다. 제목은 빌더가 원고(md)의
