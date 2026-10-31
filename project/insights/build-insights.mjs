@@ -488,6 +488,8 @@ ${footerHtml()}
 
 async function writeArticlePages(arts) {
   await mkdir(ARTICLE_OUT_DIR, { recursive: true });
+  const slugs = new Set(arts.map((a) => a.slug));
+  for (const slug of SERVICE_BY_ARTICLE.keys()) if (!slugs.has(slug)) throw new Error(`SERVICE_BY_ARTICLE 에 없는 글이 있습니다: ${slug}`);
   for (const a of arts) {
     await writeFile(join(ARTICLE_OUT_DIR, `${a.slug}.html`), renderArticlePage(a));
   }

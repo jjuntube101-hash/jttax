@@ -55,8 +55,9 @@ let serviceBlocks = 0;
 for (const f of files) {
   const html = fs.readFileSync(path.join(root,'insights',f),'utf8');
   const {count, slug} = serviceOf(html);
-  const acqHub = html.includes('href="/acquisition-tax/"');
+  const acqHub = /^acquisition-tax(-|$)/.test(f.replace(/\.html$/, '')); // same rule as isAcqHubArticle in build-insights.mjs
   assert.equal(count, acqHub ? 0 : 1, f + ': related-service block count');
+  assert.equal(html.includes('취득세는 «어떤 이유로, 무엇을, 누구 명의로» 취득했는지'), acqHub, f + ': acquisition hub block (ACQ_HUB_BLOCK)');
   if (count) { assert.ok(fs.existsSync(path.join(root,'services',slug+'.html')), f + ': service page exists'); serviceBlocks++; }
 }
 const expectService = {
