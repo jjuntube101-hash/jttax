@@ -499,7 +499,8 @@ const ROOT = path.join(__dirname, '..');
       }
       for (const sec of bootSections) {
         for (const [, href] of sec.matchAll(/<a href="([^"]*)"/g)) {
-          if (!/^\/services\/[a-z-]+\.html$|^\/insights\/([a-z0-9-]+\.html)?$/.test(href)) bad.push(`index.html — 정적 본문 구역에 허용하지 않은 링크가 있습니다 (${href})`);
+          const okService = commMod.SERVICES.some((s) => href === `/services/${s.slug}.html`);   // 정본 업무만 (Codex R2)
+          if (!okService && !/^\/insights\/([a-z0-9-]+\.html)?$/.test(href)) bad.push(`index.html — 정적 본문 구역에 허용하지 않은 링크가 있습니다 (${href})`);
         }
         for (const [, ptext] of sec.matchAll(/<p[^>]*>([^<]*)<\/p>/g)) {
           if (!commMod.SERVICES.some((s) => s.lede === unesc(ptext))) bad.push(`index.html — 정적 본문 구역에 정본에 없는 문단이 있습니다 (${ptext.slice(0, 30)})`);
