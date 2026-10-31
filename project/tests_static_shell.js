@@ -484,7 +484,10 @@ const ROOT = path.join(__dirname, '..');
         const ld = [...idx.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => { try { return JSON.parse(m[1]); } catch (e) { return null; } });
         const faqLd = ld.find((x) => x && x['@type'] === 'FAQPage');
         const ldPairs = faqLd ? faqLd.mainEntity.map((x) => ({ q: x.name, a: x.acceptedAnswer && x.acceptedAnswer.text })) : [];
+        // 형식이 다른 항목(큰따옴표 등)이 파싱에서 조용히 빠지지 않게, «q:» 개수와 파싱 개수를 대조한다 (Codex R1-F3)
+        const qCount = (faqBlock.match(/\bq:/g) || []).length;
         if (!faq.length) bad.push('Data.jsx — faq 목록을 읽지 못했습니다 (구조 변경?)');
+        else if (qCount !== faq.length) bad.push(`Data.jsx — faq 항목 ${qCount}개 중 ${faq.length}개만 읽었습니다 (형식이 다른 항목)`);
         else if (JSON.stringify(ldPairs) !== JSON.stringify(faq)) bad.push(`index.html — FAQPage 스키마(${ldPairs.length}문항)가 화면 FAQ(Data.jsx ${faq.length}문항)와 다릅니다`);
         const homeSrc = fs.readFileSync(path.join(__dirname, 'src', 'Home.jsx'), 'utf8');
         if (!/className="rn-faq">\{D\.faq\.map\(/.test(homeSrc)) bad.push('Home.jsx — 홈 FAQ 가 faq 전체를 그리지 않습니다(스키마 문항과 화면 문항이 어긋남)');

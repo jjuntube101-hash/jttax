@@ -421,7 +421,7 @@ function renderExpertPage(e) {
   const personLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: `${e.name} 세무사`,
+    name: e.name,   // 사람 이름만, 직함은 jobTitle (261031 Codex R1-F2 — 글의 검토자 Person 과 같은 이름)
     // 정적 셸 게이트는 모든 페이지의 OG·Twitter·JSON-LD 이미지를 공용 OG와 일치시킨다.
     // 개인 사진은 아래 프로필 본문에 표시한다.
     image: ogImageHref(),
@@ -544,7 +544,7 @@ function renderAboutPage() {
       '@type': 'PostalAddress', streetAddress: '강남대로78길 22, 5층', postalCode: '06243',
       addressLocality: '강남구', addressRegion: '서울특별시', addressCountry: 'KR',
     },
-    founder: EXPERTS.map(e => ({ '@type': 'Person', name: `${e.name} 세무사`, url: `${SITE}/experts/${e.slug}.html` })),
+    founder: EXPERTS.map(e => ({ '@type': 'Person', name: e.name, jobTitle: '세무사', url: `${SITE}/experts/${e.slug}.html` })),
     foundingDate: '2026',
     description: ABOUT.metaDesc,
   };

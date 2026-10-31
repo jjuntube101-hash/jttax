@@ -27,18 +27,19 @@ for (const f of files) {
   assert.equal(items[2].name, json.find(x=>x['@type']==='Article').headline, f + ': breadcrumb name = headline');
   // 261031 SEO 1-4: internal evidence-table codes must not reach readers.
   assert.ok(!/근거표|GT-\d/.test(html.replace(/<!--[\s\S]*?-->/g, '')), f + ': internal evidence-table code visible');
-  // 261031 owner decision 0-5 (SEO 1-2): reviewer 이현준 세무사 on the byline and as a Person author linked to the expert page.
-  const authors = [].concat(json.find(x=>x['@type']==='Article').author);
-  const person = authors.filter(x=>x['@type']==='Person');
-  assert.equal(person.length, 1, f + ': one Person author');
-  assert.deepEqual([person[0].name, person[0].url], ['이현준 세무사', 'https://www.jttax.co.kr/experts/lee-hyunjun.html'], f + ': reviewer Person');
-  assert.ok(authors.some(x=>x['@type']==='Organization' && x.name==='제이티 세무법인'), f + ': firm stays an author');
+  // 261031 owner decision 0-5 (SEO 1-2): reviewer 이현준 세무사 on the byline and as the Article editor (Person) linked to the expert page.
+  // The firm stays the only author: a reviewer is not declared a co-author (Codex R1-F1).
+  const art = json.find(x=>x['@type']==='Article');
+  const authors = [].concat(art.author);
+  assert.ok(authors.length === 1 && authors[0]['@type']==='Organization' && authors[0].name==='제이티 세무법인', f + ': firm is the sole author');
+  assert.ok(art.editor && art.editor['@type']==='Person', f + ': reviewer Person as editor');
+  assert.deepEqual([art.editor.name, art.editor.jobTitle, art.editor.url], ['이현준', '세무사', 'https://www.jttax.co.kr/experts/lee-hyunjun.html'], f + ': reviewer Person');
   assert.ok(/<div class="jt-ed-byline">[\s\S]*?<span>검토 <a href="\/experts\/lee-hyunjun\.html">이현준 세무사<\/a><\/span>/.test(html), f + ': reviewer on byline');
 }
 {
   // The reviewer's expert page must exist and name the same Person.
   const ex = fs.readFileSync(path.join(root,'experts','lee-hyunjun.html'),'utf8');
-  assert.ok(/"@type":"Person","name":"이현준 세무사"/.test(ex), 'expert page Person name matches reviewer');
+  assert.ok(/"@type":"Person","name":"이현준"/.test(ex), 'expert page Person name matches reviewer');
 }
 for (const slug of ['vat-basics','vat-final-filing-2026']) {
   const html = fs.readFileSync(path.join(root,'insights',slug+'.html'),'utf8');
