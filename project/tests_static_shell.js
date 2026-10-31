@@ -473,6 +473,70 @@ const ROOT = path.join(__dirname, '..');
         bad.push('index.html — 부팅 폴백이 JT_DATA 를 참조합니다. 스크립트 없이 렌더돼야 합니다');
       }
       checkBlankLinks(rootBlock, '부팅 폴백');
+      /* 홈 FAQ 스키마 = 화면 FAQ (261031 SEO 1-5): 구조화 데이터의 문답은 화면에 보이는 문답과 같아야 한다.
+         정본 = Data.jsx 의 faq, 화면 = Home.jsx 가 faq 전체를 그린다(일부만 자르면 스키마와 어긋난다). */
+      {
+        const dataSrc = fs.readFileSync(path.join(__dirname, 'src', 'Data.jsx'), 'utf8');
+        const fs0 = dataSrc.indexOf('  faq: [');
+        const faqBlock = fs0 >= 0 ? dataSrc.slice(fs0, dataSrc.indexOf('\n  ],', fs0)) : '';
+        const unq = (s) => s.replace(/\\'/g, "'").replace(/\\\\/g, '\\');
+        const faq = [...faqBlock.matchAll(/\{ q: '((?:[^'\\]|\\.)*)', a: '((?:[^'\\]|\\.)*)' \}/g)].map((m) => ({ q: unq(m[1]), a: unq(m[2]) }));
+        const ld = [...idx.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => { try { return JSON.parse(m[1]); } catch (e) { return null; } });
+        const faqLd = ld.find((x) => x && x['@type'] === 'FAQPage');
+        const ldPairs = faqLd ? faqLd.mainEntity.map((x) => ({ q: x.name, a: x.acceptedAnswer && x.acceptedAnswer.text })) : [];
+        // 형식이 다른 항목(큰따옴표 등)이 파싱에서 조용히 빠지지 않게, «q:» 개수와 파싱 개수를 대조한다 (Codex R1-F3)
+        const qCount = (faqBlock.match(/\bq:/g) || []).length;
+        if (!faq.length) bad.push('Data.jsx — faq 목록을 읽지 못했습니다 (구조 변경?)');
+        else if (qCount !== faq.length) bad.push(`Data.jsx — faq 항목 ${qCount}개 중 ${faq.length}개만 읽었습니다 (형식이 다른 항목)`);
+        else if (JSON.stringify(ldPairs) !== JSON.stringify(faq)) bad.push(`index.html — FAQPage 스키마(${ldPairs.length}문항)가 화면 FAQ(Data.jsx ${faq.length}문항)와 다릅니다`);
+        const homeSrc = fs.readFileSync(path.join(__dirname, 'src', 'Home.jsx'), 'utf8');
+        if (!/className="rn-faq">\{D\.faq\.map\(/.test(homeSrc)) bad.push('Home.jsx — 홈 FAQ 가 faq 전체를 그리지 않습니다(스키마 문항과 화면 문항이 어긋남)');
+      }
+      /* 정적 본문(261031 SEO 1-1): 자바스크립트를 돌리지 않는 수집기가 읽는 유일한 본문이다.
+         ① 분량 ② 업무 문단 = SERVICES 정본 그대로 ③ 글 링크 = 실제 글·제목 그대로. */
+      const unesc = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+      const bootText = unesc(rootBlock.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+      if (bootText.length < 1000) bad.push(`index.html — 부팅 폴백 본문이 ${bootText.length}자입니다(1,000자 이상)`);
+      for (const s of commMod.SERVICES) {
+        const re = new RegExp(`<a href="/services/${s.slug}\\.html"[^>]*>([^<]*)</a></h3>\\s*<p[^>]*>([^<]*)</p>`);
+        const m = rootBlock.match(re);
+        if (!m) bad.push(`index.html — 부팅 폴백에 ${s.slug} 업무 문단이 없습니다`);
+        else if (unesc(m[1]) !== s.kr || unesc(m[2]) !== s.lede) bad.push(`index.html — 부팅 폴백의 ${s.slug} 이름·문단이 SERVICES 정본과 다릅니다`);
+      }
+      const mdFiles = fs.readdirSync(path.join(__dirname, 'insights')).filter((f) => f.endsWith('.md'));
+      const insightLinks = [...rootBlock.matchAll(/<a href="\/insights\/([a-z0-9-]+)\.html"[^>]*>([^<]*)<\/a>/g)];
+      const uniqInsights = new Set(insightLinks.map((m) => m[1])).size;   // 같은 글 반복으로 채우지 않게 (Codex R1-F3)
+      if (uniqInsights < 5) bad.push(`index.html — 부팅 폴백의 서로 다른 글 링크가 ${uniqInsights}개입니다(5개 이상)`);
+      /* data-boot-content 는 «오류» 낱말 검사를 면제받는 표지라, 붙일 수 있는 구역을 둘로 못 박는다 (Codex R1-F1).
+         그 구역 안의 링크는 위에서 정본과 대조한 업무·글 링크만 허용하고, 문단은 SERVICES lede 만 허용한다. */
+      const bootSections = [...rootBlock.matchAll(/<section data-boot-content\b[^>]*>[\s\S]*?<\/section>/g)].map((m) => m[0]);
+      const sectionLabels = bootSections.map((s) => (s.match(/aria-label="([^"]*)"/) || [])[1]);
+      const allowedLabels = ['업무 분야 소개', '많이 읽는 세금 가이드'];
+      if ((rootBlock.match(/data-boot-content/g) || []).length !== 2
+          || sectionLabels.length !== 2 || !allowedLabels.every((l) => sectionLabels.includes(l))) {
+        bad.push('index.html — data-boot-content 표지는 «업무 분야 소개»·«많이 읽는 세금 가이드» 두 구역에만 붙일 수 있습니다');
+      }
+      for (const sec of bootSections) {
+        for (const [, href] of sec.matchAll(/<a href="([^"]*)"/g)) {
+          const okService = commMod.SERVICES.some((s) => href === `/services/${s.slug}.html`);   // 정본 업무만 (Codex R2)
+          if (!okService && !/^\/insights\/([a-z0-9-]+\.html)?$/.test(href)) bad.push(`index.html — 정적 본문 구역에 허용하지 않은 링크가 있습니다 (${href})`);
+        }
+        for (const [, ptext] of sec.matchAll(/<p[^>]*>([^<]*)<\/p>/g)) {
+          if (!commMod.SERVICES.some((s) => s.lede === unesc(ptext))) bad.push(`index.html — 정적 본문 구역에 정본에 없는 문단이 있습니다 (${ptext.slice(0, 30)})`);
+        }
+        if (/<p[^>]*>[^<]*<(?!\/p>)/.test(sec.replace(/<p[^>]*><a href="\/insights\/"[^>]*>[^<]*<\/a><\/p>/, ''))) bad.push('index.html — 정적 본문 구역의 문단 안에 다른 태그가 있습니다');
+      }
+      /* 숨긴 본문은 수집기에도 숨김 신호다 — 폴백 전체에 숨김 속성·스타일을 두지 않는다 (Codex R1-F2).
+         지연 노출 블록(.jt-boot__late)은 CSS 클래스로 처리하므로 여기 걸리지 않는다. */
+      if (/\shidden(\s|>|=)|aria-hidden|display\s*:\s*none|visibility\s*:\s*hidden|font-size\s*:\s*0|opacity\s*:\s*0(?![.\d])/i.test(rootBlock.replace(/<!--[\s\S]*?-->/g, ''))) {
+        bad.push('index.html — 부팅 폴백에 숨김 속성·스타일이 있습니다(정적 본문이 수집기에 안 보입니다)');
+      }
+      for (const [, slug, text] of insightLinks) {
+        const f = mdFiles.find((x) => x.endsWith(`-${slug}.md`));
+        const tm = f && fs.readFileSync(path.join(__dirname, 'insights', f), 'utf8').match(/^title: (".*")$/m);
+        if (!fs.existsSync(path.join(ROOT, 'insights', `${slug}.html`)) || !tm) bad.push(`index.html — 부팅 폴백의 글 링크 ${slug} 에 해당하는 글이 없습니다`);
+        else if (unesc(text) !== JSON.parse(tm[1])) bad.push(`index.html — 부팅 폴백의 글 ${slug} 제목이 원고 title 과 다릅니다`);
+      }
 
       /* ── 오류 안내는 «지연» 노출, 연락처는 «즉시» (260810) ──────────────
          이 화면은 오류 화면이 아니라 React 마운트 전까지 보이는 초기 HTML 이다.
@@ -628,7 +692,9 @@ const ROOT = path.join(__dirname, '..');
         }
       }
       /* 즉시 보이는 부분에 오류 표현이 있으면 정상 대기가 고장으로 읽힌다 */
-      const 즉시 = lateBlocks.reduce((s, b) => s.replace(b, ''), rootBlock);
+      /* data-boot-content 구역(업무 소개·글 제목)은 상태 안내가 아니라 정본 문구 사본이다 — «계산 오류» 같은 낱말을 걸지 않는다.
+         그 구역은 아래 정적 본문 검사가 SERVICES·원고 title 과 글자 단위로 대조한다(261031 SEO 1-1). */
+      const 즉시 = lateBlocks.reduce((s, b) => s.replace(b, ''), rootBlock).replace(/<section data-boot-content[\s\S]*?<\/section>/g, '');
       for (const w of ['문제가 생겼', '오류', '실패', '다시 시도해']) {
         if (즉시.indexOf(w) >= 0) {
           bad.push('index.html — 부팅 폴백에서 «즉시» 보이는 부분에 「' + w + '」가 있습니다. 정상 대기 중인 방문자에게 고장으로 읽힙니다');
@@ -747,6 +813,20 @@ const ROOT = path.join(__dirname, '..');
 
   generatedOnly.forEach((f) => checkPage(f, { requireShellMarker: true }));
   handwritten.forEach((f) => checkPage(f, { requireShellMarker: true }));
+
+  /* ── 검색 메타 빈칸 (261031) ─────────────────────────────────────
+     빌더의 head 인자 줄이 주석에 먹혀 전문가 3장의 description 이 비고 canonical 이 "undefined" 가 됐는데
+     위 검사는 모두 통과했다. 생성 페이지마다 제목·설명·canonical 이 실제 값인지 본다. */
+  for (const rel of generatedOnly) {
+    const h = fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/<!--[\s\S]*?-->/g, '');   // 주석 속 태그는 메타가 아니다 (Codex R1-F3)
+    const title = (h.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
+    const desc = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
+    const canon = (h.match(/<link rel="canonical" href="([^"]*)"/) || [])[1] || '';
+    const page = rel.endsWith('/index.html') ? rel.slice(0, -'index.html'.length) : rel;
+    if (!title.trim() || /undefined|null/.test(title)) bad.push(`${rel} — <title> 이 비었거나 undefined 입니다`);
+    if (desc.trim().length < 20 || /undefined|null/.test(desc)) bad.push(`${rel} — meta description 이 비었거나 너무 짧습니다`);
+    if (canon !== `https://www.jttax.co.kr/${page}`) bad.push(`${rel} — canonical 이 이 페이지 주소가 아닙니다: "${canon.slice(0, 80)}"`);
+  }
 
   /* ── 결과 ───────────────────────────────────────────────────────── */
   const total = generatedOnly.length + handwritten.length;

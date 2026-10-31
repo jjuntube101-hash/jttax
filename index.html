@@ -59,7 +59,7 @@
     "@context": "https://schema.org",
     "@type": "AccountingService",
     "name": "제이티 세무법인",
-    "alternateName": "JT TAX CORP.",
+    "alternateName": ["JT TAX CORP.", "제이티세무회계", "제이티 세무회계"],
     "url": "https://www.jttax.co.kr",
     "logo": "https://www.jttax.co.kr/project/assets/logo_symbol.png",
     "image": "https://www.jttax.co.kr/project/assets/og-image.png?v=2",
@@ -87,10 +87,10 @@
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      { "@type": "Question", "name": "상담은 어떻게 진행되며, 비용이 드나요?", "acceptedAnswer": { "@type": "Answer", "text": "전화·카카오톡·방문(사전 예약) 중 편한 방식으로 접수하시면, 영업일 기준 24시간 이내에 담당 세무사가 직접 연락드립니다. 접수 내용을 보고 검토 범위와 보수를 견적으로 안내하며, 세무 판단과 실행은 자문 계약 체결 후 진행됩니다." } },
-      { "@type": "Question", "name": "어떤 분야를 다루나요?", "acceptedAnswer": { "@type": "Answer", "text": "양도·상속·증여, 세무조사 대응, 법인·개인 기장 및 신고, 세금 종합 컨설팅, 경정청구(환급) 등 개인 자산가부터 법인까지 폭넓게 다룹니다." } },
-      { "@type": "Question", "name": "세무서에서 조사 통지를 받았는데, 지금 연락해도 되나요?", "acceptedAnswer": { "@type": "Answer", "text": "네, 통지 직후가 가장 중요한 시점입니다. 첫 대응이 결과를 크게 좌우하므로 가능한 한 빨리 연락 주세요. 통지 단계부터 세무사가 함께합니다." } },
-      { "@type": "Question", "name": "이미 낸 세금도 돌려받을 수 있나요?", "acceptedAnswer": { "@type": "Answer", "text": "법정신고기한으로부터 5년 이내라면, 과다 납부·공제 누락 등에 대해 경정청구로 환급받을 수 있습니다. 경정청구 기한이 남아 있는지 확인한 뒤, 검토 범위와 보수를 견적으로 안내합니다." } },
+      { "@type": "Question", "name": "상담은 어떻게 진행되며, 비용이 드나요?", "acceptedAnswer": { "@type": "Answer", "text": "전화·카카오톡·방문(사전 예약) 중 편한 방식으로 문의를 남겨 주세요. 내용을 확인한 뒤 연락드립니다. 접수 내용을 보고 검토 범위와 보수를 견적으로 안내하며, 세무 판단과 실행은 자문 계약 체결 후 진행됩니다." } },
+      { "@type": "Question", "name": "어떤 분야를 다루나요?", "acceptedAnswer": { "@type": "Answer", "text": "양도·상속·증여, 세무조사 대응, 세무기장·세금 신고, 세금 종합 컨설팅, 경정청구, 취득세, 크리에이터 세금 등 사업과 재산의 세무를 다룹니다." } },
+      { "@type": "Question", "name": "세무서에서 조사 통지를 받았는데, 지금 연락해도 되나요?", "acceptedAnswer": { "@type": "Answer", "text": "네. 통지서 종류와 받은 날짜, 조사 대상 기간을 알려 주세요. 확인할 기한과 준비할 자료를 먼저 안내하고, 검토 범위와 진행 방법을 함께 정합니다." } },
+      { "@type": "Question", "name": "이미 낸 세금도 돌려받을 수 있나요?", "acceptedAnswer": { "@type": "Answer", "text": "과다 납부나 공제 누락 등 검토할 사유가 있는지 신고 내역을 확인해야 합니다. 적용되는 청구 기한과 자료를 살핀 뒤 검토 범위와 보수를 안내하며, 환급 여부는 검토와 처리 결과에 따라 달라집니다." } },
       { "@type": "Question", "name": "지방에 있는데도 상담이 가능한가요?", "acceptedAnswer": { "@type": "Answer", "text": "네. 전화·카카오톡·이메일을 통한 비대면 상담으로 전국 어디서나 진행 가능합니다. 필요 시 자료도 온라인으로 주고받습니다." } },
       { "@type": "Question", "name": "이미 거래하는 세무사가 있는데, 특정 사안만 의견을 받을 수 있나요?", "acceptedAnswer": { "@type": "Answer", "text": "가능합니다. 세무조사·불복·경정청구·평가 등 특정 쟁점에 대한 2차 의견(세컨드 오피니언)만 별도로 제공해 드립니다." } },
       { "@type": "Question", "name": "상담 시 무엇을 준비하면 되나요?", "acceptedAnswer": { "@type": "Answer", "text": "관련 서류(계약서·신고서·통지서 등)와 핵심 일정·금액이 있으면 더 정확합니다. 다만 자료가 정리되지 않았어도 상황만 말씀해 주시면 안내해 드립니다." } }
@@ -206,7 +206,17 @@
       <a href="/services/" style="color:inherit">업무 분야</a>
       <a href="/experts/" style="color:inherit">세무사 소개</a>
       <a href="/calculators/" style="color:inherit">세금 계산기</a>
+      <a href="/insights/" style="color:inherit">세금 가이드</a>
     </nav>
+    <!-- 업무 면 직접 링크(261031 SEO 진단 1-0): 업무 4면이 «발견됨 - 색인 안 됨»이었다.
+         JS 가 돌기 전의 원본 HTML 에도 업무 면 주소가 보이게 한다. 이름은 SERVICES.kr 과 같게. -->
+    <ul aria-label="업무 분야" style="list-style:none;padding:0;margin:0 0 20px;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px">
+      <li><a href="/services/asset-transfer.html" style="color:inherit">양도·상속·증여</a></li>
+      <li><a href="/services/tax-audit.html" style="color:inherit">세무조사 대응</a></li>
+      <li><a href="/services/bookkeeping.html" style="color:inherit">세무기장·세금 신고</a></li>
+      <li><a href="/services/consulting.html" style="color:inherit">세금 종합 컨설팅</a></li>
+      <li><a href="/services/tax-refund.html" style="color:inherit">경정청구</a></li>
+    </ul>
     <p style="font-size:12px;color:#5a5a5a;margin:0 0 6px">상세 화면을 불러오고 있습니다.</p>
     <!-- ⚠️ 이 문구는 «6초 뒤에 나타나도, 처음부터 보여도» 둘 다 자연스러워야 한다.
          동작 최소화 설정이나 애니메이션을 억제하는 환경에서는 처음부터 보이기 때문이다
@@ -220,6 +230,37 @@
       <a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" style="padding:13px 22px;border:1px solid rgba(0,0,0,.2);color:#0B0B0F;text-decoration:none;font-size:14px">카카오톡 상담 <span style="font-size:11px;color:#888">(새 창)</span></a>
       <a href="/calculators/" style="padding:13px 22px;border:1px solid rgba(0,0,0,.2);color:#0B0B0F;text-decoration:none;font-size:14px">세금 계산기</a>
     </div>
+    <!-- 정적 본문(261031 SEO 진단 1-1): 자바스크립트를 돌리지 않는 수집기도 업무 설명과 글 주소를 읽게 한다.
+         업무 문단 = commercial.data.mjs SERVICES 의 kr·lede 그대로, 글 제목 = 각 md 의 title 그대로
+         (tests_static_shell 이 글자 단위로 대조한다 — 정본을 고치면 여기도 고칠 것). -->
+    <section data-boot-content aria-label="업무 분야 소개" style="margin-top:34px;font-size:14px;color:#3a3a3a">
+      <h2 style="font-size:17px;margin:0 0 10px;color:#0B0B0F">업무 분야</h2>
+      <h3 style="font-size:15px;margin:14px 0 4px"><a href="/services/asset-transfer.html" style="color:inherit">양도·상속·증여</a></h3>
+      <p style="margin:0">자산이 움직이는 순간 — 팔고, 물려주고, 받는 순간 — 세금이 결정됩니다. 신고서를 쓰기 전에, 어느 길이 유리한지부터 숫자로 비교합니다.</p>
+      <h3 style="font-size:15px;margin:14px 0 4px"><a href="/services/tax-audit.html" style="color:inherit">세무조사 대응</a></h3>
+      <p style="margin:0">조사 통지 단계부터 쟁점을 정리해 소명 논리를 세웁니다. 조문·판례·심판례로 근거를 갖춰 대응합니다.</p>
+      <h3 style="font-size:15px;margin:14px 0 4px"><a href="/services/bookkeeping.html" style="color:inherit">세무기장·세금 신고</a></h3>
+      <p style="margin:0">장부는 숫자가 아니라 의사결정의 근거입니다. 매월 기장을 바탕으로 결산·부가세·원천세·법인세 등 필요한 신고 업무를 확인하고 관리합니다.</p>
+      <h3 style="font-size:15px;margin:14px 0 4px"><a href="/services/consulting.html" style="color:inherit">세금 종합 컨설팅</a></h3>
+      <p style="margin:0">사업 구조나 자산 이전을 결정하기 전에 선택지별 세 부담과 실행 조건을 비교합니다. 현재 상황과 계획을 확인하고 필요한 검토를 안내합니다.</p>
+      <h3 style="font-size:15px;margin:14px 0 4px"><a href="/services/tax-refund.html" style="color:inherit">경정청구</a></h3>
+      <p style="margin:0">이미 낸 세금에 공제 누락이나 계산 오류가 있는지 살핍니다. 신고 내역과 청구 기한을 확인하고, 검토할 사유가 있으면 필요한 자료와 절차를 안내합니다.</p>
+    </section>
+    <section data-boot-content aria-label="많이 읽는 세금 가이드" style="margin-top:28px;font-size:14px">
+      <h2 style="font-size:17px;margin:0 0 10px">많이 읽는 세금 가이드</h2>
+      <ul style="padding-left:18px;margin:0">
+        <li><a href="/insights/acquisition-tax-basics.html" style="color:inherit">주택 매매 취득세율 2026 — 6억 이하 1%·9억 초과 3%, 지방교육세·농특세 합계까지</a></li>
+        <li><a href="/insights/acquisition-tax-rate-guide.html" style="color:inherit">아파트 취득세 얼마? 2026 — 5억 550만·7억 1,286만·10억 3,300만</a></li>
+        <li><a href="/insights/gift-tax-exemption-limit.html" style="color:inherit">증여세 면제한도 2026 — 배우자 6억·자녀 5천만·미성년 2천만 (10년)</a></li>
+        <li><a href="/insights/inheritance-tax-exemption-limit.html" style="color:inherit">상속세 면제한도 2026 — 배우자 10억·무배우자 5억 (금액별 세금표)</a></li>
+        <li><a href="/insights/capital-gains-tax-traps.html" style="color:inherit">양도소득세 계산 방법 2026 — 장기보유특별공제·필요경비 함정 5가지</a></li>
+        <li><a href="/insights/tax-audit-first-72h.html" style="color:inherit">세무조사 사전통지 대응 2026 — 통지서 받은 첫 72시간 행동요령</a></li>
+        <li><a href="/insights/side-job-income-tax.html" style="color:inherit">직장인 부업 종합소득세 2026 — 연말정산 했는데 5월에 또? 3.3%·N잡 신고 기준</a></li>
+        <li><a href="/insights/corporate-conversion.html" style="color:inherit">법인전환 개인사업자 세금 비교 2026 — 전환 시기·손익분기, 법인 바꾸면 세금 줄까?</a></li>
+        <li><a href="/insights/tax-appeal-refund-correction.html" style="color:inherit">경정청구 기간·불복 2026 — 억울한 세금 돌려받는 5년과 90일</a></li>
+      </ul>
+      <p style="margin:8px 0 0"><a href="/insights/" style="color:inherit">세금 가이드 전체 보기</a></p>
+    </section>
     <address style="font-style:normal;font-size:12px;color:#888;margin-top:34px">
       제이티 세무법인 · 대표 김민석·이현준·김가환 · 담당 세무사 이현준<br>서울특별시 강남구 강남대로78길 22, 5층 · 평일 09:30–17:30
     </address>
@@ -233,7 +274,7 @@
           node project/scripts/build_bundle.mjs 로 다시 만든다(순서는 그 스크립트의 ORDER).
        ⛔ 소스를 고쳤으면 «번들도 함께 커밋»해야 한다 — tests_build_fresh.js 가 막는다. -->
   <script src="project/dist/insight-meta.js?v=1"></script>
-  <script src="project/dist/app.js?v=147"></script>
+  <script src="project/dist/app.js?v=148"></script>
 </body>
 </html>
 

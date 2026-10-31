@@ -21,6 +21,7 @@ import { insightSlug } from '../_shared/insight-slug.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 import { footerHtml, stylesHref, ogImageHref, faviconHtml } from '../_shared/site-meta.mjs';
 import { escapeHtml, readingTools, hero, editorialCss } from './editorial.mjs';
+import { SERVICES } from '../commercial/commercial.data.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url)); // project/insights
 const PROJECT = join(__dirname, '..');                     // project
@@ -229,12 +230,65 @@ const ACQ_HUB_BLOCK = `
       <p style="margin:10px 0 0;font-size:13px;color:#777;">세액이나 차액을 계산해 보여 드리는 화면이 아니라, 써 주신 내용만으로 다시 볼 여지가 있는지 확인하는 접수입니다. 서류는 자문을 맡기시기로 한 뒤에 필요한 것만 받습니다.</p>
     </div>`;
 
+/* 글 → 업무분야 면(/services/*.html)으로 «들어오는 링크» (261031 SEO 진단 실행계획 1-0).
+   서치콘솔에서 /services/ 와 업무 4면이 «발견됨 - 현재 색인 생성되지 않음»이었고, 업무 면으로
+   들어오는 링크는 업무분야 목록·다른 업무 면뿐이었다. 업무 면 → 글 링크(relatedInsights)는 있는데
+   반대 방향이 없었다.
+   고르는 순서: ① SERVICE_BY_ARTICLE 에 적힌 글은 그 업무 ② 업무 면의 relatedInsights 에 이 글이
+   있으면 그 업무 ③ 없으면 tag 규칙.
+   취득세 글은 이미 /acquisition-tax/ 허브 블록이 붙으므로 여기서 다시 붙이지 않는다.
+   ⛔ 문구에 세율·기한·결과 주장을 넣지 않는다 — 업무 이름과 링크만. */
+const SERVICE_BY_SLUG = new Map(SERVICES.map((s) => [s.slug, s]));
+const SERVICE_BY_INSIGHT = new Map(); // 글 slug → 그 글을 relatedInsights 에 둔 업무 slug 목록
+for (const s of SERVICES) for (const r of s.relatedInsights || []) SERVICE_BY_INSIGHT.set(r.slug, [...(SERVICE_BY_INSIGHT.get(r.slug) || []), s.slug]);
+/* tag 가 «INSIGHT · CONSULT» 뿐이라 주제를 알 수 없는 증여·양도·보유세 글(Codex R1-F1). */
+/* 검토 세무사 (261031 대표 결재 0-5: 이현준 세무사(광고책임세무사) 한 명이 검토자로 표시).
+   화면 바이라인 «검토 ○○○ 세무사»와 Article.editor(Person)에 쓴다. 작성자(author)는 법인 그대로 — 검토자를 저자로 선언하지 않는다(Codex R1-F1).
+   name 은 사람 이름만(직함은 jobTitle), /experts/ 면의 Person 이름과 같게(Codex R1-F2). */
+const REVIEWER = { name: '이현준', href: '/experts/lee-hyunjun.html' };
+
+const SERVICE_BY_ARTICLE = new Map([
+  ['gift-tax-saving', 'asset-transfer'],
+  ['burdened-gift', 'asset-transfer'],
+  ['one-house-cgt-exemption', 'asset-transfer'],
+  ['property-holding-tax-june1', 'asset-transfer'],
+]);
+/* 크리에이터 규칙을 창업감면(컨설팅)보다 먼저 본다 — 크리에이터 창업감면 글은 사업자등록·기장 안내다(Codex R1-F2). */
+const SERVICE_TAG_RULES = [
+  [/AUDIT/i, 'tax-audit'],
+  [/APPEAL/i, 'tax-refund'],
+  [/LEGACY|GIFT|INHERITANCE|CAPITAL GAINS|REAL ESTATE|PROPERTY TAX/i, 'asset-transfer'],
+  [/크리에이터|CREATOR/i, 'bookkeeping'],
+  [/CONSULT|CORPORATE|창업감면/i, 'consulting'],
+  [/BOOKKEEPING|INCOME TAX|VAT|PAYROLL|기장|사업자/i, 'bookkeeping'],
+];
+for (const slug of [...SERVICE_TAG_RULES.map(([, s]) => s), ...SERVICE_BY_ARTICLE.values()]) if (!SERVICE_BY_SLUG.has(slug)) throw new Error(`관련 업무 규칙이 없는 업무를 가리킵니다: ${slug}`);
+function serviceFor(a) {
+  if (isAcqHubArticle(a.slug)) return null;
+  if (SERVICE_BY_ARTICLE.has(a.slug)) return SERVICE_BY_SLUG.get(SERVICE_BY_ARTICLE.get(a.slug));
+  const byTag = SERVICE_TAG_RULES.find(([re]) => re.test(String(a.tag || '')))?.[1];
+  const listed = SERVICE_BY_INSIGHT.get(a.slug) || [];
+  /* 두 업무 면에 함께 실린 글(예: 경정청구·불복 글은 세무조사·경정청구 양쪽)은 tag 규칙과 맞는 쪽을 고른다. */
+  const pick = listed.length ? (listed.includes(byTag) ? byTag : listed[0]) : byTag;
+  return pick ? SERVICE_BY_SLUG.get(pick) : null;
+}
+function serviceBlock(a) {
+  const s = serviceFor(a);
+  if (!s) return '';
+  return `
+    <aside aria-label="관련 업무" style="margin-top:48px;padding:22px 24px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;border-radius:10px;line-height:1.7;">
+      <div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#888;">관련 업무</div>
+      <p style="margin:8px 0 12px;font-size:15px;color:#333;">${escapeHtml(s.lede)}</p>
+      <a href="/services/${s.slug}.html" style="font-size:15px;color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">${escapeHtml(s.kr)} 업무 안내 보기 →</a>
+    </aside>`;
+}
+
 function renderArticlePage(a) {
   const shareUrl = `${SITE}/insights/${a.slug}.html`;
   const esc = escapeHtml;
   const imageUrl = a.hero ? `${SITE}${a.hero}` : ogImageHref();
   const reading = readingTools(a);
-  const hubBlock = isAcqHubArticle(a.slug) ? ACQ_HUB_BLOCK : '';
+  const hubBlock = isAcqHubArticle(a.slug) ? ACQ_HUB_BLOCK : serviceBlock(a);
   const youthBlock = a.slug === 'youth-startup-tax-reduction-2026' ? `<aside aria-label="청년창업 진단과 상담" style="margin:0 0 32px;padding:24px;border:1px solid rgba(0,0,0,.12);background:#FAFAF8;">
       <p style="margin:0 0 8px;font-weight:700;">청년창업 감면을 검토하고 계신가요?</p>
       <p style="margin:0 0 16px;color:#5a5a5a;line-height:1.7;">계산기로 기본 조건을 살펴보고, 개별 사안은 상담으로 이어가세요.</p>
@@ -288,10 +342,22 @@ ${GA_HEAD_SNIPPET}
     "datePublished": ${JSON.stringify(a.dateISO)},
     "dateModified": ${JSON.stringify(a.updatedISO)},
     "author": { "@type": "Organization", "name": ${JSON.stringify(a.author)}, "url": "${SITE}/about/" },
+    "editor": { "@type": "Person", "name": ${JSON.stringify(REVIEWER.name)}, "jobTitle": "세무사", "url": "${SITE}${REVIEWER.href}" },
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
     "description": ${JSON.stringify(a.excerpt)},
     "mainEntityOfPage": ${JSON.stringify(shareUrl)}
   }
+  </script>
+  <script type="application/ld+json">
+  ${/* 탐색경로 (261031 SEO 진단 1-3) — 화면의 «세금 가이드 / 분류» 와 같은 단계, 목록 면의 BreadcrumbList 와 같은 이름 */ JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '홈', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: '세금 가이드', item: `${SITE}/insights/` },
+      { '@type': 'ListItem', position: 3, name: a.title, item: shareUrl },
+    ],
+  }).replace(/</g, '\\u003c')}
   </script>
 </head>
 <body style="background:#fff;color:#0B0B0F;">
@@ -309,7 +375,7 @@ ${GA_HEAD_SNIPPET}
     <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">세금 가이드</a> / ${esc(a.tag)}</nav>
     <h1>${esc(a.title)}</h1>
     <p class="jt-ed-deck">${esc(a.excerpt)}</p>
-    <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a><span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
+    <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a><span>검토 <a href="${REVIEWER.href}">${esc(REVIEWER.name)} 세무사</a></span><span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
 ${hero(a)}
 ${reading.toc}
 ${youthBlock ? '    ' + youthBlock + '\n' : ''}    ${reading.html}
@@ -439,6 +505,8 @@ ${footerHtml()}
 
 async function writeArticlePages(arts) {
   await mkdir(ARTICLE_OUT_DIR, { recursive: true });
+  const slugs = new Set(arts.map((a) => a.slug));
+  for (const slug of SERVICE_BY_ARTICLE.keys()) if (!slugs.has(slug)) throw new Error(`SERVICE_BY_ARTICLE 에 없는 글이 있습니다: ${slug}`);
   for (const a of arts) {
     await writeFile(join(ARTICLE_OUT_DIR, `${a.slug}.html`), renderArticlePage(a));
   }

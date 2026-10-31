@@ -182,12 +182,12 @@ function crumbLd(items) {
   };
 }
 
-/* 카카오톡 채널 QR (260922 오너 제공 — 판독값 http://pf.kakao.com/_CcxlJG, 채널 «제이티 세무회계»).
+/* 카카오톡 채널 QR (260922 오너 제공 — 판독값 http://pf.kakao.com/_CcxlJG, 채널 «제이티 세무회계» → 261031 «제이티 세무법인»으로 이름 변경 확인).
    화면이 좁으면(휴대폰) 링크를 바로 누르면 되므로 그림은 숨긴다. */
 const KAKAO_URL = 'https://pf.kakao.com/_CcxlJG';
 const KAKAO_QR = `    <div class="jt-cc-kqr">
-      <a href="${KAKAO_URL}" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','qr')"><img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무회계 QR 코드" loading="lazy" width="88" height="88"></a>
-      <span>휴대폰 카메라로 QR을 찍으면 카카오톡 채널 <b>제이티 세무회계</b>로 연결됩니다.<br><a href="${KAKAO_URL}" target="_blank" rel="noopener" style="color:#333;">pf.kakao.com/_CcxlJG</a></span>
+      <a href="${KAKAO_URL}" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','qr')"><img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무법인 QR 코드" loading="lazy" width="88" height="88"></a>
+      <span>휴대폰 카메라로 QR을 찍으면 카카오톡 채널 <b>제이티 세무법인</b>로 연결됩니다.<br><a href="${KAKAO_URL}" target="_blank" rel="noopener" style="color:#333;">pf.kakao.com/_CcxlJG</a></span>
     </div>`;
 
 const CTA_BOTTOM = `    <div class="jt-cc-cta" style="margin-top:24px;">
@@ -421,7 +421,7 @@ function renderExpertPage(e) {
   const personLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: `${e.name} 세무사`,
+    name: e.name,   // 사람 이름만, 직함은 jobTitle (261031 Codex R1-F2 — 글의 검토자 Person 과 같은 이름)
     // 정적 셸 게이트는 모든 페이지의 OG·Twitter·JSON-LD 이미지를 공용 OG와 일치시킨다.
     // 개인 사진은 아래 프로필 본문에 표시한다.
     image: ogImageHref(),
@@ -443,7 +443,8 @@ function renderExpertPage(e) {
     ['자격', e.qualifications],
   ].filter(([, entries]) => entries && entries.length);
   return headHtml({
-    title: `${e.name} 세무사 — ${e.headline} | ${FIRM}`, desc: e.metaDesc, keywords: e.keywords, url,
+    // metaTitle: 검색결과 제목만 따로 정할 때 (261031 SEO 1-0b)
+    title: `${e.metaTitle || `${e.name} 세무사 — ${e.headline}`} | ${FIRM}`, desc: e.metaDesc, keywords: e.keywords, url,
     ldBlocks: [personLd, crumbLd([['홈', `${SITE}/`], ['전문가', `${SITE}/experts/`], [`${e.name} 세무사`, url]])],
   }) + `
   <main class="jt-cc-wrap">
@@ -535,7 +536,7 @@ function renderAboutPage() {
     '@type': 'AccountingService',
     name: FIRM,
     image: ogImageHref(),
-    alternateName: 'JT TAX CORP.',
+    alternateName: ['JT TAX CORP.', '제이티세무회계', '제이티 세무회계'],   // 옛 상호 (261031 결재 1-7)
     url: SITE,
     telephone: '+82-2-554-6405',
     email: 'jttax@jttax.co.kr',
@@ -543,7 +544,7 @@ function renderAboutPage() {
       '@type': 'PostalAddress', streetAddress: '강남대로78길 22, 5층', postalCode: '06243',
       addressLocality: '강남구', addressRegion: '서울특별시', addressCountry: 'KR',
     },
-    founder: EXPERTS.map(e => ({ '@type': 'Person', name: `${e.name} 세무사`, url: `${SITE}/experts/${e.slug}.html` })),
+    founder: EXPERTS.map(e => ({ '@type': 'Person', name: e.name, jobTitle: '세무사', url: `${SITE}/experts/${e.slug}.html` })),
     foundingDate: '2026',
     description: ABOUT.metaDesc,
   };
