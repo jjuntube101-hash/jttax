@@ -58,6 +58,7 @@
   {
     "@context": "https://schema.org",
     "@type": "AccountingService",
+    "@id": "https://www.jttax.co.kr/#organization",
     "name": "제이티 세무법인",
     "alternateName": ["JT TAX CORP.", "제이티세무회계", "제이티 세무회계"],
     "url": "https://www.jttax.co.kr",
@@ -74,10 +75,11 @@
       "addressRegion": "서울특별시",
       "addressCountry": "KR"
     },
-    "openingHours": "Mo-Fr 09:30-17:30",
+    "geo": { "@type": "GeoCoordinates", "latitude": 37.49516, "longitude": 127.03117 },
+    "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "09:30", "closes": "17:30" }],
     "priceRange": "$$",
     "areaServed": "KR",
-    "sameAs": ["https://pf.kakao.com/_CcxlJG"],
+    "sameAs": ["https://pf.kakao.com/_CcxlJG", "https://blog.naver.com/jt_tax", "https://map.naver.com/p/entry/place/1319293073", "https://place.map.kakao.com/1776119720"],
     "hasMap": ["https://place.map.kakao.com/1776119720", "https://map.naver.com/p/entry/place/1319293073"]
   }
   </script>

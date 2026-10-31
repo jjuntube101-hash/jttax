@@ -222,12 +222,22 @@ const ROOT = path.join(__dirname, '..');
         continue;
       }
       for (const node of Array.isArray(obj) ? obj : [obj]) {
-        if (node && typeof node.image === 'string') ldImages.push(node.image);
+        if (!node || typeof node.image !== 'string') continue;
+        /* Person 은 인물 사진을 쓴다 (261031 SEO 2-5). 사진 폴더 안의 «실제 있는 파일»만 허용하고,
+           공유 이미지 대조(og:image)에서는 뺀다. 그 밖의 노드는 지금처럼 공용 OG 와 같아야 한다. */
+        if (node['@type'] === 'Person') {
+          const peoplePrefix = `https://${meta.SITE_HOST}/project/assets/people/`;
+          const rel2 = node.image.startsWith(peoplePrefix) ? node.image.slice(`https://${meta.SITE_HOST}/`.length) : null;
+          if (!rel2 || !fs.existsSync(path.join(ROOT, rel2))) bad.push(`${rel} — Person image 가 인물 사진 폴더의 실제 파일이 아닙니다: ${node.image.slice(0, 80)}`);
+          else ldImages.push(null);   // «image 있음»만 표시
+          continue;
+        }
+        ldImages.push(node.image);
       }
     }
     if (ldImages.length === 0) bad.push(`${rel} — JSON-LD 에 image 가 없습니다`);
     else {
-      const off = ldImages.find((u) => u !== expected);
+      const off = ldImages.find((u) => u !== null && u !== expected);
       if (off) bad.push(`${rel} — JSON-LD image 가 og:image 와 다릅니다: ${off.slice(0, 80)}`);
     }
   };
@@ -860,6 +870,54 @@ const ROOT = path.join(__dirname, '..');
     }
     const consult = fs.readFileSync(path.join(ROOT, 'consult.html'), 'utf8');
     if (!consult.includes(`href="${kakaoMap}"`) || !consult.includes(`href="${naverMap}"`)) bad.push('consult.html — 오시는 길에 카카오맵·네이버 플레이스 링크가 없습니다');
+  }
+
+  /* ── 회사·인물 @id (261031 SEO 2-4·2-5) ────────────────────────────
+     ① 홈(수기)·회사소개·상담 면의 AccountingService 가 site-meta 공통값(@id·좌표·영업시간·sameAs)과 같은지 본다.
+     ② 모든 면의 JSON-LD 를 끝까지 내려가며, 법인 이름을 단 Organization·AccountingService 는 회사 @id 를,
+        /experts/ 주소를 단 Person 은 그 사람의 @id 를 갖는지 본다 — 한 면만 @id 를 빠뜨려도 엔티티가 둘로 갈린다. */
+  {
+    const want = { '@id': meta.ORG_ID, geo: meta.ORG_GEO, openingHoursSpecification: meta.ORG_HOURS, sameAs: meta.ORG_SAME_AS };
+    for (const rel of ['index.html', 'about/index.html', 'consult.html']) {
+      const h = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+      for (const m of h.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+        let j; try { j = JSON.parse(m[1]); } catch { continue; }
+        if (j['@type'] !== 'AccountingService') continue;
+        for (const [k, v] of Object.entries(want)) {
+          if (JSON.stringify(j[k]) !== JSON.stringify(v)) bad.push(`${rel} — AccountingService ${k} 가 site-meta 공통값과 다릅니다`);
+        }
+      }
+    }
+    const SKIP = new Set(['node_modules', 'project', '.git', 'dist']);
+    const htmlFiles = [];
+    const walk = (dir) => {
+      for (const ent of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
+        const rel = dir ? `${dir}/${ent.name}` : ent.name;
+        if (ent.isDirectory()) { if (!SKIP.has(ent.name) && !ent.name.startsWith('.')) walk(rel); }
+        else if (ent.name.endsWith('.html')) htmlFiles.push(rel);
+      }
+    };
+    walk('');
+    let orgNodes = 0;
+    const visit = (rel, node) => {
+      if (Array.isArray(node)) { node.forEach((n) => visit(rel, n)); return; }
+      if (!node || typeof node !== 'object') return;
+      const t = node['@type'];
+      if ((t === 'Organization' || t === 'AccountingService') && node.name === meta.FIRM) {
+        orgNodes++;
+        if (node['@id'] !== meta.ORG_ID) bad.push(`${rel} — 법인 ${t} 에 회사 @id 가 없습니다 (${meta.ORG_ID})`);
+      }
+      const em = t === 'Person' && typeof node.url === 'string' && /\/experts\/([a-z-]+)\.html$/.exec(node.url);
+      if (em && node['@id'] !== meta.personId(em[1])) bad.push(`${rel} — Person ${node.name} 에 @id ${meta.personId(em[1])} 가 없습니다`);
+      for (const v of Object.values(node)) if (v && typeof v === 'object') visit(rel, v);
+    };
+    for (const rel of htmlFiles) {
+      const h = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+      for (const m of h.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+        try { visit(rel, JSON.parse(m[1])); } catch { /* JSON 오류는 공유 이미지 검사가 잡는다 */ }
+      }
+    }
+    if (orgNodes < 50) bad.push(`법인 스키마 노드가 ${orgNodes}개뿐입니다 — HTML 열거가 깨졌는지 확인하세요`);
   }
 
   /* ── 업무 면 상세 (261031 SEO 2-1) ─────────────────────────────────

@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { CALCULATORS } from './calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
-import { footerHtml, stylesHref, ogImageHref, faviconHtml } from '../_shared/site-meta.mjs';
+import { footerHtml, stylesHref, ogImageHref, faviconHtml, ORG_REF } from '../_shared/site-meta.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));   // project/calculators
 const REPO_ROOT = join(__dirname, '..', '..');               // 사이트 루트
@@ -50,7 +50,7 @@ function renderCalcPage(c) {
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' },
-    provider: { '@type': 'Organization', name: '제이티 세무법인', url: SITE },
+    provider: ORG_REF,   // 회사 @id 하나로 묶는다 (261031 SEO 2-4)
     description: c.metaDesc,
     image: ogImageHref(),
   };

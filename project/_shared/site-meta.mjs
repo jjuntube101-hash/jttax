@@ -33,6 +33,28 @@ export const FIRM_EN = 'JT TAX CORP.';
 export const TAX_ACCOUNTANT = '광고책임세무사 이현준 대표세무사';
 export const SITE_HOST = 'www.jttax.co.kr';
 
+/* ── 법인 구조화 데이터 공통값 (261031 SEO 2-4) ──────────────────────
+   모든 면의 Organization·AccountingService 가 같은 @id 하나를 가리킨다.
+   index.html 의 수기 JSON-LD 도 같은 값이어야 한다 — tests_static_shell 이 홈과 회사소개 면을 대조한다.
+   좌표 = 카카오 플레이스 1776119720 의 좌표(261031 조회, Nominatim 주소 검색과 5m 안에서 일치).
+   영업시간 = CONSULT.location.hours «평일 09:30–17:30 (주말·공휴일 휴무)». */
+export const ORG_ID = `https://${SITE_HOST}/#organization`;
+export const ORG_REF = { '@type': 'Organization', '@id': ORG_ID, name: FIRM, url: `https://${SITE_HOST}` };
+export const ORG_GEO = { '@type': 'GeoCoordinates', latitude: 37.49516, longitude: 127.03117 };
+export const ORG_HOURS = [{
+  '@type': 'OpeningHoursSpecification',
+  dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+  opens: '09:30', closes: '17:30',
+}];
+export const ORG_SAME_AS = [
+  'https://pf.kakao.com/_CcxlJG',                          // 카카오톡 채널
+  'https://blog.naver.com/jt_tax',                         // 네이버 블로그
+  'https://map.naver.com/p/entry/place/1319293073',        // 네이버 플레이스
+  'https://place.map.kakao.com/1776119720',                // 카카오맵 장소
+];
+/* 전문가 Person @id — 전문가 면·회사소개 founder·글의 검토자(editor)가 같이 쓴다 */
+export const personId = (slug) => `https://${SITE_HOST}/experts/${slug}.html#person`;
+
 /* ── 공통 푸터 ─────────────────────────────────────────────────────
    정적 페이지(인사이트·계산기·데스크) 전용. SPA 푸터는 Chrome.jsx 의 JTFooter.
    수기 HTML 에도 같은 내용을 넣되, 마커 주석으로 버전을 표시해 드리프트를

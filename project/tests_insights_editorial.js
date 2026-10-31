@@ -39,7 +39,14 @@ for (const f of files) {
 {
   // The reviewer's expert page must exist and name the same Person.
   const ex = fs.readFileSync(path.join(root,'experts','lee-hyunjun.html'),'utf8');
-  assert.ok(/"@type":"Person","name":"이현준"/.test(ex), 'expert page Person name matches reviewer');
+  // 261031 SEO 2-5: parse instead of matching key order (Person now carries @id first); the editor @id must point at this Person.
+  const exLd = [...ex.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+  const exPerson = exLd.find(x => x['@type'] === 'Person');
+  assert.ok(exPerson && exPerson.name === '이현준', 'expert page Person name matches reviewer');
+  assert.equal(exPerson['@id'], 'https://www.jttax.co.kr/experts/lee-hyunjun.html#person', 'expert page Person @id');
+  const anyArticle = fs.readFileSync(path.join(root,'insights','vat-basics.html'),'utf8');
+  const art2 = [...anyArticle.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1])).find(x => x['@type'] === 'Article');
+  assert.equal(art2.editor['@id'], exPerson['@id'], 'Article editor @id = expert Person @id');
 }
 for (const slug of ['vat-basics','vat-final-filing-2026']) {
   const html = fs.readFileSync(path.join(root,'insights',slug+'.html'),'utf8');

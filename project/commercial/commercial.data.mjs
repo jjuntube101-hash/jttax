@@ -377,6 +377,7 @@ export const EXPERTS = [
     ],
     education: ['성균관대학교 경영전문대학원(EMBA) 석사'],
     qualifications: ['세무사'],
+    sameAs: ['https://class.jttax.co.kr/about'],   // 이현준 세무사 소개 면 (261031 SEO 2-5, 200 응답 확인). 법인 sameAs 에는 넣지 않는다 — 수험 교육은 개인 명의 영역
     closing: '사업과 재산의 문제를 먼저 듣고, 판단에 필요한 사실관계와 세법 근거를 정리합니다.',
     services: ['consulting'],
     metaDesc: '이현준 세무사 — 제이티 세무법인 대표세무사. 제이티세무회계 운영과 기업 자문, 사업자 세무 신고 경력 및 교육·저술 활동을 소개합니다.',

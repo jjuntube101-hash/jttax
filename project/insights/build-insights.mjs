@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { insightSlug } from '../_shared/insight-slug.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
-import { footerHtml, stylesHref, ogImageHref, faviconHtml } from '../_shared/site-meta.mjs';
+import { footerHtml, stylesHref, ogImageHref, faviconHtml, FIRM, ORG_ID, personId } from '../_shared/site-meta.mjs';
 import { escapeHtml, readingTools, hero, editorialCss } from './editorial.mjs';
 import { SERVICES } from '../commercial/commercial.data.mjs';
 
@@ -245,7 +245,7 @@ for (const s of SERVICES) for (const r of s.relatedInsights || []) SERVICE_BY_IN
 /* 검토 세무사 (261031 대표 결재 0-5: 이현준 세무사(광고책임세무사) 한 명이 검토자로 표시).
    화면 바이라인 «검토 ○○○ 세무사»와 Article.editor(Person)에 쓴다. 작성자(author)는 법인 그대로 — 검토자를 저자로 선언하지 않는다(Codex R1-F1).
    name 은 사람 이름만(직함은 jobTitle), /experts/ 면의 Person 이름과 같게(Codex R1-F2). */
-const REVIEWER = { name: '이현준', href: '/experts/lee-hyunjun.html' };
+const REVIEWER = { name: '이현준', slug: 'lee-hyunjun', href: '/experts/lee-hyunjun.html' };
 
 const SERVICE_BY_ARTICLE = new Map([
   ['gift-tax-saving', 'asset-transfer'],
@@ -341,9 +341,9 @@ ${GA_HEAD_SNIPPET}
     "image": ${JSON.stringify(imageUrl)},
     "datePublished": ${JSON.stringify(a.dateISO)},
     "dateModified": ${JSON.stringify(a.updatedISO)},
-    "author": { "@type": "Organization", "name": ${JSON.stringify(a.author)}, "url": "${SITE}/about/" },
-    "editor": { "@type": "Person", "name": ${JSON.stringify(REVIEWER.name)}, "jobTitle": "세무사", "url": "${SITE}${REVIEWER.href}" },
-    "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
+    "author": { "@type": "Organization",${a.author === FIRM ? ` "@id": "${ORG_ID}",` : ''} "name": ${JSON.stringify(a.author)}, "url": "${a.author === FIRM ? SITE : `${SITE}/about/`}" },
+    "editor": { "@type": "Person", "@id": "${personId(REVIEWER.slug)}", "name": ${JSON.stringify(REVIEWER.name)}, "jobTitle": "세무사", "url": "${SITE}${REVIEWER.href}" },
+    "publisher": { "@type": "Organization", "@id": "${ORG_ID}", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
     "description": ${JSON.stringify(a.excerpt)},
     "mainEntityOfPage": ${JSON.stringify(shareUrl)}
   }

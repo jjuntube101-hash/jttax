@@ -22,7 +22,7 @@ import { SERVICES, SERVICE_DETAILS, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, C
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
-import { footerHtml, stylesHref, ogImageHref, faviconHtml } from '../_shared/site-meta.mjs';
+import { footerHtml, stylesHref, ogImageHref, faviconHtml, ORG_ID, ORG_REF, ORG_GEO, ORG_HOURS, ORG_SAME_AS, personId } from '../_shared/site-meta.mjs';
 import { insightSlug } from '../_shared/insight-slug.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));   // project/commercial
@@ -352,7 +352,7 @@ function renderServicePage(s) {
     url,
     description: s.metaDesc,
     areaServed: 'KR',
-    provider: { '@type': 'Organization', name: FIRM, url: SITE },
+    provider: ORG_REF,   // 회사 @id 하나로 묶는다 (261031 SEO 2-4)
   };
   const calcsHtml = (s.relatedCalcs || []).map(slug => {
     const c = calcBySlug(slug, `services/${s.slug}.relatedCalcs`);
@@ -472,14 +472,16 @@ function renderExpertPage(e) {
   const personLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': personId(e.slug),
     name: e.name,   // 사람 이름만, 직함은 jobTitle (261031 Codex R1-F2 — 글의 검토자 Person 과 같은 이름)
-    // 정적 셸 게이트는 모든 페이지의 OG·Twitter·JSON-LD 이미지를 공용 OG와 일치시킨다.
-    // 개인 사진은 아래 프로필 본문에 표시한다.
-    image: ogImageHref(),
+    // 인물 사진 (261031 SEO 2-5). 정적 셸 게이트는 Person 의 image 에만 인물 사진 폴더를 허용하고, 나머지는 공용 OG 와 대조한다.
+    image: `${SITE}${e.photo.replace('-work.jpg', '-studio.jpg')}`,
     jobTitle: '대표세무사',
     url,
     description: e.metaDesc,
-    worksFor: { '@type': 'Organization', name: FIRM, url: SITE },
+    worksFor: ORG_REF,
+    ...(e.sameAs && e.sameAs.length ? { sameAs: e.sameAs } : {}),
+    hasCredential: (e.qualifications || []).map(q => ({ '@type': 'EducationalOccupationalCredential', name: q })),
   };
   const svcChips = (e.services || []).map(slug => {
     const s = serviceBySlug(slug, `experts/${e.slug}.services`);
@@ -584,7 +586,9 @@ function orgLdBlock() {
   return {
     '@context': 'https://schema.org',
     '@type': 'AccountingService',
+    '@id': ORG_ID,   // 홈 index.html 의 AccountingService 와 같은 @id (261031 SEO 2-4)
     name: FIRM,
+    logo: `${SITE}/project/assets/logo_symbol.png`,
     image: ogImageHref(),
     alternateName: ['JT TAX CORP.', '제이티세무회계', '제이티 세무회계'],   // 옛 상호 (261031 결재 1-7)
     url: SITE,
@@ -594,8 +598,11 @@ function orgLdBlock() {
       '@type': 'PostalAddress', streetAddress: '강남대로78길 22, 5층', postalCode: '06243',
       addressLocality: '강남구', addressRegion: '서울특별시', addressCountry: 'KR',
     },
+    geo: ORG_GEO,
+    openingHoursSpecification: ORG_HOURS,
+    sameAs: ORG_SAME_AS,
     hasMap: [CONSULT.location.kakaoMapUrl, CONSULT.location.naverMapUrl],
-    founder: EXPERTS.map(e => ({ '@type': 'Person', name: e.name, jobTitle: '세무사', url: `${SITE}/experts/${e.slug}.html` })),
+    founder: EXPERTS.map(e => ({ '@type': 'Person', '@id': personId(e.slug), name: e.name, jobTitle: '세무사', url: `${SITE}/experts/${e.slug}.html` })),
     foundingDate: '2026',
     description: ABOUT.metaDesc,
   };
