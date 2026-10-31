@@ -182,12 +182,12 @@ function crumbLd(items) {
   };
 }
 
-/* 카카오톡 채널 QR (260922 오너 제공 — 판독값 http://pf.kakao.com/_CcxlJG, 채널 «제이티 세무회계»).
+/* 카카오톡 채널 QR (260922 오너 제공 — 판독값 http://pf.kakao.com/_CcxlJG, 채널 «제이티 세무회계» → 261031 «제이티 세무법인»으로 이름 변경 확인).
    화면이 좁으면(휴대폰) 링크를 바로 누르면 되므로 그림은 숨긴다. */
 const KAKAO_URL = 'https://pf.kakao.com/_CcxlJG';
 const KAKAO_QR = `    <div class="jt-cc-kqr">
-      <a href="${KAKAO_URL}" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','qr')"><img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무회계 QR 코드" loading="lazy" width="88" height="88"></a>
-      <span>휴대폰 카메라로 QR을 찍으면 카카오톡 채널 <b>제이티 세무회계</b>로 연결됩니다.<br><a href="${KAKAO_URL}" target="_blank" rel="noopener" style="color:#333;">pf.kakao.com/_CcxlJG</a></span>
+      <a href="${KAKAO_URL}" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','qr')"><img src="/project/assets/kakao-qr.png" alt="카카오톡 채널 제이티 세무법인 QR 코드" loading="lazy" width="88" height="88"></a>
+      <span>휴대폰 카메라로 QR을 찍으면 카카오톡 채널 <b>제이티 세무법인</b>로 연결됩니다.<br><a href="${KAKAO_URL}" target="_blank" rel="noopener" style="color:#333;">pf.kakao.com/_CcxlJG</a></span>
     </div>`;
 
 const CTA_BOTTOM = `    <div class="jt-cc-cta" style="margin-top:24px;">
