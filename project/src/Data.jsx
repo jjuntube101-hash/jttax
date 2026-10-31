@@ -351,6 +351,7 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "adsense-unpaid-income-tax-timing", tag: "크리에이터·기장", date: "2026.10.31", title: "애드센스 미지급 수익의 신고 시점: 지급기준액 미달과 지급 보류를 구분하는 방법", excerpt: "애드센스 지급기준액 미달과 지급 보류를 구분하고, 소득세 수입시기·부가세 공급시기 및 이전 신고와 대조할 자료를 확인합니다." },
     { slug: "youtuber-startup-first-income-year", tag: "크리에이터·기장", date: "2026.10.30", title: "유튜버 창업감면 기간: 첫 매출·최초 소득·적자 연도를 구분하는 방법", excerpt: "유튜브 첫해 적자와 최초 소득 발생 연도를 구분하고, 창업감면 기간·장기 무소득 예외·필요한 장부와 신고자료를 확인하는 방법" },
     { slug: "coupang-payment-statement-mismatch", tag: "크리에이터·기장", date: "2026.10.29", title: "쿠팡파트너스 지급명세서와 정산내역 불일치: 자료 정정과 신고 정정을 나누는 방법", excerpt: "쿠팡파트너스 정산내역과 홈택스 지급명세서가 다를 때 비교할 기간·금액·중복 여부와 지급처 자료 정정 및 본인 신고 검토 방법" },
     { slug: "youtuber-startup-business-location", tag: "크리에이터·창업감면", date: "2026.10.28", title: "유튜버 창업감면의 지역 판단: 등록 주소·실제 사업장·이전 이력을 대조하는 순서", excerpt: "유튜버의 등록 주소와 실제 업무 장소가 다르거나 작업실을 옮길 때 확인할 창업 시기·증빙·적용 규정" },
