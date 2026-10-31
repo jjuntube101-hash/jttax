@@ -528,10 +528,9 @@ ${footerHtml()}
 </html>`;
 }
 
-/* ── 회사소개 ──────────────────────────────────────────────────── */
-function renderAboutPage() {
-  const url = `${SITE}/about/`;
-  const orgLd = {
+/* 회사 AccountingService — 회사소개·상담 면이 같이 쓴다. hasMap = 카카오맵·네이버 플레이스 (261031 SEO 1-6) */
+function orgLdBlock() {
+  return {
     '@context': 'https://schema.org',
     '@type': 'AccountingService',
     name: FIRM,
@@ -544,10 +543,17 @@ function renderAboutPage() {
       '@type': 'PostalAddress', streetAddress: '강남대로78길 22, 5층', postalCode: '06243',
       addressLocality: '강남구', addressRegion: '서울특별시', addressCountry: 'KR',
     },
+    hasMap: [CONSULT.location.kakaoMapUrl, CONSULT.location.naverMapUrl],
     founder: EXPERTS.map(e => ({ '@type': 'Person', name: e.name, jobTitle: '세무사', url: `${SITE}/experts/${e.slug}.html` })),
     foundingDate: '2026',
     description: ABOUT.metaDesc,
   };
+}
+
+/* ── 회사소개 ──────────────────────────────────────────────────── */
+function renderAboutPage() {
+  const url = `${SITE}/about/`;
+  const orgLd = orgLdBlock();
   return headHtml({
     title: `${ABOUT.metaTitle}`, desc: ABOUT.metaDesc, keywords: ABOUT.keywords, url,
     ldBlocks: [orgLd, crumbLd([['홈', `${SITE}/`], ['회사소개', url]])],
@@ -609,7 +615,7 @@ function renderConsultPage() {
   };
   return headHtml({
     title: `${CONSULT.metaTitle} | ${FIRM}`, desc: CONSULT.metaDesc, keywords: CONSULT.keywords, url,
-    ldBlocks: [faqLd, crumbLd([['홈', `${SITE}/`], ['상담 안내', url]])],
+    ldBlocks: [orgLdBlock(), faqLd, crumbLd([['홈', `${SITE}/`], ['상담 안내', url]])],
   }) + `
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › 상담 안내</nav>

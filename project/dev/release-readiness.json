@@ -25922,7 +25922,7 @@
   },
   "release_candidate": {
     "schema_version": "release-candidate/1",
-    "id": "rc-a1c83e6201de4c719175",
+    "id": "rc-047d32241033c486a950",
     "as_of_kst": "2026-10-31",
     "contract": {
       "schema_version": "calculation-contracts/1",
@@ -26419,20 +26419,20 @@
     },
     "frontend": {
       "schema_version": "frontend-build/1",
-      "build_id": "frontend-eec1e45b3d7210943e77",
-      "payload_sha256": "eec1e45b3d7210943e7734a3f4096752c73f32a547f338cf6375469686901679"
+      "build_id": "frontend-4cd92a1f235dd3d56e04",
+      "payload_sha256": "4cd92a1f235dd3d56e04c39ee99bb13b9c74e421c4c7eef9626e54a7cf070354"
     },
     "backend_source_base_commit": "7a227683954a29541a2bfc57bc4c437fab61250a",
-    "frontend_source_base_commit": "5637ff6ea719bc791a7a82d687bade6970cbdb95",
+    "frontend_source_base_commit": "e86a1358b72338c04fb9cafbe16eb5a96a36ae4b",
     "commit_scope": "base commits identify review branch ancestry; candidate identity binds actual code payload; final commit receipts are separate",
     "live_installed_snapshot_promoted": false,
     "public_web_deployment_verified": false,
     "historical181_regraded": false,
     "workflow20_scope": "Historical UI20 is bound to its original candidate only; current support11 validation is separate.",
-    "supersedes_candidate_id": "rc-4df132e526f69775fbaf",
+    "supersedes_candidate_id": "rc-a1c83e6201de4c719175",
     "merge_note": "Preserve origin/main a5743e9 article content; rebuild combined existing calculator bundle. Backend source unchanged; no new actual UI input-flow claim.",
-    "change_note": "Integrate reviewed calculator frontend with latest main SEO, static home content and Kakao caption changes. Backend calculation build and education HOLD unchanged. Historical UI/customer-case evidence is not re-certified on this payload.",
-    "frontend_integration_main_commit": "47fe758ea0389f39ab5baa933b249b1421cfeeff"
+    "change_note": "Integrate current main company hasMap and Naver place URI plus its independent schema tests. Calculation backend build/rules and education HOLD unchanged. Prior UI/customer-case evidence remains historical and is not re-certified.",
+    "frontend_integration_main_commit": "0c9285046bc7d5738dbc37577610d7c12c84a4bf"
   },
   "hold_reason_classification": {
     "schema_version": "hold-reasons/1",
@@ -33904,6 +33904,520 @@
       "supersedes_candidate_id": "rc-72aa1e243f195506bfaa",
       "merge_note": "Preserve origin/main a5743e9 article content; rebuild combined existing calculator bundle. Backend source unchanged; no new actual UI input-flow claim.",
       "change_note": "Acquisition education-tax HOLD guidance distinguishes unresolved calculation rules from missing user input. Backend and formulas unchanged. Historical UI evidence is not re-certified on this payload."
+    },
+    {
+      "schema_version": "release-candidate/1",
+      "id": "rc-a1c83e6201de4c719175",
+      "as_of_kst": "2026-10-31",
+      "contract": {
+        "schema_version": "calculation-contracts/1",
+        "version": {
+          "engine": "jt-tax-engine/7.0.0",
+          "calculation_revision": "rules-aa14c93e67242f99a126",
+          "ruleset_sha256": "aa14c93e67242f99a126630e40be4bc61e6d5e1c26fbe35c19041030e647739a",
+          "build_id": "build-be8129f18dfa2491c73d",
+          "build_sha256": "be8129f18dfa2491c73d78590f670595e1de7998e3966683b7c1bbab0bc728ba",
+          "tax_rates_version": "7.0.0",
+          "tax_rates_effective_date": "2026-05-02"
+        },
+        "review_schema_version": "calculation-review/1",
+        "taxes": [
+          {
+            "tax": "transfer",
+            "label": "양도소득세",
+            "route": "/v1/calc/transfer",
+            "dev_mcp_tool": "transfer_tax_dev",
+            "request_schema_sha256": "e94bf3d9dd99fe479e42bea303c8e09ae0a9d32fcc8c87c69fa0a7b020eaca18",
+            "request_fields": [
+              "rental_facts",
+              "cost_facts",
+              "whole_house_value",
+              "transfer_price",
+              "acquisition_price",
+              "property_type",
+              "address",
+              "acquisition_date",
+              "transfer_date",
+              "housing_count",
+              "is_regulated_area",
+              "regulated_at_acquisition",
+              "move_in_date",
+              "move_out_date",
+              "is_sangsaeng_rental",
+              "sangsaeng_no_residence",
+              "exclusive_area",
+              "expenses_total",
+              "expenses",
+              "use_converted_price",
+              "converted_context",
+              "converted_expense_method",
+              "is_inherited",
+              "is_gifted",
+              "is_non_business_land",
+              "is_preliminary_return",
+              "acquired_from_member",
+              "is_original_member",
+              "management_approval_date",
+              "rights_value",
+              "former_house_exemption_qualified",
+              "no_other_house_or_presale_at_transfer",
+              "one_house_acquisition_date",
+              "no_presale_right_at_transfer",
+              "held_right_type",
+              "right_acquisition_date",
+              "decedent_acquisition_date",
+              "is_deferred",
+              "donor_acquisition_price",
+              "donor_acquisition_date",
+              "gift_date",
+              "donor_gift_tax_paid",
+              "carryover_gift_tax_context",
+              "donor_relationship",
+              "inherited_house_count",
+              "exemption_special_type",
+              "new_house_acquisition_date",
+              "temp2_both_regulated",
+              "new_house_contract_date",
+              "new_house_before_designation",
+              "departure_date",
+              "overseas_departure_confirmed",
+              "departure_housing_count",
+              "residence_carryover",
+              "temp2_one_year_waived",
+              "inheritance_start_date",
+              "project_approval_date",
+              "completion_date",
+              "standard_price_at_acq",
+              "standard_price_at_transfer",
+              "depreciation_recaptured",
+              "residential_conversion_date",
+              "is_unregistered",
+              "is_designated_area",
+              "reduction_type",
+              "reduction_rate",
+              "reduction_limit",
+              "reduction_context",
+              "preserve_ordinary_loss",
+              "is_expropriated",
+              "business_approval_notice_date",
+              "marriage_date",
+              "merge_date",
+              "parent_age",
+              "simulate_penalty",
+              "penalty_type",
+              "overdue_days",
+              "late_payment_context",
+              "filing_penalty_context",
+              "historical_ordinary_sale_confirmed"
+            ],
+            "example": {
+              "transfer_price": 300000000,
+              "acquisition_price": 100000000,
+              "property_type": "토지",
+              "acquisition_date": "2019-01-01",
+              "transfer_date": "2026-10-20"
+            },
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          },
+          {
+            "tax": "acquisition",
+            "label": "취득세",
+            "route": "/v1/calc/acquisition",
+            "dev_mcp_tool": "acquisition_tax_dev",
+            "request_schema_sha256": "4cff4cd25ef23a38ff678308936743dcfc4af3c42653dcbf751523087a0b1cad",
+            "request_fields": [
+              "special_facts",
+              "heavy_exclusion_type",
+              "heavy_exclusion_facts",
+              "historical_facts",
+              "share_facts",
+              "original_cost_facts",
+              "area_class",
+              "nonprofit_facts",
+              "composition_facts",
+              "property_value",
+              "acquisition_type",
+              "property_type",
+              "is_housing",
+              "exclusive_area",
+              "housing_count",
+              "is_regulated_area",
+              "is_corporate",
+              "is_farmland",
+              "standard_value",
+              "whole_property_standard_value",
+              "gift_tax_base_choice",
+              "original_tax_base_context",
+              "common_facts",
+              "consultation_context",
+              "reduction_type",
+              "fixed_exemption_facts",
+              "rural_housing_facts",
+              "is_first_home_buyer",
+              "is_newlywed",
+              "is_childbirth",
+              "is_small_housing",
+              "acquisition_date",
+              "gift_regulated_over_3b",
+              "gift_one_house_exception",
+              "is_luxury",
+              "is_temporary_two_house",
+              "is_capital_area",
+              "inheritance_one_house",
+              "whole_house_acquisition_value",
+              "is_population_decline_area",
+              "redev_land_excess_value",
+              "prior_land_area",
+              "acquired_land_area",
+              "redev_land_unit_price",
+              "redev_building_value"
+            ],
+            "example": {
+              "property_value": 150000000,
+              "exclusive_area": 84,
+              "housing_count": 1,
+              "is_regulated_area": false,
+              "acquisition_date": "2026-10-20"
+            },
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          },
+          {
+            "tax": "gift",
+            "label": "증여세",
+            "route": "/v1/calc/gift",
+            "dev_mcp_tool": "gift_tax_dev",
+            "request_schema_sha256": "b336e63501802ec6012f493552de041b918ab26f982f8c8bfc5bf2a22c8d91c4",
+            "request_fields": [
+              "gift_event_facts",
+              "gift_asset_facts",
+              "tax_year",
+              "value",
+              "relationship",
+              "donee_age",
+              "is_minor",
+              "is_generation_skip",
+              "donor_child_deceased",
+              "debt_assumed",
+              "is_family_debt",
+              "prior_gift_values",
+              "prior_gift_taxes",
+              "prior_gift_deductions",
+              "prior_deduction_used",
+              "prior_surcharge_paid",
+              "gift_history",
+              "marriage_deduction",
+              "childbirth_deduction",
+              "prior_marriage_child_deduction_used",
+              "non_taxable",
+              "appraisal_fee",
+              "foreign_tax_paid",
+              "foreign_tax_base"
+            ],
+            "example": {
+              "value": 300000000
+            },
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          },
+          {
+            "tax": "inheritance",
+            "label": "상속세",
+            "route": "/v1/calc/inheritance",
+            "dev_mcp_tool": "inheritance_tax_dev",
+            "request_schema_sha256": "4c974fe8e95200c68de5cda9a457f737da9f48697ee0b21cff421319bba3e85c",
+            "request_fields": [
+              "prior_gift_dates",
+              "prior_gift_deductions",
+              "prior_gift_before_death",
+              "insurance_facts",
+              "special_deduction_facts",
+              "estate_value",
+              "has_spouse",
+              "num_children",
+              "spouse_inheritance",
+              "spouse_no_inheritance",
+              "spouse_legal_share",
+              "heirs",
+              "insurance_amount",
+              "retirement_pay",
+              "funeral_expenses",
+              "burial_facility_expenses",
+              "debts",
+              "public_charges",
+              "net_financial_assets",
+              "has_cohabitation_house",
+              "cohabitation_house_value",
+              "prior_gift_values",
+              "prior_gift_taxes",
+              "prior_gift_is_heir",
+              "prior_gift_recipients",
+              "gift_history",
+              "death_date",
+              "appraisal_fee",
+              "foreign_tax_paid",
+              "foreign_tax_base",
+              "short_term_re_inheritance",
+              "prior_inheritance_tax",
+              "years_since_prior",
+              "prior_inheritance_date",
+              "re_inherited_value",
+              "prior_estate_value",
+              "bequest_to_non_heirs",
+              "renounced_to_next_rank"
+            ],
+            "example": {
+              "estate_value": 1000000000
+            },
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          },
+          {
+            "tax": "property",
+            "label": "재산세",
+            "route": "/v1/calc/property",
+            "dev_mcp_tool": "property_tax_dev",
+            "request_schema_sha256": "19146dc85b5b5f6c574c5fbf9e678de37c9ba15aad116926df9b00a7aa67f2a1",
+            "request_fields": [
+              "cap_facts",
+              "standard_value",
+              "category",
+              "is_one_house",
+              "prior_year_tax",
+              "prior_year_urban_tax",
+              "is_urban_area",
+              "tax_year",
+              "exclusive_area",
+              "land_divided_type",
+              "building_type",
+              "prior_year_standard_value",
+              "no_prior_year_standard_value",
+              "housing_taxed_before_2024",
+              "owner_is_corporation"
+            ],
+            "example": {
+              "standard_value": 300000000
+            },
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          },
+          {
+            "tax": "comprehensive",
+            "label": "종합부동산세",
+            "route": "/v1/calc/comprehensive",
+            "dev_mcp_tool": "comprehensive_tax_dev",
+            "request_schema_sha256": "cc73199b4c7e151b5db405f756df2612342ce47916c2646e95ffcba14a1921ff",
+            "request_fields": [
+              "housing_credit_facts",
+              "housing_values",
+              "land_general_values",
+              "land_separate_values",
+              "land_general_property_tax_paid",
+              "land_general_property_tax_base",
+              "land_separate_property_tax_paid",
+              "land_separate_property_tax_base",
+              "prior_year_land_general_total_tax",
+              "prior_year_land_separate_total_tax",
+              "property_tax_one_house",
+              "housing_count",
+              "is_one_house",
+              "one_house_exceptions",
+              "owner_age",
+              "holding_years",
+              "is_corporate",
+              "corporate_type",
+              "property_tax_paid",
+              "prior_year_total_tax",
+              "tax_year",
+              "ownership_share"
+            ],
+            "example": {},
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          },
+          {
+            "tax": "corporate",
+            "label": "법인세",
+            "route": "/v1/calc/corporate",
+            "dev_mcp_tool": "corporate_tax_dev",
+            "request_schema_sha256": "f5961bf5a85a9d7636a37d08335fa63fc2a229908d6ce0330fdb4049b20711d7",
+            "request_fields": [
+              "foreign_tax_paid",
+              "foreign_source_income",
+              "foreign_tax_simple_case_confirmed",
+              "tax_year",
+              "fiscal_year_start",
+              "fiscal_year_end",
+              "is_small_passive_corporation",
+              "net_income",
+              "corporate_type",
+              "carried_forward_loss",
+              "income_deduction"
+            ],
+            "example": {
+              "net_income": 300000000
+            },
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          },
+          {
+            "tax": "income",
+            "label": "종합소득세",
+            "route": "/v1/calc/income",
+            "dev_mcp_tool": "income_tax_dev",
+            "request_schema_sha256": "ce424d5beed648ee5b985136e6a74feb95ace3d4817fb27ac28026ce84d0c9ba",
+            "request_fields": [
+              "business_revenue",
+              "business_expenses",
+              "salary_income",
+              "is_salary_earner",
+              "interest_income",
+              "dividend_income",
+              "is_dividend_grossup",
+              "dividend_paid_year",
+              "grossup_eligible_dividend",
+              "pension_income",
+              "spouse",
+              "dependents",
+              "elderly_dependents",
+              "disabled_dependents",
+              "children_count",
+              "national_pension",
+              "health_insurance",
+              "pension_savings",
+              "irp_contribution",
+              "tax_year"
+            ],
+            "example": {},
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          },
+          {
+            "tax": "vat",
+            "label": "부가가치세",
+            "route": "/v1/calc/vat",
+            "dev_mcp_tool": "vat_tax_dev",
+            "request_schema_sha256": "ddacde7b95a6f7c0f79c979af4f57ab5232df98ed8392cbc01436eb1a2b4de65",
+            "request_fields": [
+              "tax_year",
+              "business_type",
+              "period_type",
+              "period_end",
+              "is_corporate",
+              "sector",
+              "sales_amount",
+              "purchase_amount",
+              "purchase_vat_paid",
+              "non_deductible_input",
+              "input_facts",
+              "export_sales",
+              "exempt_sales",
+              "credit_facts",
+              "credit_card_sales",
+              "e_invoice_count",
+              "prior_e_invoice_revenue",
+              "deemed_purchase_facts",
+              "deemed_purchase_amount",
+              "deemed_purchase_sector",
+              "sales_supply_price",
+              "simplified_value_sector",
+              "simplified_input_supply",
+              "prior_period_tax",
+              "previously_paid",
+              "is_late_filing",
+              "is_fraudulent",
+              "days_overdue"
+            ],
+            "example": {
+              "sales_amount": 100000000,
+              "purchase_amount": 20000000
+            },
+            "example_scope": "합성 연결 시험; 세액 독립 정답 인증 아님"
+          }
+        ],
+        "authority_graph": [
+          {
+            "id": "acq-ordinary-full-exemption",
+            "tax": "acquisition",
+            "label": "일반 생애최초 전액면제와 무합산 사실",
+            "facts": [
+              "fixed_exemption_facts"
+            ],
+            "authorities": [
+              {
+                "law": "지방세특례제한법",
+                "article": "제36조의3",
+                "url": "https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%ED%8A%B9%EB%A1%80%EC%A0%9C%ED%95%9C%EB%B2%95/%EC%A0%9C36%EC%A1%B0%EC%9D%983"
+              },
+              {
+                "law": "지방세특례제한법",
+                "article": "제177조의2",
+                "url": "https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%ED%8A%B9%EB%A1%80%EC%A0%9C%ED%95%9C%EB%B2%95/%EC%A0%9C177%EC%A1%B0%EC%9D%982"
+              },
+              {
+                "law": "지방세법",
+                "article": "제151조",
+                "url": "https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%EB%B2%95/%EC%A0%9C151%EC%A1%B0"
+              }
+            ],
+            "scope": "2026 개인 일반 유상주택·정확한 절사전 전액면제·명시 무합산 및 근거; 감면 적격은 별도 확인",
+            "boundaries": [
+              "부분 정액감면 교육세",
+              "합산사실 있는 최소납부",
+              "농특세 미확정 결합"
+            ],
+            "effective_date_review": "177의2 시행일 도구 미확정은 원문 부칙 검토와 별도 표시; 전체 법령 시행일을 조문 적용일로 대체하지 않음",
+            "synthetic_tests": [
+              "test_acquisition_review_exact_branch",
+              "test_acquisition_review_does_not_change_legacy_fields"
+            ]
+          },
+          {
+            "id": "vat-deemed-normal-half",
+            "tax": "vat",
+            "label": "의제매입 정상 반기 사실 확인",
+            "facts": [
+              "deemed_purchase_facts"
+            ],
+            "authorities": [
+              {
+                "law": "부가가치세법",
+                "article": "제42조",
+                "url": "https://www.law.go.kr/법령/%EB%B6%80%EA%B0%80%EA%B0%80%EC%B9%98%EC%84%B8%EB%B2%95/%EC%A0%9C42%EC%A1%B0"
+              },
+              {
+                "law": "부가가치세법시행령",
+                "article": "제84조",
+                "url": "https://www.law.go.kr/법령/%EB%B6%80%EA%B0%80%EA%B0%80%EC%B9%98%EC%84%B8%EB%B2%95%EC%8B%9C%ED%96%89%EB%A0%B9/%EC%A0%9C84%EC%A1%B0"
+              }
+            ],
+            "scope": "정상 단일사업장 반기·실제 예정조기신고 없음·기공제 실제0·관련과표/적격매입·정수원 완결; 법인제조 중소기업 여부 명시",
+            "boundaries": [
+              "분수 끝수",
+              "예정·조기 실제 신고 정산",
+              "음식점 겸업2억원 충돌",
+              "과세면세 겸영",
+              "제조 연간특례"
+            ],
+            "synthetic_tests": [
+              "test_vat_deemed_actual_ui_contract",
+              "test_vat_deemed_guards"
+            ]
+          }
+        ],
+        "authority_source_bundle_sha256": "883838e01476e6b4493bf2ede553b6c80622f7978c4805339dd6dd0554500a38",
+        "authority_scope": "두 한정 규칙의 검증 근거 연결; 전 세목·모든 예규판례 적용을 인증하지 않음",
+        "operational_scope": "현재 개발 HTTP/개발 MCP 계약. 설치판 교체·운영배포 승인 아님"
+      },
+      "frontend": {
+        "schema_version": "frontend-build/1",
+        "build_id": "frontend-eec1e45b3d7210943e77",
+        "payload_sha256": "eec1e45b3d7210943e7734a3f4096752c73f32a547f338cf6375469686901679"
+      },
+      "backend_source_base_commit": "7a227683954a29541a2bfc57bc4c437fab61250a",
+      "frontend_source_base_commit": "5637ff6ea719bc791a7a82d687bade6970cbdb95",
+      "commit_scope": "base commits identify review branch ancestry; candidate identity binds actual code payload; final commit receipts are separate",
+      "live_installed_snapshot_promoted": false,
+      "public_web_deployment_verified": false,
+      "historical181_regraded": false,
+      "workflow20_scope": "Historical UI20 is bound to its original candidate only; current support11 validation is separate.",
+      "supersedes_candidate_id": "rc-4df132e526f69775fbaf",
+      "merge_note": "Preserve origin/main a5743e9 article content; rebuild combined existing calculator bundle. Backend source unchanged; no new actual UI input-flow claim.",
+      "change_note": "Integrate reviewed calculator frontend with latest main SEO, static home content and Kakao caption changes. Backend calculation build and education HOLD unchanged. Historical UI/customer-case evidence is not re-certified on this payload.",
+      "frontend_integration_main_commit": "47fe758ea0389f39ab5baa933b249b1421cfeeff"
     }
   ],
   "support11_validation": {
@@ -33925,7 +34439,7 @@
     "golden_tests_passed": 70
   },
   "real_case15_validation": {
-    "candidate_id": "rc-a1c83e6201de4c719175",
+    "candidate_id": "rc-047d32241033c486a950",
     "case_count": 15,
     "http_dev_mcp_agreement": 17,
     "conditional_numeric_envelopes": 6,
@@ -33944,7 +34458,7 @@
     "backend_replays_same_build_verified": true,
     "actual_frontend_input_flow_retested": false,
     "merge_scope": "Existing main content only; normal frontend gate and static review are separate from actual-case backend replay",
-    "followup_scope": "Unchanged backend; previous source arithmetic/HTTP-MCP replay remains explicitly historical. This merged frontend gate does not certify NAS15 cases or rerun old UI9/UI20 evidence."
+    "followup_scope": "Same backend/rules, latest-main map integration. Prior backend HTTP/MCP and UI proofs remain historical; the new merged web gate does not certify NAS15."
   },
   "real_case15_validation_history": [
     {
@@ -34143,6 +34657,28 @@
       "actual_frontend_input_flow_retested": false,
       "merge_scope": "Existing main content only; normal frontend gate and static review are separate from actual-case backend replay",
       "followup_scope": "Same backend; Historical NAS15 replay rechecked on unchanged backend; HOLD UI synthetic verification does not certify whole customer cases."
+    },
+    {
+      "candidate_id": "rc-a1c83e6201de4c719175",
+      "case_count": 15,
+      "http_dev_mcp_agreement": 17,
+      "conditional_numeric_envelopes": 6,
+      "numeric_component_only": 1,
+      "blocked_envelopes": 9,
+      "full_case_tax_accuracy_pass": 0,
+      "education_hold": true,
+      "private_inputs_published": false,
+      "summary": "real-case-scope.json",
+      "historical_ui9_reexecuted_on_new_candidate": false,
+      "unique_case_agreement": 15,
+      "reconciled_version_pairs": 2,
+      "full_electronic_return_confirmation": false,
+      "separate_synthetic_mixed_native_guard_passed": true,
+      "backend_replays_original_candidate_id": "rc-a0f5b8e3ca5935587ac6",
+      "backend_replays_same_build_verified": true,
+      "actual_frontend_input_flow_retested": false,
+      "merge_scope": "Existing main content only; normal frontend gate and static review are separate from actual-case backend replay",
+      "followup_scope": "Unchanged backend; previous source arithmetic/HTTP-MCP replay remains explicitly historical. This merged frontend gate does not certify NAS15 cases or rerun old UI9/UI20 evidence."
     }
   ],
   "gift_history_boundary_validation": {

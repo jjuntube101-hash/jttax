@@ -353,7 +353,7 @@ export const CONSULT = {
     email: 'jttax@jttax.co.kr',
     kakaoChatUrl: 'https://pf.kakao.com/_CcxlJG',
     kakaoMapUrl: 'https://place.map.kakao.com/1776119720',
-    naverMapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C78%EA%B8%B8%2022',
+    naverMapUrl: 'https://map.naver.com/p/entry/place/1319293073',   // 네이버 플레이스 «제이티 세무법인» (261031 확인)
   },
 };
 
