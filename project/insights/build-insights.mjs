@@ -342,6 +342,17 @@ ${GA_HEAD_SNIPPET}
     "mainEntityOfPage": ${JSON.stringify(shareUrl)}
   }
   </script>
+  <script type="application/ld+json">
+  ${/* 탐색경로 (261031 SEO 진단 1-3) — 화면의 «세금 가이드 / 분류» 와 같은 단계, 목록 면의 BreadcrumbList 와 같은 이름 */ JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '홈', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: '세금 가이드', item: `${SITE}/insights/` },
+      { '@type': 'ListItem', position: 3, name: a.title, item: shareUrl },
+    ],
+  }).replace(/</g, '\\u003c')}
+  </script>
 </head>
 <body style="background:#fff;color:#0B0B0F;">
   <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
