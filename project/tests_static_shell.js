@@ -473,6 +473,26 @@ const ROOT = path.join(__dirname, '..');
         bad.push('index.html — 부팅 폴백이 JT_DATA 를 참조합니다. 스크립트 없이 렌더돼야 합니다');
       }
       checkBlankLinks(rootBlock, '부팅 폴백');
+      /* 정적 본문(261031 SEO 1-1): 자바스크립트를 돌리지 않는 수집기가 읽는 유일한 본문이다.
+         ① 분량 ② 업무 문단 = SERVICES 정본 그대로 ③ 글 링크 = 실제 글·제목 그대로. */
+      const unesc = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+      const bootText = unesc(rootBlock.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+      if (bootText.length < 1000) bad.push(`index.html — 부팅 폴백 본문이 ${bootText.length}자입니다(1,000자 이상)`);
+      for (const s of commMod.SERVICES) {
+        const re = new RegExp(`<a href="/services/${s.slug}\\.html"[^>]*>([^<]*)</a></h3>\\s*<p[^>]*>([^<]*)</p>`);
+        const m = rootBlock.match(re);
+        if (!m) bad.push(`index.html — 부팅 폴백에 ${s.slug} 업무 문단이 없습니다`);
+        else if (unesc(m[1]) !== s.kr || unesc(m[2]) !== s.lede) bad.push(`index.html — 부팅 폴백의 ${s.slug} 이름·문단이 SERVICES 정본과 다릅니다`);
+      }
+      const mdFiles = fs.readdirSync(path.join(__dirname, 'insights')).filter((f) => f.endsWith('.md'));
+      const insightLinks = [...rootBlock.matchAll(/<a href="\/insights\/([a-z0-9-]+)\.html"[^>]*>([^<]*)<\/a>/g)];
+      if (insightLinks.length < 5) bad.push(`index.html — 부팅 폴백의 글 링크가 ${insightLinks.length}개입니다(5개 이상)`);
+      for (const [, slug, text] of insightLinks) {
+        const f = mdFiles.find((x) => x.endsWith(`-${slug}.md`));
+        const tm = f && fs.readFileSync(path.join(__dirname, 'insights', f), 'utf8').match(/^title: (".*")$/m);
+        if (!fs.existsSync(path.join(ROOT, 'insights', `${slug}.html`)) || !tm) bad.push(`index.html — 부팅 폴백의 글 링크 ${slug} 에 해당하는 글이 없습니다`);
+        else if (unesc(text) !== JSON.parse(tm[1])) bad.push(`index.html — 부팅 폴백의 글 ${slug} 제목이 원고 title 과 다릅니다`);
+      }
 
       /* ── 오류 안내는 «지연» 노출, 연락처는 «즉시» (260810) ──────────────
          이 화면은 오류 화면이 아니라 React 마운트 전까지 보이는 초기 HTML 이다.
@@ -628,7 +648,9 @@ const ROOT = path.join(__dirname, '..');
         }
       }
       /* 즉시 보이는 부분에 오류 표현이 있으면 정상 대기가 고장으로 읽힌다 */
-      const 즉시 = lateBlocks.reduce((s, b) => s.replace(b, ''), rootBlock);
+      /* data-boot-content 구역(업무 소개·글 제목)은 상태 안내가 아니라 정본 문구 사본이다 — «계산 오류» 같은 낱말을 걸지 않는다.
+         그 구역은 아래 정적 본문 검사가 SERVICES·원고 title 과 글자 단위로 대조한다(261031 SEO 1-1). */
+      const 즉시 = lateBlocks.reduce((s, b) => s.replace(b, ''), rootBlock).replace(/<section data-boot-content[\s\S]*?<\/section>/g, '');
       for (const w of ['문제가 생겼', '오류', '실패', '다시 시도해']) {
         if (즉시.indexOf(w) >= 0) {
           bad.push('index.html — 부팅 폴백에서 «즉시» 보이는 부분에 「' + w + '」가 있습니다. 정상 대기 중인 방문자에게 고장으로 읽힙니다');
