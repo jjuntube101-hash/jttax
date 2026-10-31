@@ -154,8 +154,8 @@ console.log('════ gift_history ════');
   ok(!('is_minor' in body({ ...P, doneeAge: '19' }).gift_history[0]), '19세(성년 경계) → 키 없음');
   ok(!('is_minor' in body({ ...P, relationship: '배우자', doneeAge: '15' }).gift_history[0]), '나이 문항이 안 보이는 관계 → 낡은 나이 답으로 is_minor 를 만들지 않는다');
   ok(!('gift_history' in body({ ...BASE, priorGiftHas: 'no', priorGiftValue: '100000000' })), '사전증여 없음 → 이력 없음');
-  ok(!('gift_history' in body({ ...BASE, priorGiftHas: 'yes', priorGiftValue: '0' })), '사전증여 금액 0 → 이력 없음');
-  ok(!('gift_history' in body({ ...BASE, priorGiftHas: 'yes' })), '사전증여 금액 미입력 → 이력 없음');
+  assert.throws(() => body({ ...BASE, priorGiftHas: 'yes', priorGiftValue: '0' }), /사전증여/, '있음 + 0은 이력 없음으로 바꾸지 않는다');
+  assert.throws(() => body({ ...BASE, priorGiftHas: 'yes' }), /사전증여/, '있음 + 미입력은 계산 요청 차단');
 }
 
 // ───────────────────────── 엔진 응답 판정 ─────────────────────────

@@ -164,7 +164,7 @@ const GIFT_QS = [
     id: 'priorGiftHas',
     section: '사전증여 이력',
     q: '최근 10년 안에, 같은 분(증여자·직계존속이면 그 배우자 포함)에게서 받은 증여가 있나요?',
-    sub: '10년 내 동일인 증여는 합산해 누진세율로 과세합니다(상증법 §47②). 합산 대상은 1천만원 이상 건입니다.',
+    sub: '10년 내 동일인 증여는 합산해 누진세율로 과세합니다(상증법 §47②). 같은 분에게 받은 가액의 합계가 1천만원 이상이면 합산합니다.',
     opts: [
       ['no', '없음', '합산 없음'],
       ['yes', '있음', '아래에 입력 (여러 건이면 추가)'],
@@ -185,7 +185,7 @@ const GIFT_QS = [
     section: '사전증여 이력',
     q: '그때 적용받은 증여재산공제는? (모르면 비우면 관계별 기본공제로 추정 · 선택)',
     sub: '사전증여 당시 적용받은 공제(예: 직계존비속 5천만·기타친족 1천만 등). 합산 시 이미 낸 증여세를 빼주는 한도(상증법 §58 납부세액공제) 계산에 쓰입니다. ⚠️ 0으로 두면 이 사전증여세액공제가 과다 산정돼 현재 증여세가 실제보다 적게 나올 수 있어, 비워두면 0이 아니라 관계별 기본공제로 추정해 드립니다. 사전증여 당시 혼인·출산공제 등으로 공제가 더 컸다면 정확한 값을 입력하세요.',
-    showIf: (a) => a.priorGiftHas === 'yes' && !(a.giftDate && a.giftDate.slice(0,4) < '2026'),
+    showIf: (a) => a.priorGiftHas === 'yes' && !a.giftDate,
     numeric: true,
     money: true,
     optional: true,
@@ -196,6 +196,27 @@ const GIFT_QS = [
     ['historicalPriorTaxes','같은 순서로 각 사전증여의 실제 산출세액을 입력하세요.','신고세액공제 전 산출세액입니다. 예: 10000000, 10000000'],
     ['historicalPriorDeductions','같은 순서로 당시 일반 증여재산공제액을 입력하세요.','혼인·출산공제와 섞지 마세요. 예: 50000000, 0']
   ].map(([id,q,sub])=>({id,section:'과거 사전증여 사실',q,sub:sub+' 원 단위 정수를 쉼표로 구분합니다. 없으면 0을 명시하세요.',freeform:true,showIf:a=>a.priorGiftHas==='yes' && a.giftDate && a.giftDate.slice(0,4)<'2026'})),
+  {
+    id: 'priorGroupDeductionUsed', section: '사전증여 공제 확인',
+    q: '최근 10년간 같은 공제그룹에서 이미 받은 일반 증여재산공제의 합계는 얼마인가요?',
+    sub: '이번 증여 전 사용액입니다. 부모·조부모는 직계존속 그룹으로 함께 확인합니다. 합산 대상 증여에서 받은 공제도 포함하고, 혼인·출산공제는 제외하세요. 공제받은 적이 없으면 0을 입력하고, 모르면 비워 두세요.',
+    showIf: a => a.giftDate && a.giftDate.slice(0,4) === '2026' && ['배우자','직계존속','직계비속','기타친족'].includes(a.relationship),
+    numeric: true, money: true, blockOnBlank: true, placeholder: '없으면 0 · 모르면 비움',
+  },
+  {
+    id: 'priorGiftOrdinaryDeduction', section: '사전증여 공제 확인',
+    q: '위 합산 대상 사전증여에서 실제 적용받은 일반 증여재산공제 합계는 얼마인가요?',
+    sub: '같은 공제그룹 전체 사용액 중 위 사전증여에 해당하는 금액만 입력하세요. 혼인·출산공제는 아래에서 따로 입력합니다. 없으면 0, 모르면 비워 두세요.',
+    showIf: a => a.giftDate && a.giftDate.slice(0,4) === '2026' && a.priorGiftHas === 'yes',
+    numeric: true, money: true, blockOnBlank: true, placeholder: '없으면 0 · 모르면 비움',
+  },
+  {
+    id: 'priorGiftMarriageChildDeduction', section: '사전증여 공제 확인',
+    q: '위 합산 대상 사전증여에서 실제 적용받은 혼인·출산공제 합계는 얼마인가요?',
+    sub: '일반 증여재산공제와 구분한 실제 사용액입니다. 적용받지 않았으면 0, 모르면 비워 두세요.',
+    showIf: a => a.giftDate && a.giftDate.slice(0,4) === '2026' && a.priorGiftHas === 'yes' && a.relationship === '직계존속',
+    numeric: true, money: true, blockOnBlank: true, placeholder: '없으면 0 · 모르면 비움',
+  },
   // ── 부담부증여 (부동산) ──
   {
     id: 'isBurdened',
@@ -321,6 +342,12 @@ function giftApplyAnswer(a, id, v) {
   if (a[id] !== v) {
     if (id === 'acqDate' || id === 'donorHouseCount' || id === 'isBurdened' || id === 'reType' || id === 'assetType') { delete next.regulatedAtAcq; delete next.moveInDate; }
     if (id === 'debtAssumed') delete next.debtObjective;
+    // 관계·증여일·이력 선택이 달라지면 이전 범위에서 확인한 공제액을 재사용하지 않는다.
+    if (['relationship','giftDate','priorGiftHas','priorGiftValue'].includes(id)) {
+      for (const key of ['priorGroupDeductionUsed','priorGiftOrdinaryDeduction','priorGiftMarriageChildDeduction','priorGiftDed',
+          'historicalPriorValues','historicalPriorTaxes','historicalPriorDeductions']) delete next[key];
+      if (id === 'relationship' || id === 'giftDate') { delete next.priorGiftHas; delete next.priorGiftValue; }
+    }
     // 부동산을 가리키는 답(유형·주소·동·호)이 바뀌면 «그 부동산»에 딸린 답을 모두 지운다 — 평가액·인수 채무액·객관적 채무·취득일·취득가액·조정대상지역·전입일·취득 당시 지역,
     //   그리고 «이 부동산 외» 기준인 증여자 세대 주택 수. (공시가격 기준 연도 reYear 는 같은 부동산의 조회 조건이라 지우지 않는다.)
     if (id === 'reType' || id === 'reAddress' || id === 'reDong' || id === 'reHo') {
@@ -368,7 +395,13 @@ function giftFallbackGaps(answers, calc) {
      증여재산공제가 통째로 배제되는데, 그대로 두면 «공제받은» 금액이 정밀 계산으로 나온다. */
   /* 부담부증여(단건): 증여자의 취득일·취득가액은 양도세(세율·장기보유특별공제·비과세·양도차익)를 가른다 — 모르면(빈칸·0) 엔진을 부르지 않고 막는다(261011) */
   const burdened = answers.isBurdened === 'yes' && answers.assetType === 'realestate';
+  const currentHistory = !burdened && answers.giftDate && answers.giftDate.slice(0,4) === '2026';
+  const groupRequired = currentHistory && ['배우자','직계존속','직계비속','기타친족'].includes(answers.relationship);
   const unknown = window.jtFallbackGaps([
+    { when: currentHistory && !['yes','no'].includes(answers.priorGiftHas),
+      why: '최근 10년간 같은 증여자의 사전증여 여부를 확인해 주세요. 미확인은 없음으로 계산하지 않습니다.' },
+    { when: groupRequired && (answers.priorGroupDeductionUsed == null || String(answers.priorGroupDeductionUsed).trim() === ''),
+      why: '같은 공제그룹의 최근 10년간 일반 증여재산공제 사용액을 확인해 주세요. 없으면 0을 입력하세요.' },
     { when: burdened && !isValidISODate(answers.acqDate || ''),
       why: '증여하는 분의 취득일을 모르면 세무사 확인이 필요합니다 — 보유기간이 채무 인수분 양도세의 세율·장기보유특별공제·1세대1주택 비과세를 가릅니다. 등기부등본으로 취득일(잔금일 또는 등기접수일)을 확인해 입력해 주세요.' },
     { when: burdened && answers.debtObjective === 'unknown',
@@ -386,6 +419,10 @@ function giftFallbackGaps(answers, calc) {
   /* ── ② 엔진 값이 없으면 어떤 입력이든 막는다 ──────────────────────────────
      이 화면에는 자체 계산식이 없으므로 «엔진이 준 금액»이 없으면 보여 줄 금액이 없다.
      사유는 «엔진이 거부했다(refused)»와 «연결하지 못했다(down·미지정)» 둘이다. */
+  if (!burdened && (currentHistory || answers.priorGiftHas === 'yes')) {
+    try { mapAnswersToGift(answers); }
+    catch (e) { unknown.push(e.message); }
+  }
   if (calc.precise) return unknown;
   const engineMsg = window.jtEngineMessageForDisplay(calc.engineMessage);   // 식별자·개발자용 꼬리말을 뗀 표시용 문구(261011)
   return unknown.concat([calc.engineState === 'refused'
@@ -407,6 +444,13 @@ function mapAnswersToGift(a) {
     body.tax_year = Number(a.giftDate.slice(0,4));
   }
   if (a.relationship) body.relationship = a.relationship;
+  const groupGiven = body.tax_year === 2026 && ['배우자','직계존속','직계비속','기타친족'].includes(a.relationship)
+    && a.priorGroupDeductionUsed != null && String(a.priorGroupDeductionUsed).trim() !== '';
+  if (groupGiven) {
+    if (!['string','number'].includes(typeof a.priorGroupDeductionUsed) || !Number.isSafeInteger(Number(a.priorGroupDeductionUsed)) || Number(a.priorGroupDeductionUsed) < 0)
+      throw new Error('공제그룹 사용액은 0 이상의 원 단위 정수로 입력해 주세요.');
+    body.prior_deduction_used = Number(a.priorGroupDeductionUsed);
+  }
   /* 보이지 않는 문항의 낡은 답(관계를 바꾸기 전에 답한 것)은 보내지 않는다 */
   const lineal = a.relationship === '직계존속';
   const ageAnswered = lineal && a.doneeAge != null && String(a.doneeAge).trim() !== '' && Number.isFinite(Number(a.doneeAge));
@@ -419,12 +463,31 @@ function mapAnswersToGift(a) {
   /* 혼인·출산공제 문항도 직계존속일 때만 보인다 — 관계를 바꾸기 전의 낡은 답을 보내지 않는다 */
   body.marriage_deduction = lineal && a.marriageDed === 'yes';
   body.childbirth_deduction = lineal && a.childbirthDed === 'yes';
-  if (a.priorGiftHas === 'yes' && Number(a.priorGiftValue) > 0) {
-    const item = { value: Number(a.priorGiftValue) || 0 };
+  if (a.priorGiftHas === 'yes') {
+    if (!['string','number'].includes(typeof a.priorGiftValue) || !Number.isSafeInteger(Number(a.priorGiftValue)) || Number(a.priorGiftValue) <= 0)
+      throw new Error('사전증여가 있으면 재산가액 합계를 양의 원 단위 정수로 입력해 주세요.');
+    const item = { value: Number(a.priorGiftValue) };
     /* 화면 문항은 「그때 적용받은 공제」를 한 칸으로 묻는다 — §53 공제와 혼인·출산공제(§53의2)가 섞인 합계일 수 있어
        엔진의 deduction_used(§53 공제만, 한도 초과 시 거부)가 아니라 total_deduction_used(구분 모름 합계)로 보낸다.
        두 키를 함께 보내면 엔진이 거부한다. */
-    if (giftPriorDedGiven(a)) item.total_deduction_used = Number(a.priorGiftDed) || 0;
+    if (body.tax_year === 2026) {
+      const fields = [['priorGiftOrdinaryDeduction','deduction_used']];
+      if (lineal) fields.push(['priorGiftMarriageChildDeduction','marriage_child_deduction_used']);
+      for (const [key, field] of fields) {
+        const raw = a[key];
+        if (!['string','number'].includes(typeof raw) || String(raw).trim() === '' || !Number.isSafeInteger(Number(raw)) || Number(raw) < 0)
+          throw new Error('사전증여의 일반공제와 혼인·출산공제 사용액을 구분해 확인해 주세요. 없으면 0을 입력하세요.');
+        item[field] = Number(raw);
+      }
+      if (item.deduction_used + (item.marriage_child_deduction_used || 0) > item.value)
+        throw new Error('사전증여 공제액 합계가 재산가액보다 큽니다.');
+      if (groupGiven && item.deduction_used > body.prior_deduction_used)
+        throw new Error('공제그룹 전체 사용액은 합산 대상 사전증여의 일반공제액 이상이어야 합니다.');
+    } else if (!a.giftDate && giftPriorDedGiven(a)) {
+      if (!['string','number'].includes(typeof a.priorGiftDed) || !Number.isSafeInteger(Number(a.priorGiftDed)) || Number(a.priorGiftDed) < 0)
+        throw new Error('사전증여 공제액은 0 이상의 원 단위 정수로 입력해 주세요.');
+      item.total_deduction_used = Number(a.priorGiftDed);
+    }
     /* 같은 증여자에게서 받은 증여이므로 세대생략 여부는 이번 증여와 같다 */
     item.is_generation_skip = skipAnswer === 'yes';
     /* 지금 19세 미만이면 10년 내 사전증여 당시에도 미성년자였다(할증률 40% 판정에 쓰인다, R1-F2).
@@ -716,7 +779,8 @@ function JTReportGift({ setRoute, onBack }) {
 
   const allVisible = GIFT_QS.filter(q => !q.showIf || q.showIf(answers));
   // 과거연도는 엔진이 요구하는 사실을 첫 계산 전에 받는다.
-  const isQuick = q => q.tier === 'quick' || (answers.giftDate && answers.giftDate.slice(0,4) < '2026'
+  const isQuick = q => q.tier === 'quick' || (answers.giftDate && answers.giftDate.slice(0,4) === '2026'
+    && ['priorGiftHas','priorGiftValue','priorGroupDeductionUsed','priorGiftOrdinaryDeduction','priorGiftMarriageChildDeduction'].includes(q.id)) || (answers.giftDate && answers.giftDate.slice(0,4) < '2026'
     && ['genSkip','childDeceased','marriageDed','childbirthDed','priorGiftHas','priorGiftValue',
         'historicalPriorValues','historicalPriorTaxes','historicalPriorDeductions','priorMarriageChildUsed'].includes(q.id));
   const visibleQs = phase === 'quick'
@@ -917,7 +981,7 @@ function JTReportGift({ setRoute, onBack }) {
     // 사전증여 공제액 입력란이 비어 있었던 경우(엔진이 한도 안 순차 공제로 보고 계산) → 결과화면에 캐비엇 노출
     const priorDedEstimated = !isBurdened && calc.precise &&
       answers.priorGiftHas === 'yes' && Number(answers.priorGiftValue) > 0 &&
-      (!answers.giftDate || Number(answers.giftDate.slice(0,4)) >= 2026) &&
+      !answers.giftDate &&
       !giftPriorDedGiven(answers);
     /* 엔진 값이 없거나(down·refused) 입력이 불확정이면 숫자를 내지 않는다 (261004: 자체 계산식 없음).
        부담부증여 엔진 실패(engineErr)도 여기서 함께 잡는다 — 종전엔 예외로 빼 두어

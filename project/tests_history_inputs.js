@@ -54,3 +54,46 @@ assert(!questionIds({...historicalAnswers,priorGiftHas:'no'}).includes('historic
 assert(!questionIds({...historicalAnswers,giftDate:'2026-06-01'}).includes('genSkip'),'현행 빠른 계산 동작 보존');
 assert(questionIds({...historicalAnswers,giftDate:'2026-06-01'},'detail').includes('genSkip'));
 console.log('PASS historical gift quick/detail question reachability and current-year preservation');
+
+// Same donor aggregation and deduction-group use are different facts.
+{
+const gf=load('Gift',['mapAnswersToGift','giftFallbackGaps','giftApplyAnswer']);
+const GB={assetType:'cash',giftDate:'2026-10-01',giftValueCash:'100000000',relationship:'직계존속',doneeAge:'30',genSkip:'no',isResident:'yes',priorGiftHas:'no',priorGroupDeductionUsed:'50000000'};
+const GP={...GB,priorGiftHas:'yes',priorGiftValue:'40000000',priorGiftOrdinaryDeduction:'30000000',priorGiftMarriageChildDeduction:'0'};
+const map=gf.mapAnswersToGift, gaps=a=>gf.giftFallbackGaps(a,{precise:true});
+assert.equal(map(GB).prior_deduction_used,50000000);
+assert.equal(map(GB).gift_history,undefined,'Other donor amount must not be aggregated');
+assert.equal(gaps(GB).length,0);
+assert.equal(map({...GB,priorGroupDeductionUsed:'0'}).prior_deduction_used,0);
+const split=map({...GP,priorGiftDed:'99999999'});
+assert.equal(split.gift_history[0].deduction_used,30000000);
+assert.equal(split.gift_history[0].marriage_child_deduction_used,0);
+assert.equal(split.gift_history[0].total_deduction_used,undefined,'Stale mixed deduction must not override confirmed components');
+assert.equal(gaps(GP).length,0);
+for(const field of ['priorGroupDeductionUsed','priorGiftOrdinaryDeduction','priorGiftMarriageChildDeduction']) {
+  for(const bad of [undefined,null,'',' ',true,[],{},'x',-1,1.5,9007199254740992])
+    assert(gaps({...GP,[field]:bad}).length>0,field+' '+String(bad)+' must block all result sinks');
+}
+for(const bad of [undefined,null,'',' ',true,[],{},'x',0,-1,1.5,9007199254740992]) {
+  assert.throws(()=>map({...GP,priorGiftValue:bad}));
+  assert(gaps({...GP,priorGiftValue:bad}).length>0);
+}
+assert(gaps({...GB,priorGiftHas:undefined}).length>0);
+assert(gaps({...GP,priorGroupDeductionUsed:'20000000'}).length>0,'Group total smaller than selected history is contradictory');
+assert(gaps({...GP,priorGiftOrdinaryDeduction:'50000000'}).length>0,'Deductions cannot exceed the selected gift');
+for(const [key,value] of [['relationship','배우자'],['giftDate','2026-09-01'],['priorGiftHas','no'],['priorGiftValue','60000000']]) {
+  const next=gf.giftApplyAnswer(GP,key,value);
+  for(const field of ['priorGroupDeductionUsed','priorGiftOrdinaryDeduction','priorGiftMarriageChildDeduction'])assert.equal(next[field],undefined);
+}
+assert.equal(gf.giftApplyAnswer(GP,'priorGiftValue',GP.priorGiftValue).priorGroupDeductionUsed,GP.priorGroupDeductionUsed);
+assert.equal(gf.giftApplyAnswer(GP,'giftValueCash','110000000').priorGroupDeductionUsed,GP.priorGroupDeductionUsed);
+for(const id of ['priorGiftHas','priorGiftValue','priorGroupDeductionUsed','priorGiftOrdinaryDeduction','priorGiftMarriageChildDeduction']){
+  assert(questionIds(GP).includes(id),id+' reachable before first calculation');
+  assert(!questionIds(GP,'detail').includes(id),id+' not repeated in detail');
+}
+assert(!questionIds(GB).includes('priorGiftOrdinaryDeduction'));
+assert(!questionIds({...GP,relationship:'배우자'}).includes('priorGiftMarriageChildDeduction'));
+assert(!questionIds({...GP,giftDate:'2025-10-01'}).includes('priorGroupDeductionUsed'),'Historical support unchanged');
+console.log('PASS 2026 gift group totals, separated deductions, missing/invalid facts, stale answer invalidation and first-step reachability');
+
+}

@@ -60,6 +60,10 @@ function loadGapFn(file, fnName) {
 
 const inhPriorGiftDropped = eval('('+fs.readFileSync(SRC('ReportInheritance.jsx'),'utf8').match(/function inhPriorGiftDropped\(a\) {[\s\S]*?\n}/)[0]+')');
 const inhFallbackGaps = loadGapFn('ReportInheritance.jsx', 'inhFallbackGaps');
+const giftSource = fs.readFileSync(SRC('ReportGift.jsx'),'utf8');
+const giftAmount = eval('('+giftSource.match(/function giftAmount[^\n]+/)[0]+')');
+const giftPriorDedGiven = eval('('+giftSource.match(/function giftPriorDedGiven\(a\) {[\s\S]*?\n}/)[0]+')');
+const mapAnswersToGift = eval('('+giftSource.match(/function mapAnswersToGift\(a\) {[\s\S]*?\n}/)[0]+')');
 const giftFallbackGaps = loadGapFn('ReportGift.jsx', 'giftFallbackGaps');
 const acqFallbackGaps = loadGapFn('ReportAcquisition.jsx', 'acqFallbackGaps');
 const propFallbackGaps = loadGapFn('ReportProperty.jsx', 'propFallbackGaps');
@@ -140,9 +144,9 @@ eq('평범한 입력 → 통과', GIFT({ ...RES, relationship: '직계존속' })
 eq('세대생략 + 엔진 값 있음 → 통과', GIFT({ ...RES, genSkip: 'yes' }).length, 0);
 eq('혼인공제 + 엔진 값 있음 → 통과', GIFT({ ...RES, marriageDed: 'yes' }).length, 0);
 eq('출산공제 + 엔진 값 있음 → 통과', GIFT({ ...RES, childbirthDed: 'yes' }).length, 0);
-eq('사전증여 + 엔진 값 있음 → 통과', GIFT({ ...RES, priorGiftHas: 'yes' }).length, 0);
+eq('사전증여 + 엔진 값 있음 → 통과', GIFT({ ...RES, priorGiftHas: 'yes', priorGiftValue: '100000000' }).length, 0);
 /* ② 엔진 값이 없으면 입력과 무관하게 항상 사유 한 건 */
-for (const ans of [{ ...RES, relationship: '직계존속' }, { ...RES, genSkip: 'yes' }, { ...RES, priorGiftHas: 'yes' }, { ...RES, marriageDed: 'yes' }]) {
+for (const ans of [{ ...RES, relationship: '직계존속' }, { ...RES, genSkip: 'yes' }, { ...RES, priorGiftHas: 'yes', priorGiftValue: '100000000' }, { ...RES, marriageDed: 'yes' }]) {
   eq('엔진 연결 실패(DOWN) → 어떤 입력이든 사유 1건: ' + JSON.stringify(ans), giftFallbackGaps(ans, DOWN).length, 1);
   eq('엔진 거부(REFUSED) → 어떤 입력이든 사유 1건: ' + JSON.stringify(ans), giftFallbackGaps(ans, REFUSED).length, 1);
 }
@@ -279,7 +283,7 @@ console.log('\n════ 엔진 성공(precise)이면 «폴백 한계»로는
 /* ⚠️ 여기 입력에 «비거주자»를 넣으면 안 된다 — 그건 폴백 한계가 아니라 엔진 미지원이라
    precise 에서도 막는 게 «의도»다. 위 «모른다» 블록에서 따로 고정한다. */
 [['상속세', inhFallbackGaps, { ...RES, hasSpouse: 'yes', numChildren: '2', spouseActual: 'none', priorGiftHas: 'yes', priorGiftOneRecipient: 'one', priorGiftValue: '100000000',priorGiftDate:'2021-10-10',priorGiftDeduction:'50000000',priorGiftAssessed:'5000000', priorGiftRelation: '직계비속' }],
- ['증여세', giftFallbackGaps, { ...RES, genSkip: 'yes', priorGiftHas: 'yes' }],
+ ['증여세', giftFallbackGaps, { ...RES, genSkip: 'yes', priorGiftHas: 'yes', priorGiftValue: '100000000' }],
  ['취득세', acqFallbackGaps, { propertyType: '토지', reduction: 'first' }],
  ['재산세', propFallbackGaps, { propertyKind: '건축물', buildingType: '일반' }],
  ['양도세', cgtFallbackGaps, { assetType: 'occupancy_succ' }]].forEach(([name, fn, ans]) => {

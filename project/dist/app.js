@@ -3,7 +3,7 @@
    소스: project/src/*.jsx (63개, ORDER 순서)
    ⛔ 이 파일을 손으로 고치면 다음 빌드에 덮어써집니다. 소스를 고치고 다시 빌드하세요.
    ⛔ 커밋에서 빠뜨리면 라이브가 «옛 코드»로 돕니다 — tests_build_fresh.js 가 막습니다. */
-window.JT_FRONTEND_BUILD = Object.freeze({"schema_version":"frontend-build/1","build_id":"frontend-0d9740b329c22aa6b782","payload_sha256":"0d9740b329c22aa6b782fbf0f1ac72cd0e4a293406847589e39f9e07589ddf66"});
+window.JT_FRONTEND_BUILD = Object.freeze({"schema_version":"frontend-build/1","build_id":"frontend-c0c53e9de54255370a49","payload_sha256":"c0c53e9de54255370a4983a0734038a08a9b289680c87a3eb1876262f5300967"});
 
 /* ────────── project/data/ordinance-cards.json (읽기 전용 원문 안내 · 세액 미반영) ────────── */
 window.JT_ORDINANCE_CARDS = {"_note":"법제처 자치법규 API 스냅샷. 세액 계산에 반영하지 않는다(원문 안내 전용). 재생성: python project/scripts/build-ordinance-cards.py","generatedAt":"2026-09-21","cards":{"서울특별시":{"region":"서울특별시","ordinanceName":"서울특별시 시세 감면 조례","ordinanceSerial":"2001341","ordinanceId":"2000202","effectiveDate":"20250101","promulgationDate":"20250101","promulgationNo":"9413","revisionInfo":"일부개정","articleLabel":"제13조","articleTitle":"산업단지 등에 대한 감면","articleText":"제13조(산업단지 등에 대한 감면) 법 제78조제8항에 따른 \"조례로 정하는 율\"은 다음 각 호와 같다.\n  1. 법 제78조제4항제2호가목의 경감률에 추가하는 경감률은 100분의 25로 한다.\n  2. 법 제78조제4항제2호나목의 경감률에 추가하는 경감률은 100분의 15로 한다.","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2001341","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2001341&type=XML","appliedToCalculation":false},"부산광역시":{"region":"부산광역시","ordinanceName":"부산광역시 시세 감면 조례","ordinanceSerial":"2130441","ordinanceId":"2064493","effectiveDate":"20260520","promulgationDate":"20260520","promulgationNo":"7946","revisionInfo":"일부개정","articleLabel":"제6조","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조(산업단지 등에 대한 감면) 법 제78조제8항에 따른 “조례로 정하는 율”은 다음 각 호와 같다.<개정 2017. 5. 31>\n1. 법 제78조제4항제2호가목의 경감률에 추가하는 경감률은 100분의 25로 한다.<개정 2017. 5. 31>\n2. 법 제78조제4항제2호나목의 경감률에 추가하는 경감률은 100분의 15로 한다.","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2130441","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2130441&type=XML","appliedToCalculation":false},"대구광역시":{"region":"대구광역시","ordinanceName":"대구광역시 시세 감면 조례","ordinanceSerial":"2117797","ordinanceId":"2050073","effectiveDate":"20260330","promulgationDate":"20260330","promulgationNo":"6472","revisionInfo":"일부개정","articleLabel":"제6조","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음과 같다. <개정 2026.3.30.>\n1. 법 제78조제5항제2호가목2)의 경감률에 추가하는 경감률은 100분의 25로 한다. <개정 2017.5.10., 2026.3.30.>\n2. 법 제78조제5항제2호가목3)의 경감률에 추가하는 경감률은 100분의 25로 한다. <신설 2026.3.30.>\n3. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률은 100분의 15로 한다. <개정 2026.3.30.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2117797","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2117797&type=XML","appliedToCalculation":false},"인천광역시":{"region":"인천광역시","ordinanceName":"인천광역시 시세 감면 조례","ordinanceSerial":"2084875","ordinanceId":"2110737","effectiveDate":"20251112","promulgationDate":"20251112","promulgationNo":"7618","revisionInfo":"일부개정","articleLabel":"제6조의2","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조의2(산업단지 등에 대한 감면) 법 제78조제8항에 따라 추가로 경감하는 율은 다음 각 호의 구분에 따른다.\n1. 법 제78조제4항제2호가목의 경감률에 추가하는 경감률: 100분의 25\n2. 법 제78조제4항제2호나목의 경감률에 추가하는 경감률: 100분의 15\n\n[본조신설 2025.9.29.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2084875","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2084875&type=XML","appliedToCalculation":false},"대전광역시":{"region":"대전광역시","ordinanceName":"대전광역시 시세 감면 조례","ordinanceSerial":"2158509","ordinanceId":"2052383","effectiveDate":"20260807","promulgationDate":"20260807","promulgationNo":"6637","revisionInfo":"일부개정","articleLabel":"제4조","articleTitle":"산업단지에 대한 추가감경","articleText":"제4조(산업단지에 대한 추가감경) 법 제78조제6항에서 “조례로 정하는 율”이란 취득세의 100분의 25를 말한다. 다만, 법 제78조제5항제2호다목의 경우에는 100분의 15로 한다. <개정 2017.4.28., 2026. 8. 7.>\n\n[제목개정 2017.4.28.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2158509","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2158509&type=XML","appliedToCalculation":false},"울산광역시":{"region":"울산광역시","ordinanceName":"울산광역시 시세 감면 조례","ordinanceSerial":"2120851","ordinanceId":"2101740","effectiveDate":"20260409","promulgationDate":"20260409","promulgationNo":"3263","revisionInfo":"일부개정","articleLabel":"제7조","articleTitle":"산업단지 등에 대한 감면","articleText":"제7조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율“은 다음 각 호와 같다. <개정 2018.5.17., 2022. 4. 7., 2026. 4. 9.>\n1. 법 제78조제5항제2호가목2의 경감률에 추가하는 경감률은 100분의 25로 한다.\n2. 법 제78조제5항제2호가목3)의 경감률에 추가하는 경감률은 100분의 25로 한다.\n3. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률은 100분의 15로 한다.","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2120851","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2120851&type=XML","appliedToCalculation":false},"세종특별자치시":{"region":"세종특별자치시","ordinanceName":"세종특별자치시 시세 감면 조례","ordinanceSerial":"2122007","ordinanceId":"2144277","effectiveDate":"20260410","promulgationDate":"20260410","promulgationNo":"3003","revisionInfo":"일부개정","articleLabel":"제8조의3","articleTitle":"산업단지 등에 대한 추가감면","articleText":"제8조의3(산업단지 등에 대한 추가감면) 법 제78조제6항에서 “조례로 정하는 율”이란 다음 각 호와 같다.<개정, 2026. 4. 10.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률: 100분의 25<개정, 2026. 4. 10.>\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률: 100분의 15[전문개정, 2019. 12. 16.]<개정, 2026. 4. 10.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2122007","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2122007&type=XML","appliedToCalculation":false},"경기도":{"region":"경기도","ordinanceName":"경기도 도세 감면 조례","ordinanceSerial":"2114419","ordinanceId":"2023930","effectiveDate":"20260304","promulgationDate":"20260304","promulgationNo":"8852","revisionInfo":"일부개정","articleLabel":"제6조","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조(산업단지 등에 대한 감면) \n① 법 제78조제6항에 따라 추가로 경감하는 율은 다음 각 호의 구분에 따른다. <개정 2025.12.31., 2026.3.4.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률: 100분의 25 <개정 2017.5.4., 2026.3.4.>\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률: 100분의 15 <개정 2026.3.4.>\n② 제1항에 따라 취득세를 경감받은 자가 법 제78조제7항에 따라 추징대상이 되는 경우에는 경감된 취득세를 추징한다. [신설 2025.12.31.] <개정 2026.3.4.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2114419","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2114419&type=XML","appliedToCalculation":false},"강원특별자치도":{"region":"강원특별자치도","ordinanceName":"강원특별자치도 도세 감면 조례","ordinanceSerial":"2124179","ordinanceId":"2230535","effectiveDate":"20260417","promulgationDate":"20260417","promulgationNo":"5789","revisionInfo":"일부개정","articleLabel":"제8조","articleTitle":"산업단지 등에 대한 감면","articleText":"제8조(산업단지 등에 대한 감면) 법 제78조제6항에서 “조례로 정하는 율”은 다음 각 호와 같다.\n1. 법 제78조제5항제2호가목에 따라 경감하는 경우에는 취득세의 100분의 25를 경감\n2. 법 제78조제5항제2호다목에 따라 경감하는 경우에는 취득세의 100분의 15를 경감\n\n[전문개정 2026. 4. 17.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2124179","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2124179&type=XML","appliedToCalculation":false},"충청북도":{"region":"충청북도","ordinanceName":"충청북도 도세 감면조례","ordinanceSerial":"2143331","ordinanceId":"2129413","effectiveDate":"20260703","promulgationDate":"20260703","promulgationNo":"5587","revisionInfo":"일부개정","articleLabel":"제11조","articleTitle":"산업단지 등에 대한 감면","articleText":"제11조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음 각 호와 같다.\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률은 100분의 25로 한다.\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률은 100분의 15로 한다.\n\n[전문개정 2026.7.3.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2143331","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2143331&type=XML","appliedToCalculation":false},"충청남도":{"region":"충청남도","ordinanceName":"충청남도 도세 감면 조례","ordinanceSerial":"2125633","ordinanceId":"2128787","effectiveDate":"20260423","promulgationDate":"20260423","promulgationNo":"6118","revisionInfo":"일부개정","articleLabel":"제7조의2","articleTitle":"산업단지 등에 대한 추가 감면","articleText":"제7조의2(산업단지 등에 대한 추가 감면) 법 제78조제6항에 따른 조례로 정하는 율은 각 호와 같다. <개정 2020.3.10., 2023. 8. 10., 2026. 4. 23.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률 : 100분의 25 <개정 2026. 4. 23.>\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률 : 100분의 15 <개정 2026. 4. 23.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2125633","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2125633&type=XML","appliedToCalculation":false},"전북특별자치도":{"region":"전북특별자치도","ordinanceName":"전북특별자치도 도세 감면 조례","ordinanceSerial":"2148733","ordinanceId":"2153475","effectiveDate":"20260710","promulgationDate":"20260710","promulgationNo":"6005","revisionInfo":"일부개정","articleLabel":"제11조","articleTitle":"산업단지 등에 대한 감면","articleText":"제11조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음과 같다. <개정 2017. 12. 29., 2024. 3. 29.,2026. 7. 10.>\n1. 법 제78조제5항제2호가목의 경감율에 추가하는 경감율: 100분의 25\n2. 법 제78조제5항제2호나목의 경감율에 추가하는 경감율: 100분의 15","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2148733","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2148733&type=XML","appliedToCalculation":false},"경상북도":{"region":"경상북도","ordinanceName":"경상북도 도세 감면조례","ordinanceSerial":"2124771","ordinanceId":"2027008","effectiveDate":"20260420","promulgationDate":"20260420","promulgationNo":"5467","revisionInfo":"일부개정","articleLabel":"제10조","articleTitle":"산업단지 등에 대한 감면","articleText":"제10조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음 각 호와 같다. <개정 2026. 4. 20.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감율은 100분의 25로 한다. <개정 2026. 4. 20.>\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감율은 100분의 15로 한다. <개정 2026. 4. 20.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2124771","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2124771&type=XML","appliedToCalculation":false},"경상남도":{"region":"경상남도","ordinanceName":"경상남도 도세 감면 조례","ordinanceSerial":"2139293","ordinanceId":"2025984","effectiveDate":"20260702","promulgationDate":"20260702","promulgationNo":"6136","revisionInfo":"일부개정","articleLabel":"제7조의2","articleTitle":"산업단지 등에 대한 감면","articleText":"제7조의2(산업단지 등에 대한 감면  <본조신설 2019.9.26.>) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음 각 호와 같다. <개정 2026.7.2.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률 : 100분의 25\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률 : 100분의 15","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2139293","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2139293&type=XML","appliedToCalculation":false},"제주특별자치도":{"region":"제주특별자치도","ordinanceName":"제주특별자치도세 감면 조례","ordinanceSerial":"2142179","ordinanceId":"2117578","effectiveDate":"20260630","promulgationDate":"20260630","promulgationNo":"4309","revisionInfo":"일부개정","articleLabel":"제5조의2","articleTitle":"산업단지 등에 대한 감면","articleText":"제5조의2(산업단지 등에 대한 감면) 「지방세특례제한법」 제78조제6항에서 “조례로 정하는 율“이란 다음 각 호의 구분과 같다.\n<개정 2026.4.8.>\n1. 「지방세특례제한법」 제78조제5항제2호가목의 경감률에 추가하는 경감률: 100분의 25\n2. 「지방세특례제한법」 제78조제5항제2호다목의 경감률에 추가하는 경감률: 100분의 15\n\n[본조신설 2022.12.30.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-09-21","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2142179","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2142179&type=XML","appliedToCalculation":false}}};
@@ -13374,7 +13374,7 @@ const GIFT_QS = [
     id: "priorGiftHas",
     section: "\uC0AC\uC804\uC99D\uC5EC \uC774\uB825",
     q: "\uCD5C\uADFC 10\uB144 \uC548\uC5D0, \uAC19\uC740 \uBD84(\uC99D\uC5EC\uC790\xB7\uC9C1\uACC4\uC874\uC18D\uC774\uBA74 \uADF8 \uBC30\uC6B0\uC790 \uD3EC\uD568)\uC5D0\uAC8C\uC11C \uBC1B\uC740 \uC99D\uC5EC\uAC00 \uC788\uB098\uC694?",
-    sub: "10\uB144 \uB0B4 \uB3D9\uC77C\uC778 \uC99D\uC5EC\uB294 \uD569\uC0B0\uD574 \uB204\uC9C4\uC138\uC728\uB85C \uACFC\uC138\uD569\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA747\u2461). \uD569\uC0B0 \uB300\uC0C1\uC740 1\uCC9C\uB9CC\uC6D0 \uC774\uC0C1 \uAC74\uC785\uB2C8\uB2E4.",
+    sub: "10\uB144 \uB0B4 \uB3D9\uC77C\uC778 \uC99D\uC5EC\uB294 \uD569\uC0B0\uD574 \uB204\uC9C4\uC138\uC728\uB85C \uACFC\uC138\uD569\uB2C8\uB2E4(\uC0C1\uC99D\uBC95 \xA747\u2461). \uAC19\uC740 \uBD84\uC5D0\uAC8C \uBC1B\uC740 \uAC00\uC561\uC758 \uD569\uACC4\uAC00 1\uCC9C\uB9CC\uC6D0 \uC774\uC0C1\uC774\uBA74 \uD569\uC0B0\uD569\uB2C8\uB2E4.",
     opts: [
       ["no", "\uC5C6\uC74C", "\uD569\uC0B0 \uC5C6\uC74C"],
       ["yes", "\uC788\uC74C", "\uC544\uB798\uC5D0 \uC785\uB825 (\uC5EC\uB7EC \uAC74\uC774\uBA74 \uCD94\uAC00)"]
@@ -13395,7 +13395,7 @@ const GIFT_QS = [
     section: "\uC0AC\uC804\uC99D\uC5EC \uC774\uB825",
     q: "\uADF8\uB54C \uC801\uC6A9\uBC1B\uC740 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uB294? (\uBAA8\uB974\uBA74 \uBE44\uC6B0\uBA74 \uAD00\uACC4\uBCC4 \uAE30\uBCF8\uACF5\uC81C\uB85C \uCD94\uC815 \xB7 \uC120\uD0DD)",
     sub: "\uC0AC\uC804\uC99D\uC5EC \uB2F9\uC2DC \uC801\uC6A9\uBC1B\uC740 \uACF5\uC81C(\uC608: \uC9C1\uACC4\uC874\uBE44\uC18D 5\uCC9C\uB9CC\xB7\uAE30\uD0C0\uCE5C\uC871 1\uCC9C\uB9CC \uB4F1). \uD569\uC0B0 \uC2DC \uC774\uBBF8 \uB0B8 \uC99D\uC5EC\uC138\uB97C \uBE7C\uC8FC\uB294 \uD55C\uB3C4(\uC0C1\uC99D\uBC95 \xA758 \uB0A9\uBD80\uC138\uC561\uACF5\uC81C) \uACC4\uC0B0\uC5D0 \uC4F0\uC785\uB2C8\uB2E4. \u26A0\uFE0F 0\uC73C\uB85C \uB450\uBA74 \uC774 \uC0AC\uC804\uC99D\uC5EC\uC138\uC561\uACF5\uC81C\uAC00 \uACFC\uB2E4 \uC0B0\uC815\uB3FC \uD604\uC7AC \uC99D\uC5EC\uC138\uAC00 \uC2E4\uC81C\uBCF4\uB2E4 \uC801\uAC8C \uB098\uC62C \uC218 \uC788\uC5B4, \uBE44\uC6CC\uB450\uBA74 0\uC774 \uC544\uB2C8\uB77C \uAD00\uACC4\uBCC4 \uAE30\uBCF8\uACF5\uC81C\uB85C \uCD94\uC815\uD574 \uB4DC\uB9BD\uB2C8\uB2E4. \uC0AC\uC804\uC99D\uC5EC \uB2F9\uC2DC \uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C \uB4F1\uC73C\uB85C \uACF5\uC81C\uAC00 \uB354 \uCEF8\uB2E4\uBA74 \uC815\uD655\uD55C \uAC12\uC744 \uC785\uB825\uD558\uC138\uC694.",
-    showIf: (a) => a.priorGiftHas === "yes" && !(a.giftDate && a.giftDate.slice(0, 4) < "2026"),
+    showIf: (a) => a.priorGiftHas === "yes" && !a.giftDate,
     numeric: true,
     money: true,
     optional: true,
@@ -13406,6 +13406,39 @@ const GIFT_QS = [
     ["historicalPriorTaxes", "\uAC19\uC740 \uC21C\uC11C\uB85C \uAC01 \uC0AC\uC804\uC99D\uC5EC\uC758 \uC2E4\uC81C \uC0B0\uCD9C\uC138\uC561\uC744 \uC785\uB825\uD558\uC138\uC694.", "\uC2E0\uACE0\uC138\uC561\uACF5\uC81C \uC804 \uC0B0\uCD9C\uC138\uC561\uC785\uB2C8\uB2E4. \uC608: 10000000, 10000000"],
     ["historicalPriorDeductions", "\uAC19\uC740 \uC21C\uC11C\uB85C \uB2F9\uC2DC \uC77C\uBC18 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uC561\uC744 \uC785\uB825\uD558\uC138\uC694.", "\uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C\uC640 \uC11E\uC9C0 \uB9C8\uC138\uC694. \uC608: 50000000, 0"]
   ].map(([id, q, sub]) => ({ id, section: "\uACFC\uAC70 \uC0AC\uC804\uC99D\uC5EC \uC0AC\uC2E4", q, sub: sub + " \uC6D0 \uB2E8\uC704 \uC815\uC218\uB97C \uC27C\uD45C\uB85C \uAD6C\uBD84\uD569\uB2C8\uB2E4. \uC5C6\uC73C\uBA74 0\uC744 \uBA85\uC2DC\uD558\uC138\uC694.", freeform: true, showIf: (a) => a.priorGiftHas === "yes" && a.giftDate && a.giftDate.slice(0, 4) < "2026" })),
+  {
+    id: "priorGroupDeductionUsed",
+    section: "\uC0AC\uC804\uC99D\uC5EC \uACF5\uC81C \uD655\uC778",
+    q: "\uCD5C\uADFC 10\uB144\uAC04 \uAC19\uC740 \uACF5\uC81C\uADF8\uB8F9\uC5D0\uC11C \uC774\uBBF8 \uBC1B\uC740 \uC77C\uBC18 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uC758 \uD569\uACC4\uB294 \uC5BC\uB9C8\uC778\uAC00\uC694?",
+    sub: "\uC774\uBC88 \uC99D\uC5EC \uC804 \uC0AC\uC6A9\uC561\uC785\uB2C8\uB2E4. \uBD80\uBAA8\xB7\uC870\uBD80\uBAA8\uB294 \uC9C1\uACC4\uC874\uC18D \uADF8\uB8F9\uC73C\uB85C \uD568\uAED8 \uD655\uC778\uD569\uB2C8\uB2E4. \uD569\uC0B0 \uB300\uC0C1 \uC99D\uC5EC\uC5D0\uC11C \uBC1B\uC740 \uACF5\uC81C\uB3C4 \uD3EC\uD568\uD558\uACE0, \uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C\uB294 \uC81C\uC678\uD558\uC138\uC694. \uACF5\uC81C\uBC1B\uC740 \uC801\uC774 \uC5C6\uC73C\uBA74 0\uC744 \uC785\uB825\uD558\uACE0, \uBAA8\uB974\uBA74 \uBE44\uC6CC \uB450\uC138\uC694.",
+    showIf: (a) => a.giftDate && a.giftDate.slice(0, 4) === "2026" && ["\uBC30\uC6B0\uC790", "\uC9C1\uACC4\uC874\uC18D", "\uC9C1\uACC4\uBE44\uC18D", "\uAE30\uD0C0\uCE5C\uC871"].includes(a.relationship),
+    numeric: true,
+    money: true,
+    blockOnBlank: true,
+    placeholder: "\uC5C6\uC73C\uBA74 0 \xB7 \uBAA8\uB974\uBA74 \uBE44\uC6C0"
+  },
+  {
+    id: "priorGiftOrdinaryDeduction",
+    section: "\uC0AC\uC804\uC99D\uC5EC \uACF5\uC81C \uD655\uC778",
+    q: "\uC704 \uD569\uC0B0 \uB300\uC0C1 \uC0AC\uC804\uC99D\uC5EC\uC5D0\uC11C \uC2E4\uC81C \uC801\uC6A9\uBC1B\uC740 \uC77C\uBC18 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uD569\uACC4\uB294 \uC5BC\uB9C8\uC778\uAC00\uC694?",
+    sub: "\uAC19\uC740 \uACF5\uC81C\uADF8\uB8F9 \uC804\uCCB4 \uC0AC\uC6A9\uC561 \uC911 \uC704 \uC0AC\uC804\uC99D\uC5EC\uC5D0 \uD574\uB2F9\uD558\uB294 \uAE08\uC561\uB9CC \uC785\uB825\uD558\uC138\uC694. \uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C\uB294 \uC544\uB798\uC5D0\uC11C \uB530\uB85C \uC785\uB825\uD569\uB2C8\uB2E4. \uC5C6\uC73C\uBA74 0, \uBAA8\uB974\uBA74 \uBE44\uC6CC \uB450\uC138\uC694.",
+    showIf: (a) => a.giftDate && a.giftDate.slice(0, 4) === "2026" && a.priorGiftHas === "yes",
+    numeric: true,
+    money: true,
+    blockOnBlank: true,
+    placeholder: "\uC5C6\uC73C\uBA74 0 \xB7 \uBAA8\uB974\uBA74 \uBE44\uC6C0"
+  },
+  {
+    id: "priorGiftMarriageChildDeduction",
+    section: "\uC0AC\uC804\uC99D\uC5EC \uACF5\uC81C \uD655\uC778",
+    q: "\uC704 \uD569\uC0B0 \uB300\uC0C1 \uC0AC\uC804\uC99D\uC5EC\uC5D0\uC11C \uC2E4\uC81C \uC801\uC6A9\uBC1B\uC740 \uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C \uD569\uACC4\uB294 \uC5BC\uB9C8\uC778\uAC00\uC694?",
+    sub: "\uC77C\uBC18 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C\uC640 \uAD6C\uBD84\uD55C \uC2E4\uC81C \uC0AC\uC6A9\uC561\uC785\uB2C8\uB2E4. \uC801\uC6A9\uBC1B\uC9C0 \uC54A\uC558\uC73C\uBA74 0, \uBAA8\uB974\uBA74 \uBE44\uC6CC \uB450\uC138\uC694.",
+    showIf: (a) => a.giftDate && a.giftDate.slice(0, 4) === "2026" && a.priorGiftHas === "yes" && a.relationship === "\uC9C1\uACC4\uC874\uC18D",
+    numeric: true,
+    money: true,
+    blockOnBlank: true,
+    placeholder: "\uC5C6\uC73C\uBA74 0 \xB7 \uBAA8\uB974\uBA74 \uBE44\uC6C0"
+  },
   // ── 부담부증여 (부동산) ──
   {
     id: "isBurdened",
@@ -13524,6 +13557,21 @@ function giftApplyAnswer(a, id, v) {
       delete next.moveInDate;
     }
     if (id === "debtAssumed") delete next.debtObjective;
+    if (["relationship", "giftDate", "priorGiftHas", "priorGiftValue"].includes(id)) {
+      for (const key of [
+        "priorGroupDeductionUsed",
+        "priorGiftOrdinaryDeduction",
+        "priorGiftMarriageChildDeduction",
+        "priorGiftDed",
+        "historicalPriorValues",
+        "historicalPriorTaxes",
+        "historicalPriorDeductions"
+      ]) delete next[key];
+      if (id === "relationship" || id === "giftDate") {
+        delete next.priorGiftHas;
+        delete next.priorGiftValue;
+      }
+    }
     if (id === "reType" || id === "reAddress" || id === "reDong" || id === "reHo") {
       for (const k of ["regulatedAtAcq", "moveInDate", "regulatedArea", "acqDate", "acqPrice", "donorHouseCount", "giftValue", "debtAssumed", "debtObjective"]) delete next[k];
     }
@@ -13547,7 +13595,17 @@ function giftFallbackGaps(answers, calc) {
   }
   const nonResident = answers.isResident !== "yes";
   const burdened = answers.isBurdened === "yes" && answers.assetType === "realestate";
+  const currentHistory = !burdened && answers.giftDate && answers.giftDate.slice(0, 4) === "2026";
+  const groupRequired = currentHistory && ["\uBC30\uC6B0\uC790", "\uC9C1\uACC4\uC874\uC18D", "\uC9C1\uACC4\uBE44\uC18D", "\uAE30\uD0C0\uCE5C\uC871"].includes(answers.relationship);
   const unknown = window.jtFallbackGaps([
+    {
+      when: currentHistory && !["yes", "no"].includes(answers.priorGiftHas),
+      why: "\uCD5C\uADFC 10\uB144\uAC04 \uAC19\uC740 \uC99D\uC5EC\uC790\uC758 \uC0AC\uC804\uC99D\uC5EC \uC5EC\uBD80\uB97C \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uBBF8\uD655\uC778\uC740 \uC5C6\uC74C\uC73C\uB85C \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
+    },
+    {
+      when: groupRequired && (answers.priorGroupDeductionUsed == null || String(answers.priorGroupDeductionUsed).trim() === ""),
+      why: "\uAC19\uC740 \uACF5\uC81C\uADF8\uB8F9\uC758 \uCD5C\uADFC 10\uB144\uAC04 \uC77C\uBC18 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C \uC0AC\uC6A9\uC561\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC5C6\uC73C\uBA74 0\uC744 \uC785\uB825\uD558\uC138\uC694."
+    },
     {
       when: burdened && !isValidISODate(answers.acqDate || ""),
       why: "\uC99D\uC5EC\uD558\uB294 \uBD84\uC758 \uCDE8\uB4DD\uC77C\uC744 \uBAA8\uB974\uBA74 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4 \u2014 \uBCF4\uC720\uAE30\uAC04\uC774 \uCC44\uBB34 \uC778\uC218\uBD84 \uC591\uB3C4\uC138\uC758 \uC138\uC728\xB7\uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\xB71\uC138\uB3001\uC8FC\uD0DD \uBE44\uACFC\uC138\uB97C \uAC00\uB985\uB2C8\uB2E4. \uB4F1\uAE30\uBD80\uB4F1\uBCF8\uC73C\uB85C \uCDE8\uB4DD\uC77C(\uC794\uAE08\uC77C \uB610\uB294 \uB4F1\uAE30\uC811\uC218\uC77C)\uC744 \uD655\uC778\uD574 \uC785\uB825\uD574 \uC8FC\uC138\uC694."
@@ -13573,6 +13631,13 @@ function giftFallbackGaps(answers, calc) {
       why: "\uBC1B\uB294 \uBD84\uC758 \uAC70\uC8FC\uC790 \uC5EC\uBD80\uAC00 \xAB\uAC70\uC8FC\uC790\xBB\uB85C \uD655\uC778\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4 \u2014 \uBE44\uAC70\uC8FC\uC790\uB294 \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C(\uBC30\uC6B0\uC790 6\uC5B5\xB7\uC9C1\uACC4 5\uCC9C\uB9CC \uB4F1)\uAC00 \uBC30\uC81C\uB429\uB2C8\uB2E4. \uACC4\uC0B0 \uC5D4\uC9C4\uC774 \uC544\uC9C1 \uAC70\uC8FC\uC790 \uAE30\uC900\uB9CC \uC9C0\uC6D0\uD574 \uAE08\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\uC0C1\uB2F4\uC5D0\uC11C \uC815\uD655\uD788 \uC548\uB0B4\uD574 \uB4DC\uB9BD\uB2C8\uB2E4)."
     }
   ]);
+  if (!burdened && (currentHistory || answers.priorGiftHas === "yes")) {
+    try {
+      mapAnswersToGift(answers);
+    } catch (e) {
+      unknown.push(e.message);
+    }
+  }
   if (calc.precise) return unknown;
   const engineMsg = window.jtEngineMessageForDisplay(calc.engineMessage);
   return unknown.concat([calc.engineState === "refused" ? engineMsg ? "\uC5D4\uC9C4 \uC548\uB0B4: " + engineMsg : "\uC785\uB825\uD558\uC2E0 \uC870\uAC74\uC740 \uC774 \uACC4\uC0B0\uAE30\uAC00 \uAE08\uC561\uC744 \uD655\uC815\uD560 \uC218 \uC5C6\uB294 \uACBD\uC6B0\uC785\uB2C8\uB2E4 \u2014 \uC138\uBB34\uC0AC \uD655\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4." : "\uACC4\uC0B0 \uC5D4\uC9C4\uC5D0 \uC5F0\uACB0\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4 \u2014 \uC5F0\uACB0\uB418\uC9C0 \uC54A\uC740 \uC0C1\uD0DC\uC5D0\uC11C\uB294 \uAE08\uC561\uC744 \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."]);
@@ -13584,6 +13649,12 @@ function mapAnswersToGift(a) {
     body.tax_year = Number(a.giftDate.slice(0, 4));
   }
   if (a.relationship) body.relationship = a.relationship;
+  const groupGiven = body.tax_year === 2026 && ["\uBC30\uC6B0\uC790", "\uC9C1\uACC4\uC874\uC18D", "\uC9C1\uACC4\uBE44\uC18D", "\uAE30\uD0C0\uCE5C\uC871"].includes(a.relationship) && a.priorGroupDeductionUsed != null && String(a.priorGroupDeductionUsed).trim() !== "";
+  if (groupGiven) {
+    if (!["string", "number"].includes(typeof a.priorGroupDeductionUsed) || !Number.isSafeInteger(Number(a.priorGroupDeductionUsed)) || Number(a.priorGroupDeductionUsed) < 0)
+      throw new Error("\uACF5\uC81C\uADF8\uB8F9 \uC0AC\uC6A9\uC561\uC740 0 \uC774\uC0C1\uC758 \uC6D0 \uB2E8\uC704 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    body.prior_deduction_used = Number(a.priorGroupDeductionUsed);
+  }
   const lineal = a.relationship === "\uC9C1\uACC4\uC874\uC18D";
   const ageAnswered = lineal && a.doneeAge != null && String(a.doneeAge).trim() !== "" && Number.isFinite(Number(a.doneeAge));
   if (ageAnswered) body.donee_age = Number(a.doneeAge);
@@ -13594,9 +13665,28 @@ function mapAnswersToGift(a) {
   }
   body.marriage_deduction = lineal && a.marriageDed === "yes";
   body.childbirth_deduction = lineal && a.childbirthDed === "yes";
-  if (a.priorGiftHas === "yes" && Number(a.priorGiftValue) > 0) {
-    const item = { value: Number(a.priorGiftValue) || 0 };
-    if (giftPriorDedGiven(a)) item.total_deduction_used = Number(a.priorGiftDed) || 0;
+  if (a.priorGiftHas === "yes") {
+    if (!["string", "number"].includes(typeof a.priorGiftValue) || !Number.isSafeInteger(Number(a.priorGiftValue)) || Number(a.priorGiftValue) <= 0)
+      throw new Error("\uC0AC\uC804\uC99D\uC5EC\uAC00 \uC788\uC73C\uBA74 \uC7AC\uC0B0\uAC00\uC561 \uD569\uACC4\uB97C \uC591\uC758 \uC6D0 \uB2E8\uC704 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+    const item = { value: Number(a.priorGiftValue) };
+    if (body.tax_year === 2026) {
+      const fields = [["priorGiftOrdinaryDeduction", "deduction_used"]];
+      if (lineal) fields.push(["priorGiftMarriageChildDeduction", "marriage_child_deduction_used"]);
+      for (const [key, field] of fields) {
+        const raw = a[key];
+        if (!["string", "number"].includes(typeof raw) || String(raw).trim() === "" || !Number.isSafeInteger(Number(raw)) || Number(raw) < 0)
+          throw new Error("\uC0AC\uC804\uC99D\uC5EC\uC758 \uC77C\uBC18\uACF5\uC81C\uC640 \uD63C\uC778\xB7\uCD9C\uC0B0\uACF5\uC81C \uC0AC\uC6A9\uC561\uC744 \uAD6C\uBD84\uD574 \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC5C6\uC73C\uBA74 0\uC744 \uC785\uB825\uD558\uC138\uC694.");
+        item[field] = Number(raw);
+      }
+      if (item.deduction_used + (item.marriage_child_deduction_used || 0) > item.value)
+        throw new Error("\uC0AC\uC804\uC99D\uC5EC \uACF5\uC81C\uC561 \uD569\uACC4\uAC00 \uC7AC\uC0B0\uAC00\uC561\uBCF4\uB2E4 \uD07D\uB2C8\uB2E4.");
+      if (groupGiven && item.deduction_used > body.prior_deduction_used)
+        throw new Error("\uACF5\uC81C\uADF8\uB8F9 \uC804\uCCB4 \uC0AC\uC6A9\uC561\uC740 \uD569\uC0B0 \uB300\uC0C1 \uC0AC\uC804\uC99D\uC5EC\uC758 \uC77C\uBC18\uACF5\uC81C\uC561 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.");
+    } else if (!a.giftDate && giftPriorDedGiven(a)) {
+      if (!["string", "number"].includes(typeof a.priorGiftDed) || !Number.isSafeInteger(Number(a.priorGiftDed)) || Number(a.priorGiftDed) < 0)
+        throw new Error("\uC0AC\uC804\uC99D\uC5EC \uACF5\uC81C\uC561\uC740 0 \uC774\uC0C1\uC758 \uC6D0 \uB2E8\uC704 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+      item.total_deduction_used = Number(a.priorGiftDed);
+    }
     item.is_generation_skip = skipAnswer === "yes";
     if (ageAnswered && Number(a.doneeAge) < 19) item.is_minor = true;
     item.donor_child_deceased = skipAnswer === "yes" && a.childDeceased === "yes";
@@ -13865,7 +13955,7 @@ function JTReportGift({ setRoute, onBack }) {
     }
   }, []);
   const allVisible = GIFT_QS.filter((q) => !q.showIf || q.showIf(answers));
-  const isQuick = (q) => q.tier === "quick" || answers.giftDate && answers.giftDate.slice(0, 4) < "2026" && [
+  const isQuick = (q) => q.tier === "quick" || answers.giftDate && answers.giftDate.slice(0, 4) === "2026" && ["priorGiftHas", "priorGiftValue", "priorGroupDeductionUsed", "priorGiftOrdinaryDeduction", "priorGiftMarriageChildDeduction"].includes(q.id) || answers.giftDate && answers.giftDate.slice(0, 4) < "2026" && [
     "genSkip",
     "childDeceased",
     "marriageDed",
@@ -14068,7 +14158,7 @@ function JTReportGift({ setRoute, onBack }) {
   if (report) {
     const { calc, commentary, isBurdened } = report;
     const nonResident = answers.isResident === "no";
-    const priorDedEstimated = !isBurdened && calc.precise && answers.priorGiftHas === "yes" && Number(answers.priorGiftValue) > 0 && (!answers.giftDate || Number(answers.giftDate.slice(0, 4)) >= 2026) && !giftPriorDedGiven(answers);
+    const priorDedEstimated = !isBurdened && calc.precise && answers.priorGiftHas === "yes" && Number(answers.priorGiftValue) > 0 && !answers.giftDate && !giftPriorDedGiven(answers);
     const giftGaps = giftFallbackGaps(answers, calc);
     const giftBlocked = giftGaps.length > 0;
     if (giftBlocked) {
