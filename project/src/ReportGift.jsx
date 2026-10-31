@@ -322,7 +322,7 @@ const GIFT_QS = [
 ];
 
 /* ── 답변 → 엔진 요청 빌더 ───────────────────────────────────────── */
-function giftAmount(a) { return Number(a.giftValue || a.giftValueCash) || 0; }
+function giftAmount(a) { return Number(a.assetType === 'cash' ? a.giftValueCash : a.giftValue) || 0; }
 
 /* 사전증여 공제액 입력란을 «채웠는가» — 비우면 total_deduction_used 키를 보내지 않는다.
    비운 경우 엔진이 「한도 안에서 최초 증여부터 순차로 공제한 것」으로 보고 계산하며 경고를 붙인다
@@ -684,6 +684,7 @@ async function lookupValuation(address, taxType, evalDate, unit) {
 function buildGiftDetail(answers, calc, commentary) {
   const L = ['■ 고객 입력 정보'];
   GIFT_QS.forEach(q => {
+    if (q.showIf && !q.showIf(answers)) return;
     const v = answers[q.id];
     if (v === undefined || v === null || v === '') return;
     let val = v;
@@ -723,6 +724,7 @@ function buildGiftDetail(answers, calc, commentary) {
 function buildGiftKakao(answers, calc) {
   const L = ['[JT택스랩 증여세 계산 — 상담 요청]', '', '▶ 입력'];
   GIFT_QS.forEach(q => {
+    if (q.showIf && !q.showIf(answers)) return;
     if (q.id === 'context') return;
     const v = answers[q.id];
     if (v === undefined || v === null || v === '') return;

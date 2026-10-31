@@ -51,15 +51,15 @@ const dispSrc = commonSrc.match(/window\.jtEngineMessageForDisplay = function[\s
 /* isValidISODate 는 ReportCGT.jsx 의 공통 헬퍼다(전역 공유) — 같은 본문을 꺼내 쓴다 */
 const isoSrc = fs.readFileSync(path.join(__dirname, 'src', 'ReportCGT.jsx'), 'utf8').match(/function isValidISODate\(v\) \{[\s\S]*?\n\}\r?\n/)[0];
 
-const DECLS = ['giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'mapAnswersToBurdenedGift', 'giftApplyAnswer', 'giftTodayISO', 'giftBurdenedHouse', 'giftAsksZoneAtAcq', 'callGiftEngine',
+const DECLS = ['GIFT_QS', 'buildGiftDetail', 'buildGiftKakao', 'giftAmount', 'giftPriorDedGiven', 'mapAnswersToGift', 'mapAnswersToBurdenedGift', 'giftApplyAnswer', 'giftTodayISO', 'giftBurdenedHouse', 'giftAsksZoneAtAcq', 'callGiftEngine',
   'GIFT_ENGINE_REQUIRED', 'GIFT_BURDENED_REQUIRED', 'giftEngineVerdict', 'giftBurdenedStatus', 'giftCalcFromEngine', 'giftCalcFromEngineError', 'giftFallbackGaps'];
 const declSrc = loadDecls(code, DECLS);
-const EXPORTS = '\nglobalThis.__e = { mapAnswersToGift, mapAnswersToBurdenedGift, giftAsksZoneAtAcq, giftApplyAnswer, giftTodayISO, giftBurdenedStatus, giftEngineVerdict, giftCalcFromEngine, giftCalcFromEngineError, giftFallbackGaps, callGiftEngine };';
+const EXPORTS = '\nglobalThis.__e = { buildGiftDetail, buildGiftKakao, mapAnswersToGift, mapAnswersToBurdenedGift, giftAsksZoneAtAcq, giftApplyAnswer, giftTodayISO, giftBurdenedStatus, giftEngineVerdict, giftCalcFromEngine, giftCalcFromEngineError, giftFallbackGaps, callGiftEngine };';
 
 function makeEnv(fetchImpl, timers) {
   const e = vm.createContext({
     window: { JT_ENGINE_BASE: 'https://engine.test' }, Date, Number, Object, Math, JSON, Promise, Error, TypeError, String, Array, AbortController,
-    fetch: fetchImpl,
+    fetch: fetchImpl, formatWon: n => String(n) + '원',
     /* 재시도 사이의 대기(≤8초)는 즉시 흘려보내고, 한 시도의 시간 제한(25초) 타이머만 모아 둔다 */
     setTimeout: (fn, ms) => { if (ms <= 8000) { fn(); return 0; } if (timers) timers.push({ fn, ms }); return 1; },
     clearTimeout: () => {},
@@ -90,6 +90,24 @@ eq(body({ assetType: 'realestate', giftValue: '800000000', relationship: '배우
   ok(!('relationship' in b), '관계 답이 없으면 키를 생략한다(기본값 «직계존속» 을 넣지 않는다)');
   ok(!('donee_age' in b) && !('is_minor' in b) && !('is_generation_skip' in b) && !('donor_child_deceased' in b) && !('gift_history' in b),
     '답이 없는 사실은 하나도 보내지 않는다');
+}
+
+// Editing asset kind must never reuse the hidden kind's amount or share its answers.
+{
+  const property = { ...BASE, assetType: 'realestate', giftValue: '800000000', reType: '공동주택', reAddress: '숨겨진 이전 주소', priorGiftHas: 'no', priorGiftValue: '777000000' };
+  const cash = plain(F.giftApplyAnswer(F.giftApplyAnswer(property, 'assetType', 'cash'), 'giftValueCash', '100000000'));
+  eq(body(cash).value, 100000000, '부동산→현금 수정은 현금 1억원만 요청');
+  eq(body({...cash, giftValueCash: ''}).value, 0, '현금 빈칸을 숨겨진 부동산 금액으로 채우지 않음');
+  eq(body({...cash, giftValueCash: '0'}).value, 0, '현금 명시 0도 부동산 금액으로 대체하지 않음');
+  const back = plain(F.giftApplyAnswer(cash, 'assetType', 'realestate'));
+  eq(body(back).value, 800000000, '현금→부동산 전환은 보존한 부동산 금액 사용');
+  eq(body({...back, giftValue: ''}).value, 0, '부동산 빈칸을 숨겨진 현금 금액으로 채우지 않음');
+  eq(F.mapAnswersToBurdenedGift({...back, isBurdened:'yes'}).property_value, 800000000, '부담부 경로도 선택한 부동산 금액 사용');
+  const calc = {giftValue:100000000,totalTax:4850000,taxBase:50000000,calcTax:5000000,filingCredit:150000};
+  for(const [label,summary] of [['email',F.buildGiftDetail(cash,calc,{})],['kakao',F.buildGiftKakao(cash,calc)]]) {
+    ok(summary.includes('100000000원'), label+' 활성 금액 표시');
+    ok(!summary.includes('800000000원')&&!summary.includes('숨겨진 이전 주소')&&!summary.includes('777000000원'), label+' 숨겨진 재산·이력 답변 제외');
+  }
 }
 
 // ───────────────────────── 나이 ─────────────────────────
