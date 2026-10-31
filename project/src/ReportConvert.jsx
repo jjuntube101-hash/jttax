@@ -541,7 +541,7 @@ window.JTConvertPdfGate = JTConvertPdfGate;
 
 function JTCalculationEvidence({engineVersion}) {
   if(!engineVersion)return null;
-  return (<section className="jt-report-result__section" aria-label="적용 계산 버전"><h3>적용 계산과 확인 범위</h3><p>입력 사실과 지원 범위에 따른 계산입니다. 실제 사건의 적격 요건과 신고 내용을 확인하세요.</p><dl><dt>계산 규칙</dt><dd>{engineVersion.calculation_revision || '버전 미확인'}</dd><dt>실행 빌드</dt><dd>{engineVersion.build_id || '빌드 미확인'}</dd><dt>세율 자료</dt><dd>{engineVersion.tax_rates_version} · {engineVersion.tax_rates_effective_date}</dd></dl></section>);
+  return (<section className="jt-report-result__section" aria-label="적용 계산 버전"><h3>적용 계산과 확인 범위</h3><p>입력 사실과 지원 범위에 따른 계산입니다. 실제 사건의 적격 요건과 신고 내용을 확인하세요.</p><dl style={{overflowWrap:'anywhere',wordBreak:'break-word'}}><dt>계산 규칙</dt><dd>{engineVersion.calculation_revision || '버전 미확인'}</dd><dt>실행 빌드</dt><dd>{engineVersion.build_id || '빌드 미확인'}</dd><dt>세율 자료</dt><dd>{engineVersion.tax_rates_version} · {engineVersion.tax_rates_effective_date}</dd></dl></section>);
 }
 window.JTCalculationEvidence=JTCalculationEvidence;
 
