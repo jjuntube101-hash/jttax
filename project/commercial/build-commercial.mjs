@@ -536,7 +536,7 @@ function renderAboutPage() {
     '@type': 'AccountingService',
     name: FIRM,
     image: ogImageHref(),
-    alternateName: 'JT TAX CORP.',
+    alternateName: ['JT TAX CORP.', '제이티세무회계', '제이티 세무회계'],   // 옛 상호 (261031 결재 1-7)
     url: SITE,
     telephone: '+82-2-554-6405',
     email: 'jttax@jttax.co.kr',

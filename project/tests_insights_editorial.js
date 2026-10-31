@@ -27,6 +27,18 @@ for (const f of files) {
   assert.equal(items[2].name, json.find(x=>x['@type']==='Article').headline, f + ': breadcrumb name = headline');
   // 261031 SEO 1-4: internal evidence-table codes must not reach readers.
   assert.ok(!/근거표|GT-\d/.test(html.replace(/<!--[\s\S]*?-->/g, '')), f + ': internal evidence-table code visible');
+  // 261031 owner decision 0-5 (SEO 1-2): reviewer 이현준 세무사 on the byline and as a Person author linked to the expert page.
+  const authors = [].concat(json.find(x=>x['@type']==='Article').author);
+  const person = authors.filter(x=>x['@type']==='Person');
+  assert.equal(person.length, 1, f + ': one Person author');
+  assert.deepEqual([person[0].name, person[0].url], ['이현준 세무사', 'https://www.jttax.co.kr/experts/lee-hyunjun.html'], f + ': reviewer Person');
+  assert.ok(authors.some(x=>x['@type']==='Organization' && x.name==='제이티 세무법인'), f + ': firm stays an author');
+  assert.ok(/<div class="jt-ed-byline">[\s\S]*?<span>검토 <a href="\/experts\/lee-hyunjun\.html">이현준 세무사<\/a><\/span>/.test(html), f + ': reviewer on byline');
+}
+{
+  // The reviewer's expert page must exist and name the same Person.
+  const ex = fs.readFileSync(path.join(root,'experts','lee-hyunjun.html'),'utf8');
+  assert.ok(/"@type":"Person","name":"이현준 세무사"/.test(ex), 'expert page Person name matches reviewer');
 }
 for (const slug of ['vat-basics','vat-final-filing-2026']) {
   const html = fs.readFileSync(path.join(root,'insights',slug+'.html'),'utf8');

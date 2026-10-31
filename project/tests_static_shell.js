@@ -473,6 +473,22 @@ const ROOT = path.join(__dirname, '..');
         bad.push('index.html — 부팅 폴백이 JT_DATA 를 참조합니다. 스크립트 없이 렌더돼야 합니다');
       }
       checkBlankLinks(rootBlock, '부팅 폴백');
+      /* 홈 FAQ 스키마 = 화면 FAQ (261031 SEO 1-5): 구조화 데이터의 문답은 화면에 보이는 문답과 같아야 한다.
+         정본 = Data.jsx 의 faq, 화면 = Home.jsx 가 faq 전체를 그린다(일부만 자르면 스키마와 어긋난다). */
+      {
+        const dataSrc = fs.readFileSync(path.join(__dirname, 'src', 'Data.jsx'), 'utf8');
+        const fs0 = dataSrc.indexOf('  faq: [');
+        const faqBlock = fs0 >= 0 ? dataSrc.slice(fs0, dataSrc.indexOf('\n  ],', fs0)) : '';
+        const unq = (s) => s.replace(/\\'/g, "'").replace(/\\\\/g, '\\');
+        const faq = [...faqBlock.matchAll(/\{ q: '((?:[^'\\]|\\.)*)', a: '((?:[^'\\]|\\.)*)' \}/g)].map((m) => ({ q: unq(m[1]), a: unq(m[2]) }));
+        const ld = [...idx.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => { try { return JSON.parse(m[1]); } catch (e) { return null; } });
+        const faqLd = ld.find((x) => x && x['@type'] === 'FAQPage');
+        const ldPairs = faqLd ? faqLd.mainEntity.map((x) => ({ q: x.name, a: x.acceptedAnswer && x.acceptedAnswer.text })) : [];
+        if (!faq.length) bad.push('Data.jsx — faq 목록을 읽지 못했습니다 (구조 변경?)');
+        else if (JSON.stringify(ldPairs) !== JSON.stringify(faq)) bad.push(`index.html — FAQPage 스키마(${ldPairs.length}문항)가 화면 FAQ(Data.jsx ${faq.length}문항)와 다릅니다`);
+        const homeSrc = fs.readFileSync(path.join(__dirname, 'src', 'Home.jsx'), 'utf8');
+        if (!/className="rn-faq">\{D\.faq\.map\(/.test(homeSrc)) bad.push('Home.jsx — 홈 FAQ 가 faq 전체를 그리지 않습니다(스키마 문항과 화면 문항이 어긋남)');
+      }
       /* 정적 본문(261031 SEO 1-1): 자바스크립트를 돌리지 않는 수집기가 읽는 유일한 본문이다.
          ① 분량 ② 업무 문단 = SERVICES 정본 그대로 ③ 글 링크 = 실제 글·제목 그대로. */
       const unesc = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');

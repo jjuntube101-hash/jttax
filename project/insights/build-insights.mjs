@@ -242,6 +242,10 @@ const SERVICE_BY_SLUG = new Map(SERVICES.map((s) => [s.slug, s]));
 const SERVICE_BY_INSIGHT = new Map(); // 글 slug → 그 글을 relatedInsights 에 둔 업무 slug 목록
 for (const s of SERVICES) for (const r of s.relatedInsights || []) SERVICE_BY_INSIGHT.set(r.slug, [...(SERVICE_BY_INSIGHT.get(r.slug) || []), s.slug]);
 /* tag 가 «INSIGHT · CONSULT» 뿐이라 주제를 알 수 없는 증여·양도·보유세 글(Codex R1-F1). */
+/* 검토 세무사 (261031 대표 결재 0-5: 이현준 세무사(광고책임세무사) 한 명이 검토자로 표시).
+   화면 바이라인 «검토 ○○○»과 Article.author 의 Person 에 함께 쓴다. 이름은 /experts/ 면의 Person 이름과 같게. */
+const REVIEWER = { name: '이현준 세무사', href: '/experts/lee-hyunjun.html' };
+
 const SERVICE_BY_ARTICLE = new Map([
   ['gift-tax-saving', 'asset-transfer'],
   ['burdened-gift', 'asset-transfer'],
@@ -336,7 +340,7 @@ ${GA_HEAD_SNIPPET}
     "image": ${JSON.stringify(imageUrl)},
     "datePublished": ${JSON.stringify(a.dateISO)},
     "dateModified": ${JSON.stringify(a.updatedISO)},
-    "author": { "@type": "Organization", "name": ${JSON.stringify(a.author)}, "url": "${SITE}/about/" },
+    "author": [{ "@type": "Organization", "name": ${JSON.stringify(a.author)}, "url": "${SITE}/about/" }, { "@type": "Person", "name": ${JSON.stringify(REVIEWER.name)}, "jobTitle": "세무사", "url": "${SITE}${REVIEWER.href}" }],
     "publisher": { "@type": "Organization", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
     "description": ${JSON.stringify(a.excerpt)},
     "mainEntityOfPage": ${JSON.stringify(shareUrl)}
@@ -369,7 +373,7 @@ ${GA_HEAD_SNIPPET}
     <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">세금 가이드</a> / ${esc(a.tag)}</nav>
     <h1>${esc(a.title)}</h1>
     <p class="jt-ed-deck">${esc(a.excerpt)}</p>
-    <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a><span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
+    <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a><span>검토 <a href="${REVIEWER.href}">${esc(REVIEWER.name)}</a></span><span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
 ${hero(a)}
 ${reading.toc}
 ${youthBlock ? '    ' + youthBlock + '\n' : ''}    ${reading.html}
