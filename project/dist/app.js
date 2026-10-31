@@ -23,7 +23,8 @@ window.JT_DATA = {
     kakaoChatUrl: "https://pf.kakao.com/_CcxlJG",
     kakaoFriendUrl: "https://pf.kakao.com/_CcxlJG",
     kakaoMapUrl: "https://place.map.kakao.com/1776119720",
-    naverMapUrl: "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C78%EA%B8%B8%2022",
+    naverMapUrl: "https://map.naver.com/p/entry/place/1319293073",
+    // 네이버 플레이스 «제이티 세무법인» (261031 확인)
     googleMapUrl: "https://www.google.com/maps/search/?api=1&query=%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C78%EA%B8%B8%2022%205%EC%B8%B5",
     businessNumber: "",
     // 사업자등록번호 — 종전 개인 사업자번호 사용 중단(260804 법인 설립). 법인 번호 미발급, 발급 후 기재 (260830 사용자 확인: 아직 미발급)

@@ -828,6 +828,36 @@ const ROOT = path.join(__dirname, '..');
     if (canon !== `https://www.jttax.co.kr/${page}`) bad.push(`${rel} — canonical 이 이 페이지 주소가 아닙니다: "${canon.slice(0, 80)}"`);
   }
 
+  /* ── 지도 (261031 SEO 1-6) ──────────────────────────────────────
+     회사 스키마의 hasMap 과 화면 지도 링크가 정본(commercial.data CONSULT.location)과 같은지 본다.
+     네이버 링크가 주소 검색으로 돌아가면 플레이스(상호·리뷰)가 아니라 검색 목록이 열린다. */
+  {
+    const dataSrc = fs.readFileSync(path.join(ROOT, 'project/commercial/commercial.data.mjs'), 'utf8');
+    const kakaoMap = (dataSrc.match(/kakaoMapUrl:\s*'([^']+)'/) || [])[1] || '';
+    const naverMap = (dataSrc.match(/naverMapUrl:\s*'([^']+)'/) || [])[1] || '';
+    if (!/^https:\/\/place\.map\.kakao\.com\/\d+$/.test(kakaoMap)) bad.push(`commercial.data kakaoMapUrl 이 카카오맵 장소 주소가 아닙니다: "${kakaoMap}"`);
+    if (!/^https:\/\/map\.naver\.com\/p\/entry\/place\/\d+$/.test(naverMap)) bad.push(`commercial.data naverMapUrl 이 네이버 플레이스 주소가 아닙니다: "${naverMap}"`);
+    const appData = fs.readFileSync(path.join(ROOT, 'project/src/Data.jsx'), 'utf8');
+    for (const [k, v] of [['kakaoMapUrl', kakaoMap], ['naverMapUrl', naverMap]]) {
+      if (!appData.includes(`${k}: '${v}'`)) bad.push(`Data.jsx ${k} 가 commercial.data 와 다릅니다`);
+    }
+    const ldHasMap = (html) => {
+      const out = [];
+      for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+        try { const j = JSON.parse(m[1]); if (j['@type'] === 'AccountingService') out.push(j.hasMap); } catch { /* JSON 오류는 다른 검사가 잡는다 */ }
+      }
+      return out;
+    };
+    for (const rel of ['index.html', 'about/index.html', 'consult.html']) {
+      const h = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+      const maps = ldHasMap(h);
+      if (maps.length !== 1) { bad.push(`${rel} — AccountingService 스키마가 ${maps.length}개입니다 (1개여야 함)`); continue; }
+      if (JSON.stringify(maps[0]) !== JSON.stringify([kakaoMap, naverMap])) bad.push(`${rel} — hasMap 이 정본 지도 주소 [카카오맵, 네이버 플레이스]와 다릅니다`);
+    }
+    const consult = fs.readFileSync(path.join(ROOT, 'consult.html'), 'utf8');
+    if (!consult.includes(`href="${kakaoMap}"`) || !consult.includes(`href="${naverMap}"`)) bad.push('consult.html — 오시는 길에 카카오맵·네이버 플레이스 링크가 없습니다');
+  }
+
   /* ── 결과 ───────────────────────────────────────────────────────── */
   const total = generatedOnly.length + handwritten.length;
   console.log(`대상: 생성 ${generatedOnly.length}장 + 수기 ${handwritten.length}장 (custom ${customSlugs.length} + desk ${desk.length}) · 원고 ${postSlugs.length}건`);
