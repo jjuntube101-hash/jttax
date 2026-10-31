@@ -207,7 +207,7 @@ window.jtFallbackGaps = function (checks) {
      reason='down'    — 폴백이 없는 계산기(취득세)의 엔진 미응답. 금액을 내지 않고 재시도를 안내한다
      reason='refused' — 엔진이 계산을 거부했다(금액 확정 불가). 재시도가 의미 없으므로 버튼이 없다
    ⚠️ 'input'·'engine' 의 문구·동작은 다른 계산기가 그대로 쓴다 — 바꾸지 않는다. */
-function JTFallbackBlocked({ gaps, onRetry, reason }) {
+function JTFallbackBlocked({ gaps, onRetry, reason, inputEditLabel = '← 이전' }) {
   var byInput = reason === 'input';
   var isDown = reason === 'down';
   var isRefused = reason === 'refused';
@@ -244,7 +244,7 @@ function JTFallbackBlocked({ gaps, onRetry, reason }) {
           : isRefused
           ? <React.Fragment>입력을 다시 확인하시거나 상담으로 문의해 주세요.</React.Fragment>
           : byInput
-          ? <React.Fragment><strong>← 이전</strong>으로 돌아가 위 항목을 채워 주세요. 확인이 어려우면 상담으로 정확히 안내해 드립니다.</React.Fragment>
+          ? <React.Fragment><strong>{inputEditLabel}</strong>으로 돌아가 위 항목을 채워 주세요. 확인이 어려우면 상담으로 정확히 안내해 드립니다.</React.Fragment>
           : <React.Fragment>잠시 후 <strong>정밀 계산 다시 시도</strong>를 눌러 주세요. 계속 안 되면 상담으로 정확히 확인해 드립니다.</React.Fragment>}
       </p>
       {!byInput && !isRefused && onRetry && <button className="jt-btn jt-btn--primary" onClick={onRetry}>{retryLabel}</button>}

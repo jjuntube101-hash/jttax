@@ -17,28 +17,28 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
     <div className={`jt-convert-banner ${urgent ? 'jt-convert-banner--urgent' : ''}`} style={{
       background: urgent ? '#1a0e0e' : '#0B0B0F',
       color: '#fff',
-      padding: '36px 40px',
+      padding: 'clamp(20px, 5vw, 36px) clamp(16px, 5vw, 40px)',
       margin: '48px 0',
       borderLeft: urgent ? '4px solid #d14e3a' : '4px solid #C7A15B',
     }}>
       <div style={{display: 'flex', gap: 32, alignItems: 'center', flexWrap: 'wrap'}}>
-        <div style={{flex: 1, minWidth: 280}}>
+        <div style={{flex: '1 1 280px', minWidth: 0}}>
           <div style={{fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.7}}>
             {urgent ? 'URGENT · 즉시 검토 권장' : 'NEXT STEP · 담당 세무사 검토'}
           </div>
-          <h3 style={{fontSize: 24, letterSpacing: '-0.015em', marginTop: 10, marginBottom: 10}}>
+          <h3 style={{fontSize: 24, color: 'inherit', letterSpacing: '-0.015em', marginTop: 10, marginBottom: 10}}>
             {urgent
               ? '이 사안, 시간이 중요합니다.'
               : '이 추정치는 시작점입니다.'}
           </h3>
-          <p style={{fontSize: 15, opacity: 0.85, lineHeight: 1.65, margin: 0}}>
+          <p style={{fontSize: 15, color: 'inherit', opacity: 0.85, lineHeight: 1.65, margin: 0}}>
             {urgent
               ? '신고·결정 기한이 임박했거나 추가 증빙이 필요한 사안일 수 있습니다. 문의를 접수하시면 영업일 기준 24시간 이내에 연락드려 검토 범위·보수·일정을 안내하고, 합의한 범위에서 검토합니다.'
               : '귀하의 사안은 이 계산보다 복잡할 수 있습니다. 담당 세무사가 검토 범위와 보수를 견적으로 안내해 드립니다.'}
           </p>
         </div>
-        <div style={{display: 'flex', gap: 10, flexWrap: 'wrap'}}>
-          <button className="jt-btn jt-btn--onDark" onClick={() => {
+        <div style={{display: 'flex', gap: 10, flexWrap: 'wrap', minWidth: 0, maxWidth: '100%'}}>
+          <button className="jt-btn jt-btn--onDark" style={{maxWidth: '100%', whiteSpace: 'normal'}} onClick={() => {
             /* ⚠️ raw gtag 는 광고차단기 환경에서 throw 해 아래 setRoute 까지 막는다 —
                「예약 버튼을 눌러도 아무 일도 안 나는」 상태 (260808 Codex R2 P2). */
             window.jtEvent('report_cta_banner_booking', { urgent });
@@ -47,7 +47,7 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
           }}>
             검토 범위·견적 요청 →
           </button>
-          <a className="jt-btn jt-btn--ghostOnDark" href={window.jtKakaoUrl()} target="_blank" rel="noopener"
+          <a className="jt-btn jt-btn--ghostOnDark" style={{maxWidth: '100%', whiteSpace: 'normal'}} href={window.jtKakaoUrl()} target="_blank" rel="noopener"
             onClick={() => {
               window.jtEvent('report_cta_banner_kakao', { urgent });
               window.jtTrackCta('kakao', 'report_banner', { urgent });
@@ -494,8 +494,8 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
   return (
     <div style={{background: '#0B0B0F', color: '#fff', padding: '28px 32px', marginTop: 24}}>
       <div style={{fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '0.18em', opacity: 0.6}}>PDF SAVE</div>
-      <h4 style={{fontSize: 18, marginTop: 8, marginBottom: 6}}>이 리포트를 PDF로 저장</h4>
-      <p style={{fontSize: 13, opacity: 0.7, marginTop: 0, marginBottom: 16, lineHeight: 1.6}}>
+      <h4 style={{fontSize: 18, color: 'inherit', marginTop: 8, marginBottom: 6}}>이 리포트를 PDF로 저장</h4>
+      <p style={{fontSize: 13, color: 'inherit', opacity: 0.7, marginTop: 0, marginBottom: 16, lineHeight: 1.6}}>
         {/* ⚠️ 「30일 내 최대 1회」는 이를 강제하는 코드가 없어 지킬 수 없는 약속이었다.
             지킬 수 있는 것만 적는다 (260806 Codex R4 P2). */}
         <b>PDF 저장은 이메일·동의 없이도 하실 수 있습니다.</b> 이메일을 남기고 아래에 동의하시면, 담당 세무사에게도 함께 전달되어 회신을 받으실 수 있습니다. 스팸 발송은 하지 않습니다.
@@ -513,7 +513,7 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
         <>
           <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10}}>
             <input type="email" placeholder="이메일 주소" value={email} onChange={e => setEmail(e.target.value)}
-              style={{flex: 1, minWidth: 240, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: 14}}/>
+              style={{flex: '1 1 240px', minWidth: 0, maxWidth: '100%', padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: 14}}/>
             <button className="jt-btn jt-btn--onDark" disabled={!canPrint} onClick={send}
               style={{opacity: canPrint ? 1 : 0.4, cursor: canPrint ? 'pointer' : 'not-allowed'}}>
               {sending ? '준비 중…' : 'PDF 저장 →'}

@@ -542,8 +542,8 @@ console.log('\n════ JTFallbackBlocked — reason 별 렌더 결과 ═�
     find(n.children, pred, out);
     return out;
   };
-  const view = (reason, withRetry = true) => {
-    const tree = Blocked({ gaps: ['사유A', '사유B'], onRetry: withRetry ? () => {} : undefined, reason });
+  const view = (reason, withRetry = true, inputEditLabel) => {
+    const tree = Blocked({ gaps: ['사유A', '사유B'], onRetry: withRetry ? () => {} : undefined, reason, inputEditLabel });
     return {
       text: textOf(tree),
       title: textOf(find(tree, (n) => n.type === 'strong' && n.props.style && n.props.style.display === 'block')[0]),
@@ -565,6 +565,11 @@ console.log('\n════ JTFallbackBlocked — reason 별 렌더 결과 ═�
   eq("reason='refused' · 하단 안내", refused.text.includes('입력을 다시 확인하시거나 상담으로 문의해 주세요.'), true);
   eq("reason='refused' · 재시도 버튼이 없다 (onRetry 를 줘도)", refused.buttons.length, 0);
   eq("reason='refused' · 사유 목록을 그대로 보인다", refused.items.join('|'), '사유A|사유B');
+
+  const giftInput = view('input', true, '입력 수정·재계산');
+  eq('증여 차단 안내는 실제 입력 수정 버튼명을 사용한다', giftInput.text.includes('입력 수정·재계산으로 돌아가'), true);
+  eq('증여 차단 안내는 없는 이전 버튼을 가리키지 않는다', giftInput.text.includes('← 이전'), false);
+  eq('증여 차단 화면에서 맞춤 수정 안내를 전달한다', /reason=\{giftBlockReason\} inputEditLabel="입력 수정·재계산"/.test(fs.readFileSync(SRC('ReportGift.jsx'), 'utf8')), true);
 
   /* 종전 두 reason 은 문구·동작 불변 (다른 계산기가 쓴다) */
   eq("reason='input' · 제목 불변", input.title, '아래를 확인해 주시면 금액을 계산해 드릴게요');

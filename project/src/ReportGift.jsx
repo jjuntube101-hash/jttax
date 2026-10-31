@@ -1001,7 +1001,7 @@ function JTReportGift({ setRoute, onBack }) {
           <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setQuickReport(null); setPhase('quick'); setStep(0); }}>입력 수정·재계산</button>
             {/* 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다.
                 단 부담부증여 엔진 실패(engineErr)의 사유 문구는 그대로 보인다(종전 동작) */}
-            <JTFallbackBlocked gaps={(giftBlockReason === 'input' || calc.engineErr || calc.engineMessage) ? giftGaps : []} onRetry={runAnalysis} reason={giftBlockReason} />
+            <JTFallbackBlocked gaps={(giftBlockReason === 'input' || calc.engineErr || calc.engineMessage) ? giftGaps : []} onRetry={runAnalysis} reason={giftBlockReason} inputEditLabel="입력 수정·재계산" />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
             </div>
@@ -1024,13 +1024,13 @@ function JTReportGift({ setRoute, onBack }) {
           <div className="jt-report-result__grade jt-grade-mid">
             {/* engineErr 는 이제 giftBlocked 로 조기 반환된다 — 여기까지 오지 않는다 */}
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 세부담' : '총 세부담 · 정밀 계산 (JT택스랩 엔진)'}</div>
-            <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
+            <div className="jt-report-result__grade-val" style={{fontSize: 'clamp(24px, 7vw, 56px)', overflowWrap: 'anywhere'}}>{formatWon(calc.totalTax)}</div>
             {/* 엔진이 알리는 가정·경고(예: 세대생략 여부 미확인 → [확인 필요]) — 양도세 화면과 같은 표시 방식.
                 일반증여 결과에만 보인다(부담부증여 화면은 종전 그대로) */}
             {!isBurdened && Array.isArray(calc.engineWarnings) && calc.engineWarnings
               .filter(w => typeof w === 'string' && w)
               .map((w, i) => (
-                <p key={`ew${i}`} style={{marginTop: 12, fontWeight: 500, color: 'var(--color-text-warning, #854F0B)'}}>⚠️ {w}</p>
+                <p key={`ew${i}`} style={{marginTop: 12, fontWeight: 500}}>⚠️ {w}</p>
               ))}
           </div>
           )}
