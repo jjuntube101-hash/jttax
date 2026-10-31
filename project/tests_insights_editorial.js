@@ -14,6 +14,19 @@ for (const f of files) {
   assert.ok(html.includes('class="jt-editorial"'), f + ': shared layout');
   const json = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]));
   assert.ok(json.some(x=>x['@type']==='Article'), f + ': Article schema');
+  // 261101: Article dates carry KST 09:00 (+09:00) so KST and UTC give the same calendar date; OG times match; byline date = date part (Codex R1-F2).
+  {
+    const a0 = json.find(x=>x['@type']==='Article');
+    const pub = (html.match(/<meta property="article:published_time" content="([^"]+)"/)||[])[1];
+    const mod = (html.match(/<meta property="article:modified_time" content="([^"]+)"/)||[])[1];
+    for (const [k, v] of [['datePublished', a0.datePublished], ['dateModified', a0.dateModified]]) {
+      assert.match(v, /^\d{4}-\d{2}-\d{2}T09:00:00\+09:00$/, f + ': ' + k + ' with KST time zone');
+      assert.equal(new Date(v).toISOString().slice(0, 10), v.slice(0, 10), f + ': ' + k + ' same date in UTC');
+    }
+    assert.deepEqual([pub, mod], [a0.datePublished, a0.dateModified], f + ': OG article times = JSON-LD dates');
+    const shown = (html.match(/<span>발행 <time datetime="([^"]+)"/)||[])[1];
+    assert.equal(shown, a0.datePublished.slice(0, 10), f + ': byline date = datePublished date');
+  }
   // 261031 SEO 1-3: Home > Tax guide > this article, last item = canonical URL, name = Article headline.
   const crumbs = json.filter(x=>x['@type']==='BreadcrumbList');
   assert.equal(crumbs.length, 1, f + ': one BreadcrumbList');

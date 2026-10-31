@@ -248,11 +248,12 @@ for (const s of SERVICES) for (const r of s.relatedInsights || []) SERVICE_BY_IN
 const REVIEWER = { name: '이현준', slug: 'lee-hyunjun', href: '/experts/lee-hyunjun.html' };
 
 /* 기계용 날짜 (261101 SEO 2-4 후속): 리치 결과 테스트가 날짜만 적힌 datePublished·dateModified 에
-   «시간대 누락» 경고를 낸다. 원고는 날짜만 있으므로 그날 0시 한국 시간으로 적는다.
+   «시간대 누락» 경고를 낸다. 원고는 날짜만 있으므로 그날 09:00 한국 시간으로 적는다 —
+   0시로 적으면 UTC 로 바꿀 때 전날이 되므로(Codex R1-F1), 한국·UTC 어느 쪽으로 읽어도 같은 날이 되는 09:00(= 00:00Z)을 쓴다.
    화면의 <time datetime> 은 날짜만 그대로 둔다(유효한 HTML 날짜). */
 const kstDateTime = (d) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) throw new Error(`[date] 형식은 YYYY-MM-DD — "${d}"`);
-  return `${d}T00:00:00+09:00`;
+  return `${d}T09:00:00+09:00`;
 };
 
 const SERVICE_BY_ARTICLE = new Map([
