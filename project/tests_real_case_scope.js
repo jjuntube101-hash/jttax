@@ -1,0 +1,14 @@
+const fs=require('fs'),assert=require('assert/strict');
+const root=__dirname+'/dev/',d=JSON.parse(fs.readFileSync(root+'real-case-scope.json','utf8')),map=JSON.parse(fs.readFileSync(root+'release-readiness.json','utf8'));
+assert.equal(d.case_count,15);assert.equal(d.cases.length,15);assert.equal(new Set(d.cases.map(c=>c.id)).size,15);
+for(const tax of ['양도','증여','상속'])assert.equal(d.cases.filter(c=>c.tax===tax).length,5);
+assert(d.cases.every(c=>c.http_dev_mcp_equal===true&&c.full_case_tax_accuracy_pass===false));
+assert.equal(d.full_case_tax_accuracy_pass,0);assert.equal(d.conditional_numeric_envelopes,6);assert.equal(d.numeric_component_only,1);assert.equal(d.blocked_envelopes,9);
+assert.equal(d.education_interpretation,'HOLD_NO_NEW_RESEARCH_NO_FORMULA_ADOPTION');assert.equal(d.golden_refrozen,false);assert.equal(d.private_evidence_published,false);
+for(const c of d.cases)for(const key of ['input','args','reported','source','path','name','tax_base','total_tax','national_assessed'])assert.equal(c[key],undefined);
+assert.equal(map.unique_cases,181);assert.deepEqual(map.grade_counts,{general:8,hold:92,conditional:81});
+assert.equal(map.real_case15_validation.candidate_id,map.release_candidate.id);assert.deepEqual(map.release_candidate.contract.version,d.current_development_version);
+assert(map.release_candidate_history.some(c=>c.id===map.support11_validation.candidate_id));assert.notEqual(map.support11_validation.candidate_id,map.release_candidate.id);
+assert.equal(map.real_case15_validation.historical_ui9_reexecuted_on_new_candidate,false);
+const h=fs.readFileSync(root+'real-case-scope.html','utf8');assert(h.includes('전체 사건 세액 정확성 확정 0/15'));assert(h.includes('id="tax"'));assert(h.includes('id="rows"'));assert(!/\d{6}-\d{7}/.test(h));
+console.log('Real-case scope15, privacy, historical evidence and candidate identity PASS');
