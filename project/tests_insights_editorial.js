@@ -20,11 +20,13 @@ for (const f of files) {
   const canonical = (html.match(/<link rel="canonical" href="([^"]+)"/)||[])[1];
   const items = crumbs[0].itemListElement;
   assert.deepEqual(items.map(x=>x.position), [1,2,3], f + ': breadcrumb positions');
+  assert.ok(items.every(x=>x['@type']==='ListItem'), f + ': breadcrumb ListItem type');
+  assert.deepEqual([items[0].name, items[0].item, items[1].name], ['홈', 'https://www.jttax.co.kr/', '세금 가이드'], f + ': breadcrumb home/hub names');
   assert.equal(items[1].item, 'https://www.jttax.co.kr/insights/', f + ': breadcrumb hub');
   assert.equal(items[2].item, canonical, f + ': breadcrumb last item = canonical');
   assert.equal(items[2].name, json.find(x=>x['@type']==='Article').headline, f + ': breadcrumb name = headline');
   // 261031 SEO 1-4: internal evidence-table codes must not reach readers.
-  assert.ok(!/근거표|\bGT-\d/.test(html.replace(/<!--[\s\S]*?-->/g, '')), f + ': internal evidence-table code visible');
+  assert.ok(!/근거표|GT-\d/.test(html.replace(/<!--[\s\S]*?-->/g, '')), f + ': internal evidence-table code visible');
 }
 for (const slug of ['vat-basics','vat-final-filing-2026']) {
   const html = fs.readFileSync(path.join(root,'insights',slug+'.html'),'utf8');
