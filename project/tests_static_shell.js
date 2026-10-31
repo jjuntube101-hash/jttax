@@ -227,7 +227,11 @@ const ROOT = path.join(__dirname, '..');
            공유 이미지 대조(og:image)에서는 뺀다. 그 밖의 노드는 지금처럼 공용 OG 와 같아야 한다. */
         if (node['@type'] === 'Person') {
           const peoplePrefix = `https://${meta.SITE_HOST}/project/assets/people/`;
-          const rel2 = node.image.startsWith(peoplePrefix) ? node.image.slice(`https://${meta.SITE_HOST}/`.length) : null;
+          // `people/../` 같은 경로로 폴더 밖을 가리키지 못하게 URL 을 정규화한 뒤 다시 본다 (Codex R1-F1)
+          let normPath = null;
+          try { normPath = new URL(node.image).pathname; } catch { /* 아래에서 FAIL */ }
+          const rel2 = node.image.startsWith(peoplePrefix) && normPath && normPath.startsWith('/project/assets/people/') && !/%2e|%2f|%5c/i.test(node.image)
+            ? decodeURIComponent(normPath.slice(1)) : null;
           if (!rel2 || !fs.existsSync(path.join(ROOT, rel2))) bad.push(`${rel} — Person image 가 인물 사진 폴더의 실제 파일이 아닙니다: ${node.image.slice(0, 80)}`);
           else ldImages.push(null);   // «image 있음»만 표시
           continue;
@@ -902,12 +906,13 @@ const ROOT = path.join(__dirname, '..');
     const visit = (rel, node) => {
       if (Array.isArray(node)) { node.forEach((n) => visit(rel, n)); return; }
       if (!node || typeof node !== 'object') return;
-      const t = node['@type'];
-      if ((t === 'Organization' || t === 'AccountingService') && node.name === meta.FIRM) {
+      const types = [].concat(node['@type'] || []);   // 배열형 @type 도 본다 (Codex R1-F2)
+      const t = types.join(',');
+      if ((types.includes('Organization') || types.includes('AccountingService')) && node.name === meta.FIRM) {
         orgNodes++;
         if (node['@id'] !== meta.ORG_ID) bad.push(`${rel} — 법인 ${t} 에 회사 @id 가 없습니다 (${meta.ORG_ID})`);
       }
-      const em = t === 'Person' && typeof node.url === 'string' && /\/experts\/([a-z-]+)\.html$/.exec(node.url);
+      const em = types.includes('Person') && typeof node.url === 'string' && /\/experts\/([a-z-]+)\.html$/.exec(node.url);
       if (em && node['@id'] !== meta.personId(em[1])) bad.push(`${rel} — Person ${node.name} 에 @id ${meta.personId(em[1])} 가 없습니다`);
       for (const v of Object.values(node)) if (v && typeof v === 'object') visit(rel, v);
     };
