@@ -862,6 +862,28 @@ const ROOT = path.join(__dirname, '..');
     if (!consult.includes(`href="${kakaoMap}"`) || !consult.includes(`href="${naverMap}"`)) bad.push('consult.html — 오시는 길에 카카오맵·네이버 플레이스 링크가 없습니다');
   }
 
+  /* ── 업무 면 상세 (261031 SEO 2-1) ─────────────────────────────────
+     업무 1~5 면에 쟁점·준비 서류·기간·보수 요인·FAQ 다섯 절이 있고 본문(main)이 공백 포함 2,000자 이상인지 본다.
+     보수 절에는 금액을 쓰지 않는다(0-3 결재: 보수 비공개) — 숫자+원 표기가 있으면 실패. */
+  {
+    const SVC_DETAIL_SLUGS = ['asset-transfer', 'tax-audit', 'bookkeeping', 'consulting', 'tax-refund'];
+    const SVC_DETAIL_H2 = ['주로 살펴보는 쟁점', '준비하시면 좋은 서류', '기간과 기한', '보수에 영향을 주는 요인', '자주 묻는 질문'];
+    for (const slug of SVC_DETAIL_SLUGS) {
+      const rel = `services/${slug}.html`;
+      const h = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+      const main = (h.match(/<main[\s\S]*?<\/main>/) || [''])[0];
+      const text = main.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      if (text.length < 2000) bad.push(`${rel} — 본문이 ${text.length}자입니다 (공백 포함 2,000자 이상이어야 함)`);
+      for (const t of SVC_DETAIL_H2) if (!main.includes(`<h2>${t}</h2>`)) bad.push(`${rel} — «${t}» 절이 없습니다`);
+      // 새 상세 다섯 절만 따로 센다 — CTA·담당자 카드·관련 링크로 main 이 부풀어도 상세가 빈약하면 잡는다 (Codex R1-F2)
+      const detail = SVC_DETAIL_H2.map((t) => (main.match(new RegExp(`<h2>${t}</h2>([\\s\\S]*?)</section>`)) || ['', ''])[1]).join(' ')
+        .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      if (detail.length < 1000) bad.push(`${rel} — 상세 다섯 절이 ${detail.length}자입니다 (공백 포함 1,000자 이상이어야 함)`);
+      const fee = (main.match(/<h2>보수에 영향을 주는 요인<\/h2>([\s\S]*?)<\/section>/) || ['', ''])[1];
+      if (/\d[\d,.]*\s*(만\s*)?원|[₩￦]\s*\d/.test(fee.replace(/<[^>]+>/g, ''))) bad.push(`${rel} — 보수 절에 금액 표기가 있습니다 (보수 비공개 결재 0-3)`);
+    }
+  }
+
   /* ── 결과 ───────────────────────────────────────────────────────── */
   const total = generatedOnly.length + handwritten.length;
   console.log(`대상: 생성 ${generatedOnly.length}장 + 수기 ${handwritten.length}장 (custom ${customSlugs.length} + desk ${desk.length}) · 원고 ${postSlugs.length}건`);

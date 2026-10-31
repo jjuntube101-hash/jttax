@@ -18,7 +18,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICES, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, CONSULT } from './commercial.data.mjs';
+import { SERVICES, SERVICE_DETAILS, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, CONSULT } from './commercial.data.mjs';
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
@@ -131,6 +131,12 @@ const STYLE = `  <style>
     .jt-cm-lead .n{font-size:18px;font-weight:800;}
     .jt-cm-lead p{margin:0;font-size:14px;color:#555;line-height:1.6;}
     .jt-cm-close{margin:36px 0 0;padding:22px 24px;border-left:3px solid #0B0B0F;background:#FAFAF8;font-size:16px;line-height:1.7;font-style:italic;color:#333;}
+    .jt-cm-issue h3{margin:0 0 6px;font-size:16px;}
+    .jt-cm-time{list-style:none;padding:0;margin:0;}
+    .jt-cm-time li{padding:12px 0;border-bottom:1px solid rgba(0,0,0,.06);line-height:1.7;color:#333;}
+    .jt-cm-time b{display:block;color:#0B0B0F;}
+    .jt-cm-src{display:block;font-size:12px;color:#888;margin-top:2px;}
+    .jt-cm-note{font-size:14px;color:#666;margin:10px 0 0;}
     .jt-cr-card{display:flex;flex-direction:column;gap:10px;padding:22px 24px;}
     .jt-cr-card .jt-btn{align-self:flex-start;margin-top:6px;}
     .jt-cr-kicker{margin:0;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;}
@@ -290,6 +296,50 @@ ${chips ? `      <div class="jt-cc-chips" style="margin-top:12px;">\n${chips}\n 
   return out.join('\n\n');
 }
 
+/* 업무 1~5 상세(SEO 2-1, 261031) — 쟁점·준비 서류·기간·보수 요인·FAQ. 보수 금액은 그리지 않는다(0-3). */
+function serviceDetailsHtml(slug) {
+  const d = SERVICE_DETAILS[slug];
+  if (!d) return '';
+  for (const k of ['issues', 'docs', 'timeline', 'feeFactors', 'faqs']) {
+    if (!Array.isArray(d[k]) || !d[k].length) throw new Error(`[services/${slug}] SERVICE_DETAILS.${k} 가 비어 있습니다`);
+  }
+  return `    <section class="jt-cc-sec">
+      <h2>주로 살펴보는 쟁점</h2>
+      <div class="jt-cc-grid">
+${d.issues.map(x => `        <div class="jt-cc-card jt-cm-issue"><h3>${esc(x.t)}</h3><p>${esc(x.d)}</p></div>`).join('\n')}
+      </div>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>준비하시면 좋은 서류</h2>
+      <ul>
+${d.docs.map(x => `      <li>${esc(x)}</li>`).join('\n')}
+      </ul>
+      <p class="jt-cm-note">사안마다 필요한 서류가 다릅니다. 상담 뒤에 실제로 필요한 목록을 따로 안내합니다.</p>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>기간과 기한</h2>
+      <ul class="jt-cm-time">
+${d.timeline.map(x => `        <li><b>${esc(x.t)}</b>${esc(x.d)}${x.src ? `<span class="jt-cm-src">근거: ${esc(x.src)}</span>` : ''}</li>`).join('\n')}
+      </ul>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>보수에 영향을 주는 요인</h2>
+      <ul>
+${d.feeFactors.map(x => `      <li>${esc(x)}</li>`).join('\n')}
+      </ul>
+      <p class="jt-cm-note">보수는 업무 범위를 확인한 뒤 상담에서 안내합니다.</p>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>자주 묻는 질문</h2>
+${d.faqs.map(x => `      <div class="jt-cc-faq"><h3>${esc(x.q)}</h3><p>${esc(x.a)}</p></div>`).join('\n')}
+    </section>
+`;
+}
+
 function renderServicePage(s) {
   const url = `${SITE}${serviceHref(s)}`;
   const lead = expertBySlug(s.lead, `services/${s.slug}`);
@@ -348,6 +398,7 @@ ${s.handoff ? `      <p style="font-size:14px;color:#666;">${esc(s.handoff)}</p>
 ${s.creatorsLink ? `      <p style="font-size:14px;"><a href="/creators.html" style="color:#1a1a1a;">크리에이터·유튜버라면 — 지금 단계에 맞는 세금 경로부터 확인하기 →</a></p>` : ''}
     </section>
 
+${serviceDetailsHtml(s.slug)}
 ${leadCard(lead, '대표별 경력을 소개합니다. 실제 업무 담당과 검토 범위는 상담 후 안내합니다.')}
 
 ${(calcsHtml || deepLink) ? `    <section class="jt-cc-sec">
