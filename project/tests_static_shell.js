@@ -837,13 +837,17 @@ const ROOT = path.join(__dirname, '..');
     const naverMap = (dataSrc.match(/naverMapUrl:\s*'([^']+)'/) || [])[1] || '';
     if (!/^https:\/\/place\.map\.kakao\.com\/\d+$/.test(kakaoMap)) bad.push(`commercial.data kakaoMapUrl 이 카카오맵 장소 주소가 아닙니다: "${kakaoMap}"`);
     if (!/^https:\/\/map\.naver\.com\/p\/entry\/place\/\d+$/.test(naverMap)) bad.push(`commercial.data naverMapUrl 이 네이버 플레이스 주소가 아닙니다: "${naverMap}"`);
+    // 장소 번호는 정본과 따로 고정한다 — 세 파일이 같은 틀린 번호로 함께 바뀌어도 잡히도록 (261031 라이브 확인값)
+    const PLACE_IDS = { kakao: '1776119720', naver: '1319293073' };
+    if (!kakaoMap.endsWith('/' + PLACE_IDS.kakao)) bad.push(`kakaoMapUrl 장소 번호가 확인값 ${PLACE_IDS.kakao} 과 다릅니다 — 장소를 옮겼다면 라이브 확인 뒤 PLACE_IDS 도 고치세요`);
+    if (!naverMap.endsWith('/' + PLACE_IDS.naver)) bad.push(`naverMapUrl 장소 번호가 확인값 ${PLACE_IDS.naver} 과 다릅니다 — 장소를 옮겼다면 라이브 확인 뒤 PLACE_IDS 도 고치세요`);
     const appData = fs.readFileSync(path.join(ROOT, 'project/src/Data.jsx'), 'utf8');
     for (const [k, v] of [['kakaoMapUrl', kakaoMap], ['naverMapUrl', naverMap]]) {
       if (!appData.includes(`${k}: '${v}'`)) bad.push(`Data.jsx ${k} 가 commercial.data 와 다릅니다`);
     }
     const ldHasMap = (html) => {
       const out = [];
-      for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+      for (const m of html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
         try { const j = JSON.parse(m[1]); if (j['@type'] === 'AccountingService') out.push(j.hasMap); } catch { /* JSON 오류는 다른 검사가 잡는다 */ }
       }
       return out;
