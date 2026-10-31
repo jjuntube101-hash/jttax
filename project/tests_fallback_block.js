@@ -566,6 +566,21 @@ console.log('\n════ JTFallbackBlocked — reason 별 렌더 결과 ═�
   eq("reason='refused' · 재시도 버튼이 없다 (onRetry 를 줘도)", refused.buttons.length, 0);
   eq("reason='refused' · 사유 목록을 그대로 보인다", refused.items.join('|'), '사유A|사유B');
 
+  const review = view('review');
+  eq('계산 기준 검토 대기 제목', review.title, '계산 기준 검토가 필요한 조건입니다');
+  eq('검토 대기는 입력 보완으로 해제된다고 약속하지 않는다', /채워 주|확인해 주시면 금액/.test(review.text), false);
+  eq('같은 계산 재시도로 보류가 해제되지 않음을 안내한다', review.text.includes('같은 계산을 반복해도 이 보류는 해제되지 않습니다'), true);
+  eq('감면 선택은 실제 요건에 맞게 유지하도록 안내한다', review.text.includes('감면 선택은 실제 요건에 맞게 유지해 주세요'), true);
+  eq('검토 대기에도 실제 사유 목록을 유지한다', review.items.join('|'), '사유A|사유B');
+  eq('검토 대기는 onRetry가 있어도 재시도를 권하지 않는다', review.buttons.length, 0);
+  const acqSource = fs.readFileSync(SRC('ReportAcquisition.jsx'),'utf8');
+  const reasonExpression = acqSource.match(/const acqBlockReason = ([^\n]+);/)[1];
+  const acqReason = new Function('calc','answers','acqFallbackGaps','return ('+reasonExpression+');');
+  const heldCalc = {engineState:'review',calculationReview:{issues:[{code:'ACQ_PARTIAL_FIXED_EDUCATION'}]}};
+  eq('교육세 산식 HOLD를 입력 누락으로 분류하지 않는다', acqReason(heldCalc,{},()=>[]), 'review');
+  eq('추가 사실 누락이 함께 있어도 산식 HOLD를 숨기지 않는다', acqReason(heldCalc,{},()=>['면적 확인']), 'review');
+  eq('일반 입력 누락은 기존 수정 안내를 유지한다', acqReason({engineState:'review',calculationReview:{issues:[]}}, {},()=>[]), 'input');
+
   const giftInput = view('input', true, '입력 수정·재계산');
   eq('증여 차단 안내는 실제 입력 수정 버튼명을 사용한다', giftInput.text.includes('입력 수정·재계산으로 돌아가'), true);
   eq('증여 차단 안내는 없는 이전 버튼을 가리키지 않는다', giftInput.text.includes('← 이전'), false);

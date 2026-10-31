@@ -211,8 +211,10 @@ function JTFallbackBlocked({ gaps, onRetry, reason, inputEditLabel = '← 이전
   var byInput = reason === 'input';
   var isDown = reason === 'down';
   var isRefused = reason === 'refused';
+  var byReview = reason === 'review';
   var title = isDown ? '지금은 금액을 계산할 수 없습니다'
     : isRefused ? '세무사 확인이 필요한 조건입니다'
+    : byReview ? '계산 기준 검토가 필요한 조건입니다'
     : byInput ? '아래를 확인해 주시면 금액을 계산해 드릴게요'
     : '이 조건은 간이 계산으로 금액을 낼 수 없습니다';
   var retryLabel = isDown ? '다시 시도 →' : '정밀 계산 다시 시도 →';
@@ -227,6 +229,8 @@ function JTFallbackBlocked({ gaps, onRetry, reason, inputEditLabel = '← 이전
           <React.Fragment>계산 엔진에 연결하지 못했습니다. 이 계산기는 엔진이 계산한 값만 보여 드리므로 금액을 표시하지 않습니다.</React.Fragment>
         ) : isRefused ? (
           <React.Fragment>입력하신 조건은 이 계산기가 금액을 확정할 수 없는 경우입니다. 틀린 금액을 보여 드리지 않기 위해 금액을 표시하지 않습니다.</React.Fragment>
+        ) : byReview ? (
+          <React.Fragment>이 조건에 적용할 계산 기준의 검토가 끝나지 않아 <strong>금액을 표시하지 않습니다</strong>. 입력을 다시 채우거나 같은 계산을 반복해도 이 보류는 해제되지 않습니다.</React.Fragment>
         ) : byInput ? (
           <React.Fragment><strong>세액이 크게 갈리는 항목이 아직 정해지지 않았습니다.</strong>{' '}
           짐작으로 채워 계산하면 틀린 금액을 「정밀 계산」처럼 보여 드리게 되어, <strong>금액을 표시하지 않습니다</strong>.</React.Fragment>
@@ -243,11 +247,13 @@ function JTFallbackBlocked({ gaps, onRetry, reason, inputEditLabel = '← 이전
           ? <React.Fragment>잠시 후 <strong>다시 시도</strong>를 눌러 주세요. 계속 안 되면 상담으로 정확히 확인해 드립니다.</React.Fragment>
           : isRefused
           ? <React.Fragment>입력을 다시 확인하시거나 상담으로 문의해 주세요.</React.Fragment>
+          : byReview
+          ? <React.Fragment>담당 세무사가 적용 근거를 별도로 검토해야 합니다. 감면 선택은 실제 요건에 맞게 유지해 주세요.</React.Fragment>
           : byInput
           ? <React.Fragment><strong>{inputEditLabel}</strong>으로 돌아가 위 항목을 채워 주세요. 확인이 어려우면 상담으로 정확히 안내해 드립니다.</React.Fragment>
           : <React.Fragment>잠시 후 <strong>정밀 계산 다시 시도</strong>를 눌러 주세요. 계속 안 되면 상담으로 정확히 확인해 드립니다.</React.Fragment>}
       </p>
-      {!byInput && !isRefused && onRetry && <button className="jt-btn jt-btn--primary" onClick={onRetry}>{retryLabel}</button>}
+      {!byInput && !byReview && !isRefused && onRetry && <button className="jt-btn jt-btn--primary" onClick={onRetry}>{retryLabel}</button>}
     </div>
   );
 }
