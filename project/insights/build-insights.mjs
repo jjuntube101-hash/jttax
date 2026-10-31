@@ -234,22 +234,33 @@ const ACQ_HUB_BLOCK = `
    서치콘솔에서 /services/ 와 업무 4면이 «발견됨 - 현재 색인 생성되지 않음»이었고, 업무 면으로
    들어오는 링크는 업무분야 목록·다른 업무 면뿐이었다. 업무 면 → 글 링크(relatedInsights)는 있는데
    반대 방향이 없었다.
-   고르는 순서: ① 업무 면의 relatedInsights 에 이 글이 있으면 그 업무 ② 없으면 tag 규칙.
+   고르는 순서: ① SERVICE_BY_ARTICLE 에 적힌 글은 그 업무 ② 업무 면의 relatedInsights 에 이 글이
+   있으면 그 업무 ③ 없으면 tag 규칙.
    취득세 글은 이미 /acquisition-tax/ 허브 블록이 붙으므로 여기서 다시 붙이지 않는다.
    ⛔ 문구에 세율·기한·결과 주장을 넣지 않는다 — 업무 이름과 링크만. */
 const SERVICE_BY_SLUG = new Map(SERVICES.map((s) => [s.slug, s]));
 const SERVICE_BY_INSIGHT = new Map(); // 글 slug → 그 글을 relatedInsights 에 둔 업무 slug 목록
 for (const s of SERVICES) for (const r of s.relatedInsights || []) SERVICE_BY_INSIGHT.set(r.slug, [...(SERVICE_BY_INSIGHT.get(r.slug) || []), s.slug]);
+/* tag 가 «INSIGHT · CONSULT» 뿐이라 주제를 알 수 없는 증여·양도·보유세 글(Codex R1-F1). */
+const SERVICE_BY_ARTICLE = new Map([
+  ['gift-tax-saving', 'asset-transfer'],
+  ['burdened-gift', 'asset-transfer'],
+  ['one-house-cgt-exemption', 'asset-transfer'],
+  ['property-holding-tax-june1', 'asset-transfer'],
+]);
+/* 크리에이터 규칙을 창업감면(컨설팅)보다 먼저 본다 — 크리에이터 창업감면 글은 사업자등록·기장 안내다(Codex R1-F2). */
 const SERVICE_TAG_RULES = [
   [/AUDIT/i, 'tax-audit'],
   [/APPEAL/i, 'tax-refund'],
   [/LEGACY|GIFT|INHERITANCE|CAPITAL GAINS|REAL ESTATE|PROPERTY TAX/i, 'asset-transfer'],
+  [/크리에이터|CREATOR/i, 'bookkeeping'],
   [/CONSULT|CORPORATE|창업감면/i, 'consulting'],
-  [/크리에이터|CREATOR|BOOKKEEPING|INCOME TAX|VAT|PAYROLL|기장|사업자/i, 'bookkeeping'],
+  [/BOOKKEEPING|INCOME TAX|VAT|PAYROLL|기장|사업자/i, 'bookkeeping'],
 ];
-for (const [, slug] of SERVICE_TAG_RULES) if (!SERVICE_BY_SLUG.has(slug)) throw new Error(`SERVICE_TAG_RULES 가 없는 업무를 가리킵니다: ${slug}`);
+for (const slug of [...SERVICE_TAG_RULES.map(([, s]) => s), ...SERVICE_BY_ARTICLE.values()]) if (!SERVICE_BY_SLUG.has(slug)) throw new Error(`관련 업무 규칙이 없는 업무를 가리킵니다: ${slug}`);
 function serviceFor(a) {
   if (isAcqHubArticle(a.slug)) return null;
+  if (SERVICE_BY_ARTICLE.has(a.slug)) return SERVICE_BY_SLUG.get(SERVICE_BY_ARTICLE.get(a.slug));
   const byTag = SERVICE_TAG_RULES.find(([re]) => re.test(String(a.tag || '')))?.[1];
   const listed = SERVICE_BY_INSIGHT.get(a.slug) || [];
   /* 두 업무 면에 함께 실린 글(예: 경정청구·불복 글은 세무조사·경정청구 양쪽)은 tag 규칙과 맞는 쪽을 고른다. */
