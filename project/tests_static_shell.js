@@ -486,7 +486,31 @@ const ROOT = path.join(__dirname, '..');
       }
       const mdFiles = fs.readdirSync(path.join(__dirname, 'insights')).filter((f) => f.endsWith('.md'));
       const insightLinks = [...rootBlock.matchAll(/<a href="\/insights\/([a-z0-9-]+)\.html"[^>]*>([^<]*)<\/a>/g)];
-      if (insightLinks.length < 5) bad.push(`index.html — 부팅 폴백의 글 링크가 ${insightLinks.length}개입니다(5개 이상)`);
+      const uniqInsights = new Set(insightLinks.map((m) => m[1])).size;   // 같은 글 반복으로 채우지 않게 (Codex R1-F3)
+      if (uniqInsights < 5) bad.push(`index.html — 부팅 폴백의 서로 다른 글 링크가 ${uniqInsights}개입니다(5개 이상)`);
+      /* data-boot-content 는 «오류» 낱말 검사를 면제받는 표지라, 붙일 수 있는 구역을 둘로 못 박는다 (Codex R1-F1).
+         그 구역 안의 링크는 위에서 정본과 대조한 업무·글 링크만 허용하고, 문단은 SERVICES lede 만 허용한다. */
+      const bootSections = [...rootBlock.matchAll(/<section data-boot-content\b[^>]*>[\s\S]*?<\/section>/g)].map((m) => m[0]);
+      const sectionLabels = bootSections.map((s) => (s.match(/aria-label="([^"]*)"/) || [])[1]);
+      const allowedLabels = ['업무 분야 소개', '많이 읽는 세금 가이드'];
+      if ((rootBlock.match(/data-boot-content/g) || []).length !== 2
+          || sectionLabels.length !== 2 || !allowedLabels.every((l) => sectionLabels.includes(l))) {
+        bad.push('index.html — data-boot-content 표지는 «업무 분야 소개»·«많이 읽는 세금 가이드» 두 구역에만 붙일 수 있습니다');
+      }
+      for (const sec of bootSections) {
+        for (const [, href] of sec.matchAll(/<a href="([^"]*)"/g)) {
+          if (!/^\/services\/[a-z-]+\.html$|^\/insights\/([a-z0-9-]+\.html)?$/.test(href)) bad.push(`index.html — 정적 본문 구역에 허용하지 않은 링크가 있습니다 (${href})`);
+        }
+        for (const [, ptext] of sec.matchAll(/<p[^>]*>([^<]*)<\/p>/g)) {
+          if (!commMod.SERVICES.some((s) => s.lede === unesc(ptext))) bad.push(`index.html — 정적 본문 구역에 정본에 없는 문단이 있습니다 (${ptext.slice(0, 30)})`);
+        }
+        if (/<p[^>]*>[^<]*<(?!\/p>)/.test(sec.replace(/<p[^>]*><a href="\/insights\/"[^>]*>[^<]*<\/a><\/p>/, ''))) bad.push('index.html — 정적 본문 구역의 문단 안에 다른 태그가 있습니다');
+      }
+      /* 숨긴 본문은 수집기에도 숨김 신호다 — 폴백 전체에 숨김 속성·스타일을 두지 않는다 (Codex R1-F2).
+         지연 노출 블록(.jt-boot__late)은 CSS 클래스로 처리하므로 여기 걸리지 않는다. */
+      if (/\shidden(\s|>|=)|aria-hidden|display\s*:\s*none|visibility\s*:\s*hidden|font-size\s*:\s*0|opacity\s*:\s*0(?![.\d])/i.test(rootBlock.replace(/<!--[\s\S]*?-->/g, ''))) {
+        bad.push('index.html — 부팅 폴백에 숨김 속성·스타일이 있습니다(정적 본문이 수집기에 안 보입니다)');
+      }
       for (const [, slug, text] of insightLinks) {
         const f = mdFiles.find((x) => x.endsWith(`-${slug}.md`));
         const tm = f && fs.readFileSync(path.join(__dirname, 'insights', f), 'utf8').match(/^title: (".*")$/m);
