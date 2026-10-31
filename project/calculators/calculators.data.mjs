@@ -422,9 +422,9 @@ export const CALCULATORS = [
   {
     slug: 'property-tax', sub: 'property',
     chips: ['comprehensive-real-estate-tax', 'acquisition-tax', 'capital-gains-tax', '2026-tax-reform-property-tax', 'gift-tax', 'income-tax'],
-    metaTitle: '재산세 계산기 2026 — 주택·토지·건물 공시가격 넣으면 바로 계산',
+    metaTitle: '재산세 계산기 2026 — 주택·토지·건물 공시가격으로 계산',
     h1: '재산세 계산기',
-    metaDesc: '주택·토지·건물 재산세를 공시가격만 넣고 바로 계산합니다. 공정시장가액비율, 1세대1주택 특례, 도시지역분·지방교육세, 세부담 상한까지 반영한 총 부담을 보여 줍니다.',
+    metaDesc: '주택·토지·건물 중 하나를 고르고 공시가격을 넣으면 예상 재산세를 계산합니다. 공정시장가액비율, 1세대1주택 특례, 도시지역분·지방교육세를 반영하고, 작년 공시가격을 넣으면 세부담 상한도 반영합니다.',
     keywords: '재산세 계산기, 재산세 계산, 공시가격 재산세, 1세대1주택 재산세 특례, 공정시장가액비율, 도시지역분, 세부담상한, 재산세 납부',
     lede: '매년 6월 1일을 기준으로 부동산을 가진 사람이 내는 재산세를, 공시가격만 입력하면 바로 계산합니다. 1세대 1주택 특례까지 반영됩니다.',
     canDo: [

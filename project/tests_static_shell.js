@@ -752,7 +752,7 @@ const ROOT = path.join(__dirname, '..');
      빌더의 head 인자 줄이 주석에 먹혀 전문가 3장의 description 이 비고 canonical 이 "undefined" 가 됐는데
      위 검사는 모두 통과했다. 생성 페이지마다 제목·설명·canonical 이 실제 값인지 본다. */
   for (const rel of generatedOnly) {
-    const h = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    const h = fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/<!--[\s\S]*?-->/g, '');   // 주석 속 태그는 메타가 아니다 (Codex R1-F3)
     const title = (h.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
     const desc = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
     const canon = (h.match(/<link rel="canonical" href="([^"]*)"/) || [])[1] || '';
