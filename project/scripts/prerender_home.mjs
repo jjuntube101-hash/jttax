@@ -118,10 +118,17 @@ export function renderFirstScreen() {
   const menuAt = header.indexOf('<div class="jt-menu-clip">');
   if (menuAt < 0 || !header.endsWith('</nav></div></header>')) throw new Error('헤더 끝이 «모바일 메뉴 판»이 아닙니다 — 구조가 바뀌었는지 확인하세요');
   header = header.slice(0, menuAt) + '</header>';
+  /* 메뉴 판을 뺐으니 그 판을 가리키는 aria-controls 도 뺀다 — 대상 없는 참조가 남지 않게 (Codex R1-F3).
+     React 가 마운트되면 판과 함께 다시 붙는다. */
+  const ctl = ' aria-controls="jt-mobile-menu"';
+  if (header.split(ctl).length !== 2) throw new Error('헤더의 메뉴 버튼 aria-controls 가 하나가 아닙니다');
+  header = header.replace(ctl, '');
   const hero = cut(full, '<section class="rn-hero rn-shell">', '</section>', '히어로');
   if (!full.includes('<div class="rn-page rn-home">' + hero)) throw new Error('히어로가 홈 첫 구역이 아닙니다');
   if (!/<p class="rn-lead">/.test(hero)) throw new Error('히어로에 p.rn-lead 가 없습니다');
-  return { header: skip + header, hero: '<div class="rn-page rn-home">' + hero + '</div>' };
+  /* data-prerender: head 의 규칙 두 개가 «선렌더 히어로에만» 걸리게 하는 표지다
+     (홈이 아닌 경로로 들어오면 숨김, 외부 CSS 가 없으면 사진 묶음 숨김). React 가 그린 히어로에는 없다. */
+  return { header: skip + header, hero: '<div class="rn-page rn-home" data-prerender="home">' + hero + '</div>' };
 }
 
 export function applyToIndex(html, parts) {

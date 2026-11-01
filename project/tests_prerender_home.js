@@ -53,6 +53,19 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   }
   const heroSeg = rootBlock.slice(rootBlock.indexOf(mod.MARKS.hero[0]), rootBlock.indexOf(mod.MARKS.hero[1]));
   if (!/<p class="rn-lead">[^<]{20,}<\/p>/.test(heroSeg)) bad.push('히어로 선렌더에 LCP 문단(p.rn-lead)이 없습니다');
+  if (!heroSeg.includes('data-prerender="home"')) bad.push('히어로 선렌더에 data-prerender 표지가 없습니다 (head 안전판 규칙이 걸리지 않음)');
+  if (/aria-controls=/.test(rootBlock.slice(rootBlock.indexOf(mod.MARKS.header[0]), rootBlock.indexOf(mod.MARKS.header[1])))) bad.push('헤더 선렌더에 aria-controls 가 남았습니다 (대상 메뉴 판은 넣지 않는다)');
+
+  /* 5) head 안전판 (Codex R1-F1·F2) */
+  const head = html.slice(0, html.indexOf('</head>'));
+  if (!/:where\(\[data-prerender\] \.rn-hero-people\)\{\s*display:none;\s*\}/.test(head)) bad.push('head — CSS 실패 때 선렌더 사진을 숨기는 :where() 규칙이 없습니다');
+  if (!/\.jt-boot-route \[data-prerender\]\{\s*display:none;\s*\}/.test(head)) bad.push('head — 홈이 아닌 경로에서 선렌더 히어로를 숨기는 규칙이 없습니다');
+  const appSrc = fs.readFileSync(path.join(__dirname, 'src', 'App.jsx'), 'utf8');
+  const appRoutes = (appSrc.match(/const JT_KNOWN_ROUTES = (\[[^\]]*\])/) || [])[1];
+  const headRoutes = (head.match(/var known = (\[[^\]]*\])/) || [])[1];
+  const norm = (s) => s && JSON.stringify(JSON.parse(s.replace(/'/g, '"')));
+  if (!appRoutes || !headRoutes || norm(appRoutes) !== norm(headRoutes)) bad.push('head 의 첫 경로 판정 목록이 App.jsx JT_KNOWN_ROUTES 와 다릅니다');
+  if (!/localStorage\.getItem\('jt_route'\)/.test(head) || !/localStorage\.getItem\('jt_route'\)/.test(appSrc)) bad.push('첫 경로 판정의 저장 키(jt_route)가 App.jsx 와 head 에서 어긋났습니다');
 
   bad.forEach((x) => console.log('FAIL  ' + x));
   console.log(`${bad.length ? '' : 'PASS  '}홈 선렌더 — 실패 ${bad.length}건`);
