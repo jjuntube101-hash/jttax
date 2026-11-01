@@ -542,7 +542,9 @@ const ROOT = path.join(__dirname, '..');
       }
       /* 숨긴 본문은 수집기에도 숨김 신호다 — 폴백 전체에 숨김 속성·스타일을 두지 않는다 (Codex R1-F2).
          지연 노출 블록(.jt-boot__late)은 CSS 클래스로 처리하므로 여기 걸리지 않는다. */
-      if (/\shidden(\s|>|=)|aria-hidden|display\s*:\s*none|visibility\s*:\s*hidden|font-size\s*:\s*0|opacity\s*:\s*0(?![.\d])/i.test(rootBlock.replace(/<!--[\s\S]*?-->/g, ''))) {
+      /* 예외 하나(261101 SEO 2-7 선렌더): 글자·숫자 없이 기호(▾·↓·→)만 담은 장식 span 의 aria-hidden 은 본문을 숨기지 않는다. */
+      const decorOnly = /<span[^>]*\saria-hidden="true"[^>]*>[^<\p{L}\p{N}]*<\/span>/gu;
+      if (/\shidden(\s|>|=)|aria-hidden|display\s*:\s*none|visibility\s*:\s*hidden|font-size\s*:\s*0|opacity\s*:\s*0(?![.\d])/i.test(rootBlock.replace(/<!--[\s\S]*?-->/g, '').replace(decorOnly, ''))) {
         bad.push('index.html — 부팅 폴백에 숨김 속성·스타일이 있습니다(정적 본문이 수집기에 안 보입니다)');
       }
       for (const [, slug, text] of insightLinks) {
