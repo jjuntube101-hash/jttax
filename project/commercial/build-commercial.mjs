@@ -18,7 +18,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICES, SERVICE_DETAILS, SERVICE_EXTRA, EXPERTS, TEAM_MODEL, ABOUT, CONSULT } from './commercial.data.mjs';
+import { SERVICES, SERVICE_DETAILS, SERVICE_EXTRA, SERVICE_SUB, EXPERTS, TEAM_MODEL, ABOUT, CONSULT } from './commercial.data.mjs';
 import { CALCULATORS } from '../calculators/calculators.data.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
@@ -296,9 +296,11 @@ ${chips ? `      <div class="jt-cc-chips" style="margin-top:12px;">\n${chips}\n 
   return out.join('\n\n');
 }
 
-/* 업무 1~5 상세(SEO 2-1, 261031) — 쟁점·준비 서류·기간·보수 요인·FAQ. 보수 금액은 그리지 않는다(0-3). */
-function serviceDetailsHtml(slug) {
-  const d = SERVICE_DETAILS[slug];
+/* 업무 1~5 상세(SEO 2-1, 261031) — 쟁점·준비 서류·기간·보수 요인·FAQ. 보수 금액은 그리지 않는다(0-3).
+   세목별 하위 면(SEO 2-2, 261101)은 상세를 데이터의 details 에 둔다. */
+function serviceDetailsHtml(s) {
+  const slug = s.slug;
+  const d = SERVICE_DETAILS[slug] || s.details;
   if (!d) return '';
   for (const k of ['issues', 'docs', 'timeline', 'feeFactors', 'faqs']) {
     if (!Array.isArray(d[k]) || !d[k].length) throw new Error(`[services/${slug}] SERVICE_DETAILS.${k} 가 비어 있습니다`);
@@ -368,12 +370,23 @@ function renderServicePage(s) {
   const groupsHtml = (s.insightGroups || []).map(g => `${g.label ? `      <p style="margin:16px 0 6px;font-size:13px;color:#777;">${esc(g.label)}</p>\n` : ''}      <ul class="jt-cc-links">
 ${g.slugs.map(sl => insightLi(sl, null, `services/${s.slug}.insightGroups`)).join('\n')}
       </ul>`).join('\n');
+  /* 세목별 하위 면(SEO 2-2)은 경로에 부모 업무를 끼우고, 부모 면은 하위 면을 카드로 연결한다 */
+  const parent = s.parent ? serviceBySlug(s.parent, `services/${s.slug}.parent`) : null;
+  const subs = SERVICE_SUB.filter(x => x.parent === s.slug);
+  const subsHtml = subs.length ? `    <section class="jt-cc-sec">
+      <h2>세목별로 자세히 보기</h2>
+      <div class="jt-cc-grid">
+${subs.map(x => `        <a class="jt-cc-card" style="display:block;text-decoration:none;color:#0B0B0F;" href="${serviceHref(x)}"><h3>${esc(x.kr)}</h3><p>${esc(x.cardLede)}</p></a>`).join('\n')}
+      </div>
+    </section>
+` : '';
+  const crumbs = [['홈', `${SITE}/`], ['업무분야', `${SITE}/services/`], ...(parent ? [[parent.kr, `${SITE}${serviceHref(parent)}`]] : []), [s.kr, url]];
   return headHtml({
     title: `${s.metaTitle} | ${FIRM}`, desc: s.metaDesc, keywords: s.keywords, url,
-    ldBlocks: [svcLd, crumbLd([['홈', `${SITE}/`], ['업무분야', `${SITE}/services/`], [s.kr, url]])],
+    ldBlocks: [svcLd, crumbLd(crumbs)],
   }) + `
   <main class="jt-cc-wrap">
-    <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/services/">업무분야</a> › ${esc(s.kr)}</nav>
+    <nav class="jt-cc-crumb"><a href="/">홈</a> › <a href="/services/">업무분야</a> › ${parent ? `<a href="${serviceHref(parent)}">${esc(parent.kr)}</a> › ` : ''}${esc(s.kr)}</nav>
     <h1>${esc(s.h1)}</h1>
     <p class="jt-cc-lede">${esc(s.lede)}</p>
 ${s.proof ? `    <p class="jt-cr-proof">${esc(s.proof)}</p>\n` : ''}
@@ -382,7 +395,7 @@ ${s.proof ? `    <p class="jt-cr-proof">${esc(s.proof)}</p>\n` : ''}
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','svc_top')">카톡 상담</a>
     </div>
 
-    <section class="jt-cc-sec">
+${subsHtml}    <section class="jt-cc-sec">
       <h2>이런 상황이면 맡겨주세요</h2>
       <ul>
 ${(s.situations || []).map(x => `      <li>${esc(x)}</li>`).join('\n')}
@@ -398,7 +411,7 @@ ${s.handoff ? `      <p style="font-size:14px;color:#666;">${esc(s.handoff)}</p>
 ${s.creatorsLink ? `      <p style="font-size:14px;"><a href="/creators.html" style="color:#1a1a1a;">크리에이터·유튜버라면 — 지금 단계에 맞는 세금 경로부터 확인하기 →</a></p>` : ''}
     </section>
 
-${serviceDetailsHtml(s.slug)}
+${serviceDetailsHtml(s)}
 ${leadCard(lead, '대표별 경력을 소개합니다. 실제 업무 담당과 검토 범위는 상담 후 안내합니다.')}
 
 ${(calcsHtml || deepLink) ? `    <section class="jt-cc-sec">
@@ -458,6 +471,12 @@ function renderServicesIndex() {
     <div class="jt-cc-grid">
 ${cards}
     </div>
+    <section class="jt-cc-sec">
+      <h2>양도·상속·증여 세목별 안내</h2>
+      <div class="jt-cc-chips">
+${SERVICE_SUB.map(x => `        <a class="jt-cc-chip" href="${serviceHref(x)}">${esc(x.h1)}</a>`).join('\n')}
+      </div>
+    </section>
 ${DISCLAIMER}
 ${CTA_BOTTOM}
   </main>
@@ -733,6 +752,12 @@ async function main() {
   let n = 0;
   for (const s of SERVICES) {
     assertSlug(s.slug, 'commercial.data SERVICES');
+    await writeFile(join(svcDir, `${s.slug}.html`), renderServicePage(s)); n++;
+  }
+  for (const s of SERVICE_SUB) {   // 261101 SEO 2-2: 양도·상속·증여 세목별 하위 면
+    assertSlug(s.slug, 'commercial.data SERVICE_SUB');
+    if (SERVICES.some(x => x.slug === s.slug)) throw new Error(`[SERVICE_SUB ${s.slug}] 업무 1~5 와 slug 가 겹칩니다`);
+    if (!SERVICES.some(x => x.slug === s.parent)) throw new Error(`[SERVICE_SUB ${s.slug}] parent 는 업무 1~5 가운데 하나여야 합니다`);
     await writeFile(join(svcDir, `${s.slug}.html`), renderServicePage(s)); n++;
   }
   await writeFile(join(svcDir, 'index.html'), renderServicesIndex()); n++;

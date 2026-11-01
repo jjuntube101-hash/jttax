@@ -315,7 +315,7 @@ const ROOT = path.join(__dirname, '..');
 
   /* 상업 랜딩도 같은 고아 대조: 데이터에서 지우면 HTML 도 지워야 한다 (sitemap 이 디렉터리를 통째 열거하므로) */
   const commMod = await import(url.pathToFileURL(path.join(__dirname, 'commercial', 'commercial.data.mjs')).href);
-  const svcSlugs = commMod.SERVICES.map((s) => s.slug);
+  const svcSlugs = commMod.SERVICES.concat(commMod.SERVICE_SUB || []).map((s) => s.slug);   // 261101 SEO 2-2 세목별 하위 면 포함
   const expSlugs = commMod.EXPERTS.map((e) => e.slug);
   if (svcSlugs.length === 0 || expSlugs.length === 0) bad.push('commercial.data.mjs — SERVICES/EXPERTS 가 비어 있습니다 (데이터 구조 확인)');
   listHtml('services').map((f) => path.basename(f, '.html'))
@@ -937,7 +937,8 @@ const ROOT = path.join(__dirname, '..');
      업무 1~5 면에 쟁점·준비 서류·기간·보수 요인·FAQ 다섯 절이 있고 본문(main)이 공백 포함 2,000자 이상인지 본다.
      보수 절에는 금액을 쓰지 않는다(0-3 결재: 보수 비공개) — 숫자+원 표기가 있으면 실패. */
   {
-    const SVC_DETAIL_SLUGS = ['asset-transfer', 'tax-audit', 'bookkeeping', 'consulting', 'tax-refund'];
+    const SVC_DETAIL_SLUGS = ['asset-transfer', 'tax-audit', 'bookkeeping', 'consulting', 'tax-refund',
+      'capital-gains-tax', 'inheritance-tax', 'gift-tax'];   // 261101 SEO 2-2 세목별 하위 면도 같은 기준
     const SVC_DETAIL_H2 = ['주로 살펴보는 쟁점', '준비하시면 좋은 서류', '기간과 기한', '보수에 영향을 주는 요인', '자주 묻는 질문'];
     for (const slug of SVC_DETAIL_SLUGS) {
       const rel = `services/${slug}.html`;

@@ -21,7 +21,7 @@ import { insightSlug } from '../_shared/insight-slug.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 import { footerHtml, stylesHref, ogImageHref, faviconHtml, FIRM, ORG_ID, personId } from '../_shared/site-meta.mjs';
 import { escapeHtml, readingTools, hero, editorialCss } from './editorial.mjs';
-import { SERVICES } from '../commercial/commercial.data.mjs';
+import { SERVICES, SERVICE_SUB } from '../commercial/commercial.data.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url)); // project/insights
 const PROJECT = join(__dirname, '..');                     // project
@@ -247,7 +247,7 @@ const ACQ_HUB_BLOCK = `
    있으면 그 업무 ③ 없으면 tag 규칙.
    취득세 글은 이미 /acquisition-tax/ 허브 블록이 붙으므로 여기서 다시 붙이지 않는다.
    ⛔ 문구에 세율·기한·결과 주장을 넣지 않는다 — 업무 이름과 링크만. */
-const SERVICE_BY_SLUG = new Map(SERVICES.map((s) => [s.slug, s]));
+const SERVICE_BY_SLUG = new Map(SERVICES.concat(SERVICE_SUB).map((s) => [s.slug, s]));
 const SERVICE_BY_INSIGHT = new Map(); // 글 slug → 그 글을 relatedInsights 에 둔 업무 slug 목록
 for (const s of SERVICES) for (const r of s.relatedInsights || []) SERVICE_BY_INSIGHT.set(r.slug, [...(SERVICE_BY_INSIGHT.get(r.slug) || []), s.slug]);
 /* tag 가 «INSIGHT · CONSULT» 뿐이라 주제를 알 수 없는 증여·양도·보유세 글(Codex R1-F1). */
@@ -265,10 +265,17 @@ const kstDateTime = (d) => {
   return `${d}T09:00:00+09:00`;
 };
 
+/* 세목이 하나로 분명한 글은 세목별 하위 면(SEO 2-2, 261101)으로 보낸다. 증여·상속 비교와 보유세 글은 묶음 면에 둔다. */
 const SERVICE_BY_ARTICLE = new Map([
-  ['gift-tax-saving', 'asset-transfer'],
-  ['burdened-gift', 'asset-transfer'],
-  ['one-house-cgt-exemption', 'asset-transfer'],
+  ['gift-tax-saving', 'gift-tax'],
+  ['gift-tax-exemption-limit', 'gift-tax'],
+  ['burdened-gift', 'gift-tax'],
+  ['one-house-cgt-exemption', 'capital-gains-tax'],
+  ['capital-gains-tax-traps', 'capital-gains-tax'],
+  ['multi-house-cgt-surcharge-2026', 'capital-gains-tax'],
+  ['spouse-gift-carryover-tax', 'capital-gains-tax'],
+  ['inheritance-tax-basics', 'inheritance-tax'],
+  ['inheritance-tax-exemption-limit', 'inheritance-tax'],
   ['property-holding-tax-june1', 'asset-transfer'],
 ]);
 /* 크리에이터 규칙을 창업감면(컨설팅)보다 먼저 본다 — 크리에이터 창업감면 글은 사업자등록·기장 안내다(Codex R1-F2). */

@@ -15,12 +15,27 @@
     "mainPreserved": true
   },
   {
+    "path": "services/capital-gains-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "services/consulting.html",
     "h1": 1,
     "mainPreserved": true
   },
   {
+    "path": "services/gift-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "services/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "services/inheritance-tax.html",
     "h1": 1,
     "mainPreserved": true
   },

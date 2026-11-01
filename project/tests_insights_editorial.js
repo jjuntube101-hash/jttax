@@ -107,8 +107,11 @@ for (const f of files) {
   if (count) { assert.ok(fs.existsSync(path.join(root,'services',slug+'.html')), f + ': service page exists'); serviceBlocks++; }
 }
 const expectService = {
-  'gift-tax-saving':'asset-transfer', 'burdened-gift':'asset-transfer', 'one-house-cgt-exemption':'asset-transfer',
-  'property-holding-tax-june1':'asset-transfer', 'capital-gains-tax-traps':'asset-transfer',
+  'gift-tax-saving':'gift-tax', 'burdened-gift':'gift-tax', 'gift-tax-exemption-limit':'gift-tax',
+  'one-house-cgt-exemption':'capital-gains-tax', 'capital-gains-tax-traps':'capital-gains-tax',
+  'multi-house-cgt-surcharge-2026':'capital-gains-tax', 'spouse-gift-carryover-tax':'capital-gains-tax',
+  'inheritance-tax-basics':'inheritance-tax', 'inheritance-tax-exemption-limit':'inheritance-tax',
+  'property-holding-tax-june1':'asset-transfer', 'gift-vs-inheritance-2026':'asset-transfer',
   'youtube-youth-startup-tax-relief':'bookkeeping', 'existing-business-youtuber-startup-tax-relief':'bookkeeping',
   'youtuber-startup-business-location':'bookkeeping', 'youtuber-tax-guide':'bookkeeping',
   'corporate-conversion':'consulting', 'family-business-succession':'consulting',
