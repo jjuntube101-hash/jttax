@@ -148,6 +148,9 @@ async function loadArticles() {
     // SNS 호환·기존 공유 캐시를 위해 원본 PNG 를 여기에 둔다 (261101 이미지 압축, project/scripts/build-insight-webp.py)
     if (meta.heroShare) {
       if (!meta.hero || !/^\/project\/assets\/insights\/[a-z0-9-]+\.(png|jpg)$/.test(meta.heroShare)) throw new Error(`[heroShare] ${f}: hero 와 함께, 로컬 png/jpg 경로여야 합니다`);
+      // 화면(hero)과 공유(heroShare)가 같은 그림이어야 한다 — 이름(확장자 앞)이 같아야 한다 (Codex R1-F2)
+      const stem = (p) => p.replace(/\.[a-z]+$/, '');
+      if (stem(meta.heroShare) !== stem(meta.hero)) throw new Error(`[heroShare] ${f}: hero(${meta.hero})와 같은 이름의 원본이어야 합니다 — ${meta.heroShare}`);
       await readFile(join(REPO_ROOT, meta.heroShare.slice(1)));
     }
     if (meta.lawChecked && (!/^\d{4}-\d{2}-\d{2}$/.test(meta.lawChecked) || !body.includes('https://www.law.go.kr/'))) throw new Error(`[lawChecked] ${f}: 확인일과 원문 링크 필요`);

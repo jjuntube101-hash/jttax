@@ -12,8 +12,11 @@ heroShare 는 og:image·twitter:image·JSON-LD image 에 쓴다 — SNS 미리�
 이미 퍼진 공유 캐시를 위해 원본 PNG 를 그대로 둔다. 원본 PNG 는 지우지 않는다(외부 링크·이미지 색인·옛 캐시).
 
 두 번 돌려도 결과가 같다. 새 글을 PNG hero 로 올렸다면 이 스크립트를 한 번 돌리면 된다.
-  python project/scripts/build-insight-webp.py          # 변환 + 프론트매터 갱신
-  python project/scripts/build-insight-webp.py --check  # 바꿀 것이 남았는지만 본다(남으면 종료 코드 1)
+이미 WebP 로 바꾼 글의 원본(heroShare)을 갈아 끼웠다면 --refresh 로 WebP 를 원본에서 다시 만든다 —
+그러지 않으면 화면(WebP)과 공유(원본)가 서로 다른 그림이 된다 (Codex R1-F1).
+  python project/scripts/build-insight-webp.py            # 변환 + 프론트매터 갱신(없는 WebP 만 만든다)
+  python project/scripts/build-insight-webp.py --refresh  # 모든 WebP 를 heroShare 원본에서 다시 만든다
+  python project/scripts/build-insight-webp.py --check    # 남은 PNG hero·없는 WebP·원본과 화소 크기가 다른 WebP 가 있으면 종료 코드 1
 """
 import re
 import sys
@@ -25,6 +28,8 @@ ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / 'project' / 'insights'
 QUALITY = 80  # 1536×1024 기준 장당 약 60~100KB, 글 첫 화면에서 눈에 띄는 열화 없음(261101 육안 대조)
 HERO_RE = re.compile(r'^hero:[ \t]*(/project/assets/insights/[a-z0-9-]+)\.png[ \t]*$', re.M)
+WEBP_RE = re.compile(r'^hero:[ \t]*(/project/assets/insights/[a-z0-9-]+)\.webp[ \t]*$', re.M)
+SHARE_RE = re.compile(r'^heroShare:[ \t]*(/project/assets/insights/[a-z0-9-]+)\.(png|jpg)[ \t]*$', re.M)
 
 
 def convert(png: Path, webp: Path) -> None:
@@ -34,6 +39,7 @@ def convert(png: Path, webp: Path) -> None:
 
 def main() -> int:
     check = '--check' in sys.argv
+    refresh = '--refresh' in sys.argv
     todo = []
     for md in sorted(SRC.glob('*.md')):
         raw = md.read_bytes().decode('utf-8')
@@ -43,6 +49,23 @@ def main() -> int:
         block = head.group(1).replace('\r\n', '\n')
         m = HERO_RE.search(block)
         if not m:
+            # 이미 WebP 인 글: heroShare 원본과 짝이 맞는지, WebP 가 있는지·원본과 같은 그림 크기인지 본다
+            w, sh = WEBP_RE.search(block), SHARE_RE.search(block)
+            if not w:
+                continue
+            if not sh or sh.group(1) != w.group(1):
+                raise SystemExit(f'[hero] {md.name}: WebP hero 에는 같은 이름의 heroShare(png/jpg)가 있어야 합니다')
+            src = ROOT / (sh.group(1).lstrip('/') + '.' + sh.group(2))
+            webp = ROOT / (w.group(1).lstrip('/') + '.webp')
+            if not src.exists():
+                raise SystemExit(f'[hero] {md.name}: 원본 {src} 이 없습니다')
+            stale = not webp.exists() or Image.open(webp).size != Image.open(src).size
+            if check:
+                if stale:
+                    todo.append(md.name)
+            elif stale or refresh:
+                convert(src, webp)
+                print(f'{md.name}: WebP 다시 만듦 {webp.stat().st_size // 1024}KB')
             continue
         base = m.group(1)
         png = ROOT / (base.lstrip('/') + '.png')
@@ -63,9 +86,9 @@ def main() -> int:
         print(f'{md.name}: {webp.stat().st_size // 1024}KB (원본 {png.stat().st_size // 1024}KB)')
     if check:
         if todo:
-            print('WebP 로 바꿀 PNG hero 가 남았습니다:', ', '.join(todo))
+            print('WebP 로 바꾸거나 다시 만들 글이 남았습니다:', ', '.join(todo))
             return 1
-        print('PNG hero 없음')
+        print('남은 PNG hero·어긋난 WebP 없음')
     return 0
 
 

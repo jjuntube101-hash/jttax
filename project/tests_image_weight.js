@@ -16,6 +16,17 @@ const bad = [];
 const warn = [];
 const kb = (rel) => Math.round(fs.statSync(path.join(ROOT, rel.replace(/^\//, ''))).size / 1024);
 const exists = (rel) => fs.existsSync(path.join(ROOT, rel.replace(/^\//, '')));
+// 화소 크기(머리 바이트만 읽는다) — PNG IHDR, WebP VP8/VP8L/VP8X. 그 밖의 형식은 null(검사 건너뜀)
+function dims(rel) {
+  const b = fs.readFileSync(path.join(ROOT, rel.replace(/^\//, '')));
+  if (b.toString('latin1', 1, 4) === 'PNG') return [b.readUInt32BE(16), b.readUInt32BE(20)];
+  if (b.toString('latin1', 0, 4) !== 'RIFF' || b.toString('latin1', 8, 12) !== 'WEBP') return null;
+  const chunk = b.toString('latin1', 12, 16);
+  if (chunk === 'VP8 ') return [b.readUInt16LE(26) & 0x3fff, b.readUInt16LE(28) & 0x3fff];
+  if (chunk === 'VP8L') return [1 + (b[21] | ((b[22] & 0x3f) << 8)), 1 + ((b[22] >> 6) | (b[23] << 2) | ((b[24] & 0x0f) << 10))];
+  if (chunk === 'VP8X') return [1 + b.readUIntLE(24, 3), 1 + b.readUIntLE(27, 3)];
+  return null;
+}
 
 const SRC = path.join(__dirname, 'insights');
 let webpCount = 0;
@@ -33,7 +44,14 @@ for (const name of fs.readdirSync(SRC).filter((n) => n.endsWith('.md')).sort()) 
     webpCount++;
     if (kb(hero) > 300) bad.push(`${name}: hero WebP 가 ${kb(hero)}KB 입니다(300KB 이하)`);
     if (!share) { bad.push(`${name}: hero 가 WebP 인데 공유용 heroShare(원본 PNG/JPG)가 없습니다`); continue; }
+    if (share.replace(/\.[a-z]+$/, '') !== hero.replace(/\.[a-z]+$/, '')) bad.push(`${name}: heroShare(${share})가 hero(${hero})와 같은 이름의 원본이 아닙니다`);
     if (!exists(share)) bad.push(`${name}: heroShare 파일이 없습니다 — ${share}`);
+    else {
+      // 원본을 갈아 끼우고 WebP 를 다시 만들지 않으면 화면과 공유가 다른 그림이 된다 — 화소 크기로 잡는다 (Codex R1-F1)
+      const a = dims(hero), b = dims(share);
+      if (a && b && (a[0] !== b[0] || a[1] !== b[1])) bad.push(`${name}: hero WebP(${a.join('x')})와 원본(${b.join('x')})의 크기가 다릅니다 — python project/scripts/build-insight-webp.py --refresh`);
+      if (!a) bad.push(`${name}: hero WebP 크기를 읽지 못했습니다 — 손상된 파일인지 확인하세요`);
+    }
     const page = path.join(ROOT, 'insights', slug + '.html');
     if (!fs.existsSync(page)) { bad.push(`${name}: 글 페이지 insights/${slug}.html 이 없습니다 — npm run build`); continue; }
     const html = fs.readFileSync(page, 'utf8');
