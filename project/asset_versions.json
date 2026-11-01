@@ -4,16 +4,16 @@
     "sha256": "c21900464445e08002cf95732d6531cea1a1fa499ebe972029131c8ee4b46748"
   },
   "project/src/styles.css": {
-    "v": "33",
-    "sha256": "de95af77efd3442ea6997ef80805eef43c073ee494762168621cb4df94f7644d"
+    "v": "34",
+    "sha256": "8aaf0d18c4a827d236231ea8f74d93e3f52f98a16e060b13c37dca019769abec"
   },
   "project/src/redesign.css": {
     "v": "54",
     "sha256": "deea2b11f70364be2c8de359dbea2fa694ca9c453203b3298310d15e29bc9f62"
   },
   "project/src/colors_and_type.css": {
-    "v": "3",
-    "sha256": "bdeb321ef20ab7313a3181a3500024d341285e0ccf518b81ed54e86b9d05575c"
+    "v": "4",
+    "sha256": "23bd50398bfe4eafee9464f7c27dcc88b086c5f31b0f4645db9f759d856d6311"
   },
   "project/assets/og-image.png": {
     "v": "2",

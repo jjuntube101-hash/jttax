@@ -4,18 +4,10 @@
    ========================================================= */
 
 /* ---------- Webfonts ---------- */
-/* Pretendard (body KR) — open source */
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
-
-/* Helvetica Neue is system-only. For web, we fall back gracefully and
-   substitute with Inter which has similar neo-grotesque metrics. */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap");
-
-/* Headline KR — Sandoll 격동고딕2 is a paid display face.
-   Substituted with Black Han Sans (free, Google Fonts) — a heavy, rigid,
-   square-ish Korean display face that preserves the industrial, blocky
-   character of the original. FLAG: swap to the real Sandoll file when licensed. */
-@import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap");
+/* 261101 SEO 2-6: 외부 웹폰트 @import 3개(jsdelivr Pretendard·Google Inter·Black Han Sans)를 걷어 냈다.
+   renewal.css 가 네 글꼴 변수(--font-sans-kr·-en·--font-display-kr·-en)를 모두 자체 호스팅
+   «JT Pretendard» 서브셋으로 덮어써 공개 면에서는 받기만 하고 쓰이지 않았다(CSS 사슬 세 번째 단계라 늦게 요청됨).
+   아래 변수 정의는 renewal.css 를 싣지 않는 내부 화면(project/dev)용 폴백으로 남긴다 — 그 화면은 시스템 폰트로 보인다. */
 
 :root {
   /* ---------- Brand palette — CI Monochrome (HEAZ 가이드 정색) ----------

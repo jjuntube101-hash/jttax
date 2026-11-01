@@ -1,9 +1,28 @@
 /* JT rebuild preview. Load AFTER styles.css and redesign.css.
    This file owns presentation only: calculator logic and state colors remain intact.
    Shared legacy tokens allow the same sheet to skin generated static templates. */
+/* 261101 SEO 2-6: 원본 가변 폰트(약 2.06MB) 대신 서브셋(약 0.5MB — 완성형 한글 2,350자 + 사이트 원문 글자 + 영문·기호).
+   만들기·갱신 = project/scripts/build-font-subset.py, 원문 글자 누락 검사 = tests_font_subset.js.
+   서브셋에 없는 드문 글자는 글꼴 목록 다음 순서(시스템 한글 폰트)로 보인다.
+   «Pretendard»·«Pretendard Variable» 이름도 같은 파일로 선언한다 — 부팅 화면·앱 오류 화면이 그 이름을 직접 쓰고,
+   외부 Pretendard CSS 를 걷어 냈기 때문이다. 주소가 같아 한 번만 내려받는다. */
 @font-face {
   font-family: "JT Pretendard";
-  src: url("../assets/fonts/PretendardVariable.woff2") format("woff2");
+  src: url("../assets/fonts/PretendardVariable-core.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pretendard";
+  src: url("../assets/fonts/PretendardVariable-core.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url("../assets/fonts/PretendardVariable-core.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
