@@ -7,7 +7,8 @@ excerpt: 현금 없이 받은 협찬 제품도 사업 수입이 될 수 있습�
 slug: creator-sponsored-product-value
 author: 제이티 세무법인
 lawChecked: 2026-10-07
-hero: /project/assets/insights/creator-sponsored-product-value-hero.png
+hero: /project/assets/insights/creator-sponsored-product-value-hero.webp
+heroShare: /project/assets/insights/creator-sponsored-product-value-hero.png
 heroAlt: 촬영용 카메라 앞 협찬 제품 상자와 가격표를 돋보기로 살피는 컬러 일러스트
 heroCaption: 협찬 제품의 계약과 가격 자료를 확인하는 상황을 AI로 연출한 일러스트입니다. 실제 고객이나 거래 자료가 아닙니다.
 ---

@@ -7,7 +7,8 @@ excerpt: 애드센스 입금내역만으로 영세율 요건을 모두 확인할
 slug: adsense-zero-rate-evidence
 author: 제이티 세무법인
 lawChecked: 2026-10-12
-hero: /project/assets/insights/adsense-zero-rate-evidence-hero.png
+hero: /project/assets/insights/adsense-zero-rate-evidence-hero.webp
+heroShare: /project/assets/insights/adsense-zero-rate-evidence-hero.png
 heroAlt: 영상 제작 장비와 지구본 옆에 계약·정산·은행 자료를 나란히 펼친 코발트·청록·주황 컬러 일러스트
 heroCaption: 해외 플랫폼 거래의 자료 대조를 AI로 연출한 일러스트입니다. 실제 고객이나 거래 자료가 아닙니다.
 ---

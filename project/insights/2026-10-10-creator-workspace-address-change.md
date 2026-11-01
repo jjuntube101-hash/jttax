@@ -7,7 +7,8 @@ excerpt: 작업실을 실제로 이전했다면 사업자등록 정정을 확인
 slug: creator-workspace-address-change
 author: 제이티 세무법인
 lawChecked: 2026-10-10
-hero: /project/assets/insights/creator-workspace-address-change-hero.png
+hero: /project/assets/insights/creator-workspace-address-change-hero.webp
+heroShare: /project/assets/insights/creator-workspace-address-change-hero.png
 heroAlt: 집 안 편집 공간에서 새 촬영 작업실로 장비와 상자를 옮기는 모습을 표현한 코발트·청록 컬러 일러스트
 heroCaption: 크리에이터의 작업실 이전을 AI로 연출한 일러스트입니다. 실제 고객이나 사업장 사진이 아닙니다.
 ---

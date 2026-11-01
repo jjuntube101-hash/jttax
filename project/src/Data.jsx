@@ -265,7 +265,7 @@ window.JT_DATA = {
         initials: '李',
         role: 'MANAGING PARTNER · 대표세무사',
         name: '이현준',
-        photo: '/project/assets/people/rebuild/lee-hyunjun.png',
+        photo: '/project/assets/people/rebuild/lee-hyunjun.jpg',
         titleKr: '사무소 운영 · 기업 자문 · 세무 신고',
         summary: '2020년 제이티세무회계를 열어 운영했습니다. 사업자의 세무 신고와 기업 자문, 사업 구조 검토를 다루며 세법 강의·저술도 이어갑니다.',
         scope: [

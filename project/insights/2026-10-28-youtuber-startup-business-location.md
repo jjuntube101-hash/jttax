@@ -7,7 +7,8 @@ excerpt: 유튜버의 등록 주소와 실제 업무 장소가 다르거나 작�
 slug: youtuber-startup-business-location
 author: 제이티 세무법인
 lawChecked: 2026-10-28
-hero: /project/assets/insights/youtuber-startup-business-location-hero.png
+hero: /project/assets/insights/youtuber-startup-business-location-hero.webp
+heroShare: /project/assets/insights/youtuber-startup-business-location-hero.png
 heroAlt: 창업 당시 장소, 실제 작업 공간, 이전 이력을 함께 확인하는 유튜버 사업장 안내
 heroCaption: AI로 제작한 설명용 일러스트입니다. 실제 사업장이나 서류가 아니며 중요한 조건은 본문에서 확인할 수 있습니다.
 ---

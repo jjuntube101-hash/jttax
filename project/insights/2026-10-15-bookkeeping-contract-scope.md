@@ -7,7 +7,8 @@ excerpt: 기장료 견적을 비교할 때 확인할 월 장부 정리, 연간 �
 slug: bookkeeping-contract-scope
 author: 제이티 세무법인
 lawChecked: 2026-10-15
-hero: /project/assets/insights/bookkeeping-contract-scope-hero.png
+hero: /project/assets/insights/bookkeeping-contract-scope-hero.webp
+heroShare: /project/assets/insights/bookkeeping-contract-scope-hero.png
 heroAlt: 기장료 비교 전에 장부 정리, 신고 범위, 자료 전달을 확인하는 안내
 heroCaption: 자료 확인 순서를 표현한 AI 생성 시각자료입니다. 핵심 내용은 아래 본문에서도 확인할 수 있습니다.
 ---

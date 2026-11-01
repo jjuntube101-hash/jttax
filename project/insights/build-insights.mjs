@@ -144,6 +144,12 @@ async function loadArticles() {
       if (!/^\/project\/assets\/insights\/[a-z0-9-]+\.(png|jpg|webp)$/.test(meta.hero) || !meta.heroAlt || !meta.heroCaption) throw new Error(`[hero] ${f}: 로컬 이미지 경로·alt·캡션 필요`);
       await readFile(join(REPO_ROOT, meta.hero.slice(1)));
     }
+    // heroShare: 공유 미리보기(og·twitter·JSON-LD)용 원본. hero 를 WebP 로 줄여 화면에 쓰고,
+    // SNS 호환·기존 공유 캐시를 위해 원본 PNG 를 여기에 둔다 (261101 이미지 압축, project/scripts/build-insight-webp.py)
+    if (meta.heroShare) {
+      if (!meta.hero || !/^\/project\/assets\/insights\/[a-z0-9-]+\.(png|jpg)$/.test(meta.heroShare)) throw new Error(`[heroShare] ${f}: hero 와 함께, 로컬 png/jpg 경로여야 합니다`);
+      await readFile(join(REPO_ROOT, meta.heroShare.slice(1)));
+    }
     if (meta.lawChecked && (!/^\d{4}-\d{2}-\d{2}$/.test(meta.lawChecked) || !body.includes('https://www.law.go.kr/'))) throw new Error(`[lawChecked] ${f}: 확인일과 원문 링크 필요`);
     arts.push({
       slug,
@@ -163,7 +169,7 @@ async function loadArticles() {
       tag: meta.tag || 'INSIGHT',
       excerpt: meta.excerpt || '',
       author: meta.author || '제이티 세무법인',
-      hero: meta.hero || '', heroAlt: meta.heroAlt || '', heroCaption: meta.heroCaption || '',
+      hero: meta.hero || '', heroShare: meta.heroShare || meta.hero || '', heroAlt: meta.heroAlt || '', heroCaption: meta.heroCaption || '',
       lawChecked: meta.lawChecked || '',
       body,
       html: mdToHtml(body),
@@ -295,7 +301,7 @@ function serviceBlock(a) {
 function renderArticlePage(a) {
   const shareUrl = `${SITE}/insights/${a.slug}.html`;
   const esc = escapeHtml;
-  const imageUrl = a.hero ? `${SITE}${a.hero}` : ogImageHref();
+  const imageUrl = a.heroShare ? `${SITE}${a.heroShare}` : ogImageHref();
   const reading = readingTools(a);
   const hubBlock = isAcqHubArticle(a.slug) ? ACQ_HUB_BLOCK : serviceBlock(a);
   const youthBlock = a.slug === 'youth-startup-tax-reduction-2026' ? `<aside aria-label="청년창업 진단과 상담" style="margin:0 0 32px;padding:24px;border:1px solid rgba(0,0,0,.12);background:#FAFAF8;">

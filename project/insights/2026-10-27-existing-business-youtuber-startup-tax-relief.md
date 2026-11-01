@@ -7,7 +7,8 @@ excerpt: 두 국세청 회신을 바탕으로 등록 이력과 실제 창업을 
 slug: existing-business-youtuber-startup-tax-relief
 author: 제이티 세무법인
 lawChecked: 2026-10-27
-hero: /project/assets/insights/existing-business-youtuber-startup-tax-relief-hero.png
+hero: /project/assets/insights/existing-business-youtuber-startup-tax-relief-hero.webp
+heroShare: /project/assets/insights/existing-business-youtuber-startup-tax-relief-hero.png
 heroAlt: 기존 사업자의 유튜브 창업감면 안내 일러스트
 heroCaption: AI로 제작한 설명용 일러스트입니다. 실제 서류가 아니며 중요한 조건은 본문에서 확인할 수 있습니다.
 ---

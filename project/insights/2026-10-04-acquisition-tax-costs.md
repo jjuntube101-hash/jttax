@@ -7,7 +7,8 @@ excerpt: 취득세 과세표준에 반영할 부대비용을 살펴봅니다. �
 slug: acquisition-tax-costs
 author: 제이티 세무법인
 lawChecked: 2026-10-04
-hero: /project/assets/insights/acquisition-tax-costs-hero.png
+hero: /project/assets/insights/acquisition-tax-costs-hero.webp
+heroShare: /project/assets/insights/acquisition-tax-costs-hero.png
 heroAlt: 주택 모형과 여러 비용 항목을 나타낸 청록색·주황색 타일
 heroCaption: 주제 이해를 돕는 AI 생성 연출 이미지입니다. 실제 고객이나 공식 문서의 사진이 아닙니다.
 ---

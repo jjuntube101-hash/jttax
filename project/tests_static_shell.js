@@ -295,7 +295,13 @@ const ROOT = path.join(__dirname, '..');
       bad.push(`${file} — 대표 이미지 파일·alt·캡션이 유효하지 않습니다`);
       continue;
     }
-    articleImages.set(`insights/${slug}.html`, `https://${meta.SITE_HOST}${hero}`);
+    // 공유 이미지 정본 = heroShare(있으면). hero 는 화면용 WebP 로 줄이고 공유는 원본을 쓴다 (261101 이미지 압축)
+    const share = field('heroShare') || hero;
+    if (!/^\/project\/assets\/insights\/[a-z0-9-]+\.(png|jpg|webp)$/.test(share) || !fs.existsSync(path.join(ROOT, share.slice(1)))) {
+      bad.push(`${file} — 공유용 이미지(heroShare) 파일이 유효하지 않습니다`);
+      continue;
+    }
+    articleImages.set(`insights/${slug}.html`, `https://${meta.SITE_HOST}${share}`);
   }
   /* index 는 원고가 아니라 «허브»다 (260921 신설) — 계산기 허브와 같은 예외 */
   listHtml('insights').map((f) => path.basename(f, '.html'))

@@ -7,7 +7,8 @@ excerpt: 사업용 카드 등록만으로 부가세가 모두 공제되지는 �
 slug: business-card-vat-deduction
 author: 제이티 세무법인
 lawChecked: 2026-10-04
-hero: /project/assets/insights/business-card-vat-hero.png
+hero: /project/assets/insights/business-card-vat-hero.webp
+heroShare: /project/assets/insights/business-card-vat-hero.png
 heroAlt: 파란 결제 카드와 영수증을 주황색 돋보기로 살피는 일러스트
 heroCaption: 카드 결제 뒤 증빙을 살피는 상황을 AI로 연출한 일러스트입니다. 실제 고객이나 거래 자료가 아닙니다.
 ---

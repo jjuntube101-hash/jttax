@@ -7,7 +7,8 @@ excerpt: 경리프로그램으로 모은 거래에서 본인 계좌 이체, 카�
 slug: creator-bookkeeping-software-checks
 author: 제이티 세무법인
 lawChecked: 2026-10-18
-hero: /project/assets/insights/creator-bookkeeping-software-checks-hero.png
+hero: /project/assets/insights/creator-bookkeeping-software-checks-hero.webp
+heroShare: /project/assets/insights/creator-bookkeeping-software-checks-hero.png
 heroAlt: 자동으로 모인 거래에서 확인할 내 계좌 이체, 카드대금 중복, 취소·환불 내역
 heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건은 아래 본문에서도 설명합니다.
 ---

@@ -7,7 +7,8 @@ excerpt: 유튜버 손익계산서의 기간·매출·비용을 읽는 순서를
 slug: creator-income-statement-review
 author: 제이티 세무법인
 lawChecked: 2026-10-17
-hero: /project/assets/insights/creator-income-statement-review-hero.png
+hero: /project/assets/insights/creator-income-statement-review-hero.webp
+heroShare: /project/assets/insights/creator-income-statement-review-hero.png
 heroAlt: 손익계산서를 읽는 순서: 같은 기간 비교, 매출 내역 확인, 비용 변화 확인
 heroCaption: AI로 제작한 시각자료입니다. 기록할 내용은 아래 본문에서도 확인할 수 있습니다.
 ---

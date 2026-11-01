@@ -7,7 +7,8 @@ excerpt: 미리 뗀 세금과 최종 신고를 구분하고 정산자료를 모�
 slug: coupang-partners-withholding-tax-filing
 author: 제이티 세무법인
 lawChecked: 2026-10-27
-hero: /project/assets/insights/coupang-partners-withholding-tax-filing-hero.png
+hero: /project/assets/insights/coupang-partners-withholding-tax-filing-hero.webp
+heroShare: /project/assets/insights/coupang-partners-withholding-tax-filing-hero.png
 heroAlt: 쿠팡파트너스 3.3%와 신고 안내 일러스트
 heroCaption: AI로 제작한 설명용 일러스트입니다. 실제 서류가 아니며 중요한 조건은 본문에서 확인할 수 있습니다.
 ---

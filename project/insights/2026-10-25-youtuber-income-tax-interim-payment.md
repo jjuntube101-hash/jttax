@@ -7,7 +7,8 @@ excerpt: 유튜버의 종합소득세 중간예납 대상과 고지 내역, 상�
 slug: youtuber-income-tax-interim-payment
 author: 제이티 세무법인
 lawChecked: 2026-10-25
-hero: /project/assets/insights/youtuber-income-tax-interim-payment-hero.png
+hero: /project/assets/insights/youtuber-income-tax-interim-payment-hero.webp
+heroShare: /project/assets/insights/youtuber-income-tax-interim-payment-hero.png
 heroAlt: 유튜버의 종합소득세 중간예납 대상 여부, 고지 내역, 상반기 장부를 확인하는 안내
 heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건은 아래 본문에서도 설명합니다.
 ---

@@ -7,7 +7,8 @@ excerpt: 등록 전에 산 카메라도 일정 요건을 갖추면 부가세 공
 slug: creator-pre-registration-vat
 author: 제이티 세무법인
 lawChecked: 2026-10-06
-hero: /project/assets/insights/creator-pre-registration-vat-hero.png
+hero: /project/assets/insights/creator-pre-registration-vat-hero.webp
+heroShare: /project/assets/insights/creator-pre-registration-vat-hero.png
 heroAlt: 카메라 옆 구매 서류를 돋보기로 살피고 달력을 대조하는 컬러 일러스트
 heroCaption: 등록 전 장비 구매와 서류 확인을 AI로 연출한 일러스트입니다. 실제 거래나 고객 자료가 아닙니다.
 ---

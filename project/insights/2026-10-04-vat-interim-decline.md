@@ -7,7 +7,8 @@ excerpt: 부가세 예정고지와 사업부진 예정신고를 구별합니다.
 slug: vat-interim-decline
 author: 제이티 세무법인
 lawChecked: 2026-10-04
-hero: /project/assets/insights/vat-interim-decline-hero.png
+hero: /project/assets/insights/vat-interim-decline-hero.webp
+heroShare: /project/assets/insights/vat-interim-decline-hero.png
 heroAlt: 달력과 내려가는 주황색 실적 막대로 표현한 부가세 예정고지 검토
 heroCaption: 주제 이해를 돕는 AI 생성 연출 이미지입니다. 실제 고객이나 공식 문서의 사진이 아닙니다.
 ---

@@ -7,7 +7,8 @@ excerpt: 유튜버의 복식부기 기준을 실제 업종과 직전연도 수�
 slug: youtuber-double-entry-threshold
 author: 제이티 세무법인
 lawChecked: 2026-10-19
-hero: /project/assets/insights/youtuber-double-entry-threshold-hero.png
+hero: /project/assets/insights/youtuber-double-entry-threshold-hero.webp
+heroShare: /project/assets/insights/youtuber-double-entry-threshold-hero.png
 heroAlt: 유튜버 복식부기 대상 판단에 필요한 실제 업종, 직전연도 수입, 다른 사업 수익
 heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건은 아래 본문에서도 설명합니다.
 ---

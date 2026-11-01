@@ -7,7 +7,8 @@ excerpt: 직장인 유튜버의 당기 사업 결손금은 장부와 필요경�
 slug: creator-business-loss-salary
 author: 제이티 세무법인
 lawChecked: 2026-10-11
-hero: /project/assets/insights/creator-business-loss-salary-hero.png
+hero: /project/assets/insights/creator-business-loss-salary-hero.webp
+heroShare: /project/assets/insights/creator-business-loss-salary-hero.png
 heroAlt: 회사 급여 자료와 영상 제작 장비 옆에서 장부와 영수증을 대조하는 코발트·청록·주황 컬러 일러스트
 heroCaption: 직장인의 영상 제작 사업 자료 정리를 AI로 연출한 일러스트입니다. 실제 고객이나 거래 자료가 아닙니다.
 ---

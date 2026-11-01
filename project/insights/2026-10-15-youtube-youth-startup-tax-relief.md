@@ -7,7 +7,8 @@ excerpt: 유튜버의 940306·921505 업종 차이와 청년창업 세액감면 
 slug: youtube-youth-startup-tax-relief
 author: 제이티 세무법인
 lawChecked: 2026-10-15
-hero: /project/assets/insights/youtube-youth-startup-tax-relief.png
+hero: /project/assets/insights/youtube-youth-startup-tax-relief.webp
+heroShare: /project/assets/insights/youtube-youth-startup-tax-relief.png
 heroAlt: 유튜버 두 업종의 구분과 창업세액감면 조건, 상담 준비자료 비교
 heroCaption: 유튜버 업종과 상담 준비자료를 정리한 AI 생성 시각자료입니다. 구체적인 감면 적용 여부는 실제 사업 내용과 창업 이력을 함께 확인해야 합니다.
 ---

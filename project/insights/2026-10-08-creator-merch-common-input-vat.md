@@ -7,7 +7,8 @@ excerpt: 면세 영상 제작과 과세 굿즈 판매를 함께 하면 비용의
 slug: creator-merch-common-input-vat
 author: 제이티 세무법인
 lawChecked: 2026-10-08
-hero: /project/assets/insights/creator-merch-common-input-vat-hero.png
+hero: /project/assets/insights/creator-merch-common-input-vat-hero.webp
+heroShare: /project/assets/insights/creator-merch-common-input-vat-hero.png
 heroAlt: 영상 촬영 장비와 판매용 굿즈 사이에서 영수증을 구분하는 코발트·청록·주황 컬러 일러스트
 heroCaption: 영상 제작과 굿즈 판매의 비용을 구분하는 상황을 AI로 연출한 일러스트입니다. 실제 고객이나 거래 자료가 아닙니다.
 ---

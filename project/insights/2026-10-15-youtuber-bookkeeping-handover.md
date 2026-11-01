@@ -7,7 +7,8 @@ excerpt: 직접 신고하던 유튜버가 기장을 맡길 때 필요한 자료�
 slug: youtuber-bookkeeping-handover
 author: 제이티 세무법인
 lawChecked: 2026-10-15
-hero: /project/assets/insights/youtuber-bookkeeping-handover-hero.png
+hero: /project/assets/insights/youtuber-bookkeeping-handover-hero.webp
+heroShare: /project/assets/insights/youtuber-bookkeeping-handover-hero.png
 heroAlt: 유튜버 기장 시작 시 지난 신고, 정산 내역, 확인할 지출을 정리하는 안내
 heroCaption: 자료 확인 순서를 표현한 AI 생성 시각자료입니다. 핵심 내용은 아래 본문에서도 확인할 수 있습니다.
 ---

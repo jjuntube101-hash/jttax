@@ -7,7 +7,8 @@ excerpt: 카메라·PC 구입비의 업무 관련성, 즉시상각과 감가상�
 slug: creator-equipment
 author: 제이티 세무법인
 lawChecked: 2026-10-04
-hero: /project/assets/insights/creator-equipment-hero.png
+hero: /project/assets/insights/creator-equipment-hero.webp
+heroShare: /project/assets/insights/creator-equipment-hero.png
 heroAlt: 카메라와 편집용 노트북 및 시간 흐름을 나타낸 청록색 블록
 heroCaption: 주제 이해를 돕는 AI 생성 연출 이미지입니다. 실제 고객이나 공식 문서의 사진이 아닙니다.
 ---

@@ -7,7 +7,8 @@ excerpt: 쿠팡파트너스 정산내역과 홈택스 지급명세서가 다를 
 slug: coupang-payment-statement-mismatch
 author: 제이티 세무법인
 lawChecked: 2026-10-29
-hero: /project/assets/insights/coupang-payment-statement-mismatch-hero.png
+hero: /project/assets/insights/coupang-payment-statement-mismatch-hero.webp
+heroShare: /project/assets/insights/coupang-payment-statement-mismatch-hero.png
 heroAlt: 쿠팡파트너스 정산내역과 홈택스 자료의 비교 기준, 지급처 자료, 본인 신고서를 차례로 확인하는 안내
 heroCaption: AI로 제작한 설명용 일러스트입니다. 실제 기관 화면이나 고객 서류가 아니며 중요한 조건은 본문에서 확인할 수 있습니다.
 ---

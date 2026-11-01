@@ -7,7 +7,8 @@ excerpt: 과세예고 통지와 납세고지서의 차이를 설명합니다. �
 slug: acquisition-tax-notice
 author: 제이티 세무법인
 lawChecked: 2026-10-04
-hero: /project/assets/insights/acquisition-tax-notice-hero.png
+hero: /project/assets/insights/acquisition-tax-notice-hero.webp
+heroShare: /project/assets/insights/acquisition-tax-notice-hero.png
 heroAlt: 과세 전후의 문서를 구별하는 파란색·청록색 서류와 봉투 이미지
 heroCaption: 주제 이해를 돕는 AI 생성 연출 이미지입니다. 실제 고객이나 공식 문서의 사진이 아닙니다.
 ---

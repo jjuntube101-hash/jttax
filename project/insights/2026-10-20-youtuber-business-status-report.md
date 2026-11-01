@@ -7,7 +7,8 @@ excerpt: 면세 유튜버의 사업장현황신고 대상과 과세·면세 겸�
 slug: youtuber-business-status-report
 author: 제이티 세무법인
 lawChecked: 2026-10-20
-hero: /project/assets/insights/youtuber-business-status-report-hero.png
+hero: /project/assets/insights/youtuber-business-status-report-hero.webp
+heroShare: /project/assets/insights/youtuber-business-status-report-hero.png
 heroAlt: 면세 유튜버의 사업장현황신고를 위한 신고 대상, 기존 신고서, 정산자료 확인
 heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건은 아래 본문에서도 설명합니다.
 ---

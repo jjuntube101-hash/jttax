@@ -7,7 +7,8 @@ excerpt: 유튜버 촬영 의상과 평상복의 경비처리는 실제 사용�
 slug: youtuber-filming-clothing-expenses
 author: 제이티 세무법인
 lawChecked: 2026-10-26
-hero: /project/assets/insights/youtuber-filming-clothing-expenses-hero.png
+hero: /project/assets/insights/youtuber-filming-clothing-expenses-hero.webp
+heroShare: /project/assets/insights/youtuber-filming-clothing-expenses-hero.png
 heroAlt: 촬영 의상 경비를 검토할 때 구입 목적, 실제 사용, 증빙 자료를 확인하는 안내
 heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건은 아래 본문에서도 설명합니다.
 ---

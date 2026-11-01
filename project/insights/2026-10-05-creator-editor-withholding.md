@@ -7,7 +7,8 @@ excerpt: 편집자 외주비는 사업자등록증 유무만으로 처리하지 
 slug: creator-editor-withholding
 author: 제이티 세무법인
 lawChecked: 2026-10-05
-hero: /project/assets/insights/creator-editor-withholding-hero.png
+hero: /project/assets/insights/creator-editor-withholding-hero.webp
+heroShare: /project/assets/insights/creator-editor-withholding-hero.png
 heroAlt: 영상 편집 화면과 계약·지급 서류를 돋보기로 살펴보는 컬러 일러스트
 heroCaption: 편집 외주비의 계약과 증빙 확인을 표현한 AI 생성 일러스트입니다. 실제 고객 자료가 아닙니다.
 ---

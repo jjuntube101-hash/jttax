@@ -7,7 +7,8 @@ excerpt: 발급 다음 단계인 자료 대조와 지급 경로별 세무 검토
 slug: adsense-foreign-exchange-certificate-records
 author: 제이티 세무법인
 lawChecked: 2026-10-27
-hero: /project/assets/insights/adsense-foreign-exchange-certificate-records-hero.png
+hero: /project/assets/insights/adsense-foreign-exchange-certificate-records-hero.webp
+heroShare: /project/assets/insights/adsense-foreign-exchange-certificate-records-hero.png
 heroAlt: 외국환매입증명서와 입금내역 안내 일러스트
 heroCaption: AI로 제작한 설명용 일러스트입니다. 실제 서류가 아니며 중요한 조건은 본문에서 확인할 수 있습니다.
 ---

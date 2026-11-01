@@ -7,7 +7,8 @@ excerpt: 간편장부 대상 여부와 단순경비율 적용은 따로 판단�
 slug: simple-bookkeeping-vs-expense-rate
 author: 제이티 세무법인
 lawChecked: 2026-10-16
-hero: /project/assets/insights/simple-bookkeeping-vs-expense-rate-hero.png
+hero: /project/assets/insights/simple-bookkeeping-vs-expense-rate-hero.webp
+heroShare: /project/assets/insights/simple-bookkeeping-vs-expense-rate-hero.png
 heroAlt: 간편장부 대상자에게도 수입 기록, 비용 기록, 장비와 자산 기록이 필요하다는 안내
 heroCaption: AI로 제작한 시각자료입니다. 기록할 내용은 아래 본문에서도 확인할 수 있습니다.
 ---

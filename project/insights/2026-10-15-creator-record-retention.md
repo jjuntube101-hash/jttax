@@ -7,7 +7,8 @@ excerpt: 세금 신고를 마쳤다고 장부와 증빙을 지워도 되는 것�
 slug: creator-record-retention
 author: 제이티 세무법인
 lawChecked: 2026-10-15
-hero: /project/assets/insights/creator-record-retention-hero.png
+hero: /project/assets/insights/creator-record-retention-hero.webp
+heroShare: /project/assets/insights/creator-record-retention-hero.png
 heroAlt: 영상 촬영 장비 옆에 계약서와 영수증을 담은 컬러 보관함, 노트북과 외장 저장장치를 놓은 일러스트
 heroCaption: 크리에이터의 장부·증빙 정리를 표현한 AI 생성 일러스트입니다. 실제 고객의 자료나 업무 현장을 촬영한 사진이 아닙니다.
 ---

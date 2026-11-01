@@ -7,7 +7,8 @@ excerpt: 유튜브 첫해 적자와 최초 소득 발생 연도를 구분하고,
 slug: youtuber-startup-first-income-year
 author: 제이티 세무법인
 lawChecked: 2026-10-30
-hero: /project/assets/insights/youtuber-startup-first-income-year-hero.png
+hero: /project/assets/insights/youtuber-startup-first-income-year-hero.webp
+heroShare: /project/assets/insights/youtuber-startup-first-income-year-hero.png
 heroAlt: 유튜브 첫해 적자일 때 사업 개시일, 최초 소득, 감면 기간을 차례로 확인하는 안내
 heroCaption: AI로 제작한 설명용 일러스트입니다. 실제 기관 화면이나 고객 서류가 아니며 중요한 조건은 본문에서 확인할 수 있습니다.
 ---

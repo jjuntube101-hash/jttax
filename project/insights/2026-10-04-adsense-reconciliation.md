@@ -7,7 +7,8 @@ excerpt: 애드센스 확정 수익과 통장 입금액이 다른 이유를 설�
 slug: adsense-reconciliation
 author: 제이티 세무법인
 lawChecked: 2026-10-04
-hero: /project/assets/insights/adsense-reconciliation-hero.png
+hero: /project/assets/insights/adsense-reconciliation-hero.webp
+heroShare: /project/assets/insights/adsense-reconciliation-hero.png
 heroAlt: 촬영 카메라와 정산서를 은행 모형에 연결한 크리에이터 수익 정산 이미지
 heroCaption: 주제 이해를 돕는 AI 생성 연출 이미지입니다. 실제 고객이나 공식 문서의 사진이 아닙니다.
 ---

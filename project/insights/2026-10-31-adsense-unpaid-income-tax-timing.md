@@ -7,7 +7,8 @@ excerpt: 애드센스 지급기준액 미달과 지급 보류를 구분하고, �
 slug: adsense-unpaid-income-tax-timing
 author: 제이티 세무법인
 lawChecked: 2026-10-31
-hero: /project/assets/insights/adsense-unpaid-income-tax-timing-hero.png
+hero: /project/assets/insights/adsense-unpaid-income-tax-timing-hero.webp
+heroShare: /project/assets/insights/adsense-unpaid-income-tax-timing-hero.png
 heroAlt: 애드센스 미입금 수익의 수익 상태, 지급 조건, 신고 기간을 확인하는 안내
 heroCaption: AI로 제작한 설명용 일러스트입니다. 실제 기관 화면이나 고객 서류가 아니며 중요한 조건은 본문에서 확인할 수 있습니다.
 ---

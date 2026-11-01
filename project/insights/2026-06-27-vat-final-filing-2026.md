@@ -7,7 +7,8 @@ excerpt: "2026년 1기 부가세 일반 신고기한은 7월 27일이었습니�
 slug: "vat-final-filing-2026"
 author: "제이티 세무법인"
 lawChecked: 2026-10-02
-hero: /project/assets/insights/vat-receipts-editorial.png
+hero: /project/assets/insights/vat-receipts-editorial.webp
+heroShare: /project/assets/insights/vat-receipts-editorial.png
 heroAlt: "파란 서류철 위에 영수증을 펼쳐 부가세 신고 증빙 정리를 표현한 이미지"
 heroCaption: "신고서보다 먼저 살펴볼 것은 거래와 증빙입니다. 설명을 위한 AI 생성 이미지."
 ---

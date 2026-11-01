@@ -7,7 +7,8 @@ excerpt: 사업자통장 개설과 사업용계좌 신고는 다릅니다. 개�
 slug: youtuber-business-bank-account
 author: 제이티 세무법인
 lawChecked: 2026-10-23
-hero: /project/assets/insights/youtuber-business-bank-account-hero.png
+hero: /project/assets/insights/youtuber-business-bank-account-hero.webp
+heroShare: /project/assets/insights/youtuber-business-bank-account-hero.png
 heroAlt: 사업자통장 개설 후 사업용계좌 신고 대상, 신고 내역, 실제 사용을 확인하는 안내
 heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건은 아래 본문에서도 설명합니다.
 ---

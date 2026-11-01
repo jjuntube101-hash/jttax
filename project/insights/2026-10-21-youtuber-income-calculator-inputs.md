@@ -7,7 +7,8 @@ excerpt: 유튜버가 종합소득세 계산기에 넣을 사업소득금액을 
 slug: youtuber-income-calculator-inputs
 author: 제이티 세무법인
 lawChecked: 2026-10-21
-hero: /project/assets/insights/youtuber-income-calculator-inputs-hero.png
+hero: /project/assets/insights/youtuber-income-calculator-inputs-hero.webp
+heroShare: /project/assets/insights/youtuber-income-calculator-inputs-hero.png
 heroAlt: 종합소득세 계산기 입력 전 같은 연도, 수입과 경비, 소득금액을 확인하는 안내
 heroCaption: AI로 제작한 시각자료입니다. 확인할 거래와 조건은 아래 본문에서도 설명합니다.
 ---
