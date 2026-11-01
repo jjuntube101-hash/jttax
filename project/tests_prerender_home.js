@@ -36,21 +36,28 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   const bodyHtml = html.slice(html.indexOf('<body')).replace(/<!--[\s\S]*?-->/g, '');
   const realSrc = [...bodyHtml.matchAll(/<script\b[^>]*\ssrc="([^"]+)"/g)].map((m) => m[1]);
   if (realSrc.length) bad.push('index.html — body 에 src 를 단 script 가 있습니다(첫 화면 전에 요청됨): ' + realSrc.join(', '));
-  if (/<link[^>]+rel="(preload|modulepreload)"[^>]+(app\.js|insight-meta|react)/.test(html)) bad.push('index.html — 앱 스크립트를 preload 합니다(첫 화면 전에 요청됨)');
-  const late = [...bodyHtml.matchAll(/<script type="text\/plain" data-late-script data-src="([^"]+)"(?: data-integrity="([^"]+)")?><\/script>/g)].map((m) => ({ src: m[1], sri: m[2] }));
+  /* 속성 순서와 무관하게 본다 (Codex 2-7b R1-F2) — 태그 하나씩 속성을 읽는다 */
+  const attrsOf = (tag) => Object.fromEntries([...tag.matchAll(/\s([a-z-]+)(?:="([^"]*)")?/g)].map((m) => [m[1], m[2] === undefined ? '' : m[2]]));
+  for (const [tag] of html.matchAll(/<link\b[^>]*>/g)) {
+    const at = attrsOf(tag);
+    if (/^(preload|modulepreload)$/.test(at.rel || '') && /app\.js|insight-meta|react/.test(at.href || '')) bad.push('index.html — 앱 스크립트를 preload 합니다(첫 화면 전에 요청됨): ' + at.href);
+  }
+  const late = [...bodyHtml.matchAll(/<script\b[^>]*>/g)].map((m) => attrsOf(m[0])).filter((at) => 'data-late-script' in at)
+    .map((at) => ({ src: at['data-src'], sri: at['data-integrity'], type: at.type }));
+  for (const l of late) if (l.type !== 'text/plain') bad.push(`index.html — 늦게 받을 목록 태그 ${l.src} 의 type 이 text/plain 이 아닙니다(브라우저가 바로 실행·요청)`);
   const order = ['https://unpkg.com/react@', 'https://unpkg.com/react-dom@', 'project/dist/insight-meta.js?v=', 'project/dist/app.js?v='];
   if (late.length !== order.length || !order.every((o, i) => late[i].src.startsWith(o))) bad.push('index.html — 늦게 받을 스크립트 목록이 react → react-dom → insight-meta → app 네 개가 아닙니다');
   for (const l of late) if (l.src.startsWith('https://') !== !!l.sri) bad.push(`index.html — ${l.src}: 외부 파일에는 SRI(data-integrity)가 있어야 하고 자체 파일에는 없어야 합니다`);
   /* 로더를 실제로 돌려 본다 — 두 갈래 모두:
      (가) FCP 기록을 보는 브라우저: first-contentful-paint 뒤에 시작(그 전 페인트·프레임으로는 시작하지 않음)
      (나) 못 보는 브라우저: 두 번째 프레임에 시작
-     공통: 목록 순서·async=false·SRI 옮김·3초 안전판·두 번 붙이지 않음 */
+     공통: 목록 순서·async=false·SRI 옮김·load 안전판·두 번 붙이지 않음 */
   const loaderSrc = (bodyHtml.match(/<script>\s*(\(function \(\) \{\s*var started[\s\S]*?\}\)\(\);)\s*<\/script>/) || [])[1];
   if (!loaderSrc) bad.push('index.html — 늦게 받는 로더 스크립트가 없습니다');
   else {
     const tags = late.map((l) => ({ getAttribute: (k) => (k === 'data-src' ? l.src : k === 'data-integrity' ? (l.sri || null) : null) }));
     const run = (withPaint) => {
-      const appended = [], frames = [], timers = [], observers = [];
+      const appended = [], frames = [], timers = [], observers = [], loads = [];
       class PO {
         constructor(cb) { this.cb = cb; this.on = false; observers.push(this); }
         observe(o) { if (o.type === 'paint') this.on = true; }
@@ -58,7 +65,7 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
       }
       PO.supportedEntryTypes = withPaint ? ['paint', 'largest-contentful-paint'] : ['largest-contentful-paint'];
       const sandbox = {
-        window: { requestAnimationFrame: true, PerformanceObserver: PO },
+        window: { requestAnimationFrame: true, PerformanceObserver: PO, addEventListener: (ev, f) => { if (ev === 'load') loads.push(f); } },
         PerformanceObserver: PO,
         requestAnimationFrame: (f) => frames.push(f),
         setTimeout: (f, ms) => timers.push({ f, ms }),
@@ -89,9 +96,9 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
       }
       if (appended.length !== 4 || appended.some((s, i) => s.src !== late[i].src || s.async !== false)) bad.push(`로더${tag}가 목록 순서대로 async=false 로 붙이지 않습니다`);
       if (appended.some((s, i) => (late[i].sri ? s.integrity !== late[i].sri || s.crossOrigin !== 'anonymous' : s.integrity))) bad.push(`로더${tag}가 SRI·crossOrigin 을 옮기지 않습니다`);
-      const fb = timers.find((t) => t.ms === 3000);
-      if (!fb) bad.push(`로더${tag}에 3초 안전판이 없습니다`);
-      else { fb.f(); if (appended.length !== 4) bad.push(`로더${tag}가 두 번 시작돼 스크립트를 두 번 붙입니다`); }
+      if (timers.some((t) => t.ms > 0)) bad.push(`로더${tag}가 시간 타이머로 시작합니다 — 느린 기기에서 FCP 보다 먼저 받을 수 있습니다`);
+      if (loads.length !== 1) bad.push(`로더${tag}에 load 안전판이 없습니다`);
+      else { loads[0](); if (appended.length !== 4) bad.push(`로더${tag}가 두 번 시작돼 스크립트를 두 번 붙입니다`); }
     };
     run(true);
     run(false);
