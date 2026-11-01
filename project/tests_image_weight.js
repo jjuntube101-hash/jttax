@@ -20,6 +20,17 @@ const exists = (rel) => fs.existsSync(path.join(ROOT, rel.replace(/^\//, '')));
 function dims(rel) {
   const b = fs.readFileSync(path.join(ROOT, rel.replace(/^\//, '')));
   if (b.toString('latin1', 1, 4) === 'PNG') return [b.readUInt32BE(16), b.readUInt32BE(20)];
+  if (b[0] === 0xff && b[1] === 0xd8) {
+    // JPEG: SOF0~SOF15(C4·C8·CC 제외) 표지의 높이·너비 (Codex R2-F1 — heroShare 는 jpg 도 허용)
+    for (let i = 2; i + 9 < b.length;) {
+      if (b[i] !== 0xff) { i++; continue; }
+      const m = b[i + 1];
+      if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return [b.readUInt16BE(i + 7), b.readUInt16BE(i + 5)];
+      if (m === 0xd8 || m === 0x01 || (m >= 0xd0 && m <= 0xd7) || m === 0xff) { i += m === 0xff ? 1 : 2; continue; }
+      i += 2 + b.readUInt16BE(i + 2);
+    }
+    return null;
+  }
   if (b.toString('latin1', 0, 4) !== 'RIFF' || b.toString('latin1', 8, 12) !== 'WEBP') return null;
   const chunk = b.toString('latin1', 12, 16);
   if (chunk === 'VP8 ') return [b.readUInt16LE(26) & 0x3fff, b.readUInt16LE(28) & 0x3fff];
@@ -49,6 +60,7 @@ for (const name of fs.readdirSync(SRC).filter((n) => n.endsWith('.md')).sort()) 
     else {
       // 원본을 갈아 끼우고 WebP 를 다시 만들지 않으면 화면과 공유가 다른 그림이 된다 — 화소 크기로 잡는다 (Codex R1-F1)
       const a = dims(hero), b = dims(share);
+      if (!b) bad.push(`${name}: 원본 ${share} 의 크기를 읽지 못했습니다 — png/jpg 인지 확인하세요`);
       if (a && b && (a[0] !== b[0] || a[1] !== b[1])) bad.push(`${name}: hero WebP(${a.join('x')})와 원본(${b.join('x')})의 크기가 다릅니다 — python project/scripts/build-insight-webp.py --refresh`);
       if (!a) bad.push(`${name}: hero WebP 크기를 읽지 못했습니다 — 손상된 파일인지 확인하세요`);
     }
