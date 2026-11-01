@@ -127,7 +127,8 @@ export function renderFirstScreen() {
      선렌더에서는 같은 모양의 링크로 바꿔 둔다 — 누르면 예약 화면으로 간다 (Codex 2-7b R1-F3). */
   const bookBtn = /<button class="(jt-btn jt-btn--primary jt-btn--sm jt-nav__book)">([\s\S]*?)<\/button>/;
   if ((header.match(new RegExp(bookBtn.source, 'g')) || []).length !== 1) throw new Error('헤더의 상담 신청 버튼(jt-nav__book)이 하나가 아닙니다');
-  header = header.replace(bookBtn, '<a class="$1" href="/#/booking">$2</a>');
+  // data-prerender-book: 누를 때 예약 유래·CTA 계측을 남기는 index.html 로더의 표지다 (Codex 2-7b R2-F3)
+  header = header.replace(bookBtn, '<a class="$1" href="/#/booking" data-prerender-book>$2</a>');
   const hero = cut(full, '<section class="rn-hero rn-shell">', '</section>', '히어로');
   if (!full.includes('<div class="rn-page rn-home">' + hero)) throw new Error('히어로가 홈 첫 구역이 아닙니다');
   if (!/<p class="rn-lead">/.test(hero)) throw new Error('히어로에 p.rn-lead 가 없습니다');

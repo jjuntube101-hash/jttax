@@ -48,60 +48,111 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   const order = ['https://unpkg.com/react@', 'https://unpkg.com/react-dom@', 'project/dist/insight-meta.js?v=', 'project/dist/app.js?v='];
   if (late.length !== order.length || !order.every((o, i) => late[i].src.startsWith(o))) bad.push('index.html — 늦게 받을 스크립트 목록이 react → react-dom → insight-meta → app 네 개가 아닙니다');
   for (const l of late) if (l.src.startsWith('https://') !== !!l.sri) bad.push(`index.html — ${l.src}: 외부 파일에는 SRI(data-integrity)가 있어야 하고 자체 파일에는 없어야 합니다`);
-  /* 로더를 실제로 돌려 본다 — 두 갈래 모두:
+  /* 로더를 실제로 돌려 본다 — 두 갈래 × 신호 순서 두 가지:
      (가) FCP 기록을 보는 브라우저: first-contentful-paint 뒤에 시작(그 전 페인트·프레임으로는 시작하지 않음)
      (나) 못 보는 브라우저: 두 번째 프레임에 시작
-     공통: 목록 순서·async=false·SRI 옮김·load 안전판·두 번 붙이지 않음 */
+     (다) load 가 먼저 오는 경우(숨은 탭 등): load 직후가 아니라 그 뒤 두 번째 프레임에 시작 (Codex R2-F1·F2)
+     공통: 목록 순서·async=false·SRI 옮김·시간 타이머 없음·두 번 붙이지 않음
+     덧붙여: 선렌더 «상담 신청» 링크 클릭 → 예약 유래·cta_click 기록 (Codex R2-F3) */
   const loaderSrc = (bodyHtml.match(/<script>\s*(\(function \(\) \{\s*var started[\s\S]*?\}\)\(\);)\s*<\/script>/) || [])[1];
   if (!loaderSrc) bad.push('index.html — 늦게 받는 로더 스크립트가 없습니다');
   else {
     const tags = late.map((l) => ({ getAttribute: (k) => (k === 'data-src' ? l.src : k === 'data-integrity' ? (l.sri || null) : null) }));
-    const run = (withPaint) => {
-      const appended = [], frames = [], timers = [], observers = [], loads = [];
+    const load = (withPaint) => {
+      const env = { appended: [], frames: [], timers: [], observers: [], loads: [], clicks: [], store: {}, events: [] };
       class PO {
-        constructor(cb) { this.cb = cb; this.on = false; observers.push(this); }
+        constructor(cb) { this.cb = cb; this.on = false; env.observers.push(this); }
         observe(o) { if (o.type === 'paint') this.on = true; }
         disconnect() { this.on = false; }
       }
       PO.supportedEntryTypes = withPaint ? ['paint', 'largest-contentful-paint'] : ['largest-contentful-paint'];
       const sandbox = {
-        window: { requestAnimationFrame: true, PerformanceObserver: PO, addEventListener: (ev, f) => { if (ev === 'load') loads.push(f); } },
+        window: {
+          requestAnimationFrame: true, PerformanceObserver: PO,
+          addEventListener: (ev, f) => { if (ev === 'load') env.loads.push(f); },
+          gtag: (...a) => env.events.push(a),
+        },
         PerformanceObserver: PO,
-        requestAnimationFrame: (f) => frames.push(f),
-        setTimeout: (f, ms) => timers.push({ f, ms }),
+        requestAnimationFrame: (f) => env.frames.push(f),
+        setTimeout: (f, ms) => env.timers.push({ f, ms }),
+        sessionStorage: { getItem: (k) => (k in env.store ? env.store[k] : null), setItem: (k, v) => { env.store[k] = String(v); } },
         document: {
           querySelectorAll: (sel) => (sel === 'script[data-late-script]' ? tags : []),
           createElement: () => ({}),
-          body: { appendChild: (s) => appended.push(s) },
+          body: { appendChild: (s) => env.appended.push(s) },
+          addEventListener: (ev, f) => { if (ev === 'click') env.clicks.push(f); },
         },
       };
       require('vm').runInNewContext(loaderSrc, sandbox);
-      const tag = withPaint ? '(FCP 기록)' : '(프레임 대체)';
-      if (appended.length) bad.push(`로더${tag}가 시작 신호 전에 스크립트를 붙였습니다`);
-      if (withPaint) {
-        if (frames.length) bad.push('로더(FCP 기록)가 프레임 신호도 함께 겁니다 — FCP 보다 이르게 시작될 수 있습니다');
-        const po = observers.find((o) => o.on);
-        if (!po) { bad.push('로더가 paint 기록을 구독하지 않습니다'); return; }
-        po.cb({ getEntries: () => [{ name: 'first-paint' }] });
-        timers.filter((t) => t.ms === 0).forEach((t) => t.f());
-        if (appended.length) bad.push('로더가 first-paint(글자 없는 페인트)에 시작했습니다 — first-contentful-paint 여야 합니다');
-        po.cb({ getEntries: () => [{ name: 'first-contentful-paint' }] });
-        if (po.on) bad.push('로더가 FCP 뒤에 구독을 끊지 않습니다');
-        timers.filter((t) => t.ms === 0).forEach((t) => t.f());
-      } else {
-        if (frames.length !== 1) { bad.push('로더(프레임 대체)가 프레임 신호를 걸지 않습니다'); return; }
-        frames.shift()();
-        if (appended.length) bad.push('로더(프레임 대체)가 첫 프레임에 붙였습니다 — 두 번째 프레임이어야 합니다');
-        frames.shift()();
-      }
+      return env;
+    };
+    const drainFrames = (env) => { for (let n = 0; env.frames.length && n < 10; n++) env.frames.shift()(); };
+    const check = (env, tag) => {
+      const { appended } = env;
       if (appended.length !== 4 || appended.some((s, i) => s.src !== late[i].src || s.async !== false)) bad.push(`로더${tag}가 목록 순서대로 async=false 로 붙이지 않습니다`);
       if (appended.some((s, i) => (late[i].sri ? s.integrity !== late[i].sri || s.crossOrigin !== 'anonymous' : s.integrity))) bad.push(`로더${tag}가 SRI·crossOrigin 을 옮기지 않습니다`);
-      if (timers.some((t) => t.ms > 0)) bad.push(`로더${tag}가 시간 타이머로 시작합니다 — 느린 기기에서 FCP 보다 먼저 받을 수 있습니다`);
-      if (loads.length !== 1) bad.push(`로더${tag}에 load 안전판이 없습니다`);
-      else { loads[0](); if (appended.length !== 4) bad.push(`로더${tag}가 두 번 시작돼 스크립트를 두 번 붙입니다`); }
+      if (env.timers.some((t) => t.ms > 0)) bad.push(`로더${tag}가 시간 타이머로 시작합니다 — 느린 기기에서 FCP 보다 먼저 받을 수 있습니다`);
+      // 다른 신호가 뒤늦게 와도 다시 붙이지 않는다
+      env.loads.forEach((f) => f()); drainFrames(env);
+      env.observers.forEach((o) => o.cb({ getEntries: () => [{ name: 'first-contentful-paint' }] }));
+      env.timers.filter((t) => t.ms === 0).forEach((t) => t.f());
+      if (appended.length !== 4) bad.push(`로더${tag}가 두 번 시작돼 스크립트를 두 번 붙입니다`);
     };
-    run(true);
-    run(false);
+    for (const withPaint of [true, false]) {
+      const tag = withPaint ? '(FCP 기록)' : '(프레임 대체)';
+      // ① 정상 순서
+      let env = load(withPaint);
+      if (env.appended.length) bad.push(`로더${tag}가 시작 신호 전에 스크립트를 붙였습니다`);
+      if (env.loads.length !== 1) bad.push(`로더${tag}에 load 안전판이 없습니다`);
+      if (withPaint) {
+        if (env.frames.length) bad.push('로더(FCP 기록)가 프레임 신호도 함께 겁니다 — FCP 보다 이르게 시작될 수 있습니다');
+        const po = env.observers.find((o) => o.on);
+        if (!po) { bad.push('로더가 paint 기록을 구독하지 않습니다'); continue; }
+        po.cb({ getEntries: () => [{ name: 'first-paint' }] });
+        env.timers.filter((t) => t.ms === 0).forEach((t) => t.f());
+        if (env.appended.length) bad.push('로더가 first-paint(글자 없는 페인트)에 시작했습니다 — first-contentful-paint 여야 합니다');
+        po.cb({ getEntries: () => [{ name: 'first-contentful-paint' }] });
+        if (po.on) bad.push('로더가 FCP 뒤에 구독을 끊지 않습니다');
+        env.timers.filter((t) => t.ms === 0).forEach((t) => t.f());
+      } else {
+        if (env.frames.length !== 1) { bad.push('로더(프레임 대체)가 프레임 신호를 걸지 않습니다'); continue; }
+        env.frames.shift()();
+        if (env.appended.length) bad.push('로더(프레임 대체)가 첫 프레임에 붙였습니다 — 두 번째 프레임이어야 합니다');
+        env.frames.shift()();
+      }
+      check(env, tag);
+      // ② load 가 FCP·프레임보다 먼저 온다 (숨은 탭에서 load 가 끝난 경우)
+      env = load(withPaint);
+      env.loads.forEach((f) => f());
+      if (env.appended.length) bad.push(`로더${tag}가 load 직후 바로 시작합니다 — 숨은 탭에서는 FCP 보다 먼저 받습니다`);
+      if (withPaint) {
+        // 프레임이 하나만 돌았을 때도 아직이어야 한다
+        if (env.frames.length !== 1) bad.push('로더(FCP 기록)가 load 뒤 프레임 신호를 걸지 않습니다');
+        else { env.frames.shift()(); if (env.appended.length) bad.push('로더(FCP 기록)가 load 뒤 첫 프레임에 붙였습니다 — 두 번째 프레임이어야 합니다'); }
+      }
+      drainFrames(env);
+      check(env, `${tag}·load 먼저`);
+    }
+    // ③ 선렌더 «상담 신청» 링크 클릭 계측
+    {
+      const env = load(true);
+      if (env.clicks.length !== 1) bad.push('로더에 선렌더 상담 신청 클릭 기록이 없습니다');
+      else {
+        const book = { tag: 'book' };
+        const hit = (target) => env.clicks[0]({ target });
+        hit({ closest: () => null });
+        if (Object.keys(env.store).length || env.events.length) bad.push('로더가 상담 신청 링크가 아닌 클릭도 기록합니다');
+        hit({ closest: (sel) => (sel === 'a[data-prerender-book]' ? book : null) });
+        let rec = null; try { rec = JSON.parse(env.store.jt_booking_origin_v1); } catch (_e) {}
+        if (!rec || rec.v !== 1 || rec.location !== 'nav' || rec.route !== 'home' || !rec.at) bad.push('선렌더 상담 신청 클릭이 jt_booking_origin_v1 을 앱과 같은 형식으로 남기지 않습니다');
+        if (!env.events.some((a) => a[0] === 'event' && a[1] === 'cta_click' && a[2] && a[2].channel === 'booking' && a[2].location === 'nav')) bad.push('선렌더 상담 신청 클릭이 cta_click 을 보내지 않습니다');
+        env.store.jt_booking_origin_v1 = JSON.stringify({ v: 1, location: 'hero', route: 'home', at: 'x' });
+        hit({ closest: (sel) => (sel === 'a[data-prerender-book]' ? book : null) });
+        if (JSON.parse(env.store.jt_booking_origin_v1).location !== 'hero') bad.push('선렌더 상담 신청 클릭이 이미 있는 예약 유래를 덮어씁니다 — 세션 최초 1회 고정이어야 합니다');
+      }
+    }
+    // 선렌더 링크가 계측 표지를 달고 있는가
+    if (!/<a class="jt-btn jt-btn--primary jt-btn--sm jt-nav__book" href="\/#\/booking" data-prerender-book>/.test(html)) bad.push('선렌더 헤더의 상담 신청이 계측 표지(data-prerender-book)를 단 /#/booking 링크가 아닙니다');
   }
 
   /* 4) #root 구조 */
