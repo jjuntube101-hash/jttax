@@ -71,6 +71,7 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
           requestAnimationFrame: true, PerformanceObserver: PO,
           addEventListener: (ev, f) => { if (ev === 'load') env.loads.push(f); },
           gtag: (...a) => env.events.push(a),
+          location: { get hash() { return env.hash; } },
         },
         PerformanceObserver: PO,
         requestAnimationFrame: (f) => env.frames.push(f),
@@ -138,21 +139,39 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
       const env = load(true);
       if (env.clicks.length !== 1) bad.push('로더에 선렌더 상담 신청 클릭 기록이 없습니다');
       else {
-        const book = { tag: 'book' };
-        const hit = (target) => env.clicks[0]({ target });
-        hit({ closest: () => null });
+        const link = (where) => ({ getAttribute: (k) => (k === 'data-prerender-book' ? where : null) });
+        const hit = (where, hash) => {
+          env.hash = hash || '';
+          env.clicks[0]({ target: { closest: (sel) => (where && sel === 'a[data-prerender-book]' ? link(where) : null) } });
+        };
+        const rec = () => { try { return JSON.parse(env.store.jt_booking_origin_v1); } catch (_e) { return null; } };
+        hit(null);
         if (Object.keys(env.store).length || env.events.length) bad.push('로더가 상담 신청 링크가 아닌 클릭도 기록합니다');
-        hit({ closest: (sel) => (sel === 'a[data-prerender-book]' ? book : null) });
-        let rec = null; try { rec = JSON.parse(env.store.jt_booking_origin_v1); } catch (_e) {}
-        if (!rec || rec.v !== 1 || rec.location !== 'nav' || rec.route !== 'home' || !rec.at) bad.push('선렌더 상담 신청 클릭이 jt_booking_origin_v1 을 앱과 같은 형식으로 남기지 않습니다');
-        if (!env.events.some((a) => a[0] === 'event' && a[1] === 'cta_click' && a[2] && a[2].channel === 'booking' && a[2].location === 'nav')) bad.push('선렌더 상담 신청 클릭이 cta_click 을 보내지 않습니다');
-        env.store.jt_booking_origin_v1 = JSON.stringify({ v: 1, location: 'hero', route: 'home', at: 'x' });
-        hit({ closest: (sel) => (sel === 'a[data-prerender-book]' ? book : null) });
-        if (JSON.parse(env.store.jt_booking_origin_v1).location !== 'hero') bad.push('선렌더 상담 신청 클릭이 이미 있는 예약 유래를 덮어씁니다 — 세션 최초 1회 고정이어야 합니다');
+        hit('elsewhere');
+        if (Object.keys(env.store).length || env.events.length) bad.push('로더가 nav·hero 밖의 표지 값도 기록합니다 — 앱의 위치 폐집합과 어긋납니다');
+        // 위치·route 별 기록 — 매번 새 세션으로 본다. route 규칙은 Chrome.jsx jtBookingOrigin.route() 와 같다
+        for (const [where, hash, route] of [['nav', '', 'home'], ['hero', '#/', 'home'], ['nav', '#/services/tax-audit', 'services'], ['nav', '#/x@y.z', 'unknown'], ['nav', '#top', 'home']]) {
+          env.store = {}; env.events.length = 0;
+          hit(where, hash);
+          const r = rec();
+          if (!r || r.v !== 1 || r.location !== where || r.route !== route || !r.at) bad.push(`선렌더 상담 신청(${where}, 해시 «${hash}») 클릭이 jt_booking_origin_v1 을 앱과 같은 형식(location ${where}·route ${route})으로 남기지 않습니다`);
+          if (!env.events.some((a) => a[0] === 'event' && a[1] === 'cta_click' && a[2] && a[2].channel === 'booking' && a[2].location === where)) bad.push(`선렌더 상담 신청(${where}) 클릭이 cta_click 을 보내지 않습니다`);
+        }
+        env.store = { jt_booking_origin_v1: JSON.stringify({ v: 1, location: 'faq', route: 'home', at: 'x' }) };
+        hit('nav', '');
+        if ((rec() || {}).location !== 'faq') bad.push('선렌더 상담 신청 클릭이 이미 있는 예약 유래를 덮어씁니다 — 세션 최초 1회 고정이어야 합니다');
       }
     }
-    // 선렌더 링크가 계측 표지를 달고 있는가
-    if (!/<a class="jt-btn jt-btn--primary jt-btn--sm jt-nav__book" href="\/#\/booking" data-prerender-book>/.test(html)) bad.push('선렌더 헤더의 상담 신청이 계측 표지(data-prerender-book)를 단 /#/booking 링크가 아닙니다');
+    // 로더의 route 폐집합이 앱(Chrome.jsx jtBookingOrigin.ROUTES)과 같은가
+    {
+      const listOf = (src, re) => { const m = src.match(re); return m ? (m[1].match(/'([^']+)'/g) || []).map((x) => x.slice(1, -1)) : null; };
+      const appRoutes = listOf(fs.readFileSync(path.join(__dirname, 'src', 'Chrome.jsx'), 'utf8'), /var ROUTES = \[([^\]]*)\]/);
+      const loaderRoutes = listOf(loaderSrc, /var ROUTES = \[([^\]]*)\]/);
+      if (!appRoutes || !loaderRoutes || appRoutes.join() !== loaderRoutes.join()) bad.push(`로더의 ROUTES(${loaderRoutes})가 Chrome.jsx jtBookingOrigin 의 ROUTES(${appRoutes})와 다릅니다`);
+    }
+    // 선렌더 링크가 계측 표지를 달고 있는가 — 헤더(nav)·히어로(hero) 각 하나
+    if ((html.match(/<a class="jt-btn jt-btn--primary jt-btn--sm jt-nav__book" href="\/#\/booking" data-prerender-book="nav">/g) || []).length !== 1) bad.push('선렌더 헤더의 상담 신청이 계측 표지(data-prerender-book="nav")를 단 /#/booking 링크가 아닙니다');
+    if ((html.match(/<a href="\/#\/booking" class="rn-link" data-prerender-book="hero">/g) || []).length !== 1) bad.push('선렌더 히어로의 상담 신청이 계측 표지(data-prerender-book="hero")를 달고 있지 않습니다');
   }
 
   /* 4) #root 구조 */

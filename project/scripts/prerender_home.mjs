@@ -127,11 +127,15 @@ export function renderFirstScreen() {
      선렌더에서는 같은 모양의 링크로 바꿔 둔다 — 누르면 예약 화면으로 간다 (Codex 2-7b R1-F3). */
   const bookBtn = /<button class="(jt-btn jt-btn--primary jt-btn--sm jt-nav__book)">([\s\S]*?)<\/button>/;
   if ((header.match(new RegExp(bookBtn.source, 'g')) || []).length !== 1) throw new Error('헤더의 상담 신청 버튼(jt-nav__book)이 하나가 아닙니다');
-  // data-prerender-book: 누를 때 예약 유래·CTA 계측을 남기는 index.html 로더의 표지다 (Codex 2-7b R2-F3)
-  header = header.replace(bookBtn, '<a class="$1" href="/#/booking" data-prerender-book>$2</a>');
-  const hero = cut(full, '<section class="rn-hero rn-shell">', '</section>', '히어로');
+  /* data-prerender-book="<위치>": 앱이 붙기 전에 누르면 index.html 로더가 jtTrackCta('booking', 위치) 와 같은
+     예약 유래·CTA 계측을 남기는 표지다. 값은 마운트 뒤 같은 자리의 jtTrackCta 위치와 같아야 한다 (Codex 2-7b R2-F3·R3-F3). */
+  header = header.replace(bookBtn, '<a class="$1" href="/#/booking" data-prerender-book="nav">$2</a>');
+  let hero = cut(full, '<section class="rn-hero rn-shell">', '</section>', '히어로');
+  const heroBook = '<a href="/#/booking" class="rn-link">';
+  if (hero.split(heroBook).length !== 2) throw new Error('히어로의 상담 신청 링크(/#/booking)가 하나가 아닙니다');
   if (!full.includes('<div class="rn-page rn-home">' + hero)) throw new Error('히어로가 홈 첫 구역이 아닙니다');
   if (!/<p class="rn-lead">/.test(hero)) throw new Error('히어로에 p.rn-lead 가 없습니다');
+  hero = hero.replace(heroBook, '<a href="/#/booking" class="rn-link" data-prerender-book="hero">');
   /* data-prerender: head 의 규칙 두 개가 «선렌더 히어로에만» 걸리게 하는 표지다
      (홈이 아닌 경로로 들어오면 숨김, 외부 CSS 가 없으면 사진 묶음 숨김). React 가 그린 히어로에는 없다. */
   return { header: skip + header, hero: '<div class="rn-page rn-home" data-prerender="home">' + hero + '</div>' };
