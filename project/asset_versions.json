@@ -11,6 +11,22 @@
     "v": "54",
     "sha256": "deea2b11f70364be2c8de359dbea2fa694ca9c453203b3298310d15e29bc9f62"
   },
+  "project/src/renewal.css": {
+    "v": "8",
+    "sha256": "019b5de83e634f823e84878fb9579f8e1a1d78bfa17de851d79b15ce70e15e64"
+  },
+  "project/src/renewal-pages.css": {
+    "v": "7",
+    "sha256": "7ae34970436480d6dc30f47ceaea9aa44367edf2557aa971b97cc9586c7f9d6c"
+  },
+  "project/src/renewal-flow.css": {
+    "v": "7",
+    "sha256": "4ce47cb122e516c6823c19819a1d76890875ea8dbee9e0114d6066dc51358b85"
+  },
+  "project/src/renewal-motion.css": {
+    "v": "7",
+    "sha256": "3ede535b428b72bc675b0885c7e05495516ca61d4b0cdbdd5263978adb4253c6"
+  },
   "project/src/colors_and_type.css": {
     "v": "4",
     "sha256": "23bd50398bfe4eafee9464f7c27dcc88b086c5f31b0f4645db9f759d856d6311"

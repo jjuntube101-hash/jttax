@@ -22,7 +22,7 @@ if (sha(path.join(FONT_DIR, man.source)) !== man.source_sha256) bad.push(`${man.
 if (man.subset_bytes > 800 * 1024) bad.push(`서브셋이 ${man.subset_bytes} 바이트입니다 (800KB 이하여야 함)`);
 
 /* 원문 글자 — build-font-subset.py 의 SOURCE_GLOBS·SKIP_PREFIX 와 같다 */
-const SOURCE_GLOBS = ['*.html', '*.jsx', '*.mjs', '*.md', '*.css'];
+const SOURCE_GLOBS = ['*.html', '*.jsx', '*.mjs', '*.md', '*.css', '*.js', '*.json'];
 const SKIP_PREFIX = ['node_modules/', 'project/dist/', 'project/dev/'];
 const files = execFileSync('git', ['-C', ROOT, 'ls-files', ...SOURCE_GLOBS], { encoding: 'utf8' }).split('\n')
   .filter((f) => f && !SKIP_PREFIX.some((p) => f.startsWith(p)));

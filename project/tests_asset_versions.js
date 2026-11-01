@@ -28,7 +28,7 @@ if (jsxCount !== 1) throw new Error(`index.html 에서 버전 붙은 번들을 $
 /* CSS 도 같은 사고를 낸다 (260808 추가) — index.html 이 로드하는 전수 +
    styles.css 가 @import 로 끌어오는 것까지. 엔트리만 보면 colors_and_type.css 를
    고쳐도 캐시가 안 깨진다. */
-const reCss = /href="(project\/src\/([A-Za-z0-9_.-]+\.css))\?v=(\d+)"/g;
+const reCss = /href="\/?(project\/src\/([A-Za-z0-9_.-]+\.css))\?v=(\d+)"/g;   // 앞의 / 도 허용 — /project/src/renewal*.css 가 빠져 있었다 (261101 Codex R1-F2)
 while ((m = reCss.exec(html)) !== null) live[m[1]] = { v: m[3] };
 const stylesRel = 'project/src/styles.css';
 if (fs.existsSync(path.join(ROOT, stylesRel))) {

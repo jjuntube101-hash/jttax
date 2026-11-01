@@ -30,7 +30,7 @@ OUT = os.path.join(FONT_DIR, 'PretendardVariable-core.woff2')
 MANIFEST = os.path.join(FONT_DIR, 'pretendard-subset.json')
 
 # 원문 글자를 모을 파일 — tests_font_subset.js 의 SOURCE_GLOBS 와 같아야 한다
-SOURCE_GLOBS = ['*.html', '*.jsx', '*.mjs', '*.md', '*.css']
+SOURCE_GLOBS = ['*.html', '*.jsx', '*.mjs', '*.md', '*.css', '*.js', '*.json']   # js·json: 조례 카드 JSON 처럼 번들에 들어가는 문구 (Codex R1-F1)
 SKIP_PREFIX = ('node_modules/', 'project/dist/', 'project/dev/')
 
 # 기본으로 넣는 구간: 영문·라틴-1·일반 문장부호·화살표·원 숫자·도형·CJK 기호·전각 영숫자·원화 기호

@@ -40,7 +40,7 @@ if (nJsx !== 1) throw new Error(`index.html 에서 번들을 ${nJsx}개 찾았�
 /* .css — <link rel="stylesheet" href="..."> (260808 추가)
    CSS 를 고쳐도 `?v=` 를 안 올리면 재방문자에겐 옛 스타일이 간다. jsx 만 보던
    종전 게이트는 이걸 못 잡았고, 정적 45 장은 `?v=` 자체가 없었다. */
-const reCss = /href="(project\/src\/([A-Za-z0-9_.-]+\.css))\?v=(\d+)"/g;
+const reCss = /href="\/?(project\/src\/([A-Za-z0-9_.-]+\.css))\?v=(\d+)"/g;   // 앞의 / 도 허용 — /project/src/renewal*.css 가 빠져 있었다 (261101 Codex R1-F2)
 while ((m = reCss.exec(html)) !== null) rec[m[1]] = { v: m[3], sha256: sha(m[1]) };
 
 /* @import 로만 들어오는 CSS — styles.css 안의 `@import url("./colors_and_type.css?v=2")`.
