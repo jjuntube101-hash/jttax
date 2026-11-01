@@ -289,15 +289,57 @@
     </address>
     </div></main></div></div>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous" defer></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous" defer></script>
+  <!-- 앱 스크립트는 «첫 화면을 그린 뒤» 요청한다 (261101 SEO 2-7 후속).
+       왜: defer 여도 src 가 달린 script 태그는 HTML 을 읽자마자 미리 읽기(preload scanner)로 요청된다. 그러면 모바일 측정이
+       app.js(613KB)를 첫 화면 경로에 넣어 계산한다(배포 뒤 PSI FCP·LCP 5.4초). 첫 화면은 선렌더 HTML 이 맡으므로
+       스크립트는 그 뒤에 받아도 된다.
+       어떻게: 아래 네 줄은 실행되지 않는 «목록»이다(type="text/plain" 이라 브라우저가 받지도 않는다). 맨 끝 로더가
+       첫 콘텐츠 페인트(FCP) 직후 이 목록을 순서대로 붙인다(async=false → 붙인 순서대로 실행, defer 와 같은 순서 보장).
+       FCP 기록을 못 보는 브라우저는 두 번째 화면 프레임에서, 숨은 탭 등은 늦어도 3초 뒤에 시작한다.
+       ⛔ 순서가 계약이다: react → react-dom → insight-meta → app. data-integrity 는 unpkg 파일의 SRI 다. -->
+  <script type="text/plain" data-late-script data-src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" data-integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"></script>
+  <script type="text/plain" data-late-script data-src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" data-integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1"></script>
   <!-- ⚡ 미리 변환한 번들 하나 (260810). 종전엔 여기서 @babel/standalone 3.0MB 를 받아
        방문자 브라우저가 JSX 27개 1,020KB 를 «매 방문마다» 변환했다. 빌드 때 한 번 하면 된다.
        ⛔ 소스는 project/src/*.jsx 다. 이 파일을 손으로 고치지 말 것 —
           node project/scripts/build_bundle.mjs 로 다시 만든다(순서는 그 스크립트의 ORDER).
        ⛔ 소스를 고쳤으면 «번들도 함께 커밋»해야 한다 — tests_build_fresh.js 가 막는다. -->
-  <script src="project/dist/insight-meta.js?v=1" defer></script>
-  <script src="project/dist/app.js?v=149" defer></script>
+  <script type="text/plain" data-late-script data-src="project/dist/insight-meta.js?v=1"></script>
+  <script type="text/plain" data-late-script data-src="project/dist/app.js?v=149"></script>
+  <script>
+    (function () {
+      var started = false;
+      function start() {
+        if (started) return;
+        started = true;
+        var list = document.querySelectorAll('script[data-late-script]');
+        for (var i = 0; i < list.length; i++) {
+          var s = document.createElement('script');
+          s.src = list[i].getAttribute('data-src');
+          var sri = list[i].getAttribute('data-integrity');
+          if (sri) { s.integrity = sri; s.crossOrigin = 'anonymous'; }
+          s.async = false;
+          document.body.appendChild(s);
+        }
+      }
+      // 시작 신호 = 브라우저가 기록한 첫 콘텐츠 페인트(FCP). 화면 프레임만으로는 이르다 —
+      // 웹폰트를 기다리는 동안(swap 차단 구간)은 프레임이 돌아도 글자가 그려진 것이 아니다(로컬 실측: 프레임 신호가 FCP 보다 50~80ms 앞섰다).
+      // FCP 기록을 못 보는 브라우저는 두 번째 프레임으로 대신한다.
+      var onPaint = false;
+      try {
+        if (window.PerformanceObserver && PerformanceObserver.supportedEntryTypes && PerformanceObserver.supportedEntryTypes.indexOf('paint') >= 0) {
+          var po = new PerformanceObserver(function (l) {
+            var e = l.getEntries();
+            for (var i = 0; i < e.length; i++) if (e[i].name === 'first-contentful-paint') { po.disconnect(); setTimeout(start, 0); return; }
+          });
+          po.observe({ type: 'paint', buffered: true });
+          onPaint = true;
+        }
+      } catch (e) {}
+      if (!onPaint && window.requestAnimationFrame) requestAnimationFrame(function () { requestAnimationFrame(start); });
+      setTimeout(start, 3000);   // 숨은 탭·페인트가 늦는 경우의 안전판
+    })();
+  </script>
 </body>
 </html>
 

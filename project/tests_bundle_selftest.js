@@ -117,13 +117,13 @@ console.log('[번들 게이트 자기시험] 결함 주입 → 잡히는지 확�
 
 시험('NC-6 @babel/standalone 을 되살림 (3.0MB 를 다시 받는다)',
   'index',
-  (s) => s.replace('<script src="project/dist/app.js',
+  (s) => s.replace('<script type="text/plain" data-late-script data-src="project/dist/app.js',
     '<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>\n  <script src="project/dist/app.js'),
   '@babel/standalone 을 안 받는다');
 
 시험('NC-7 text/babel 스크립트 부활 (Babel 이 다시 필요해진다)',
   'index',
-  (s) => s.replace('<script src="project/dist/app.js',
+  (s) => s.replace('<script type="text/plain" data-late-script data-src="project/dist/app.js',
     '<script type="text/babel">const x = 1;</script>\n  <script src="project/dist/app.js'),
   'text/babel 스크립트가 없다');
 
