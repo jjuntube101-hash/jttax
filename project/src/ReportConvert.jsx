@@ -147,10 +147,80 @@ function JTConvertBanner({ setRoute, urgent, reportType, reportSummary, reportDe
 window.JTConvertBanner = JTConvertBanner;
 
 // ===== 2. 리드 캡처 (이메일로 결과 받기) =====
-function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
+/* 261101: 사무소에 온 접수 메일에서 «고객이 무엇을 원하는지»가 보이지 않았다 — 폼이 묻지 않았기
+   때문이다. 상담 희망 내용(필수)·연락 희망 방법·시간(선택)을 받고, 메일은 직원이 첫 화면에서
+   판단할 순서(요청 → 회신기한 → 원하는 것 → 고객 → 고객 메모 → 계산 미반영 항목)로 싣는다. */
+const LEAD_TOPICS = [
+  ['filing', '신고 대행을 맡기고 싶어요'],
+  ['saving', '세금을 줄이는 방법이 궁금해요'],
+  ['check', '계산 결과가 맞는지 확인하고 싶어요'],
+  ['other', '기타 (아래에 적어 주세요)'],
+];
+const LEAD_METHODS = ['전화', '문자', '카카오톡', '이메일'];
+const LEAD_TIMES = ['언제든', '오전', '오후', '저녁(18시 이후)'];
+
+function jtFormatPhone(raw) {
+  /* 내선·부가 설명이 섞이면 숫자를 합치지 않고 원문 그대로 둔다(Codex R2-F4) */
+  if (!/^[\d\s\-().+]*$/.test(String(raw || '').trim())) return String(raw || '').trim();
+  const d = String(raw || '').replace(/\D/g, '');
+  if (/^02\d{7,8}$/.test(d)) return d.replace(/^(02)(\d{3,4})(\d{4})$/, '$1-$2-$3');
+  if (/^0\d{9,10}$/.test(d)) return d.replace(/^(0\d{2})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+  return String(raw || '').trim();
+}
+
+/* 화면 약속은 «영업일 기준 24시간»이다 — 주말만 건너뛴다(공휴일은 반영하지 못해 그렇게 적는다) */
+function jtLeadDeadline(now) {
+  const d = new Date(now.getTime());
+  d.setDate(d.getDate() + 1);
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getMonth() + 1}/${d.getDate()}(${['일','월','화','수','목','금','토'][d.getDay()]}) ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/* 같은 방문(접수ID)·같은 계산 «결과»·같은 이메일을 두 번 메일로 보내지 않기 위한 표시 —
+   회신 요청이 먼저 가면 PDF 저장은 전송을 생략한다. 세션 안에서만 의미가 있어 sessionStorage 에 둔다.
+   ⚠️ 키에 결과(진단요약)가 없으면 같은 계산기에서 «다시 계산한» 새 결과도 생략됐고, 이메일을 대조하지
+   않으면 다른 주소를 적어도 «이미 전달됨»이라 안내했다 (Codex R1-F1·F2). 저장값은 이메일의 해시뿐이다. */
+/* 32비트 하나로는 서로 다른 이메일이 같은 값이 될 수 있어 두 가지 해시를 잇는다(Codex R2-F2) */
+function jtHash(s) {
+  let h = 5381, f = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    h = ((h * 33) ^ c) >>> 0;
+    f = Math.imul(f ^ c, 0x01000193) >>> 0;
+  }
+  return h.toString(36) + '.' + f.toString(36);
+}
+function jtLeadKey(reportType, reportSummary) {
+  let sid = '';
+  try { sid = (window.jtAttributionFields('x') || {}).접수ID || ''; } catch (_e) {}
+  if (!sid) return '';                        // 접수ID 를 모르면 생략 판정을 하지 않는다(보내는 쪽으로)
+  return 'jt_lead_sent:' + sid + ':' + jtHash(String(reportType || '') + '|' + String(reportSummary || ''));
+}
+function jtEmailTag(email) { return jtHash(String(email || '').trim().toLowerCase()); }
+function jtMarkLeadSent(reportType, reportSummary, kind, email) {
+  const k = jtLeadKey(reportType, reportSummary);
+  if (!k) return;
+  try { sessionStorage.setItem(k, kind + ':' + jtEmailTag(email)); } catch (_e) {}
+}
+/* 같은 결과·같은 이메일로 이미 보낸 종류('lead'|'pdf')를 돌려준다. 다르면 '' */
+function jtLeadSentKind(reportType, reportSummary, email) {
+  const k = jtLeadKey(reportType, reportSummary);
+  if (!k) return '';
+  let v = '';
+  try { v = sessionStorage.getItem(k) || ''; } catch (_e) { return ''; }
+  const [kind, tag] = v.split(':');
+  return tag && tag === jtEmailTag(email) ? kind : '';
+}
+
+function JTConvertLeadCapture({ reportType, reportSummary, reportDetail, reportNotes, reportCaveats }) {
   const [email, setEmail] = useCvtState('');
   const [name, setName] = useCvtState('');
   const [phone, setPhone] = useCvtState('');
+  const [topic, setTopic] = useCvtState('');
+  const [topicNote, setTopicNote] = useCvtState('');
+  const [method, setMethod] = useCvtState('');
+  const [time, setTime] = useCvtState('');
   const [agree, setAgree] = useCvtState(false);
   /* §28의8①1호 — 국외 이전은 «별도의» 동의라 agree 와 합치면 안 된다 (260809 결재 안 A) */
   const [agreeIntl, setAgreeIntl] = useCvtState(false);
@@ -158,23 +228,40 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
   const [done, setDone] = useCvtState(false);
   const [err, setErr] = useCvtState('');
 
-  const canSend = email.includes('@') && name.trim() && phone.trim() && agree && agreeIntl && !sending;
+  const canSend = email.includes('@') && name.trim() && phone.trim() && topic && agree && agreeIntl && !sending;
 
   const send = async () => {
     if (!canSend) return;
     setSending(true); setErr('');
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
+    const now = new Date();
+    const deadline = jtLeadDeadline(now);
+    const topicLabel = (LEAD_TOPICS.find(t => t[0] === topic) || ['', topic])[1].replace(/\s*\(.*\)$/, '');
+    const note = topicNote.trim().slice(0, 500);
+    const contact = [method, time].filter(Boolean).join(' · ');
+    const memo = String(reportNotes || '').trim();
+    const caveats = (reportCaveats || []).filter(Boolean);
+    const pdfFirst = jtLeadSentKind(reportType, reportSummary, email) === 'pdf';
+    /* Web3Forms 는 받은 순서대로 메일에 찍는다 — 직원이 위에서부터 읽고 판단할 순서로 둔다.
+       코드 값(구분)·유입 정보는 맨 아래로 내린다. */
     const payload = {
-      _subject: `[JT 리포트 결과 요청] ${reportType} · ${name}`,
-      구분: 'REPORT_LEAD',
-      리포트유형: reportType,
+      _subject: `[상담요청] ${reportType} · ${name} 님 · 회신기한 ${deadline}`,
+      요청내용: '담당 세무사 검토 후 회신 (고객 화면 안내: 영업일 기준 24시간 이내 연락)',
+      회신기한: `${deadline} (주말만 제외한 기준 — 공휴일이 끼면 그만큼 늦춰짐)`,
+      상담희망내용: topicLabel + (note ? ' / ' + note : ''),
       성명: name,
+      연락처: jtFormatPhone(phone),
       이메일: email,
-      연락처: phone,
+      연락희망: contact || '선택 안 함',
+      고객메모: memo || '없음',
+      계산_미반영_확인필요: caveats.length ? caveats.map(c => '⚠ ' + c).join('\n') : '없음',
+      리포트유형: reportType,
       진단요약: reportSummary || '(요약 없음)',
       상세입력_및_분석: reportDetail || '(상세 없음)',
-      접수시각: new Date().toLocaleString('ko-KR'),
+      ...(pdfFirst ? { 비고: '같은 접수번호로 «PDF 저장» 메일(이메일·진단요약만)이 먼저 왔습니다 — 이 메일이 전체 내용입니다.' } : {}),
+      접수시각: now.toLocaleString('ko-KR'),
       ...window.jtAttributionFields('report_lead'),
+      구분: 'REPORT_LEAD',
     };
     /* 전환 이벤트·완료 화면을 «전송 성공 이후»로 옮겼다 (260808) — 상담 예약 폼과 같은
        이유다. 실패한 접수를 전환으로 세면 수치가 부풀고, mailto 는 열렸는지조차 알 수
@@ -185,12 +272,14 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
         const res = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: {'Content-Type': 'application/json', Accept: 'application/json'},
-          body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, from_name: name || '홈페이지 리포트 접수', replyto: email || '', ...payload }),
+          // _subject 는 제목으로만 쓴다 — 본문에 한 번 더 찍히지 않게 뺀다
+          body: JSON.stringify((({ _subject, ...fields }) => ({ access_key: w3fKey, subject: _subject, from_name: (name ? name + ' (홈페이지 상담요청)' : '홈페이지 상담요청'), replyto: email || '', ...fields }))(payload)),
         });
         const data = await res.json().catch(() => ({}));
         // 200 + {} 를 성공으로 보면 안 된다 — Web3Forms 는 success 필드로 판정한다
         sent = !!(res.ok && data && data.success === true);
         if (!sent) throw new Error('fail');
+        jtMarkLeadSent(reportType, reportSummary, 'lead', email);
       } else {
         // Fallback: mailto — 열기만 하고, 접수 성공으로 승격하지 않는다
         const body = Object.entries(payload).map(([k,v]) => `${k}: ${v}`).join('\n');
@@ -237,13 +326,40 @@ function JTConvertLeadCapture({ reportType, reportSummary, reportDetail }) {
         <input type="email" placeholder="이메일 *" value={email} onChange={e => setEmail(e.target.value)}
           style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14, minWidth: 0, width: '100%'}}/>
       </div>
+      <fieldset style={{border: 0, padding: 0, margin: '0 0 12px', minWidth: 0}}>
+        <legend style={{fontSize: 14, fontWeight: 600, color: '#333', marginBottom: 8, padding: 0}}>상담 받고 싶은 내용 *</legend>
+        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: 6}}>
+          {LEAD_TOPICS.map(([v, label]) => (
+            <label key={v} style={{display: 'flex', gap: 8, alignItems: 'center', fontSize: 14, color: '#333', cursor: 'pointer', padding: '8px 10px', background: '#fff', border: topic === v ? '1px solid #C7A15B' : '1px solid rgba(0,0,0,0.12)'}}>
+              <input type="radio" name="jt-lead-topic" value={v} checked={topic === v} onChange={() => setTopic(v)}/>
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
+        <textarea placeholder="상황을 한두 줄로 적어 주시면 더 정확히 회신드립니다 (선택) · 예: 임대소득 신고를 처음 해요" value={topicNote} maxLength={500}
+          onChange={e => setTopicNote(e.target.value)} rows={2}
+          style={{marginTop: 8, padding: '10px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14, width: '100%', minWidth: 0, boxSizing: 'border-box', resize: 'vertical', fontFamily: 'inherit'}}/>
+      </fieldset>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: 10, marginBottom: 16}}>
+        <select aria-label="연락 희망 방법 (선택)" value={method} onChange={e => setMethod(e.target.value)}
+          style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14, minWidth: 0, width: '100%'}}>
+          <option value="">연락 희망 방법 (선택)</option>
+          {LEAD_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
+        <select aria-label="연락 희망 시간 (선택)" value={time} onChange={e => setTime(e.target.value)}
+          style={{padding: '12px 14px', border: '1px solid rgba(0,0,0,0.15)', background: '#fff', fontSize: 14, minWidth: 0, width: '100%'}}>
+          <option value="">연락 희망 시간 (선택)</option>
+          {LEAD_TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
+      </div>
       <label style={{display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 13, color: '#5a5a5a', marginBottom: 16, cursor: 'pointer'}}>
         <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} style={{marginTop: 3}}/>
         <span>
           {/* ⚠️ 동의문은 «실제 전송 항목»과 일치해야 한다. 종전엔 성명·연락처·이메일만 적었는데
-              실제 payload 에는 진단요약·상세입력_및_분석(재산·세액 정보)이 함께 갔다 (260806 Codex E P1). */}
+              실제 payload 에는 진단요약·상세입력_및_분석(재산·세액 정보)이 함께 갔다 (260806 Codex E P1).
+              261101: 상담 희망 내용·연락 희망 방법/시간을 받으며 수집 항목에 함께 적는다. */}
           상담 목적 개인정보 수집·이용 및 처리위탁에 동의합니다. (필수)
-          · <strong>수집 항목</strong>: 성명·연락처·이메일 <strong>및 계산에 입력하신 값·계산 결과·분석 내용</strong>
+          · <strong>수집 항목</strong>: 성명·연락처·이메일·상담 희망 내용(선택하신 항목과 적으신 말씀)·연락 희망 방법과 시간(선택) <strong>및 계산에 입력하신 값·계산 결과·분석 내용</strong>
           {/* 260808: 유입 출처를 payload 에 추가하며 고지도 함께 갱신 (Codex R1→R4).
               ⚠️ R4 에서 «이 폼만» 옛 문구로 남아 있던 것이 적발됐다 — 예약폼·PDF·카톡 셋만
               고치고 여기를 빠뜨렸다. 게이트가 동의문을 검사하지 않아 조용히 통과했다.
@@ -445,6 +561,7 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
   const [done, setDone] = useCvtState(false);
   const [sentOk, setSentOk] = useCvtState(false);   // 사무소 전달이 «실제로» 됐는가
   const [askedToSend, setAskedToSend] = useCvtState(false); // 전달을 «요청»하긴 했는가 (미요청 ≠ 실패)
+  const [alreadySent, setAlreadySent] = useCvtState(false); // 위 «회신 요청»으로 이미 전달됨 (중복 전송 생략)
 
   /* ⚠️ PDF 저장은 «동의와 무관한» 서비스다 (260809). 이메일·동의는 「사무소 전달」에만 필요한데
      저장까지 동의에 묶여 있었다 — 그러면 ①아래 고지문의 「거부 시 PDF 저장은 그대로 가능」이
@@ -458,26 +575,32 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
     setSending(true);
     const w3fKey = (window.JT_DATA.integrations && window.JT_DATA.integrations.web3formsKey) || '';
     const payload = {
-      _subject: `[JT 리포트 PDF 요청] ${reportType}`,
-      구분: 'REPORT_PDF',
-      리포트유형: reportType,
+      _subject: `[PDF 저장·이메일만] ${reportType}`,
+      요청내용: 'PDF 저장하며 사무소 전달에 동의 — 이메일·진단요약만 있음(성명·연락처·입력값 없음). 회신은 이메일로.',
       이메일: email,
+      리포트유형: reportType,
       진단요약: reportSummary || '',
       접수시각: new Date().toLocaleString('ko-KR'),
       ...window.jtAttributionFields('report_pdf'),
+      구분: 'REPORT_PDF',
     };
+    /* 261101: 같은 방문에서 «회신 요청»이 이미 갔으면 이 메일은 내용이 적은 중복이다 —
+       사무소엔 한 통만 가게 전송을 생략한다(인쇄는 그대로). */
+    const dup = jtLeadSentKind(reportType, reportSummary, email) === 'lead';
     /* ⚠️ 전송 실패를 삼키고 무조건 「접수됐다」고 말하면 안 된다. 인쇄창은 열렸어도
        사무소에는 아무것도 안 갔을 수 있다 (260806 Codex R4 P1). 두 결과를 분리해 알린다. */
     let sent = false;
     try {
       /* 동의하지 않으셨으면 «아무것도 보내지 않는다» — 인쇄창만 연다 */
-      if (willSend && w3fKey && !w3fKey.includes('REPLACE')) {
-        const res = await fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'}, body: JSON.stringify({ access_key: w3fKey, subject: payload._subject, replyto: email || '', ...payload })});
+      if (willSend && !dup && w3fKey && !w3fKey.includes('REPLACE')) {
+        const res = await fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'}, body: JSON.stringify((({ _subject, ...fields }) => ({ access_key: w3fKey, subject: _subject, from_name: '홈페이지 PDF 저장', replyto: email || '', ...fields }))(payload))});
         const data = await res.json().catch(() => ({}));
         /* ⚠️ 200 + {} 도 성공으로 보면 안 된다 — Web3Forms 는 success 필드로 판정한다 */
         sent = !!(res.ok && data && data.success === true);
+        if (sent) jtMarkLeadSent(reportType, reportSummary, 'pdf', email);
       }
     } catch(_){ sent = false; }
+    setAlreadySent(willSend && dup);
     /* 이 이벤트는 «인쇄창을 여는 행위»를 세는 것이라 실패해도 발화한다(인쇄창은 열린다).
        다만 종전엔 fetch 이전에 발화해 «사무소 도달 여부»를 전혀 알 수 없었다 —
        판정이 끝난 뒤로 옮기고 sent 를 파라미터로 붙여 두 지표를 분리한다 (260808). */
@@ -503,7 +626,9 @@ function JTConvertPdfGate({ reportType, reportSummary }) {
       {done ? (
         /* 인쇄창은 열렸어도 사무소 전달은 실패했을 수 있다 — 두 가지를 나눠 말한다 */
         <p style={{color: '#C7A15B', fontSize: 13, margin: 0}}>
-          {sentOk
+          {alreadySent
+            ? '● 저장 창이 열렸습니다. 같은 계산 결과와 같은 이메일이 위 «결과 회신 요청»으로 이미 담당 세무사에게 전달되어 다시 보내지 않았습니다.'
+            : sentOk
             ? '● 저장 창이 열렸습니다. 남기신 이메일과 진단요약이 담당 세무사에게 전달되어, 같은 사안을 검토해 회신드릴 수 있습니다.'
             : (askedToSend
               ? '● 저장 창이 열렸습니다. 다만 담당 세무사에게는 전달되지 않았습니다(전송 실패) — 회신이 필요하시면 카카오톡이나 전화로 연락해 주세요.'
@@ -546,7 +671,9 @@ function JTCalculationEvidence({engineVersion}) {
 window.JTCalculationEvidence=JTCalculationEvidence;
 
 // ===== 통합 랩퍼 =====
-function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, kakaoSummary, urgent, calcId, completeEligible, precise, quick, engineVersion, calculationReview }) {
+/* reportNotes = 고객이 자유 입력 칸에 적은 말(계산에 반영 안 됨) · reportCaveats = 이 계산이 반영하지
+   못한 것(문자열 배열) — 둘 다 접수 메일 위쪽에 따로 찍어 직원이 놓치지 않게 한다 (261101) */
+function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, reportDetail, reportNotes, reportCaveats, kakaoSummary, urgent, calcId, completeEligible, precise, quick, engineVersion, calculationReview }) {
   // calc_complete — «결과가 확정된» 계산기에서만 발화 (jtCalcComplete 정의는 Report.jsx, 세션당 1회)
   useCvtEffect(function () {
     if ((!calculationReview || calculationReview.can_share === true) && completeEligible === true && calcId && window.jtCalcComplete) {
@@ -559,8 +686,9 @@ function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, repor
   return (
     <>
       <JTCalculationEvidence engineVersion={engineVersion} />
-      <JTConvertBanner setRoute={setRoute} urgent={urgent} reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} kakaoSummary={kakaoSummary} />
-      <JTConvertLeadCapture reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} />
+      {/* 카카오 상담 메일에는 고객메모 칸이 따로 없으니 상세 본문 끝에 붙인다(Codex R2-F1) */}
+      <JTConvertBanner setRoute={setRoute} urgent={urgent} reportType={reportType} reportSummary={reportSummary} reportDetail={String(reportNotes || '').trim() ? (reportDetail || '') + '\n\n■ 고객 메모 (계산 미반영)\n' + String(reportNotes).trim() : reportDetail} kakaoSummary={kakaoSummary} />
+      <JTConvertLeadCapture reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} reportNotes={reportNotes} reportCaveats={reportCaveats} />
       <JTConvertPrecedents reportTag={reportTag} calcId={calcId} />
       <JTConvertTimeSlots setRoute={setRoute} urgent={urgent} />
       <JTConvertPdfGate reportType={reportType} reportSummary={reportSummary} />

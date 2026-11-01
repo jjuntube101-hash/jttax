@@ -201,9 +201,25 @@ function incKoreanAmount(n) {
   return s.trim() + '원';
 }
 
+/* 계산이 반영하지 못한 것 — 접수 메일 위쪽에 따로 찍힌다 (261101). 직원이 결과 금액을
+   그대로 안내하지 않도록, 화면의 ※ 안내와 같은 내용을 메일에도 싣는다. */
+function buildIncomeCaveats(answers) {
+  const C = ['총 세부담은 이미 낸 세금(근로소득 원천징수·3.3% 원천징수·중간예납) 차감 전 금액 — 실제 추가 납부·환급액은 다름'];
+  if ((Number(answers.businessIncome) || 0) > 0) C.push('사업소득은 고객이 입력한 «소득금액(수입−경비)»을 그대로 썼음 — 매출 총액을 넣었는지 확인 필요');
+  if (String(answers.context || '').trim()) C.push('고객 메모의 업종·공제·감면 항목(노란우산공제·기부금 등)은 계산에 반영 안 됨');
+  return C;
+}
+
+/* 엔진에는 고객이 넣은 소득금액을 «총수입, 필요경비 0»으로 넘긴다 — 메일에 그 이름 그대로
+   찍으면 고객이 매출을 넣은 것처럼 읽힌다. 메일에서는 입력값 이름으로 바꿔 적는다. */
+const INC_STEP_MAIL_LABEL = { '사업소득 총수입': '사업소득금액(고객 입력값)' };
+const INC_STEP_MAIL_SKIP = ['사업소득 필요경비', '사업소득금액'];
+
 function buildIncomeDetail(answers, calc) {
   const L = ['■ 고객 입력 정보'];
   INC_QS.forEach(q => {
+    if (q.showIf && !q.showIf(answers)) return;   // 숨겨진 문항(예: 배당 0원인데 배당 종류)의 낡은 답은 싣지 않는다
+    if (q.freeform) return;                       // 자유 입력은 메일 위쪽 «고객메모»에 따로 싣는다
     const val = answers[q.id];
     if (val === undefined || val === null || val === '') return;
     let v = val;
@@ -218,8 +234,12 @@ function buildIncomeDetail(answers, calc) {
     L.push('  · 산출세액: ' + formatWon(calc.calculated) + (calc.rate ? ' (' + calc.rate + ')' : ''));
     L.push('  · 결정세액(세액공제 반영): ' + formatWon(calc.determined));
     L.push('  · 지방소득세(10%): ' + formatWon(calc.local));
-    L.push('  · 총 세부담: ' + formatWon(calc.total));
-    (calc.steps || []).forEach(s => { if (s && s.항목) L.push('    - ' + s.항목 + ': ' + formatWon(s.금액) + (s.조문 ? ' [' + s.조문 + ']' : '')); });
+    L.push('  · 총 세부담: ' + formatWon(calc.total) + ' (이미 낸 세금 차감 전)');
+    L.push('', '■ 단계별 계산');
+    (calc.steps || []).forEach(s => {
+      if (!s || !s.항목 || INC_STEP_MAIL_SKIP.includes(s.항목)) return;
+      L.push('    - ' + (INC_STEP_MAIL_LABEL[s.항목] || s.항목) + ': ' + formatWon(s.금액) + (s.조문 ? ' [' + s.조문 + ']' : ''));
+    });
   }
   return L.join('\n');
 }
@@ -478,8 +498,10 @@ function JTReportIncome({ setRoute, onBack }) {
                   quick={report.quick}
                   reportType="종합소득세 계산"
                   reportTag="BOOKKEEPING"
-                  reportSummary={`과세표준 ${formatWon(calc.taxBase)} · 예상 총부담 ${formatWon(calc.total)}`}
+                  reportSummary={`과세표준 ${formatWon(calc.taxBase)} · 예상 총부담 ${formatWon(calc.total)} (이미 낸 세금 차감 전)`}
                   reportDetail={buildIncomeDetail(answers, calc)}
+                  reportNotes={answers.context}
+                  reportCaveats={buildIncomeCaveats(answers)}
                   kakaoSummary={buildIncomeKakao(answers, calc)}
                   setRoute={setRoute}
                 />

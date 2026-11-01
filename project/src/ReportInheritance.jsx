@@ -477,6 +477,7 @@ function inhFallbackGaps(answers, calc) {
 function buildInhDetail(answers, calc, commentary) {
   const L = ['■ 고객 입력 정보'];
   INHERITANCE_QS.forEach(q => {
+    if (q.showIf && !q.showIf(answers)) return;   // 숨겨진 문항의 낡은 답은 상담 메일에 싣지 않는다 (261101)
     const v = answers[q.id];
     if (v === undefined || v === null || v === '') return;
     let val = v;

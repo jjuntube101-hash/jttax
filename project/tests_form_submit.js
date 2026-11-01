@@ -600,10 +600,62 @@ console.log('\n════ 동의문 ↔ 실제 전송 항목 일치 ═══�
         /const canPrint\s*=\s*!sending\s*;/.test(pdf), true);
       eq('PDF 게이트: 저장 버튼이 canPrint 로만 잠김',
         /disabled=\{!canPrint\}/.test(pdf) && !/disabled=\{!canSend\}/.test(pdf), true);
+      /* 261101: 같은 방문에서 회신 요청이 이미 갔으면(dup) 전송을 생략한다 — 그래도 willSend 가 첫 조건이다 */
       eq('PDF 게이트: 전송은 willSend 로 잠김',
-        /if \(willSend && w3fKey/.test(pdf), true);
+        /if \(willSend && !dup && w3fKey/.test(pdf), true);
+      /* Codex R2-F5: dup 이 상수로 바뀌어도 통과하지 않게 산출식까지 본다 */
+      eq('PDF 게이트: dup 은 같은 결과·같은 이메일의 회신 요청 기록에서만 나옴',
+        /const dup = jtLeadSentKind\(reportType, reportSummary, email\) === 'lead';/.test(pdf), true);
       eq('PDF 게이트: 「미요청」과 「전송 실패」를 구분해 안내',
         /askedToSend/.test(pdf), true);
+      eq('PDF 게이트: 회신 요청이 이미 간 경우를 따로 안내', /alreadySent\s*\n?\s*\?/.test(pdf), true);
+      /* Codex R2-F1: 종합소득세 상세 본문에서 자유 입력을 뺐으니 카카오 상담 메일에는 메모를 붙여 보내야 한다 */
+      eq('카카오 상담 메일: 상세 본문에 고객 메모를 붙임',
+        /<JTConvertBanner[^\n]*reportNotes[^\n]*고객 메모 \(계산 미반영\)/.test(rc), true);
+    }
+
+    /* 261101: 사무소 메일에서 «고객이 원하는 것»이 보이지 않았다. 리드 payload 는 직원이 읽을
+       순서(요청내용 → 회신기한 → 상담희망내용 → 고객 → 고객메모 → 미반영 항목)로 시작하고,
+       코드 값 «구분»은 맨 끝에 둔다. Web3Forms 는 받은 키 순서대로 찍는다. */
+    const leadAt = rc.indexOf('function JTConvertLeadCapture');
+    const leadSeg = leadAt >= 0 ? rc.slice(leadAt, rc.indexOf('const res = await fetch', leadAt)) : '';
+    const pAt = leadSeg.indexOf('const payload = {');
+    const pBody = pAt >= 0 ? leadSeg.slice(pAt, leadSeg.indexOf('\n    };', pAt)) : '';
+    const pKeys = [...pBody.matchAll(/^\s{6}([가-힣_A-Za-z]+)\s*:/gm)].map(m => m[1]);
+    eq('리드 메일: payload 블록을 찾음', pKeys.length > 5, true);
+    eq('리드 메일: 앞쪽 키 순서', pKeys.slice(0, 5).join(','), '_subject,요청내용,회신기한,상담희망내용,성명');
+    eq('리드 메일: 고객메모·미반영 항목을 싣는다', pKeys.includes('고객메모') && pKeys.includes('계산_미반영_확인필요'), true);
+    eq('리드 메일: 코드 값 «구분»은 맨 끝', pKeys[pKeys.length - 1], '구분');
+    eq('리드 메일: _subject 를 본문 필드에서 뺀다', /\(\{ _subject, \.\.\.fields \}\)/.test(rc.slice(leadAt, leadAt + 12000)), true);
+    eq('리드 메일: 성공한 뒤에만 «회신 요청 보냄» 표시', /if \(!sent\) throw new Error\('fail'\);\s*\n\s*jtMarkLeadSent\(reportType, reportSummary, 'lead', email\)/.test(rc), true);
+
+    /* Codex R1-F1·F2: 중복 생략은 «같은 접수ID·같은 결과·같은 이메일»일 때만이어야 한다.
+       문자열이 아니라 함수를 실제로 돌려 본다(가짜 sessionStorage·접수ID). */
+    {
+      const vm = require('vm');
+      const s = rc.indexOf('function jtFormatPhone('), e = rc.indexOf('function JTConvertLeadCapture');
+      const store = {};
+      const ctx = { sid: 'S1', String, sessionStorage: { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); } } };
+      ctx.window = { jtAttributionFields: () => ({ 접수ID: ctx.sid }) };
+      vm.createContext(ctx);
+      vm.runInContext(rc.slice(s, e), ctx);
+      const kind = (t, sum, em) => vm.runInContext(`jtLeadSentKind(${JSON.stringify(t)}, ${JSON.stringify(sum)}, ${JSON.stringify(em)})`, ctx);
+      vm.runInContext(`jtMarkLeadSent('종합소득세 계산', '결과A', 'lead', 'a@x.com')`, ctx);
+      eq('중복 판정: 같은 결과·같은 이메일(대소문자·공백 무시) → lead', kind('종합소득세 계산', '결과A', ' A@X.com '), 'lead');
+      eq('중복 판정: 다시 계산한 다른 결과 → 생략 안 함', kind('종합소득세 계산', '결과B', 'a@x.com'), '');
+      eq('중복 판정: 다른 이메일 → 생략 안 함', kind('종합소득세 계산', '결과A', 'b@x.com'), '');
+      eq('중복 판정: 다른 계산기 → 생략 안 함', kind('양도소득세', '결과A', 'a@x.com'), '');
+      ctx.sid = '';
+      eq('중복 판정: 접수ID 를 모르면 생략 안 함', kind('종합소득세 계산', '결과A', 'a@x.com'), '');
+      eq('중복 판정: 저장값에 이메일 원문이 없음', Object.values(store).some(v => v.includes('@')), false);
+      /* Codex R2-F2: 옛 32비트 해시에서 충돌하던 두 주소 */
+      eq('중복 판정: 해시가 충돌하던 두 이메일을 구분', vm.runInContext(`jtEmailTag('a6@example.test') !== jtEmailTag('gp@example.test')`, ctx), true);
+      /* Codex R2-F4: 내선이 섞이면 숫자를 합치지 않는다 */
+      const ph = (v) => vm.runInContext(`jtFormatPhone(${JSON.stringify(v)})`, ctx);
+      eq('연락처: 휴대전화 하이픈', ph('01012345678'), '010-1234-5678');
+      eq('연락처: 서울 번호 하이픈', ph('02 123 4567'), '02-123-4567');
+      eq('연락처: 내선은 원문 그대로', ph('02-123-4567 ext 89'), '02-123-4567 ext 89');
+      eq('연락처: 설명이 붙으면 원문 그대로', ph('010-1234-5678 (저녁만)'), '010-1234-5678 (저녁만)');
     }
   }
 }
@@ -1044,8 +1096,9 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
           && guardExpr(pg2, 'canNext2') === 'form.name && form.phone',
           ['성명', '연락처', '상담 분야'], ['이메일', '회사·법인명', '문의 내용']],
         ['JT 리포트 회신',
-          guardExpr(rc2, 'canSend') === "email.includes('@') && name.trim() && phone.trim() && agree && agreeIntl && !sending",
-          ['성명', '연락처', '이메일'], []],
+          /* 261101: 상담 받고 싶은 내용(topic)을 필수로 받는다 — 방침 §1 「필수:」에도 적혀야 한다 */
+          guardExpr(rc2, 'canSend') === "email.includes('@') && name.trim() && phone.trim() && topic && agree && agreeIntl && !sending",
+          ['성명', '연락처', '이메일', '상담 받고 싶은 내용'], ['상황 설명', '연락 희망 방법', '시간']],
         ['리포트 PDF 저장', guardExpr(rc2, 'willSend') === "email.includes('@') && agree && agreeIntl",
           /* ⚠️ 진단요약은 사용자가 «입력»하는 항목이 아니라 앱이 자동으로 싣는다 —
              `reportSummary || ''` 라 빈 값도 간다. 방침이 그걸 「필수」라 부르면 사실과 다르다
@@ -1077,6 +1130,13 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
         eq(`처리방침 §1 ${label} 필수 항목 (누락: ${missM.join('·') || '없음'})`, missM.length, 0);
         const wrong = opt.filter(k => req.includes(k));
         eq(`처리방침 §1 ${label}: 선택 항목을 필수로 적지 않음 (${wrong.join('·') || '없음'})`, wrong.length, 0);
+        /* Codex R1-F3: 선택 항목이 «필수에 없다»만 보면, 고지에서 아예 빠져도 통과한다.
+           리포트 회신은 선택 항목도 「선택:」 구간에 실제로 적혀 있어야 한다. */
+        if (label === 'JT 리포트 회신') {
+          const optPart = (line.match(/선택:\s*([^<]*)/) || [, ''])[1];
+          const missO = opt.filter(k => !optPart.includes(k));
+          eq(`처리방침 §1 ${label}: 선택 항목 고지 (누락: ${missO.join('·') || '없음'})`, missO.length, 0);
+        }
       }
       /* ⚠️ 유입 경로 정보를 «보내는 곳»과 방침 문구가 맞는지 (260809 Codex R7 P1).
          desk 두 폼은 jtAttributionFields 를 쓰지 않으므로 그 항목을 고지하면 «허위»가 된다. */
