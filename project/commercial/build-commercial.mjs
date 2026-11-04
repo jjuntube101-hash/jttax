@@ -667,7 +667,6 @@ function orgLdBlock() {
     sameAs: ORG_SAME_AS,
     hasMap: [CONSULT.location.kakaoMapUrl, CONSULT.location.naverMapUrl],
     founder: EXPERTS.map(e => ({ '@type': 'Person', '@id': personId(e.slug), name: e.name, jobTitle: '세무사', url: `${SITE}/experts/${e.slug}.html` })),
-    foundingDate: '2026',
     description: ABOUT.metaDesc,
   };
 }
