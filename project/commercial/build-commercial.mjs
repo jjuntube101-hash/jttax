@@ -111,7 +111,7 @@ const STYLE = `  <style>
     @media(max-width:600px){.jt-cc-grid--experts{grid-template-columns:1fr;}.jt-cc-expert-intro{grid-template-columns:1fr;}.jt-cc-expert-intro .jt-cc-portrait{max-width:180px;}}
     .jt-cc-hook{font-size:19px;font-weight:700;letter-spacing:-0.01em;color:#0B0B0F;margin:4px 0 12px;line-height:1.45;}
     .jt-cc-card .jt-cc-hook{font-size:16px;margin:2px 0 8px;}
-    .jt-cc-tags{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0;padding:0;list-style:none;}
+    .jt-cc-wrap ul.jt-cc-tags{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0;padding:0;list-style:none;}
     .jt-cc-tags li{font-size:12px;line-height:1.5;padding:3px 9px;border-radius:999px;background:#EDEBE5;color:#333;}
     .jt-cc-wrap ul.jt-cc-strengths{list-style:none;padding:0;display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:0;}
     .jt-cc-strengths li{border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:10px 14px;background:#fff;font-size:14px;line-height:1.5;}
@@ -598,7 +598,7 @@ function renderExpertsIndex() {
     const e = expertBySlug(v.slug, 'team-model');
     return `      <a class="jt-cc-card" style="display:block;text-decoration:none;color:#0B0B0F;" href="/experts/${assertSlug(v.slug, 'team-model')}.html">
         <img class="jt-cc-portrait" src="${esc(e.photo)}" alt="${esc(v.name)} 대표세무사" loading="lazy" width="210" height="280">
-        <p style="margin:0 0 4px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;">주로 맡는 일 · ${esc(v.view)}</p>
+        <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#777;">주로 맡는 일 · ${esc(v.view)}</p>
         <h3>${esc(v.name)} 대표세무사</h3>
         <p class="jt-cc-hook">${esc(e.hook)}</p>
         <p>${esc(e.cardLine)}</p>
