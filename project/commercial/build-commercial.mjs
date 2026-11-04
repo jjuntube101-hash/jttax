@@ -109,6 +109,13 @@ const STYLE = `  <style>
     .jt-cc-expert-intro{display:grid;grid-template-columns:180px minmax(0,1fr);gap:24px;align-items:start;}
     .jt-cc-expert-intro .jt-cc-lede{margin-bottom:0;}
     @media(max-width:600px){.jt-cc-grid--experts{grid-template-columns:1fr;}.jt-cc-expert-intro{grid-template-columns:1fr;}.jt-cc-expert-intro .jt-cc-portrait{max-width:180px;}}
+    .jt-cc-hook{font-size:19px;font-weight:700;letter-spacing:-0.01em;color:#0B0B0F;margin:4px 0 12px;line-height:1.45;}
+    .jt-cc-card .jt-cc-hook{font-size:16px;margin:2px 0 8px;}
+    .jt-cc-tags{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0;padding:0;list-style:none;}
+    .jt-cc-tags li{font-size:12px;line-height:1.5;padding:3px 9px;border-radius:999px;background:#EDEBE5;color:#333;}
+    .jt-cc-wrap ul.jt-cc-strengths{list-style:none;padding:0;display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:0;}
+    .jt-cc-strengths li{border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:10px 14px;background:#fff;font-size:14px;line-height:1.5;}
+    .jt-cc-connector{margin:18px 0 0;font-size:15px;line-height:1.7;color:#333;}
     .jt-cc-links{list-style:none;padding:0;}
     .jt-cc-links a{color:#1a1a1a;text-decoration:none;border-bottom:1px solid rgba(0,0,0,.15);}
     .jt-cc-chips{display:flex;gap:8px;flex-wrap:wrap;}
@@ -508,6 +515,7 @@ function renderExpertPage(e) {
   }).join('\n');
   const profileSections = [
     ['실무 경력', e.practice],
+    ['세무조사 대응', e.audits],
     ['자문 · 대외활동', e.advisory],
     ['교육 활동', e.teaching],
     ['저서', e.books],
@@ -526,12 +534,19 @@ function renderExpertPage(e) {
       <div>
         <p style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#999;margin:0 0 8px;">Managing Partner · 대표세무사</p>
         <h1>${esc(e.name)} 대표세무사 · ${esc(e.headline)}</h1>
-        <p class="jt-cc-lede">${esc(e.lede)}</p>
-      </div>
+${e.hook ? `        <p class="jt-cc-hook">${esc(e.hook)}</p>\n` : ''}        <p class="jt-cc-lede">${esc(e.lede)}</p>
+${(e.tags || []).length ? `        <ul class="jt-cc-tags">${e.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>\n` : ''}      </div>
     </div>
 
+${(e.how || []).length ? `    <section class="jt-cc-sec">
+      <h2>이렇게 일합니다</h2>
+      <ul>
+${e.how.map(x => `        <li>${esc(x)}</li>`).join('\n')}
+      </ul>
+    </section>
+` : ''}
     <section class="jt-cc-sec">
-      <h2>주요 실무</h2>
+      <h2>주로 맡는 일</h2>
       <img class="jt-renewal-expert-work" src="${esc(e.photo)}" alt="${esc(e.name)} 대표세무사 업무 모습" width="1536" height="1024" loading="lazy" decoding="async">
       <p style="font-size:16px;line-height:1.7;color:#333;">${esc(e.focus)}</p>
       <div class="jt-cc-chips" style="margin-top:12px;">
@@ -546,6 +561,13 @@ ${entries.map(entry => `        <li>${esc(heading === '저서' ? `『${entry}』
       </ul>
     </section>`).join('\n')}
 
+${(e.forWhom || []).length ? `    <section class="jt-cc-sec">
+      <h2>이런 분께</h2>
+      <ul>
+${e.forWhom.map(x => `        <li>${esc(x)}</li>`).join('\n')}
+      </ul>
+    </section>
+` : ''}
     <div class="jt-cm-close">${esc(e.closing)}</div>
 
 ${DISCLAIMER}
@@ -572,26 +594,48 @@ function renderExpertsIndex() {
       })),
     },
   };
-  const views = TEAM_MODEL.views.map(v => `      <a class="jt-cc-card" style="display:block;text-decoration:none;color:#0B0B0F;" href="/experts/${assertSlug(v.slug, 'team-model')}.html">
-        <img class="jt-cc-portrait" src="${esc(expertBySlug(v.slug, 'team-model').photo)}" alt="${esc(v.name)} 대표세무사" loading="lazy" width="210" height="280">
-        <p style="margin:0 0 4px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;">${esc(v.view)}</p>
+  const views = TEAM_MODEL.views.map(v => {
+    const e = expertBySlug(v.slug, 'team-model');
+    return `      <a class="jt-cc-card" style="display:block;text-decoration:none;color:#0B0B0F;" href="/experts/${assertSlug(v.slug, 'team-model')}.html">
+        <img class="jt-cc-portrait" src="${esc(e.photo)}" alt="${esc(v.name)} 대표세무사" loading="lazy" width="210" height="280">
+        <p style="margin:0 0 4px;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;">주로 맡는 일 · ${esc(v.view)}</p>
         <h3>${esc(v.name)} 대표세무사</h3>
-        <p>${esc(v.d)}</p>
-        <p style="margin-top:10px;font-weight:600;font-size:13px;">프로필 보기 →</p>
-      </a>`).join('\n');
+        <p class="jt-cc-hook">${esc(e.hook)}</p>
+        <p>${esc(e.cardLine)}</p>
+        <ul class="jt-cc-tags">${(e.tags || []).map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+        <p style="margin-top:12px;font-weight:600;font-size:13px;">프로필 보기 →</p>
+      </a>`;
+  }).join('\n');
+  const refundSvc = serviceBySlug(TEAM_MODEL.refund.service, 'team-model.refund');
   return headHtml({
     title: `대표세무사 소개 | ${FIRM}`,
-    desc: '김민석·이현준·김가환 대표세무사의 실무 경력과 활동을 소개합니다. 세 대표 모두 사업과 재산의 세금 문제를 폭넓게 다룹니다.',
+    desc: '카카오톡 상담은 대표가 직접 받고, 모든 신고는 대표가 직접 검토합니다. 기장은 김민석, 양도·증여·상속은 김가환, 최종 검토는 이현준 대표세무사가 주로 맡습니다.',
     keywords: '강남 세무사, 제이티 세무법인 세무사, 대표세무사, 김민석 세무사, 이현준 세무사, 김가환 세무사', url,
     ldBlocks: [listLd, crumbLd([['홈', `${SITE}/`], ['전문가', url]])],
   }) + `
   <main class="jt-cc-wrap">
     <nav class="jt-cc-crumb"><a href="/">홈</a> › 전문가</nav>
-    <h1>${esc(TEAM_MODEL.title)}</h1>
+    <h1>${esc(TEAM_MODEL.h1)}</h1>
     <p class="jt-cc-lede">${esc(TEAM_MODEL.lede)}</p>
     <div class="jt-cc-grid jt-cc-grid--experts">
 ${views}
     </div>
+    <p class="jt-cc-connector">${esc(TEAM_MODEL.connector)}</p>
+
+    <section class="jt-cc-sec">
+      <h2>세 대표가 함께 가진 것</h2>
+      <ul class="jt-cc-strengths">
+${TEAM_MODEL.strengths.map(x => `        <li>${esc(x)}</li>`).join('\n')}
+      </ul>
+    </section>
+
+    <section class="jt-cc-sec">
+      <h2>${esc(TEAM_MODEL.refund.h2)}</h2>
+      <p style="font-size:16px;line-height:1.75;color:#333;">${esc(TEAM_MODEL.refund.d)}</p>
+      <div class="jt-cc-chips" style="margin-top:12px;">
+        <a class="jt-cc-chip" href="${serviceHref(refundSvc)}">${esc(refundSvc.kr)}</a>
+      </div>
+    </section>
 ${DISCLAIMER}
 ${CTA_BOTTOM}
   </main>
