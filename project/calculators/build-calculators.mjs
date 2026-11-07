@@ -18,6 +18,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CALCULATORS } from './calculators.data.mjs';
 import { vatQuick } from './vat-quick.mjs';
+import { guides } from './calculator-guides.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 import { footerHtml, stylesHref, ogImageHref, faviconHtml, ORG_REF } from '../_shared/site-meta.mjs';
@@ -29,6 +30,11 @@ const SITE = 'https://www.jttax.co.kr';
 
 const esc = (s) => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+function inputGuide(c) {
+  const [question, inputs, result] = guides.get(c.sub);
+  return `<section id="input-guide" aria-labelledby="guide-heading" style="margin:24px 0;line-height:1.7"><h2 id="guide-heading" style="font-size:19px;margin:0 0 8px">${esc(question)}</h2><p><strong>준비할 자료:</strong> ${esc(inputs)}</p><p>${esc(result)}</p></section>`;
+}
 
 function renderCalcPage(c) {
   const url = `${SITE}/calculators/${c.slug}.html`;
@@ -162,7 +168,9 @@ ${GA_HEAD_SNIPPET}
       ${c.sub === 'vat' ? '<a href="#vat-quick" class="jt-btn jt-btn--primary">거래 한 건 계산하기 ↓</a>\n      ' : ''}<a href="${appUrl}" class="jt-btn ${c.sub === 'vat' ? 'jt-btn--outline' : 'jt-btn--primary'}">${c.sub === 'vat' ? '신고할 부가세 예상하기 →' : '지금 계산하기 →'}</a>
       <a href="/#/booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
-    <p class="jt-cc-note">${c.sub === 'vat' ? '로그인 없이 이용할 수 있습니다. 입력한 거래 금액은 전송하지 않습니다.' : '로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진'}</p>${c.sub === 'vat' ? '\n    ' + vatQuick : ''}
+    <p class="jt-cc-note">${c.sub === 'vat' ? '로그인 없이 이용할 수 있습니다. 입력한 거래 금액은 전송하지 않습니다.' : '로그인 없이 이용할 수 있습니다. 계산 화면에서 내 조건에 맞는 항목을 선택하세요.'}</p>${c.sub === 'vat' ? '\n    ' + vatQuick : ''}
+
+    ${inputGuide(c)}
 
     <section class="jt-cc-sec">
       <h2>이 계산기로 알 수 있는 것</h2>
@@ -265,7 +273,8 @@ function renderIndexPage() {
     const cards = group.tools.map(sub => bySub.get(sub)).map(c =>
     `      <a class="jt-ci-card" href="/calculators/${c.slug}.html">
         <h3>${esc(c.h1)}</h3>
-        <p>${esc(c.lede)}</p>
+        <p>${esc(guides.get(c.sub)[0])}</p>
+        <p><strong>준비물</strong> · ${esc(guides.get(c.sub)[1])}</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>`
     ).join('\n');
@@ -303,7 +312,8 @@ ${GA_HEAD_SNIPPET}
     .jt-ci-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
     .jt-ci-card{display:block;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:20px;text-decoration:none;color:#0B0B0F;background:#fff;transition:box-shadow .15s,transform .15s;}
     .jt-ci-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
-    .jt-ci-card h2{font-size:18px;margin:0 0 8px;border:0;padding:0;}
+    .jt-ci-card h3{font-size:18px;margin:0 0 8px;border:0;padding:0;}
+    .jt-ci-wrap [hidden]{display:none!important;}
     .jt-ci-card p{font-size:13.5px;color:#666;line-height:1.55;margin:0 0 12px;}
     .jt-ci-go{font-size:13px;color:#1a1a1a;font-weight:600;}
   </style>
@@ -320,7 +330,30 @@ ${GA_HEAD_SNIPPET}
     <h1>세금 계산기</h1>
     <p class="jt-ci-lede">세금과 4대보험 등 궁금한 항목을 골라 입력 조건에 따른 참고 결과를 확인해 보세요. 개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p>
     <nav class="jt-ci-jump" aria-label="계산기 분야">${groups.map(g => `<a href="#${g.id}">${g.title}</a>`).join('')}</nav>
+    <div id="calc-finder" hidden style="margin:20px 0"><label for="calc-search"><strong>상황이나 세금 이름으로 찾기</strong></label><br>
+      <input id="calc-search" type="search" placeholder="예: 영수증, 부가세, 전세보증금" style="width:100%;max-width:32em;padding:10px;font-size:16px;box-sizing:border-box">
+      <span id="calc-count" role="status"></span></div>
     ${sections}
+    <script>
+      (() => {
+        const finder = document.getElementById('calc-finder'), field = document.getElementById('calc-search');
+        const norm = s => s.toLowerCase().replace(/\\s+/g,'');
+        function filter() {
+          const query = norm(field.value); let count = 0;
+          for (const group of document.querySelectorAll('.jt-ci-group')) {
+            let visible = 0;
+            for (const card of group.querySelectorAll('.jt-ci-card')) {
+              card.hidden = !norm(card.textContent).includes(query);
+              if (!card.hidden) visible++;
+            }
+            group.hidden = !visible; count += visible;
+            document.querySelector('.jt-ci-jump a[href="#'+group.id+'"]').hidden = !visible;
+          }
+          document.getElementById('calc-count').textContent = count ? '계산기 '+count+'개' : '맞는 계산기가 없습니다. 다른 말로 찾아보세요.';
+        }
+        finder.hidden = false; field.addEventListener('input', filter); filter();
+      })();
+    </script>
     <!-- 취득세 허브로 들어오는 링크 (260921) — 계산기 목록은 «계산 의도»,
          허브는 «내 경우가 어디에 해당하는지» 의도를 받는다 -->
     <p style="margin:32px 0 0;font-size:15px;line-height:1.7;color:#444;">
@@ -380,6 +413,7 @@ function assertCalculatorDefinitions() {
   const subs = new Set();
   for (const c of CALCULATORS) {
     assertSlug(c.slug, 'calculators.data.mjs');
+    if (guides.get(c.sub)?.length !== 3) throw new Error('상황별 입력 안내 누락: ' + c.slug);
     if (slugs.has(c.slug)) throw new Error(`[calculators.data.mjs] 중복 slug: ${c.slug}`);
     if (!/^[a-z0-9-]+$/.test(String(c.sub || ''))) throw new Error(`[calculators.data.mjs] ${c.slug}: sub 형식 오류`);
     if (subs.has(c.sub)) throw new Error(`[calculators.data.mjs] 중복 sub: ${c.sub}`);
@@ -435,7 +469,12 @@ async function main() {
     // custom: true → 손으로 쓴 페이지. 덮어쓰면 연도별 비교표가 날아가므로 건드리지 않는다.
     if (c.custom) {
       const path = join(OUT_DIR, `${c.slug}.html`);
-      const html = await readFile(path, 'utf8');
+      const source = await readFile(path, 'utf8');
+      // 수기 원고는 그대로 두고 표시된 안내 영역만 공통 데이터와 동기화한다.
+      const region = /<!-- input-guide:start -->[\s\S]*?<!-- input-guide:end -->/;
+      if (!region.test(source)) throw new Error('수기 계산기 입력 안내 영역 누락: ' + c.slug);
+      const html = source.replace(region, '<!-- input-guide:start -->'+inputGuide(c)+'<!-- input-guide:end -->');
+      if (source !== html) await writeFile(path, html);
       assertCalculatorLandingSeo(c, html, `calculators/${c.slug}.html`);
       kept++;
       continue;

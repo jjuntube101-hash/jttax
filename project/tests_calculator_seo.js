@@ -31,6 +31,7 @@ function hasMetaDescription(html) {
 
 async function main() {
   const { CALCULATORS } = await import('./calculators/calculators.data.mjs');
+  const { guides } = await import('./calculators/calculator-guides.mjs');
   const slugs = new Set();
   const subs = new Set();
   const sitemap = await readFile('sitemap.xml', 'utf8');
@@ -64,6 +65,9 @@ async function main() {
       continue;
     }
     const html = await readFile(where, 'utf8');
+    const [question, inputs, result] = guides.get(calc.sub);
+    const guide = html.match(/<section id="input-guide"[\s\S]*?<\/section>/)?.[0] || '';
+    if (![question, inputs, result].every(s => guide.includes(s)) || !index.includes(question) || !index.includes(inputs)) fail(where + ': hub and landing input guide differ');
     if (calc.sub === 'vat' && (!html.includes('href="#vat-quick"') || !html.includes('id="vat-quick"'))) fail('VAT landing lacks the quick calculator destination');
     const ld = jsonLd(html, where);
     const app = ld.find((item) => item['@type'] === 'WebApplication');

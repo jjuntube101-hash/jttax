@@ -55,7 +55,8 @@
     .jt-ci-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
     .jt-ci-card{display:block;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:20px;text-decoration:none;color:#0B0B0F;background:#fff;transition:box-shadow .15s,transform .15s;}
     .jt-ci-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
-    .jt-ci-card h2{font-size:18px;margin:0 0 8px;border:0;padding:0;}
+    .jt-ci-card h3{font-size:18px;margin:0 0 8px;border:0;padding:0;}
+    .jt-ci-wrap [hidden]{display:none!important;}
     .jt-ci-card p{font-size:13.5px;color:#666;line-height:1.55;margin:0 0 12px;}
     .jt-ci-go{font-size:13px;color:#1a1a1a;font-weight:600;}
   </style>
@@ -73,92 +74,131 @@
     <h1>세금 계산기</h1>
     <p class="jt-ci-lede">세금과 4대보험 등 궁금한 항목을 골라 입력 조건에 따른 참고 결과를 확인해 보세요. 개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p>
     <nav class="jt-ci-jump" aria-label="계산기 분야"><a href="#property">부동산·상속·증여</a><a href="#income">사업·급여</a><a href="#changes">개정안·가상자산</a></nav>
+    <div id="calc-finder" hidden style="margin:20px 0"><label for="calc-search"><strong>상황이나 세금 이름으로 찾기</strong></label><br>
+      <input id="calc-search" type="search" placeholder="예: 영수증, 부가세, 전세보증금" style="width:100%;max-width:32em;padding:10px;font-size:16px;box-sizing:border-box">
+      <span id="calc-count" role="status"></span></div>
     <section class="jt-ci-group" id="property" aria-labelledby="title-property">
       <h2 id="title-property">부동산·상속·증여</h2><div class="jt-ci-grid">      <a class="jt-ci-card" href="/calculators/capital-gains-tax.html">
         <h3>양도소득세 계산기</h3>
-        <p>집이나 부동산을 팔 때 내는 양도소득세를, 매도 정보만 입력하면 검증된 계산 엔진으로 바로 계산합니다. 1세대 1주택 비과세부터 다주택 중과까지 자동으로 반영됩니다.</p>
+        <p>집을 팔면 양도차익 중 얼마를 세금으로 낼까요?</p>
+        <p><strong>준비물</strong> · 매매계약서의 취득·양도 날짜와 금액, 필요경비, 보유 주택 수</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/acquisition-tax.html">
         <h3>취득세 계산기</h3>
-        <p>부동산을 살 때 내는 취득세를, 취득 방식과 금액만 넣으면 바로 계산합니다. 다주택 중과와 생애최초 감면, 부가되는 세금까지 함께 보여 줍니다.</p>
+        <p>집을 살 때 매매대금 외에 취득세는 얼마나 들까요?</p>
+        <p><strong>준비물</strong> · 취득 방식과 부동산 종류, 취득가액, 보유 주택 수와 소재지</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/property-tax.html">
         <h3>재산세 계산기</h3>
-        <p>매년 6월 1일을 기준으로 부동산을 가진 사람이 내는 재산세를, 공시가격만 입력하면 바로 계산합니다. 1세대 1주택 특례까지 반영됩니다.</p>
+        <p>올해 우리 집 재산세는 얼마일까요?</p>
+        <p><strong>준비물</strong> · 계산할 연도의 주택 공시가격과 소유 조건</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/comprehensive-real-estate-tax.html">
         <h3>종합부동산세 계산기</h3>
-        <p>6월 1일 기준 보유한 주택의 공시가격 합계에 매기는 종합부동산세를, 공시가격만 넣으면 바로 계산합니다. 1세대 1주택 공제와 세액공제가 반영됩니다.</p>
+        <p>여러 채의 주택을 보유하면 종부세는 얼마일까요?</p>
+        <p><strong>준비물</strong> · 인별 보유 주택의 공시가격, 지분과 소유 형태</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/inheritance-tax.html">
         <h3>상속세 계산기</h3>
-        <p>가족이 남긴 재산에 대한 상속세를, 재산과 가족 구성만 입력하면 바로 계산합니다. 일괄공제·배우자공제·사전증여 합산이 자동으로 반영됩니다.</p>
+        <p>상속재산과 빚을 함께 고려하면 상속세는 얼마일까요?</p>
+        <p><strong>준비물</strong> · 재산 종류별 금액, 채무와 장례비, 배우자 등 상속인 구성</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/gift-tax.html">
         <h3>증여세 계산기</h3>
-        <p>부모·배우자·자녀 등에게 재산을 줄 때 내는 증여세를, 관계와 금액만 입력하면 바로 계산합니다. 증여재산공제와 10년 합산이 자동으로 반영됩니다.</p>
+        <p>가족에게 현금이나 부동산을 주면 증여세는 얼마일까요?</p>
+        <p><strong>준비물</strong> · 증여재산가액, 주는 분과 받는 분의 관계, 과거 증여 내역</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/burdened-gift-simulator.html">
         <h3>부담부증여 계산기</h3>
-        <p>채무를 함께 넘길 때 세금 구성이 어떻게 달라지는지 살펴보세요. 실제로 인수하는 채무와 상환 능력을 확인해야 부담부증여를 검토할 수 있습니다.</p>
+        <p>전세보증금이나 대출을 함께 넘기면 어떨까요?</p>
+        <p><strong>준비물</strong> · 부동산 시세, 취득가액·취득일, 실제로 넘길 보증금이나 대출 잔액</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/disposal-comparison.html">
         <h3>증여·매매·상속 세금 비교 계산기</h3>
-        <p>부동산을 가족에게 넘기는 세 가지 방법의 예상 세금을 같은 화면에서 비교합니다. 세금 외에 자금 조달과 실행 조건도 함께 확인해야 합니다.</p>
+        <p>가족에게 집을 팔 때와 증여할 때, 세금이 얼마나 다를까요?</p>
+        <p><strong>준비물</strong> · 현재 시세, 취득가액·취득일, 받는 분과의 관계, 다른 상속재산 금액</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a></div>
     </section>
 <section class="jt-ci-group" id="income" aria-labelledby="title-income">
       <h2 id="title-income">사업·급여</h2><div class="jt-ci-grid">      <a class="jt-ci-card" href="/calculators/income-tax.html">
         <h3>종합소득세 계산기</h3>
-        <p>사업·프리랜서·근로 등 여러 소득을 합산해 내는 종합소득세를, 소득과 공제만 입력하면 바로 계산합니다. 5월 종합소득세 신고를 미리 가늠해 보세요.</p>
+        <p>사업이나 부업에서 생긴 소득을 합치면 얼마를 낼까요?</p>
+        <p><strong>준비물</strong> · 소득 종류별 금액, 사업 필요경비, 공제 자료와 이미 낸 세금</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/value-added-tax.html">
         <h3>부가가치세(부가세) 계산기</h3>
-        <p>영수증은 부가세 포함 합계금액을, 견적서는 부가세 별도 공급가액을 입력하세요. 신고 기간 전체의 납부액이나 환급액은 신고액 계산기에서 확인할 수 있습니다.</p>
+        <p>영수증 합계에서 부가세를 빼면 공급가액은 얼마일까요?</p>
+        <p><strong>준비물</strong> · 거래 한 건은 영수증 합계 또는 견적서 공급가액, 신고액 예상은 기간 전체의 매출·매입 자료</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/incorporation-simulator.html">
         <h3>개인사업자·법인 세금 비교</h3>
-        <p>개인사업자로 계속할지, 법인으로 전환할지. 사업이익과 대표 연봉만 입력하면 개인과 법인의 세부담을 한눈에 비교해 줍니다.</p>
+        <p>같은 사업이익이라면 개인과 법인의 세금이 어떻게 다를까요?</p>
+        <p><strong>준비물</strong> · 연간 사업이익과 법인 전환 후 받을 대표 급여</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/net-salary.html">
         <h3>월급 실수령액 계산기</h3>
-        <p>세전 월급에서 4대보험과 세금을 떼면 실제로 통장에 얼마가 들어올까요? 월급만 입력하면 2026년 요율로 실수령액을 바로 계산합니다.</p>
+        <p>세전 월급에서 보험료와 세금을 떼면 얼마가 남을까요?</p>
+        <p><strong>준비물</strong> · 세전 월급, 부양가족과 자녀 수</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/youthstartup.html">
         <h3>청년창업 세액감면 계산기</h3>
-        <p>업종코드와 사업장 주소만 넣으면 청년창업중소기업 세액감면 가능 여부·감면율·창업 배제사유까지 자동 판정합니다. 5년간 최대 100% 감면.</p>
+        <p>내 업종과 사업장 주소로 창업 감면을 받을 수 있을까요?</p>
+        <p><strong>준비물</strong> · 업종명 또는 업종코드, 사업장 주소, 창업 당시 나이와 기존 사업 이력</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a></div>
     </section>
 <section class="jt-ci-group" id="changes" aria-labelledby="title-changes">
       <h2 id="title-changes">개정안·가상자산</h2><div class="jt-ci-grid">      <a class="jt-ci-card" href="/calculators/2026-tax-reform-capital-gains.html">
         <h3>2026 세제개편안 양도세 계산기</h3>
-        <p>장기보유특별공제가 「보유」에서 「거주」 기준으로 바뀝니다. 파는 해에 따라 세금이 달라지므로 2026년(현행)·2027·2028·2029년 이후를 한 화면에서 비교하세요.</p>
+        <p>집을 파는 해에 따라 개편안의 영향이 달라질까요?</p>
+        <p><strong>준비물</strong> · 취득가액과 예상 양도가액, 보유기간과 실제 거주기간</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/2026-tax-reform-property-tax.html">
         <h3>2026 종부세 개편안 계산기</h3>
-        <p>같은 집이라도 살고 있으면 공제 14억원, 비거주는 현행 12억원 유지. 공시가격만 넣으면 2026·2027·2028년 종부세를 한 번에 비교합니다.</p>
+        <p>같은 집에 거주할 때와 아닐 때, 개편안 결과가 다를까요?</p>
+        <p><strong>준비물</strong> · 보유 주택 공시가격과 실거주 여부</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>
       <a class="jt-ci-card" href="/calculators/crypto-tax-2027.html">
         <h3>가상자산(코인) 세금 계산기</h3>
-        <p>코인 세금은 2027년 1월 1일 양도분부터입니다. 2026년 말까지 오른 부분은 과세 대상에서 빠집니다 — 내 경우 얼마인지 계산해 보세요.</p>
+        <p>코인을 파는 시점을 바꾸면 예상 세금이 어떻게 달라질까요?</p>
+        <p><strong>준비물</strong> · 종목별 매입액·매도액·수수료, 해당하는 경우 2026년 말 시가</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a></div>
     </section>
+    <script>
+      (() => {
+        const finder = document.getElementById('calc-finder'), field = document.getElementById('calc-search');
+        const norm = s => s.toLowerCase().replace(/\s+/g,'');
+        function filter() {
+          const query = norm(field.value); let count = 0;
+          for (const group of document.querySelectorAll('.jt-ci-group')) {
+            let visible = 0;
+            for (const card of group.querySelectorAll('.jt-ci-card')) {
+              card.hidden = !norm(card.textContent).includes(query);
+              if (!card.hidden) visible++;
+            }
+            group.hidden = !visible; count += visible;
+            document.querySelector('.jt-ci-jump a[href="#'+group.id+'"]').hidden = !visible;
+          }
+          document.getElementById('calc-count').textContent = count ? '계산기 '+count+'개' : '맞는 계산기가 없습니다. 다른 말로 찾아보세요.';
+        }
+        finder.hidden = false; field.addEventListener('input', filter); filter();
+      })();
+    </script>
     <!-- 취득세 허브로 들어오는 링크 (260921) — 계산기 목록은 «계산 의도»,
          허브는 «내 경우가 어디에 해당하는지» 의도를 받는다 -->
     <p style="margin:32px 0 0;font-size:15px;line-height:1.7;color:#444;">
