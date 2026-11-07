@@ -352,7 +352,13 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "acquisition-tax-payment-review-intake", tag: "INSIGHT · ACQUISITION TAX", date: "2026.11.07", title: "취득세 납부 후 재검토 요청, 법무사 사무소는 어떤 차이를 세무사에게 넘길까요?", excerpt: "정산서를 다시 받은 사무소가 최초 취득세 신고, 실제 납부, 지자체 통지를 구분하고 이후에 발견한 자료를 세무사에게 넘기는 순서를 안내합니다." },
     { slug: "creator-used-equipment-evidence", tag: "크리에이터·기장", date: "2026.11.07", title: "유튜버 중고 장비 개인거래: 판매자 성격과 지출 증빙을 연결하는 방법", excerpt: "개인에게 산 중고 촬영장비는 판매자 성격, 거래 내용, 지급과 인도, 업무 사용 자료를 함께 확인합니다. 거래 확인서와 세금계산서의 차이도 구분합니다." },
+    { slug: "inheritance-registration-intake", tag: "INSIGHT · INHERITANCE", date: "2026.11.07", title: "상속등기 전 분할 협의가 끝나지 않았다면, 법무사 사무소에서 세무사에게 무엇을 넘길까요?", excerpt: "분할협의서에 아직 서명하지 않은 상속인에게 무엇을 물을지, 사망 당시 지분과 재산 목록을 어떻게 인계할지 예시로 살펴봅니다." },
+    { slug: "inherited-home-sale-contract-file", tag: "INSIGHT · CAPITAL GAINS TAX", date: "2026.11.07", title: "상속주택 매도 의뢰, 중개사무소에서 평가자료를 어떻게 인계하면 좋을까요?", excerpt: "상속받은 집의 매도를 준비할 때 상속 당시 평가 자료와 현재 매도할 지분을 연결합니다. 공동상속 주택의 상담 인계 사례를 살펴봅니다." },
+    { slug: "lease-deposit-gift-handover", tag: "INSIGHT · GIFT", date: "2026.11.07", title: "증여등기 의뢰서에 전세보증금이 적혀 있다면, 어떤 자료로 인수를 확인할까요?", excerpt: "전세계약을 갱신하고 보증금 일부를 돌려준 집의 증여를 준비합니다. 증여일의 잔액, 채무 인수 약정, 실제 반환 자금을 따로 대조합니다." },
+    { slug: "same-day-balances-evidence", tag: "INSIGHT · CAPITAL GAINS TAX", date: "2026.11.07", title: "같은 날 매도·매수 잔금, 중개사무소가 남길 두 거래의 정산 기록", excerpt: "매도와 매수 잔금이 같은 날 오갈 때 이체 내역을 두 계약에 나누는 방법입니다. 정산서, 보류한 잔금, 등기 접수 기록을 대조합니다." },
+    { slug: "two-home-contract-timeline", tag: "INSIGHT · CAPITAL GAINS TAX", date: "2026.11.07", title: "일시적 2주택 상담, 중개사무소의 갈아타기 일정표에는 무엇을 적을까요?", excerpt: "종전 집의 매도와 새집의 취득을 두 줄의 일정표로 정리합니다. 계약서의 날짜, 변경 합의, 실제 잔금 자료를 구분하는 중개사무소용 안내입니다." },
     { slug: "creator-equipment-taxable-conversion", tag: "크리에이터·부가가치세", date: "2026.11.05", title: "면세사업용 장비의 과세사업 전환: 유튜버가 과거 구입자료를 다시 확인할 때", excerpt: "면세사업 때 산 카메라·컴퓨터를 과세사업에 쓰기 시작했다면 취득 당시 불공제 사유, 실제 사용 전환일, 감가상각자산 해당 여부와 신고자료를 함께 확인합니다." },
     { slug: "youtuber-editing-outsourcing-vat-review", tag: "크리에이터·기장", date: "2026.11.04", title: "유튜버 편집 외주와 면세 판단: 주된 업무·작업실·변경 시점을 대조하는 방법", excerpt: "면세사업자인 유튜버가 편집 외주를 시작했다면 계약 명칭보다 실제 맡긴 업무를 확인해야 합니다. 작업 내용·시설·변경 시점을 자료로 대조하는 방법을 살펴봅니다." },
     { slug: "adsense-unpaid-income-tax-timing", tag: "크리에이터·기장", date: "2026.10.31", title: "애드센스 미지급 수익의 신고 시점: 지급기준액 미달과 지급 보류를 구분하는 방법", excerpt: "애드센스 지급기준액 미달과 지급 보류를 구분하고, 소득세 수입시기·부가세 공급시기 및 이전 신고와 대조할 자료를 확인합니다." },

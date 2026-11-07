@@ -190,6 +190,11 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/acquisition-tax-payment-review-intake.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/acquisition-tax-rate-guide.html",
     "h1": 1,
     "mainPreserved": true
@@ -380,12 +385,27 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/inheritance-registration-intake.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/inheritance-tax-basics.html",
     "h1": 1,
     "mainPreserved": true
   },
   {
     "path": "insights/inheritance-tax-exemption-limit.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/inherited-home-sale-contract-file.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/lease-deposit-gift-handover.html",
     "h1": 1,
     "mainPreserved": true
   },
@@ -420,6 +440,11 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/same-day-balances-evidence.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/side-job-income-tax.html",
     "h1": 1,
     "mainPreserved": true
@@ -446,6 +471,11 @@
   },
   {
     "path": "insights/tax-reform-2026-real-estate.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/two-home-contract-timeline.html",
     "h1": 1,
     "mainPreserved": true
   },
