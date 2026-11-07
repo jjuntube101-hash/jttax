@@ -243,21 +243,35 @@ ${footerHtml()}
 
 function renderIndexPage() {
   const url = `${SITE}/calculators/`;
+  const groups = [
+    { id: 'property', title: '부동산·상속·증여', tools: ['cgt', 'acquisition', 'property', 'comprehensive', 'inheritance', 'gift', 'burden', 'compare'] },
+    { id: 'income', title: '사업·급여', tools: ['income', 'vat', 'corporate', 'insurance', 'youthstartup'] },
+    { id: 'changes', title: '개정안·가상자산', tools: ['reform-cgt', 'reform-cre', 'crypto'] },
+  ];
+  const assigned = groups.flatMap(g => g.tools);
+  if (new Set(assigned).size !== assigned.length || assigned.length !== CALCULATORS.length ||
+      CALCULATORS.some(c => !assigned.includes(c.sub))) throw new Error('계산기 목록의 분류를 확인하세요.');
+  const bySub = new Map(CALCULATORS.map(c => [c.sub, c]));
   const itemsLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     image: ogImageHref(),
-    itemListElement: CALCULATORS.map((c, i) => ({
+    itemListElement: assigned.map(sub => bySub.get(sub)).map((c, i) => ({
       '@type': 'ListItem', position: i + 1, name: c.h1, url: `${SITE}/calculators/${c.slug}.html`,
     })),
   };
-  const cards = CALCULATORS.map(c =>
+  const sections = groups.map(group => {
+    const cards = group.tools.map(sub => bySub.get(sub)).map(c =>
     `      <a class="jt-ci-card" href="/calculators/${c.slug}.html">
-        <h2>${esc(c.h1)}</h2>
+        <h3>${esc(c.h1)}</h3>
         <p>${esc(c.lede)}</p>
         <span class="jt-ci-go">계산하기 →</span>
       </a>`
-  ).join('\n');
+    ).join('\n');
+    return `<section class="jt-ci-group" id="${group.id}" aria-labelledby="title-${group.id}">
+      <h2 id="title-${group.id}">${group.title}</h2><div class="jt-ci-grid">${cards}</div>
+    </section>`;
+  }).join('\n');
   return `<!doctype html>
 <html lang="ko">
 <head>
@@ -304,9 +318,8 @@ ${GA_HEAD_SNIPPET}
     <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 세금 계산기</nav>
     <h1>세금 계산기</h1>
     <p class="jt-ci-lede">세금과 4대보험 등 궁금한 항목을 골라 입력 조건에 따른 참고 결과를 확인해 보세요. 개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p>
-    <div class="jt-ci-grid">
-${cards}
-    </div>
+    <nav class="jt-ci-jump" aria-label="계산기 분야">${groups.map(g => `<a href="#${g.id}">${g.title}</a>`).join('')}</nav>
+    ${sections}
     <!-- 취득세 허브로 들어오는 링크 (260921) — 계산기 목록은 «계산 의도»,
          허브는 «내 경우가 어디에 해당하는지» 의도를 받는다 -->
     <p style="margin:32px 0 0;font-size:15px;line-height:1.7;color:#444;">

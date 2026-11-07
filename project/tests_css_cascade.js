@@ -246,6 +246,19 @@ console.log('[css-cascade] 규칙 ' + rules.length + '개 · 선언 ' + lib.decl
 
   let markup = '';
   for (const p of SRC_FILES) { try { markup += fs.readFileSync(p, 'utf8') + '\n'; } catch (_e) {} }
+  // The generated directories also use the shared sheet. Only actual class
+  // attributes count here: an inline CSS selector alone is not a rendered use.
+  const { tokenize } = require('./_shared/html-scan');
+  const staticClasses = new Set();
+  for (const dir of ['calculators', 'insights', 'services', 'experts', 'about', 'acquisition-tax']) {
+    for (const file of fs.readdirSync(path.join(ROOT, dir)).filter(f => f.endsWith('.html'))) {
+      const html = fs.readFileSync(path.join(ROOT, dir, file), 'utf8');
+      for (const token of tokenize(html)) {
+        if (token.type !== 'open' || !token.attrs.has('class')) continue;
+        for (const name of token.attrs.get('class').split(/\s+/)) staticClasses.add(name);
+      }
+    }
+  }
 
   const SIZE_PROPS = /^(height|width|min-height|max-height|padding|margin|gap|font-size|top|bottom)/;
   const seen = new Set();
@@ -259,7 +272,7 @@ console.log('[css-cascade] 규칙 ' + rules.length + '개 · 선언 ' + lib.decl
     for (const c of classes) {
       const name = c.slice(1);
       if (seen.has(name)) continue;
-      if (markup.indexOf(name) >= 0) continue;
+      if (markup.indexOf(name) >= 0 || staticClasses.has(name)) continue;
       seen.add(name);
       dead++;
       fail('CSS-DEAD-SEL',
