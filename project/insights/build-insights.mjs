@@ -497,6 +497,7 @@ ${GA_HEAD_SNIPPET}
     .jt-ih-links{margin:40px 0 0;display:flex;gap:8px;flex-wrap:wrap;}
     .jt-ih-links a{font-size:13px;border:1px solid rgba(0,0,0,.15);border-radius:999px;padding:7px 13px;text-decoration:none;color:#333;background:#fff;}
   </style>
+  <script src="/project/src/guide-search.js?v=1" defer></script>
 </head>
 <body style="background:#fff;">
   <header style="border-bottom:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:12px;">
@@ -509,6 +510,11 @@ ${GA_HEAD_SNIPPET}
     <nav style="font-size:13px;color:#888;margin-bottom:20px;"><a href="/" style="color:#888;text-decoration:none;">홈</a> › 세금 가이드</nav>
     <h1>세금 가이드</h1>
     <p class="jt-ih-lede">${esc(DESC)}</p>
+    <div class="jt-ih-search" hidden>
+      <label for="guide-query">가이드 검색</label>
+      <input id="guide-query" type="search" placeholder="세금 이름이나 주제로 찾기">
+      <span role="status" aria-live="polite"></span>
+    </div>
     <div class="jt-ih-grid">
 ${cards}
     </div>

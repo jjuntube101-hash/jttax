@@ -1,0 +1,106 @@
+/* Public directories, reading pages and the calculator share the JT palette. */
+.jt-renewal-static :is(.jt-ci-wrap, .jt-ih-wrap) {
+  width: min(100%, 1160px);
+  max-width: 1160px;
+  margin-inline: auto;
+  padding: clamp(28px, 5vw, 72px) clamp(20px, 4vw, 56px) 88px;
+}
+.jt-renewal-static :is(.jt-ci-wrap, .jt-ih-wrap, .jt-cc-wrap, .jt-editorial) > h1,
+.jt-page-report .jt-report-shell__title h1 {
+  font-size: clamp(32px, 4.3vw, 62px);
+  line-height: 1.13;
+  letter-spacing: -.05em;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.jt-renewal-static :is(.jt-ci-lede, .jt-ih-lede, .jt-cc-lede, .jt-ed-deck) {
+  max-width: 46em;
+  margin-block: 16px 24px;
+  line-height: 1.7;
+}
+.jt-ci-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.jt-ci-jump a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  background: var(--brand);
+  color: var(--cream);
+  text-decoration: none;
+  border-radius: 4px;
+}
+.jt-ci-jump a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.jt-ci-group { margin-block: 36px 52px; scroll-margin-top: 100px; }
+.jt-ci-group > h2 { margin-bottom: 14px; font-size: clamp(23px, 2.2vw, 32px); }
+.jt-ci-group .jt-ci-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 265px), 1fr)); gap: 0; }
+.jt-renewal-static .jt-ci-group .jt-ci-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 8px;
+  border: 0;
+  border-top: 2px solid var(--brand);
+  border-radius: 0;
+  padding: 20px;
+  background: var(--cream);
+}
+.jt-ci-group .jt-ci-card h3 { margin: 0; font-size: 21px; line-height: 1.35; }
+.jt-ci-group .jt-ci-card p { margin: 0; }
+.jt-renewal-static .jt-ci-group .jt-ci-card:is(:hover, :focus-visible) { background: #e8eee5; }
+.jt-renewal-static .jt-cc-cta { gap: 10px; margin-block: 20px; }
+.jt-renewal-static .jt-cc-cta a { min-height: 44px; }
+.jt-renewal-static .jt-cc-sec > h2 { padding-block: 12px; border-top: 2px solid var(--brand); border-bottom: 0; }
+.jt-renewal-static .jt-editorial { max-width: 840px; }
+.jt-renewal-static .jt-editorial > h2 { margin-block: 2em .65em; scroll-margin-top: 100px; }
+.jt-renewal-static .jt-ed-toc { padding: clamp(18px, 3vw, 32px); border-inline-start: 4px solid var(--brand); }
+.jt-renewal-static .jt-ed-toc a { text-underline-offset: .22em; }
+.jt-renewal-static .jt-ih-grid { gap: 16px; }
+.jt-renewal-static .jt-ih-card { border-radius: 4px; box-shadow: none; }
+.jt-page-report .jt-report-shell__head { margin-bottom: 12px; }
+.jt-page-report .jt-report-shell { margin-top: clamp(20px, 3vw, 48px); }
+.jt-page-report .jt-report-shell__bar { margin-bottom: 16px; }
+.jt-page-report .jt-report-shell__title { margin-bottom: 16px; padding-block: 0; }
+.jt-page-report .jt-report-shell__title h1 { font-size: clamp(30px, 3.4vw, 48px); }
+.jt-page-report .jt-report-shell__body { border-top: 2px solid var(--brand); padding-top: 20px; }
+.jt-page-report .jt-report-result__grade-val { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.jt-page-report .jt-report-result__section { scroll-margin-top: 92px; }
+.jt-page-report .jt-report-shell__body :is(input:not([type]), input[type=text], input[type=number], select) {
+  min-height: 44px;
+  font-size: max(16px, 1em);
+}
+.jt-renew-booking .jt-booking-step-heading { padding-bottom: .5em; border-bottom: 2px solid var(--brand); }
+.jt-renew-tool-list .jt-renew-tool { box-shadow: none; border-radius: 4px; }
+.jt-renewal-static :is(.jt-ci-jump, .jt-ci-group, .jt-cc-cta, .jt-ed-toc) a:focus-visible,
+.jt-page-report .jt-report-shell :is(a, button, input, select):focus-visible {
+  outline: 3px solid var(--brand); outline-offset: 3px;
+}
+@media (max-width: 640px) {
+  .jt-ci-jump { gap: 6px; margin-bottom: 20px; }
+  .jt-ci-jump a { padding-inline: 12px; font-size: 15px; }
+  .jt-ci-group { margin-block: 24px 36px; }
+  .jt-renewal-static .jt-ci-group .jt-ci-card { padding: 18px 4px; }
+  .jt-report-shell .jt-report-shell__body { padding-top: 12px; }
+  .jt-renewal-static .jt-editorial > h1 { font-size: clamp(27px, 7vw, 34px); line-height: 1.24; }
+}
+.jt-ih-search:not([hidden]) {
+  display: grid;
+  grid-template-columns: minmax(0, 32rem) auto;
+  gap: 6px 14px;
+  align-items: center;
+  margin-block: 16px 28px;
+}
+.jt-ih-search label { grid-column: 1 / -1; font-weight: 650; }
+.jt-ih-search input {
+  min-width: 0; min-height: 46px; padding: 10px 14px;
+  background: var(--cream); border: 1px solid var(--brand);
+  color: var(--brand); font: inherit; border-radius: 4px;
+}
+.jt-ih-search span { color: var(--muted); font-size: 15px; }
+.jt-ih-grid .jt-ih-card[hidden] { display: none; }
+@media (max-width: 640px) {
+  .jt-ih-search:not([hidden]) { grid-template-columns: 1fr; }
+}
