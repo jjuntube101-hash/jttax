@@ -8,7 +8,7 @@ const header=`<header class="jt-renewal-header"><a class="jt-renewal-skip" href=
 const mobile=`<nav class="jt-renewal-mobile-cta" aria-label="빠른 상담"><a href="tel:02-554-6405" onclick="jtTrackCta('call','sticky')">전화</a><a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','sticky')">카카오톡</a><a href="/#/booking" onclick="jtTrackCta('booking','sticky')">상담 신청 →</a></nav>`;
 const styles=['renewal.css','renewal-pages.css','renewal-flow.css','renewal-motion.css','renewal-static.css','renewal-journeys.css'];
 // Per-sheet cache version (default 7). renewal.css 8 = 261101 SEO 2-6 font subset.
-const styleVersion={'renewal.css':8,'renewal-journeys.css':1};
+const styleVersion={'renewal.css':8,'renewal-journeys.css':1,'renewal-results.css':1};
 const files=[];
 async function walk(p){for(const d of await fs.readdir(p,{withFileTypes:true})){const f=path.join(p,d.name);if(d.isDirectory())await walk(f);else if(f.endsWith('.html'))files.push(f);}}
 for(const name of ['about','services','experts','insights','calculators','acquisition-tax','desk'])await walk(path.join(root,name));
@@ -18,8 +18,8 @@ const evidence=[];
 for(const f of files){let html=await fs.readFile(f,'utf8');const rel=path.relative(root,f).replaceAll('\\','/');const home=rel==='index.html';
  html=html.replace(/project\/src\/styles\.css\?v=\d+/g,'project/src/styles.css?v='+sharedStyleVersion);
  const beforeMain=html.match(/<(main|article)\b[\s\S]*?<\/\1>/i)?.[0]; const beforeH1=(html.match(/<h1\b/gi)||[]).length;
- html=html.replace(/\s*<link\b[^>]*href="[^"]*\/renewal(?:-pages|-flow|-motion|-static|-journeys)?\.css[^>]*>/g,'');
- html=html.replace('</head>',styles.filter(n=>!home||n!=='renewal-static.css').map(n=>`<link rel="stylesheet" href="/project/src/${n}?v=${styleVersion[n]||7}">`).join('\n')+'\n</head>');
+ html=html.replace(/\s*<link\b[^>]*href="[^"]*\/renewal(?:-pages|-flow|-motion|-static|-journeys|-results)?\.css[^>]*>/g,'');
+ html=html.replace('</head>',(home ? [...styles.filter(n=>n!=='renewal-static.css'),'renewal-results.css'] : styles).map(n=>`<link rel="stylesheet" href="/project/src/${n}?v=${styleVersion[n]||7}">`).join('\n')+'\n</head>');
  if(!home){
   // The first generated header must be navigation outside main; fail closed otherwise.
   const match=html.match(/<header\b[\s\S]*?<\/header>/i);
