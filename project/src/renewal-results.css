@@ -111,6 +111,19 @@
 .jt-special-direct .jt-credit-table caption { padding-block: 12px; font-weight: 700; text-align: start; }
 .jt-special-direct .jt-credit-table th, .cw-workspace .cw-table th { background: var(--sheet-wash); }
 .cw-workspace .cw-card { border: 0; border-top: 2px solid var(--sheet-ink); border-radius: 0; background: var(--sheet-paper); }
+.jt-report :is(.gc-card,.acq-section,.eq-section,.ic-section,.tc-section,.vat-section) {
+  color: var(--sheet-ink); background: var(--sheet-paper);
+  border: 0; border-top: 2px solid var(--sheet-ink); border-radius: 0;
+  padding: clamp(14px,2.5vw,28px); min-width: 0; max-width: 100%;
+}
+.jt-report :is(.gc-table,.cw-table) { overflow-x: auto; max-width: 100%; }
+.jt-report :is(.gc-table,.acq-section,.eq-section,.ic-section,.tc-section,.vat-section) table {
+  border-collapse: collapse; font-variant-numeric: tabular-nums;
+}
+.jt-report :is(.gc-card,.acq-section,.eq-section,.ic-section,.tc-section,.vat-section) > :is(h2,h3) {
+  font-size: clamp(19px,2.2vw,26px); line-height: 1.35; letter-spacing: -.035em;
+}
+.jt-report :is(.gc-grid,.acq-grid,.eq-grid,.ic-grid,.tc-grid,.vat-grid) > * { min-width: 0; }
 .jt-special-direct .jt-special-field { min-width: 0; }
 .jt-report :is(.jt-credit-table,.jt-special-direct,.cw-workspace) :is(button,input,select) { max-width: 100%; }
 .jt-report :is(section,div,article):is([data-testid$="-result"],[data-testid$="-results"]),
