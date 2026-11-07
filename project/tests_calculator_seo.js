@@ -36,6 +36,11 @@ async function main() {
   const sitemap = await readFile('sitemap.xml', 'utf8');
   const index = await readFile('calculators/index.html', 'utf8');
   const robots = await readFile('robots.txt', 'utf8');
+  const home = await readFile('index.html', 'utf8');
+  for (const name of ['asset-transfer', 'capital-gains-tax', 'inheritance-tax', 'gift-tax', 'bookkeeping', 'consulting', 'tax-audit', 'tax-refund']) {
+    const path = 'services/' + name + '.html';
+    if (!home.includes('href="/' + path + '"') || !existsSync(path)) fail('home: missing static service link ' + path);
+  }
   const chrome = await readFile('project/src/Chrome.jsx', 'utf8');
   const routesMatch = chrome.match(/const calculatorLandings = (\{[\s\S]*?\n      \});/);
   if (!routesMatch) throw new Error('calculator canonical map missing');
@@ -59,6 +64,7 @@ async function main() {
       continue;
     }
     const html = await readFile(where, 'utf8');
+    if (calc.sub === 'vat' && (!html.includes('href="#vat-quick"') || !html.includes('id="vat-quick"'))) fail('VAT landing lacks the quick calculator destination');
     const ld = jsonLd(html, where);
     const app = ld.find((item) => item['@type'] === 'WebApplication');
 
