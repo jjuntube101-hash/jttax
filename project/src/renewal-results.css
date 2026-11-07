@@ -89,6 +89,14 @@
   padding-inline: 0; max-width: 100%;
 }
 .jt-report .jt-report-result__section > table { max-width: 100%; }
+.jt-report .jt-report-result__section > div[style*="grid-template-columns"] > div {
+  min-width: 0; border-radius: 2px !important; font-variant-numeric: tabular-nums;
+  text-align: start !important; overflow-wrap: anywhere;
+}
+.jt-report-shell__body > div:not([class])[style*="border: 1.5px solid"]:has(~ .jt-report-result__section) {
+  border-radius: 2px !important; border-inline-start-width: 5px !important;
+  padding: clamp(16px,3vw,36px) !important; text-align: start !important;
+}
 .jt-report .jt-report-calc tr:has(th strong):last-child { background: var(--sheet-wash); }
 .jt-report .jt-report-result__section:has(table) { overflow-x: auto; }
 .jt-report .jt-report-result__section :is(th,td) { font-variant-numeric: tabular-nums; }
