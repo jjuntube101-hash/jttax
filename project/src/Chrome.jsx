@@ -487,6 +487,32 @@ function useJTContentMotion(identity) {
 }
 window.useJTContentMotion = useJTContentMotion;
 
+function JTSitIcon({ name }) {
+  const p = { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true };
+  switch (name) {
+    case 'home': // 양도·상속·증여 — 집/재산
+      return <svg {...p}><path d="M3 10.5 12 4l9 6.5" /><path d="M5 9.5V20h14V9.5" /><path d="M10 20v-5h4v5" /></svg>;
+    case 'corp': // 법인·사업 운영 — 건물
+      return <svg {...p}><rect x="5" y="3" width="14" height="18" rx="1" /><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2" /></svg>;
+    case 'audit': // 세무조사 — 서류/조사
+      return <svg {...p}><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v4h4" /><path d="M10 13l1.6 1.6L15 11.5" /></svg>;
+    case 'refund': // 경정·환급 — 되돌림
+      return <svg {...p}><path d="M4 8h11a5 5 0 0 1 0 10H8" /><path d="M7 5 4 8l3 3" /></svg>;
+    case 'consult': // 세금 컨설팅 — 나침반/전략
+      return <svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="m15 9-3.4 1.6L10 14l3.4-1.6z" /></svg>;
+    case 'chat': // 일반 상담 — 말풍선
+      return <svg {...p}><path d="M5 5h14v10H9l-4 3.5z" /><path d="M9 9h6M9 11.5h4" /></svg>;
+    case 'phone': // 전화
+      return <svg {...p}><path d="M5 4h3l1.6 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.6V19a2 2 0 0 1-2 2A15 15 0 0 1 4 6a2 2 0 0 1 1-2z" /></svg>;
+    case 'mail': // 이메일
+      return <svg {...p}><rect x="3" y="5" width="18" height="14" rx="1.5" /><path d="m3.5 6.5 8.5 6 8.5-6" /></svg>;
+    default:
+      return null;
+  }
+}
+window.JTSitIcon = JTSitIcon;
+window.JTIcon = JTSitIcon;
+
 function JTMobileCta({ setRoute, route }) {
   const D = window.JT_DATA.firm;
   const Icon = window.JTSitIcon;
@@ -589,6 +615,7 @@ function JTFooter({ setRoute }) {
   const D = window.JT_DATA.firm;
   return (
     <footer className="jt-footer">
+      <div className="jt-footer__contents wrap">
       <div className="jt-footer__grid">
         <div>
           <div className="jt-footer__brand">
@@ -650,6 +677,7 @@ function JTFooter({ setRoute }) {
           {' · '}
           <a href="/#/terms" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('terms'))} style={{cursor: 'pointer'}}>이용약관</a>
         </span>
+      </div>
       </div>
     </footer>
   );

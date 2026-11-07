@@ -2,7 +2,7 @@ const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('ass
 const read=name=>fs.readFileSync(path.join(__dirname,'src',name),'utf8');
 const decl=(name,names)=>{const s=read(name);return parser.parse(s,{sourceType:'script',plugins:['jsx']}).program.body.filter(n=>n.type==='FunctionDeclaration'&&names.includes(n.id.name)).map(n=>s.slice(n.start,n.end)).join('\n');};
 const box={window:{},React:{Fragment:'fragment',createElement:(type,props,...children)=>({type,props,children})},Number,String};vm.createContext(box);
-vm.runInContext(decl('ReportCGT.jsx',['formatWon']),box);
+vm.runInContext(decl('Report.jsx',['formatWon']),box);
 for(const [input,expected] of [[4850001,'4,850,001원'],[87373000,'87,373,000원'],[100000001,'100,000,001원'],[-12345,'-12,345원'],[0,'0원']])assert.equal(box.formatWon(input),expected);
 vm.runInContext(esbuild.transformSync(decl('Report.jsx',['JTCalculationStepLabel']),{loader:'jsx'}).code,box);
 const words=x=>x==null?'':typeof x==='object'?(x.children||[]).map(words).join(''):String(x);

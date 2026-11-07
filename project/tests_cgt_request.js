@@ -267,7 +267,8 @@ console.log('════ 엔진 호출 → 판정 세 갈래 (fetch 대역) ═
 {
   const t = vm.createContext({ window: {}, Number, Math, String, Array, Object });
   vm.runInContext(validCalcSrc, t);
-  vm.runInContext(loadDecls(code, ['formatWon', 'cgtTemp2Phrase', 'cgtDeadlineWarnText', 'cgtTimingTipText', 'cgtOrderTipText',
+  vm.runInContext(loadDecls(commonSrc, ['formatWon']), t);
+  vm.runInContext(loadDecls(code, ['cgtTemp2Phrase', 'cgtDeadlineWarnText', 'cgtTimingTipText', 'cgtOrderTipText',
     'CGT_ENGINE_REQUIRED', 'cgtEngineVerdict'])
     + '\nglobalThis.__t = { cgtDeadlineWarnText, cgtTimingTipText, cgtOrderTipText, cgtEngineVerdict };', t);
   const T = t.__t;
