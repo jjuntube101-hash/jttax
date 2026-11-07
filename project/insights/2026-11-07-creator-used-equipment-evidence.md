@@ -75,7 +75,7 @@ heroCaption: 중고 장비 거래자료 정리를 표현한 AI 생성 일러스�
 대표세무사와 여러 직원이 함께 참여하는 카카오톡 단체방에서 소통하며 거래처 대표님·회계담당직원 등 원하는 관계자도 참여할 수 있습니다. 사업자등록 지원, 기장·신고, 별도 거래 검토의 범위와 수수료는 사전에 안내합니다.
 
 - [크리에이터 세무 업무 안내](https://www.jttax.co.kr/creators.html)
-- [기장·신고 상담 안내](https://www.jttax.co.kr/bookkeeping.html)
+- [기장·신고 상담 안내](https://www.jttax.co.kr/services/bookkeeping.html)
 - [카카오톡으로 중고 장비 자료 문의](https://pf.kakao.com/_CcxlJG)
 - [장비 경비 처리와 부가세 공제의 차이](https://www.jttax.co.kr/insights/creator-equipment.html)
 - [면세사업 때 산 장비를 과세사업에 쓰기 시작했다면](https://www.jttax.co.kr/insights/creator-equipment-taxable-conversion.html)
