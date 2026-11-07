@@ -48,6 +48,9 @@ jobs:
 
       # CI=true 는 GitHub Actions 가 자동으로 넣지만, 신선도 게이트의 fail-closed 분기가
       # 이 값에 걸려 있으므로 «의도»를 눈에 보이게 명시해 둔다.
+      - name: Verify committed asset versions before rebuilding
+        run: node project/tests_asset_versions.js
+
       - name: npm run gate
         run: npm run gate
         env:
