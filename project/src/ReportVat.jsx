@@ -77,9 +77,9 @@ const VAT_QS = [
   {
     id: 'simplifiedSector', section: '업종',
     q: '어떤 업종인가요?',
-    sub: '간이과세자는 업종별 「부가가치율」(15~40%)로 세금을 계산합니다(부가법 §63②). 가장 가까운 업종을 골라 주세요.',
+    sub: '간이과세자는 업종별 「부가가치율」(15~40%)로 세금을 계산합니다(부가법 §63②). 가장 가까운 업종을 골라 주세요. 도매업(소매업 겸영 포함, 재생용 재료수집 및 판매업은 제외)과 상품중개업은 간이과세를 적용받을 수 없습니다(부가법 시행령 §109②3호).',
     opts: [
-      ['도소매업', '소매·도매업 (15%)', ''],
+      ['도소매업', '소매업·재생용 재료수집 및 판매업 (15%)', ''],
       ['음식점업', '음식점업 (15%)', ''],
       ['제조업', '제조·농림어업·소화물운송 (20%)', ''],
       ['숙박업', '숙박업 (25%)', ''],
@@ -188,6 +188,16 @@ function vatCreditInputs(a,body) {
   return {period_end:end,credit_facts:f};
 }
 
+// 261107: 엔진 키 '도소매업'(계약 유지)이 «부가가치율» 단계 비고에 그대로 실려 온다. 화면에는 시행령 §111② 1호 표기로 바꿔 보인다(값·조문 불변).
+const VAT_SECTOR_DISPLAY = { '도소매업': '소매업·재생용 재료수집 및 판매업' };
+function vatStepsForDisplay(steps) {
+  return (steps || []).map(s => {
+    if (!s || s['항목'] !== '부가가치율' || typeof s['비고'] !== 'string') return s;
+    const m = s['비고'].match(/^(\S+)(\s.*)$/);
+    if (!m || !VAT_SECTOR_DISPLAY[m[1]]) return s;
+    return Object.assign({}, s, { '비고': VAT_SECTOR_DISPLAY[m[1]] + m[2] });
+  });
+}
 function vatDeadlineFromEngine(c) {
   const d=String(c&&c['신고기한']||'');
   return /^\d{4}-\d{2}-\d{2}$/.test(d)&&Number.isFinite(Date.parse(d))&&new Date(d).toISOString().slice(0,10)===d ? d : null;
@@ -379,7 +389,7 @@ function JTReportVat({ setRoute, onBack }) {
           calc.exemptReason = c['비과세사유'] || '';
           calc.detail = c['주요내역'] || {};
           calc.penaltyInfo = c['가산세_안내'] || null;
-          calc.steps = c['단계별계산'] || [];
+          calc.steps = vatStepsForDisplay(c['단계별계산'] || []);
           calc.engineWarnings = c['경고사항'] || [];
           calc.periodType = body.period_type;
           calc.deadline = vatDeadlineFromEngine(c);
