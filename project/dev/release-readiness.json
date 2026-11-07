@@ -25922,7 +25922,7 @@
   },
   "release_candidate": {
     "schema_version": "release-candidate/1",
-    "id": "rc-d684741fc442fab1de13",
+    "id": "rc-4eeb9f9dd8b5e39f79d4",
     "as_of_kst": "2026-11-07",
     "contract": {
       "schema_version": "calculation-contracts/1",
@@ -26419,8 +26419,8 @@
     },
     "frontend": {
       "schema_version": "frontend-build/1",
-      "build_id": "frontend-d0f8306b70092f9fa0e0",
-      "payload_sha256": "d0f8306b70092f9fa0e06aa0d0a1320292e8f93a08ad601fc855a50f52171506"
+      "build_id": "frontend-07f12afba404d028d034",
+      "payload_sha256": "07f12afba404d028d03494b246209dc6baddc54d3e4e73fdb199540b77ff1c18"
     },
     "backend_source_base_commit": "7a227683954a29541a2bfc57bc4c437fab61250a",
     "frontend_source_base_commit": "8c2c2e1aceb31830192011e997147b4731615aaf",
@@ -26431,7 +26431,7 @@
     "workflow20_scope": "Historical UI20 is bound to its original candidate only; current support11 validation is separate.",
     "supersedes_candidate_id": "rc-b6cc4fc097879b67d63a",
     "merge_note": "Frontend-only label change on origin/main 870a68c; bundle ?v=160. Backend source unchanged in this record.",
-    "change_note": "VAT simplified taxpayer sector option: 15 percent label changed from retail and wholesale to retail and recyclable materials collection and sale (VAT Enforcement Decree art. 111(2) item 1); wholesale is excluded from simplified taxation (art. 109(2) item 3). Engine key unchanged.",
+    "change_note": "VAT simplified taxpayer sector option: 15 percent label changed from retail and wholesale to retail and recyclable materials collection and sale (VAT Enforcement Decree art. 111(2) item 1); wholesale is excluded from simplified taxation (art. 109(2) item 3, recyclable materials collection and sale excepted; commodity brokerage also excluded). Result step note maps engine key to the same display label. Engine key unchanged.",
     "frontend_integration_main_commit": "870a68c"
   },
   "hold_reason_classification": {
@@ -39579,7 +39579,7 @@
     "golden_tests_passed": 70
   },
   "real_case15_validation": {
-    "candidate_id": "rc-d684741fc442fab1de13",
+    "candidate_id": "rc-4eeb9f9dd8b5e39f79d4",
     "case_count": 15,
     "http_dev_mcp_agreement": 17,
     "conditional_numeric_envelopes": 6,
