@@ -621,6 +621,7 @@ function JTFooter({ setRoute }) {
   const D = window.JT_DATA.firm;
   return (
     <footer className="jt-footer">
+      <div className="jt-footer__contents wrap">
       <div className="jt-footer__grid">
         <div>
           <div className="jt-footer__brand">
@@ -682,6 +683,7 @@ function JTFooter({ setRoute }) {
           {' · '}
           <a href="/#/terms" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('terms'))} style={{cursor: 'pointer'}}>이용약관</a>
         </span>
+      </div>
       </div>
     </footer>
   );

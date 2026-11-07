@@ -647,7 +647,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'cgt' && <JTReportCGT setRoute={setRoute} onBack={back} />}
       {subRoute === 'income' && <JTReportIncome setRoute={setRoute} onBack={back} />}
       {subRoute === 'gift' && <JTReportGift setRoute={setRoute} onBack={back} />}
-      {subRoute === 'inheritance' && <div className="jt-container"><button className="jt-btn jt-btn--ghost" onClick={() => setSubRoute('workspace')}>상속 사건 입력·저장 작업대 열기</button><p>사건 작업대에서는 고객별 재산·상속인 사실을 확인하고 저장·계산·과거 결과를 관리합니다. 아래 빠른 계산 답안은 자동 이전되지 않습니다.</p></div>}
+      {subRoute === 'inheritance' && <aside aria-label="상속 사건 작업대" className="jt-report-shell jt-estate-entry"><button className="jt-btn jt-btn--ghost" onClick={() => setSubRoute('workspace')}>상속 사건 입력·저장 작업대 열기</button><p>사건 작업대에서는 고객별 재산·상속인 사실을 확인하고 저장·계산·과거 결과를 관리합니다. 아래 빠른 계산 답안은 자동 이전되지 않습니다.</p></aside>}
       {subRoute === 'inheritance' && <JTReportInheritance setRoute={setRoute} onBack={back} />}
       {subRoute === 'acquisition' && <JTReportAcquisition setRoute={setRoute} onBack={back} />}
       {subRoute === 'acq-check' && <JTReportAcqCheck setRoute={setRoute} onBack={back} />}

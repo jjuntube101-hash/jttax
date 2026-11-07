@@ -683,16 +683,28 @@ function JTReportConvert({ setRoute, reportType, reportTag, reportSummary, repor
   if(calculationReview && calculationReview.can_share!==true)return <section role="status"><h3>확인이 필요한 계산입니다</h3><p>미확정 세액은 공유하거나 상담 요약으로 전송하지 않습니다. 필요한 사실과 근거를 먼저 확인해 주세요.</p></section>;
   const versionText=engineVersion ? [engineVersion.engine,engineVersion.calculation_revision,engineVersion.build_id].filter(Boolean).join(' · ') : '';
   if(versionText){if(kakaoSummary)kakaoSummary+='\n적용 계산 버전: '+versionText;reportSummary=(reportSummary||'')+' / 적용 계산 버전 '+versionText;reportDetail=(reportDetail||'')+'\n\n적용 계산 버전: '+versionText+'\n입력 사실과 지원 범위에 따른 조건부 계산이며 신고 확정이 아닙니다.';}
-  return (
-    <>
-      <JTCalculationEvidence engineVersion={engineVersion} />
-      {/* 카카오 상담 메일에는 고객메모 칸이 따로 없으니 상세 본문 끝에 붙인다(Codex R2-F1) */}
-      <JTConvertBanner setRoute={setRoute} urgent={urgent} reportType={reportType} reportSummary={reportSummary} reportDetail={String(reportNotes || '').trim() ? (reportDetail || '') + '\n\n■ 고객 메모 (계산 미반영)\n' + String(reportNotes).trim() : reportDetail} kakaoSummary={kakaoSummary} />
-      <JTConvertLeadCapture reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} reportNotes={reportNotes} reportCaveats={reportCaveats} />
-      <JTConvertPrecedents reportTag={reportTag} calcId={calcId} />
-      <JTConvertTimeSlots setRoute={setRoute} urgent={urgent} />
-      <JTConvertPdfGate reportType={reportType} reportSummary={reportSummary} />
-    </>
-  );
+  const evidence = <JTCalculationEvidence engineVersion={engineVersion} />;
+  const banner = <JTConvertBanner setRoute={setRoute} urgent={urgent} reportType={reportType} reportSummary={reportSummary} reportDetail={String(reportNotes || '').trim() ? (reportDetail || '') + '\n\n■ 고객 메모 (계산 미반영)\n' + String(reportNotes).trim() : reportDetail} kakaoSummary={kakaoSummary} />;
+  const request = <JTConvertLeadCapture reportType={reportType} reportSummary={reportSummary} reportDetail={reportDetail} reportNotes={reportNotes} reportCaveats={reportCaveats} />;
+  const precedents = <JTConvertPrecedents reportTag={reportTag} calcId={calcId} />;
+  const slots = <JTConvertTimeSlots setRoute={setRoute} urgent={urgent} />;
+  const pdf = <JTConvertPdfGate reportType={reportType} reportSummary={reportSummary} />;
+  if (calcId === 'income') {
+    return (
+      <div className="jt-income-support">
+        <div className="jt-income-options">
+          <details className="jt-income-detail"><summary>결과를 PDF로 저장</summary>{pdf}</details>
+          <details className="jt-income-detail"><summary>세무사 검토·회신 요청</summary>{banner}{request}{precedents}</details>
+          <details className="jt-income-detail"><summary>상담 희망 시간 선택</summary>{slots}</details>
+        </div>
+        <a className="jt-income-adviser" href="/experts/lee-hyunjun.html">
+          <img src="/project/assets/people/rebuild/lee-hyunjun.jpg" width="1086" height="1448" loading="lazy" alt="이현준 대표세무사" />
+          <span>이현준 대표세무사 소개</span>
+        </a>
+      </div>
+    );
+  }
+  return <>{evidence}{banner}{request}{precedents}{slots}{pdf}</>;
+
 }
 window.JTReportConvert = JTReportConvert;
