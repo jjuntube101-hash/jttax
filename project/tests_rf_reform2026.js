@@ -369,5 +369,18 @@ const r19b = CGT({ transferPrice: '1000000167', acqPrice: '100000000', expenses:
 chk('C19 양도세 본세는 10원 단위', r19b.tax % 10, 0);
 chk('C19 tax + 지방세 = total', r19b.tax + r19b.local, r19b.total);
 
+console.log('\n════ CASE 22: 2026 현행 — 조정대상지역 2주택도 2주택 이하 세율표 (261107 A1) ════');
+/* 종부세법 §9①: 1호 2주택 이하 / 2호 3주택 이상 — 조정대상지역 구분 없음(2023.1.1 이후 같은 문언).
+   공시가격 합계 50억, 2주택: 과표 (50억−9억)×60% = 24.6억
+   2주택 이하 표: 960만 + (24.6억−12억)×1.3% = 25,980,000 → 농특세 20% 5,196,000 → 총 31,176,000 */
+const r22a = CRE({ totalValue: '5000000000', houses: 'two', adjusted: 'yes', age: '50', holdYears: '5', resYears: '0' }, 2026);
+const r22b = CRE({ totalValue: '5000000000', houses: 'two', adjusted: 'no', age: '50', holdYears: '5', resYears: '0' }, 2026);
+chk('C22 2026 조정 2주택 총액', r22a.total, 31176000);
+chk('C22 2026 비조정 2주택 총액', r22b.total, 31176000);
+chk('C22 2026 조정 2주택은 중과 아님', r22a.heavy ? 1 : 0, 0);
+/* 3주택 이상 표: 960만 + (24.6억−12억)×2% = 34,800,000 → ×1.2 = 41,760,000 */
+const r22c = CRE({ totalValue: '5000000000', houses: 'three', adjusted: 'no', age: '50', holdYears: '5', resYears: '0' }, 2026);
+chk('C22 2026 3주택은 3주택 이상 표', r22c.total, 41760000);
+
 console.log(`\n════════════════════\n실패 ${fails}건`);
 process.exit(fails ? 1 : 0);
