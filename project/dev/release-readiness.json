@@ -26430,9 +26430,9 @@
     "historical181_regraded": false,
     "workflow20_scope": "Historical UI20 is bound to its original candidate only; current support11 validation is separate.",
     "supersedes_candidate_id": "rc-4eeb9f9dd8b5e39f79d4",
-    "merge_note": "Frontend-only change on origin/main 01b26d2; bundle ?v=161. Backend source unchanged in this record.",
+    "merge_note": "Frontend-only change on origin/main d765349; bundle ?v=161. Backend source unchanged in this record.",
     "change_note": "VAT result filing deadline: request now sends period_end for the selected 2026 period (1st final 2026-06-30, 2nd final and simplified 2026-12-31; VAT Act art. 5(1)) so the engine returns its filing deadline (art. 49(1), art. 67(1), holiday carry-over); caveat shown for closure, type change and simplified-taxation waiver (art. 5(3)-(5)). Credit facts period_end must equal the selected period. Simplified deadline step citation displayed as art. 67 instead of engine art. 66. Amounts unchanged.",
-    "frontend_integration_main_commit": "01b26d2"
+    "frontend_integration_main_commit": "d765349"
   },
   "hold_reason_classification": {
     "schema_version": "hold-reasons/1",
