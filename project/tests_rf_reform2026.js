@@ -382,5 +382,21 @@ chk('C22 2026 조정 2주택은 중과 아님', r22a.heavy ? 1 : 0, 0);
 const r22c = CRE({ totalValue: '5000000000', houses: 'three', adjusted: 'no', age: '50', holdYears: '5', resYears: '0' }, 2026);
 chk('C22 2026 3주택은 3주택 이상 표', r22c.total, 41760000);
 
+console.log('\n════ CASE 23: 종부세 결과 표 이름 = «공제 전 비교액» (261107, Codex 038 P1) ════');
+/* 재산세 중복분 공제(§9③)·세부담 상한(§10)을 계산하지 않은 금액이므로 «총 세부담»(실제 낼 세금)으로 부르지 않는다.
+   양도세 비교 표의 «총 세부담»은 별개라 그대로 둔다. */
+{
+  const src23 = fs.readFileSync(SRC, 'utf8');
+  const a23 = src23.indexOf('title="연도별 종합부동산세 비교"'), b23 = src23.indexOf('<JTReportCta', a23);
+  const cre23 = src23.slice(a23, b23);
+  chk('C23 종부세 결과 구간을 찾음', a23 > 0 && b23 > a23 ? 1 : 0, 1, 0);
+  chk('C23 종부세 결과에 «총 세부담» 없음', cre23.includes('총 세부담') ? 1 : 0, 0, 0);
+  chk('C23 종부세 표 이름 «공제 전 비교액»', cre23.includes("['공제 전 비교액', (r) => rfEok(r.total)]") ? 1 : 0, 1, 0);  // 허용오차 0: 1·0 판정
+  chk('C23 종부세 부제에 «세부담 상한 적용 전»', cre23.includes('세부담 상한 적용 전') ? 1 : 0, 1, 0);
+  chk('C23 종부세 결과에 «내야 할»·«납부» 없음', /내야 할|납부/.test(cre23) ? 1 : 0, 0, 0);
+  const n23 = src23.indexOf('function RfNotice()'), notice23 = src23.slice(n23, src23.indexOf('\n}', n23));
+  chk('C23 공통 안내문에 «총 세부담» 없음', n23 > 0 && !notice23.includes('총 세부담') ? 1 : 0, 1, 0);
+  chk('C23 양도세 표 «총 세부담»은 유지', src23.includes("['총 세부담', (r) => rfEok(r.total)]") ? 1 : 0, 1, 0);
+}
 console.log(`\n════════════════════\n실패 ${fails}건`);
 process.exit(fails ? 1 : 0);

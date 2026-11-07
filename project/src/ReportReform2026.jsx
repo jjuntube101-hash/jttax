@@ -1529,12 +1529,12 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
   const diff = v.diff;
   return (
     <JTReportShell dataFlow="lookup" tag="2026 세제개편안" stepIdx={2} stepTotal={2} onBack={onBack}
-      title="연도별 종합부동산세 비교" subtitle="개편안이 그대로 시행된다고 가정했을 때, 해마다 내야 할 종부세입니다.">
+      title="연도별 종합부동산세 비교" subtitle="개편안이 그대로 시행된다고 가정하고 연도별로 비교한 종부세 금액입니다(재산세 중복분 공제·세부담 상한 적용 전).">
       <div className="jt-container">
         <RfNotice />
 
         <section className="jt-report-result__section" style={{ marginBottom: 6 }}>
-          <h3 style={{ fontSize: 16, marginBottom: 4 }}>해마다 얼마인가 (종부세 + 농어촌특별세)</h3>
+          <h3 style={{ fontSize: 16, marginBottom: 4 }}>해마다 얼마인가 (종부세 + 농어촌특별세, 공제 전 비교액)</h3>
           <p style={{ fontSize: 13, color: '#7b756b', margin: '0 0 12px', lineHeight: 1.65 }}>
             종부세는 해마다 내는 세금이라, 각 연도는 <strong>그 해 6월 1일까지 계속 보유한 것으로 보고</strong> 보유기간·나이를 함께 반영했습니다
             {answers.houses === 'one' && answers.stillLiving === 'yes' && rfNum(answers.resYears) > 0 ? ' (계속 거주 중이라 거주기간도 늘렸습니다)' : ''}.
@@ -1594,12 +1594,12 @@ function JTReportReformCRE({ setRoute, setSubRoute, onBack }) {
                   ['산출세액', (r) => (r.notTaxable ? '—' : rfEok(r.gross))],
                   ['1주택 세액공제', (r) => (r.notTaxable ? '—' : (r.credit ? '−' + rfEok(r.credit) : '—'))],
                   ['농어촌특별세', (r) => (r.notTaxable ? '—' : rfEok(r.rural))],
-                  ['총 세부담', (r) => rfEok(r.total)],
+                  ['공제 전 비교액', (r) => rfEok(r.total)],
                 ].map(([label, fn], i) => (
                   <tr key={i} style={{ background: i % 2 ? '#fbfaf8' : '#fff' }}>
                     <td style={{ padding: '10px 12px', borderBottom: '1px solid #efece6', fontWeight: 700 }}>{label}</td>
                     {result.map((r) => (
-                      <td key={r.year} style={{ padding: '10px 12px', borderBottom: '1px solid #efece6', textAlign: 'right', whiteSpace: 'nowrap', fontWeight: label === '총 세부담' ? 800 : 400 }}>{fn(r)}</td>
+                      <td key={r.year} style={{ padding: '10px 12px', borderBottom: '1px solid #efece6', textAlign: 'right', whiteSpace: 'nowrap', fontWeight: label === '공제 전 비교액' ? 800 : 400 }}>{fn(r)}</td>
                     ))}
                   </tr>
                 ))}
