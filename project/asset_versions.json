@@ -31,6 +31,10 @@
     "v": "1",
     "sha256": "c5ef08f0b3b3233408159e3fb224ba4d3f7d3b5d06a077a4947eae945593c008"
   },
+  "project/src/renewal-results.css": {
+    "v": "1",
+    "sha256": "6cad166cee481e5c000035960f26c5d39f6b0d419b799cf519fcc13606b9ecd0"
+  },
   "project/src/colors_and_type.css": {
     "v": "4",
     "sha256": "23bd50398bfe4eafee9464f7c27dcc88b086c5f31b0f4645db9f759d856d6311"

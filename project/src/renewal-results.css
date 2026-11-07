@@ -1,0 +1,139 @@
+/* Calculations use the same ink and paper as the JT guides. Amounts, alternatives
+   and cautions each retain their own hierarchy, including on a narrow screen. */
+.jt-report, .cw-workspace, .jt-legal {
+  --sheet-ink: #163e39;
+  --sheet-muted: #465e57;
+  --sheet-rule: #b9c9bf;
+  --sheet-paper: #fffefa;
+  --sheet-wash: #edf2ec;
+}
+.jt-report-shell:has(.jt-report-result__section, .jt-report-result__grade, .jt-credit-table) {
+  max-width: 1040px;
+}
+.jt-report .jt-report-shell__body:has(.jt-report-result__grade, .jt-report-result__section) {
+  padding-top: 0;
+  border-top: 0;
+}
+.jt-report .jt-report-result__grade {
+  /* Earlier themes mark the background and foreground important. */
+  background: var(--sheet-paper) !important;
+  color: var(--sheet-ink) !important;
+  border: 0;
+  border-block: 3px solid var(--sheet-ink);
+  border-bottom-width: 1px;
+  border-radius: 0;
+  box-shadow: none;
+  padding: clamp(20px, 3.2vw, 44px);
+  margin-block: 18px 32px;
+  text-align: start;
+}
+.jt-report .jt-report-result__grade-label {
+  color: var(--sheet-ink); opacity: 1; font: 650 16px/1.5 var(--font-sans-kr);
+  letter-spacing: -.025em; text-transform: none;
+}
+.jt-report .jt-report-result__grade-val {
+  color: var(--sheet-ink);
+  margin: 8px 0 16px;
+  font: 720 clamp(34px,5.4vw,72px)/1.12 var(--font-sans-kr);
+  letter-spacing: -.055em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.jt-report .jt-report-result__grade p { color: var(--sheet-muted); }
+.jt-report .jt-report-shell__privacy,
+.jt-report .jt-input-review > summary span,
+.jt-report .jt-report-calc th span {
+  color: #3c5750 !important;
+  opacity: 1 !important;
+}
+.jt-report .jt-report-result__section > p[style*="color: rgb(90, 90, 90)"],
+.jt-report .jt-report-result__section > p[style*="color: rgb(136, 136, 136)"],
+.jt-report .jt-report-result__section > div > span[style*="color: rgb(90, 90, 90)"] {
+  color: #3d514c !important;
+}
+.jt-page-report .jt-footer__bar span { color: #e4eee7; opacity: 1; }
+.jt-report .jt-report-result__grade:has(.jt-report-result__grade-val) > div[style] {
+  font-size: 15px !important; line-height: 1.65 !important; opacity: 1 !important;
+}
+.jt-report .jt-report-result__grade:has(.jt-report-result__grade-val) > div[style*="color: rgb(184, 134, 11)"] {
+  color: #614412 !important; background: #faf1da;
+  margin-top: 14px !important; padding: 12px 16px; border-inline-start: 3px solid #a3792c;
+}
+.jt-report .jt-report-result__grade:not(:has(.jt-report-result__grade-val)) > div > div[style*="background"] {
+  border: 1px solid var(--sheet-rule); color: var(--sheet-ink); background: var(--sheet-wash) !important;
+}
+.jt-report .jt-report-result__section {
+  min-width: 0; margin-bottom: clamp(24px,4vw,48px); overflow-wrap: anywhere;
+}
+.jt-report .jt-report-result__section > :is(h2,h3):first-child {
+  margin: 0 0 16px; padding: 14px 0 0;
+  border: 0; border-top: 2px solid var(--sheet-ink);
+  color: var(--sheet-ink); font: 680 clamp(21px,2.4vw,30px)/1.35 var(--font-sans-kr);
+  letter-spacing: -.04em; word-break: keep-all;
+}
+.jt-report .jt-report-result__section[style*="background"] > :is(h2,h3):first-child {
+  padding-top: 0; border: 0;
+}
+.jt-report .jt-report-calc {
+  width: 100%; margin-block: 8px 18px; border-collapse: collapse;
+  background: var(--sheet-paper); color: var(--sheet-ink); font-variant-numeric: tabular-nums;
+}
+.jt-report .jt-report-calc :is(th,td) {
+  padding: 12px clamp(8px,1.5vw,18px); border: 0; border-bottom: 1px solid var(--sheet-rule);
+  line-height: 1.5; word-break: normal; overflow-wrap: anywhere;
+}
+.jt-report .jt-report-calc tbody th { text-align: start; color: var(--sheet-muted); }
+.jt-report .jt-report-calc tbody td { text-align: end; color: var(--sheet-ink); }
+.jt-report .jt-report-calc thead th { background: var(--sheet-wash); }
+.jt-report .jt-report-shell__body > .jt-container:has(.jt-report-result__section) {
+  padding-inline: 0; max-width: 100%;
+}
+.jt-report .jt-report-result__section > table { max-width: 100%; }
+.jt-report .jt-report-calc tr:has(th strong):last-child { background: var(--sheet-wash); }
+.jt-report .jt-report-result__section:has(table) { overflow-x: auto; }
+.jt-report .jt-report-result__section :is(th,td) { font-variant-numeric: tabular-nums; }
+.jt-report .jt-report-result__grid { align-items: start; }
+.jt-report .jt-report-result__foot { padding-block: 16px; color: var(--sheet-muted); }
+.jt-report :is(.jt-report-caution,.jt-confirm) { border-inline-start: 4px solid var(--sheet-ink); }
+.jt-report .jt-confirm { background: var(--sheet-paper); padding: clamp(20px,4vw,44px); }
+.jt-special-direct .jt-credit-table, .cw-workspace .cw-table { overflow-x: auto; max-width: 100%; }
+.jt-special-direct .jt-credit-table table, .cw-workspace .cw-table table {
+  width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums;
+}
+.jt-special-direct .jt-credit-table caption { padding-block: 12px; font-weight: 700; text-align: start; }
+.jt-special-direct .jt-credit-table th, .cw-workspace .cw-table th { background: var(--sheet-wash); }
+.cw-workspace .cw-card { border: 0; border-top: 2px solid var(--sheet-ink); border-radius: 0; background: var(--sheet-paper); }
+.jt-special-direct .jt-special-field { min-width: 0; }
+.jt-report :is(.jt-credit-table,.jt-special-direct,.cw-workspace) :is(button,input,select) { max-width: 100%; }
+.jt-report :is(section,div,article):is([data-testid$="-result"],[data-testid$="-results"]),
+.jt-report-shell__body > section:not([class]):has(> p) {
+  margin-block: 24px; padding: clamp(14px,2.5vw,28px);
+  border-block-start: 3px solid var(--sheet-ink); background: var(--sheet-paper);
+  min-width: 0; max-width: 100%; overflow-x: auto; font-variant-numeric: tabular-nums;
+}
+.jt-report-shell__body > section:not([class]):has(> p) > p {
+  margin: 0; padding-block: 9px; border-bottom: 1px solid var(--sheet-rule);
+  color: var(--sheet-ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+}
+.jt-report :is(section,div,article):is([data-testid$="-result"],[data-testid$="-results"]) > :is(h2,h3) {
+  margin: 0 0 14px; font-size: clamp(20px,2.2vw,28px); letter-spacing: -.035em;
+}
+.jt-report .jt-report-shell__body > .jt-container > .jt-report-result__section {
+  max-width: 100%; margin-inline: 0;
+}
+.jt-report :is(button,a,input,select,textarea):focus-visible {
+  outline: 3px solid #966511; outline-offset: 2px;
+}
+.jt-legal { width: min(100%, 52rem); margin-inline: auto; line-height: 1.8; overflow-wrap: anywhere; }
+.jt-legal :is(h2,h3) { color: var(--sheet-ink); border-top: 1px solid var(--sheet-rule); padding-top: 1em; }
+@media (max-width: 640px) {
+  .jt-report .jt-report-result__grade { padding: 18px 14px; margin-bottom: 22px; }
+  .jt-report .jt-report-calc :is(th,td) { padding: 9px 8px; font-size: 14px; }
+  .jt-report .jt-report-result__grid { grid-template-columns: minmax(0, 1fr); }
+  .jt-report .jt-report-result__section[style*="32px 36px"] { padding: 18px 14px !important; }
+}
+@media print {
+  .jt-report .jt-report-result__grade { break-inside: avoid; }
+  .jt-report .jt-report-result__section { overflow: visible; }
+  .jt-report .jt-report-calc tr { break-inside: avoid; }
+}
