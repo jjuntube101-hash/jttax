@@ -49,9 +49,9 @@ const VAT_QS = [
   {
     id: 'periodType', section: '과세기간',
     q: '어느 기간을 신고하나요?',
-    sub: '부가세는 1년에 두 번 확정신고합니다. 상반기(1~6월)분은 7월 25일까지, 하반기(7~12월)분은 다음 해 1월 25일까지.',
+    sub: '부가세는 1년에 두 번 확정신고합니다. 상반기(1~6월)분은 7월 25일까지, 하반기(7~12월)분은 다음 해 1월 25일까지입니다(부가법 §49①). 기한이 토요일·일요일, 공휴일·대체공휴일, 노동절이면 그 다음날로 넘어갑니다(국기법 §5①).',
     opts: [
-      ['1기_확정', '1기 확정 (1~6월분)', '신고·납부 7/25'],
+      ['1기_확정', '1기 확정 (1~6월분)', '신고·납부 7/25 (2026년은 토요일이라 7/27)'],
       ['2기_확정', '2기 확정 (7~12월분)', '신고·납부 다음해 1/25'],
     ],
     showIf: (a) => a.businessType === '일반과세자',
@@ -181,6 +181,7 @@ function vatCreditInputs(a,body) {
   const yesno=(key,label)=>{if(!['yes','no'].includes(a[key])) throw new Error(label+'을 확인해 주세요.');return a[key]==='yes';};
   const end=String(a.creditPeriodEnd||'');
   if(!/^2026-\d{2}-\d{2}$/.test(end)||!a.creditEvidence||!String(a.creditEvidence).trim()) throw new Error('2026년 과세기간 종료일과 공제 확인자료를 입력해 주세요.');
+  if(body.period_end&&body.period_end!==end) throw new Error('공제 확인에 넣은 과세기간 마지막 날('+end+')이 선택한 신고기간('+body.period_end+')과 다릅니다.');
   const f={schema_version:'vat-credits/1',tax_year:2026,period_end:end,ordinary_single_business_confirmed:true,annual_history_complete_confirmed:true,evidence_ref:String(a.creditEvidence).trim()};
   if(a.businessType==='간이과세자') f.full_year_simplified_confirmed=true;
   if(card) f.card={eligible_business_confirmed:yesno('cardEligible','카드공제 대상 업종·거래'),prior_year_supply:n('cardPriorSupply','직전 공급가액'),eligible_gross_sales:card,prior_used:n('cardPriorUsed','올해 기사용 카드공제')};
@@ -192,12 +193,18 @@ function vatCreditInputs(a,body) {
 const VAT_SECTOR_DISPLAY = { '도소매업': '소매업·재생용 재료수집 및 판매업' };
 function vatStepsForDisplay(steps) {
   return (steps || []).map(s => {
+    // 261107: 간이과세자 «신고기한» 단계는 엔진이 §66(예정부과)으로 표시한다 — 확정신고·납부 기한 근거는 부가법 §67①이다(원본 골든 보존 위해 엔진은 두고 화면만).
+    if (s && s['항목'] === '신고기한' && s['조문'] === '부§66') return Object.assign({}, s, { '조문': '부§67' });
     if (!s || s['항목'] !== '부가가치율' || typeof s['비고'] !== 'string') return s;
     const m = s['비고'].match(/^(\S+)(\s.*)$/);
     if (!m || !VAT_SECTOR_DISPLAY[m[1]]) return s;
     return Object.assign({}, s, { '비고': VAT_SECTOR_DISPLAY[m[1]] + m[2] });
   });
 }
+// 261107: 엔진은 period_end 가 있어야 신고기한을 낸다(부가법 §49①·§67①, 휴일 이월 포함). 이 계산기는 2026년 과세기간만 다루므로
+// 신고 구분에서 2026년 과세기간 마지막 날(§5①)을 정해 보낸다. 폐업·과세유형 변경·간이과세 포기(§5③~⑤)는 기간이 달라 안내만 붙인다.
+const VAT_PERIOD_END_2026 = { '1기_확정': '2026-06-30', '2기_확정': '2026-12-31', '간이과세_확정': '2026-12-31' };
+const VAT_DEADLINE_CAVEAT = '2026년 과세기간 기준 · 폐업·과세유형 변경·간이과세 포기가 있으면 달라짐';
 function vatDeadlineFromEngine(c) {
   const d=String(c&&c['신고기한']||'');
   return /^\d{4}-\d{2}-\d{2}$/.test(d)&&Number.isFinite(Date.parse(d))&&new Date(d).toISOString().slice(0,10)===d ? d : null;
@@ -363,6 +370,7 @@ function JTReportVat({ setRoute, onBack }) {
         business_type: bt,
         is_corporate: isCorp,
         period_type: bt === '간이과세자' ? '간이과세_확정' : (answers.periodType || '1기_확정'),
+        period_end: VAT_PERIOD_END_2026[bt === '간이과세자' ? '간이과세_확정' : (answers.periodType || '1기_확정')],
         sales_amount: clamp(answers.salesAmount),
         purchase_amount: purchaseAmt,
         purchase_vat_paid: Math.round(purchaseAmt * 0.1),   // 매입세액 = 과세 매입액 × 10%
@@ -423,6 +431,7 @@ function JTReportVat({ setRoute, onBack }) {
     const { calc } = report;
     const d = calc.detail || {};
     const deadline = calc.deadline || '엔진 기한 미확인 · 별도 확인';
+    const deadlineCaveat = calc.deadline ? <span style={{ display: 'block', fontSize: 12, opacity: 0.8 }}>기한은 {VAT_DEADLINE_CAVEAT}</span> : null;
     return (
       <div className="jt-container">
         <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="부가가치세 계산 결과" subtitle="매출세액 − 매입세액 − 공제" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
@@ -455,9 +464,9 @@ function JTReportVat({ setRoute, onBack }) {
                 <div className="jt-report-result__grade-label">{calc.simplifiedExempt ? '납부의무 면제 (간이과세자)' : ((calc.isRefund ? '예상 환급세액' : '예상 납부세액') + ' (' + calc.businessType + ')')}</div>
                 <div className="jt-report-result__grade-val">{vatWon(calc.isRefund ? calc.refund : calc.netTax)}</div>
                 {calc.simplifiedExempt ? (
-                  <div style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.6 }}>1년 공급대가가 <strong>4,800만원 미만</strong>이라 부가가치세 <strong>납부의무가 면제</strong>됩니다(부가법 §69). <strong>신고는 해야 하지만 낼 세금은 0원</strong>이에요. 신고·납부 기한은 <strong>{deadline}</strong>.</div>
+                  <div style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.6 }}>1년 공급대가가 <strong>4,800만원 미만</strong>이라 부가가치세 <strong>납부의무가 면제</strong>됩니다(부가법 §69). <strong>신고는 해야 하지만 낼 세금은 0원</strong>이에요. 신고·납부 기한은 <strong>{deadline}</strong>.{deadlineCaveat}</div>
                 ) : (
-                  <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 }}>{vatKorean(calc.isRefund ? calc.refund : calc.netTax)} · 신고·납부 기한 <strong>{deadline}</strong></div>
+                  <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 }}>{vatKorean(calc.isRefund ? calc.refund : calc.netTax)} · 신고·납부 기한 <strong>{deadline}</strong>{deadlineCaveat}</div>
                 )}
                 <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, color: '#b8860b' }}>※ 입력하신 매출·매입 기준 추정입니다. 추가 입력한 영세율 매출·전자세금계산서 공제·기납부세액을 반영합니다. {calc.deemedApplied ? '의제매입은 입력한 적격·관련매출·신고이력 확인 범위에서 반영했습니다.' : '의제매입은 별도 사실 입력이 필요합니다.'} 공통매입세액 안분은 별도 검토가 필요합니다.</div>
               </div>
