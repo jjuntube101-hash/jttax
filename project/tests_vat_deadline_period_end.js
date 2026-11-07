@@ -34,13 +34,17 @@ chk('period_type 규칙은 그대로', src.includes("period_type: bt === '간이
 const creditSrc = slice('function vatCreditInputs', '// 261107: 엔진 키');
 chk('공제 입력 함수 구간을 찾음', !!creditSrc);
 const vatCreditInputs = creditSrc ? new Function(creditSrc + '; return vatCreditInputs;')() : null;
-const ans = { businessType: '간이과세자', creditScope: 'yes', creditPeriodEnd: '2026-06-30', creditEvidence: '카드매출 집계표', cardEligible: 'yes', cardPriorSupply: '0', cardPriorUsed: '0' };
+// 261107 묶음 2 ⑤: 간이 공제 계약은 1년 내내 사업한 경우만 — 새 질문 simplifiedPeriod 의 답을 넣는다
+const ans = { businessType: '간이과세자', simplifiedPeriod: 'full', creditScope: 'yes', creditPeriodEnd: '2026-06-30', creditEvidence: '카드매출 집계표', cardEligible: 'yes', cardPriorSupply: '0', cardPriorUsed: '0' };
 let msg = '';
 try { vatCreditInputs(ans, { credit_card_sales: 1000000, period_end: '2026-12-31' }); } catch (e) { msg = e.message; }
 chk('다른 종료일이면 오류', /선택한 신고기간/.test(msg));
 let ok = null;
 try { ok = vatCreditInputs(Object.assign({}, ans, { creditPeriodEnd: '2026-12-31' }), { credit_card_sales: 1000000, period_end: '2026-12-31' }); } catch (e) { ok = e; }
 chk('같은 종료일이면 통과', ok && ok.period_end === '2026-12-31' && ok.credit_facts && ok.credit_facts.period_end === '2026-12-31');
+let partMsg = '';
+try { vatCreditInputs(Object.assign({}, ans, { simplifiedPeriod: 'part', creditPeriodEnd: '2026-12-31' }), { credit_card_sales: 1000000, period_end: '2026-12-31' }); } catch (e) { partMsg = e.message; }
+chk('일부 기간 간이 공제는 계산 전에 막음', /일부 기간만 사업한 간이과세자/.test(partMsg));
 
 // 4) 간이과세자 신고기한 단계 조문 §66 → §67 (화면만, 원본 불변)
 const stepsSrc = slice('const VAT_SECTOR_DISPLAY', '// 261107: 엔진은 period_end');
@@ -53,7 +57,8 @@ chk('엔진 응답 원본은 바꾸지 않음', eng[0]['조문'] === '부§66');
 
 // 5) 화면: 기한이 있을 때만 안내 한 줄, 없으면 종전 문구
 chk('기한 없을 때 종전 문구 유지', src.includes("const deadline = calc.deadline || '엔진 기한 미확인 · 별도 확인';"));
-chk('안내 한 줄은 기한이 있을 때만', /const deadlineCaveat = calc\.deadline \? <span[^>]*>기한은 \{VAT_DEADLINE_CAVEAT\}<\/span> : null;/.test(src));
+// 261107 묶음 2(Codex 059 R2-F1): 간이 일부 기간이면 폐업·유형 전환 안내로 바꿔 보인다 — 기한이 있을 때만이라는 조건은 그대로
+chk('안내 한 줄은 기한이 있을 때만', /const deadlineCaveat = calc\.deadline \? <span[^>]*>\{calc\.simplifiedPartYear \? VAT_PART_YEAR_DEADLINE_CAVEAT : <>기한은 \{VAT_DEADLINE_CAVEAT\}<\/>\}<\/span> : null;/.test(src));
 chk('면제 문구·납부 문구 두 곳에 안내', (src.match(/\{deadline\}<\/strong>\.?\{deadlineCaveat\}/g) || []).length === 2);
 
 console.log(fails ? `\n${fails} fails` : '\nall pass');

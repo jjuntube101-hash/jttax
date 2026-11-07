@@ -338,6 +338,10 @@
 .jt-page-report:has(.jt-income-summary) .jt-footer :is(.jt-footer__grid,.jt-footer__bar) {
   width: 100%; max-width: none; margin-inline: auto; padding-inline: 0;
 }
+@media (min-width: 641px) and (max-width: 1024px) and (orientation: portrait) {
+  .jt-income-reading { grid-template-columns: minmax(0,1fr); row-gap: 28px; }
+  .jt-income-stages svg { height: clamp(210px,24svh,288px); }
+}
 @media (max-width: 640px) {
   :is(.jt-income-summary,.jt-income-calculation,.jt-income-followup) {
     padding-top: 86px; padding-bottom: calc(72px + env(safe-area-inset-bottom,0px));
