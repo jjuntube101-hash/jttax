@@ -17,6 +17,7 @@ import { insightSlug } from '../_shared/insight-slug.mjs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CALCULATORS } from './calculators.data.mjs';
+import { vatQuick } from './vat-quick.mjs';
 import { writeSitemap } from '../_shared/build-sitemap.mjs';
 import { GA_HEAD_SNIPPET } from '../_shared/ga-snippet.mjs';
 import { footerHtml, stylesHref, ogImageHref, faviconHtml, ORG_REF } from '../_shared/site-meta.mjs';
@@ -158,10 +159,10 @@ ${GA_HEAD_SNIPPET}
     <p class="jt-cc-lede">${esc(c.lede)}</p>
 
     <div class="jt-cc-cta">
-      <a href="${appUrl}" class="jt-btn jt-btn--primary">지금 계산하기 →</a>
+      ${c.sub === 'vat' ? '<a href="#vat-quick" class="jt-btn jt-btn--primary">합계금액에서 부가세 나누기 ↓</a>\n      ' : ''}<a href="${appUrl}" class="jt-btn ${c.sub === 'vat' ? 'jt-btn--outline' : 'jt-btn--primary'}">${c.sub === 'vat' ? '신고할 부가세 예상하기 →' : '지금 계산하기 →'}</a>
       <a href="/#/booking" class="jt-btn jt-btn--outline" onclick="jtTrackCta('booking','calc_top')">세무사 상담</a>
     </div>
-    <p class="jt-cc-note">로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진</p>
+    <p class="jt-cc-note">${c.sub === 'vat' ? '로그인 없이 이용할 수 있습니다. 입력한 거래 금액은 전송하지 않습니다.' : '로그인 불필요 · 입력값은 내 브라우저에만 저장 · 검증된 계산 엔진'}</p>${c.sub === 'vat' ? '\n    ' + vatQuick : ''}
 
     <section class="jt-cc-sec">
       <h2>이 계산기로 알 수 있는 것</h2>
@@ -197,7 +198,7 @@ ${faqHtml}
     </section>
 
     <div class="jt-cc-cta" style="margin-top:8px;">
-      <a href="${appUrl}" class="jt-btn jt-btn--primary">${esc(c.h1)}로 계산하기 →</a>
+      <a href="${appUrl}" class="jt-btn jt-btn--primary">${c.sub === 'vat' ? '신고할 부가세 예상하기' : esc(c.h1) + '로 계산하기'} →</a>
     </div>
 
 ${c.slug === 'acquisition-tax' ? `    <section class="jt-cc-sec">

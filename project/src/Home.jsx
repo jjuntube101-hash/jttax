@@ -436,9 +436,9 @@ window.JTFaq = JTFaq;
 
 // 고객 상황을 출발점으로 하는 새 홈. 최신 데이터와 기존 계산·예약 계약은 유지한다.
 const JT_RENEWAL_GROUPS = [
-  { id: 'property', name: '재산과 자산 이전', question: '재산을 사고, 팔거나 물려주려 합니다', description: '거래와 이전을 앞두고 세금과 준비할 사항을 살펴봅니다.', indices: [0, 5], prepare: ['거래할 재산과 예정 시점', '계약서 또는 보유 내역', '이미 신고한 경우 신고서·납부 내역'] },
-  { id: 'business', name: '사업 운영과 신고', question: '사업의 장부와 세금 신고가 필요합니다', description: '매월의 장부부터 신고, 사업 구조의 변화까지 연결합니다.', indices: [2, 3, 6], prepare: ['사업 종류와 운영 형태', '최근 신고 내역', '매출·비용 또는 플랫폼 정산자료'] },
-  { id: 'review', name: '조사와 지난 신고 검토', question: '통지를 받았거나, 낸 세금을 확인하려 합니다', description: '통지 내용과 일정을 먼저 확인하고 대응할 자료를 정리합니다.', indices: [1, 4], prepare: ['받은 통지와 수령일', '해당 기간의 신고 내역', '거래 내용과 보유 증빙'] }
+  { id: 'property', href: '/services/asset-transfer.html', name: '재산과 자산 이전', question: '재산을 사고, 팔거나 물려주려 합니다', description: '거래와 이전을 앞두고 세금과 준비할 사항을 살펴봅니다.', indices: [0, 5], prepare: ['거래할 재산과 예정 시점', '계약서 또는 보유 내역', '이미 신고한 경우 신고서·납부 내역'] },
+  { id: 'business', href: '/services/bookkeeping.html', name: '사업 운영과 신고', question: '사업의 장부와 세금 신고가 필요합니다', description: '매월의 장부부터 신고, 사업 구조의 변화까지 연결합니다.', indices: [2, 3, 6], prepare: ['사업 종류와 운영 형태', '최근 신고 내역', '매출·비용 또는 플랫폼 정산자료'] },
+  { id: 'review', href: '/services/tax-audit.html', name: '조사와 지난 신고 검토', question: '통지를 받았거나, 낸 세금을 확인하려 합니다', description: '통지 내용과 일정을 먼저 확인하고 대응할 자료를 정리합니다.', indices: [1, 4], prepare: ['받은 통지와 수령일', '해당 기간의 신고 내역', '거래 내용과 보유 증빙'] }
 ];
 window.JT_RENEWAL_GROUPS = JT_RENEWAL_GROUPS;
 const JT_RENEWAL_PEOPLE = { '김민석': 'kim-minseok', '이현준': 'lee-hyunjun', '김가환': 'kim-gahwan' };
@@ -473,7 +473,8 @@ function JTRebuildHome({ setRoute }) {
       <div className="rn-hero-people" aria-label="제이티 세 대표세무사">{D.team.partners.map(p => <figure key={p.name}><img src={p.photo} alt={p.name + ' 대표세무사'} width="750" height="1000" fetchPriority="high" decoding="async"/><figcaption><a href={'/experts/' + JT_RENEWAL_PEOPLE[p.name] + '.html'}>{p.name}<span>대표세무사</span></a></figcaption></figure>)}</div>
     </section>
     <section className="rn-shell rn-section" id="rn-home-start"><div className="rn-section-heading"><h2>어떤 일을 앞두고 계신가요?</h2><p>세목을 몰라도 괜찮습니다. 지금 상황에서 시작하세요.</p></div>
-      <div className="rn-situation-list">{JT_RENEWAL_GROUPS.map(g => <a key={g.id} className="rn-situation" href={'/#/services/' + g.id}><span>{g.name}</span><h3>{g.question}</h3><span aria-hidden="true">→</span></a>)}</div>
+      <div className="rn-situation-list">{JT_RENEWAL_GROUPS.map(g => <a key={g.id} className="rn-situation" href={g.href}><span>{g.name}</span><h3>{g.question}</h3><span aria-hidden="true">→</span></a>)}</div>
+      <nav className="rn-actions" aria-label="세부 업무 안내">{[['capital-gains-tax','양도세'],['inheritance-tax','상속세'],['gift-tax','증여세'],['tax-refund','경정청구'],['consulting','세무 컨설팅']].map(([slug,label]) => <a className="rn-link" key={slug} href={'/services/'+slug+'.html'}>{label}</a>)}<a className="rn-link" href="/services/">전체 업무 보기 →</a></nav>
     </section>
     <section className="rn-method-band"><div className="rn-shell rn-method-layout"><figure><img src="/project/assets/people/renewal/team-review.jpg" alt="세 대표가 자료를 함께 살피는 모습" width="1536" height="1024" loading="lazy" decoding="async"/></figure><div><h2>먼저 듣고,<br/>근거를 확인합니다.</h2><p className="rn-lead">궁금한 점을 분명히 하고, 판단에 필요한 자료와 다음 절차를 함께 정리합니다.</p><ol className="rn-method-list"><li><h3>상황과 일정 확인</h3><p>어떤 일이 있었는지, 언제까지 무엇을 결정해야 하는지 듣습니다.</p></li><li><h3>자료와 쟁점 검토</h3><p>거래 내역과 신고 자료를 확인하고 검토할 사항을 설명합니다.</p></li><li><h3>진행할 업무 안내</h3><p>필요한 신고·자문·대응의 범위와 준비 사항을 정리합니다.</p></li></ol><a className="rn-link" href="/#/about">제이티의 사람과 업무 방식 →</a></div></div></section>
     <section className="rn-shell rn-section rn-tools-teaser"><div><h2>계산부터 시작하고 싶다면.</h2><p>입력 조건에 따른 참고 결과를 확인해 보세요.<br/>개별 사안의 판단이 필요하면 상담으로 이어갈 수 있습니다.</p></div><div className="rn-tool-shortcuts"><a href="/#/report/cgt">양도소득세 <span aria-hidden="true">→</span></a><a href="/#/report/acquisition">취득세 <span aria-hidden="true">→</span></a><a href="/#/report/income">종합소득세 <span aria-hidden="true">→</span></a><a href="/#/report">세금 계산기 전체 보기 <span aria-hidden="true">→</span></a></div></section>

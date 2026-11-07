@@ -387,11 +387,6 @@ function JTNav({ route, setRoute }) {
   }, []);
   const openSvc = () => { if (closeTimer.current) clearTimeout(closeTimer.current); setSvcOpen(true); };
   const closeSvc = () => { closeTimer.current = setTimeout(() => setSvcOpen(false), 150); };
-  const goService = (topic) => {
-    if (topic) { try { sessionStorage.setItem('jt_preferred_topic', topic); } catch(_){} }
-    setSvcOpen(false);
-    setRoute('services');
-  };
   const services = (window.JT_DATA && window.JT_DATA.services) || [];
   return (
     <header className={`jt-nav ${scrolled ? 'jt-nav--scrolled' : ''} ${menuOpen ? 'jt-nav--menu-open' : ''}`} onKeyDown={e => { if(e.key === 'Escape'){ const target=e.currentTarget.querySelector(menuOpen ? '.jt-nav__burger' : '.jt-nav__dd-trigger'); setMenuOpen(false); setSvcOpen(false); target?.focus(); } }}>
@@ -406,7 +401,6 @@ function JTNav({ route, setRoute }) {
         <div className="jt-nav__dd-wrap" onMouseEnter={openSvc} onMouseLeave={closeSvc} onBlur={e => { if(!e.currentTarget.contains(e.relatedTarget)) setSvcOpen(false); }}>
           <a href="/services/" tabIndex={0} role="link" onKeyDown={e => { if(e.key === 'ArrowDown'){ e.preventDefault(); openSvc(); requestAnimationFrame(() => document.querySelector('.jt-nav__dd-item')?.focus()); } else jtKeyActivate(e); }}
             className={`jt-nav__dd-trigger ${route === 'services' ? 'active' : ''}`}
-            onClick={jtNavGo(() => setRoute('services'))}
             aria-haspopup="true"
             aria-expanded={svcOpen}
           >
@@ -415,7 +409,7 @@ function JTNav({ route, setRoute }) {
           {svcOpen && (
             <div className="jt-nav__dd" onMouseEnter={openSvc} onMouseLeave={closeSvc}>
               {services.map((s) => (
-                <a href={s.href || (s.slug ? `/services/${s.slug}.html` : '/#/services')} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={s.num} className="jt-nav__dd-item" onClick={() => setSvcOpen(false)}>
+                <a href={s.href || (s.slug ? `/services/${s.slug}.html` : '/services/')} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={s.num} className="jt-nav__dd-item" onClick={() => setSvcOpen(false)}>
                   <span className="jt-nav__dd-num">{s.num}</span>
                   <span className="jt-nav__dd-label">
                     <span className="jt-nav__dd-kr">{s.kr}</span>
@@ -424,7 +418,7 @@ function JTNav({ route, setRoute }) {
                 </a>
               ))}
               <div className="jt-nav__dd-sep" role="separator"></div>
-              <a href="/services/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className="jt-nav__dd-item jt-nav__dd-item--all" onClick={jtNavGo(() => goService(null))}>
+              <a href="/services/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className="jt-nav__dd-item jt-nav__dd-item--all">
                 <span className="jt-nav__dd-all-label">전체 업무분야 보기</span>
                 <span className="jt-arrow">→</span>
               </a>
@@ -452,7 +446,7 @@ function JTNav({ route, setRoute }) {
         <nav ref={motion.panel} aria-label="모바일 주 메뉴" aria-hidden={!menuOpen} className="jt-navmenu jt-menu-panel" id="jt-mobile-menu">
           <button type="button" className="jt-menu-grip" aria-label="메뉴 닫기. 위로 밀어서 닫을 수도 있습니다" onClick={() => setMenuOpen(false)}><span aria-hidden="true" /><small>위로 밀어 닫기</small></button>
           {[['about', '제이티 소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '세금 가이드', '/insights/'], [null, '법무사·중개사', '/desk/'], ['contact', '상담 안내', '/#/contact']].map(([r, l, h]) => (
-            !r
+            !r || r === 'services'
               ? <a href={h} key={h}>{l}</a>
               : h
               ? <a href={h} tabIndex={0} role="link" onKeyDown={jtKeyActivate} key={r} className={route === r ? 'is-active' : ''} onClick={jtNavGo(() => { setRoute(r); setMenuOpen(false); })}>{l}</a>

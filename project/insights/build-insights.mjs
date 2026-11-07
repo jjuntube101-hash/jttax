@@ -304,7 +304,7 @@ function serviceBlock(a) {
     <aside aria-label="관련 업무" style="margin-top:48px;padding:22px 24px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;border-radius:10px;line-height:1.7;">
       <div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#888;">관련 업무</div>
       <p style="margin:8px 0 12px;font-size:15px;color:#333;">${escapeHtml(s.lede)}</p>
-      <a href="/services/${s.slug}.html" style="font-size:15px;color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">${escapeHtml(s.kr)} 업무 안내 보기 →</a>
+      <a href="/services/${s.slug}.html" style="font-size:15px;color:#1a1a1a;border-bottom:1px solid rgba(0,0,0,.25);text-decoration:none;">${escapeHtml(s.kr)} 업무 안내 보기 →</a>${['gift-vs-inheritance-2026', 'family-business-succession'].includes(a.slug) ? '\n      <p><a href="/services/gift-tax.html">생전 증여 상담</a> · <a href="/services/inheritance-tax.html">상속세 상담</a></p>' : ''}
     </aside>`;
 }
 

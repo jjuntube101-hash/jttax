@@ -138,7 +138,8 @@ export function renderFirstScreen() {
   hero = hero.replace(heroBook, '<a href="/#/booking" class="rn-link" data-prerender-book="hero">');
   /* data-prerender: head 의 규칙 두 개가 «선렌더 히어로에만» 걸리게 하는 표지다
      (홈이 아닌 경로로 들어오면 숨김, 외부 CSS 가 없으면 사진 묶음 숨김). React 가 그린 히어로에는 없다. */
-  return { header: skip + header, hero: '<div class="rn-page rn-home" data-prerender="home">' + hero + '</div>' };
+  const services = cut(full, '<section class="rn-shell rn-section" id="rn-home-start">', '</section>', '업무 안내');
+  return { header: skip + header, hero: '<div class="rn-page rn-home" data-prerender="home">' + hero + services + '</div>' };
 }
 
 export function applyToIndex(html, parts) {
