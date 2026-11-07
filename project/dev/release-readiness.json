@@ -25922,7 +25922,7 @@
   },
   "release_candidate": {
     "schema_version": "release-candidate/1",
-    "id": "rc-23222d328c2ee96dc082",
+    "id": "rc-901c8b17c9d6f2f71ddf",
     "as_of_kst": "2026-11-07",
     "contract": {
       "schema_version": "calculation-contracts/1",
@@ -26419,8 +26419,8 @@
     },
     "frontend": {
       "schema_version": "frontend-build/1",
-      "build_id": "frontend-247d64c26a563ebc4e80",
-      "payload_sha256": "247d64c26a563ebc4e80b450ff5f92b72ac9a8ce2597f4a333001633887b50de"
+      "build_id": "frontend-0eeaa66f810b56dc8f18",
+      "payload_sha256": "0eeaa66f810b56dc8f18d0eb2d8006f052cf34aa8c0316b7d7d75b2aef045ddc"
     },
     "backend_source_base_commit": "7a227683954a29541a2bfc57bc4c437fab61250a",
     "frontend_source_base_commit": "8c2c2e1aceb31830192011e997147b4731615aaf",
@@ -40093,7 +40093,7 @@
     "golden_tests_passed": 70
   },
   "real_case15_validation": {
-    "candidate_id": "rc-23222d328c2ee96dc082",
+    "candidate_id": "rc-901c8b17c9d6f2f71ddf",
     "case_count": 15,
     "http_dev_mcp_agreement": 17,
     "conditional_numeric_envelopes": 6,

@@ -24,7 +24,7 @@ const md = (d) => (d.getUTCMonth() + 1) + '/' + d.getUTCDate();
 const pblock = slice("id: 'periodType'", 'showIf');
 chk('2026 1기 기한(토·일 이월 반영)이 선택지에 보임', md(jul) === '7/27' && pblock.includes("['1기_확정', '1기 확정 (1~6월분)', '신고·납부 7/25 (2026년은 토요일이라 " + md(jul) + ")']"));
 chk('2기 기한 2027-01-25 는 평일이라 1/25 그대로', md(jan) === '1/25' && pblock.includes("'신고·납부 다음해 1/25'"));
-chk('신고 구분 안내에 §49①·국기법 §5① 이월 규칙', pblock.includes('(부가법 §49①)') && pblock.includes('기한이 토·일·공휴일이면 그 다음날로 넘어갑니다(국기법 §5①)'));
+chk('신고 구분 안내에 §49①·국기법 §5① 이월 규칙', pblock.includes('(부가법 §49①)') && pblock.includes('기한이 토요일·일요일, 공휴일·대체공휴일, 노동절이면 그 다음날로 넘어갑니다(국기법 §5①)'));
 
 // 2) 요청 본문에 period_end 가 period_type 과 같은 규칙으로 실림
 chk('요청에 period_end 를 실음', src.includes("period_end: VAT_PERIOD_END_2026[bt === '간이과세자' ? '간이과세_확정' : (answers.periodType || '1기_확정')],"));
