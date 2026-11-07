@@ -269,7 +269,7 @@
 @media (min-width: 1025px) {
   .jt-report .jt-income-summary .jt-report-result__grade {
     display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr);
-    column-gap: clamp(28px,5vw,72px);
+    column-gap: 24px;
   }
   .jt-income-summary .jt-report-result__grade-label,
   .jt-income-summary .jt-report-result__grade-val,
