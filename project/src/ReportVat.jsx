@@ -83,18 +83,34 @@ const VAT_QS = [
       ['음식점업', '음식점업 (15%)', ''],
       ['제조업', '제조·농림어업·소화물운송 (20%)', ''],
       ['숙박업', '숙박업 (25%)', ''],
-      ['기타서비스업', '건설·운수창고·정보통신·기타서비스업 (30%)', ''],
-      ['부동산임대업', '금융·보험·전문서비스·부동산임대업 (40%)', ''],
+      ['기타서비스업', '건설·운수창고·정보통신·기타서비스업 (30%)', '인물사진·행사용 영상 촬영업도 여기(30%)'],
+      ['부동산임대업', '금융·보험·전문서비스·부동산임대업 (40%)', '전문서비스 중 인물사진·행사용 영상 촬영업은 제외 → 30%'],
     ],
     showIf: (a) => a.businessType === '간이과세자',
   },
   {
     id: 'supplyPrice', section: '매출',
     q: '1년 매출(공급대가)은 얼마인가요? (원)',
-    sub: '간이과세자는 1년치 매출을 한 번에 신고합니다. 부가세를 포함한 1년 총매출(공급대가)을 넣어 주세요.',
+    sub: '간이과세자는 1년치 매출을 한 번에 신고합니다. 부가세를 포함한 1년 총매출(공급대가)을 넣어 주세요. 올해 중간에 개업했거나 휴업·폐업·과세유형 전환이 있었다면 그 기간의 실제 매출을 넣으세요(다음 질문에서 개월 수를 여쭤봐요).',
     numeric: true, money: true,
     showIf: (a) => a.businessType === '간이과세자',
     placeholder: '예: 50,000,000',
+  },
+  // 261107 묶음 2 ⑤(오너 «권장안대로»): 4,800만원 면제는 과세기간이 1년이 안 되면 공급대가를 12개월로 환산해 판단한다(부가법 §69③).
+  {
+    id: 'simplifiedPeriod', section: '매출',
+    q: '올해 1년 내내(1월~12월) 사업했나요?',
+    sub: '중간에 개업했거나 휴업·폐업·과세유형 전환이 있었다면, 4,800만원 면제는 공급대가를 12개월로 환산한 금액으로 판단합니다(부가법 §69③).',
+    opts: [['full', '네, 1년 내내', ''], ['part', '아니요, 중간에 개업·휴업·폐업·과세유형 전환', '실제 사업 개월 수를 여쭤봐요']],
+    showIf: (a) => a.businessType === '간이과세자',
+  },
+  {
+    id: 'simplifiedMonths', section: '매출',
+    q: '올해 실제로 사업한 개월 수는? (1~12개월)',
+    sub: '1개월이 안 되는 끝수는 1개월로 셉니다(예: 3월 10일 개업 → 10개월, 1월 15일 개업 → 12개월). 이 개월 수로 공급대가를 12개월로 환산해 4,800만원 면제를 판단합니다(부가법 §69③).',
+    numeric: true, intRange: [1, 12],
+    showIf: (a) => a.businessType === '간이과세자' && a.simplifiedPeriod === 'part',
+    placeholder: '예: 6',
   },
   {
     id: 'simplifiedInput', section: '공제',
@@ -183,28 +199,46 @@ function vatCreditInputs(a,body) {
   if(!/^2026-\d{2}-\d{2}$/.test(end)||!a.creditEvidence||!String(a.creditEvidence).trim()) throw new Error('2026년 과세기간 종료일과 공제 확인자료를 입력해 주세요.');
   if(body.period_end&&body.period_end!==end) throw new Error('공제 확인에 넣은 과세기간 마지막 날('+end+')이 선택한 신고기간('+body.period_end+')과 다릅니다.');
   const f={schema_version:'vat-credits/1',tax_year:2026,period_end:end,ordinary_single_business_confirmed:true,annual_history_complete_confirmed:true,evidence_ref:String(a.creditEvidence).trim()};
-  if(a.businessType==='간이과세자') f.full_year_simplified_confirmed=true;
+  if(a.businessType==='간이과세자') {
+    // 261107 묶음 2 ⑤: 간이 카드·전자 공제 계약은 1년 내내 사업한 경우만 다룬다(엔진 credit_facts.full_year_simplified_confirmed).
+    if(a.simplifiedPeriod!=='full') throw new Error('올해 일부 기간만 사업한 간이과세자의 신용카드·전자세금계산서 공제는 이 계산기에서 다루지 않습니다. 해당 금액을 0으로 두고 계산하거나 상담해 주세요.');
+    f.full_year_simplified_confirmed=true;
+  }
   if(card) f.card={eligible_business_confirmed:yesno('cardEligible','카드공제 대상 업종·거래'),prior_year_supply:n('cardPriorSupply','직전 공급가액'),eligible_gross_sales:card,prior_used:n('cardPriorUsed','올해 기사용 카드공제')};
   if(count) {const fresh=yesno('invoiceNewBusiness','올해 신규개업 여부');f.e_invoice={new_business_this_year:fresh,timely_issue_transmission_confirmed:yesno('invoiceTimely','적기 발급·전송'),eligible_count:count,prior_used:n('invoicePriorUsed','올해 기사용 전자공제')};if(!fresh) f.e_invoice.prior_year_revenue=n('priorInvoiceRevenue','직전 과세·면세 공급가액');}
   return {period_end:end,credit_facts:f};
 }
 
-// 261107: 엔진 키 '도소매업'(계약 유지)이 «부가가치율» 단계 비고에 그대로 실려 온다. 화면에는 시행령 §111② 1호 표기로 바꿔 보인다(값·조문 불변).
+// 261107: 엔진 키 '도소매업'(계약 유지)이 «부가가치율» 단계 비고에 그대로 실려 온다. 화면에는 시행령 §111② 1호 표기로 바꿔 보인다(값 불변).
 const VAT_SECTOR_DISPLAY = { '도소매업': '소매업·재생용 재료수집 및 판매업' };
+// 261107(오너 «권장안대로»): 엔진은 «부가가치율» 조문을 «§63②N호»로 싣는다 — 부가법 §63②은 호 없이 대통령령에 맡기고,
+// 업종 표는 시행령 §111② 표의 호다. 원본 골든 보존 위해 엔진은 두고 화면만 «부§63②·령§111② N호»로 보인다(율·금액 불변).
+const VAT_SECTOR_ITEM = { '도소매업': 1, '음식점업': 1, '제조업': 2, '농업': 2, '임업': 2, '어업': 2, '소화물전문운송업': 2, '숙박업': 3,
+  '운수업': 4, '통신업': 4, '금융보험업': 5, '부동산임대업': 5, '전문과학기술서비스업': 5, '사업시설관리업': 5,
+  '교육서비스업': 6, '보건업': 6, '기타서비스업': 6 };
 function vatStepsForDisplay(steps) {
   return (steps || []).map(s => {
     // 261107: 간이과세자 «신고기한» 단계는 엔진이 §66(예정부과)으로 표시한다 — 확정신고·납부 기한 근거는 부가법 §67①이다(원본 골든 보존 위해 엔진은 두고 화면만).
     if (s && s['항목'] === '신고기한' && s['조문'] === '부§66') return Object.assign({}, s, { '조문': '부§67' });
     if (!s || s['항목'] !== '부가가치율' || typeof s['비고'] !== 'string') return s;
     const m = s['비고'].match(/^(\S+)(\s.*)$/);
-    if (!m || !VAT_SECTOR_DISPLAY[m[1]]) return s;
-    return Object.assign({}, s, { '비고': VAT_SECTOR_DISPLAY[m[1]] + m[2] });
+    if (!m) return s;
+    const out = Object.assign({}, s);
+    if (VAT_SECTOR_ITEM[m[1]] && typeof s['조문'] === 'string') out['조문'] = '부§63②·령§111② ' + VAT_SECTOR_ITEM[m[1]] + '호';
+    if (VAT_SECTOR_DISPLAY[m[1]]) out['비고'] = VAT_SECTOR_DISPLAY[m[1]] + m[2];
+    return out;
   });
 }
 // 261107: 엔진은 period_end 가 있어야 신고기한을 낸다(부가법 §49①·§67①, 휴일 이월 포함). 이 계산기는 2026년 과세기간만 다루므로
 // 신고 구분에서 2026년 과세기간 마지막 날(§5①)을 정해 보낸다. 폐업·과세유형 변경·간이과세 포기(§5③~⑤)는 기간이 달라 안내만 붙인다.
 const VAT_PERIOD_END_2026 = { '1기_확정': '2026-06-30', '2기_확정': '2026-12-31', '간이과세_확정': '2026-12-31' };
 const VAT_DEADLINE_CAVEAT = '2026년 과세기간 기준 · 폐업·과세유형 변경·간이과세 포기가 있으면 달라짐';
+const VAT_PART_YEAR_DEADLINE_CAVEAT = '이 기한은 과세기간이 2026년 12월 31일에 끝나는 경우(중간에 개업한 경우 등)입니다. 폐업했거나 간이과세자에서 일반과세자로 바뀌었다면(간이과세 포기 포함) 과세기간이 그 전에 끝나 기한이 달라지니 따로 확인해 주세요(부가법 §5③~⑤).';
+function vatSimplifiedExemptFromEngine(c, businessType, netTax) {
+  if (businessType !== '간이과세자' || netTax !== 0 || !c) return false;
+  const steps = Array.isArray(c['단계별계산']) ? c['단계별계산'] : [], warns = Array.isArray(c['경고사항']) ? c['경고사항'] : [];
+  return steps.some(s => s && String(s['항목'] || '').startsWith('납부의무 면제')) || warns.some(w => String(w).includes('납부의무가 면제됩니다'));
+}
 function vatDeadlineFromEngine(c) {
   const d=String(c&&c['신고기한']||'');
   return /^\d{4}-\d{2}-\d{2}$/.test(d)&&Number.isFinite(Date.parse(d))&&new Date(d).toISOString().slice(0,10)===d ? d : null;
@@ -278,7 +312,10 @@ function buildVatDetail(answers, calc) {
 function buildVatKakao(answers, calc) {
   const L = ['[JT택스랩 부가가치세 계산 — 상담 요청]', '', '▶ 입력'];
   L.push('· 사업자 유형: ' + (answers.businessType || '일반과세자'));
-  if (answers.businessType === '간이과세자') L.push('· 1년 공급대가: ' + vatWon(Number(answers.supplyPrice) || 0));
+  if (answers.businessType === '간이과세자') {
+    if (answers.simplifiedPeriod === 'part') L.push('· 사업 기간 공급대가: ' + vatWon(Number(answers.supplyPrice) || 0) + ' (' + (Number(answers.simplifiedMonths) || '?') + '개월 — 중간 개업·휴업·폐업·과세유형 전환)');
+    else L.push('· 1년 공급대가: ' + vatWon(Number(answers.supplyPrice) || 0));
+  }
   else if (answers.businessType === '일반과세자') {
     L.push('· 매출(공급가액): ' + vatWon(Number(answers.salesAmount) || 0));
     L.push('· 매입(공급가액): ' + vatWon(Number(answers.purchaseAmount) || 0));
@@ -330,6 +367,7 @@ function JTReportVat({ setRoute, onBack }) {
       const v = Number(raw);
       return raw != null && String(raw).trim() !== '' && Number.isSafeInteger(v) && v >= 0;
     }
+    if (cur.intRange) { const raw = answers[cur.id], v = Number(raw); return raw != null && String(raw).trim() !== '' && Number.isSafeInteger(v) && v >= cur.intRange[0] && v <= cur.intRange[1]; }
     if (cur.numeric) { if (cur.optional) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
     return !!answers[cur.id];
   };
@@ -380,6 +418,12 @@ function JTReportVat({ setRoute, onBack }) {
         simplified_input_supply: clamp(answers.simplifiedInput),
         ...extra,
       };
+      // 261107 묶음 2 ⑤: 일부 기간만 사업했으면 실제 개월 수를 엔진에 보낸다(부가법 §69③ 12개월 환산). 1년 내내면 보내지 않는다(종전과 같음).
+      if (bt === '간이과세자' && answers.simplifiedPeriod === 'part') {
+        const months = Number(answers.simplifiedMonths);
+        if (!Number.isSafeInteger(months) || months < 1 || months > 12) { setErr('올해 실제로 사업한 개월 수를 1~12 사이 정수로 입력해 주세요.'); setLoading(false); return; }
+        body.simplified_period_months = months;
+      }
 
       try {Object.assign(body,vatCreditInputs(answers,body));Object.assign(body,vatDeemedInputs(answers,body));} catch(e) {setErr(e.message);setLoading(false);return;}
       let calc = { precise: false };
@@ -405,7 +449,9 @@ function JTReportVat({ setRoute, onBack }) {
           calc.precise = true;
           calc.engineVer = j.version && j.version.engine; calc.engineVersion = j.version || null; calc.calculationReview = j.review || null;
           // §69 간이과세자 납부의무 면제. 수정 260628(VAT-R2-03): 프론트 독자 판정 제거 — 엔진 납부세액 0 신호로만 면제 라벨(§64 재고납부세액이 있으면 netTax>0 → 면제 제외·실액 표시, §69① 단서 준수).
-          calc.simplifiedExempt = (calc.netTax === 0 && answers.businessType === '간이과세자' && clamp(answers.supplyPrice) > 0 && clamp(answers.supplyPrice) < 48000000);
+          // 261107 묶음 2 ⑤: 화면이 4,800만원과 직접 비교하지 않는다 — 일부 기간은 12개월 환산(§69③)이라 엔진의 면제 단계·경고로만 판정한다.
+          calc.simplifiedExempt = vatSimplifiedExemptFromEngine(c, answers.businessType, calc.netTax);
+          calc.simplifiedPartYear = answers.businessType === '간이과세자' && answers.simplifiedPeriod === 'part';
         } else if(c) { calc.engineReason = ['needs_input','unsupported'].includes(c['상태']) ? window.jtEngineMessageForDisplay(c['오류'] || c['메시지'] || c['사유'] || '입력 요건 또는 지원 범위를 확인해 주세요.') : ''; }
       } catch (e) { console.warn('부가세 엔진 연결 실패', e); calc.engineErr = true; }
 
@@ -431,7 +477,8 @@ function JTReportVat({ setRoute, onBack }) {
     const { calc } = report;
     const d = calc.detail || {};
     const deadline = calc.deadline || '엔진 기한 미확인 · 별도 확인';
-    const deadlineCaveat = calc.deadline ? <span style={{ display: 'block', fontSize: 12, opacity: 0.8 }}>기한은 {VAT_DEADLINE_CAVEAT}</span> : null;
+    // 261107 묶음 2(Codex 059 R2-F1): 일부 기간 흐름은 폐업·과세유형 전환도 받는데, 엔진 기한은 과세기간을 12월 31일까지로 본 값이다 — 그 경우를 따로 알린다.
+    const deadlineCaveat = calc.deadline ? <span style={{ display: 'block', fontSize: 12, opacity: 0.8 }}>{calc.simplifiedPartYear ? VAT_PART_YEAR_DEADLINE_CAVEAT : <>기한은 {VAT_DEADLINE_CAVEAT}</>}</span> : null;
     return (
       <div className="jt-container">
         <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="부가가치세 계산 결과" subtitle="매출세액 − 매입세액 − 공제" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
@@ -464,7 +511,7 @@ function JTReportVat({ setRoute, onBack }) {
                 <div className="jt-report-result__grade-label">{calc.simplifiedExempt ? '납부의무 면제 (간이과세자)' : ((calc.isRefund ? '예상 환급세액' : '예상 납부세액') + ' (' + calc.businessType + ')')}</div>
                 <div className="jt-report-result__grade-val">{vatWon(calc.isRefund ? calc.refund : calc.netTax)}</div>
                 {calc.simplifiedExempt ? (
-                  <div style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.6 }}>1년 공급대가가 <strong>4,800만원 미만</strong>이라 부가가치세 <strong>납부의무가 면제</strong>됩니다(부가법 §69). <strong>신고는 해야 하지만 낼 세금은 0원</strong>이에요. 신고·납부 기한은 <strong>{deadline}</strong>.{deadlineCaveat}</div>
+                  <div style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.6 }}>{calc.simplifiedPartYear ? <>사업한 기간의 공급대가를 <strong>12개월로 환산한 금액이 4,800만원 미만</strong>이라 부가가치세 <strong>납부의무가 면제</strong>됩니다(부가법 §69①·③).</> : <>1년 공급대가가 <strong>4,800만원 미만</strong>이라 부가가치세 <strong>납부의무가 면제</strong>됩니다(부가법 §69).</>} <strong>신고는 해야 하지만 낼 세금은 0원</strong>이에요. 신고·납부 기한은 <strong>{deadline}</strong>.{deadlineCaveat}</div>
                 ) : (
                   <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 }}>{vatKorean(calc.isRefund ? calc.refund : calc.netTax)} · 신고·납부 기한 <strong>{deadline}</strong>{deadlineCaveat}</div>
                 )}
