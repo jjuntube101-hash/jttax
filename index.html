@@ -169,6 +169,24 @@
     @media (prefers-reduced-motion: reduce){
       .jt-boot__late{ animation:none; }
     }
+    /* 홈 첫 화면 — 대표세무사 사진과 상담 경로 */
+    .rn-home .rn-hero { min-height: calc(100svh - 80px); align-content: center; }
+    .rn-home .rn-hero-copy h1 { word-break: keep-all; font-size: clamp(48px, 6.1vw, 88px); line-height: 1.06; }
+    .rn-home .rn-hero-copy .rn-lead { max-width: 29em; }
+    .rn-home .rn-hero-copy .rn-actions { align-items: center; }
+    .rn-home .rn-hero-people { gap: clamp(8px, 1vw, 16px); }
+    .rn-home .rn-hero-people img { aspect-ratio: 3 / 4; object-fit: cover; }
+    .rn-home .rn-hero-people figcaption a:hover { text-decoration: underline; text-underline-offset: .2em; }
+    @media (min-width: 1025px) {
+      .rn-home .rn-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: clamp(36px, 5vw, 80px); }
+    }
+    .rn-home .rn-hero-people img { border-radius: 2px; box-shadow: none; }
+    .rn-home .rn-hero-people figure { margin: 0; }
+    .rn-home .rn-hero-people figcaption a { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: .4em; min-height: 44px; }
+    @media (max-width: 640px) {
+      .rn-home .rn-hero { min-height: auto; }
+      .rn-home .rn-hero-people figcaption a { display: block; }
+    }
     /* 홈 선렌더(261101 SEO 2-7)의 안전판 두 개 — [data-prerender] 는 빌드가 넣은 히어로에만 있다.
        ① 외부 CSS 가 실패하면 사진 3장이 원래 크기(750×1000)로 커져 연락처를 밀어낸다(Codex R1-F1).
           :where() 로 우선순위를 0 으로 두어, CSS 가 오면 renewal-pages.css 의 display:grid 가 이긴다.
