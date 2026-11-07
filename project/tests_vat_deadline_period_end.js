@@ -17,6 +17,15 @@ chk('간이 확정 → 2026-12-31', P.VAT_PERIOD_END_2026 && P.VAT_PERIOD_END_20
 chk('예정신고 구분은 정하지 않음', P.VAT_PERIOD_END_2026 && !('1기_예정' in P.VAT_PERIOD_END_2026) && !('2기_예정' in P.VAT_PERIOD_END_2026));
 chk('안내문에 폐업·과세유형 변경·간이과세 포기', typeof P.VAT_DEADLINE_CAVEAT === 'string' && /폐업/.test(P.VAT_DEADLINE_CAVEAT) && /과세유형 변경/.test(P.VAT_DEADLINE_CAVEAT) && /간이과세 포기/.test(P.VAT_DEADLINE_CAVEAT));
 
+// 1-2) 신고 구분 화면 안내가 실제 2026년 기한과 맞음 — 요일을 시험이 직접 계산(국기법 §5① 토·일 이월)
+const roll = (iso) => { const d = new Date(iso + 'T00:00:00Z'); while ([0, 6].includes(d.getUTCDay())) d.setUTCDate(d.getUTCDate() + 1); return d; };
+const jul = roll('2026-07-25'), jan = roll('2027-01-25');
+const md = (d) => (d.getUTCMonth() + 1) + '/' + d.getUTCDate();
+const pblock = slice("id: 'periodType'", 'showIf');
+chk('2026 1기 기한(토·일 이월 반영)이 선택지에 보임', md(jul) === '7/27' && pblock.includes("['1기_확정', '1기 확정 (1~6월분)', '신고·납부 7/25 (2026년은 토요일이라 " + md(jul) + ")']"));
+chk('2기 기한 2027-01-25 는 평일이라 1/25 그대로', md(jan) === '1/25' && pblock.includes("'신고·납부 다음해 1/25'"));
+chk('신고 구분 안내에 §49①·국기법 §5① 이월 규칙', pblock.includes('(부가법 §49①)') && pblock.includes('기한이 토·일·공휴일이면 그 다음날로 넘어갑니다(국기법 §5①)'));
+
 // 2) 요청 본문에 period_end 가 period_type 과 같은 규칙으로 실림
 chk('요청에 period_end 를 실음', src.includes("period_end: VAT_PERIOD_END_2026[bt === '간이과세자' ? '간이과세_확정' : (answers.periodType || '1기_확정')],"));
 chk('period_type 규칙은 그대로', src.includes("period_type: bt === '간이과세자' ? '간이과세_확정' : (answers.periodType || '1기_확정'),"));
