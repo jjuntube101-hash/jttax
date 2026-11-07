@@ -260,12 +260,27 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/commercial-sale-land-building-vat.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/commercial-to-residential-vat-records.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/comprehensive-income-tax-2026.html",
     "h1": 1,
     "mainPreserved": true
   },
   {
     "path": "insights/comprehensive-real-estate-tax-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/coownership-partition-settlement.html",
     "h1": 1,
     "mainPreserved": true
   },
@@ -345,12 +360,32 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/devised-property-registration.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/existing-business-youtuber-startup-tax-relief.html",
     "h1": 1,
     "mainPreserved": true
   },
   {
     "path": "insights/family-business-succession.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/family-home-discounted-sale.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/family-loan-purchase-funding.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/farm-inheritance-work-records.html",
     "h1": 1,
     "mainPreserved": true
   },
@@ -375,12 +410,27 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/house-demolition-sale-agreement.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/housing-bond-sale-loss-evidence.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/housing-rental-income.html",
     "h1": 1,
     "mainPreserved": true
   },
   {
     "path": "insights/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/inheritance-cash-withdrawals.html",
     "h1": 1,
     "mainPreserved": true
   },
@@ -405,7 +455,32 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/inherited-property-redivision.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/inherited-property-valuation-comparables.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/joint-ownership-purchase-funds.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/lease-deposit-gift-handover.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/life-insurance-premium-payer.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/mixed-use-building-floor-evidence.html",
     "h1": 1,
     "mainPreserved": true
   },
@@ -420,7 +495,37 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/nonresident-property-sale-closing.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/officetel-actual-use-records.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/one-house-cgt-exemption.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/partial-expropriation-remaining-land-sale.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/presale-right-premium-options.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/prior-gifts-transfer-history.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/property-contract-cancellation-penalty.html",
     "h1": 1,
     "mainPreserved": true
   },
@@ -431,6 +536,16 @@
   },
   {
     "path": "insights/property-tax-2026-calculation.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/renovation-costs-sale-evidence.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/rental-business-transfer-checklist.html",
     "h1": 1,
     "mainPreserved": true
   },
@@ -456,6 +571,11 @@
   },
   {
     "path": "insights/spouse-gift-carryover-tax.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/successive-inheritance-registration.html",
     "h1": 1,
     "mainPreserved": true
   },

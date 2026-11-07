@@ -320,6 +320,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/commercial-sale-land-building-vat.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/commercial-to-residential-vat-records.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/comprehensive-income-tax-2026.html</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -328,6 +340,12 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/comprehensive-real-estate-tax-2026.html</loc>
     <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/coownership-partition-settlement.html</loc>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -422,6 +440,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/devised-property-registration.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/existing-business-youtuber-startup-tax-relief.html</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -430,6 +454,24 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/family-business-succession.html</loc>
     <lastmod>2026-06-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/family-home-discounted-sale.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/family-loan-purchase-funding.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/farm-inheritance-work-records.html</loc>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -458,6 +500,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/house-demolition-sale-agreement.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/housing-bond-sale-loss-evidence.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/housing-rental-income.html</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
@@ -467,6 +521,12 @@
     <loc>https://www.jttax.co.kr/insights/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/inheritance-cash-withdrawals.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.jttax.co.kr/insights/inheritance-registration-intake.html</loc>
@@ -493,8 +553,38 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/inherited-property-redivision.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/inherited-property-valuation-comparables.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/joint-ownership-purchase-funds.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/lease-deposit-gift-handover.html</loc>
     <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/life-insurance-premium-payer.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/mixed-use-building-floor-evidence.html</loc>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -511,8 +601,44 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/nonresident-property-sale-closing.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/officetel-actual-use-records.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/one-house-cgt-exemption.html</loc>
     <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/partial-expropriation-remaining-land-sale.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/presale-right-premium-options.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/prior-gifts-transfer-history.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/property-contract-cancellation-penalty.html</loc>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -525,6 +651,18 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/property-tax-2026-calculation.html</loc>
     <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/renovation-costs-sale-evidence.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/rental-business-transfer-checklist.html</loc>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -555,6 +693,12 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/spouse-gift-carryover-tax.html</loc>
     <lastmod>2026-06-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/successive-inheritance-registration.html</loc>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
