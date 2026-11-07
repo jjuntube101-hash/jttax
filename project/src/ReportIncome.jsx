@@ -257,6 +257,47 @@ function buildIncomeKakao(answers, calc) {
   return L.join('\n');
 }
 
+function IncomeTaxShare({calc}) {
+  const share = calc.total > 0 ? Math.max(0, Math.min(100, calc.determined / calc.total * 100)) : 0;
+  const label = calc.total > 0 ? Math.round(share) + '%' : '0원';
+  return (
+    <figure className="jt-income-share">
+      <svg viewBox="0 0 280 238" role="img" aria-label={`예상 총세부담 ${formatWon(calc.total)} 중 종합소득세 ${formatWon(calc.determined)}, 지방소득세 ${formatWon(calc.local)}`}>
+        <rect width="280" height="238" fill="#e8ede6" />
+        <circle cx="140" cy="119" r="82" fill="none" stroke={calc.total > 0 ? '#b67b40' : '#c9d4cc'} strokeWidth="28" />
+        {share > 0 && <circle cx="140" cy="119" r="82" fill="none" stroke="#245648" strokeWidth="28"
+          pathLength="100" strokeDasharray={share + ' ' + (100 - share)} transform="rotate(-90 140 119)" />}
+        <text x="140" y="113" textAnchor="middle" className="jt-chart-label">{calc.total > 0 ? '종합소득세 비중' : '총세부담'}</text>
+        <text x="140" y="145" textAnchor="middle" className="jt-chart-value">{label}</text>
+      </svg>
+      <dl><div><dt>종합소득세</dt><dd>{formatWon(calc.determined)}</dd></div><div><dt>지방소득세</dt><dd>{formatWon(calc.local)}</dd></div></dl>
+    </figure>
+  );
+}
+
+function IncomeTaxStages({calc}) {
+  const rows = [
+    ['산출세액', calc.calculated], ['결정세액', calc.determined], ['지방소득세', calc.local],
+  ];
+  const maximum = Math.max(1, ...rows.map(([,amount]) => Math.abs(amount)));
+  return (
+    <figure className="jt-income-stages">
+      <svg viewBox="0 0 420 220" role="img" aria-label={rows.map(([label,amount]) => label + ' ' + formatWon(amount)).join(', ')}>
+        <rect width="420" height="220" fill="#e8ede6" />
+        {rows.map(([label,amount], index) => {
+          const y = 36 + index * 66;
+          return <g key={label}>
+            <text x="20" y={y} className="jt-chart-label">{label}</text>
+            <text x="400" y={y} textAnchor="end" className="jt-chart-label">{formatWon(amount)}</text>
+            <rect x="20" y={y + 12} width="380" height="12" fill="#d1dcd3" />
+            <rect x="20" y={y + 12} width={380 * Math.abs(amount) / maximum} height="12" fill={index === 2 ? '#b67b40' : '#245648'} />
+          </g>;
+        })}
+      </svg>
+    </figure>
+  );
+}
+
 function JTReportIncome({ setRoute, onBack }) {
   const [creditMode,setCreditMode]=useIncState(false);
 
@@ -274,6 +315,24 @@ function JTReportIncome({ setRoute, onBack }) {
   const setErr=rawSetErr;
   const setQuickReport=rawSetQuickReport;
 
+
+  React.useEffect(() => {
+    if (!report?.calc?.precise) return;
+    let opened = [];
+    const expand = () => {
+      for (const detail of document.querySelectorAll('[data-income-print]:not([open])')) {
+        detail.open = true;
+        opened.push(detail);
+      }
+    };
+    const restore = () => { opened.forEach(detail => { detail.open = false; }); opened = []; };
+    window.addEventListener('beforeprint', expand);
+    window.addEventListener('afterprint', restore);
+    return () => {
+      window.removeEventListener('beforeprint', expand);
+      window.removeEventListener('afterprint', restore);
+    };
+  }, [report]);
 
   React.useEffect(() => {
     const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || '';
@@ -419,102 +478,135 @@ function JTReportIncome({ setRoute, onBack }) {
         </div>
       );
     }
-    return (
-      <div className="jt-container">
-        <JTReportShell extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={()=>{inputSession.invalidate();setCreditMode(true);}}>공제·이월 원장 계산</button>} inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="종합소득세 계산 결과" subtitle="사업·근로·금융 소득 합산 종합소득세" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
-          {!calc.precise ? (
+    if (!calc.precise) {
+      return (
+        <div className="jt-container">
+          <JTReportShell title="종합소득세 계산 결과" subtitle="정밀 계산 필요" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING"
+            inputReview={{questions: visibleQs, answers, onEdit: index => { inputSession.invalidate(); setStep(index); }}}
+            extraActions={<button type="button" className="jt-btn jt-btn--ghost" onClick={() => { inputSession.invalidate(); setCreditMode(true); }}>공제·이월 원장 계산</button>}>
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               {calc.engineReason && <p role="alert">{calc.engineReason}</p>}<strong>정밀 계산이 필요합니다.</strong> 종합소득세는 여러 소득·공제를 정확히 합산해야 해서, 간이 추정으로는 세액을 잘못 안내할 수 있습니다. 입력 보완 안내가 있으면 해당 항목을 수정하고, 연결 오류라면 잠시 후 다시 시도해 주세요.
               <div style={{ marginTop: 8 }}><button className="jt-btn jt-btn--ghost" onClick={() => runAnalysis()}>정밀 계산 다시 시도 →</button></div>
             </div>
-          ) : (
-            <>
-              {/* 수정 260628(INCOME-R2-02): 엔진 경고사항 화면 노출(가정·계산 알림) */}
-              {calc.engineWarnings && calc.engineWarnings.length > 0 && (
-                <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
-                  <strong>확인이 필요한 점</strong>
-                  <ul style={{ margin: '8px 0 0', paddingLeft: 18 }}>{calc.engineWarnings.map((w, i) => <li key={i} style={{ marginBottom: 4 }}>{w}</li>)}</ul>
+          </JTReportShell>
+        </div>
+      );
+    }
+    return (
+      <>
+        <section className="jt-income-summary" aria-labelledby="jt-income-result-title">
+          <div className="jt-income-wrap wrap">
+            <div className="hero-text jt-income-cover">
+              <div className="jt-income-intro">
+                <h1 id="jt-income-result-title">종합소득세 계산 결과</h1>
+                {/* 수정 260628(INCOME-R2-02): 엔진 경고사항 화면 노출(가정·계산 알림) */}
+                {calc.engineWarnings && calc.engineWarnings.length > 0 && (
+                  <div style={{ background: '#fff7ea', borderLeft: '4px solid #d08b00', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>
+                    <strong>확인이 필요한 점</strong>
+                    <ul style={{ margin: '8px 0 0', paddingLeft: 18 }}>{calc.engineWarnings.map((w, i) => <li key={i} style={{ marginBottom: 4 }}>{w}</li>)}</ul>
+                  </div>
+                )}
+                <div className="jt-report-result__grade jt-grade-mid">
+                  <div className="jt-report-result__grade-label">1년치 예상 종합소득세 (추정)</div>
+                  <div className="jt-report-result__grade-val">{formatWon(calc.total)}</div>
+                  <p>과세표준 {formatWon(calc.taxBase)} · 적용세율 {calc.rate || '-'}</p>
+                  <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, color: '#b8860b' }}>※ <strong>이미 낸 세금(프리랜서 3.3% 원천징수·중간예납·직장인 연말정산)을 빼기 전</strong> 1년치 산정액입니다. 5월에 실제로 더 내실 돈은 이보다 적고, 이미 낸 세금이 더 많으면 환급받습니다. 정확한 추가납부·환급액은 상담에서 확인하세요.</div>
                 </div>
-              )}
-              <div className="jt-report-result__grade jt-grade-mid">
-                <div className="jt-report-result__grade-label">1년치 예상 종합소득세 (추정)</div>
-                <div className="jt-report-result__grade-val">{formatWon(calc.total)}</div>
-                <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 }}>종합소득세 {formatWon(calc.determined)} + 지방소득세 {formatWon(calc.local)}. 과세표준 {formatWon(calc.taxBase)} · 적용세율 {calc.rate || '-'}.</div>
-                <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, color: '#b8860b' }}>※ <strong>이미 낸 세금(프리랜서 3.3% 원천징수·중간예납·직장인 연말정산)을 빼기 전</strong> 1년치 산정액입니다. 5월에 실제로 더 내실 돈은 이보다 적고, 이미 낸 세금이 더 많으면 환급받습니다. 정확한 추가납부·환급액은 상담에서 확인하세요.</div>
+
+                {report.quick && <p>소득금액만으로 계산한 예상 세액입니다. 부양가족과 공제를 입력하면 이를 반영해 다시 계산합니다.</p>}
+                <div className="jt-income-actions">
+                  {report.quick && <button className="jt-btn jt-btn--primary" onClick={goDetail}>공제 넣어 정확히 계산 →</button>}
+                  <button className="jt-btn jt-btn--ghost" onClick={() => document.getElementById('jt-income-breakdown').focus()}>계산 내역 보기</button>
+                </div>
               </div>
-
-              <section className="jt-report-result__section">
-                <h3>계산 내역</h3>
-                <table className="jt-report-calc">
-                  <tbody>
-                    {['연금소득금액','추가공제','보험료공제','배당세액공제'].map(key => typeof (calc.detail || {})[key] === 'number' ? <tr key={key}><th>{key}</th><td>{formatWon(calc.detail[key])}</td></tr> : null)}
-                    <tr><th>과세표준</th><td>{formatWon(calc.taxBase)}</td></tr>
-                    <tr><th>산출세액 {calc.rate ? `(${calc.rate})` : ''}</th><td>{formatWon(calc.calculated)}</td></tr>
-                    <tr><th>결정세액 (세액공제 반영)</th><td>{formatWon(calc.determined)}</td></tr>
-                    <tr><th>지방소득세 (10%)</th><td>{formatWon(calc.local)}</td></tr>
-                    <tr style={{ background: '#f0f7f3' }}><th><strong>총 세부담</strong></th><td><strong>{formatWon(calc.total)}</strong></td></tr>
-                  </tbody>
-                </table>
-              </section>
-
-              {(calc.steps && calc.steps.length > 0) && (
-                <section className="jt-report-result__section">
-                  <h3>단계별 계산 (법조문)</h3>
-                  <table className="jt-report-calc">
+              <IncomeTaxShare calc={calc} />
+            </div>
+          </div>
+        </section>
+        <section className="jt-income-calculation" aria-labelledby="jt-income-breakdown">
+          <div className="jt-income-wrap wrap">
+            <h2 id="jt-income-breakdown" tabIndex={-1}>계산 내역</h2>
+            <div className="jt-income-reading">
+              <div className="jt-income-options">
+                <details className="jt-income-detail" data-income-print><summary>계산 항목별 금액 보기</summary>
+                  <table className="jt-report-calc" aria-labelledby="jt-income-breakdown">
                     <tbody>
-                      {calc.steps.map((s, i) => (
-                        <tr key={i}>
-                          <th style={{ fontWeight: 400 }}><JTCalculationStepLabel step={s} /></th>
-                          <td>{typeof s.금액 === 'number' ? formatWon(s.금액) : (s.금액 || '')}</td>
-                        </tr>
-                      ))}
+                      {['연금소득금액','추가공제','보험료공제','배당세액공제'].map(key => typeof (calc.detail || {})[key] === 'number' ? <tr key={key}><th>{key}</th><td>{formatWon(calc.detail[key])}</td></tr> : null)}
+                      <tr><th>과세표준</th><td>{formatWon(calc.taxBase)}</td></tr>
+                      <tr><th>산출세액 {calc.rate ? `(${calc.rate})` : ''}</th><td>{formatWon(calc.calculated)}</td></tr>
+                      <tr><th>결정세액 (세액공제 반영)</th><td>{formatWon(calc.determined)}</td></tr>
+                      <tr><th>지방소득세 (10%)</th><td>{formatWon(calc.local)}</td></tr>
+                      <tr style={{ background: '#f0f7f3' }}><th><strong>총 세부담</strong></th><td><strong>{formatWon(calc.total)}</strong></td></tr>
                     </tbody>
                   </table>
-                </section>
-              )}
+                </details>
 
-              {report.quick && (
-                <div className="jt-report-result__section" style={{ background: 'var(--bg-1,#f7f5f0)', borderLeft: '4px solid var(--accent,#2a6d4f)', padding: '14px 18px' }}>
-                  <p style={{ margin: '0 0 12px', lineHeight: 1.65 }}><strong>소득 금액만으로 낸 빠른 계산이에요.</strong> 부양가족·공제 항목을 넣으면 세금이 더 줄 수 있습니다 —</p>
-                  <button className="jt-btn jt-btn--primary" onClick={goDetail}>공제 넣어 정확히 계산 →</button>
-                </div>
-              )}
+                {(calc.steps && calc.steps.length > 0) && (
+                  <details className="jt-income-detail" data-income-print><summary>단계별 계산과 적용 근거 보기</summary>
+                    <table className="jt-report-calc">
+                      <tbody>
+                        {calc.steps.map((s, i) => (
+                          <tr key={i}>
+                            <th style={{ fontWeight: 400 }}><JTCalculationStepLabel step={s} /></th>
+                            <td>{typeof s.금액 === 'number' ? formatWon(s.금액) : (s.금액 || '')}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </details>
+                )}
 
-              <section className="jt-report-result__section" style={{ background: '#fff7ea', borderLeft: '4px solid #b8860b', padding: '14px 18px', borderRadius: 8 }}>
-                <p style={{ margin: '0 0 8px', fontWeight: 700 }}>흔히 놓치는 절세 항목 — 넣으면 세금이 더 줄 수 있어요</p>
-                <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7, fontSize: 14 }}>
-                  <li><strong>연금저축·IRP</strong>: 위에 입력하셨으면 이미 반영됐습니다. 미가입이면 연 900만원까지 12~15% 세액공제(소득세법 §59의3) — 사업자·프리랜서에게 효과가 가장 큰 절세입니다.</li>
-                  <li><strong>노란우산공제</strong>: 소상공인·사업자 소득공제(소득 구간별 한도). 본 계산에는 미반영 — 상담에서 반영.</li>
-                  <li><strong>의료비·기부금·교육비·중소기업특별세액감면</strong>: 요건 충족 시 추가 절세. 본 계산에는 미반영이니 상담에서 확인하세요.</li>
-                  <li><strong>장부 작성(기장)</strong>: 장부 없이 추계신고하면 무기장가산세가 붙을 수 있고, 간편장부대상자가 복식부기로 기장하면 기장세액공제(산출세액 20%·한도 100만)를 받습니다(소득세법 §56의2). 업종별 경비율·기장 유불리는 상담에서 따져 드립니다.</li>
-                </ul>
-              </section>
 
-              {calc.precise && typeof JTReportConvert === 'function' && (
-                <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
-                  calcId="income"
-                  completeEligible={true}
-                  precise={calc.precise}
-                  quick={report.quick}
-                  reportType="종합소득세 계산"
-                  reportTag="BOOKKEEPING"
-                  reportSummary={`과세표준 ${formatWon(calc.taxBase)} · 예상 총부담 ${formatWon(calc.total)} (이미 낸 세금 차감 전)`}
-                  reportDetail={buildIncomeDetail(answers, calc)}
-                  reportNotes={answers.context}
-                  reportCaveats={buildIncomeCaveats(answers)}
-                  kakaoSummary={buildIncomeKakao(answers, calc)}
-                  setRoute={setRoute}
-                />
-              )}
+                <details className="jt-income-detail" data-income-print><summary>추가로 확인할 공제 항목</summary>
+                  <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7, fontSize: 14 }}>
+                    <li><strong>연금저축·IRP</strong>: 위에 입력하셨으면 이미 반영됐습니다. 미가입이면 연 900만원까지 12~15% 세액공제(소득세법 §59의3) — 사업자·프리랜서에게 효과가 가장 큰 절세입니다.</li>
+                    <li><strong>노란우산공제</strong>: 소상공인·사업자 소득공제(소득 구간별 한도). 본 계산에는 미반영 — 상담에서 반영.</li>
+                    <li><strong>의료비·기부금·교육비·중소기업특별세액감면</strong>: 요건 충족 시 추가 절세. 본 계산에는 미반영이니 상담에서 확인하세요.</li>
+                    <li><strong>장부 작성(기장)</strong>: 장부 없이 추계신고하면 무기장가산세가 붙을 수 있고, 간편장부대상자가 복식부기로 기장하면 기장세액공제(산출세액 20%·한도 100만)를 받습니다(소득세법 §56의2). 업종별 경비율·기장 유불리는 상담에서 따져 드립니다.</li>
+                  </ul>
+                </details>
 
-              <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
-                <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
-                <button className="jt-btn jt-btn--ghost" onClick={onBack}>← 세금 계산기</button>
+                {calc.engineVersion && (!calc.calculationReview || calc.calculationReview.can_share === true) && (
+                  <details className="jt-income-detail" data-income-print>
+                    <summary>적용한 계산 규칙과 버전</summary>
+                    <JTCalculationEvidence engineVersion={calc.engineVersion} />
+                  </details>
+                )}
+                <JTInputReview questions={visibleQs} answers={answers} onEdit={index => { inputSession.invalidate(); setStep(index); }} />
+                <button type="button" className="jt-btn jt-btn--ghost" onClick={() => { inputSession.invalidate(); setCreditMode(true); }}>공제·이월 원장 계산</button>
+                <p className="jt-report-shell__privacy">{window.JT_PRIVACY_NOTE.engine}</p>
               </div>
-            </>
-          )}
-        </JTReportShell>
-      </div>
+              <IncomeTaxStages calc={calc} />
+            </div>
+          </div>
+        </section>
+        <section className="jt-income-followup" aria-labelledby="jt-income-next">
+          <div className="jt-income-wrap wrap">
+            <h2 id="jt-income-next">결과 저장·상담</h2>
+            {calc.precise && typeof JTReportConvert === 'function' && (
+              <JTReportConvert engineVersion={calc.engineVersion} calculationReview={calc.calculationReview}
+                calcId="income"
+                completeEligible={true}
+                precise={calc.precise}
+                quick={report.quick}
+                reportType="종합소득세 계산"
+                reportTag="BOOKKEEPING"
+                reportSummary={`과세표준 ${formatWon(calc.taxBase)} · 예상 총부담 ${formatWon(calc.total)} (이미 낸 세금 차감 전)`}
+                reportDetail={buildIncomeDetail(answers, calc)}
+                reportNotes={answers.context}
+                reportCaveats={buildIncomeCaveats(answers)}
+                kakaoSummary={buildIncomeKakao(answers, calc)}
+                setRoute={setRoute}
+              />
+            )}
+
+            <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
+              <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
+              <button className="jt-btn jt-btn--ghost" onClick={onBack}>← 세금 계산기</button>
+            </div>
+          </div>
+        </section>
+      </>
     );
   }
 

@@ -12,15 +12,6 @@ function acqFmtArticle(s) {
   if (!s) return '';
   return String(s).replace(/SS/g, '§').replace(/\((\d{1,2})\)/g, (m, n) => ACQ_CIRCLED[Number(n)] || m);
 }
-function acqKoreanAmount(raw) {
-  const n = Number(raw) || 0;
-  if (n <= 0) return '';
-  const units = [[1_0000_0000_0000, '조'], [1_0000_0000, '억'], [1_0000, '만'], [1, '']];
-  let rest = n, s = '';
-  for (const [u, label] of units) { const q = Math.floor(rest / u); if (q > 0) { s += q.toLocaleString('ko-KR') + label + ' '; rest -= q * u; } }
-  return s.trim() + '원';
-}
-
 /* 단계별 '세율' 항목은 엔진이 만분율 정수(×10000)로 반환 → %로 표시(예: 1200→12%, 233→2.33%, 100→1%).
    그 외 항목(과세표준·본세·교육세·감면·총세액)은 금액(원). 공유 formatStepValue는 양도세 전용이라 취득세 세율을 오표시(만분율을 원으로). */
 function acqFormatStepValue(name, amount, note) {

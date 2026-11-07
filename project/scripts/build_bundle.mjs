@@ -27,6 +27,7 @@ import esbuild from 'esbuild';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -34,6 +35,12 @@ const ROOT = path.join(__dirname, '..', '..');
 const SRC = path.join(ROOT, 'project', 'src');
 const OUT_DIR = path.join(ROOT, 'project', 'dist');
 const OUT_FILE = path.join(OUT_DIR, 'app.js');
+// Shared classic scripts must run once, in the same order as the full bundle.
+const REPORT_ENTRY = new Set([
+  'lawValues.jsx', 'Chrome.jsx', 'Report.jsx', 'InputReview.jsx',
+  'CreditGenerationInputs.jsx', 'CreditSettlementDirect.jsx', 'ReportConvert.jsx',
+  'ReportIncome.jsx', 'App.jsx',
+]);
 
 /* 종전 index.html 의 <script type="text/babel"> 순서 그대로. App 은 맨 마지막. */
 export const ORDER = [
@@ -218,6 +225,30 @@ export function buildBundle({ write = true } = {}) {
   if (write) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
     fs.writeFileSync(OUT_FILE, bundle);
+    const compact = code => esbuild.transformSync(code, {
+      target: TARGET, charset: 'utf8', minify: true,
+    }).code;
+    const partition = included => parts.filter((_, i) => REPORT_ENTRY.has(ORDER[i]) === included).join('\n');
+    // An open tab can cross a Pages release. Never apply a deferred bundle to
+    // an entry with different globals or calculation metadata.
+    const compatible = 'if (window.JT_FRONTEND_BUILD?.release_payload_sha256 !== ' +
+      JSON.stringify(payloadHash) + ') throw new Error("화면이 업데이트되었습니다.");\n';
+    const otherCode = compact(compatible + ordinance + partition(false)) + '\nwindow.JT_OTHER_READY = true;\n';
+    fs.writeFileSync(path.join(OUT_DIR, 'report-other.js'), otherCode);
+    const otherHash = createHash('sha256').update(otherCode).digest('hex');
+    const loader = 'window.JT_OTHER_BUNDLE = "/project/dist/report-other.js?v=' + otherHash.slice(0, 20) + '";\n';
+    // Data.jsx is the canonical static object. The navigation, footer, result and
+    // meta tags use these four groups. The remaining routes load the entire object.
+    const data = vm.runInNewContext(fs.readFileSync(path.join(SRC, 'Data.jsx'), 'utf8') +
+      '\nwindow.JT_DATA;', { window: {} });
+    const { firm, integrations, seo, services } = data;
+    const reportData = 'window.JT_DATA=' + JSON.stringify({ firm, integrations, seo, services }) + ';\n';
+    const entryPayload = loader + reportData + compact(partition(true));
+    const entryHash = createHash('sha256').update(entryPayload).digest('hex');
+    const entryIdentity = { schema_version: identity.schema_version, build_id: 'frontend-' + entryHash.slice(0, 20),
+      payload_sha256: entryHash, release_payload_sha256: payloadHash };
+    fs.writeFileSync(path.join(OUT_DIR, 'report-entry.js'), 'window.JT_FRONTEND_BUILD = Object.freeze(' +
+      JSON.stringify(entryIdentity) + ');\n' + entryPayload);
   }
   return bundle;
 }

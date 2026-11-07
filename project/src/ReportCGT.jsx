@@ -638,11 +638,6 @@ const CGT_QS = [
   },
 ];
 
-function formatWon(n) {
-  if (!n || isNaN(n)) return '0원';
-  return Number(n).toLocaleString('ko-KR', { maximumFractionDigits: 20 }) + '원';
-}
-
 /* 상담 요청 시 담당 세무사에게 전달할 상세 — 고객 입력 전체 + 계산 결과 + 자동 분석 */
 /* 차단 판정 — «렌더»가 아니라 «분석 단계»에서 쓰라고 모듈 스코프로 뺐다.
    화면에서 금액을 가려도 그 전에 AI 프롬프트가 세액을 외부로 보내고 있었다
