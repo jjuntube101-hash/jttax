@@ -80,6 +80,8 @@ heroCaption: 중고 장비 거래자료 정리를 표현한 AI 생성 일러스�
 - [장비 경비 처리와 부가세 공제의 차이](https://www.jttax.co.kr/insights/creator-equipment.html)
 - [면세사업 때 산 장비를 과세사업에 쓰기 시작했다면](https://www.jttax.co.kr/insights/creator-equipment-taxable-conversion.html)
 
+개인에게 중고 카메라를 사고 어떤 자료를 남겨야 할지 궁금하다면 [제이티 블로그의 질문별 안내](https://blog.naver.com/jt_tax/224468090924)도 함께 읽어 보세요.
+
 ## 근거와 적용 범위
 
 2026년 11월 7일 기준 원문을 대조했습니다. 과거 거래의 신고를 검토할 때에는 거래 당시 법령과 부칙을 별도로 확인해야 합니다.
