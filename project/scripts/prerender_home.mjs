@@ -136,6 +136,9 @@ export function renderFirstScreen() {
   if (!full.includes('<div class="rn-page rn-home">' + hero)) throw new Error('히어로가 홈 첫 구역이 아닙니다');
   if (!/<p class="rn-lead">/.test(hero)) throw new Error('히어로에 p.rn-lead 가 없습니다');
   hero = hero.replace(heroBook, '<a href="/#/booking" class="rn-link" data-prerender-book="hero">');
+  // Deep-linked calculators hide this home-only panel. Native lazy loading
+  // keeps its portraits off the network there and preserves the home images.
+  hero = hero.replace(/<img /g, '<img loading="lazy" ');
   /* data-prerender: head 의 규칙 두 개가 «선렌더 히어로에만» 걸리게 하는 표지다
      (홈이 아닌 경로로 들어오면 숨김, 외부 CSS 가 없으면 사진 묶음 숨김). React 가 그린 히어로에는 없다. */
   return { header: skip + header, hero: '<div class="rn-page rn-home" data-prerender="home">' + hero + '</div>' };

@@ -158,3 +158,148 @@
   .jt-report .jt-report-result__section { overflow: visible; }
   .jt-report .jt-report-calc tr { break-inside: avoid; }
 }
+/* The income statement has three reading stops: the total, its calculation,
+   and optional actions. Long tables and expanded input reviews grow naturally. */
+.jt-page-report:has(.jt-income-summary) {
+  --income-gutter: clamp(20px, 5.56vw, 112px);
+  --income-heading-size: clamp(30px, 3.4vw, 48px);
+}
+.jt-income-wrap {
+  width: calc(100% - 2 * var(--income-gutter));
+  margin-inline: auto;
+}
+.jt-income-summary, .jt-income-calculation, .jt-income-followup {
+  padding-block: clamp(32px, 5vw, 72px);
+  overflow-wrap: anywhere;
+}
+.jt-income-summary { background: var(--sheet-paper); }
+.jt-income-wrap > :is(h1,h2), .jt-income-split dd {
+  margin: 0; color: var(--sheet-ink); letter-spacing: -.045em;
+}
+.jt-income-summary h1 {
+  font: 730 clamp(38px, 4.6vw, 68px)/1.16 var(--font-sans-kr);
+  word-break: keep-all;
+}
+.jt-income-wrap > h2 {
+  font: 680 var(--income-heading-size)/1.25 var(--font-sans-kr);
+  margin-bottom: 24px; scroll-margin-top: 100px;
+}
+.jt-report .jt-income-summary .jt-report-result__grade {
+  max-width: none; margin-block: 24px; padding: 24px 0; border-bottom-width: 0;
+}
+.jt-income-summary .jt-report-result__grade-val {
+  font-size: var(--income-heading-size);
+}
+.jt-income-split { max-width: 60rem; margin-block: 20px; }
+.jt-income-split svg { width: 100%; height: 12px; display: block; }
+.jt-income-split dl { margin: 12px 0 0; display: flex; flex-wrap: wrap; gap: 12px 36px; }
+.jt-income-split dl > div { display: flex; align-items: baseline; gap: 10px; }
+.jt-income-split dt { color: var(--sheet-muted); }
+.jt-income-split dt::before {
+  content: ""; display: inline-block; width: .7em; height: .7em; margin-inline-end: .5em;
+  background: #245648;
+}
+.jt-income-split dl > div + div dt::before { background: #bd8550; }
+.jt-income-split dd { font-weight: 680; font-variant-numeric: tabular-nums; }
+.jt-income-summary .jt-report-result__grade p,
+.jt-income-summary .jt-report-result__grade > div:last-child { max-width: 74ch; }
+.jt-income-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.jt-income-calculation { background: var(--sheet-wash); }
+.jt-income-calculation .jt-input-review { margin: 0 0 12px; }
+.jt-report .jt-income-calculation .jt-report-shell__privacy { margin-block: 16px 24px; color: #324f47 !important; }
+.jt-income-wrap .jt-report-result__section { width: 100%; max-width: none; margin-inline: 0; }
+.jt-income-wrap :is(.jt-report-result__section, .jt-convert-banner) h3 {
+  font-size: clamp(20px, 2vw, 26px) !important; line-height: 1.35;
+}
+.jt-report .jt-income-wrap .jt-report-result__section h3,
+.jt-report .jt-income-wrap .jt-report-q__nav {
+  border-block: 0;
+}
+.jt-income-wrap .jt-convert-banner { margin-block: 20px !important; }
+.jt-income-wrap div:has(> input[type="email"]:last-child):has(> input[type="tel"]) {
+  grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+}
+.jt-income-wrap fieldset > div { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+.jt-income-wrap .jt-consult-schedule > div:nth-child(2) {
+  display: flex !important; flex-direction: column; gap: 0 !important;
+}
+.jt-income-wrap .jt-consult-schedule > div:nth-child(2) > div {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px 24px;
+  border: 0 !important; border-top: 1px solid var(--sheet-rule) !important;
+  padding: 12px 0 !important; background: transparent !important;
+}
+.jt-income-wrap .jt-consult-schedule > div:nth-child(2) > div > div {
+  margin: 0 !important;
+}
+.jt-income-wrap .jt-consult-schedule > div:nth-child(2) > div > div:first-child {
+  min-width: 7em; color: var(--sheet-ink) !important; font: 650 16px/1.5 var(--font-sans-kr) !important;
+}
+.jt-page-report:has(.jt-income-summary) .jt-nav {
+  padding-inline: var(--income-gutter);
+}
+.jt-page-report:has(.jt-income-summary) :is(.jt-footer__grid,.jt-footer__bar) {
+  width: calc(100% - 2 * var(--income-gutter)); max-width: none;
+  margin-inline: auto; padding-inline: 0;
+}
+.jt-page-report:has(.jt-income-summary) .jt-menu-panel[aria-hidden="true"] {
+  visibility: hidden;
+}
+.jt-page-report:has(.jt-income-summary) .jt-btn {
+  min-height: 46px; padding: 8px 18px !important; font-size: 15px !important; line-height: 1.4;
+  border-radius: 6px !important; background: var(--brand) !important; color: white !important;
+  border: 1px solid var(--brand) !important;
+}
+.jt-page-report:has(.jt-income-summary) :is(.jt-btn--ghost,.jt-btn--outline,.jt-btn--outlineOnDark) {
+  background: #fff !important; color: var(--brand) !important;
+}
+@media(max-width: 640px) {
+  .jt-income-summary, .jt-income-calculation, .jt-income-followup { padding-block: 32px; }
+  .jt-income-wrap fieldset > div,
+  .jt-income-wrap div:has(> input[type="email"]:last-child):has(> input[type="tel"]) { grid-template-columns: 1fr !important; }
+  .jt-income-actions > button { width: 100%; }
+}
+/* Keep the opening statement and its actions together above the ledger. */
+.jt-page-report:has(.jt-income-summary) .jt-nav {
+  position: fixed; inset: 0 0 auto;
+}
+.jt-income-summary {
+  box-sizing: border-box; min-height: 100svh;
+  display: grid; align-items: center; padding-top: clamp(112px, 10vw, 152px);
+}
+@media (min-width: 1025px) {
+  .jt-report .jt-income-summary .jt-report-result__grade {
+    display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    column-gap: clamp(28px,5vw,72px);
+  }
+  .jt-income-summary .jt-report-result__grade-label,
+  .jt-income-summary .jt-report-result__grade-val,
+  .jt-income-summary .jt-report-result__grade p { grid-column: 1; }
+  .jt-income-summary .jt-income-split { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  .jt-income-summary .jt-report-result__grade > div:last-child { grid-column: 2; grid-row: 3; }
+}
+@media (max-width: 640px) {
+  .jt-income-summary { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Reserve the entire bottom edge for mobile contact actions on a solid ground. */
+.jt-page-report:has(.jt-income-summary) .jt-mcta {
+  inset: auto 0 0; width: 100%; max-width: none; margin: 0; border-radius: 0;
+  padding: 8px var(--income-gutter) calc(8px + env(safe-area-inset-bottom,0px));
+  background: #fffefa !important; border: 0; border-top: 1px solid var(--sheet-rule);
+}
+.jt-page-report:has(.jt-income-summary) .jt-mcta__btn {
+  min-height: 46px; border-radius: 6px; font-size: 15px;
+}
+.jt-page-report:has(.jt-income-summary) .jt-mcta__btn--primary {
+  border: 1px solid var(--brand); background: var(--brand) !important;
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+  .jt-page-report:has(.jt-income-summary) .jt-nav__book { display: inline-flex; }
+}
+
+@media print {
+  .jt-page-report:has(.jt-income-summary) :is(.jt-mcta,.jt-income-actions) { display: none !important; }
+  .jt-income-summary { min-height: 0; display: block; padding-block: 0; }
+  .jt-income-calculation, .jt-income-followup { padding-block: 16px; }
+  .jt-income-wrap { width: 100%; }
+}

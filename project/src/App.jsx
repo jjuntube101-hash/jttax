@@ -45,6 +45,41 @@ window.JTRouter = JTRouter;
 const JT_KNOWN_ROUTES = ['home', 'services', 'team', 'about', 'insights', 'report', 'contact', 'booking', 'privacy', 'terms'];
 const jtNormRoute = (r) => (JT_KNOWN_ROUTES.indexOf(r) >= 0 ? r : 'home'); // 모르는 페이지 키 → 홈 (깨진 링크 방어)
 
+let jtOtherRequest = null;
+function jtLoadOtherRoutes() {
+  if (!jtOtherRequest) {
+    jtOtherRequest = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = window.JT_OTHER_BUNDLE;
+      script.onload = () => {
+        if (window.JT_OTHER_READY) resolve();
+        else reject(Object.assign(new Error('새로고침하여 최신 화면을 열어 주세요.'), {reload: true}));
+      };
+      script.onerror = () => reject(new Error('네트워크 연결을 확인해 주세요.'));
+      document.head.appendChild(script);
+    }).catch(error => { jtOtherRequest = null; throw error; });
+  }
+  return jtOtherRequest;
+}
+
+function useJTRouteLoader(needsOther) {
+  const pending = Boolean(needsOther && window.JT_OTHER_BUNDLE && !window.JT_OTHER_READY);
+  const [attempt, retry] = React.useReducer(n => n + 1, 0);
+  const [error, setError] = React.useState(null);
+  const [, refresh] = React.useReducer(n => n + 1, 0);
+  React.useEffect(() => {
+    if (!pending) return;
+    let active = true;
+    setError(null);
+    jtLoadOtherRoutes().then(() => { if (active) refresh(); }, e => { if (active) setError(e); });
+    return () => { active = false; };
+  }, [pending, attempt]);
+  if (!pending) return null;
+  return <div role="status" className="jt-container"><p>{error?.message || '화면을 불러오고 있습니다.'}</p>
+    {error && <button type="button" className="jt-btn" onClick={error.reload ? () => window.location.reload() : retry}>
+      {error.reload ? '새로고침' : '다시 시도'}</button>}</div>;
+}
+
 const TWEAK_DEFAULTS = {
   "servicesLayout": "grid",
   "showQuote": false,
@@ -92,6 +127,7 @@ function App() {
   useAppEffect(() => {
     const onHash = () => {
       const r = JTRouter.parse();
+      document.documentElement.classList.toggle('jt-report-entry', r.route === 'report' && (!r.sub || r.sub === 'income'));
       if (r.router && r.route) { setRouteRaw(jtNormRoute(r.route)); if(r.route === 'about') setAboutTab(r.sub === 'team' ? 'team' : 'company'); }
     };
     window.addEventListener('hashchange', onHash);
@@ -148,22 +184,23 @@ function App() {
   const pageClass = `jt-app jt-page-${route}`;
   const contentMotion = useJTContentMotion(route);
   window.useSeoMeta(route);
+  const routeLoading = useJTRouteLoader(route !== 'report');
 
   return (
     <div className={pageClass}>
       <a className="jt-renewal-skip" href="#jt-main" onClick={e => { e.preventDefault(); const main=document.getElementById('jt-main'); main?.focus(); main?.scrollIntoView(); }}>본문으로 바로가기</a>
       <JTNav route={route} setRoute={setRoute} />
-      <main ref={contentMotion} id="jt-main" className="jt-main" tabIndex={-1}>
-        {route === 'home' && <JTRebuildHome setRoute={setRoute} />}
+      <main ref={contentMotion} id="jt-main" className={route === 'report' ? 'jt-main jt-report' : 'jt-main'} tabIndex={-1}>
+        {routeLoading || <>{route === 'home' && <JTRebuildHome setRoute={setRoute} />}
         {route === 'services' && <div><JTServicesPage setRoute={setRoute} /></div>}
         {route === 'team' && <div><JTAbout setRoute={setRoute} initialTab="team" /></div>}
         {route === 'about' && <div><JTAbout setRoute={setRoute} initialTab={aboutTab} /></div>}
         {route === 'insights' && <div><JTInsightsPage setRoute={setRoute} /></div>}
-        {route === 'report' && <div><JTReportPage setRoute={setRoute} /></div>}
+        {route === 'report' && <JTReportPage setRoute={setRoute} />}
         {route === 'contact' && <div><JTContact setRoute={setRoute} /></div>}
         {route === 'booking' && <div><JTBooking setRoute={setRoute} /></div>}
         {route === 'privacy' && <div><JTLegal kind="privacy" setRoute={setRoute} /></div>}
-        {route === 'terms' && <div><JTLegal kind="terms" setRoute={setRoute} /></div>}
+        {route === 'terms' && <div><JTLegal kind="terms" setRoute={setRoute} /></div>}</>}
       </main>
       <JTFooter setRoute={setRoute} />
       <svg className="jt-logomark-fix" viewBox="138 201 156 102" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">

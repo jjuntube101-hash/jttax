@@ -508,7 +508,7 @@ function JTConvertTimeSlots({ setRoute, urgent }) {
   }, []);
 
   return (
-    <section className="jt-report-result__section" style={{
+    <section className="jt-report-result__section jt-consult-schedule" style={{
       background: urgent ? '#fff' : '#FAFAF8',
       border: '1px solid rgba(0,0,0,0.1)',
       padding: '36px 40px',
@@ -529,7 +529,7 @@ function JTConvertTimeSlots({ setRoute, urgent }) {
             <div style={{fontFamily: 'ui-monospace,monospace', fontSize: 11, letterSpacing: '0.14em', color: '#5a5a5a'}}>{d.day}</div>
             <div style={{display: 'flex', gap: 8, marginTop: 14, flexWrap: 'wrap'}}>
               {d.times.map((t, ti) => (
-                <button key={ti} className="jt-btn jt-btn--outline" style={{padding: '8px 14px', fontSize: 13, borderRadius: 0}}
+                <button key={ti} aria-label={d.day + ' ' + t + ' 상담 예약'} className="jt-btn jt-btn--outline" style={{padding: '8px 14px', fontSize: 13, borderRadius: 0}}
                   onClick={() => {
                     window.jtEvent('report_cta_slot_click', { slot: `${d.day} ${t}` });
                     window.jtTrackCta('booking', 'report_slots');

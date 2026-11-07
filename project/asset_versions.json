@@ -1,7 +1,7 @@
 {
   "project/dist/app.js": {
-    "v": "161",
-    "sha256": "b53dcc605f6bb45e8a4a71459139f800ec74053346457e88ba20af0be6b244d2"
+    "v": "162",
+    "sha256": "7b1b65db3f772047723b76c38030e7c31ae5df432c1e9a32688ba72827c3dc56"
   },
   "project/src/styles.css": {
     "v": "34",
@@ -32,8 +32,8 @@
     "sha256": "c5ef08f0b3b3233408159e3fb224ba4d3f7d3b5d06a077a4947eae945593c008"
   },
   "project/src/renewal-results.css": {
-    "v": "1",
-    "sha256": "1202a60ad3d79bf156f081229d3d815744cc828d547d50489767b68d314a8767"
+    "v": "2",
+    "sha256": "dc07eb947ae8ffc08d58c97521500af31512dd5a22de3139558ebb6dc694ce12"
   },
   "project/src/colors_and_type.css": {
     "v": "4",

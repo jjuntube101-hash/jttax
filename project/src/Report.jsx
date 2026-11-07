@@ -59,6 +59,20 @@ window.jtMoneyCaret = function (formatted, digitCount) {
   }
   return formatted.length;
 };
+function formatWon(n) {
+  if (!n || isNaN(n)) return '0원';
+  return Number(n).toLocaleString('ko-KR', { maximumFractionDigits: 20 }) + '원';
+}
+
+function acqKoreanAmount(raw) {
+  const n = Number(raw) || 0;
+  if (n <= 0) return '';
+  const units = [[1_0000_0000_0000, '조'], [1_0000_0000, '억'], [1_0000, '만'], [1, '']];
+  let rest = n, s = '';
+  for (const [u, label] of units) { const q = Math.floor(rest / u); if (q > 0) { s += q.toLocaleString('ko-KR') + label + ' '; rest -= q * u; } }
+  return s.trim() + '원';
+}
+
 function JTNumericInput({ money = true, value, onChange, parseMoney, ...props }) {
   const [error, setError] = useReportState('');
   const [fractionDraft, setFractionDraft] = useReportState(null);
@@ -619,9 +633,11 @@ function JTReportPage({ setRoute }) {
   }, [subRoute]);
 
   const back = () => setSubRoute('hub');
+  const routeLoading = useJTRouteLoader(subRoute !== 'income' && subRoute !== 'hub');
+  if (routeLoading) return routeLoading;
 
   return (
-    <div className="jt-report">
+    <>
       {subRoute === 'workspace' && <JTCaseWorkspace onBack={back} />}
       {subRoute === 'hub' && <JTReportHub setRoute={setRoute} setSubRoute={setSubRoute} />}
       {subRoute === 'reform-cgt' && <JTReportReformCGT setRoute={setRoute} setSubRoute={setSubRoute} onBack={back} />}
@@ -643,7 +659,7 @@ function JTReportPage({ setRoute }) {
       {subRoute === 'compare' && <JTReportCompare setRoute={setRoute} onBack={back} />}
       {subRoute === 'burden' && <JTReportBurden setRoute={setRoute} onBack={back} />}
       {subRoute === 'youthstartup' && <JTReportYouthStartup setRoute={setRoute} onBack={back} />}
-    </div>
+    </>
   );
 }
 window.JTReportPage = JTReportPage;
