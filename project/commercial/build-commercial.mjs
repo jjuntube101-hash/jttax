@@ -557,7 +557,16 @@ ${svcChips}
 ${profileSections.map(([heading, entries]) => `    <section class="jt-cc-sec">
       <h2>${esc(heading)}</h2>
       <ul>
-${entries.map(entry => `        <li>${esc(heading === '저서' ? `『${entry}』` : entry)}</li>`).join('\n')}
+${entries.map(entry => {
+  if (Array.isArray(entry)) {
+    const links = entry.map(({ label, href }) => {
+      if (new URL(href).protocol !== 'https:') throw new Error(`Invalid profile link: ${href}`);
+      return `<a href="${esc(href)}">${esc(label)}</a>`;
+    });
+    return `        <li>${links.join(' · ')}</li>`;
+  }
+  return `        <li>${esc(heading === '저서' ? `『${entry}』` : entry)}</li>`;
+}).join('\n')}
       </ul>
     </section>`).join('\n')}
 

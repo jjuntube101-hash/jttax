@@ -397,7 +397,10 @@ export const EXPERTS = [
       '엠아이앤뉴스 전문위원·칼럼니스트',
     ],
     teaching: [
-      '해커스공무원 세법 강사',
+      [
+        { label: '해커스공무원 세법 강사 이현준', href: 'https://class.jttax.co.kr/about' },
+        { label: '해커스 강의·커리큘럼', href: 'https://mgosi.hackers.com/?c=teacher_detail&sub=&tnum=672' },
+      ],
       '동남보건대학교 세무회계학과 겸임교수',
       '前 영등포여성인력개발센터 직업훈련 강사',
     ],
