@@ -1,7 +1,7 @@
 ---
 title: 상속주택 매도 의뢰, 중개사무소에서 평가자료를 어떻게 인계하면 좋을까요?
 date: 2026-11-07
-updated: 2026-11-07
+updated: 2026-11-08
 tag: INSIGHT · CAPITAL GAINS TAX
 excerpt: 상속받은 집의 매도를 준비할 때 상속 당시 평가 자료와 현재 매도할 지분을 연결합니다. 공동상속 주택의 상담 인계 사례를 살펴봅니다.
 slug: inherited-home-sale-contract-file
@@ -47,6 +47,8 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 <figure style="margin:28px 0"><img src="/project/assets/insights/inherited-home-sale-contract-file-compare.png" alt="당시 기록 · 상속 신고·평가 자료 / 지금 계획 · 매도할 지분과 일정" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>상속 때와 매도 전을 구분 — 당시 기록 · 상속 신고·평가 자료 / 지금 계획 · 매도할 지분과 일정</figcaption></figure>
 
 ## 고객에게 전달할 문구
+
+매도인이 집에서 서류를 찾아볼 때는 제이티 블로그의 [상속받은 집을 팔기 전, 계약 전에 찾아볼 서류](https://blog.naver.com/jt_tax/224469251114)를 안내하세요. 상속재산명세에서 해당 주택을 찾는 방법부터 설명합니다.
 
 “매도 대상 주소와 파실 지분을 알려 주세요. 상속세 신고서가 있다면 재산명세에서 이 집이 나온 쪽과 나중에 평가금액이 변경된 자료가 있는지 확인해 주세요. 없는 자료는 아직 확인 중이라고 말씀해 주시면 됩니다.”
 
