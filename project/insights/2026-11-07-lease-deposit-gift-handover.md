@@ -1,7 +1,7 @@
 ---
 title: 증여등기 의뢰서에 전세보증금이 적혀 있다면, 어떤 자료로 인수를 확인할까요?
 date: 2026-11-07
-updated: 2026-11-07
+updated: 2026-11-10
 tag: INSIGHT · GIFT
 excerpt: 전세계약을 갱신하고 보증금 일부를 돌려준 집의 증여를 준비합니다. 증여일의 잔액, 채무 인수 약정, 실제 반환 자금을 따로 대조합니다.
 slug: lease-deposit-gift-handover
@@ -49,6 +49,8 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 <figure style="margin:28px 0"><img src="/project/assets/insights/lease-deposit-gift-handover-compare.png" alt="계약서 · 어떤 금액을 약정했나 / 이체 내역 · 어떤 금액을 돌려줬나" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>처음 계약과 현재 잔액 — 계약서 · 어떤 금액을 약정했나 / 이체 내역 · 어떤 금액을 돌려줬나</figcaption></figure>
 
 ## 세무사에게 보낼 메모는 어떻게 끝맺을까요?
+
+가족이 직접 서류를 준비한다면 제이티 블로그의 [전세 준 집을 자녀에게 증여할 때 확인할 보증금과 반환 내역](https://blog.naver.com/jt_tax/224471372625)을 함께 참고하세요.
 
 “증여 예정인 빌라에 임차인이 있습니다. 갱신 때 보증금을 낮추기로 했고 실제 이체 한 건을 확인했습니다. 나머지 반환 여부와 자녀의 인수 약정은 확인 중입니다. 증여일 기준 채무 잔액과 증여자·수증자의 세무 검토 범위를 검토해 주세요.”
 

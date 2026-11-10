@@ -1,7 +1,7 @@
 ---
 title: 일시적 2주택 상담, 중개사무소의 갈아타기 일정표에는 무엇을 적을까요?
 date: 2026-11-07
-updated: 2026-11-07
+updated: 2026-11-10
 tag: INSIGHT · CAPITAL GAINS TAX
 excerpt: 종전 집의 매도와 새집의 취득을 두 줄의 일정표로 정리합니다. 계약서의 날짜, 변경 합의, 실제 잔금 자료를 구분하는 중개사무소용 안내입니다.
 slug: two-home-contract-timeline
@@ -46,6 +46,8 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 <figure style="margin:28px 0"><img src="/project/assets/insights/two-home-contract-timeline-compare.png" alt="예정일 · 계약서·변경 합의 / 확인된 일자 · 이체·등기 자료" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>예정과 실제를 따로 기록 — 예정일 · 계약서·변경 합의 / 확인된 일자 · 이체·등기 자료</figcaption></figure>
 
 ## 계약 조건을 바꾸기 전 넘기는 인계 문구
+
+매도인과 잔금 일정을 다시 잡을 때는 제이티 블로그의 [일시적 2주택 상담 전에 두 집의 날짜를 정리하는 방법](https://blog.naver.com/jt_tax/224471374323)을 함께 보셔도 좋습니다.
 
 “종전 주택 매도 잔금은 아직 협의 중이며 새 주택 매수 잔금은 계약서로 확인했습니다. 종전 주택의 취득 자료와 신규 주택 계약금 영수증을 확보했습니다. 종전 주택 양도소득세와 신규 주택 취득세를 각각 검토할 때 변경 전에 추가로 필요한 사실을 알려 주세요.”
 
