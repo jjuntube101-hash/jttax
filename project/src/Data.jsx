@@ -352,6 +352,7 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "creator-paypal-sponsorship-transfer", tag: "크리에이터·기장", date: "2026.11.10", title: "페이팔로 받은 유튜버 협찬비, 통장 입금까지 매출로 잡았나요?", excerpt: "해외 광고주에게 받은 협찬비를 페이팔 잔액에서 본인 통장으로 옮겼다면, 지급 내역과 인출 내역을 구분해 보세요. 수수료와 환불이 섞인 사례로 장부에서 대조할 항목을 짚습니다." },
     { slug: "cash-receipt-cancellation-reissue", tag: "개인사업자·기장", date: "2026.11.09", title: "현금영수증 취소 후 재발급, 매출이 두 번 잡혔는지 확인하는 법", excerpt: "현금영수증을 취소하고 다시 발급한 개인사업자를 위한 안내입니다. 주문 한 건을 기준으로 원승인·취소·재발급 내역과 실제 입금·환불 기록을 맞춰 봅니다." },
     { slug: "commercial-sale-land-building-vat", tag: "INSIGHT · VAT", date: "2026.11.08", title: "상가 매매계약서, 토지값과 건물값을 어떤 근거로 나눴나요?", excerpt: "일괄 매매총액을 계약서에 쓸 때 토지·건물의 실제 구분과 근거 자료, 세금 별도·포함 여부를 함께 대조합니다." },
     { slug: "commercial-to-residential-vat-records", tag: "INSIGHT · VAT", date: "2026.11.08", title: "상가 임대를 끝내고 주택으로 바꿨다면 부가세에서 무엇을 다시 보나요?", excerpt: "상가 임대의 매입세액 이력, 실제 주거용 임대 시작, 폐업 및 매도 시점의 재화를 별도로 확인합니다." },
