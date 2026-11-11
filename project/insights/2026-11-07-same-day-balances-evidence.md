@@ -1,7 +1,7 @@
 ---
 title: 같은 날 매도·매수 잔금, 중개사무소가 남길 두 거래의 정산 기록
 date: 2026-11-07
-updated: 2026-11-07
+updated: 2026-11-11
 tag: INSIGHT · CAPITAL GAINS TAX
 excerpt: 매도와 매수 잔금이 같은 날 오갈 때 이체 내역을 두 계약에 나누는 방법입니다. 정산서, 보류한 잔금, 등기 접수 기록을 대조합니다.
 slug: same-day-balances-evidence
@@ -46,6 +46,8 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 <figure style="margin:28px 0"><img src="/project/assets/insights/same-day-balances-evidence-compare.png" alt="시각이 있는 자료 · 이체기록의 거래 식별 / 같이 볼 자료 · 정산서·등기 접수자료" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>한 날짜, 서로 다른 거래 — 시각이 있는 자료 · 이체기록의 거래 식별 / 같이 볼 자료 · 정산서·등기 접수자료</figcaption></figure>
 
 ## 사무소가 제이티에 넘길 질문
+
+매도인이나 매수인에게 준비할 자료를 안내할 때는 제이티 블로그의 [같은 날 매도·매수 잔금을 치를 때 남겨 둘 이체·보증금 내역](https://blog.naver.com/jt_tax/224472869198)을 공유할 수 있습니다.
 
 “종전 주택 매매 잔금 중 임차인 직접 송금분이 있으며, 새 주택은 임차보증금을 승계했습니다. 종전 주택 등기접수는 확인됐고, 남은 지급 건의 성격은 확인 중입니다. 종전 주택의 양도 시기와 새 주택 취득세 검토에 필요한 자료가 각각 무엇인가요?”
 
