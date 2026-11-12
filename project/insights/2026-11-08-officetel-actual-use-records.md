@@ -1,7 +1,7 @@
 ---
 title: 오피스텔 양도 전, 실제 주거용인지 확인할 자료는 무엇인가요?
 date: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-12
 tag: INSIGHT · CAPITAL GAINS TAX
 excerpt: 건축물대장, 임대차계약, 실제 사용이 달라 보일 때 사용 시점과 구조를 함께 확인해 양도소득세 상담자료를 정리합니다.
 slug: officetel-actual-use-records
@@ -42,5 +42,7 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 <figure style="margin:28px 0"><img src="/project/assets/insights/officetel-actual-use-records-compare.png" alt="계약 목적 · 계약 당사자가 정한 사용 방식 / 사용 현황 · 양도 무렵 실제 사용 및 구조를 보여 줄 자료" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>계약상 용도와 사용 기록 — 계약 목적 · 계약 당사자가 정한 사용 방식 / 사용 현황 · 양도 무렵 실제 사용 및 구조를 보여 줄 자료</figcaption></figure>
 
 ## 사무소가 전달할 표현
+
+매도인에게는 [업무시설로 산 오피스텔의 실제 용도를 확인하는 방법](https://blog.naver.com/jt_tax/224474277168)을 함께 안내할 수 있습니다.
 
 ‘대장에는 업무시설로 적혀 있고, 해당 기간에 주거용 사용 여부를 추가 확인 중입니다. 마지막 임차인의 계약과 내부 구조 변경 자료를 확보했습니다.’ 이렇게 사실을 넘기면 제이티가 용도 판단에 더 필요한 자료와 검토할 세목을 알려드립니다. [양도소득세 거래 점검](https://www.jttax.co.kr/insights/capital-gains-tax-traps.html) · [공인중개사 상담 창구](https://www.jttax.co.kr/desk/broker.html)

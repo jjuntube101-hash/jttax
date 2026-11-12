@@ -1,7 +1,7 @@
 ---
 title: 사망보험금, 보험계약자와 실제 납입자가 다르면 무엇을 확인하나요?
 date: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-12
 tag: INSIGHT · INHERITANCE
 excerpt: 사망보험금의 보험계약자와 실제 보험료 부담자가 다를 때 확인할 계약·납입·지급 자료를 정리합니다.
 slug: life-insurance-premium-payer
@@ -41,6 +41,8 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 <figure style="margin:28px 0"><img src="/project/assets/insights/life-insurance-premium-payer-compare.png" alt="지급 내역 · 얼마를 받았나 / 납입 이력 · 누가 부담했나" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>보험금 수령인과 납입자는 누구인가요? — 지급 내역 · 얼마를 받았나 / 납입 이력 · 누가 부담했나</figcaption></figure>
 
 ## 인계용 메모에서 빠지기 쉬운 것
+
+가족이 직접 자료를 챙긴다면 [자녀 통장으로 받은 사망보험금의 상담 준비 안내](https://blog.naver.com/jt_tax/224474260058)를 참고하세요.
 
 이미 지급받은 보험금 외에 청구 중인 계약이 있다면 지급 전으로 표시하세요. 보험금 청구일과 피상속인 사망일도 따로 적습니다. “자녀 계약자, 부모 피보험자이며 초기 납입자와 이후 납입자가 다릅니다. 보험사 납입 이력은 확보했고 계좌의 자금 출처를 확인하고 있습니다.” 제이티 세무법인은 계약별 지급 사유와 보험료 부담 내역을 보고 필요한 세무 검토 범위를 안내합니다.
 
