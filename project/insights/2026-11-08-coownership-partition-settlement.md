@@ -1,7 +1,7 @@
 ---
 title: 공유물분할 등기, 땅을 같은 면적으로 나눠도 취득세 검토가 필요한가요?
 date: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-13
 tag: INSIGHT · REAL ESTATE
 excerpt: 공유물 분할 때 필지 면적·가치와 정산금을 따로 표시해 지분 초과 여부를 검토합니다.
 slug: coownership-partition-settlement
@@ -49,3 +49,5 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 [지방세법 제7조](https://www.law.go.kr/법령/지방세법/제7조) · [지방세법 제11조](https://www.law.go.kr/법령/지방세법/제11조)
 
 [취득세 자료 안내](https://www.jttax.co.kr/insights/acquisition-tax-costs.html) · [법무사 협업 상담](https://www.jttax.co.kr/desk/scrivener.html)
+
+네이버 블로그에서 [공유자가 분할 차액과 측량비를 함께 지급하는 사례](https://blog.naver.com/jt_tax/224475530529)를 읽을 수 있습니다.

@@ -1,7 +1,7 @@
 ---
 title: 상가 매매계약서, 토지값과 건물값을 어떤 근거로 나눴나요?
 date: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-13
 tag: INSIGHT · VAT
 excerpt: 일괄 매매총액을 계약서에 쓸 때 토지·건물의 실제 구분과 근거 자료, 세금 별도·포함 여부를 함께 대조합니다.
 slug: commercial-sale-land-building-vat
@@ -44,3 +44,5 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 ## 세무사에게 보낼 한 줄
 
 ‘매도인의 임대 현황과 대지지분은 확인했고, 총액에 건물분 부가세가 포함되는지는 협의 중입니다. 평가자료로 금액 구분을 뒷받침할 수 있는지 확인해 주세요.’ 당사자 동의 후 초안과 근거 자료를 보내면 제이티가 검토 범위와 필요한 추가 자료를 안내합니다. [부가가치세 기초](https://www.jttax.co.kr/insights/vat-basics.html) · [공인중개사 상담 창구](https://www.jttax.co.kr/desk/broker.html)
+
+네이버 블로그에서 [상가 매수인이 계약 전에 확인할 ‘부가세 별도’ 문구](https://blog.naver.com/jt_tax/224475529484)를 읽을 수 있습니다.
