@@ -6,9 +6,9 @@ tag: INSIGHT · VAT
 excerpt: 일괄 매매총액을 계약서에 쓸 때 토지·건물의 실제 구분과 근거 자료, 세금 별도·포함 여부를 함께 대조합니다.
 slug: commercial-sale-land-building-vat
 author: 제이티 세무법인
-lawChecked: 2026-11-08
-hero: /project/assets/insights/commercial-sale-land-building-vat-hero.webp
-heroShare: /project/assets/insights/commercial-sale-land-building-vat-hero.jpg
+lawChecked: 2026-11-13
+hero: /project/assets/insights/commercial-sale-land-building-vat-ci-hero.webp
+heroShare: /project/assets/insights/commercial-sale-land-building-vat-ci-hero.jpg
 heroAlt: 토지 받침과 분리되는 상가 건물 모형, 매매계약 금액 두 칸을 배치한 주제 설명용 연출 이미지
 heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 ---
@@ -19,7 +19,7 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 
 매도인은 중개대상물 설명서의 가격을 세금 제외 금액으로, 매수인은 자신이 지급할 전액으로 이해했다고 가정합니다. 같은 숫자를 두고도 매수인이 준비할 잔금이 달라집니다. 사무소는 어느 해석을 선택할지 대신 정하기보다 양측이 합의한 가격의 범위를 다시 확인해 계약서 작성 전 기록합니다.
 
-<figure style="margin:28px 0"><img src="/project/assets/insights/commercial-sale-land-building-vat-map.png" alt="계약 초안 · 매매총액 및 부가세 포함·별도 문구 / 평가 자료 · 대지지분·건물분 평가 대상과 기준일 / 대금표 · 계약금·중도금·잔금 합계와 별도 지급분" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>상가 매매대금을 나누는 자료 — 계약 초안 · 매매총액 및 부가세 포함·별도 문구 / 평가 자료 · 대지지분·건물분 평가 대상과 기준일 / 대금표 · 계약금·중도금·잔금 합계와 별도 지급분</figcaption></figure>
+<figure style="margin:28px 0"><img src="/project/assets/insights/commercial-sale-land-building-vat-ci-map.png" alt="계약 초안 · 매매총액 및 부가세 포함·별도 문구 / 평가 자료 · 대지지분·건물분 평가 대상과 기준일 / 대금표 · 계약금·중도금·잔금 합계와 별도 지급분" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>상가 매매대금을 나누는 자료 — 계약 초안 · 매매총액 및 부가세 포함·별도 문구 / 평가 자료 · 대지지분·건물분 평가 대상과 기준일 / 대금표 · 계약금·중도금·잔금 합계와 별도 지급분</figcaption></figure>
 
 ## 총액을 구성하는 세 자료
 
@@ -35,11 +35,26 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 
 사업자가 공급하는 토지와 건물은 부가가치세 검토 내용이 다릅니다. 토지와 건물을 함께 공급할 때에는 구분되는 실지거래가액, 구분이 불분명하거나 법령상 다시 안분해야 하는 경우의 산정 기준을 살펴야 합니다. 사안에 따라 기준시가·감정평가 등 어떤 자료가 유효한지는 평가 시점과 요건을 확인한 뒤 정합니다. [부가가치세법 제29조](https://www.law.go.kr/법령/부가가치세법/제29조) · [부가가치세법 시행령 제64조](https://www.law.go.kr/법령/부가가치세법시행령/제64조) · [부가가치세법 제26조](https://www.law.go.kr/법령/부가가치세법/제26조)
 
+## 건물 금액이 같을 때 잔금표 비교
+
+일반과세자가 사업용 상가를 매각하면서 토지는 3억원, 건물은 2억 2,000만원으로 표시한 거래입니다. 사업 양도에 해당하지 않고 토지·건물 금액의 구분이 세법상 인정된다고 가정합니다. 계약 시 지급한 총액은 5,000만원이며 중도금·보증금 승계 등 다른 정산은 없습니다.
+
+| 계약서와 잔금표 (만원) | 건물분 부가세 별도 | 건물분 부가세 포함 |
+|---|---:|---:|
+| 토지 대금 | 30,000 | 30,000 |
+| 건물 공급가액 | 22,000 | 20,000 |
+| 건물분 부가세 | 2,200 | 2,000 |
+| 매수인 총 지급액 | 54,200 | 52,000 |
+| 이미 낸 계약금 | 5,000 | 5,000 |
+| 잔금일 지급액 | **49,200** | **47,000** |
+
+별도 약정에서는 건물 표시액에 10%를 더하고, 포함 약정에서는 같은 표시액을 1.1로 나누어 건물 공급가액을 구합니다. 잔금 차이는 2,200만원이고, 두 계약의 건물분 세액 차이는 200만원입니다. 잔금표를 건넬 때는 총 지급액과 기지급 계약금을 다른 줄에 표시해야 매수인이 얼마를 준비할지 알 수 있습니다. [부가가치세법 제30조](https://www.law.go.kr/법령/부가가치세법/제30조)
+
 ## 잔금표를 다시 읽을 자리
 
 계약 초안의 매매총액에 토지·건물 합계가 맞는지, 세액 포함·별도 표기와 계약금·중도금·잔금표가 같은 전제를 쓰는지 대조합니다. 임차보증금 승계나 시설·집기 대금이 섞이면 해당 항목을 별도 표시합니다. 검토 전 대략 나눈 금액을 계약서에 확정값으로 옮기면 나중에 합의를 다시 확인해야 합니다.
 
-<figure style="margin:28px 0"><img src="/project/assets/insights/commercial-sale-land-building-vat-compare.png" alt="구분 확인 · 금액이 나뉜 경위와 산출 자료 확보 / 구분 미확인 · 계약 체결 전에 법정 안분 검토 의뢰" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>계약서에 금액이 구분됐나요? — 구분 확인 · 금액이 나뉜 경위와 산출 자료 확보 / 구분 미확인 · 계약 체결 전에 법정 안분 검토 의뢰</figcaption></figure>
+<figure style="margin:28px 0"><img src="/project/assets/insights/commercial-sale-land-building-vat-ci-compare.png" alt="구분 확인 · 금액이 나뉜 경위와 산출 자료 확보 / 구분 미확인 · 계약 체결 전에 법정 안분 검토 의뢰" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>계약서에 금액이 구분됐나요? — 구분 확인 · 금액이 나뉜 경위와 산출 자료 확보 / 구분 미확인 · 계약 체결 전에 법정 안분 검토 의뢰</figcaption></figure>
 
 ## 세무사에게 보낼 한 줄
 

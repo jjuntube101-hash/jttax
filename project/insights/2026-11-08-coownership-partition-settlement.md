@@ -6,9 +6,9 @@ tag: INSIGHT · REAL ESTATE
 excerpt: 공유물 분할 때 필지 면적·가치와 정산금을 따로 표시해 지분 초과 여부를 검토합니다.
 slug: coownership-partition-settlement
 author: 제이티 세무법인
-lawChecked: 2026-11-08
-hero: /project/assets/insights/coownership-partition-settlement-hero.webp
-heroShare: /project/assets/insights/coownership-partition-settlement-hero.jpg
+lawChecked: 2026-11-13
+hero: /project/assets/insights/coownership-partition-settlement-ci-hero.webp
+heroShare: /project/assets/insights/coownership-partition-settlement-ci-hero.jpg
 heroAlt: 땅을 둘로 가른 필지 모형, 지분을 표시하는 반투명 필름과 정산서을 배치한 주제 설명용 연출 이미지
 heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 ---
@@ -19,7 +19,7 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 
 설명을 위한 사례입니다. 두 사람이 한 토지를 같은 지분으로 보유하다가 앞쪽 필지와 뒤쪽 필지를 나누어 갖기로 했습니다. 도로에 붙은 필지를 받는 사람이 상대방에게 돈을 지급하기로 했습니다. 가족은 면적이 같아 지분을 그대로 나누었다고 이해하지만, 세무 검토에는 전후 재산가액과 정산 약정이 필요합니다.
 
-<figure style="margin:28px 0"><img src="/project/assets/insights/coownership-partition-settlement-map.png" alt="분할 전 · 필지·각자 지분 / 분할 후 · 필지별 가치 / 정산금 · 지급 이유와 증빙" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>공유 토지의 분할 전후 가치를 비교하세요 — 분할 전 · 필지·각자 지분 / 분할 후 · 필지별 가치 / 정산금 · 지급 이유와 증빙</figcaption></figure>
+<figure style="margin:28px 0"><img src="/project/assets/insights/coownership-partition-settlement-ci-map.png" alt="분할 전 · 필지·각자 지분 / 분할 후 · 필지별 가치 / 정산금 · 지급 이유와 증빙" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>공유 토지의 분할 전후 가치를 비교하세요 — 분할 전 · 필지·각자 지분 / 분할 후 · 필지별 가치 / 정산금 · 지급 이유와 증빙</figcaption></figure>
 
 ## 사무소는 무엇을 비교하면 될까요?
 
@@ -34,13 +34,15 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 
 지방세법은 공유물 분할에 따른 취득을 규정하면서 등기부상 본인 지분을 초과하는 부분을 구별합니다. 검토할 때 원래 지분의 가치를 먼저 놓고 분할 후 귀속 재산의 가치를 같은 기준으로 비교합니다. 등기 원인에 ‘공유물분할’이라고 적었다는 사실만으로 모든 부분에 동일한 취득세 취급이 적용된다고 안내하지 않습니다.
 
+등기부상 본인 지분에 해당하는 부분은 공유물분할에 따른 취득세 세율 특례를 검토합니다. 분할로 그 지분을 초과해 취득한 부분은 특례 대상에서 제외됩니다. 예를 들어 두 공유자가 절반씩 보유한 땅을 나누고 한 사람이 자신의 종전 몫보다 가치가 큰 필지를 받으면서 상대의 지분을 대가를 주고 취득했다면, 그 초과분은 유상취득에 해당하는지 별도로 판단합니다. 두 사람이 각자의 종전 몫을 그대로 받고 측량비만 분담한 경우와 구별됩니다. **정산금이라는 명칭이나 송금액 자체가 곧 초과분의 과세표준을 뜻하지는 않습니다.** [지방세법 제11조 제1항 제5호](https://www.law.go.kr/법령/지방세법/제11조) · [지방세법 제15조 제1항 제4호](https://www.law.go.kr/법령/지방세법/제15조)
+
 ## 송금한 돈이 모두 정산금인가요?
 
-서울고등법원이 살핀 사건에서는 공유 부동산 여러 건과 공유자 중 한 사람이 별도로 소유하던 재산이 한 계약에 담겼습니다. 법원은 종전 공유지분 범위에서 나눈 부분과 이를 초과해 얻은 부분을 구분해 당시 취득세 특례의 적용 범위를 판단했습니다. 대법원은 상고를 기각했습니다. 이 사건은 당시 법과 소유관계를 전제로 하므로, 지금 의뢰받은 필지마다 원래 누구의 몫이었고 정산금이 무엇을 보전하는지 따로 확인합니다. [서울고법 2021누62845 및 대법원 2022두58742](https://www.law.go.kr/precInfoP.do?precSeq=423832)
+서울고등법원이 살핀 사건에서는 당사자들이 함께 소유하던 부동산과, 취득자가 종전에 지분을 갖고 있지 않던 호텔의 지분을 한 계약에서 이전했습니다. 법원은 종전 공유지분 범위에서 나눈 부분과 이를 초과해 얻은 부분을 구분해 당시 취득세 특례의 적용 범위를 판단했습니다. 대법원은 상고를 기각했습니다. 이 사건은 당시 법과 소유관계를 전제로 하므로, 지금 의뢰받은 필지마다 원래 누구의 몫이었고 정산금이 무엇을 보전하는지 따로 확인합니다. [서울고법 2021누62845 및 대법원 2022두58742](https://www.law.go.kr/precInfoP.do?precSeq=423832)
 
 별도 측량비나 공사비를 나눠 부담한 돈과 지분 차이를 맞추려고 지급하는 돈을 따로 적습니다. 송금액이 합쳐져 있으면 협의서의 정산 조항·산출 메모와 비용 영수증을 구분해 주세요. 돈을 지급하지 않기로 한 경우에도 가치 차이를 어떻게 정리했는지 사실관계를 확인합니다.
 
-<figure style="margin:28px 0"><img src="/project/assets/insights/coownership-partition-settlement-compare.png" alt="종전 몫 · 공유하던 가치 / 초과 부분 · 더 취득한 가치" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>종전 지분보다 더 받는 몫이 있나요? — 종전 몫 · 공유하던 가치 / 초과 부분 · 더 취득한 가치</figcaption></figure>
+<figure style="margin:28px 0"><img src="/project/assets/insights/coownership-partition-settlement-ci-compare.png" alt="종전 몫 · 공유하던 가치 / 초과 부분 · 더 취득한 가치" width="960" height="640" loading="lazy" style="width:100%;height:auto;display:block"><figcaption>종전 지분보다 더 받는 몫이 있나요? — 종전 몫 · 공유하던 가치 / 초과 부분 · 더 취득한 가치</figcaption></figure>
 
 ## 인계할 때 남기는 문장
 
