@@ -1,7 +1,7 @@
 ---
 title: 상속 직전 인출금, 통장 출금만 보일 때 어디까지 사용처를 확인하나요?
 date: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-14
 tag: INSIGHT · INHERITANCE
 excerpt: 상속 전 인출금에 대해 계좌 간 이동, 실제 지출, 사망 당시 남은 현금을 나누어 확인합니다.
 slug: inheritance-cash-withdrawals
@@ -47,3 +47,5 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 [상속세 및 증여세법 제15조](https://www.law.go.kr/법령/상속세및증여세법/제15조)
 
 [상속재산 신고 안내](https://www.jttax.co.kr/insights/inheritance-tax-basics.html) · [법무사 협업 상담](https://www.jttax.co.kr/desk/scrivener.html)
+
+네이버 블로그에서 [부모님 계좌에서 인출한 현금의 사용처를 확인하는 사례](https://blog.naver.com/jt_tax/224477025726)를 읽을 수 있습니다.
