@@ -64,10 +64,19 @@ const ACQ_REGIONS = ['서울특별시', '부산광역시', '대구광역시', '�
   '세종특별자치시', '경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도',
   '경상북도', '경상남도', '제주특별자치도'];
 
+const ACQ_RURAL_START = '2026-01-01';
+const ACQ_RURAL_END = '2026-11-15';
+
 function acqRuralScope(a) {
   return a.propertyType==='주택' && acqIsPaid(a) && !acqIsCorporate(a)
-    && a.housingCount==='1' && a.acquisitionDate>='2026-01-01' && a.acquisitionDate<='2026-10-30'
+    && a.housingCount==='1' && a.acquisitionDate>=ACQ_RURAL_START && a.acquisitionDate<=ACQ_RURAL_END
     && Number(a.exclusiveArea)>85 && Number(a.exclusiveArea)<=100;
+}
+function acqRuralReviewLimit(a, review) {
+  if (!review?.required_facts?.includes('rural_housing_facts') || acqRuralScope(a)) return null;
+  if (a.acquisitionDate < ACQ_RURAL_START || a.acquisitionDate > ACQ_RURAL_END)
+    return '농어촌특별세의 지역·주택 자료로 계산할 수 있는 취득일은 ' + ACQ_RURAL_START + '부터 ' + ACQ_RURAL_END + '까지입니다. 이 취득일의 농어촌특별세와 총액은 별도 검토가 필요합니다.';
+  return '이 취득 조건은 농어촌특별세 지역·주택 자료를 입력해 계산할 수 있는 범위를 벗어납니다. 농어촌특별세와 총액은 별도 검토가 필요합니다.';
 }
 function acqRuralActive(a) { return acqRuralScope(a) && a.ruralReview==='yes'; }
 function acqRuralNonextension(a) { return a.ruralCapital==='yes' || a.ruralUrban==='yes' || ['동','기타'].includes(a.ruralUnit); }
@@ -1414,19 +1423,22 @@ function JTReportAcquisition({ setRoute, onBack }) {
        AI 코멘터리·절세전략 문구가 차례로 발견). 조기 반환은 «세지 않아도» 안전하다. */
     if (acqBlocked) {
       /* 사유 구분: ①입력 불확정 → 'input' / 엔진이 거부 → 'refused' / 그 밖(연결 실패·미지정) → 'down' */
-      const acqBlockReason = calc.engineState === 'review' && (calc.calculationReview?.issues || []).some(issue => issue.code === 'ACQ_PARTIAL_FIXED_EDUCATION') ? 'review' : calc.engineState === 'review' || acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
+      const ruralLimit = acqOpenQ ? null : acqRuralReviewLimit(answers, calc.calculationReview);
+      const acqBlockReason = ruralLimit ? 'refused' : calc.engineState === 'review' && (calc.calculationReview?.issues || []).some(issue => issue.code === 'ACQ_PARTIAL_FIXED_EDUCATION') ? 'review' : calc.engineState === 'review' || acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
       return (
         <div className="jt-container">
           <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산 결과" subtitle={acqBlockReason === 'review' ? '계산 기준 검토 필요' : acqBlockReason === 'input' ? '정밀 계산 필요' : (acqBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
             <JTAcqDroppedNotice dropped={acqDropped} />
             {/* 261004: 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다 */}
-            <JTFallbackBlocked gaps={acqBlockReason === 'input' || acqBlockReason === 'review' ? acqGaps : []} onRetry={runAnalysis} reason={acqBlockReason} />
+            <JTFallbackBlocked gaps={ruralLimit ? [ruralLimit] : acqBlockReason === 'input' || acqBlockReason === 'review' ? acqGaps : []} onRetry={runAnalysis} reason={acqBlockReason} />
             {/* ★ 260921 (Astra R1-F5): 되돌아갈 길을 준다. 종전엔 「처음부터 다시」뿐이라
                 답을 전부 버려야만 빠진 항목을 채울 수 있었다. 다른 답은 그대로 둔다. */}
             <p style={{ margin: '0 0 10px', fontSize: 14, lineHeight: 1.6 }}>
               {acqOpenQ
                 ? <React.Fragment>확인이 필요한 문항: <strong>{acqOpenQ.qFor ? acqOpenQ.qFor(answers) : acqOpenQ.q}</strong><br />지금까지 답하신 다른 내용은 그대로 남습니다.</React.Fragment>
-                : (acqBlockReason === 'review'
+                : (ruralLimit
+                    ? <React.Fragment>지금까지 답하신 내용은 그대로 남습니다.</React.Fragment>
+                    : acqBlockReason === 'review'
                     ? <React.Fragment>입력 내용은 유지됩니다. 위 계산 기준의 검토가 끝나기 전에는 이 조건의 금액을 확정할 수 없습니다.</React.Fragment>
                     : acqBlockReason === 'down'
                     ? <React.Fragment>지금까지 답하신 내용은 그대로 남습니다.</React.Fragment>
@@ -1434,7 +1446,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
             </p>
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
               <button className="jt-btn jt-btn--primary" onClick={() => goToQuestion(acqOpenQ)}>
-                {acqOpenQ ? '빠진 질문으로 돌아가기 →' : '입력 수정하러 돌아가기 →'}
+                {acqOpenQ ? '빠진 질문으로 돌아가기 →' : ruralLimit ? '입력 내용 확인 →' : '입력 수정하러 돌아가기 →'}
               </button>
               <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); }}>처음부터 다시</button>
             </div>
