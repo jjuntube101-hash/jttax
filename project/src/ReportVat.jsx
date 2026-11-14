@@ -233,6 +233,8 @@ const VAT_SECTOR_ITEM = { '도소매업': 1, '음식점업': 1, '제조업': 2, 
   '교육서비스업': 6, '보건업': 6, '기타서비스업': 6 };
 function vatStepsForDisplay(steps) {
   return (steps || []).map(s => {
+    // Negative final tax is a refund; keep the engine response unchanged.
+    if (s && s.항목 === '최종 납부세액' && typeof s.금액 === 'number' && s.금액 < 0) return Object.assign({}, s, {항목: '최종 환급세액', 금액: -s.금액});
     // 261107: 간이과세자 «신고기한» 단계는 엔진이 §66(예정부과)으로 표시한다 — 확정신고·납부 기한 근거는 부가법 §67①이다(원본 골든 보존 위해 엔진은 두고 화면만).
     if (s && s['항목'] === '신고기한' && s['조문'] === '부§66') return Object.assign({}, s, { '조문': '부§67' });
     if (!s || s['항목'] !== '부가가치율' || typeof s['비고'] !== 'string') return s;

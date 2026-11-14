@@ -69,6 +69,7 @@ function loadDecls(names) {
 const M = loadDecls([
   'acqIsPaid', 'acqIsCorporate', 'acqNewTypeSelected',
   'acqRuralScope', 'acqRuralActive', 'acqRuralNonextension', 'acqRuralInputs',
+  'ACQ_RURAL_START', 'ACQ_RURAL_END',
   'ACQ_REDUCTION_NOTE', 'ACQ_REGIONS', 'ACQ_QS',
   'ACQ_PROPERTY_TYPE', 'ACQ_ACQUISITION_TYPE',
   'acqOptionAvailable', 'acqVisibleOpts', 'acqAnswerLabel', 'acqNormalize', 'acqNormalizeAnswers',

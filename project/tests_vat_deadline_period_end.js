@@ -101,5 +101,12 @@ chk('전자발급 공제행은 실제 입력한 개인 일반만', src.includes(
 chk('의제매입 공제행도 일반만', src.includes("calc.businessType === '일반과세자' && !!d['의제매입공제'] && <tr>"));
 chk('간이 안내0.5%와 일반 안내10%를 분기', src.includes("calc.businessType === '간이과세자' ? '적격 세금계산서 등 증빙을 갖춘 매입 공급대가의 0.5%") && src.includes(" : '사업용 매입은 세금계산서·사업용 신용카드로 받아야 매입세액(10%)"));
 
+const rawRefundSteps=[{항목:'최종 납부세액',금액:-200000,조문:''},{항목:'차감 세액',금액:-200000},{항목:'최종 납부세액',금액:0},{항목:'최종 납부세액',금액:200000}];
+const refundShown=vatStepsForDisplay(rawRefundSteps);
+chk('음수 최종납부는 양수 최종환급으로 표시',refundShown[0].항목==='최종 환급세액'&&refundShown[0].금액===200000);
+chk('환급 표시가 원본 엔진값을 바꾸지 않음',rawRefundSteps[0].항목==='최종 납부세액'&&rawRefundSteps[0].금액===-200000);
+chk('차감단계 음수·납부0·납부양수 보존',refundShown[1]===rawRefundSteps[1]&&refundShown[2]===rawRefundSteps[2]&&refundShown[3]===rawRefundSteps[3]);
+chk('공유 상세도 최종 환급20만원',summaries.buildVatDetail({}, {...calculated,businessType:'일반과세자',isRefund:true,refund:200000,netTax:-200000,steps:refundShown}).includes('최종 환급세액: 200,000원'));
+
 console.log(fails ? `\n${fails} fails` : '\nall pass');
 process.exit(fails ? 1 : 0);
