@@ -30,6 +30,8 @@ function acqFormatStepValue(name, amount, note) {
   return formatWon(amount);
 }
 
+function acqReportType(quick) { return quick ? '취득세 빠른 예상 계산' : '취득세 정밀 계산'; }
+
 /* 「유상거래」 묶음 — 매매와 공매는 엔진에서 주택 관련 규정(다주택 중과·일시적 2주택·
    생애최초/출산양육 감면·법인 중과)이 «완전히 같게» 동작한다. 260921 fly.dev 엔진 실측:
      공매 8억 2주택 조정 = 67,200,000 = 매매 동일 입력 / 공매 생애최초 = 매매 동일 입력
@@ -1442,7 +1444,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산 결과" subtitle="취득세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산 결과" subtitle={acqReportType(report.quick)} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <JTAcqDroppedNotice dropped={acqDropped} />
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 취득세(총액)' : '총 납부세액 · 정밀 계산 (JT택스랩 엔진)'}</div>
@@ -1597,7 +1599,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
             completeEligible={true}
             precise={calc.precise}
             quick={report.quick}
-            reportType="취득세 정밀 계산"
+            reportType={acqReportType(report.quick)}
             reportTag="LEGACY"
             reportSummary={`총 납부세액 ${formatWon(calc.totalTax)} / ${answers.acquisitionType}·${answers.propertyType} / ${commentary.headline || ''}`}
             reportDetail={buildAcqDetail(answers, calc, commentary)}

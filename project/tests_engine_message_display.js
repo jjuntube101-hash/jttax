@@ -88,6 +88,10 @@ for (const [f, re] of wired) {
   const ctx = {formatWon: n => n.toLocaleString('ko-KR') + '원'};
   vm.createContext(ctx); vm.runInContext(helper, ctx);
   const F = ctx.acqFormatStepValue;
+  eq(ctx.acqReportType(true), '취득세 빠른 예상 계산', '빠른 계산의 결과·전달 문구');
+  eq(ctx.acqReportType(false), '취득세 정밀 계산', '정밀 계산의 결과·전달 문구 유지');
+  eq(acqSource.includes('subtitle={acqReportType(report.quick)}'), true, '결과 제목은 실제 계산 모드를 사용');
+  eq(acqSource.includes('reportType={acqReportType(report.quick)}'), true, '전달 문구는 결과 제목과 같은 계산 모드를 사용');
   eq(F('2. 시가표준액', 0, '미입력 (유상취득 취득가액 기준)'), '미입력', '취득 빠른 결과: 과거 응답 미입력을 0원으로 표시하지 않음');
   eq(F('시가표준액', null, '미입력'), '미입력', '취득 시가표준액 null 미입력');
   eq(F('2. 시가표준액', 0, '확인한 값'), '0원', '명시적인 시가표준액 0원 보존');

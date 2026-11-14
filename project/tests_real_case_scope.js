@@ -7,8 +7,18 @@ assert.equal(d.full_case_tax_accuracy_pass,0);assert.equal(d.conditional_numeric
 assert.equal(d.education_interpretation,'HOLD_NO_NEW_RESEARCH_NO_FORMULA_ADOPTION');assert.equal(d.golden_refrozen,false);assert.equal(d.private_evidence_published,false);
 for(const c of d.cases)for(const key of ['input','args','reported','source','path','name','tax_base','total_tax','national_assessed'])assert.equal(c[key],undefined);
 assert.equal(map.unique_cases,181);assert.deepEqual(map.grade_counts,{general:8,hold:92,conditional:81});
-assert.equal(map.real_case15_validation.candidate_id,map.release_candidate.id);assert.deepEqual(map.release_candidate.contract.version,d.current_development_version);
+// Actual-case evidence remains bound to its recorded build when a new local candidate is registered.
+const caseCandidate=[map.release_candidate,...map.release_candidate_history].find(c=>c.id===map.real_case15_validation.candidate_id);
+assert(caseCandidate,'recorded actual-case candidate must be preserved');assert.deepEqual(caseCandidate.contract.version,d.current_development_version);
+assert.equal(map.real_case15_validation.actual_frontend_input_flow_retested,false);
 assert(map.release_candidate_history.some(c=>c.id===map.support11_validation.candidate_id));assert.notEqual(map.support11_validation.candidate_id,map.release_candidate.id);
 assert.equal(map.real_case15_validation.historical_ui9_reexecuted_on_new_candidate,false);
 const h=fs.readFileSync(root+'real-case-scope.html','utf8');assert(h.includes('전체 사건 세액 정확성 확정 0/15'));assert(h.includes('id="tax"'));assert(h.includes('id="rows"'));assert(!/\d{6}-\d{7}/.test(h));
 console.log('Real-case scope15, privacy, historical evidence and candidate identity PASS');
+
+assert.equal(map.release_candidate.validation_status.nas15.status,'not_run');
+assert.equal(map.release_candidate.validation_status.nas15.full_case_revalidated,false);
+assert.equal(map.release_candidate.validation_status.nas15.historical_candidate_id,map.real_case15_validation.candidate_id);
+assert.notEqual(map.release_candidate.id,map.real_case15_validation.candidate_id);
+assert(h.includes('기록 기준일: 2026-10-31'));
+assert(h.includes('현재 로컬 후보의 15사건 재검증은 미실행'));
