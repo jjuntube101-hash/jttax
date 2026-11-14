@@ -18,6 +18,8 @@ test('verified autumn dates allow the original facts and direct missing-input na
     assert.equal(box.acqFirstOpenQuestion({...answers,ruralReview:'unknown'},review).id,'ruralReview');
     assert.equal(box.acqRuralReviewLimit(answers,review),null);
   }
+  const question=box.qs.find(q=>q.id==='ruralReview');
+  assert.match(question.sub,/2026-01-01부터 2026-11-15까지/);
   const future={...a,acquisitionDate:'2026-11-16'};
   assert.match(box.acqRuralReviewLimit(future,review),/2026-11-15.*별도 검토/);
   assert.equal(box.acqRuralReviewLimit(future,{required_facts:['exclusive_area']}),null);

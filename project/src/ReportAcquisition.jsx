@@ -185,7 +185,7 @@ const ACQ_QS = [
     placeholder: '예: 84.96',
   },
   {id:'ruralReview',tier:'quick',section:'농특세 지역·주택 확인',q:'지역·주택·부속토지 자료로 농특세 예외를 확인할까요?',
-    sub:'2026-01-01~10-30 개인 일반 1주택 전체 유상취득 중 전용85㎡ 초과100㎡ 이하만 지원합니다. 자료가 없으면 합계·해설·공유를 확정하지 않습니다. 감면 후 교육세의 미확정은 별도로 남습니다.',
+    sub:ACQ_RURAL_START+'부터 '+ACQ_RURAL_END+'까지 개인이 일반 1주택 전체를 유상취득한 경우, 전용면적 85㎡ 초과 100㎡ 이하를 지원합니다. 자료가 없으면 합계·해설·공유를 확정하지 않습니다. 감면 후 교육세의 미확정은 별도로 남습니다.',
     showIf:acqRuralScope,blocksNothing:true,opts:[['yes','자료를 확인해 입력','취득일 현재 자료'],['unknown','아직 확인하지 못했어요','금액 확정 보류']]},
   {id:'ruralCapital',tier:'quick',section:'농특세 위치',q:'취득일 현재 수도권에 있나요?',showIf:acqRuralActive,opts:[['yes','수도권',''],['no','수도권 밖','']]},
   {id:'ruralUrban',tier:'quick',section:'농특세 위치',q:'토지이용계획상 도시지역인가요?',showIf:acqRuralActive,opts:[['yes','도시지역',''],['no','도시지역 아님','']]},
