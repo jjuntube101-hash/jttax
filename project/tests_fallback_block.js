@@ -575,11 +575,16 @@ console.log('\n════ JTFallbackBlocked — reason 별 렌더 결과 ═�
   eq('검토 대기는 onRetry가 있어도 재시도를 권하지 않는다', review.buttons.length, 0);
   const acqSource = fs.readFileSync(SRC('ReportAcquisition.jsx'),'utf8');
   const reasonExpression = acqSource.match(/const acqBlockReason = ([^\n]+);/)[1];
-  const acqReason = new Function('calc','answers','acqFallbackGaps','return ('+reasonExpression+');');
+  const acqReason = new Function('calc','answers','acqFallbackGaps','ruralLimit','return ('+reasonExpression+');');
   const heldCalc = {engineState:'review',calculationReview:{issues:[{code:'ACQ_PARTIAL_FIXED_EDUCATION'}]}};
   eq('교육세 산식 HOLD를 입력 누락으로 분류하지 않는다', acqReason(heldCalc,{},()=>[]), 'review');
   eq('추가 사실 누락이 함께 있어도 산식 HOLD를 숨기지 않는다', acqReason(heldCalc,{},()=>['면적 확인']), 'review');
   eq('일반 입력 누락은 기존 수정 안내를 유지한다', acqReason({engineState:'review',calculationReview:{issues:[]}}, {},()=>[]), 'input');
+
+  eq('농특세 자료 적용 범위를 벗어나면 입력 반복보다 별도 검토를 안내한다',
+    acqReason({engineState:'review',calculationReview:{issues:[]}}, {},()=>[], '농특세 지원 범위'), 'refused');
+  eq('농특세 자료 지원 범위와 교육세 산식 보류가 겹쳐도 산식 보류를 알린다',
+    acqReason(heldCalc,{},()=>[], '농특세 지원 범위'), 'review');
 
   const giftInput = view('input', true, '입력 수정·재계산');
   eq('증여 차단 안내는 실제 입력 수정 버튼명을 사용한다', giftInput.text.includes('입력 수정·재계산으로 돌아가'), true);

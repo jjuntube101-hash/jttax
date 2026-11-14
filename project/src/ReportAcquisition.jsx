@@ -1424,13 +1424,13 @@ function JTReportAcquisition({ setRoute, onBack }) {
     if (acqBlocked) {
       /* 사유 구분: ①입력 불확정 → 'input' / 엔진이 거부 → 'refused' / 그 밖(연결 실패·미지정) → 'down' */
       const ruralLimit = acqOpenQ ? null : acqRuralReviewLimit(answers, calc.calculationReview);
-      const acqBlockReason = ruralLimit ? 'refused' : calc.engineState === 'review' && (calc.calculationReview?.issues || []).some(issue => issue.code === 'ACQ_PARTIAL_FIXED_EDUCATION') ? 'review' : calc.engineState === 'review' || acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
+      const acqBlockReason = calc.engineState === 'review' && (calc.calculationReview?.issues || []).some(issue => issue.code === 'ACQ_PARTIAL_FIXED_EDUCATION') ? 'review' : ruralLimit ? 'refused' : calc.engineState === 'review' || acqFallbackGaps(answers, { precise: true }).length > 0 ? 'input' : (calc.engineState === 'refused' ? 'refused' : 'down');
       return (
         <div className="jt-container">
           <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="취득세 계산 결과" subtitle={acqBlockReason === 'review' ? '계산 기준 검토 필요' : acqBlockReason === 'input' ? '정밀 계산 필요' : (acqBlockReason === 'refused' ? '세무사 확인 필요' : '계산 엔진 연결 실패')} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
             <JTAcqDroppedNotice dropped={acqDropped} />
             {/* 261004: 'down'·'refused' 는 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다 */}
-            <JTFallbackBlocked gaps={ruralLimit ? [ruralLimit] : acqBlockReason === 'input' || acqBlockReason === 'review' ? acqGaps : []} onRetry={runAnalysis} reason={acqBlockReason} />
+            <JTFallbackBlocked gaps={acqBlockReason === 'review' && ruralLimit ? [...acqGaps, ruralLimit] : ruralLimit ? [ruralLimit] : acqBlockReason === 'input' || acqBlockReason === 'review' ? acqGaps : []} onRetry={runAnalysis} reason={acqBlockReason} />
             {/* ★ 260921 (Astra R1-F5): 되돌아갈 길을 준다. 종전엔 「처음부터 다시」뿐이라
                 답을 전부 버려야만 빠진 항목을 채울 수 있었다. 다른 답은 그대로 둔다. */}
             <p style={{ margin: '0 0 10px', fontSize: 14, lineHeight: 1.6 }}>
