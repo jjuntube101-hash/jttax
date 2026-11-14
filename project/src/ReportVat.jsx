@@ -21,12 +21,13 @@ function vatKorean(n) {
   return s.trim() + '원';
 }
 
-// 신고기한 안내 (부가법 §49①/§48/§66)
-const VAT_DEADLINE = {
-  '1기_확정': '7월 25일',
-  '2기_확정': '다음 해 1월 25일',
-  '간이과세_확정': '다음 해 1월 25일',
-};
+function vatOutputLabel(businessType) {
+  return businessType === '간이과세자' ? '산출세액 (공급대가 × 업종별 부가가치율 × 10%)' : '매출세액 (공급가액 × 10%)';
+}
+function vatFormatStepValue(step) {
+  if (['사업자 유형', '과세기간', '부가가치율', '신고기한', '면세사업자'].includes(step.항목)) return '—';
+  return typeof step.금액 === 'number' ? vatWon(step.금액) : (step.금액 || '—');
+}
 
 const VAT_QS = [
   {
@@ -322,15 +323,15 @@ function buildVatDetail(answers, calc) {
   if (calc.precise && !calc.isExempt) {
     L.push('', '■ 계산 결과 (검증 엔진)');
     const d = calc.detail || {};
-    if (d['매출세액']) L.push('  · 매출세액: ' + vatWon(d['매출세액']));
-    if (d['매입세액']) L.push('  · 매입세액: ' + vatWon(d['매입세액']));
+    if (typeof d['매출세액'] === 'number') L.push('  · ' + vatOutputLabel(calc.businessType) + ': ' + vatWon(d['매출세액']));
+    if (calc.businessType === '일반과세자' && d['매입세액']) L.push('  · 매입세액: ' + vatWon(d['매입세액']));
     if (d['신용카드공제']) L.push('  · 신용카드공제: ' + vatWon(d['신용카드공제']));
-    if (d['전자세금계산서공제']) L.push('  · 전자세금계산서공제: ' + vatWon(d['전자세금계산서공제']));
-    if (d['간이매입공제']) L.push('  · 간이매입공제: ' + vatWon(d['간이매입공제']));
+    if (calc.businessType === '일반과세자' && answers.isCorporate !== 'yes' && Number(answers.eInvoiceCount) > 0 && d['전자세금계산서공제']) L.push('  · 전자세금계산서공제: ' + vatWon(d['전자세금계산서공제']));
+    if (d['간이매입공제']) L.push('  · 간이매입공제 (적격 매입 공급대가 × 0.5%): ' + vatWon(d['간이매입공제']));
     if (d['부가가치율'] && d['부가가치율'] !== '-') L.push('  · 부가가치율: ' + d['부가가치율']);
     if (calc.deadline) L.push('  · 신고기한: ' + calc.deadline);
     L.push(calc.isRefund ? '  · 예상 환급세액: ' + vatWon(calc.refund) : '  · 예상 납부세액: ' + vatWon(calc.netTax));
-    (calc.steps || []).forEach(s => { if (s && s.항목) L.push('    - ' + s.항목 + ': ' + (typeof s.금액 === 'number' ? vatWon(s.금액) : s.금액) + (s.조문 ? ' [' + s.조문 + ']' : '')); });
+    (calc.steps || []).forEach(s => { if (s && s.항목) L.push('    - ' + s.항목 + ': ' + vatFormatStepValue(s) + (s.조문 ? ' [' + s.조문 + ']' : '')); });
   }
   return L.join('\n');
 }
@@ -350,6 +351,7 @@ function buildVatKakao(answers, calc) {
   if (calc.precise) {
     if (calc.deadline) L.push('· 신고기한: ' + calc.deadline);
     L.push('', '▶ 결과(추정)');
+    if (calc.detail && typeof calc.detail['매출세액'] === 'number') L.push('· ' + vatOutputLabel(calc.businessType) + ': ' + vatWon(calc.detail['매출세액']));
     if (calc.isExempt) L.push('· 면세사업자 — 부가세 면제');
     else L.push(calc.isRefund ? '· 예상 환급세액: ' + vatWon(calc.refund) : '· 예상 납부세액: ' + vatWon(calc.netTax));
   }
@@ -512,7 +514,7 @@ function JTReportVat({ setRoute, onBack }) {
     const deadlineCaveat = calc.deadline ? <span style={{ display: 'block', fontSize: 12, opacity: 0.8 }}>{calc.simplifiedPartYear ? VAT_PART_YEAR_DEADLINE_CAVEAT : <>기한은 {VAT_DEADLINE_CAVEAT}</>}</span> : null;
     return (
       <div className="jt-container">
-        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="부가가치세 계산 결과" subtitle="매출세액 − 매입세액 − 공제" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="부가가치세 계산 결과" subtitle={calc.businessType === '간이과세자' ? '공급대가 × 업종별 부가가치율 × 10% − 공제' : '매출세액 − 매입세액 − 공제'} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="BOOKKEEPING">
           {!calc.precise ? (
             <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '14px 18px', marginBottom: 16, borderRadius: 8, lineHeight: 1.6 }}>
               <strong>정밀 계산이 필요합니다.</strong> {calc.engineReason || '정밀 엔진 연결이 지연됐습니다.'} 잘못된 세액을 안내하지 않기 위해 결과를 표시하지 않았어요. 잠시 후 다시 시도하거나 상담을 권합니다.
@@ -546,7 +548,7 @@ function JTReportVat({ setRoute, onBack }) {
                 ) : (
                   <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, opacity: 0.85 }}>{vatKorean(calc.isRefund ? calc.refund : calc.netTax)} · 신고·납부 기한 <strong>{deadline}</strong>{deadlineCaveat}</div>
                 )}
-                <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, color: '#b8860b' }}>※ 입력하신 매출·매입 기준 추정입니다. 추가 입력한 영세율 매출·전자세금계산서 공제·기납부세액을 반영합니다. {calc.deemedApplied ? '의제매입은 입력한 적격·관련매출·신고이력 확인 범위에서 반영했습니다.' : '의제매입은 별도 사실 입력이 필요합니다.'} 공통매입세액 안분은 별도 검토가 필요합니다.</div>
+                <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, color: '#b8860b' }}>※ 입력하신 매출·매입 기준 추정입니다. {calc.businessType === '간이과세자' ? '적격 증빙을 갖춘 매입 공급대가의 0.5% 공제와 확인된 공제를 엔진 결과에 따라 반영합니다.' : <>추가 입력한 영세율 매출·전자세금계산서 공제·기납부세액을 반영합니다. {calc.deemedApplied ? '의제매입은 입력한 적격·관련매출·신고이력 확인 범위에서 반영했습니다.' : '의제매입은 별도 사실 입력이 필요합니다.'} 공통매입세액 안분은 별도 검토가 필요합니다.</>}</div>
               </div>
 
               <section className="jt-report-result__section">
@@ -556,12 +558,12 @@ function JTReportVat({ setRoute, onBack }) {
                     {d['부가가치율'] && d['부가가치율'] !== '-' && (
                       <tr><th>부가가치율 (간이 업종)</th><td>{d['부가가치율']}</td></tr>
                     )}
-                    {!!d['매출세액'] && <tr><th>매출세액 (공급가액 × 10%)</th><td>{vatWon(d['매출세액'])}</td></tr>}
-                    {!!d['매입세액'] && <tr><th>(−) 매입세액</th><td>{vatWon(d['매입세액'])}</td></tr>}
+                    {typeof d['매출세액'] === 'number' && <tr><th>{vatOutputLabel(calc.businessType)}</th><td>{vatWon(d['매출세액'])}</td></tr>}
+                    {calc.businessType === '일반과세자' && !!d['매입세액'] && <tr><th>(−) 매입세액</th><td>{vatWon(d['매입세액'])}</td></tr>}
                     {!!d['신용카드공제'] && <tr><th>(−) 신용카드·현금영수증 공제</th><td>{vatWon(d['신용카드공제'])}</td></tr>}
-                    {!!d['간이매입공제'] && <tr><th>(−) 간이 매입세액공제</th><td>{vatWon(d['간이매입공제'])}</td></tr>}
-                    {typeof d['전자세금계산서공제'] === 'number' && <tr><th>(−) 전자세금계산서 발급공제</th><td>{vatWon(d['전자세금계산서공제'])}</td></tr>}
-                    {!!d['의제매입공제'] && <tr><th>(−) 의제매입세액공제</th><td>{vatWon(d['의제매입공제'])}</td></tr>}
+                    {!!d['간이매입공제'] && <tr><th>(−) 간이 매입세액공제 (적격 매입 공급대가 × 0.5%)</th><td>{vatWon(d['간이매입공제'])}</td></tr>}
+                    {calc.businessType === '일반과세자' && answers.isCorporate !== 'yes' && Number(answers.eInvoiceCount) > 0 && typeof d['전자세금계산서공제'] === 'number' && <tr><th>(−) 전자세금계산서 발급공제</th><td>{vatWon(d['전자세금계산서공제'])}</td></tr>}
+                    {calc.businessType === '일반과세자' && !!d['의제매입공제'] && <tr><th>(−) 의제매입세액공제</th><td>{vatWon(d['의제매입공제'])}</td></tr>}
                     <tr style={{ background: '#f0f7f3' }}>
                       <th><strong>{calc.isRefund ? '환급세액' : '납부세액'}</strong></th>
                       <td><strong>{vatWon(calc.isRefund ? calc.refund : calc.netTax)}</strong></td>
@@ -578,7 +580,7 @@ function JTReportVat({ setRoute, onBack }) {
                       {calc.steps.map((s, i) => (
                         <tr key={i}>
                           <th style={{ fontWeight: 400 }}><JTCalculationStepLabel step={s} /></th>
-                          <td>{typeof s.금액 === 'number' ? vatWon(s.금액) : (s.금액 || '')}</td>
+                          <td>{vatFormatStepValue(s)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -589,9 +591,9 @@ function JTReportVat({ setRoute, onBack }) {
               <section className="jt-report-result__section" style={{ background: '#fff7ea', borderLeft: '4px solid #b8860b', padding: '14px 18px', borderRadius: 8 }}>
                 <p style={{ margin: '0 0 8px', fontWeight: 700 }}>부가세, 이것도 챙기세요 — 더 줄이거나 가산세를 피하는 법</p>
                 <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7, fontSize: 14 }}>
-                  <li><strong>매입세금계산서를 빠짐없이 챙기세요.</strong> 사업용 매입은 세금계산서·사업용 신용카드로 받아야 매입세액(10%)을 공제받습니다. 간이영수증·인건비는 공제 안 됩니다.</li>
+                  <li><strong>매입 증빙을 챙기세요.</strong> {calc.businessType === '간이과세자' ? '적격 세금계산서 등 증빙을 갖춘 매입 공급대가의 0.5%를 공제하는 계산입니다. 입력한 적격 매입액과 증빙을 함께 확인하세요.' : '사업용 매입은 세금계산서·사업용 신용카드로 받아야 매입세액(10%)을 공제받습니다. 간이영수증·인건비는 공제 안 됩니다.'}</li>
                   <li><strong>신고기한({deadline})을 넘기면 가산세.</strong> 무신고 20%·과소신고 10%·납부지연(미납세액 × 1일 0.022%)이 붙습니다(국기법 §47의2~5).</li>
-                  <li><strong>의제매입·신용카드·전자세금계산서 공제</strong>는 요건이 맞으면 세금을 더 줄입니다. 전자세금계산서는 추가 입력으로 반영하며, 의제매입은 적격 원재료·관련 매출·반기 신고 이력을 추가 입력해 검증 범위 안에서 계산합니다. 끝수·예정/조기 정산 등 미지원 사례는 세액 없이 안내합니다.</li>
+                  {calc.businessType === '일반과세자' && <li><strong>의제매입·신용카드·전자세금계산서 공제</strong>는 요건이 맞으면 세금을 더 줄입니다. 전자세금계산서는 추가 입력으로 반영하며, 의제매입은 적격 원재료·관련 매출·반기 신고 이력을 추가 입력해 검증 범위 안에서 계산합니다. 끝수·예정/조기 정산 등 미지원 사례는 세액 없이 안내합니다.</li>}
                   <li><strong>부가세는 「내 돈」이 아닙니다.</strong> 매출 부가세는 고객에게 받아 보관했다 내는 돈이에요. 따로 떼어 두면 신고철에 당황하지 않습니다.</li>
                 </ul>
               </section>

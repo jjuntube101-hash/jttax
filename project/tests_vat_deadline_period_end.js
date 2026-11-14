@@ -77,13 +77,29 @@ chk('기한 없을 때 종전 문구 유지', src.includes("const deadline = cal
 chk('안내 한 줄은 기한이 있을 때만', /const deadlineCaveat = calc\.deadline \? <span[^>]*>\{calc\.simplifiedPartYear \? VAT_PART_YEAR_DEADLINE_CAVEAT : <>기한은 \{VAT_DEADLINE_CAVEAT\}<\/>\}<\/span> : null;/.test(src));
 chk('면제 문구·납부 문구 두 곳에 안내', (src.match(/\{deadline\}<\/strong>\.?\{deadlineCaveat\}/g) || []).length === 2);
 
-const summaries = new Function('VAT_QS','vatWon',slice('function buildVatDetail','function JTReportVat')+';return {buildVatDetail,buildVatKakao};')([],n=>n.toLocaleString('ko-KR')+'원');
+const won=n=>n.toLocaleString('ko-KR')+'원';
+const display=new Function('vatWon',slice('function vatOutputLabel','const VAT_QS')+';return {vatOutputLabel,vatFormatStepValue};')(won);
+const summaries = new Function('VAT_QS','vatWon','vatOutputLabel','vatFormatStepValue',slice('function buildVatDetail','function JTReportVat')+';return {buildVatDetail,buildVatKakao};')([],won,display.vatOutputLabel,display.vatFormatStepValue);
 const calculated={precise:true,deadline:'2026-07-27',netTax:360000,detail:{},steps:[],businessType:'간이과세자'};
 chk('전달 상세에 엔진 7월27일 유지', summaries.buildVatDetail(part,calculated).includes('신고기한: 2026-07-27'));
 chk('상담 요약에 실제 종료일과 엔진 기한 유지', summaries.buildVatKakao({...part,supplyPrice:'24000000'},calculated).includes('실제 과세기간 종료일: 2026-06-30') && summaries.buildVatKakao(part,calculated).includes('신고기한: 2026-07-27'));
 chk('종료일 미확인 상담 요약은 날짜 추정 안 함', !summaries.buildVatKakao({...part,simplifiedPeriodEndState:'unknown'}, {precise:false}).includes('신고기한:') && summaries.buildVatKakao({...part,simplifiedPeriodEndState:'unknown'}, {precise:false}).includes('종료일: 미확인'));
 
 chk('종료일만 모르면 확정된 엔진 세액은 전달', summaries.buildVatKakao({...part,simplifiedPeriodEndState:'unknown'}, {...calculated,deadline:null}).includes('360,000원') && !summaries.buildVatKakao({...part,simplifiedPeriodEndState:'unknown'}, {...calculated,deadline:null}).includes('신고기한:'));
+
+chk('사용되지 않는 정적 신고기한표 없음', !/const VAT_DEADLINE\s*=/.test(src));
+chk('일반 매출세액 산식 보존', display.vatOutputLabel('일반과세자') === '매출세액 (공급가액 × 10%)');
+chk('간이 산출세액 산식은 공급대가와 업종율', display.vatOutputLabel('간이과세자') === '산출세액 (공급대가 × 업종별 부가가치율 × 10%)');
+for(const label of ['사업자 유형','과세기간','부가가치율','신고기한'])chk('비금액 '+label+' 0원 방지', display.vatFormatStepValue({항목:label,금액:0}) === '—');
+for(const label of ['매입세액 합계','납부세액','전자세금계산서 발급공제'])chk('실제 금액 '+label+' 0원 보존', display.vatFormatStepValue({항목:label,금액:0}) === '0원');
+const simpleCalc={...calculated,detail:{매출세액:360000,전자세금계산서공제:0,간이매입공제:5000},steps:[{항목:'신고기한',금액:0,조문:'부§67'}]};
+chk('간이 전달 상세는 간이 산식과0.5% 표기', summaries.buildVatDetail(part,simpleCalc).includes('산출세액 (공급대가 × 업종별 부가가치율 × 10%)') && summaries.buildVatDetail(part,simpleCalc).includes('적격 매입 공급대가 × 0.5%'));
+chk('간이 상담 요약도 같은 산식', summaries.buildVatKakao(part,simpleCalc).includes('산출세액 (공급대가 × 업종별 부가가치율 × 10%)'));
+chk('일반 전달 상세 기존 산식 보존', summaries.buildVatDetail({}, {...simpleCalc,businessType:'일반과세자'}).includes('매출세액 (공급가액 × 10%)'));
+chk('전달 단계 날짜가0원이 아님', summaries.buildVatDetail(part,simpleCalc).includes('신고기한: —'));
+chk('전자발급 공제행은 실제 입력한 개인 일반만', src.includes("calc.businessType === '일반과세자' && answers.isCorporate !== 'yes' && Number(answers.eInvoiceCount) > 0 && typeof d['전자세금계산서공제'] === 'number'"));
+chk('의제매입 공제행도 일반만', src.includes("calc.businessType === '일반과세자' && !!d['의제매입공제'] && <tr>"));
+chk('간이 안내0.5%와 일반 안내10%를 분기', src.includes("calc.businessType === '간이과세자' ? '적격 세금계산서 등 증빙을 갖춘 매입 공급대가의 0.5%") && src.includes(" : '사업용 매입은 세금계산서·사업용 신용카드로 받아야 매입세액(10%)"));
 
 console.log(fails ? `\n${fails} fails` : '\nall pass');
 process.exit(fails ? 1 : 0);
