@@ -15,8 +15,10 @@ function acqFmtArticle(s) {
 /* 단계별 '세율' 항목은 엔진이 만분율 정수(×10000)로 반환 → %로 표시(예: 1200→12%, 233→2.33%, 100→1%).
    그 외 항목(과세표준·본세·교육세·감면·총세액)은 금액(원). 공유 formatStepValue는 양도세 전용이라 취득세 세율을 오표시(만분율을 원으로). */
 function acqFormatStepValue(name, amount, note) {
-  if (typeof amount !== 'number') return amount;
   const label = String(name || '').replace(/^\d+\.\s*/, '');
+  // Older engine responses encode an omitted standard value as 0 with an explicit note.
+  if (label === '시가표준액' && (amount == null || (amount === 0 && /미입력/.test(String(note || ''))))) return '미입력';
+  if (typeof amount !== 'number') return amount;
   if (/세율/.test(label)) {
     if (amount === 0) return /중과/.test(label) ? '해당 없음' : '0%';
     return (Math.round(amount) / 100) + '%';

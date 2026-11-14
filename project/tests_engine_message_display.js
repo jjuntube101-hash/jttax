@@ -80,5 +80,23 @@ for (const [f, re] of wired) {
   else { fails++; console.log('FAIL  ' + f + ' 날것 engineMessage 표시 남음: ' + raw.join(' | ')); }
 }
 
+// Missing acquisition input is not a measured zero, including legacy engine steps.
+{
+  const vm = require('vm');
+  const acqSource = fs.readFileSync(path.join(__dirname, 'src', 'ReportAcquisition.jsx'), 'utf8');
+  const helper = acqSource.slice(acqSource.indexOf('function acqFormatStepValue('), acqSource.indexOf('/* 「유상거래」'));
+  const ctx = {formatWon: n => n.toLocaleString('ko-KR') + '원'};
+  vm.createContext(ctx); vm.runInContext(helper, ctx);
+  const F = ctx.acqFormatStepValue;
+  eq(F('2. 시가표준액', 0, '미입력 (유상취득 취득가액 기준)'), '미입력', '취득 빠른 결과: 과거 응답 미입력을 0원으로 표시하지 않음');
+  eq(F('시가표준액', null, '미입력'), '미입력', '취득 시가표준액 null 미입력');
+  eq(F('2. 시가표준액', 0, '확인한 값'), '0원', '명시적인 시가표준액 0원 보존');
+  eq(F('2. 시가표준액', 100000000, ''), '100,000,000원', '확인한 시가표준액 보존');
+  for (const label of ['취득세', '지방교육세', '농어촌특별세', '총세액']) eq(F(label, 0, ''), '0원', label + ' 정상 0원 보존');
+  eq(F('취득세율', 0, ''), '0%', '0 세율 보존');
+  eq(F('취득세율', 100, ''), '1%', '세율 보존');
+  eq((acqSource.match(/acqFormatStepValue\(s(?:\.항목|\['항목'\])/g) || []).length, 3, '빠른 결과·특례 결과·상세 결과의 공통 포맷터 유지');
+}
+
 console.log(`\n${fails ? 'FAIL' : 'OK'}: ${checks - fails}/${checks} checks`);
 if (fails) process.exit(1);
