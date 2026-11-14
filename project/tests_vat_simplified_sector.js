@@ -42,7 +42,7 @@ chk('요청에 simplified_period_months(1~12, 일부 기간만)', src.includes("
 // Codex 059 R2: 1월 중 개업 → 12개월(R2-F2) · 다음 버튼은 1~12 정수만(R2-F3) · 상담 요약에 기간(R2-F4) · 폐업·유형 전환 기한 안내(R2-F1)
 chk('개월 수 질문 1~12 정수 범위', src.includes('numeric: true, intRange: [1, 12],') && src.includes('Number.isSafeInteger(v) && v >= cur.intRange[0] && v <= cur.intRange[1]'));
 chk('상담 요약: 일부 기간은 «사업 기간 공급대가»와 개월 수', src.includes("'· 사업 기간 공급대가: '") && src.includes("'개월 — 중간 개업·휴업·폐업·과세유형 전환)'"));
-chk('일부 기간 기한 안내(§5③~⑤)', src.includes('calc.simplifiedPartYear ? VAT_PART_YEAR_DEADLINE_CAVEAT') && src.includes('기한이 달라지니 따로 확인해 주세요(부가법 §5③~⑤)'));
+chk('일부 기간은 확인한 실제 종료일 안내', src.includes('calc.simplifiedPartYear ? VAT_PART_YEAR_DEADLINE_CAVEAT') && src.includes('확인한 실제 과세기간 종료일을 기준으로 엔진이 반환한 신고기한'));
 chk('화면이 4,800만원과 직접 비교하지 않음', !src.includes('< 48000000'));
 chk('카드·전자 공제는 1년 내내일 때만 full_year 확인', src.includes("if(a.simplifiedPeriod!=='full') throw new Error(") && src.includes('f.full_year_simplified_confirmed=true;'));
 const ea = src.indexOf('function vatSimplifiedExemptFromEngine'), eb = src.indexOf('function vatDeadlineFromEngine', ea);

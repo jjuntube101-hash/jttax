@@ -113,6 +113,20 @@ const VAT_QS = [
     placeholder: '예: 6',
   },
   {
+    id: 'simplifiedPeriodEndState', section: '과세기간',
+    q: '이번 신고 과세기간의 실제 마지막 날을 확인했나요?',
+    sub: '사업 개월 수만으로 종료일을 정하지 않습니다. 신고 자료에서 이번 과세기간의 마지막 날을 확인해 주세요. 아직 모르면 신고기한만 미확인으로 둡니다.',
+    opts: [['known', '확인했어요', '다음 질문에서 실제 날짜 입력'], ['unknown', '아직 확인하지 못했어요', '신고기한 미확인 · 확인된 자료로 세액 계산']],
+    showIf: a => a.businessType === '간이과세자' && a.simplifiedPeriod === 'part',
+  },
+  {
+    id: 'simplifiedPeriodEnd', section: '과세기간',
+    q: '이번 신고 과세기간의 실제 마지막 날은 언제인가요?',
+    sub: '확인한 2026년 날짜를 입력해 주세요. 신고기한은 이 날짜를 엔진에 보내 확인합니다.',
+    date: true,
+    showIf: a => a.businessType === '간이과세자' && a.simplifiedPeriod === 'part' && a.simplifiedPeriodEndState === 'known',
+  },
+  {
     id: 'simplifiedInput', section: '공제',
     q: '세금계산서 받은 매입(공급대가)은? (원)',
     sub: '간이과세자는 세금계산서를 받은 매입액(부가세 포함)의 0.5%를 세액공제받습니다. 카드·세금계산서로 산 사업 매입액을 넣어 주세요. 없으면 0.',
@@ -153,7 +167,7 @@ const VAT_QS = [
   {"id": "exportSales", "section": "추가 계산 입력", "q": "별도 영세율 매출 (원)", "sub": "앞의 10% 과세 매출에 포함하지 않은 영세율 매출입니다.", "numeric": true, "money": true, "optional": true, showIf: (a) => a.businessType==='일반과세자'},
   {"id": "eInvoiceCount", "section": "추가 계산 입력", "q": "공제 대상 전자세금계산서 발급 건수", "sub": "발급공제 요건을 확인한 건수만 입력하세요. 직전연도 공급가액 입력이 함께 필요합니다.", "numeric": true, "money": false, "optional": true, showIf: (a) => a.businessType==='일반과세자' && a.isCorporate!=='yes'},
   {id:'creditScope',section:'공제 요건 확인',q:'단일 사업장의 정상신고이며 올해 앞선 공제 이력을 모두 확인했나요?',sub:'간이는 연중 계속 12개월 영업, 신규·휴폐업·유형전환·재고 추가납부가 없는 경우입니다. 다른 사업장·수정신고나 연간 이력 미확인은 공제를 확정할 수 없습니다.',opts:[['yes','확인했어요',''],['no','아직 확인하지 못했어요','금액 확정 보류']],showIf:a=>Number(a.creditCardSales)>0||Number(a.eInvoiceCount)>0},
-  {id:'creditPeriodEnd',section:'공제 요건 확인',q:'이 신고 과세기간의 마지막 날은 언제인가요?',sub:'2026년 1기 확정은 6월 30일, 2기 확정·간이는 12월 31일입니다.',date:true,showIf:a=>Number(a.creditCardSales)>0||Number(a.eInvoiceCount)>0},
+  {id:'creditPeriodEnd',section:'공제 요건 확인',q:'이 신고 과세기간의 마지막 날은 언제인가요?',sub:'일반적인 2026년 1기 확정은 6월 30일, 2기 확정은 12월 31일입니다. 앞에서 확인한 실제 신고 과세기간과 같아야 합니다.',date:true,showIf:a=>Number(a.creditCardSales)>0||Number(a.eInvoiceCount)>0},
   {id:'creditEvidence',section:'공제 요건 확인',q:'공제 요건·올해 기사용액을 확인한 자료를 적어 주세요.',sub:'예: 직전연도 매출원장, 올해 1기 신고서, 적기 전송내역. 고객 이름·식별번호는 쓰지 마세요.',freeform:true,showIf:a=>Number(a.creditCardSales)>0||Number(a.eInvoiceCount)>0},
   {id:'cardEligible',section:'카드 공제',q:'공제 대상 업종·과세거래의 적격 발급금액임을 확인했나요?',sub:'소비자 상대 업종 등 법정 대상인지, 면세거래가 포함되지 않았는지 확인하세요.',opts:[['yes','적격으로 확인',''],['no','공제 대상 아님','공제 0']],showIf:a=>Number(a.creditCardSales)>0},
   {id:'cardPriorSupply',section:'카드 공제',q:'직전연도 이 사업장의 공급가액은 얼마인가요? (원)',sub:'실제 금액을 확인해 입력하세요. 신규개업 등 실제 0원이면 0을 입력합니다.',numeric:true,money:true,allowZero:true,showIf:a=>Number(a.creditCardSales)>0},
@@ -230,10 +244,21 @@ function vatStepsForDisplay(steps) {
   });
 }
 // 261107: 엔진은 period_end 가 있어야 신고기한을 낸다(부가법 §49①·§67①, 휴일 이월 포함). 이 계산기는 2026년 과세기간만 다루므로
-// 신고 구분에서 2026년 과세기간 마지막 날(§5①)을 정해 보낸다. 폐업·과세유형 변경·간이과세 포기(§5③~⑤)는 기간이 달라 안내만 붙인다.
+// 일반 연말·반기 경로는 유지하고 간이 일부 기간은 고객이 확인한 실제 종료일만 보낸다.
 const VAT_PERIOD_END_2026 = { '1기_확정': '2026-06-30', '2기_확정': '2026-12-31', '간이과세_확정': '2026-12-31' };
 const VAT_DEADLINE_CAVEAT = '2026년 과세기간 기준 · 폐업·과세유형 변경·간이과세 포기가 있으면 달라짐';
-const VAT_PART_YEAR_DEADLINE_CAVEAT = '이 기한은 과세기간이 2026년 12월 31일에 끝나는 경우(중간에 개업한 경우 등)입니다. 폐업했거나 간이과세자에서 일반과세자로 바뀌었다면(간이과세 포기 포함) 과세기간이 그 전에 끝나 기한이 달라지니 따로 확인해 주세요(부가법 §5③~⑤).';
+const VAT_PART_YEAR_DEADLINE_CAVEAT = '확인한 실제 과세기간 종료일을 기준으로 엔진이 반환한 신고기한입니다. 종료일이 다르면 다시 확인해 주세요.';
+function vatPeriodEndForRequest(a) {
+  if (a.businessType === '간이과세자' && a.simplifiedPeriod === 'part') {
+    if (a.simplifiedPeriodEndState !== 'known') return null;
+    const end = String(a.simplifiedPeriodEnd || '');
+    const date = new Date(end + 'T00:00:00Z');
+    if (!/^2026-\d{2}-\d{2}$/.test(end) || !Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== end) throw new Error('확인한 실제 과세기간 종료일을 2026년의 정확한 날짜로 입력해 주세요.');
+    return end;
+  }
+  return VAT_PERIOD_END_2026[a.businessType === '간이과세자' ? '간이과세_확정' : (a.periodType || '1기_확정')];
+}
+
 function vatSimplifiedExemptFromEngine(c, businessType, netTax) {
   if (businessType !== '간이과세자' || netTax !== 0 || !c) return false;
   const steps = Array.isArray(c['단계별계산']) ? c['단계별계산'] : [], warns = Array.isArray(c['경고사항']) ? c['경고사항'] : [];
@@ -303,6 +328,7 @@ function buildVatDetail(answers, calc) {
     if (d['전자세금계산서공제']) L.push('  · 전자세금계산서공제: ' + vatWon(d['전자세금계산서공제']));
     if (d['간이매입공제']) L.push('  · 간이매입공제: ' + vatWon(d['간이매입공제']));
     if (d['부가가치율'] && d['부가가치율'] !== '-') L.push('  · 부가가치율: ' + d['부가가치율']);
+    if (calc.deadline) L.push('  · 신고기한: ' + calc.deadline);
     L.push(calc.isRefund ? '  · 예상 환급세액: ' + vatWon(calc.refund) : '  · 예상 납부세액: ' + vatWon(calc.netTax));
     (calc.steps || []).forEach(s => { if (s && s.항목) L.push('    - ' + s.항목 + ': ' + (typeof s.금액 === 'number' ? vatWon(s.금액) : s.금액) + (s.조문 ? ' [' + s.조문 + ']' : '')); });
   }
@@ -314,6 +340,7 @@ function buildVatKakao(answers, calc) {
   L.push('· 사업자 유형: ' + (answers.businessType || '일반과세자'));
   if (answers.businessType === '간이과세자') {
     if (answers.simplifiedPeriod === 'part') L.push('· 사업 기간 공급대가: ' + vatWon(Number(answers.supplyPrice) || 0) + ' (' + (Number(answers.simplifiedMonths) || '?') + '개월 — 중간 개업·휴업·폐업·과세유형 전환)');
+    if (answers.simplifiedPeriod === 'part') L.push('· 실제 과세기간 종료일: ' + (answers.simplifiedPeriodEndState === 'known' ? answers.simplifiedPeriodEnd : '미확인'));
     else L.push('· 1년 공급대가: ' + vatWon(Number(answers.supplyPrice) || 0));
   }
   else if (answers.businessType === '일반과세자') {
@@ -321,6 +348,7 @@ function buildVatKakao(answers, calc) {
     L.push('· 매입(공급가액): ' + vatWon(Number(answers.purchaseAmount) || 0));
   }
   if (calc.precise) {
+    if (calc.deadline) L.push('· 신고기한: ' + calc.deadline);
     L.push('', '▶ 결과(추정)');
     if (calc.isExempt) L.push('· 면세사업자 — 부가세 면제');
     else L.push(calc.isRefund ? '· 예상 환급세액: ' + vatWon(calc.refund) : '· 예상 납부세액: ' + vatWon(calc.netTax));
@@ -403,12 +431,13 @@ function JTReportVat({ setRoute, onBack }) {
         }
       }
 
+      const periodEnd = vatPeriodEndForRequest(answers);
       const purchaseAmt = clamp(answers.purchaseAmount);
       const body = {
         business_type: bt,
         is_corporate: isCorp,
         period_type: bt === '간이과세자' ? '간이과세_확정' : (answers.periodType || '1기_확정'),
-        period_end: VAT_PERIOD_END_2026[bt === '간이과세자' ? '간이과세_확정' : (answers.periodType || '1기_확정')],
+        ...(periodEnd ? { period_end: periodEnd } : {}),
         sales_amount: clamp(answers.salesAmount),
         purchase_amount: purchaseAmt,
         purchase_vat_paid: Math.round(purchaseAmt * 0.1),   // 매입세액 = 과세 매입액 × 10%
@@ -418,11 +447,13 @@ function JTReportVat({ setRoute, onBack }) {
         simplified_input_supply: clamp(answers.simplifiedInput),
         ...extra,
       };
-      // 261107 묶음 2 ⑤: 일부 기간만 사업했으면 실제 개월 수를 엔진에 보낸다(부가법 §69③ 12개월 환산). 1년 내내면 보내지 않는다(종전과 같음).
+      // 고객이 확인한 실제 개월 수를 보낸다. 1년 내내 확인도 12개월로 명시해 미입력과 구별한다.
       if (bt === '간이과세자' && answers.simplifiedPeriod === 'part') {
         const months = Number(answers.simplifiedMonths);
         if (!Number.isSafeInteger(months) || months < 1 || months > 12) { setErr('올해 실제로 사업한 개월 수를 1~12 사이 정수로 입력해 주세요.'); setLoading(false); return; }
         body.simplified_period_months = months;
+      } else if (bt === '간이과세자' && answers.simplifiedPeriod === 'full') {
+        body.simplified_period_months = 12;
       }
 
       try {Object.assign(body,vatCreditInputs(answers,body));Object.assign(body,vatDeemedInputs(answers,body));} catch(e) {setErr(e.message);setLoading(false);return;}
@@ -476,8 +507,8 @@ function JTReportVat({ setRoute, onBack }) {
   if (report) {
     const { calc } = report;
     const d = calc.detail || {};
-    const deadline = calc.deadline || '엔진 기한 미확인 · 별도 확인';
-    // 261107 묶음 2(Codex 059 R2-F1): 일부 기간 흐름은 폐업·과세유형 전환도 받는데, 엔진 기한은 과세기간을 12월 31일까지로 본 값이다 — 그 경우를 따로 알린다.
+    const deadline = calc.deadline || '과세기간 종료일 또는 엔진 기한 미확인 · 별도 확인';
+    // 일부 기간의 기한도 확인한 실제 종료일에 대한 엔진 응답만 표시한다.
     const deadlineCaveat = calc.deadline ? <span style={{ display: 'block', fontSize: 12, opacity: 0.8 }}>{calc.simplifiedPartYear ? VAT_PART_YEAR_DEADLINE_CAVEAT : <>기한은 {VAT_DEADLINE_CAVEAT}</>}</span> : null;
     return (
       <div className="jt-container">
