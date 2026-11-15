@@ -386,3 +386,42 @@
   .jt-income-wrap { width: 100%; }
   :is(.jt-income-share,.jt-income-stages) svg { height: 120px; }
 }
+
+/* VAT result print: factual answers, tax/steps, notices and brand only; screen UI is untouched. */
+@page vat-calculation { size: A4; margin: 14mm; }
+@media print {
+  html:has(.jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"])), body:has(.jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"])), body:has(.jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"])) > #root {
+    min-height: 0 !important; height: auto !important; padding: 0 !important;
+    margin: 0; background: #fff !important;
+  }
+  body:has(.jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"])) { page: vat-calculation; display: block !important; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) {
+    page: vat-calculation; display: block !important; min-height: 0 !important;
+    height: auto !important; margin: 0 !important; padding: 0 !important; background: #fff !important;
+  }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-main, .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-container, .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-shell {
+    display: block !important; min-height: 0 !important; height: auto !important;
+    width: auto !important; max-width: none !important; padding: 0 !important; margin: 0 !important;
+    border: 0; border-radius: 0; box-shadow: none; overflow: visible !important; background: #fff !important;
+  }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-nav {
+    display: block !important; position: static !important; transform: none !important;
+    min-height: 0 !important; height: auto !important; width: auto !important;
+    padding: 0 0 5mm !important; margin: 0 0 5mm !important;
+    border: 0; border-bottom: 1px solid var(--sheet-rule); box-shadow: none; background: #fff !important;
+  }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-nav > :not(.jt-nav__brand) { display: none !important; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-nav__brand { display: inline-flex !important; position: static; color: var(--sheet-ink) !important; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-nav__brand img { height: 26px !important; width: auto; filter: none !important; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) :is(.jt-report-shell__head,.jt-report-shell__bar,.jt-report-q__nav,.jt-consult-schedule),
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-shell__body > .jt-convert-banner,
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-shell__body > section:has(input[type="tel"]),
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-shell__body > div:has(input[type="email"]),
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-shell :is(button,input,select,textarea) { display: none !important; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-shell__title { margin: 0 0 5mm; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-shell__title h1 { font-size: 22pt; margin: 0 0 3mm; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-input-review { padding: 4mm; margin: 0 0 5mm; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-input-review li { padding: 2mm 0; break-inside: avoid; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-result__section { padding: 4mm 0; margin-block: 4mm; overflow: visible !important; }
+  .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) .jt-report-calc tr { break-inside: avoid; }
+}

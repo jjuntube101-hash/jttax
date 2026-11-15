@@ -58,6 +58,14 @@ test('presentation CSS preserves screen skip access and printed calculation/sour
  assert(/min-height:\s*44px/.test(css));
  for(const selector of ['.jt-report-calc','.jt-report-result__grade','.jt-report-result__section'])assert(!new RegExp(selector.replaceAll('.','\\.')+'\\s*\\{[^}]*display:\\s*none').test(css));
 });
+test('VAT print scope keeps brand and calculation sections while excluding lead controls',()=>{
+ const css=esbuild.transformSync(fs.readFileSync(__dirname+'/src/renewal-results.css','utf8'),{loader:'css',charset:'utf8'}).code;
+ assert(/@page vat-calculation\s*\{[^}]*size: A4/.test(css));assert(css.includes('입력 수정: 어떤 부가가치세 사업자인가요?'));
+ assert(css.includes('.jt-nav__brand')&&css.includes('.jt-report-shell__body > .jt-convert-banner'));
+ assert(css.includes('section:has(input[type=tel])')||css.includes('section:has(input[type="tel"])'));
+ assert(css.includes('div:has(input[type=email])')||css.includes('div:has(input[type="email"])'));
+ assert(css.includes('.jt-report-calc tr')&&css.includes('break-inside: avoid'));
+});
 (async()=>{
  const input=market(),draft=raw(input),saved={case_id:'case',client_id:'client',revision_id:'revision2',revision:2,current_revision:2,etag:'"2"',label:'SYNTH',draft,validation:{can_run:true,errors:[]},input_hash:'b'.repeat(64),last_successful_run_id:null,read_only:false};
  let received=[],changed;
