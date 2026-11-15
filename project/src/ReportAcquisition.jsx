@@ -1478,7 +1478,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
 
           {report.quick && calc.totalTax > 0 && calc.appliedRate && calc.appliedRate !== '-' && (
             <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: 14, color: 'var(--jt-ink-700,#444)' }}>
-              {answers.acquisitionType} · {formatWon(Number(answers.propertyValue) || 0)} · {answers.propertyType} 기준, 적용세율 약 <strong>{calc.appliedRate}</strong>로 계산했어요.
+              {answers.acquisitionType} · {formatWon(Number(answers.propertyValue) || 0)} · {answers.propertyType} · 취득세 본세율 <strong>{calc.appliedRate}</strong>
             </p>
           )}
 
@@ -1532,7 +1532,7 @@ function JTReportAcquisition({ setRoute, onBack }) {
             <table className="jt-report-calc">
               <tbody>
                 <tr><th>과세표준</th><td>{formatWon(calc.taxBase)}</td></tr>
-                <tr><th>적용세율{calc.heavyApplied ? ' (중과)' : ''}</th><td>{calc.appliedRate}</td></tr>
+                <tr><th>취득세 본세율{calc.heavyApplied ? ' (중과)' : ''}</th><td>{calc.appliedRate}</td></tr>
                 <tr><th>취득세 본세</th><td>{formatWon(calc.acqTax)}</td></tr>
                 <tr><th>지방교육세</th><td>{formatWon(calc.eduTax)}</td></tr>
                 {/* 「85㎡ 초과」는 주택에만 해당하는 이유다 — 농지·상가에 붙이면 틀린 설명이 된다(260921) */}
