@@ -1,7 +1,7 @@
 ---
 title: 등기 때 국민주택채권을 즉시 매도했다면 어떤 금액을 보관해야 하나요?
 date: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-15
 tag: INSIGHT · REAL ESTATE
 excerpt: 등기 때 산 국민주택채권을 즉시 매도했다면 액면액·매도대금·실제 차손을 구별해 향후 부동산 양도 자료로 보관합니다.
 slug: housing-bond-sale-loss-evidence
@@ -47,3 +47,5 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 [소득세법 제97조](https://www.law.go.kr/법령/소득세법/제97조) · [소득세법 시행령 제163조](https://www.law.go.kr/법령/소득세법시행령/제163조)
 
 [부동산 취득 부대비용 안내](https://www.jttax.co.kr/insights/acquisition-tax-costs.html) · [법무사 협업 상담](https://www.jttax.co.kr/desk/scrivener.html)
+
+네이버 블로그에서 [국민주택채권을 즉시 매도한 사례](https://blog.naver.com/jt_tax/224477772075)를 읽을 수 있습니다.

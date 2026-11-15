@@ -1,7 +1,7 @@
 ---
 title: 임대 중인 상가를 넘길 때 사업의 포괄양도인지 어떻게 확인할까요?
 date: 2026-11-08
-updated: 2026-11-08
+updated: 2026-11-15
 tag: INSIGHT · VAT
 excerpt: 임대차 승계와 임대사업의 포괄 인계를 나누어 임차인별 계약, 보증금, 관리업무 및 인계에서 빠진 항목을 점검합니다.
 slug: rental-business-transfer-checklist
@@ -44,3 +44,5 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 ## 인계 시점을 정하기 전
 
 ‘호실은 그대로 임대하지만 공용 관리 계약은 매도인이 유지하고, 연체 월세의 귀속은 협의 중입니다.’ 이런 설명이 있어야 세무사가 어떤 추가 자료를 볼지 정할 수 있습니다. 실제로 계약할 시점에 포괄양도 여부와 세금계산서 처리 등을 함께 검토합니다. [부가가치세 기초](https://www.jttax.co.kr/insights/vat-basics.html) · [공인중개사 상담 창구](https://www.jttax.co.kr/desk/broker.html)
+
+네이버 블로그에서 [세입자가 있는 상가를 매도하는 사례](https://blog.naver.com/jt_tax/224477772550)를 읽을 수 있습니다.
