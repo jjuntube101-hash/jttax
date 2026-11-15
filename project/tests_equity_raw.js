@@ -43,6 +43,12 @@ test('edited inputs keep an explicitly old frozen value until save',()=>{
  const draft=raw(market()),w={uid:'synthetic',meta:{case_id:'case',client_id:'client',revision:1,current_revision:1,validation:{can_run:false,errors:['후보 금액 미확인']}},label:'SYNTH',draft,run:{run_id:'frozen',revision_id:'old',engine_request:{shares_evaluated:100},response_snapshot:{calc:{'최종_1주당가액':120000,'총평가액':12000000,'평가방법':'시가','시가적용':true,'단계별계산':[]}}},keys:{},baseline:'old'};
  const v=caseRender(w);assert.equal(by(v,'equity-total').children[0],'12,000,000');assert(v.nodes.some(n=>n.tag==='h2'&&n.children.includes(' · 수정 전 입력 기준')));
 });
+test('only actual raw supplementary results show known goodwill and net assets',()=>{
+ const render=(marketApplied,goodwill,nav)=>caseRender({uid:'synthetic',meta:{case_id:'case',client_id:'client',revision:1,current_revision:1,validation:{can_run:true,errors:[]}},label:'SYNTH',draft:raw(office()),keys:{},baseline:'same',run:{run_id:'supplement',revision_id:'input',engine_request:{shares_evaluated:100,reviewed_supplement_facts:office().reviewed_supplement_facts},response_snapshot:{calc:{'최종_1주당가액':70065,'총평가액':7006500,'시가적용':marketApplied,'영업권':goodwill,'순자산가액':nav,'단계별계산':[]}}}});
+ let v=render(false,0,800000000);assert(by(v,'equity-goodwill-result').children.includes('0'));assert(by(v,'equity-nav-result').children.includes('800,000,000'));
+ v=render(true,0,800000000);assert(!v.nodes.some(n=>n.props?.['data-testid']==='equity-goodwill-result'||n.props?.['data-testid']==='equity-nav-result'));
+ v=render(false,null,undefined);assert(!v.nodes.some(n=>n.props?.['data-testid']==='equity-goodwill-result'||n.props?.['data-testid']==='equity-nav-result'));
+});
 (async()=>{
  const input=market(),draft=raw(input),saved={case_id:'case',client_id:'client',revision_id:'revision2',revision:2,current_revision:2,etag:'"2"',label:'SYNTH',draft,validation:{can_run:true,errors:[]},input_hash:'b'.repeat(64),last_successful_run_id:null,read_only:false};
  let received=[],changed;
