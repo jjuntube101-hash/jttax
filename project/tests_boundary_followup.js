@@ -12,3 +12,27 @@ const e=draft(fixture.employment);e.employmentEnabled=true;const raw=box.gen(e);
 assert.equal(raw.employment.first_claim_year,2026);assert(raw.employment.first_claim_evidence.includes('SYNTH'));
 if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify({treasury:box.make(d),employment:{generation_facts:raw}},null,2));
 console.log('Boundary web payloads: treasury direct-single-cause /3, source/rights checks, first-claim facts and comparison-ledger mapping PASS');
+
+// Exercise the active saved-transfer HTTP error handler, without a live account.
+(async()=>{
+  const source=read('TransferCases.jsx');
+  const handler=source.slice(source.indexOf('  const api = async'),source.indexOf('  const mutation ='));
+  let response;
+  const context={AbortController,setTimeout,clearTimeout,window:{JT_ENGINE_BASE:'http://127.0.0.1:8000'},
+    jtGiftSession:{token:'synthetic'},fetch:async()=>response};
+  vm.createContext(context);vm.runInContext(handler+';this.api=api;',context);
+  for(const [code,message] of [['ENGINE_NEEDS_INPUT','실제 거주기간 move_in_date 확인 필요'],
+      ['ENGINE_UNSUPPORTED','양도연도 2028은 미지원'],['DRAFT_NOT_RUNNABLE','증여 이월과세 미적용 검토 필요']]){
+    response={ok:false,status:422,json:async()=>({detail:{code,message,engine_state:'needs_input'}})};
+    await assert.rejects(context.api('/v1/transfer-cases/synthetic/runs'),e=>
+      e.message.includes(message)&&e.message.includes('이번 계산 결과는 저장되지 않았습니다.'));
+  }
+  response={ok:false,status:422,json:async()=>({detail:{code:'ENGINE_CALCULATION_ERROR',message:'internal detail'}})};
+  await assert.rejects(context.api('/v1/transfer-cases/synthetic/runs'),e=>
+    e.message.includes('계산 입력을 추가 확인')&&!e.message.includes('internal detail'));
+  response={ok:true,status:200,json:async()=>({status:'succeeded',run_id:'frozen-synthetic'})};
+  assert.equal((await context.api('/v1/transfer-cases/synthetic/runs')).run_id,'frozen-synthetic');
+  assert(source.includes('saved.last_successful_run_id?await api'));
+  assert(source.includes("await mutation(base+'/runs'"));
+  console.log('Saved transfer holds: fact requirements reach customer alerts, internal errors remain generic, successful frozen flow PASS');
+})().catch(e=>{console.error(e);process.exitCode=1;});

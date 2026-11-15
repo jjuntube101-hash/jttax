@@ -26,7 +26,10 @@ function JTTransferCases({ clientId, caseId, onExit }) {
         const messages = {SOURCE_FACT_HISTORY_GAP:'원본 이력의 연결이 끊겼습니다. 변경 내역을 확인하세요.',SOURCE_FACT_VERSION_NOT_FOUND:'선택한 원본 버전을 찾을 수 없습니다.',SOURCE_FACT_NOT_FOUND:'해당 고객의 원본 자료가 없습니다.',SOURCE_FACT_DATE_INVALID:'선택 버전의 취득일·생년월일이 사건일보다 늦습니다.',SOURCE_FACT_APPLICABILITY_REQUIRED:'사건일을 포함하는 적용기간과 선택 근거를 확인하세요.',SOURCE_OWNERSHIP_HISTORY_GAP:'소유 이력과 현재 원본이 일치하지 않습니다. 변동 기록을 확인하세요.',SOURCE_OWNERSHIP_VERSION_DATE_MISMATCH:'사건 날짜에 맞는 소유 이력을 다시 조회하고 선택하세요.',SOURCE_OWNERSHIP_VERSION_OWNER_MISMATCH:'선택한 이력의 소유자를 다시 선택하세요.',SOURCE_OWNERSHIP_HISTORY_CONFIRM_REQUIRED:'과거 소유 지분과 현재 취득·평가자료의 사용을 확인하세요.',SOURCE_OWNERSHIP_DATE_REVIEW_REQUIRED:'현재 소유 변동일보다 이른 사건입니다. 과거 소유 자료를 확인해야 합니다.',SOURCE_CHANGED:'원본 자료가 변경됐습니다. 다시 확인해 주세요.',REVISION_CONFLICT:'다른 저장본이 있습니다. 다시 열어 확인해 주세요.',
           SOURCE_PROPERTY_UNSUPPORTED:'주택 또는 매매 취득 토지·상가 원본을 선택하세요. 원본 환산취득가는 지원하지 않습니다.',SOURCE_NONHOUSING_SHARE_UNSUPPORTED:'일반 비주택은 전체 지분 1의 양도부터 지원합니다.',SOURCE_SHARE_INVALID:'양도 지분은 보유 지분 이하여야 합니다.',
           DRAFT_NOT_RUNNABLE:'저장본의 보완 항목을 확인해 주세요.',ENGINE_CALCULATION_ERROR:'계산 입력을 추가 확인해야 합니다. 결과는 저장되지 않았습니다.'};
+        const factHold = r.status===422 && ['ENGINE_NEEDS_INPUT','ENGINE_UNSUPPORTED','DRAFT_NOT_RUNNABLE'].includes(data.detail?.code)
+          && typeof data.detail?.message==='string' && data.detail.message.trim() ? data.detail.message : '';
         throw new Error(r.status===401?'로그인이 필요합니다. 작업대로 돌아가 같은 계정으로 로그인하세요.':
+          factHold ? factHold+' · 이번 계산 결과는 저장되지 않았습니다.' :
           messages[data.detail?.code] || (r.status===422?'입력 형식과 날짜·금액을 확인해 주세요.':'자료를 처리하지 못했습니다. 저장본을 확인하고 다시 시도해 주세요.'));
       }
       return data;
