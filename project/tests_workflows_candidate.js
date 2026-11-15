@@ -14,7 +14,9 @@ test('unknown acquisition region warning contains no unrelated fixed case money'
 test('known acquisition region adds no unknown-region warning',()=>assert.deepEqual(gaps({assetType:'house_1',acqAdjustedZone:'yes'},{precise:true}),[]));
 const vat=fs.readFileSync(path.join(root,'src/ReportVat.jsx'),'utf8'),decl=declarations(vat);
 const questions=Function('return ('+vat.slice(decl.VAT_QS.start,decl.VAT_QS.end)+')')(),purchase=questions.find(q=>q.id==='purchaseAmount');
-const next=Function('cur','answers','return ('+vat.slice(decl.canNext.start,decl.canNext.end)+')()');
+const amountHelper=parse(vat,{sourceType:'script',plugins:['jsx']}).program.body.find(n=>n.type==='FunctionDeclaration' && n.id.name==='vatAmountConfirmed');
+assert(amountHelper, 'actual VAT amount validation helper');
+const next=Function('cur','answers',vat.slice(amountHelper.start,amountHelper.end)+'; return ('+vat.slice(decl.canNext.start,decl.canNext.end)+')()');
 test('unknown purchase amount blocks next',()=>assert.equal(next(purchase,{}),false));
 test('explicit actual zero advances without inventing purchase',()=>assert.equal(next(purchase,{purchaseAmount:'0'}),true));
 test('known positive purchase advances',()=>assert.equal(next(purchase,{purchaseAmount:'1000000'}),true));
