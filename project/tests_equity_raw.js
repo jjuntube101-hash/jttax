@@ -49,6 +49,15 @@ test('only actual raw supplementary results show known goodwill and net assets',
  v=render(true,0,800000000);assert(!v.nodes.some(n=>n.props?.['data-testid']==='equity-goodwill-result'||n.props?.['data-testid']==='equity-nav-result'));
  v=render(false,null,undefined);assert(!v.nodes.some(n=>n.props?.['data-testid']==='equity-goodwill-result'||n.props?.['data-testid']==='equity-nav-result'));
 });
+test('presentation CSS preserves screen skip access and printed calculation/source content',()=>{
+ const css=esbuild.transformSync(fs.readFileSync(__dirname+'/src/renewal-results.css','utf8'),{loader:'css'}).code;
+ assert(/@media print\s*\{\s*\/\*[^]*?\*\/\s*\.jt-renewal-skip\s*\{\s*display:\s*none !important;/.test(css)||/@media print\s*\{\s*\.jt-renewal-skip\s*\{\s*display:\s*none !important;/.test(css));
+ const skip=[...css.matchAll(/\.jt-renewal-skip\s*\{[^}]*display:\s*none[^}]*\}/g)];assert.equal(skip.length,1);
+ const before=css.slice(0,skip[0].index),media=before.lastIndexOf('@media print');assert(media>=0);const scope=before.slice(media);assert.equal((scope.match(/\{/g)||[]).length-(scope.match(/\}/g)||[]).length,1);
+ const selectors=css.replaceAll(String.fromCharCode(34),'').replaceAll(String.fromCharCode(39),'');for(const id of ['equity-save','equity-calculate','equity-reopen-revision'])assert(selectors.includes('[data-testid='+id+']'));
+ assert(/min-height:\s*44px/.test(css));
+ for(const selector of ['.jt-report-calc','.jt-report-result__grade','.jt-report-result__section'])assert(!new RegExp(selector.replaceAll('.','\\.')+'\\s*\\{[^}]*display:\\s*none').test(css));
+});
 (async()=>{
  const input=market(),draft=raw(input),saved={case_id:'case',client_id:'client',revision_id:'revision2',revision:2,current_revision:2,etag:'"2"',label:'SYNTH',draft,validation:{can_run:true,errors:[]},input_hash:'b'.repeat(64),last_successful_run_id:null,read_only:false};
  let received=[],changed;

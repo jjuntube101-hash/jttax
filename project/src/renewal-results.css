@@ -130,6 +130,30 @@
 .jt-special-direct .jt-credit-table caption { padding-block: 12px; font-weight: 700; text-align: start; }
 .jt-special-direct .jt-credit-table th, .cw-workspace .cw-table th { background: var(--sheet-wash); }
 .cw-workspace .cw-card { border: 0; border-top: 2px solid var(--sheet-ink); border-radius: 0; background: var(--sheet-paper); }
+/* Equity save/run/reopen are direct workbench children, outside the section button rules. */
+.jt-report .cw-workspace > :is([data-testid="equity-save"],[data-testid="equity-calculate"]),
+.jt-report .cw-workspace > label:has(> [data-testid="equity-reopen-revision"]) + button {
+  min-height: 44px; min-width: 44px; max-width: 100%; box-sizing: border-box;
+  padding: 10px 14px; margin: 6px 8px 6px 0; font: inherit;
+  white-space: normal; overflow-wrap: anywhere;
+}
+.jt-report .cw-workspace > label:has(> [data-testid="equity-reopen-revision"]) {
+  display: inline-flex; flex-direction: column; gap: 6px; vertical-align: top;
+  min-width: 0; max-width: 100%; margin: 6px 8px 6px 0;
+}
+.jt-report .cw-workspace > label > [data-testid="equity-reopen-revision"] {
+  min-height: 44px; width: min(100%, 10rem); box-sizing: border-box;
+  padding: 10px; font: inherit;
+}
+@media (max-width: 640px) {
+  .jt-report .cw-workspace > :is([data-testid="equity-save"],[data-testid="equity-calculate"]),
+  .jt-report .cw-workspace > label:has(> [data-testid="equity-reopen-revision"]),
+  .jt-report .cw-workspace > label:has(> [data-testid="equity-reopen-revision"]) + button {
+    display: flex; width: 100%; margin-inline: 0; align-items: center; justify-content: center;
+  }
+  .jt-report .cw-workspace > label > [data-testid="equity-reopen-revision"] { width: 100%; }
+}
+
 .jt-report :is(.gc-card,.acq-section,.eq-section,.ic-section,.tc-section,.vat-section) {
   color: var(--sheet-ink); background: var(--sheet-paper);
   border: 0; border-top: 2px solid var(--sheet-ink); border-radius: 0;
@@ -173,6 +197,8 @@
   .jt-report .jt-report-result__section[style*="32px 36px"] { padding: 18px 14px !important; }
 }
 @media print {
+  /* Keyboard skip navigation must remain available on screen, never repeat over printed content. */
+  .jt-renewal-skip { display: none !important; }
   .jt-report .jt-report-result__grade { break-inside: avoid; }
   .jt-report .jt-report-result__section { overflow: visible; }
   .jt-report .jt-report-calc tr { break-inside: avoid; }
