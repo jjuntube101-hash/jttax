@@ -834,7 +834,8 @@ function JTAcqOrdinanceCard({ region }) {
       <section className="jt-report-result__section">
         <h3>{region} 감면 조례</h3>
         <div style={ACQ_ORD_BOX}>
-          이 시·도의 시도세 감면 조례에 추가 경감 규정이 있을 수 있습니다. 법제처 자치법규 원문에서 확인하십시오.
+          {store && store.unavailable && store.unavailable[region] && <p>{store.unavailable[region]}</p>}
+          취득일에 적용되는 감면 규정과 부칙은 법제처 자치법규 원문에서 확인해 주세요.
           <div style={{ marginTop: 10 }}><a className="jt-btn jt-btn--ghost" href={searchUrl} target="_blank" rel="noopener">법제처 자치법규에서 찾아보기 (새 창) →</a></div>
           <p style={{ margin: '10px 0 0', fontSize: 13, opacity: 0.85 }}><strong>이 계산에는 넣지 않았습니다.</strong></p>
         </div>
@@ -855,6 +856,18 @@ function JTAcqOrdinanceCard({ region }) {
           시행일 {ymd(card.effectiveDate)} · 공포번호 제{card.promulgationNo}호 · 자치법규일련번호 {card.ordinanceSerial} · 조회일 {card.fetchedAt}
           {stale && <strong style={{ color: '#a35a00' }}> · 갱신 확인 필요(조회 후 {daysSince}일 경과)</strong>}
         </p>
+        {!card.successorSource && <p>조회일 현재의 조문입니다. 취득일에 적용되는 감면 규정은 당시 조례와 부칙에서 확인해 주세요.</p>}
+        {card.successorSource && (
+          <div>
+            <p>{card.successorSource.note}</p>
+            <details>
+              <summary>납세지·취득일에 따른 적용 규정 보기</summary>
+              <p style={{ whiteSpace: 'pre-line' }}>{card.successorSource.scopeText}</p>
+              <p style={{ whiteSpace: 'pre-line' }}>{card.successorSource.addendumText}</p>
+              <a href={card.successorSource.repealSourceUrl} target="_blank" rel="noopener">법제처 조례 부칙 원문 (새 창)</a>
+            </details>
+          </div>
+        )}
         <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'keep-all', fontFamily: 'inherit', fontSize: 14.5, margin: '0 0 12px', padding: '12px 14px', background: '#fff', border: '1px solid rgba(0,0,0,.08)', borderRadius: 8 }}>{card.articleText}</pre>
         <p style={{ margin: '0 0 10px' }}>
           이 조문이 적용되는 대상은 <strong>산업단지 등에 관한 지방세특례제한법 제78조의 감면 대상자</strong>입니다. 해당하는지는 확인이 필요합니다 — 물건이 산업단지·산업기술단지 안에 있는지, 어떤 용도로 쓰는지, 감면 후 처분·용도 변경이 있었는지를 분양계약서·사업계획서·등기사항증명서로 확인하세요.

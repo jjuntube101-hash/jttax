@@ -411,6 +411,10 @@ console.log('\n════ ④ 조례 카드의 경감률이 매퍼 출력에 �
     eq(`조례 카드가 «${banned}» 를 건드리지 않는다`, cardSrc.includes(banned), false);
   }
   eq('조례 카드가 「이 계산에는 넣지 않았습니다」를 표시한다', cardSrc.includes('이 계산에는 넣지 않았습니다'), true);
+  for (const field of ['note', 'scopeText', 'addendumText', 'repealSourceUrl']) {
+    eq(`후속 조례 안내에 ${field} 원문·출처가 연결된다`,
+       cardSrc.includes('card.successorSource.' + field), true);
+  }
 }
 
 /* 스냅샷 파일 자체 — «비어 있어도 통과»하지 않게 내용을 본다 */
