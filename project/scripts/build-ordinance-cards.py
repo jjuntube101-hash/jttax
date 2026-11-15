@@ -207,6 +207,7 @@ def main():
     today = datetime.date.today().isoformat()
     today8 = today.replace("-", "")
     cards = {}
+    unavailable = {}
     report = []  # [(시도, 버킷, 상세문구)]
 
     for sido in SIDOS:
@@ -221,6 +222,14 @@ def main():
         comp = res.get("completeness") or {}
         if status != "SELECTED" or res.get("partial") or not comp.get("complete"):
             report.append((sido, "조회 불완전", describe_incomplete(res)))
+            if status == "SELECTED" and (res.get("partial") or comp.get("complete") is False):
+                number = (res.get("identifiers") or {}).get("공포번호")
+                edition = f"제{number}호" if number else "해당 판본"
+                issues = comp.get("issues") or []
+                if any("부칙 요소가 없거나 부칙내용이 공백" in issue for issue in issues):
+                    unavailable[sido] = f"법제처에서 조회한 {edition}의 부칙 원문을 확인하지 못해 카드를 보류했습니다."
+                else:
+                    unavailable[sido] = f"법제처에서 조회한 {edition}의 원문이 불완전해 카드를 보류했습니다."
             continue
 
         arts = res.get("articles") or []
@@ -274,6 +283,7 @@ def main():
                  "재생성: python project/scripts/build-ordinance-cards.py",
         "generatedAt": today,
         "cards": cards,
+        "unavailable": unavailable,
     }
 
     # ── OC 유출 방지 (260921 Codex R2-F6) ─────────────────────────────────
