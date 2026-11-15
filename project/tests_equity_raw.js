@@ -60,7 +60,7 @@ test('presentation CSS preserves screen skip access and printed calculation/sour
 });
 test('VAT print scope keeps brand and calculation sections while excluding lead controls',()=>{
  const css=esbuild.transformSync(fs.readFileSync(__dirname+'/src/renewal-results.css','utf8'),{loader:'css',charset:'utf8'}).code;
- assert(/@page vat-calculation\s*\{[^}]*size: A4/.test(css));assert(css.includes('입력 수정: 어떤 부가가치세 사업자인가요?'));
+ assert(!/:has\([^)]*:has\(/.test(css),'CSS :has must not be nested'); assert(/@page vat-calculation\s*\{[^}]*size: A4/.test(css));assert(css.includes('입력 수정: 어떤 부가가치세 사업자인가요?'));
  assert(css.includes('.jt-nav__brand')&&css.includes('.jt-report-shell__body > .jt-convert-banner'));
  assert(css.includes('section:has(input[type=tel])')||css.includes('section:has(input[type="tel"])'));
  assert(css.includes('div:has(input[type=email])')||css.includes('div:has(input[type="email"])'));

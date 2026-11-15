@@ -390,11 +390,11 @@
 /* VAT result print: factual answers, tax/steps, notices and brand only; screen UI is untouched. */
 @page vat-calculation { size: A4; margin: 14mm; }
 @media print {
-  html:has(.jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"])), body:has(.jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"])), body:has(.jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"])) > #root {
+  html:has(.jt-page-report .jt-report-result__grade):has(.jt-page-report .jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]), body:has(.jt-page-report .jt-report-result__grade):has(.jt-page-report .jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]), body:has(.jt-page-report .jt-report-result__grade):has(.jt-page-report .jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) > #root {
     min-height: 0 !important; height: auto !important; padding: 0 !important;
     margin: 0; background: #fff !important;
   }
-  body:has(.jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"])) { page: vat-calculation; display: block !important; }
+  body:has(.jt-page-report .jt-report-result__grade):has(.jt-page-report .jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) { page: vat-calculation; display: block !important; }
   .jt-page-report:has(.jt-report-result__grade):has(.jt-input-review button[aria-label="입력 수정: 어떤 부가가치세 사업자인가요?"]) {
     page: vat-calculation; display: block !important; min-height: 0 !important;
     height: auto !important; margin: 0 !important; padding: 0 !important; background: #fff !important;
