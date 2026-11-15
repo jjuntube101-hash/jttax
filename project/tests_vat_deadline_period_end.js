@@ -99,8 +99,15 @@ chk('일반 전달 상세 기존 산식 보존', summaries.buildVatDetail({}, {.
 chk('전달 단계 날짜가0원이 아님', summaries.buildVatDetail(part,simpleCalc).includes('신고기한: —'));
 chk('전자발급 공제행은 실제 입력한 개인 일반만', src.includes("calc.businessType === '일반과세자' && answers.isCorporate !== 'yes' && Number(answers.eInvoiceCount) > 0 && typeof d['전자세금계산서공제'] === 'number'"));
 chk('의제매입 공제행도 일반만', src.includes("calc.businessType === '일반과세자' && !!d['의제매입공제'] && <tr>"));
-chk('간이 안내0.5%와 일반 안내10%를 분기', src.includes("calc.businessType === '간이과세자' ? '적격 세금계산서 등 증빙을 갖춘 매입 공급대가의 0.5%") && src.includes(" : '사업용 매입은 세금계산서·사업용 신용카드로 받아야 매입세액(10%)"));
+chk('간이 0.5%와 일반 적격매입·의제매입을 구분', src.includes("calc.businessType === '간이과세자' ? '적격 세금계산서 등 증빙을 갖춘 매입 공급대가의 0.5%") && src.includes(" : '과세 매입은 적격 증빙과 공제 요건을 확인하세요. 면세농산물 등의 의제매입세액공제"));
 
+const types = vatStepsForDisplay([{항목:'사업자 유형',조문:'부§3',금액:0,비고:'간이과세자'}]);
+chk('사업자등록 유형은 입력값으로 표시',types[0].항목==='입력한 사업자 유형' && !types[0].조문 && display.vatFormatStepValue(types[0])==='—');
+const net = vatStepsForDisplay([{항목:'차감 세액',조문:'부§63',금액:360000}])[0];
+chk('차감 후 세액과 초과 공제의 범위',net.항목==='공제 후 납부세액' && net.금액===360000 && net.비고.includes('공제액이 납부세액을 초과한 부분'));
+const confirmed = new Function(slice('function vatAmountConfirmed', 'function vatOutputLabel')+';return vatAmountConfirmed;')();
+chk('확인한 무실적과 미입력 구분',confirmed(0) && confirmed('0') && ![null,undefined,'', ' ', -1, 1.1].some(confirmed));
+chk('잘못된 가산세 일괄 적용·원자료 임의 0 안내 방지',!src.includes('1일 0.022%') && !src.includes('해당 금액을 0으로 두고') && src.includes('신고 내용과 납부 경과기간'));
 const rawRefundSteps=[{항목:'최종 납부세액',금액:-200000,조문:''},{항목:'차감 세액',금액:-200000},{항목:'최종 납부세액',금액:0},{항목:'최종 납부세액',금액:200000}];
 const refundShown=vatStepsForDisplay(rawRefundSteps);
 chk('음수 최종납부는 양수 최종환급으로 표시',refundShown[0].항목==='최종 환급세액'&&refundShown[0].금액===200000);

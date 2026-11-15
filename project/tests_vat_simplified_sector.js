@@ -55,7 +55,7 @@ chk('환산으로 면제 아님 → 면제 아님', exempt && exempt({ '단계�
 chk('세액 있으면 면제 아님', exempt && exempt(st('납부의무 면제(§69)'), '간이과세자', 450000) === false);
 chk('일반과세자는 면제 아님', exempt && exempt(st('납부의무 면제(§69)'), '일반과세자', 0) === false);
 chk('면제 문구: 일부 기간은 12개월 환산(§69①·③)', src.includes('12개월로 환산한 금액이 4,800만원 미만</strong>이라') && src.includes('(부가법 §69①·③)'));
-chk('매출 질문에 일부 기간 안내', src.includes('그 기간의 실제 매출을 넣으세요(다음 질문에서 개월 수를 여쭤봐요)'));
+chk('매출 질문에 일부 기간 안내', src.includes('이번 신고기간의 매출(공급대가)은 얼마인가요?') && src.includes('일부 기간만 사업했어도 1년치로 환산하지 말고 실제 공급대가를'));
 chk('계산 결과 단계에 변환 함수를 거침', /calc\.steps = vatStepsForDisplay\(c\['단계별계산'\] \|\| \[\]\)/.test(src));
 chk('계산 요청 키는 엔진 계약 그대로', src.includes("simplified_value_sector: answers.simplifiedSector || '도소매업'"));
 chk('음식점업 15% 유지', block.includes("['음식점업', '음식점업 (15%)', '']"));
