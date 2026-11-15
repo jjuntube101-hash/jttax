@@ -15,8 +15,7 @@
     - 0개  → 「해당 조문 없음」
     - 2개+ → 「후보 여럿」(후보 조문 번호를 그대로 결과표에 적는다. 임의로 하나를 고르지 않는다)
     - 조회 자체가 SELECTED 가 아니거나 partial·completeness 가 불완전을 가리키면
-      → 「조회 불완전」(「규정 없음」과 구분한다 — 예: 260921 실측 광주광역시·전라남도는
-      선택 가능한 계보가 REPEALED 라 대체 조례를 기계로 특정할 수 없었다)
+      → 「조회 불완전」(「규정 없음」과 구분한다 — 후속 조례 안내는 폐지된 계보와 이를 명시한 제정 부칙을 대조한 경우만 허용한다)
   스크립트는 개별 시도의 실패로 전체를 중단하지 않고, 끝에 17개 시도 결과표를 출력한다.
   (경기도 도세 감면 조례 제6조가 이 확대의 원본 파일럿 1장이었다 — 260921.)
 
@@ -138,12 +137,63 @@ def describe_incomplete(res):
     return status
 
 
+# UI의 종전 지역 선택지를 유지한다. 제75호 제정 부칙에 두 옛 조례의 폐지가 명시돼 있다.
+# 이는 조회일 현행 원문 링크의 연결이며 취득일 당시의 관할·감면 적용을 결정하지 않는다.
+MERGED_PREDECESSORS = {
+    "광주광역시": ("2035993", "광주광역시 시세 감면 조례"),
+    "전라남도": ("2114491", "전라남도 도세 감면 조례"),
+}
+MERGED_REGION = "전남광주통합특별시"
+MERGED_ORDINANCE = "전남광주통합특별시 시세 감면 조례"
+FOUNDING_SERIAL = "2137635"
+
+
+def successor_source(sido, previous, target_date, get_at_date, get_detail):
+    """원문으로 확인되는 한 쌍만 연결하며 조건 불충족 시 기존 미게시 처리를 유지한다."""
+    if previous.get("status") != "REPEALED" or sido not in MERGED_PREDECESSORS:
+        return previous, None
+    previous_id, previous_name = MERGED_PREDECESSORS[sido]
+    repeal = previous.get("폐지_식별자") or {}
+    if (repeal.get("자치법규ID"), repeal.get("자치법규명"), repeal.get("시행일자")) != (
+            previous_id, previous_name, "20260701"):
+        return previous, None
+
+    current = get_at_date(MERGED_REGION, MERGED_ORDINANCE, target_date)
+    origin = get_detail(mst=FOUNDING_SERIAL)
+    if (current.get("status") != "SELECTED" or origin.get("status") != "OK"
+            or any(x.get("partial") or not (x.get("completeness") or {}).get("complete")
+                   for x in (current, origin))):
+        return previous, None
+    if any((x.get("identifiers") or {}).get("자치법규ID") != "2263510" for x in (origin, current)):
+        return previous, None
+
+    scope = [a["조내용"].strip() for a in current["articles"]
+             if a.get("조표시") == "제2조" and a.get("조내용")]
+    add = origin.get("addenda") or {}
+    text = add.get("부칙내용") or ""
+    # 제정 부칙의 폐지·일반 적용례·제8조의 별도 적용례·종전 조례 경과조치를 함께 보인다.
+    match = re.search(r"(?:^|\n)(제2조\(다른 조례의 폐지\).*?)\n제6조\(", text, re.S)
+    if (len(scope) != 1 or not match
+            or (add.get("부칙공포번호"), add.get("부칙공포일자")) != ("75", "20260701")
+            or not all(coord in match[1] for coord in ("제3조(", "제4조(", "제5조("))):
+        return previous, None
+    repeal_article = match[1].split("\n제3조(", 1)[0]
+    if not re.search(r"^\d+\.\s*" + re.escape(previous_name) + r"\s*$", repeal_article, re.M):
+        return previous, None
+    return current, {
+        "note": "종전 소재지로 찾은 조회일 현재의 후속 조례입니다. 취득일과 납세지에 적용되는 규정은 제2조와 제정 부칙의 적용례·경과조치를 함께 확인하세요.",
+        "scopeText": scope[0],
+        "addendumText": match[1].strip(),
+        "repealSourceUrl": VIEWER_URL.format(serial=FOUNDING_SERIAL),
+    }
+
+
 def main():
     if not os.path.isdir(JT_LAW_MCP):
         fail("jt-law-mcp 경로를 찾지 못했습니다: %s" % JT_LAW_MCP)
     sys.path.insert(0, JT_LAW_MCP)
     try:
-        from tools.ordinance import get_oc
+        from tools.ordinance import get_oc, get_ordinance_at_date, get_ordinance_detail
         from tools.acquisition_bundle import _find_sido_ordinance
     except Exception as e:  # noqa: BLE001
         fail("tools.ordinance / tools.acquisition_bundle 를 불러오지 못했습니다: %s" % e)
@@ -162,6 +212,7 @@ def main():
     for sido in SIDOS:
         try:
             res = _find_sido_ordinance(sido, today8)
+            res, successor = successor_source(sido, res, today8, get_ordinance_at_date, get_ordinance_detail)
         except Exception as e:  # noqa: BLE001
             report.append((sido, "조회 불완전", "조회 중 예외: %s" % e))
             continue
@@ -214,6 +265,8 @@ def main():
             # 화면이 이 값을 계산에 쓰지 않는다는 사실을 데이터에도 박아 둔다.
             "appliedToCalculation": False,
         }
+        if successor:
+            cards[sido]["successorSource"] = successor
         report.append((sido, "카드 생성", art.get("조표시") or ""))
 
     payload = {
