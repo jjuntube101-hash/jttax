@@ -695,16 +695,29 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
   const CTRL = new Set(['submit', 'button', 'reset']);
   const ACTION = 'https://api.web3forms.com/submit';
   /* 261003: 「파일럿 신청」→「문의 남기기」. 성함(name)을 빼고 문의 내용(memo)을 필수로 했다. */
-  const LABEL = { office: '사무소 이름', contact: '연락처', memo: '문의 내용' };
+  const DESK_LABEL = { office: '사무소 이름', contact: '연락처', memo: '문의 내용' };
+  /* 261116: 공시가격·기준시가 면(/property-values/)의 검토 요청 양식도 같은 네이티브 POST·같은 수신처라
+     desk 와 «같은 잣대»로 본다. 수집 항목이 다르므로 표만 따로 둔다. memo 는 선택이다. */
+  const LABELS = {
+    'desk/broker.html': DESK_LABEL, 'desk/scrivener.html': DESK_LABEL,
+    'property-values/nts-2027.html': { contact: '연락처', kind: '부동산 종류', area: '소재지', plan: '상담 목적', memo: '문의 내용' },
+  };
+  const REQUIRED_BY = {
+    'desk/broker.html': ['office', 'contact', 'memo'], 'desk/scrivener.html': ['office', 'contact', 'memo'],
+    'property-values/nts-2027.html': ['contact', 'kind', 'area', 'plan'],
+  };
   /* 외부 스크립트는 «허용 목록»으로만 — `<script src="helper.js">` 한 줄이면 그 안에서
      무엇이든 할 수 있고 게이트는 아무것도 못 본다 (R4 P0).
      ⚠️ 호스트·스킴은 대소문자를 가리지 않는다 — URL 로 정규화해 비교한다 (R5 P2). */
   /* ⚠️ host·path 만 보면 «어느 컨테이너인지»가 안 잠긴다 — `?id=GTM-ATTACKER` 로 바꾸면
      그 컨테이너가 임의 태그를 실행할 수 있다 (260809 Codex R10 P0). 전체 URL 을 고정한다. */
-  const SRC_OK = ['https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE', 'https://www.jttax.co.kr/desk/partner-form.js?v=1', 'https://www.jttax.co.kr/project/src/renewal-static.js?v=1'];
+  const SRC_OK = ['https://www.googletagmanager.com/gtag/js?id=G-ETRXTFKLFE', 'https://www.jttax.co.kr/desk/partner-form.js?v=1', 'https://www.jttax.co.kr/property-values/price-form.js?v=1', 'https://www.jttax.co.kr/project/src/renewal-static.js?v=1'];
   // Reviewed submission handler: pin contents as well as the URL; runtime cases live in tests_partner_form.js.
   const partnerJs = fs.readFileSync(path.join(__dirname, '../desk/partner-form.js'), 'utf8').replace(/\r\n/g, '\n');
   eq('desk: reviewed partner handler hash', require('crypto').createHash('sha256').update(partnerJs).digest('hex'), '077dab1dd03c9724e49d623f2340afb5086075ce75ae321f30062d03bf863f98');
+  // 261116: 기준시가 검토 요청 핸들러도 내용을 고정한다. 실행 시험은 tests_price_form.js.
+  const priceJs = fs.readFileSync(path.join(__dirname, '../property-values/price-form.js'), 'utf8').replace(/\r\n/g, '\n');
+  eq('property-values: reviewed price handler hash', require('crypto').createHash('sha256').update(priceJs).digest('hex'), '0214db4220dce33ab1a65a0d652487e9c3eedaa19c3dc5c77e53423481f145ba');
   // Independently reviewed: skip-link focus and Escape-to-close navigation only; no form, storage, or network access.
   const renewalUiJs = fs.readFileSync(path.join(__dirname, 'src/renewal-static.js'), 'utf8').replace(/\r\n/g, '\n');
   eq('desk: reviewed navigation-only handler hash', require('crypto').createHash('sha256').update(renewalUiJs).digest('hex'), 'e4bf3f113f5c6122697b64f3b9fa4b99e70a0e33601286b91912b1e9fac8708f');
@@ -712,10 +725,11 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
      바꾸면 action 은 그대로인 채 제출 내용이 «남의 계정»으로 간다 (R10 P0). */
   const HIDDEN_PIN = {
     access_key: 'c3a5ab0f-c275-4434-a4ba-bda8500378fa',
-    from_name: { 'broker.html': 'jttax.co.kr 중개사 데스크', 'scrivener.html': 'jttax.co.kr 법무사 데스크' },
+    from_name: { 'broker.html': 'jttax.co.kr 중개사 데스크', 'scrivener.html': 'jttax.co.kr 법무사 데스크', 'nts-2027.html': 'jttax.co.kr 공시가격·기준시가' },
     /* 261003: 제출 뒤 한글 완료 안내 면으로 보낸다. 값을 고정하지 않으면 «다른 곳»으로 보내도 통과한다.
        Web3Forms 기본 요금제는 같은 도메인으로만 보낼 수 있다. */
-    redirect: 'https://www.jttax.co.kr/desk/thanks.html',
+    redirect: { 'broker.html': 'https://www.jttax.co.kr/desk/thanks.html', 'scrivener.html': 'https://www.jttax.co.kr/desk/thanks.html',
+      'nts-2027.html': 'https://www.jttax.co.kr/property-values/thanks.html' },
   };
   /* on* 는 전면 금지가 아니라 «내용 허용 목록» — 이 페이지의 핸들러는 전부 정당한 추적 호출이다 */
   const HANDLER_OK = /^jtTrackCta\('[\w-]+'\s*,\s*'[\w-]+'\)$/;
@@ -723,10 +737,12 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
   /* desk 두 파일에서 뽑은 보유기간 — 처리방침과 대조하려고 모은다.
      ⚠️ 종전엔 broker 만 읽어 scrivener 를 단독으로 바꿔도 통과했다 (R5 P1). */
   const deskRetention = [];
+  const priceRetention = [];
 
-  for (const f of ['broker.html', 'scrivener.html']) {
-    const p = path.join(__dirname, '..', 'desk', f);
-    if (!fs.existsSync(p)) { eq(`desk/${f} 존재`, false, true); continue; }
+  for (const [dir, f] of [['desk', 'broker.html'], ['desk', 'scrivener.html'], ['property-values', 'nts-2027.html']]) {
+    const LABEL = LABELS[`${dir}/${f}`];
+    const p = path.join(__dirname, '..', dir, f);
+    if (!fs.existsSync(p)) { eq(`${dir}/${f} 존재`, false, true); continue; }
     const html = fs.readFileSync(p, 'utf8');
     const toks = tokenize(html);
     const A = (t, k) => (t.attrs ? t.attrs.get(k) : undefined);
@@ -743,7 +759,7 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
        (260809 Codex R6 P0). 「AST 는 과하다」던 내 판단이 틀렸다 — AST 로 본다. */
     const js = inlineScripts(toks);
     const jsHits = domTouches(js);
-    eq(`desk/${f}: 인라인 스크립트가 DOM·폼을 건드리지 않음 (${jsHits.join('·') || '없음'})`, jsHits.length, 0);
+    eq(`${dir}/${f}: 인라인 스크립트가 DOM·폼을 건드리지 않음 (${jsHits.join('·') || '없음'})`, jsHits.length, 0);
     /* ⚠️ «금지 목록»으로는 이 게임을 이길 수 없다 (260809 Codex R8 P0).
        동적 접근·eval 을 막았더니 `Object.assign(f,{action:…})`(키가 ObjectProperty) 와
        `Reflect.get(f,'submit')`(이름이 «인수») 로 뚫었다. 금지어를 늘려도 다음 라운드에 또 나온다.
@@ -760,16 +776,17 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
           의도한 변경이면 그때 해시를 갱신한다(그 리뷰가 이 검사의 목적이다). */
     const JS_BASELINE = {
       'broker.html': '0396c0ee5be13217e42b38ce24eebde4149bf4e1f49570dbbc4285d1388e28bf',
+      'nts-2027.html': '4da4bcfbf51dabb5ee3c5965f0e63db4c238078b00c402dacafbcf16c71bbba1',
       'scrivener.html': '4b2363253cd08ddcde03505cf21ab0b3ab12e2794275f6fce7bca439f920f6db',
     };
     const jsNorm = js.replace(/\r\n/g, '\n').replace(/[ \t]+$/gm, '').trim();
     const jsHash = require('crypto').createHash('sha256').update(jsNorm, 'utf8').digest('hex');
-    eq(`desk/${f}: 인라인 스크립트가 기준선과 동일 (바뀌었으면 사람이 읽을 것)`,
+    eq(`${dir}/${f}: 인라인 스크립트가 기준선과 동일 (바뀌었으면 사람이 읽을 것)`,
       jsHash, JS_BASELINE[f]);
     /* 아래는 «두 번째» 신호다 — 해시가 갱신될 때 무엇이 들어왔는지 바로 보이게 한다 */
     const JS_GLOBALS_OK = new Set(['window', 'dataLayer', 'Date', 'Object', 'URLSearchParams']);
     const strangers = freeIdentifiers(js).filter(n => !JS_GLOBALS_OK.has(n));
-    eq(`desk/${f}: 인라인 JS 가 «허용된 전역»만 사용 (낯선 이름: ${strangers.join('·') || '없음'})`,
+    eq(`${dir}/${f}: 인라인 JS 가 «허용된 전역»만 사용 (낯선 이름: ${strangers.join('·') || '없음'})`,
       strangers.length, 0);
     /* ⚠️ 전역 이름만 좁혀서는 부족하다 — 내가 스스로 찔러 보니 허용 전역 `window` 하나로
        `window.fetch(…)`(유출) · `window.location = …`(유출) · `window.Reflect.get(f,'submit')`(제출)
@@ -785,12 +802,12 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
     ]);
     const props = propertyNames(js);
     const oddProps = props.names.filter(n => !JS_PROPS_OK.has(n));
-    eq(`desk/${f}: 인라인 JS 가 «허용된 속성»만 사용 (낯선 속성: ${oddProps.join('·') || '없음'})`,
+    eq(`${dir}/${f}: 인라인 JS 가 «허용된 속성»만 사용 (낯선 속성: ${oddProps.join('·') || '없음'})`,
       oddProps.length, 0);
-    eq(`desk/${f}: 인라인 JS 에 이름을 계산한 접근 없음`, props.dynamic, false);
+    eq(`${dir}/${f}: 인라인 JS 에 이름을 계산한 접근 없음`, props.dynamic, false);
     /* on* 핸들러 본문도 «실행되는 코드»다 — 같은 잣대로 본다 */
     const hHits = [...new Set(eventHandlers(toks).flatMap(h => domTouches(h.value)))];
-    eq(`desk/${f}: on* 핸들러가 DOM·폼을 건드리지 않음 (${hHits.join('·') || '없음'})`, hHits.length, 0);
+    eq(`${dir}/${f}: on* 핸들러가 DOM·폼을 건드리지 않음 (${hHits.join('·') || '없음'})`, hHits.length, 0);
     /* ⚠️ `type="application/ld+json" src=…` 는 «실행되지 않는» 데이터라 허용목록 대상이
        아니고(위양성), 반대로 스킴을 안 보면 `http:` 평문 로딩을 허용한다 (R6 P2). */
     const badSrc = externalScriptSrcs(toks).filter(s => {
@@ -801,13 +818,13 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
           return u.host.toLowerCase() === o.host && u.pathname === o.pathname && u.search === o.search; });
       } catch (_e) { return true; }
     });
-    eq(`desk/${f}: 허용되지 않은 외부 스크립트 없음 (${badSrc.join(' · ') || '없음'})`, badSrc.length, 0);
+    eq(`${dir}/${f}: 허용되지 않은 외부 스크립트 없음 (${badSrc.join(' · ') || '없음'})`, badSrc.length, 0);
     /* ⚠️ `<input type="image">` 는 클릭 제출 시 `name.x`·`name.y` 를 «추가로» 보낸다 —
        이름 검사는 `name` 만 보므로 알려진 이름을 쓰면 새 전송 항목이 조용히 들어간다
        (R8 P1). 이 폼들에는 쓸 이유가 없으니 아예 금지한다. */
     const imageInputs = toks.filter(t => t.type === 'open' && t.name === 'input'
       && (A(t, 'type') || '').toLowerCase() === 'image');
-    eq(`desk/${f}: <input type="image"> 없음 (name.x·name.y 가 고지 없이 전송된다)`, imageInputs.length, 0);
+    eq(`${dir}/${f}: <input type="image"> 없음 (name.x·name.y 가 고지 없이 전송된다)`, imageInputs.length, 0);
     /* ⚠️ 인라인 <script> 와 on* 만 보면 «실행되는 정적 마크업»이 통째로 남는다 (R10 P0).
        `<a href=javascript:fetch(…,{body:new FormData(form)})>` 한 줄이면 같은 출처에서 폼 값을
        읽어 밖으로 보낼 수 있고, 인라인 JS 해시도 외부 script 검사도 그대로 통과한다.
@@ -838,24 +855,24 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
       }
       if (t.attrs.has('srcdoc')) jsUrls.push(t.name + ' srcdoc');
     }
-    eq(`desk/${f}: 실행되는 URL·srcdoc 없음 (${jsUrls.join(' · ') || '없음'})`, jsUrls.length, 0);
+    eq(`${dir}/${f}: 실행되는 URL·srcdoc 없음 (${jsUrls.join(' · ') || '없음'})`, jsUrls.length, 0);
     const badHandler = eventHandlers(toks).filter(h => !HANDLER_OK.test(h.value.trim()));
-    eq(`desk/${f}: on* 핸들러가 추적 호출뿐 (${badHandler.map(h => h.value.slice(0, 34)).join(' · ') || '없음'})`,
+    eq(`${dir}/${f}: on* 핸들러가 추적 호출뿐 (${badHandler.map(h => h.value.slice(0, 34)).join(' · ') || '없음'})`,
       badHandler.length, 0);
 
     /* ── 폼 ──────────────────────────────────────────────────────────── */
     const formIdxs = toks.map((t, k) => (t.type === 'open' && t.name === 'form' ? k : -1)).filter(k => k >= 0);
-    eq(`desk/${f}: 폼이 하나뿐 (${formIdxs.length}개)`, formIdxs.length, 1);
+    eq(`${dir}/${f}: 폼이 하나뿐 (${formIdxs.length}개)`, formIdxs.length, 1);
     if (formIdxs.length !== 1) continue;
     const fi = formIdxs[0];
     const fend = elementEnd(toks, fi);
     const form = toks[fi];
 
     /* required 가 «있어도» 브라우저 검증을 끄면 무력화된다 (R2 P0) */
-    eq(`desk/${f}: <form> 에 novalidate 없음`, HAS(form, 'novalidate'), false);
+    eq(`${dir}/${f}: <form> 에 novalidate 없음`, HAS(form, 'novalidate'), false);
     /* 수신처를 검사하지 않으면 동의·항목 게이트가 다 녹색이어도 전송처를 바꿀 수 있다 */
-    eq(`desk/${f}: action 이 Web3Forms 로 고정`, A(form, 'action'), ACTION);
-    eq(`desk/${f}: method 가 POST`, (A(form, 'method') || '').toUpperCase(), 'POST');
+    eq(`${dir}/${f}: action 이 Web3Forms 로 고정`, A(form, 'action'), ACTION);
+    eq(`${dir}/${f}: method 가 POST`, (A(form, 'method') || '').toUpperCase(), 'POST');
 
     /* 폼 «안»의 입력 전수 — 이름을 모르면 그것 자체를 FAIL 로 만든다.
        ⚠️ 「아는 이름 4개」만 훑던 시절엔 새 필드(`memo2`)가 조용히 지나갔다. */
@@ -880,23 +897,23 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
       const isSubmitter = (t.name === 'button' && !['button', 'reset'].includes(ctlType))
         || (t.name === 'input' && ['submit', 'image'].includes(ctlType));
       if (isSubmitter) {
-        eq(`desk/${f}: 제출 버튼에 formnovalidate 없음`, HAS(t, 'formnovalidate'), false);
-        eq(`desk/${f}: 제출 버튼에 formaction 없음`, HAS(t, 'formaction'), false);
+        eq(`${dir}/${f}: 제출 버튼에 formnovalidate 없음`, HAS(t, 'formnovalidate'), false);
+        eq(`${dir}/${f}: 제출 버튼에 formaction 없음`, HAS(t, 'formaction'), false);
         /* formmethod=GET 이면 개인정보가 «URL 쿼리»에 실려 이력·리퍼러·로그에 남는다 */
-        eq(`desk/${f}: 제출 버튼에 formmethod 없음`, HAS(t, 'formmethod'), false);
+        eq(`${dir}/${f}: 제출 버튼에 formmethod 없음`, HAS(t, 'formmethod'), false);
       }
     }
     /* `<input form="폼id">` 는 폼 «밖»에 있어도 POST 에 실린다 (form-associated control) */
     const outsideBound = toks.filter((t, k) => t.type === 'open' && (k < fi || k >= fend)
       && ['input', 'textarea', 'select', 'button'].includes(t.name) && HAS(t, 'form'));
-    eq(`desk/${f}: 폼 밖에서 form= 로 묶인 입력 없음`, outsideBound.length, 0);
+    eq(`${dir}/${f}: 폼 밖에서 form= 로 묶인 입력 없음`, outsideBound.length, 0);
 
     /* ── 동의 체크박스 — 속성 «순서»에 기대지 않는다 ──────────────────── */
     const box = (nm) => inForm.filter(i => i.nm === nm && i.ctl === 'checkbox');
     const consentBoxes = box('개인정보동의');
     const intlBoxes = box('국외이전동의');
-    eq(`desk/${f}: 수집·이용 동의 체크박스가 폼 «안»에 정확히 1개`, consentBoxes.length, 1);
-    eq(`desk/${f}: 국외이전 동의 체크박스가 폼 «안»에 정확히 1개 (§28의8①1호 «별도» 동의)`, intlBoxes.length, 1);
+    eq(`${dir}/${f}: 수집·이용 동의 체크박스가 폼 «안»에 정확히 1개`, consentBoxes.length, 1);
+    eq(`${dir}/${f}: 국외이전 동의 체크박스가 폼 «안»에 정확히 1개 (§28의8①1호 «별도» 동의)`, intlBoxes.length, 1);
     /* ⚠️ `disabled` 가 붙으면 브라우저는 제약검증에서 «제외»하고 값도 «전송하지 않는다» —
        required 가 그대로 있어도 동의 없이 제출된다 (260809 Codex R10 P0). */
     /* ⚠️ `disabled` 는 «조상»에서도 내려온다 — `<fieldset disabled>` 로 감싸면 안의 입력이
@@ -912,14 +929,14 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
       const wraps = k < fi && end > fend;
       return inside || wraps;
     });
-    eq(`desk/${f}: 폼을 무력화하는 disabled fieldset 없음 (안·감싸기 모두)`, disabledFs.length, 0);
+    eq(`${dir}/${f}: 폼을 무력화하는 disabled fieldset 없음 (안·감싸기 모두)`, disabledFs.length, 0);
     /* ⚠️ 네이티브 폼은 마크업에 `checked` 를 박으면 «사용자 조작 없이» required 가 충족되고
        동의 값이 그대로 POST 된다 (260809 Codex R12 P2). React 쪽 초기값과 같은 문제다. */
     const preChecked = [...consentBoxes, ...intlBoxes].filter(b => HAS(b, 'checked'));
-    eq(`desk/${f}: 동의 체크박스에 checked 사전설정 없음`, preChecked.length, 0);
+    eq(`${dir}/${f}: 동의 체크박스에 checked 사전설정 없음`, preChecked.length, 0);
     for (const [lbl, arr] of [['수집·이용', consentBoxes], ['국외이전', intlBoxes]]) {
-      eq(`desk/${f}: ${lbl} 동의가 required`, arr.length === 1 && HAS(arr[0], 'required'), true);
-      eq(`desk/${f}: ${lbl} 동의에 disabled 없음 (있으면 검증·전송에서 빠진다)`,
+      eq(`${dir}/${f}: ${lbl} 동의가 required`, arr.length === 1 && HAS(arr[0], 'required'), true);
+      eq(`${dir}/${f}: ${lbl} 동의에 disabled 없음 (있으면 검증·전송에서 빠진다)`,
         arr.length === 1 && HAS(arr[0], 'disabled'), false);
     }
 
@@ -940,12 +957,12 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
     };
     const seg = consentBoxes.length === 1 ? labelTextFor(consentBoxes[0].idx) : '';
     const iSeg = intlBoxes.length === 1 ? labelTextFor(intlBoxes[0].idx) : '';
-    eq(`desk/${f}: 수집·이용 고지가 체크박스와 같은 <label> 안`, /개인정보 수집·이용 동의/.test(seg), true);
-    eq(`desk/${f}: 국외이전 고지가 체크박스와 같은 <label> 안`, /개인정보 국외 이전 동의/.test(iSeg), true);
+    eq(`${dir}/${f}: 수집·이용 고지가 체크박스와 같은 <label> 안`, /개인정보 수집·이용 동의/.test(seg), true);
+    eq(`${dir}/${f}: 국외이전 고지가 체크박스와 같은 <label> 안`, /개인정보 국외 이전 동의/.test(iSeg), true);
     const miss = REQ.filter(k => seg.indexOf(k) < 0);
-    eq(`desk/${f}: §15② 고지 4요건 (누락: ${miss.join('·') || '없음'})`, miss.length, 0);
+    eq(`${dir}/${f}: §15② 고지 4요건 (누락: ${miss.join('·') || '없음'})`, miss.length, 0);
     const missI = REQ_INTL.filter(([, re]) => !re.test(iSeg)).map(([k]) => k);
-    eq(`desk/${f}: §28의8② 고지 요건 (누락: ${missI.join('·') || '없음'})`, missI.length, 0);
+    eq(`${dir}/${f}: §28의8② 고지 요건 (누락: ${missI.join('·') || '없음'})`, missI.length, 0);
 
     /* ── 실제 수집 항목이 고지에 다 들어 있는가 ──────────────────────── */
     const collected = inForm
@@ -958,29 +975,29 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
       const el = inForm.find(i => i.nm === nm && i.ctl === 'hidden');
       const expect = typeof want === 'string' ? want : want[f];
       /* 같은 이름을 두 번 두면 «어느 값이 채택되는지»가 우리 손을 떠난다 (R11 P2) */
-      eq(`desk/${f}: hidden ${nm} 값이 고정값과 일치`, el ? A(el, 'value') : null, expect);
+      eq(`${dir}/${f}: hidden ${nm} 값이 고정값과 일치`, el ? A(el, 'value') : null, expect);
     }
     /* ⚠️ 이름 중복은 access_key 뿐 아니라 «모든» 입력에서 문제다 — 수신 서비스가 어느 값을
        쓰는지 우리가 정하지 못한다 (260809 Codex R12 P2). 폼 안 전체를 본다. */
     {
       const names = inForm.map(i => i.nm).filter(Boolean);
       const dup = [...new Set(names.filter((n, k) => names.indexOf(n) !== k))];
-      eq(`desk/${f}: 이름이 중복된 입력 없음 (${dup.join('·') || '없음'})`, dup.length, 0);
+      eq(`${dir}/${f}: 이름이 중복된 입력 없음 (${dup.join('·') || '없음'})`, dup.length, 0);
     }
     const unknown = [...new Set(collected)].filter(k => !(k in LABEL));
-    eq(`desk/${f}: 모르는 수집 항목 없음 (${unknown.join('·') || '없음'}) — 새 필드를 넣었으면 고지와 이 표를 함께 고칠 것`,
+    eq(`${dir}/${f}: 모르는 수집 항목 없음 (${unknown.join('·') || '없음'}) — 새 필드를 넣었으면 고지와 이 표를 함께 고칠 것`,
       unknown.length, 0);
     const notNoticed = [...new Set(collected)].filter(k => (k in LABEL) && seg.indexOf(LABEL[k]) < 0);
-    eq(`desk/${f}: 수집 항목이 모두 고지됨 (빠진 것: ${notNoticed.map(k => LABEL[k]).join('·') || '없음'})`,
+    eq(`${dir}/${f}: 수집 항목이 모두 고지됨 (빠진 것: ${notNoticed.map(k => LABEL[k]).join('·') || '없음'})`,
       notNoticed.length, 0);
     /* 동의 «기록» 두 키(개인정보동의·국외이전동의)도 POST 에 실려 국외로 나간다. 국외 이전 고지는
        「위 수집 항목 전부」라고만 하므로, 수집·이용 고지 쪽에 동의 여부가 적혀 있어야 실제 전송과 맞는다
        (261003 Codex TASK-261003-004 R1-F1). */
-    eq(`desk/${f}: 수집·이용 고지에 「동의 여부」 전송을 적음`, /동의 여부/.test(seg), true);
+    eq(`${dir}/${f}: 수집·이용 고지에 「동의 여부」 전송을 적음`, /동의 여부/.test(seg), true);
     /* 고지가 「필수」라 한 항목은 실제로 required 여야 한다 — 문구와 마크업의 어긋남 방지 */
-    for (const k of ['office', 'contact', 'memo']) {
+    for (const k of REQUIRED_BY[`${dir}/${f}`]) {
       const el = inForm.find(i => i.nm === k);
-      eq(`desk/${f}: ${LABEL[k]}(필수 고지)에 required 있음`, !!el && HAS(el, 'required'), true);
+      eq(`${dir}/${f}: ${LABEL[k]}(필수 고지)에 required 있음`, !!el && HAS(el, 'required'), true);
     }
 
     /* 개인정보를 받는 페이지인데 처리방침으로 가는 길이 없었다 (Codex B-2 R1 지적, 260809 반영) */
@@ -989,14 +1006,14 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
     const privacyLinks = toks.filter(t => t.type === 'open' && t.name === 'a')
       .map(t => A(t, 'href') || '')
       .filter(h => { try { const u = new URL(h, 'https://www.jttax.co.kr'); return u.host === 'www.jttax.co.kr' && u.hash === '#/privacy'; } catch (_e) { return false; } });
-    eq(`desk/${f}: 개인정보 처리방침 링크 존재 (같은 출처)`, privacyLinks.length >= 1, true);
+    eq(`${dir}/${f}: 개인정보 처리방침 링크 존재 (같은 출처)`, privacyLinks.length >= 1, true);
 
     /* ⚠️ 보유기간을 «문서 전역 정규식»으로 읽고 있었다 — 주석이나 script 문자열에 적힌
        값도 잡혀서, 정작 화면 고지엔 기간이 없어도 통과할 수 있었다 (R6 P1).
        실제로 정보주체가 읽는 «동의 label 안»에서만 뽑는다. */
     const m = seg.match(/보유[·\s]*이용기간\s*:?\s*([^·.]*?\d+\s*(?:년|개월)(?:\s*\d+\s*개월)?)/);
-    eq(`desk/${f}: 보유기간이 동의 문구 «안»에 있음`, !!m, true);
-    if (m) deskRetention.push({ file: f, period: m[1].trim() });
+    eq(`${dir}/${f}: 보유기간이 동의 문구 «안»에 있음`, !!m, true);
+    if (m) (dir === 'desk' ? deskRetention : priceRetention).push({ file: f, period: m[1].trim() });
   }
 
   /* ── 폼 고지 ↔ 처리방침 대조 ──────────────────────────────────────────
@@ -1035,6 +1052,14 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
       const months = parts.reduce((a, m2) => a + (m2[2] === '년' ? Number(m2[1]) * 12 : Number(m2[1])), 0);
       return `${ev}+${months}개월`;
     };
+    eq('property-values: 보유기간을 읽음', priceRetention.length, 1);
+    {
+      const pLegal = detag(legal).match(/공시가격·기준시가 검토 요청\(공시가격·기준시가 면의 양식\):\s*([^\n]*?\d+\s*(?:년|개월))/);
+      eq('처리방침: 공시가격·기준시가 검토 요청 보유기간 존재', !!pLegal, true);
+      if (pLegal && priceRetention.length === 1) {
+        eq(`처리방침 공시가격·기준시가 보유기간 = 양식 (${priceRetention[0].period})`, normPeriod(pLegal[1]), normPeriod(priceRetention[0].period));
+      }
+    }
     eq('desk: 두 파일 모두에서 보유기간을 읽음', deskRetention.length, 2);
     const norms = [...new Set(deskRetention.map(d => normPeriod(d.period)))];
     eq(`desk: 두 파일의 보유기간이 서로 같음 (${deskRetention.map(d => d.period).join(' / ')})`, norms.length, 1);
@@ -1147,7 +1172,9 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
         const attrLine = (sec1.split('\n').find(x => x.includes('함께 전송')) || '');
         eq('처리방침 §1 「함께 전송」 줄 존재', !!attrLine, true);
         eq('처리방침 §1: 「함께 전송」을 모든 경로 공통이라 하지 않음', /공통으로 함께 전송/.test(sec1), false);
-        eq('처리방침 §1: 법무사·중개사 문의 제외를 명시', /법무사·중개사 문의에는 해당하지 않습니다/.test(attrLine), true);
+        eq('처리방침 §1: 법무사·중개사 문의 제외를 명시', /법무사·중개사 문의와 공시가격·기준시가 검토 요청에는 해당하지 않습니다/.test(attrLine), true);
+        const priceHtml = fs.readFileSync(path.join(__dirname, '..', 'property-values', 'nts-2027.html'), 'utf8');
+        eq('property-values 폼은 유입 경로 정보를 보내지 않음', /jtAttributionFields|접수번호|유입 매체/.test(priceHtml), false);
       }
       /* ⚠️ 동의 «값» 자체도 전송된다 — desk 폼은 `개인정보동의=동의함`·`국외이전동의=동의함`
          두 키를 POST 에 싣는다. 방침이 그걸 안 적으면 실제보다 «적게» 고지한 것이 된다
@@ -1173,6 +1200,29 @@ console.log('\n════ 파트너 데스크 폼 (네이티브 POST) ══�
       eq(`처리방침 §1 법무사·중개사 문의 필수 항목 (누락: ${dMiss.join('·') || '없음'})`, dMiss.length, 0);
       /* 양식에서 뺀 「성함」을 방침이 여전히 수집한다고 적으면 실제보다 많이 고지한 것이 된다 */
       eq('처리방침 §1 법무사·중개사 문의: 받지 않는 성함을 적지 않음', /성함|성명/.test(dline), false);
+      /* 261116: 공시가격·기준시가 검토 요청 — 마크업 required 가 정본, 선택 항목(문의 내용)은 「선택:」 구간에 */
+      const pline = (sec1.split('\n').find(x => x.includes('공시가격·기준시가 검토 요청')) || '');
+      eq('처리방침 §1 에 「공시가격·기준시가 검토 요청」 줄 존재', !!pline, true);
+      const mP = pline.match(/필수:\s*([^/]*)/);
+      eq('처리방침 §1 공시가격·기준시가 검토 요청: 「필수:」 가 한 번만', (pline.match(/필수:/g) || []).length, 1);
+      const preq = mP ? mP[1] : '';
+      const pMiss = ['연락처', '부동산 종류', '소재지', '상담 목적'].filter(k => !preq.includes(k));
+      eq(`처리방침 §1 공시가격·기준시가 검토 요청 필수 항목 (누락: ${pMiss.join('·') || '없음'})`, pMiss.length, 0);
+      eq('처리방침 §1 공시가격·기준시가 검토 요청: 문의 내용을 필수로 적지 않음', preq.includes('문의 내용'), false);
+      eq('처리방침 §1 공시가격·기준시가 검토 요청: 문의 내용을 선택으로 고지', /선택:[^<]*문의 내용/.test(pline), true);
+      eq('처리방침 §1 공시가격·기준시가 검토 요청: 받지 않는 성명을 적지 않음', /성함|성명/.test(pline), false);
+      /* 양방향 대조 — 처리방침이 «양식이 받지 않는 항목»을 적어도 잡는다 (Codex TASK-261116-010 R1-F3).
+         괄호 설명을 걷어낸 항목 이름의 집합이 양식의 required/선택 라벨 집합과 정확히 같아야 한다. */
+      {
+        const items = seg => (seg || '').replace(/<[^>]*>/g, '').replace(/\([^)]*\)/g, '').split(/[,，]/).map(x => x.trim()).filter(Boolean).sort();
+        const PL = LABELS['property-values/nts-2027.html'], PR = REQUIRED_BY['property-values/nts-2027.html'];
+        const wantReq = PR.map(k => PL[k]).sort(), wantOpt = Object.keys(PL).filter(k => !PR.includes(k)).map(k => PL[k]).sort();
+        const mOpt = pline.match(/선택:\s*([^<]*)/);
+        eq('처리방침 §1 공시가격·기준시가 필수 항목 = 양식 required (집합)', JSON.stringify(items(preq.replace(/\/\s*$/, ''))), JSON.stringify(wantReq));
+        eq('처리방침 §1 공시가격·기준시가 선택 항목 = 양식 선택 필드 (집합)', JSON.stringify(items(mOpt && mOpt[1])), JSON.stringify(wantOpt));
+        /* 음성 대조: 받지 않는 «이메일»을 선택 항목에 끼우면 위 비교가 반드시 깨져야 한다 */
+        eq('음성 대조: 처리방침에 받지 않는 항목을 더하면 불일치로 잡힘', JSON.stringify(items((mOpt && mOpt[1]) + ', 이메일')) === JSON.stringify(wantOpt), false);
+      }
     }
     /* 상담·리포트 3년도 폼과 대조한다 (R5 P1: Legal 만 바꿔도 안 잡혔다) */
     const legalConsult = detag(legal).match(/세무 상담·리포트 회신[\s\S]{0,60}?(상담[^\n]{0,26}?\d+\s*년)/);

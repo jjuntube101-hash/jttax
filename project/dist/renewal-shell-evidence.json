@@ -530,6 +530,11 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/officetel-commercial-standard-price-2027.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/one-house-cgt-exemption.html",
     "h1": 1,
     "mainPreserved": true
@@ -836,6 +841,21 @@
   },
   {
     "path": "desk/thanks.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "property-values/index.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "property-values/nts-2027.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "property-values/thanks.html",
     "h1": 1,
     "mainPreserved": true
   },

@@ -431,6 +431,8 @@ function JTNav({ route, setRoute }) {
         <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'insights' ? 'active' : ''} onClick={jtNavGo(() => setRoute('insights'))}>세금 가이드</a>
         {/* 261003: 법무사·중개사 면은 정적 면(/desk/)이라 SPA 라우트가 없다 — 핸들러 없는 실링크 */}
         <a href="/desk/">법무사·중개사</a>
+        {/* 261116: 공시가격·기준시가 면도 정적 면(/property-values/)이라 핸들러 없는 실링크 */}
+        <a href="/property-values/">공시가격·기준시가</a>
         <a href="/#/contact" tabIndex={0} role="link" onKeyDown={jtKeyActivate} className={route === 'contact' ? 'active' : ''} onClick={jtNavGo(() => setRoute('contact'))}>상담 안내</a>
       </nav>
       <div className="jt-nav__cta">
@@ -445,7 +447,7 @@ function JTNav({ route, setRoute }) {
       <div ref={motion.clip} className="jt-menu-clip">
         <nav ref={motion.panel} aria-label="모바일 주 메뉴" aria-hidden={!menuOpen} className="jt-navmenu jt-menu-panel" id="jt-mobile-menu">
           <button type="button" className="jt-menu-grip" aria-label="메뉴 닫기. 위로 밀어서 닫을 수도 있습니다" onClick={() => setMenuOpen(false)}><span aria-hidden="true" /><small>위로 밀어 닫기</small></button>
-          {[['about', '제이티 소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '세금 가이드', '/insights/'], [null, '법무사·중개사', '/desk/'], ['contact', '상담 안내', '/#/contact']].map(([r, l, h]) => (
+          {[['about', '제이티 소개', '/about/'], ['services', '업무분야', '/services/'], ['report', '세금 계산기', '/calculators/'], ['insights', '세금 가이드', '/insights/'], [null, '법무사·중개사', '/desk/'], [null, '공시가격·기준시가', '/property-values/'], ['contact', '상담 안내', '/#/contact']].map(([r, l, h]) => (
             !r || r === 'services'
               ? <a href={h} key={h}>{l}</a>
               : h
@@ -646,6 +648,7 @@ function JTFooter({ setRoute }) {
           {/* 260921: 내비와 같은 이유로 푸터의 인사이트에도 실 href 를 붙였다 (정적 허브 신설) */}
           <a href="/insights/" tabIndex={0} role="link" onKeyDown={jtKeyActivate} onClick={jtNavGo(() => setRoute('insights'))}>세금 가이드</a>
           <a href="/desk/">법무사·중개사</a>
+          <a href="/property-values/">공시가격·기준시가</a>
         </div>
         <div className="jt-footer__col">
           <h4>업무분야</h4>

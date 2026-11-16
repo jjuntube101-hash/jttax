@@ -265,7 +265,7 @@ const ROOT = path.join(__dirname, '..');
     ...commercialRootSingles.filter((f) => fs.existsSync(path.join(ROOT, f))),
   ];
   const generated = [...listHtml('insights'), ...listHtml('calculators'), ...commercialPages];
-  const desk = listHtml('desk');
+  const desk = [...listHtml('desk'), ...listHtml('property-values')];   // 261116 공시가격·기준시가 면도 수기 면
 
   /* custom:true = 빌더가 «덮어쓰지 않는» 수기 페이지. 정규식으로 소스를 긁지 않고
      데이터 모듈을 실제로 import 한다 — 주석 속 `custom: true` 같은 것에 걸리지 않게. */
@@ -351,9 +351,9 @@ const ROOT = path.join(__dirname, '..');
     /* 색인 제외 면 (261003) — 양식 제출 뒤의 완료 안내 면. sitemap 에 없어야 하고 noindex 여야 한다.
        build-sitemap.mjs 의 SITEMAP_EXCLUDE 와 같은 목록이다. 반대로, 이 목록에 없는 면이 noindex 를
        달면 그 면은 sitemap 에 실린 채 색인만 막히므로(신호 충돌) 그것도 잡는다. */
-    const SITEMAP_EXCLUDE = ['desk/thanks.html'];
+    const SITEMAP_EXCLUDE = ['desk/thanks.html', 'property-values/thanks.html'];
     const reNoindex = /<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i;
-    const allStatic = [...listHtml('insights'), ...listHtml('calculators'), ...commercialPages, ...listHtml('desk')];
+    const allStatic = [...listHtml('insights'), ...listHtml('calculators'), ...commercialPages, ...listHtml('desk'), ...listHtml('property-values')];
     for (const rel of SITEMAP_EXCLUDE) {
       if (!allStatic.includes(rel)) { bad.push(`${rel} — 색인 제외 목록에 있는데 파일이 없습니다`); continue; }
       if (!reNoindex.test(fs.readFileSync(path.join(ROOT, rel), 'utf8'))) bad.push(`${rel} — 색인 제외 면인데 <meta name="robots" content="noindex"> 가 없습니다`);

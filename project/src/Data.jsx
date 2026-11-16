@@ -352,6 +352,7 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "officetel-commercial-standard-price-2027", tag: "INSIGHT · REAL ESTATE", date: "2026.11.16", title: "2027년 오피스텔·상가 기준시가, 어디서 보고 언제까지 의견을 내나요?", excerpt: "국세청이 2027년 오피스텔과 상업용 건물의 기준시가(안)을 공개했습니다. 의견제출 기간은 2026년 12월 2일까지입니다. 열람 경로와 의견을 내기 전에 확인할 점을 정리했습니다." },
     { slug: "youtube-content-id-dispute-revenue", tag: "크리에이터·기장", date: "2026.11.16", title: "유튜브 저작권 이의 제기 중 사라진 광고수익, 장부에는 어떻게 남길까요?", excerpt: "유튜브가 Content ID 분쟁 중 광고수익 정산을 보류하면 분석 화면에서 해당 영상의 수익이 보이지 않을 수 있습니다. 이의 제기 결과와 월별 정산을 연결해 누락과 중복을 확인하는 방법입니다." },
     { slug: "coupang-partners-returns-settlement", tag: "크리에이터·기장", date: "2026.11.15", title: "쿠팡파트너스 반품, 지난달 정산과 이번 달 실적에서 두 번 빼야 할까요?", excerpt: "구매 다음 달에 취소된 주문이 실적 리포트와 정산 리포트에 어떻게 표시되는지 살펴봅니다. 예상 수익을 먼저 적은 경우와 최종 정산액을 적은 경우의 확인 자료를 구분합니다." },
     { slug: "adsense-returned-payment-reissue", tag: "크리에이터·기장", date: "2026.11.14", title: "애드센스 송금이 반환됐다가 다시 입금되면 장부에는 어떻게 남길까요?", excerpt: "계좌 변경 전 보낸 광고대금이 반환된 뒤 다시 지급된 사례입니다. 최초 지급과 재송금이 같은 수익인지 확인하는 자료를 살펴봅니다." },

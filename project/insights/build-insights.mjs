@@ -297,6 +297,7 @@ function serviceFor(a) {
   const pick = listed.length ? (listed.includes(byTag) ? byTag : listed[0]) : byTag;
   return pick ? SERVICE_BY_SLUG.get(pick) : null;
 }
+const PRICE_VALUE_ARTICLES = new Set(['officetel-commercial-standard-price-2027']);
 function serviceBlock(a) {
   const s = serviceFor(a);
   if (!s) return '';
@@ -320,6 +321,15 @@ function renderArticlePage(a) {
       <div style="display:flex;flex-wrap:wrap;gap:12px;">
         <a href="/#/report/youthstartup" class="jt-btn jt-btn--outline">감면 조건 진단하기 →</a>
         <a href="/#/booking" class="jt-btn jt-btn--primary" onclick="jtTrackCta('booking','insight_youth')">창업 감면 상담 예약 →</a>
+      </div>
+    </aside>` : '';
+  /* 261116 공시가격·기준시가 글은 글 머리에서 검토 요청 양식으로 바로 보낸다(오너 «세금 가이드에 상담으로 오는 링크가 없음»). */
+  const priceBlock = PRICE_VALUE_ARTICLES.has(a.slug) ? `<aside aria-label="기준시가 검토 요청" style="margin:0 0 32px;padding:24px;border:1px solid rgba(0,0,0,.12);background:#FAFAF8;">
+      <p style="margin:0 0 8px;font-weight:700;">내 오피스텔·상가도 의견을 낼 필요가 있을까요?</p>
+      <p style="margin:0 0 16px;color:#5a5a5a;line-height:1.7;">상속·증여나 양도 계획에 비추어 실익과 근거가 있는지 세무사가 먼저 살펴 드립니다. 검토 요청만으로 국세청에 의견이 제출되지는 않습니다.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        <a href="/property-values/nts-2027.html#ask" class="jt-btn jt-btn--primary" onclick="jtTrackCta('property_values','insight_price')">기준시가 검토 요청하기 →</a>
+        <a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" class="jt-btn jt-btn--outline" onclick="jtTrackCta('kakao','insight_price')">카톡으로 묻기</a>
       </div>
     </aside>` : '';
   return `<!doctype html>
@@ -403,7 +413,7 @@ ${GA_HEAD_SNIPPET}
     <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a><span>검토 <a href="${REVIEWER.href}">${esc(REVIEWER.name)} 세무사</a></span><span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
 ${hero(a)}
 ${reading.toc}
-${youthBlock ? '    ' + youthBlock + '\n' : ''}    ${reading.html}
+${youthBlock ? '    ' + youthBlock + '\n' : ''}${priceBlock ? '    ' + priceBlock + '\n' : ''}    ${reading.html}
 ${hubBlock}
 
     <div style="margin-top:64px;padding:32px;border:1px solid rgba(0,0,0,.1);background:#FAFAF8;">

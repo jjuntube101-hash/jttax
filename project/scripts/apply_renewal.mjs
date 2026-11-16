@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const menu=[['/about/','제이티 소개'],['/services/','업무분야'],['/calculators/','세금 계산기'],['/insights/','세금 가이드'],['/desk/','법무사·중개사'],['/#/contact','상담 안내']];
+const menu=[['/about/','제이티 소개'],['/services/','업무분야'],['/calculators/','세금 계산기'],['/insights/','세금 가이드'],['/desk/','법무사·중개사'],['/property-values/','공시가격·기준시가'],['/#/contact','상담 안내']];
 const links=menu.map(([h,t])=>`<a href="${h}">${t}</a>`).join('');
 const header=`<header class="jt-renewal-header"><a class="jt-renewal-skip" href="#content">본문으로 바로가기</a><a class="jt-renewal-brand" href="/#/" aria-label="제이티 세무법인 홈"><img src="/project/assets/logo_symbol.png" width="46" height="32" alt=""><span>제이티 세무법인</span></a><nav class="jt-renewal-desktop" aria-label="주 메뉴">${links}</nav><a class="jt-renewal-book" href="/#/booking" onclick="jtTrackCta('booking','nav')">상담 신청</a><details class="jt-renewal-menu"><summary aria-label="주 메뉴 열기">메뉴</summary><nav aria-label="모바일 주 메뉴">${links}<a href="/#/booking">상담 신청</a></nav></details></header>`;
 const mobile=`<nav class="jt-renewal-mobile-cta" aria-label="빠른 상담"><a href="tel:02-554-6405" onclick="jtTrackCta('call','sticky')">전화</a><a href="https://pf.kakao.com/_CcxlJG" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','sticky')">카카오톡</a><a href="/#/booking" onclick="jtTrackCta('booking','sticky')">상담 신청 →</a></nav>`;
@@ -11,7 +11,7 @@ const styles=['renewal.css','renewal-pages.css','renewal-flow.css','renewal-moti
 const styleVersion={'renewal.css':8,'renewal-journeys.css':1,'renewal-results.css':8};
 const files=[];
 async function walk(p){for(const d of await fs.readdir(p,{withFileTypes:true})){const f=path.join(p,d.name);if(d.isDirectory())await walk(f);else if(f.endsWith('.html'))files.push(f);}}
-for(const name of ['about','services','experts','insights','calculators','acquisition-tax','desk'])await walk(path.join(root,name));
+for(const name of ['about','services','experts','insights','calculators','acquisition-tax','desk','property-values'])await walk(path.join(root,name));
 for(const name of ['index.html','consult.html','creators.html'])files.push(path.join(root,name));
 const sharedStyleVersion=(await fs.readFile(path.join(root,'index.html'),'utf8')).match(/styles\.css\?v=(\d+)/)[1];
 const evidence=[];

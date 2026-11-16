@@ -52,7 +52,7 @@ async function readInsightDates(repoRoot) {
 /* 색인 제외 면 (261003) — 양식 제출 뒤의 완료 안내 면은 검색 결과에 나올 이유가 없다.
    면에는 <meta name="robots" content="noindex"> 를 두고 sitemap 에서도 뺀다.
    ⚠️ tests_static_shell.js 의 SITEMAP_EXCLUDE 와 같은 목록이어야 한다(시험이 양방향으로 대조한다). */
-const SITEMAP_EXCLUDE = new Set(['desk/thanks.html']);
+const SITEMAP_EXCLUDE = new Set(['desk/thanks.html', 'property-values/thanks.html']);
 
 export async function writeSitemap(repoRoot, site) {
   const insightDates = await readInsightDates(repoRoot);
@@ -74,6 +74,8 @@ export async function writeSitemap(repoRoot, site) {
     { dir: 'acquisition-tax', freq: 'monthly', priority: '0.9' },
     // 법무사·중개사 면 (261003 — 수기 3장: 허브·법무사·중개사. 상단 메뉴·푸터에서 들어온다)
     { dir: 'desk', freq: 'monthly', priority: '0.8' },
+    // 공시가격·기준시가 의견제출 면 (261116 — 수기 2장: 안내·완료. 상단 메뉴·푸터에서 들어온다)
+    { dir: 'property-values', freq: 'weekly', priority: '0.8' },
   ];
   for (const d of dirs) {
     let files = [];

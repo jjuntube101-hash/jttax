@@ -242,6 +242,7 @@ console.log('[css-cascade] 규칙 ' + rules.length + '개 · 선언 ' + lib.decl
   };
   pushDir(path.join(ROOT, 'project', 'src'), ['.jsx', '.js']);
   pushDir(path.join(ROOT, 'desk'), ['.html']);
+  pushDir(path.join(ROOT, 'property-values'), ['.html']);
   SRC_FILES.push(path.join(ROOT, 'index.html'));
 
   let markup = '';
