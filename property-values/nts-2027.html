@@ -79,6 +79,11 @@
     .pr-steps li{counter-increment:s;position:relative;padding-left:34px;margin-bottom:10px;}
     .pr-steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:22px;height:22px;border-radius:50%;background:#0F3D2E;color:#fff;font-size:12.5px;line-height:22px;text-align:center;}
     .pr-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;}
+    .pr-hook{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:22px 0 4px;}
+    .pr-hook a{display:block;padding:16px 18px;border:1px solid rgba(15,61,46,.25);border-radius:10px;background:#F4F8F6;color:#1a1a1a;text-decoration:none;}
+    .pr-hook b{display:block;font-size:22px;color:#0F3D2E;letter-spacing:-0.02em;margin:2px 0 4px;}
+    .pr-hook small{display:block;font-size:12.5px;color:#5a5a5a;line-height:1.6;}
+    .pr-case{border-left:3px solid #0F3D2E;}
   </style>
 <link rel="stylesheet" href="/project/src/renewal.css?v=8">
 <link rel="stylesheet" href="/project/src/renewal-pages.css?v=7">
@@ -101,6 +106,36 @@
       <a href="https://pf.kakao.com/_CcxlJG" class="jt-btn jt-btn--outline" target="_blank" rel="noopener" onclick="jtTrackCta('kakao','property_values_top')">카카오톡으로 문의하기</a>
     </div>
     <p class="pr-note">이 페이지는 제이티 세무법인의 상담 창구입니다. 상담 요청을 남기신 것만으로 국세청에 의견이 제출되지는 않습니다.</p>
+
+    <div class="pr-hook">
+      <a href="#effect"><small>계산 예시 · 기준시가 20억 원 상가를 자녀에게 증여</small><b>기준시가 1억 원 ↓ → 증여세 3,880만 원 ↓</b><small>시가가 없어 기준시가로 평가하는 경우입니다. 금액 구간에 따라 차이가 달라지며, 조건은 아래에 적었습니다.</small></a>
+      <a href="#case"><small>제이티 진행 사례 · 아파트 공동주택가격</small><b>공시가격(안)보다 5억 원 ↓</b><small>1세대 1주택이라면 2026년 보유세가 약 770만 원 넘게 줄어드는 크기입니다. 오피스텔·상가 기준시가와는 다른, 아파트 사례입니다.</small></a>
+    </div>
+
+    <section class="jt-cc-sec" id="effect">
+      <h2>기준시가가 1억 원 낮아지면, 증여세는 얼마나 달라질까요?</h2>
+      <p style="color:#333;line-height:1.8;">매매·감정가액 같은 시가가 없어 기준시가로 평가하는 상가를 부모가 성인 자녀에게 증여한다고 해 보겠습니다. 기준시가가 20억 원에서 19억 원으로 1억 원 낮아지면, 신고하고 낼 증여세는 3,880만 원 줄어듭니다.</p>
+      <table class="pr-table">
+        <thead><tr><th>구분</th><th style="text-align:right">기준시가 20억 원</th><th style="text-align:right">기준시가 19억 원</th></tr></thead>
+        <tbody>
+          <tr><td>증여재산공제 (성인 자녀)</td><td class="n">5,000만 원</td><td class="n">5,000만 원</td></tr>
+          <tr><td>과세표준</td><td class="n">19억 5,000만 원</td><td class="n">18억 5,000만 원</td></tr>
+          <tr><td>산출세액 (세율 40%, 누진공제 1억 6,000만 원)</td><td class="n">6억 2,000만 원</td><td class="n">5억 8,000만 원</td></tr>
+          <tr><td>신고세액공제(3%) 뒤 낼 세액</td><td class="n">6억 140만 원</td><td class="n">5억 6,260만 원</td></tr>
+          <tr><td><strong>차이</strong></td><td class="n" colspan="2"><strong>3,880만 원</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="pr-src">계산 조건: 2026년 11월 현재의 상속세 및 증여세법으로 계산했습니다. 증여받는 자녀는 성인이고, 증여일 전 10년 안에 부모(그 배우자 포함)에게서 받은 다른 증여가 없으며, 혼인·출산 증여재산공제는 적용하지 않았고, 넘겨받는 채무가 없으며, 기한 안에 신고한다고 가정했습니다. 차이 3,880만 원은 과세표준이 40% 세율 구간(10억 원 초과 30억 원 이하)에 있을 때의 값이며, 금액이 작으면 차이도 줄어듭니다. 상가에 임대차계약이 있어 임대료·보증금으로 계산한 가액이 두 기준시가보다 모두 크면 이 차이는 생기지 않고, 그 사이에 있으면 줄어듭니다. 매매사례가액·감정가액이 시가로 쓰여도 이 차이는 생기지 않습니다. 증여받은 상가를 나중에 팔 때에는 취득가액도 그만큼 낮게 잡힐 수 있고, 증여받은 뒤 10년 안에 팔면 이월과세로 부모가 취득한 가액이 쓰일 수도 있습니다. 법이 바뀌면 결과도 달라집니다. 근거: <a href="https://www.law.go.kr/법령/상속세및증여세법/제56조" target="_blank" rel="noopener">상속세 및 증여세법 제56조</a>·<a href="https://www.law.go.kr/법령/상속세및증여세법/제26조" target="_blank" rel="noopener">제26조</a>·<a href="https://www.law.go.kr/법령/상속세및증여세법/제47조" target="_blank" rel="noopener">제47조</a>·<a href="https://www.law.go.kr/법령/상속세및증여세법/제53조" target="_blank" rel="noopener">제53조</a>·<a href="https://www.law.go.kr/법령/상속세및증여세법/제53조의2" target="_blank" rel="noopener">제53조의2</a>·<a href="https://www.law.go.kr/법령/상속세및증여세법/제55조" target="_blank" rel="noopener">제55조</a>·<a href="https://www.law.go.kr/법령/상속세및증여세법/제61조" target="_blank" rel="noopener">제61조</a>·<a href="https://www.law.go.kr/법령/상속세및증여세법/제69조" target="_blank" rel="noopener">제69조</a> · <a href="https://www.law.go.kr/법령/소득세법/제97조의2" target="_blank" rel="noopener">소득세법 제97조의2</a> · <a href="https://www.law.go.kr/법령/소득세법시행령/제163조" target="_blank" rel="noopener">같은 법 시행령 제163조</a></p>
+    </section>
+
+    <section class="jt-cc-sec" id="case">
+      <h2>제이티가 직접 진행한 사례</h2>
+      <div class="jt-cc-card pr-case"><h3>2026년 공동주택가격(안) 의견제출 · 5억 원 하향</h3>
+        <p>100억 원대 아파트의 2026년 공동주택가격(안)에 대해 근거 자료를 정리해 의견을 냈고, 공시가격이 (안)보다 5억 원 낮게 조정되었습니다. 고객의 동의를 받아 소개합니다.</p>
+        <p>이 아파트 한 채만 가진 1세대 1주택자라고 가정하면, 2026년 재산세(도시지역분·지방교육세 포함)와 종합부동산세(농어촌특별세 포함)를 합친 보유세가 약 770만 원 넘게 줄어드는 크기입니다. 공시가격은 해마다 새로 정해지므로, 이 차이는 그해 세금에 대한 것입니다.</p>
+      </div>
+      <p class="pr-src">계산 조건: 표준세율로 계산했고, 감액 전후의 종합부동산세 과세표준이 모두 50억 원 초과 94억 원 이하(세율 2.0%) 구간에 있는 경우입니다(정확한 공시가격은 밝히지 않습니다). 종합부동산세는 1세대 1주택자 공제 12억 원과 공정시장가액비율 60%를, 재산세는 1세대 1주택 공정시장가액비율 45%를 적용했고, 고령자·장기보유 세액공제와 세부담 상한은 반영하지 않았습니다. 종합부동산세에서 빼는 재산세 상당액은 법정 산식으로 추정했습니다. 그 산식에 넣는 재산세 공정시장가액비율을 45%로 보면 보유세 차이는 약 795만 원, 60%로 보면 약 773만 원입니다. 지역자원시설세는 넣지 않았습니다. 실제 고지 세액은 보유자 사정과 지방자치단체 조례에 따라 다릅니다. 고객 정보를 보호하려고 소재지·단지와 정확한 공시가격은 밝히지 않았습니다. 의견이 받아들여질지는 사안마다 다르며, 같은 결과를 약속드리지는 않습니다. 이 사례는 아파트 공동주택가격에 관한 것이고, 이번 오피스텔·상가 기준시가는 재산세·종합부동산세 계산에 쓰이지 않습니다. 근거: <a href="https://www.law.go.kr/법령/지방세법/제110조" target="_blank" rel="noopener">지방세법 제110조</a>·<a href="https://www.law.go.kr/법령/지방세법/제111조" target="_blank" rel="noopener">제111조</a>·<a href="https://www.law.go.kr/법령/지방세법/제112조" target="_blank" rel="noopener">제112조</a>·<a href="https://www.law.go.kr/법령/지방세법/제151조" target="_blank" rel="noopener">제151조</a> · <a href="https://www.law.go.kr/법령/지방세법시행령/제109조" target="_blank" rel="noopener">같은 법 시행령 제109조</a> · <a href="https://www.law.go.kr/법령/종합부동산세법/제8조" target="_blank" rel="noopener">종합부동산세법 제8조</a>·<a href="https://www.law.go.kr/법령/종합부동산세법/제9조" target="_blank" rel="noopener">제9조</a> · <a href="https://www.law.go.kr/법령/종합부동산세법시행령/제4조의3" target="_blank" rel="noopener">같은 법 시행령 제4조의3</a> · <a href="https://www.law.go.kr/법령/농어촌특별세법/제5조" target="_blank" rel="noopener">농어촌특별세법 제5조</a></p>
+    </section>
 
     <section class="jt-cc-sec">
       <h2>이 기준시가는 어디에 쓰이나요?</h2>
