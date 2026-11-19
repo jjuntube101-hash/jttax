@@ -172,6 +172,7 @@ async function loadArticles() {
       tag: meta.tag || 'INSIGHT',
       excerpt: meta.excerpt || '',
       author: meta.author || '제이티 세무법인',
+      showPersonalReviewer: meta.personalReview !== 'none',
       hero: meta.hero || '', heroShare: meta.heroShare || meta.hero || '', heroAlt: meta.heroAlt || '', heroCaption: meta.heroCaption || '',
       lawChecked: meta.lawChecked || '',
       body,
@@ -377,8 +378,7 @@ ${GA_HEAD_SNIPPET}
     "datePublished": ${JSON.stringify(kstDateTime(a.dateISO))},
     "dateModified": ${JSON.stringify(kstDateTime(a.updatedISO))},
     "author": { "@type": "Organization",${a.author === FIRM ? ` "@id": "${ORG_ID}",` : ''} "name": ${JSON.stringify(a.author)}, "url": "${a.author === FIRM ? SITE : `${SITE}/about/`}" },
-    "editor": { "@type": "Person", "@id": "${personId(REVIEWER.slug)}", "name": ${JSON.stringify(REVIEWER.name)}, "jobTitle": "세무사", "url": "${SITE}${REVIEWER.href}" },
-    "publisher": { "@type": "Organization", "@id": "${ORG_ID}", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
+${a.showPersonalReviewer ? `    "editor": { "@type": "Person", "@id": "${personId(REVIEWER.slug)}", "name": ${JSON.stringify(REVIEWER.name)}, "jobTitle": "세무사", "url": "${SITE}${REVIEWER.href}" },\n` : ''}    "publisher": { "@type": "Organization", "@id": "${ORG_ID}", "name": "제이티 세무법인", "logo": { "@type": "ImageObject", "url": "${SITE}/project/assets/logo_symbol.png" } },
     "description": ${JSON.stringify(a.excerpt)},
     "mainEntityOfPage": ${JSON.stringify(shareUrl)}
   }
@@ -410,7 +410,7 @@ ${GA_HEAD_SNIPPET}
     <nav aria-label="현재 위치" class="jt-ed-kicker"><a href="/insights/">세금 가이드</a> / ${esc(a.tag)}</nav>
     <h1>${esc(a.title)}</h1>
     <p class="jt-ed-deck">${esc(a.excerpt)}</p>
-    <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a><span>검토 <a href="${REVIEWER.href}">${esc(REVIEWER.name)} 세무사</a></span><span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
+    <div class="jt-ed-byline"><a href="/about/">${esc(a.author)}</a>${a.showPersonalReviewer ? `<span>검토 <a href="${REVIEWER.href}">${esc(REVIEWER.name)} 세무사</a></span>` : ''}<span>발행 <time datetime="${a.dateISO}">${a.date}</time></span>${a.updatedISO !== a.dateISO ? `<span>수정 <time datetime="${a.updatedISO}">${a.updatedISO}</time></span>` : ''}${a.lawChecked ? `<span>법령 원문 대조 ${a.lawChecked}</span>` : ''}</div>
 ${hero(a)}
 ${reading.toc}
 ${youthBlock ? '    ' + youthBlock + '\n' : ''}${priceBlock ? '    ' + priceBlock + '\n' : ''}    ${reading.html}
