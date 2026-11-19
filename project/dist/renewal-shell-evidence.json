@@ -500,6 +500,11 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/job-change-year-end-tax-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/joint-ownership-purchase-funds.html",
     "h1": 1,
     "mainPreserved": true
@@ -561,6 +566,11 @@
   },
   {
     "path": "insights/prior-gifts-transfer-history.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/property-balance-held-before-registration.html",
     "h1": 1,
     "mainPreserved": true
   },

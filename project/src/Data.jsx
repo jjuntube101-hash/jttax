@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "job-change-year-end-tax-2026", tag: "연말정산", date: "2026.11.19", title: "2026년 이직 연말정산, 전 직장 급여가 합산됐는지 확인하는 법", excerpt: "같은 해 직장을 옮겼다면 종전 근무지의 급여 자료를 준비하고 현 직장 연말정산에 합산됐는지 확인하세요." },
+    { slug: "property-balance-held-before-registration", tag: "양도소득세", date: "2026.11.19", title: "잔금 일부를 남기고 등기하면 양도일은 언제인가요?", excerpt: "주택 매매 잔금을 나눠 치를 때 대금청산일과 이전등기 접수일을 대조하는 법무사·중개사 실무 안내입니다." },
     { slug: "creator-annual-software-subscription", tag: "크리에이터·기장", date: "2026.11.18", title: "유튜버 편집 프로그램 1년 구독료, 결제한 달에 전부 비용일까요?", excerpt: "영상 편집 프로그램의 연간 구독료는 결제일과 이용 기간을 함께 확인합니다. 연간 선결제와 매월 청구 사례를 나누고, 장부를 맡길 때 필요한 계약·청구 자료를 살펴봅니다." },
     { slug: "creator-costume-rental-deposit", tag: "크리에이터·기장", date: "2026.11.17", title: "유튜버 촬영 의상 대여 보증금, 돌려받으면 장부에 어떻게 적나요?", excerpt: "촬영 의상을 빌릴 때 보낸 돈에서 대여료와 보증금을 나눠 봅니다. 보증금을 전액 돌려받은 경우와 계약에 따라 추가 대여료로 쓴 경우의 장부와 증빙을 살펴봅니다." },
     { slug: "officetel-commercial-standard-price-2027", tag: "INSIGHT · REAL ESTATE", date: "2026.11.16", title: "2027년 오피스텔·상가 기준시가, 어디서 보고 언제까지 의견을 내나요?", excerpt: "국세청이 2027년 오피스텔과 상업용 건물의 기준시가(안)을 공개했습니다. 의견제출 기간은 2026년 12월 2일까지입니다. 열람 경로와 의견을 내기 전에 확인할 점을 정리했습니다." },
