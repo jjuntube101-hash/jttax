@@ -283,6 +283,8 @@ const SERVICE_BY_ARTICLE = new Map([
 const SERVICE_TAG_RULES = [
   [/AUDIT/i, 'tax-audit'],
   [/APPEAL/i, 'tax-refund'],
+  [/^양도소득세$/, 'capital-gains-tax'],
+  [/^연말정산$/, 'bookkeeping'],
   [/LEGACY|GIFT|INHERITANCE|CAPITAL GAINS|REAL ESTATE|PROPERTY TAX/i, 'asset-transfer'],
   [/크리에이터|CREATOR/i, 'bookkeeping'],
   [/CONSULT|CORPORATE|창업감면/i, 'consulting'],

@@ -5,6 +5,16 @@ const assert = require('node:assert/strict');
 const {spawnSync} = require('node:child_process');
 const root = path.join(__dirname, '..');
 const files = fs.readdirSync(path.join(root, 'insights')).filter(f => f.endsWith('.html') && f !== 'index.html');
+const sourceDir = path.join(__dirname, 'insights');
+const withoutReviewer = new Set();
+for (const file of fs.readdirSync(sourceDir).filter(file => file.endsWith('.md'))) {
+  const body = fs.readFileSync(path.join(sourceDir, file), 'utf8');
+  const meta = body.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1];
+  if (!/^personalReview:[ \t]*(?:none|"none")[ \t]*\r?$/m.test(meta || '')) continue;
+  const slug = meta.match(/^slug:[ \t]*"?([a-z0-9-]+)"?[ \t]*\r?$/m)?.[1]
+    || file.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
+  withoutReviewer.add(slug + '.html');
+}
 for (const f of files) {
   const html = fs.readFileSync(path.join(root, 'insights', f), 'utf8');
   assert.equal((html.match(/<h1\b/g)||[]).length, 1, f + ': H1');
@@ -45,9 +55,15 @@ for (const f of files) {
   const art = json.find(x=>x['@type']==='Article');
   const authors = [].concat(art.author);
   assert.ok(authors.length === 1 && authors[0]['@type']==='Organization' && authors[0].name==='제이티 세무법인', f + ': firm is the sole author');
-  assert.ok(art.editor && art.editor['@type']==='Person', f + ': reviewer Person as editor');
-  assert.deepEqual([art.editor.name, art.editor.jobTitle, art.editor.url], ['이현준', '세무사', 'https://www.jttax.co.kr/experts/lee-hyunjun.html'], f + ': reviewer Person');
-  assert.ok(/<div class="jt-ed-byline">[\s\S]*?<span>검토 <a href="\/experts\/lee-hyunjun\.html">이현준 세무사<\/a><\/span>/.test(html), f + ': reviewer on byline');
+  const byline = html.match(/<div class="jt-ed-byline">([\s\S]*?)<\/div>/)?.[1] || '';
+  if (withoutReviewer.has(f)) {
+    assert.ok(!Object.hasOwn(art,'editor'), f + ': omit the personal editor in structured data');
+    assert.ok(!byline.includes('<span>검토 '), f + ': omit the personal reviewer on byline');
+  } else {
+    assert.ok(art.editor && art.editor['@type']==='Person', f + ': reviewer Person as editor');
+    assert.deepEqual([art.editor.name, art.editor.jobTitle, art.editor.url], ['이현준', '세무사', 'https://www.jttax.co.kr/experts/lee-hyunjun.html'], f + ': reviewer Person');
+    assert.ok(/<span>검토 <a href="\/experts\/lee-hyunjun\.html">이현준 세무사<\/a><\/span>/.test(byline), f + ': reviewer on byline');
+  }
 }
 {
   // The reviewer's expert page must exist and name the same Person.
