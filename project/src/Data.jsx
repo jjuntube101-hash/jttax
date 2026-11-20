@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "buyer-paid-capital-gains-tax-contract", tag: "양도소득세", date: "2026.11.20", title: "매수인이 양도소득세를 내기로 한 계약, 매도인은 무엇을 신고하나요?", excerpt: "매매대금 외에 매수인이 매도자의 양도소득세를 부담하기로 했다면 특약, 정산 내역과 실제 지급 증빙을 나란히 확인하세요." },
+    { slug: "comprehensive-real-estate-tax-installments-2026", tag: "INSIGHT · PROPERTY TAX", date: "2026.11.20", title: "2026년 종부세 분납, 12월 15일 전에 고지서에서 확인할 것", excerpt: "종합부동산세 자체가 250만원을 넘는지 확인하고 2026년 12월 15일까지 분납을 신청하는 순서와 수정 고지 확인법을 안내합니다." },
     { slug: "job-change-year-end-tax-2026", tag: "연말정산", date: "2026.11.19", title: "2026년 이직 연말정산, 전 직장 급여가 합산됐는지 확인하는 법", excerpt: "같은 해 직장을 옮겼다면 종전 근무지의 급여 자료를 준비하고 현 직장 연말정산에 합산됐는지 확인하세요." },
     { slug: "property-balance-held-before-registration", tag: "양도소득세", date: "2026.11.19", title: "잔금 일부를 남기고 등기하면 양도일은 언제인가요?", excerpt: "주택 매매 잔금을 나눠 치를 때 대금청산일과 이전등기 접수일을 대조하는 법무사·중개사 실무 안내입니다." },
     { slug: "creator-annual-software-subscription", tag: "크리에이터·기장", date: "2026.11.18", title: "유튜버 편집 프로그램 1년 구독료, 결제한 달에 전부 비용일까요?", excerpt: "영상 편집 프로그램의 연간 구독료는 결제일과 이용 기간을 함께 확인합니다. 연간 선결제와 매월 청구 사례를 나누고, 장부를 맡길 때 필요한 계약·청구 자료를 살펴봅니다." },

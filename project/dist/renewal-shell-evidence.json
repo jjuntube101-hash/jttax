@@ -260,6 +260,11 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/buyer-paid-capital-gains-tax-contract.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/capital-gains-tax-traps.html",
     "h1": 1,
     "mainPreserved": true
@@ -286,6 +291,11 @@
   },
   {
     "path": "insights/comprehensive-real-estate-tax-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/comprehensive-real-estate-tax-installments-2026.html",
     "h1": 1,
     "mainPreserved": true
   },
