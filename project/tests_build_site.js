@@ -133,6 +133,46 @@ const BASE = {
     fs.rmSync(root, { recursive: true, force: true });
   }
 
+  // ③-d 주석 속 참조·이름만 적힌 문자열은 따라가지 않는다 (R4-F1)
+  {
+    const files = {
+      ...BASE,
+      'index.html': BASE['index.html'] + '<!-- retired <script src="/desk/preview.js"></script> -->',
+      'desk/preview.js': 'var client="/desk/internal.html";',
+      'desk/internal.html': 'secret',
+      'project/dist/app.js': BASE['project/dist/app.js'] + ' var label="internal.html"; // 옛 화면 /desk/old.html\n/* "/project/assets/old.png" */',
+      'desk/old.html': 'secret',
+      'project/assets/old.png': 'x',
+      'project/src/a.css': BASE['project/src/a.css'] + '/* url(../assets/old2.png) */',
+      'project/assets/old2.png': 'x',
+    };
+    const root = makeRepo(files);
+    const r = buildSite({ root, out: path.join(root, '_site') });
+    assert.deepEqual(r.errors, [], '주석 처리한 참조는 오류도 내지 않는다');
+    for (const no of ['desk/preview.js', 'desk/internal.html', 'internal.html', 'desk/old.html', 'project/assets/old.png', 'project/assets/old2.png']) {
+      ok(!r.picked.includes(no), `주석·이름 문자열로 끌려오면 안 됨: ${no}`);
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+
+  // ③-e 템플릿 문자열로 조합한 경로 (R4-F2): 명시 목록 폴더면 포함, 아니면 실패
+  {
+    const root = makeRepo({ ...BASE, 'project/dist/app.js': 'P={"a":"kim-gahwan"}; img.src=`/project/assets/people/renewal/${P[n]}-studio.jpg`;' });
+    const r = buildSite({ root, out: path.join(root, '_site') });
+    assert.deepEqual(r.errors, [], '명시 목록 폴더의 템플릿 경로는 통과');
+    ok(r.picked.includes('project/assets/people/renewal/kim-gahwan-studio.jpg'), '템플릿 경로 파일 포함');
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+  for (const [js, label] of [
+    ['img.src=`/project/assets/insights/${slug}-hero.webp`;', '명시 목록에 없는 폴더의 템플릿 경로'],
+    ['img.src=`/project/assets/x-${n}.png`;', '폴더가 아닌 템플릿 조각'],
+  ]) {
+    const root = makeRepo({ ...BASE, 'project/dist/app.js': js });
+    const r = buildSite({ root, out: path.join(root, '_site') });
+    ok(r.errors.length > 0, `실패해야 함: ${label}`);
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+
   // ④ 필수 파일이 없으면 실패
   {
     const files = { ...BASE };

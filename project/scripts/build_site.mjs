@@ -10,7 +10,7 @@
    ▣ 무엇이 나가나: «진입점에서 참조를 따라 닿는 파일»만 (도달 집합)
      진입점 = sitemap.xml 의 모든 주소 + 고정 루트 파일(CNAME·robots·favicon·manifest·sitemap)
               + 검색엔진 소유 확인 파일(google<hex>.html · naver<hex>.html · <32hex>.txt).
-     HTML·CSS·JS·JSON·XML 안의 경로 참조를 따라가며 모은다. 위치·확장자만 맞는다고 나가지 않는다
+     HTML·CSS·JS·JSON·XML 안의 경로 참조를 따라가며 모은다(주석 속 참조는 지우고 본다). 위치·확장자만 맞는다고 나가지 않는다
      — 아무도 링크하지 않은 내부 HTML·JS·이미지를 새로 넣어도 공개되지 않는다(Codex R1-F1).
      참조 해석 기준: HTML = 그 문서 위치 / CSS = 그 CSS 파일 위치 / JS = 그 JS 를 불러온 문서 위치
      (브라우저가 JS 안의 상대 경로를 문서 기준으로 읽기 때문 — R1-F3).
@@ -31,6 +31,7 @@
    ▣ 시험: project/tests_build_site.js (가짜 저장소로 포함·제외·실패를 확인)
    ══════════════════════════════════════════════════════════════════════════ */
 
+import esbuild from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -70,10 +71,12 @@ const REF = new RegExp(
   [
     String.raw`(?:[\w-]*src|href|content|poster|srcset|action)\s*=\s*["']([^"']+)["']`,
     String.raw`url\(\s*["']?([^"')]+)["']?\s*\)`,
-    String.raw`["'\x60]((?:\.{1,2}\/)*\/?project\/[^"'\x60\s?#]*)`,
-    // 위 규칙에 안 걸리는 상대 경로 문자열('img/a.png' 등) — 저장소에 있는 파일일 때만 효과가 있다
-    String.raw`["'\x60]((?:\.{1,2}\/|\/)?[\w.-]+(?:\/[\w.-]+)*\.(?:png|jpe?g|webp|svg|gif|ico|avif|woff2?|css|js|html))(?=["'\x60?#])`,
-    String.raw`["'\x60](\/(?:insights|calculators|services|experts|desk|about|acquisition-tax|property-values)\/[^"'\x60\s?#]*)`,
+    // '${' 앞에서 끊는다 — 템플릿 문자열 `/project/…/${이름}-studio.jpg` 는 접두어로 읽혀 동적 규칙을 탄다(R4-F2)
+    String.raw`["'\x60]((?:\.{1,2}\/)*\/?project\/[^"'\x60\s?#$]*)`,
+    // 위 규칙에 안 걸리는 상대 경로 문자열('img/a.png' 등). 폴더 구분자가 있는 것만 — 이름만 적힌
+    // "internal.html" 같은 문자열은 경로가 아니다(R4-F1). 저장소에 있는 파일일 때만 효과가 있다.
+    String.raw`["'\x60]((?=[\w./-]*\/)[\w./-]+\.(?:png|jpe?g|webp|svg|gif|ico|avif|woff2?|css|js|html))(?=["'\x60?#])`,
+    String.raw`["'\x60](\/(?:insights|calculators|services|experts|desk|about|acquisition-tax|property-values)\/[^"'\x60\s?#$]*)`,
     String.raw`["'\x60](https?:\/\/(?:www\.)?jttax\.co\.kr\/[^"'\x60\s?#]*)`,
     String.raw`<loc>\s*([^<\s]+)\s*<\/loc>`,
   ].join('|'),
@@ -81,6 +84,31 @@ const REF = new RegExp(
 );
 const TEXT_TYPE = /\.(html|css|js|json|webmanifest|xml)$/i;
 const LITERAL = /["'`]([\w.-]{1,80})["'`]/g;
+
+/** 주석 속 참조는 따라가지 않는다(R4-F1 — 주석 처리한 옛 스크립트·페이지가 공개되지 않게).
+ *  HTML: <!-- --> 제거, 인라인 <script> 는 esbuild 로 주석 제거 / CSS: 블록 주석 제거 / JS: esbuild. */
+function stripComments(rel, text) {
+  const jsNoComments = (code, where) => {
+    try {
+      return esbuild.transformSync(code, { loader: 'js', legalComments: 'none', charset: 'utf8' }).code;
+    } catch (e) {
+      throw new Error(`JS 를 해석하지 못해 주석을 걸러낼 수 없음: ${where} (${String(e.message).split('\n')[0]})`);
+    }
+  };
+  if (/\.css$/i.test(rel)) return text.replace(/\/\*[\s\S]*?\*\//g, '');
+  if (/\.js$/i.test(rel)) return jsNoComments(text, rel);
+  if (/\.html$/i.test(rel)) {
+    return text
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi, (_, a, b, c) => a + b.replace(/\/\*[\s\S]*?\*\//g, '') + c)
+      .replace(/(<script\b([^>]*)>)([\s\S]*?)(<\/script>)/gi, (all, open, attrs, body, close) => {
+        const type = (/\btype\s*=\s*["']?([^"'\s>]+)/i.exec(attrs) || [])[1] || '';
+        if (!body.trim() || (type && !/^(text\/javascript|module|application\/javascript)$/i.test(type))) return all;
+        return open + jsNoComments(body, rel + ' 인라인 <script>') + close;
+      });
+  }
+  return text;
+}
 
 /** ref 를 baseDir(posix, 저장소 상대) 기준 저장소 상대 경로로. 외부·특수 주소는 null. */
 function resolveRef(baseDir, ref) {
@@ -152,7 +180,13 @@ export function buildSite({ root, out = path.join(root, '_site'), write = true }
   while (queue.length) {
     const [rel, baseDir] = queue.shift();
     if (!TEXT_TYPE.test(rel)) continue;
-    const text = fs.readFileSync(path.join(root, rel), 'utf8');
+    let text;
+    try {
+      text = stripComments(rel, fs.readFileSync(path.join(root, rel), 'utf8'));
+    } catch (e) {
+      errors.push(String(e.message));
+      continue;
+    }
     const isJs = /\.js$/i.test(rel);
     const ownDir = path.posix.dirname(rel) === '.' ? '' : path.posix.dirname(rel);
     // JS 안 상대 경로는 «불러온 문서» 기준, 그 밖은 자기 위치 기준
@@ -194,7 +228,7 @@ export function buildSite({ root, out = path.join(root, '_site'), write = true }
               if (named) errors.push(`동적 경로로 불릴 수 있는데 명시 목록에 없음: ${f} ← ${rel} (공개할 파일이면 DYNAMIC_FILES 에 추가, 아니면 폴더에서 뺀다)`);
             }
             if (!n) errors.push(`동적 접두어 ${d}/ 에 명시 목록과 맞는 파일이 없음 ← ${rel}`);
-          } else if (c.startsWith('project/') && !/[\$\{}*]/.test(c)) {
+          } else if (c.startsWith('project/')) {
             // project/ 안을 가리키는데 저장소에 없는 참조 — 배포 뒤 404 가 된다(R2-F2: 조용히 넘기지 않는다)
             unresolved.set(c, rel);
           }
