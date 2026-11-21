@@ -13,7 +13,20 @@
 #     빠뜨리면 site 단계가 «참조하는데 _site 에 없음» 으로 실패해 배포가 멈춘다.
 #
 # ▣ 저장소 설정 전제: Settings → Pages → Source = «GitHub Actions» (build_type=workflow).
-#   «Deploy from a branch» 로 두면 deploy 잡이 실패한다. 되돌리기 = Source 를 main 브랜치로 되돌리기.
+#   «Deploy from a branch» 로 두면 deploy 잡이 실패한다(그동안은 예전처럼 브랜치 전체가 서빙된다).
+#
+# ▣ 첫 전환 순서 (공백을 가장 짧게 — 소스 전환 시 기존 게시본 유지 여부는 공식 문서에 없다)
+#   1) 이 워크플로를 main 에 반영 → gate·site 통과, artifact 업로드, deploy 잡은 실패(정상)
+#   2) gh api -X PUT repos/<소유자>/jttax/pages -f build_type=workflow   (cname 유지 확인: GET …/pages)
+#   3) 1)의 실행에서 deploy 잡만 «Re-run failed jobs» (artifact 보관 1일 안에)
+#   4) 라이브 확인: /project/src/ReportAcquisition.jsx·/project/dev/…·/project/tests_acq_check.js = 404,
+#      sitemap 페이지·계산기 = 200
+#
+# ▣ 되돌리기 — ⛔ Source 를 «Deploy from a branch» 로 되돌리지 않는다.
+#   그러면 저장소 원본·시험·개발 자료가 다시 전부 공개된다(이번 전환이 막으려는 바로 그것).
+#   · 잘못된 배포를 되돌릴 때: 문제 커밋을 git revert 해서 main 에 push (gate → 재배포), 또는
+#     Actions 에서 직전 성공 실행을 «Re-run all jobs» (그 커밋으로 _site 를 다시 만들어 배포)
+#   · Actions 자체가 장애일 때: 기다린다. 브랜치 서빙 복귀는 오너가 노출을 감수한다고 결정한 경우만.
 #
 # 종전 기록 (260808·260810): tests_build_fresh.js 는 «커밋된 산출물 = 소스로 재생성한 것» 을
 #   CI 에서만 실패로 처리한다. 그래서 이 워크플로가 있어야 그 분기가 실제로 돈다.
