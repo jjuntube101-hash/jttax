@@ -98,6 +98,14 @@ function resolveRef(baseDir, ref) {
 /* ── 본체 ────────────────────────────────────────────────────────────────── */
 const SKIP_DIRS = new Set(['.git', 'node_modules', '_site']);
 
+// 동적 조합 경로로만 불리는 파일의 «명시 목록» (R3-F1). 폴더별 파일 이름 정규식.
+// 문자열 대조는 후보를 «찾기»만 하고, 넣을지는 이 목록이 정한다. 목록에 없는 후보가 보이면 빌드 실패 —
+// 새 대표 사진을 넣었으면 여기에 이름을 추가한다(조용히 404 가 나거나 내부 이미지가 섞이지 않게).
+const DYNAMIC_FILES = {
+  // Pages1.jsx(전문가 소개): '/project/assets/people/renewal/' + JT_RENEWAL_PEOPLE[이름] + '-studio.jpg' / '-work.jpg'
+  'project/assets/people/renewal': /^(kim-gahwan|kim-minseok|lee-hyunjun)-(studio|work)\.jpg$/,
+};
+
 // 이 스크립트 도입(261121) 전부터 라이브에서도 404 인 참조 — 파일이 저장소에 커밋된 적이 없다.
 // 배포를 막지 않고 경고만 낸다. 파일을 넣거나 참조를 지우면 이 목록에서도 뺀다.
 const KNOWN_MISSING = new Set([
@@ -169,16 +177,23 @@ export function buildSite({ root, out = path.join(root, '_site'), write = true }
               errors.push(`project/assets 밖 폴더를 동적으로 참조: ${d}/ ← ${rel} (허용하지 않는다 — 파일 경로를 직접 적어야 한다)`);
               continue;
             }
+            const allow = DYNAMIC_FILES[d];
+            if (!allow) {
+              errors.push(`동적 접두어 ${d}/ ← ${rel} 가 DYNAMIC_FILES 에 없음 (공개할 파일 이름을 명시 목록에 적어야 한다)`);
+              continue;
+            }
             literals ??= new Set([...text.matchAll(LITERAL)].map((x) => x[1]));
             let n = 0;
             for (const f of files) {
-              if (path.posix.dirname(f) !== d || !IMAGE_FONT.test(f)) continue;
+              if (path.posix.dirname(f) !== d) continue;
               const name = path.posix.basename(f);
+              if (allow.test(name)) { enqueue(f, '', rel + ' (동적 ' + d + '/)'); n++; continue; }
+              // 후보 탐지: 이름 전체 또는 앞·뒷부분이 이 파일의 문자열로 적혀 있으면 «불릴 수 있는» 파일이다
               let named = literals.has(name);
               for (let k = 1; !named && k < name.length; k++) named = literals.has(name.slice(0, k)) && literals.has(name.slice(k));
-              if (named) { enqueue(f, '', rel + ' (동적 ' + d + '/)'); n++; }
+              if (named) errors.push(`동적 경로로 불릴 수 있는데 명시 목록에 없음: ${f} ← ${rel} (공개할 파일이면 DYNAMIC_FILES 에 추가, 아니면 폴더에서 뺀다)`);
             }
-            if (!n) errors.push(`동적 접두어 ${d}/ 에서 이름이 확인되는 파일이 없음 ← ${rel} (조합 방식을 확인하라)`);
+            if (!n) errors.push(`동적 접두어 ${d}/ 에 명시 목록과 맞는 파일이 없음 ← ${rel}`);
           } else if (c.startsWith('project/') && !/[\$\{}*]/.test(c)) {
             // project/ 안을 가리키는데 저장소에 없는 참조 — 배포 뒤 404 가 된다(R2-F2: 조용히 넘기지 않는다)
             unresolved.set(c, rel);
@@ -197,6 +212,14 @@ export function buildSite({ root, out = path.join(root, '_site'), write = true }
   for (const [r, from] of reached) {
     const why = denyReason(r);
     if (why) errors.push(`사이트가 참조하지만 공개할 수 없는 파일: ${r} ← ${from} (${why} — 참조 쪽을 고쳐야 한다)`);
+  }
+  // sitemap 의 모든 주소가 실제 페이지로 이어지는가 (R3-F2)
+  if (files.has('sitemap.xml')) {
+    for (const m of fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8').matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)) {
+      const c = resolveRef('', m[1]);
+      if (c === null) errors.push(`sitemap 주소가 이 사이트가 아님: ${m[1]}`);
+      else if (!lookup(c)) errors.push(`sitemap 주소에 해당하는 페이지 없음: ${m[1]}`);
+    }
   }
   for (const must of ['index.html', 'CNAME', 'robots.txt', 'sitemap.xml', 'project/dist/app.js', 'project/dist/report-entry.js']) {
     if (!picked.includes(must)) errors.push(`필수 파일 없음: ${must}`);
