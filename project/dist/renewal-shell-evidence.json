@@ -515,6 +515,11 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/joint-home-sale-seller-records.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/joint-ownership-purchase-funds.html",
     "h1": 1,
     "mainPreserved": true
@@ -676,6 +681,11 @@
   },
   {
     "path": "insights/virtual-asset-tax-2027.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/year-end-tax-data-consent-2026.html",
     "h1": 1,
     "mainPreserved": true
   },

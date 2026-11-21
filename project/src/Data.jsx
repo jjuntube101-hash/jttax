@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "joint-home-sale-seller-records", tag: "양도소득세", date: "2026.11.21", title: "공동명의 주택을 팔 때 양도소득세 신고, 매도인별로 어떤 자료를 준비할까요?", excerpt: "공동명의 주택을 한 계약서로 매도한 경우 각 소유자의 지분, 취득 이력, 매매대금 정산을 확인할 자료를 정리합니다." },
+    { slug: "year-end-tax-data-consent-2026", tag: "연말정산", date: "2026.11.21", title: "2026년 귀속 연말정산 간소화자료 일괄제공, 회사 신청과 근로자 동의 일정", excerpt: "2026년 귀속 연말정산 일괄제공은 회사의 신청과 근로자의 동의 절차가 따로 있습니다. 각 일정과 자료 제출 방식을 확인하세요." },
     { slug: "buyer-paid-capital-gains-tax-contract", tag: "양도소득세", date: "2026.11.20", title: "매수인이 양도소득세를 내기로 한 계약, 매도인은 무엇을 신고하나요?", excerpt: "매매대금 외에 매수인이 매도자의 양도소득세를 부담하기로 했다면 특약, 정산 내역과 실제 지급 증빙을 나란히 확인하세요." },
     { slug: "comprehensive-real-estate-tax-installments-2026", tag: "INSIGHT · PROPERTY TAX", date: "2026.11.20", title: "2026년 종부세 분납, 12월 15일 전에 고지서에서 확인할 것", excerpt: "종합부동산세 자체가 250만원을 넘는지 확인하고 2026년 12월 15일까지 분납을 신청하는 순서와 수정 고지 확인법을 안내합니다." },
     { slug: "job-change-year-end-tax-2026", tag: "연말정산", date: "2026.11.19", title: "2026년 이직 연말정산, 전 직장 급여가 합산됐는지 확인하는 법", excerpt: "같은 해 직장을 옮겼다면 종전 근무지의 급여 자료를 준비하고 현 직장 연말정산에 합산됐는지 확인하세요." },
