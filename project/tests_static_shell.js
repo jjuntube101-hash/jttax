@@ -900,7 +900,7 @@ const ROOT = path.join(__dirname, '..');
         }
       }
     }
-    const SKIP = new Set(['node_modules', 'project', '.git', 'dist']);
+    const SKIP = new Set(['node_modules', 'project', '.git', 'dist', '_site']);
     const htmlFiles = [];
     const walk = (dir) => {
       for (const ent of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {

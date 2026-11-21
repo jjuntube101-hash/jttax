@@ -15,3 +15,6 @@ project/insights/README.md
 # Python 캐시 (조례 스크립트 import 시 생김 — 산출물 아님)
 __pycache__/
 *.pyc
+
+# 배포본(npm run site 산출물) — Actions 가 매번 새로 만든다. 커밋하지 않는다(261121).
+_site/

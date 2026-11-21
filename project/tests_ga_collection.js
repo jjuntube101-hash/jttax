@@ -20,7 +20,7 @@ function condition(n, host) {
 }
 function files(dir) {
   return fs.readdirSync(dir, {withFileTypes:true}).flatMap(e => {
-    if (['.git','node_modules','project'].includes(e.name)) return [];
+    if (['.git','node_modules','project','_site'].includes(e.name)) return [];
     const p = path.join(dir,e.name);
     return e.isDirectory() ? files(p) : e.name.endsWith('.html') ? [p] : [];
   });

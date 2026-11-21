@@ -555,7 +555,7 @@ console.log('\n════ ⑤ 취득세 허브·인사이트 허브로 들어�
   const kakaoBad = [];
   const walk = (d) => { for (const f of fs.readdirSync(d, { withFileTypes: true })) {
     const fp = path.join(d, f.name);
-    if (f.isDirectory()) { if (!['node_modules', '.git', 'project'].includes(f.name)) walk(fp); }
+    if (f.isDirectory()) { if (!['node_modules', '.git', 'project', '_site'].includes(f.name)) walk(fp); }
     else if (f.name.endsWith('.html') && /pf\.kakao\.com\/_CcxlJG\/(chat|friend)/.test(fs.readFileSync(fp, 'utf8'))) kakaoBad.push(path.relative(ROOT, fp));
   } };
   walk(ROOT);

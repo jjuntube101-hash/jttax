@@ -1,23 +1,22 @@
-# 게이트 — push·PR 마다 빌드하고 검사한다.
+# 게이트 + 배포 — push·PR 마다 빌드하고 검사하며, main push 일 때만 _site/ 를 Pages 에 배포한다.
 #
-# ⚠️ 배포는 건드리지 않는다. GitHub Pages 의 기존 배포 방식(main 브랜치 서빙)은 그대로다.
-#    이 워크플로는 «검사만» 한다 — 실패해도 배포가 막히지는 않으므로, 빨간불이 뜨면
-#    사람이 보고 되돌린다.
+# ▣ 261121 전환: «main 브랜치 그대로 서빙» → «Actions 가 만든 _site/ 만 배포»
+#   종전 GitHub Pages(legacy, main 브랜치 /) 는 저장소의 모든 파일을 URL 로 내보냈다.
+#   www.jttax.co.kr/project/src/*.jsx(계산기 화면 원본)·/project/dev/(계산 계약·출시 점검)·
+#   /project/tests_*.js 가 모두 200 이었다(261121 실측). 이제는 npm run site 가 허용 목록으로
+#   만든 _site/ 만 올라간다. 허용 규칙·금지 검사 = project/scripts/build_site.mjs.
 #
-# ⛔ 260810 정정 (Codex R2·R3): 종전 주석은 「배포 차단까지 하려면 Pages 를 Actions 배포로
-#    바꿔야 한다」고 했는데 그건 틀렸다. Pages 를 main 브랜치 서빙으로 «둔 채»
-#    저장소 설정만으로 사전 차단할 수 있다:
-#      ① Settings → Branches → main 에 보호 규칙 추가
-#      ② "Require a pull request before merging" 켜기 (= main 직접 push 금지)
-#      ③ "Require status checks to pass" 에 이 워크플로(gate) 지정
-#    지금은 main 직접 push 가 되므로, 산출물을 빠뜨린 커밋이 들어가면 Pages 가 «먼저»
-#    그 커밋을 서빙하고 게이트는 뒤늦게 빨간불이 된다. 설정은 저장소 소유자만 바꿀 수 있다.
+# ▣ 바뀐 점 (작업하는 세션이 알아야 할 것)
+#   · main 에 push 하면 «게이트 통과 뒤에» 배포된다. 게이트가 빨간불이면 라이브는 바뀌지 않는다.
+#     (종전에는 Pages 가 먼저 서빙하고 게이트가 뒤늦게 빨간불이 됐다.)
+#   · 새 파일 유형(예: 새 폴더의 페이지, 새 확장자 자산)을 추가했으면 build_site.mjs 허용 규칙에 넣는다.
+#     빠뜨리면 site 단계가 «참조하는데 _site 에 없음» 으로 실패해 배포가 멈춘다.
 #
-# 왜 지금 만드나 (260808 Codex P2a R3 P1):
-#   project/tests_build_fresh.js 는 «커밋된 산출물이 소스로 재생성한 것과 같은가»를
-#   CI 에서만 실패로 처리한다(로컬은 개발 중이라 경고). 그런데 CI 가 없으면 그 분기는
-#   영영 실행되지 않는 죽은 코드이고, 「원고만 고치고 빌드를 잊은 커밋」이 그대로 라이브에
-#   올라간다. GitHub Pages 는 커밋된 파일을 그대로 서빙한다.
+# ▣ 저장소 설정 전제: Settings → Pages → Source = «GitHub Actions» (build_type=workflow).
+#   «Deploy from a branch» 로 두면 deploy 잡이 실패한다. 되돌리기 = Source 를 main 브랜치로 되돌리기.
+#
+# 종전 기록 (260808·260810): tests_build_fresh.js 는 «커밋된 산출물 = 소스로 재생성한 것» 을
+#   CI 에서만 실패로 처리한다. 그래서 이 워크플로가 있어야 그 분기가 실제로 돈다.
 name: gate
 
 on:
@@ -30,6 +29,11 @@ on:
 permissions:
   contents: read
 
+# 배포는 한 번에 하나만. 진행 중인 배포는 끊지 않는다(반쯤 올라간 상태를 피한다).
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   gate:
     runs-on: ubuntu-latest
@@ -41,23 +45,43 @@ jobs:
           node-version: '20'
           cache: npm
 
-      # devDependencies 는 @babel/parser 하나뿐이라 가볍다.
-      # ci(=clean install) 를 쓰는 이유: package-lock.json 을 그대로 재현해야
-      # 「내 컴퓨터에선 됐는데」를 막는다.
+      # ci(=clean install) — package-lock.json 을 그대로 재현한다.
       - run: npm ci
 
-      # CI=true 는 GitHub Actions 가 자동으로 넣지만, 신선도 게이트의 fail-closed 분기가
-      # 이 값에 걸려 있으므로 «의도»를 눈에 보이게 명시해 둔다.
       - name: Verify committed asset versions before rebuilding
         run: node project/tests_asset_versions.js
 
+      # CI=true 는 신선도 게이트의 fail-closed 분기 조건이다. 의도를 명시해 둔다.
       - name: npm run gate
         run: npm run gate
         env:
           CI: 'true'
 
-      # 게이트가 통과해도 워킹트리가 더러우면(빌드 산출물 미커밋) 위에서 이미 실패한다.
-      # 여기서는 CRLF 무시 기준으로 한 번 더 눈에 보이게 남긴다 — 실패 시 원인 파악용.
       - name: 변경 잔여 확인
         if: always()
         run: git diff --name-only --ignore-cr-at-eol || true
+
+      # 배포본 생성 + 금지 파일·참조 누락 검사. PR 에서도 돌려서 허용 목록 누락을 미리 잡는다.
+      - name: npm run site
+        run: npm run site
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site/
+
+  deploy:
+    needs: gate
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

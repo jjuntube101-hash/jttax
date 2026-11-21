@@ -8,6 +8,8 @@
     "build": "node project/insights/build-insights.mjs && node project/calculators/build-calculators.mjs && node project/commercial/build-commercial.mjs && node project/scripts/build_bundle.mjs && node project/scripts/apply_renewal.mjs && node project/scripts/prerender_home.mjs",
     "_gate_note": "build → test 순서다(260808 역전). 정적 45장을 검사하는 tests_static_shell 은 «빌드된 산출물»을 보므로 빌드가 먼저여야 한다. ⛔ sync 는 여기 넣지 말 것 — sync 는 현재 해시를 기준선으로 «기록»하는 도구라, 테스트 앞에서 자동 실행하면 「고쳤는데 ?v= 안 올림」을 영영 못 잡는다. 자산을 고쳤으면 ?v= 를 올린 «뒤» 손으로 sync 한다.",
     "gate": "npm run build && npm run test && node project/tests_build_fresh.js",
+    "site": "node project/scripts/build_site.mjs",
+    "_site_note": "site 는 gate 뒤에 돈다. _site/ 에 사이트가 쓰는 파일만 허용 목록으로 복사하고, 원본·시험·빌드 파일이 섞이거나 참조 파일이 빠지면 실패한다. GitHub Pages 는 이 _site/ 만 배포한다(261121). 새 자산 유형을 추가했다면 project/scripts/build_site.mjs 의 허용 규칙에 넣는다.",
     "_fresh_note": "tests_build_fresh 는 «커밋된 산출물이 소스로 재생성한 것과 같은가»를 본다. 로컬에서는 경고만(원고 고치고 아직 커밋 전인 상태가 정상이므로), CI(env CI)에서는 실패. GitHub Pages 가 커밋된 파일을 그대로 서빙하므로 「게이트는 녹색인데 라이브는 낡음」을 막는다."
   },
   "engines": {

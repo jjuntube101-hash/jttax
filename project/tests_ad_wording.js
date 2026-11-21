@@ -12,7 +12,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github', '.tmp_ad_wording']);
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github', '.tmp_ad_wording', '_site']);
 /* 「무료」의 대체 표현도 같이 본다(Codex R2-F4). 「무상」은 무상취득·무상 증여 같은 세법 용어라 «상담» 문맥만 잡는다. */
 const BANNED = ['무료', '비용 없음', '비용 없이', '비용이 들지 않', '비용을 받지 않', '공짜', '0원 상담', '0원에 상담', '무보수', '무상 상담', '무상으로 상담',
                 '환급율', '환급률', '평균 환급', '절세율'];
