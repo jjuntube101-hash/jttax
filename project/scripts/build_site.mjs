@@ -14,14 +14,16 @@
      — 아무도 링크하지 않은 내부 HTML·JS·이미지를 새로 넣어도 공개되지 않는다(Codex R1-F1).
      참조 해석 기준: HTML = 그 문서 위치 / CSS = 그 CSS 파일 위치 / JS = 그 JS 를 불러온 문서 위치
      (브라우저가 JS 안의 상대 경로를 문서 기준으로 읽기 때문 — R1-F3).
-     동적 조합 경로(예: '/project/assets/people/renewal/' + 이름)는 참조된 «폴더»의 바로 아래
-     이미지·폰트만 연다(project/assets/ 안에서만, 하위 폴더는 열지 않는다).
+     동적 조합 경로(예: '/project/assets/people/renewal/' + 이름 + '-studio.jpg')는 폴더를 통째로
+     열지 않는다. 그 폴더 바로 아래 파일 중 이름(또는 앞부분·뒷부분)이 같은 파일 안에 문자열로
+     적힌 것만 넣는다(project/assets/ 안에서만).
 
    ▣ 그래도 막는 것 (빌드 실패)
      ① 형식: 도달했더라도 공개 형식(HTML·JS·CSS·이미지·폰트·xml·txt·manifest)이 아니면 실패
      ② 금지: 원본·스크립트·문서 확장자, 시험 파일, 개발·빌드 폴더, 숨김 파일, 내부 기록
         (대소문자 무시). 사이트가 이런 파일을 참조하면 «참조 쪽»을 고쳐야 한다.
-     ③ 누락: 참조하는 로컬 파일이 저장소에 있는데 위 규칙 때문에 _site 에 못 들어가면 실패
+     ③ 누락: 참조하는 로컬 파일이 저장소에 있는데 위 규칙 때문에 _site 에 못 들어가면 실패,
+        project/ 안을 가리키는데 저장소에 없는 참조도 실패(배포 뒤 404)
      ④ 필수 파일(index.html·CNAME·robots.txt·sitemap.xml·번들 2개)이 없으면 실패
      저장소에도 없는 참조(외부 경로·원래부터 깨진 링크)는 이 스크립트가 아니라 html-scan 이 본다.
 
@@ -68,7 +70,9 @@ const REF = new RegExp(
   [
     String.raw`(?:[\w-]*src|href|content|poster|srcset|action)\s*=\s*["']([^"']+)["']`,
     String.raw`url\(\s*["']?([^"')]+)["']?\s*\)`,
-    String.raw`["'\x60](\/?project\/[^"'\x60\s?#]*)`,
+    String.raw`["'\x60]((?:\.{1,2}\/)*\/?project\/[^"'\x60\s?#]*)`,
+    // 위 규칙에 안 걸리는 상대 경로 문자열('img/a.png' 등) — 저장소에 있는 파일일 때만 효과가 있다
+    String.raw`["'\x60]((?:\.{1,2}\/|\/)?[\w.-]+(?:\/[\w.-]+)*\.(?:png|jpe?g|webp|svg|gif|ico|avif|woff2?|css|js|html))(?=["'\x60?#])`,
     String.raw`["'\x60](\/(?:insights|calculators|services|experts|desk|about|acquisition-tax|property-values)\/[^"'\x60\s?#]*)`,
     String.raw`["'\x60](https?:\/\/(?:www\.)?jttax\.co\.kr\/[^"'\x60\s?#]*)`,
     String.raw`<loc>\s*([^<\s]+)\s*<\/loc>`,
@@ -76,6 +80,7 @@ const REF = new RegExp(
   'gi',
 );
 const TEXT_TYPE = /\.(html|css|js|json|webmanifest|xml)$/i;
+const LITERAL = /["'`]([\w.-]{1,80})["'`]/g;
 
 /** ref 를 baseDir(posix, 저장소 상대) 기준 저장소 상대 경로로. 외부·특수 주소는 null. */
 function resolveRef(baseDir, ref) {
@@ -84,7 +89,7 @@ function resolveRef(baseDir, ref) {
   else if (!ref || /^([a-z][a-z0-9+.-]*:|\/\/|#)/i.test(ref)) return null;
   let p;
   try { p = decodeURIComponent(ref.split(/[?#]/)[0]); } catch { return null; }
-  if (!p) return null;
+  if (!p || p.startsWith('#')) return null; // url(%23n) 같은 data URI 안 SVG 조각 참조
   const cand = p.startsWith('/') ? path.posix.normalize(p).slice(1) : path.posix.normalize(path.posix.join(baseDir, p));
   if (cand.startsWith('..')) return null;
   return cand === '.' ? '' : cand;
@@ -92,6 +97,13 @@ function resolveRef(baseDir, ref) {
 
 /* ── 본체 ────────────────────────────────────────────────────────────────── */
 const SKIP_DIRS = new Set(['.git', 'node_modules', '_site']);
+
+// 이 스크립트 도입(261121) 전부터 라이브에서도 404 인 참조 — 파일이 저장소에 커밋된 적이 없다.
+// 배포를 막지 않고 경고만 낸다. 파일을 넣거나 참조를 지우면 이 목록에서도 뺀다.
+const KNOWN_MISSING = new Set([
+  'project/assets/people/team-editorial-260919.png',
+  'project/assets/people/team-discussion-260919.png',
+]);
 
 export function buildSite({ root, out = path.join(root, '_site'), write = true } = {}) {
   const files = new Set();
@@ -113,6 +125,7 @@ export function buildSite({ root, out = path.join(root, '_site'), write = true }
   const lookup = (c) => [c, c.replace(/\/$/, '') + (c ? '/' : '') + 'index.html', c + '.html'].find((v) => files.has(v));
 
   const errors = [];
+  const unresolved = new Map(); // project/ 안인데 저장소에 없는 참조 → 처음 참조한 파일
   const reached = new Map(); // rel → 처음 참조한 파일
   const queue = [];
   const seenPair = new Set();
@@ -136,6 +149,7 @@ export function buildSite({ root, out = path.join(root, '_site'), write = true }
     const ownDir = path.posix.dirname(rel) === '.' ? '' : path.posix.dirname(rel);
     // JS 안 상대 경로는 «불러온 문서» 기준, 그 밖은 자기 위치 기준
     const base = isJs ? baseDir : ownDir;
+    let literals = null; // 동적 접두어를 만났을 때만 계산
     for (const m of text.matchAll(REF)) {
       for (const raw of m.slice(1)) {
         if (!raw) continue;
@@ -146,16 +160,39 @@ export function buildSite({ root, out = path.join(root, '_site'), write = true }
           if (hit) {
             const childBase = /\.js$/i.test(hit) ? (isJs ? baseDir : ownDir) : '';
             enqueue(hit, childBase, rel);
-          } else if (c.startsWith('project/assets/') && dirs.has(c.replace(/\/$/, ''))) {
-            // 동적 조합 접두어: 그 폴더 바로 아래 이미지·폰트만
+          } else if (dirs.has(c.replace(/\/$/, '')) && c.startsWith('project/')) {
+            // 동적 조합 접두어('…/people/renewal/' + 이름 + '-studio.jpg'): 폴더를 통째로 열지 않는다.
+            // 그 폴더 바로 아래 이미지·폰트 중, 파일 이름 전체가 — 또는 «앞부분»과 «뒷부분»이 각각 —
+            // 같은 파일 안에 문자열로 적혀 있는 것만 넣는다(R2-F1). 그 밖은 아무도 부를 수 없는 파일이다.
             const d = c.replace(/\/$/, '');
-            for (const f of files) if (path.posix.dirname(f) === d && IMAGE_FONT.test(f)) enqueue(f, '', rel + ' (접두어 ' + d + '/)');
+            if (!d.startsWith('project/assets/')) {
+              errors.push(`project/assets 밖 폴더를 동적으로 참조: ${d}/ ← ${rel} (허용하지 않는다 — 파일 경로를 직접 적어야 한다)`);
+              continue;
+            }
+            literals ??= new Set([...text.matchAll(LITERAL)].map((x) => x[1]));
+            let n = 0;
+            for (const f of files) {
+              if (path.posix.dirname(f) !== d || !IMAGE_FONT.test(f)) continue;
+              const name = path.posix.basename(f);
+              let named = literals.has(name);
+              for (let k = 1; !named && k < name.length; k++) named = literals.has(name.slice(0, k)) && literals.has(name.slice(k));
+              if (named) { enqueue(f, '', rel + ' (동적 ' + d + '/)'); n++; }
+            }
+            if (!n) errors.push(`동적 접두어 ${d}/ 에서 이름이 확인되는 파일이 없음 ← ${rel} (조합 방식을 확인하라)`);
+          } else if (c.startsWith('project/') && !/[\$\{}*]/.test(c)) {
+            // project/ 안을 가리키는데 저장소에 없는 참조 — 배포 뒤 404 가 된다(R2-F2: 조용히 넘기지 않는다)
+            unresolved.set(c, rel);
           }
         }
       }
     }
   }
 
+  const warnings = [];
+  for (const [c, from] of unresolved) {
+    if (KNOWN_MISSING.has(c)) warnings.push(`기존 결함(라이브도 404): ${c} ← ${from}`);
+    else errors.push(`참조한 파일이 저장소에 없음: ${c} ← ${from} (배포 뒤 404)`);
+  }
   const picked = [...reached.keys()].filter((r) => !denyReason(r)).sort();
   for (const [r, from] of reached) {
     const why = denyReason(r);
@@ -187,13 +224,14 @@ export function buildSite({ root, out = path.join(root, '_site'), write = true }
   }
 
   const bytes = picked.reduce((s, r) => s + fs.statSync(path.join(root, r)).size, 0);
-  return { picked, errors, bytes, total: files.size };
+  return { picked, errors, warnings, bytes, total: files.size };
 }
 
 /* ── CLI ─────────────────────────────────────────────────────────────────── */
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-  const { picked, errors, bytes, total } = buildSite({ root });
+  const { picked, errors, warnings, bytes, total } = buildSite({ root });
+  for (const w of warnings) console.warn('⚠ ' + w);
   if (errors.length) {
     console.error(`✗ 배포본 검사 실패 ${errors.length}건 (_site 를 만들지 않았거나 금지 파일이 섞였다)`);
     for (const e of errors.slice(0, 50)) console.error('  - ' + e);
