@@ -56,3 +56,5 @@ heroCaption: 부동산 매매계약의 특약을 설명하기 위한 AI 생성 �
 - [소득세법 제96조](https://www.law.go.kr/법령/소득세법/제96조) [API 확인]
 - [국세청 양도소득세 안내](https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7715&mi=2315) [웹검색 확인]
 - [관련 글 · 잔금 일부를 남긴 경우의 양도일](https://www.jttax.co.kr/insights/property-balance-held-before-registration.html)
+
+네이버 블로그에서 같은 주제를 읽어보세요. [블로그 글 읽기](https://blog.naver.com/jt_tax/224484855081)

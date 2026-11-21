@@ -60,3 +60,5 @@ heroCaption: 종부세 분납을 설명하기 위한 AI 생성 이미지입니�
 - [국세청 분납 안내](https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7734&mi=40376) [웹검색 확인]
 - [국세청 종합부동산세 분납신청서](https://www.nts.go.kr/nts/na/ntt/selectNttInfo.do?mi=2359&nttSn=1345277) [웹검색 확인]
 - [관련 글 · 2026년 종부세 계산 안내](https://www.jttax.co.kr/insights/comprehensive-real-estate-tax-2026.html)
+
+네이버 블로그에서 같은 주제를 읽어보세요. [블로그 글 읽기](https://blog.naver.com/jt_tax/224484854303)

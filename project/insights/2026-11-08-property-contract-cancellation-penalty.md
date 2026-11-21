@@ -44,3 +44,5 @@ heroCaption: 상담 준비 상황을 표현한 AI 제작 이미지입니다.
 ## 고객 인계 문구
 
 ‘계약은 해제됐고 매수인에게 원금과 추가 금액이 함께 지급됐습니다. 합의서에는 각 항목의 금액이 구분돼 있습니다.’ 민감정보 없이 먼저 상황을 전하고 세무사가 필요한 서류와 검토 범위를 안내하도록 연결합니다. [양도소득세 거래 점검](https://www.jttax.co.kr/insights/capital-gains-tax-traps.html) · [공인중개사 상담 창구](https://www.jttax.co.kr/desk/broker.html)
+
+네이버 블로그에서 같은 주제를 읽어보세요. [블로그 글 읽기](https://blog.naver.com/jt_tax/224485453027)
