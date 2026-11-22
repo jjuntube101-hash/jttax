@@ -79,7 +79,13 @@ for (const f of files) {
 }
 for (const slug of ['vat-basics','vat-final-filing-2026']) {
   const html = fs.readFileSync(path.join(root,'insights',slug+'.html'),'utf8');
-  assert.ok(html.includes('법령 원문 대조 2026-10-02'));
+  const sourceDir = path.join(root, 'project', 'insights');
+  const source = fs.readdirSync(sourceDir).find(name => name.endsWith('-' + slug + '.md'));
+  assert.ok(source, slug + ': VAT source must exist');
+  const lawChecked = fs.readFileSync(path.join(sourceDir, source), 'utf8')
+    .match(/^lawChecked: (\d{4}-\d{2}-\d{2})\r?$/m)?.[1];
+  assert.ok(lawChecked && lawChecked >= '2026-10-02', slug + ': VAT law review date');
+  assert.ok(html.includes('법령 원문 대조 ' + lawChecked), slug + ': rendered law review date');
   assert.ok(html.includes('https://www.law.go.kr/'));
   assert.ok(html.includes('상반기 세금계산서 발급'));
   assert.ok(!html.includes('개인 일반과세자만 대상이고 간이과세자는 제외'));
