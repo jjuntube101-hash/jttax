@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "comprehensive-real-estate-tax-deferral-2026", tag: "INSIGHT · PROPERTY TAX", date: "2026.11.22", title: "2026년 종부세 납부유예, 1세대 1주택자가 확인할 요건과 신청서", excerpt: "1세대 1주택자의 주택분 종합부동산세 납부유예 요건, 담보와 신청서를 준비할 때 확인할 사항을 정리합니다." },
+    { slug: "lease-deposit-home-sale-settlement", tag: "양도소득세", date: "2026.11.22", title: "세입자 있는 집을 팔 때, 전세보증금을 뺀 입금액이 양도가액인가요?", excerpt: "세입자가 있는 주택의 보증금 반환 부담을 매수인이 승계했다면 실제 매매대금과 매도인 통장에 입금된 금액을 구분해 확인하세요." },
     { slug: "joint-home-sale-seller-records", tag: "양도소득세", date: "2026.11.21", title: "공동명의 주택을 팔 때 양도소득세 신고, 매도인별로 어떤 자료를 준비할까요?", excerpt: "공동명의 주택을 한 계약서로 매도한 경우 각 소유자의 지분, 취득 이력, 매매대금 정산을 확인할 자료를 정리합니다." },
     { slug: "year-end-tax-data-consent-2026", tag: "연말정산", date: "2026.11.21", title: "2026년 귀속 연말정산 간소화자료 일괄제공, 회사 신청과 근로자 동의 일정", excerpt: "2026년 귀속 연말정산 일괄제공은 회사의 신청과 근로자의 동의 절차가 따로 있습니다. 각 일정과 자료 제출 방식을 확인하세요." },
     { slug: "buyer-paid-capital-gains-tax-contract", tag: "양도소득세", date: "2026.11.20", title: "매수인이 양도소득세를 내기로 한 계약, 매도인은 무엇을 신고하나요?", excerpt: "매매대금 외에 매수인이 매도자의 양도소득세를 부담하기로 했다면 특약, 정산 내역과 실제 지급 증빙을 나란히 확인하세요." },
