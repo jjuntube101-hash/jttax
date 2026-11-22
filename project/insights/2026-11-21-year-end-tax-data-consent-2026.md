@@ -59,3 +59,5 @@ heroCaption: 연말정산 자료 동의 절차를 설명하는 AI 생성 이미�
 - [국세청 2026년 귀속 일괄제공 안내](https://s.nts.go.kr/nowon/na/ntt/selectNttInfo.do?mi=5890&nttSn=1355933) [웹검색 확인]
 - [국세청 회사 명단 조기등록 안내](https://nts.go.kr/dongjak/na/ntt/selectNttInfo.do?mi=5491&nttSn=1355849) [웹검색 확인]
 - [관련 글 · 이직자의 전 직장 급여 확인](https://www.jttax.co.kr/insights/job-change-year-end-tax-2026.html)
+
+네이버 블로그에서 같은 주제를 읽어보세요. [블로그 글 읽기](https://blog.naver.com/jt_tax/224486305946)

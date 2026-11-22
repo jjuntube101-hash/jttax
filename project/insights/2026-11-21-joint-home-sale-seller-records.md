@@ -58,3 +58,5 @@ heroCaption: 공동명의 주택 매도 서류를 설명하는 AI 생성 이미�
 - [국세청 부동산 양도소득세 예정신고 안내](https://ems.nts.go.kr/nts/na/ntt/selectNttInfo.do?mi=2307&nttSn=1346906) [웹검색 확인]
 - [국세청 공동명의 양도 안내 자료](https://www.nts.go.kr/comm/ntsFileDown.do?filePath=%2Fupload%2Fnts%2F03%2F0308%2F030801%2F_nts_news_2020%EB%85%84+%ED%95%B4%EC%99%B8%EB%82%A9%EC%84%B8%EC%9E%90%EA%B0%80+%EC%95%8C%EC%95%84%EC%95%BC+%ED%95%A0+%EC%84%B8%EA%B8%88%EC%83%81%EC%8B%9D.pdf) [웹검색 확인]
 - [관련 글 · 매수인이 양도소득세를 부담하는 계약](https://www.jttax.co.kr/insights/buyer-paid-capital-gains-tax-contract.html)
+
+네이버 블로그에서 같은 주제를 읽어보세요. [블로그 글 읽기](https://blog.naver.com/jt_tax/224486306302)
