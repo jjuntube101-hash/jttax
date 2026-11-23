@@ -745,6 +745,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/real-estate-brokerage-fee-cash-receipt.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/renovation-costs-sale-evidence.html</loc>
     <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
@@ -837,6 +843,12 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/virtual-asset-tax-2027.html</loc>
     <lastmod>2026-06-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/year-end-pension-savings-irp-credit-2026.html</loc>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

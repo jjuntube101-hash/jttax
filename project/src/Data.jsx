@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "real-estate-brokerage-fee-cash-receipt", tag: "INSIGHT · BOOKKEEPING", date: "2026.11.23", title: "부동산 중개보수를 계좌이체로 받을 때, 현금영수증은 누구에게 발급하나요?", excerpt: "부동산 중개보수를 이체로 받았다면 건당 거래금액과 실제 중개서비스를 받은 사람을 확인합니다. 요청 없이 발급해야 하는 기준과 자진발급 때 남길 기록을 정리했습니다." },
+    { slug: "year-end-pension-savings-irp-credit-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.23", title: "2026년 연말정산, 연금저축과 IRP 세액공제 한도는 어떻게 확인하나요?", excerpt: "2026년 연금저축과 개인형퇴직연금에 납입한 금액을 따로 확인하세요. 연금저축 한도와 합산 한도, 납입 확인서에서 구분할 항목을 정리했습니다." },
     { slug: "comprehensive-real-estate-tax-deferral-2026", tag: "INSIGHT · PROPERTY TAX", date: "2026.11.22", title: "2026년 종부세 납부유예, 1세대 1주택자가 확인할 요건과 신청서", excerpt: "1세대 1주택자의 주택분 종합부동산세 납부유예 요건, 담보와 신청서를 준비할 때 확인할 사항을 정리합니다." },
     { slug: "lease-deposit-home-sale-settlement", tag: "양도소득세", date: "2026.11.22", title: "세입자 있는 집을 팔 때, 전세보증금을 뺀 입금액이 양도가액인가요?", excerpt: "세입자가 있는 주택의 보증금 반환 부담을 매수인이 승계했다면 실제 매매대금과 매도인 통장에 입금된 금액을 구분해 확인하세요." },
     { slug: "joint-home-sale-seller-records", tag: "양도소득세", date: "2026.11.21", title: "공동명의 주택을 팔 때 양도소득세 신고, 매도인별로 어떤 자료를 준비할까요?", excerpt: "공동명의 주택을 한 계약서로 매도한 경우 각 소유자의 지분, 취득 이력, 매매대금 정산을 확인할 자료를 정리합니다." },
