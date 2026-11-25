@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "property-gift-tax-paid-by-donor", tag: "INSIGHT · GIFT TAX", date: "2026.11.25", title: "부동산 증여 뒤 부모가 증여세를 대신 냈다면, 어떤 지급 기록을 남기나요?", excerpt: "부동산 증여세를 부모가 냈다면 자녀가 부담할 세금을 대신 낸 것인지, 부모에게 법정 연대납부의무가 있었는지 확인합니다. 등기·납부·송금 자료를 구분해 정리했습니다." },
+    { slug: "year-end-rent-tax-credit-midyear-move-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.25", title: "2026년 이사한 해의 월세 세액공제, 전·후 계약서는 어떻게 정리하나요?", excerpt: "같은 해 월세집을 옮겼다면 이전 집과 새 집의 임대차계약서, 주민등록 주소, 월세 이체내역을 각각 맞춰 봅니다. 2026년 연말정산에서 회사에 제출할 자료를 정리했습니다." },
     { slug: "real-estate-brokerage-fee-cash-receipt", tag: "INSIGHT · BOOKKEEPING", date: "2026.11.23", title: "부동산 중개보수를 계좌이체로 받을 때, 현금영수증은 누구에게 발급하나요?", excerpt: "부동산 중개보수를 이체로 받았다면 건당 거래금액과 실제 중개서비스를 받은 사람을 확인합니다. 요청 없이 발급해야 하는 기준과 자진발급 때 남길 기록을 정리했습니다." },
     { slug: "year-end-pension-savings-irp-credit-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.23", title: "2026년 연말정산, 연금저축과 IRP 세액공제 한도는 어떻게 확인하나요?", excerpt: "2026년 연금저축과 개인형퇴직연금에 납입한 금액을 따로 확인하세요. 연금저축 한도와 합산 한도, 납입 확인서에서 구분할 항목을 정리했습니다." },
     { slug: "comprehensive-real-estate-tax-deferral-2026", tag: "INSIGHT · PROPERTY TAX", date: "2026.11.22", title: "2026년 종부세 납부유예, 1세대 1주택자가 확인할 요건과 신청서", excerpt: "1세대 1주택자의 주택분 종합부동산세 납부유예 요건, 담보와 신청서를 준비할 때 확인할 사항을 정리합니다." },
