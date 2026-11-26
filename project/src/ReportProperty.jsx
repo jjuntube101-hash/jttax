@@ -865,7 +865,7 @@ function JTReportProperty({ setRoute, onBack }) {
 
   const runAnalysis = async () => {
     const missing = visibleQs.findIndex(q => !canNext(q));
-    if (missing >= 0) { setReport(null); setStep(missing); return; }
+    if (missing >= 0) { inputSession.invalidate(); setStep(missing); return; }
     const inputRequest=inputSession.begin();
     const setReport=inputSession.sink(inputRequest,rawSetReport);
     const setLoading=inputSession.sink(inputRequest,rawSetLoading);
