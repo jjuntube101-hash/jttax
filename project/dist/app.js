@@ -3,7 +3,7 @@
    소스: project/src/*.jsx (63개, ORDER 순서)
    ⛔ 이 파일을 손으로 고치면 다음 빌드에 덮어써집니다. 소스를 고치고 다시 빌드하세요.
    ⛔ 커밋에서 빠뜨리면 라이브가 «옛 코드»로 돕니다 — tests_build_fresh.js 가 막습니다. */
-window.JT_FRONTEND_BUILD = Object.freeze({"schema_version":"frontend-build/1","build_id":"frontend-7f9331f78fd776fd6cdd","payload_sha256":"7f9331f78fd776fd6cddf8fa5b20de9fe5d7707fd597e51ac1e29c624a1a7264"});
+window.JT_FRONTEND_BUILD = Object.freeze({"schema_version":"frontend-build/1","build_id":"frontend-2c7d957179dc0c20e106","payload_sha256":"2c7d957179dc0c20e106aaa0b7aab32ca7de49da7de483ce272e8c1cde32f90f"});
 
 /* ────────── project/data/ordinance-cards.json (읽기 전용 원문 안내 · 세액 미반영) ────────── */
 window.JT_ORDINANCE_CARDS = {"_note":"법제처 자치법규 API 스냅샷. 세액 계산에 반영하지 않는다(원문 안내 전용). 재생성: python project/scripts/build-ordinance-cards.py","generatedAt":"2026-11-15","cards":{"서울특별시":{"region":"서울특별시","ordinanceName":"서울특별시 시세 감면 조례","ordinanceSerial":"2001341","ordinanceId":"2000202","effectiveDate":"20250101","promulgationDate":"20250101","promulgationNo":"9413","revisionInfo":"일부개정","articleLabel":"제13조","articleTitle":"산업단지 등에 대한 감면","articleText":"제13조(산업단지 등에 대한 감면) 법 제78조제8항에 따른 \"조례로 정하는 율\"은 다음 각 호와 같다.\n  1. 법 제78조제4항제2호가목의 경감률에 추가하는 경감률은 100분의 25로 한다.\n  2. 법 제78조제4항제2호나목의 경감률에 추가하는 경감률은 100분의 15로 한다.","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2001341","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2001341&type=XML","appliedToCalculation":false},"부산광역시":{"region":"부산광역시","ordinanceName":"부산광역시 시세 감면 조례","ordinanceSerial":"2130441","ordinanceId":"2064493","effectiveDate":"20260520","promulgationDate":"20260520","promulgationNo":"7946","revisionInfo":"일부개정","articleLabel":"제6조","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조(산업단지 등에 대한 감면) 법 제78조제8항에 따른 “조례로 정하는 율”은 다음 각 호와 같다.<개정 2017. 5. 31>\n1. 법 제78조제4항제2호가목의 경감률에 추가하는 경감률은 100분의 25로 한다.<개정 2017. 5. 31>\n2. 법 제78조제4항제2호나목의 경감률에 추가하는 경감률은 100분의 15로 한다.","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2130441","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2130441&type=XML","appliedToCalculation":false},"대구광역시":{"region":"대구광역시","ordinanceName":"대구광역시 시세 감면 조례","ordinanceSerial":"2117797","ordinanceId":"2050073","effectiveDate":"20260330","promulgationDate":"20260330","promulgationNo":"6472","revisionInfo":"일부개정","articleLabel":"제6조","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음과 같다. <개정 2026.3.30.>\n1. 법 제78조제5항제2호가목2)의 경감률에 추가하는 경감률은 100분의 25로 한다. <개정 2017.5.10., 2026.3.30.>\n2. 법 제78조제5항제2호가목3)의 경감률에 추가하는 경감률은 100분의 25로 한다. <신설 2026.3.30.>\n3. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률은 100분의 15로 한다. <개정 2026.3.30.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2117797","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2117797&type=XML","appliedToCalculation":false},"인천광역시":{"region":"인천광역시","ordinanceName":"인천광역시 시세 감면 조례","ordinanceSerial":"2084875","ordinanceId":"2110737","effectiveDate":"20251112","promulgationDate":"20251112","promulgationNo":"7618","revisionInfo":"일부개정","articleLabel":"제6조의2","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조의2(산업단지 등에 대한 감면) 법 제78조제8항에 따라 추가로 경감하는 율은 다음 각 호의 구분에 따른다.\n1. 법 제78조제4항제2호가목의 경감률에 추가하는 경감률: 100분의 25\n2. 법 제78조제4항제2호나목의 경감률에 추가하는 경감률: 100분의 15\n\n[본조신설 2025.9.29.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2084875","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2084875&type=XML","appliedToCalculation":false},"광주광역시":{"region":"광주광역시","ordinanceName":"전남광주통합특별시 시세 감면 조례","ordinanceSerial":"2137635","ordinanceId":"2263510","effectiveDate":"20260701","promulgationDate":"20260701","promulgationNo":"75","revisionInfo":"제정","articleLabel":"제8조","articleTitle":"산업단지 등에 대한 감면","articleText":"제8조(산업단지 등에 대한 감면) \n① 법 제78조제6항에 따른 “조례로 정하는 율”은 다음 각 호와 같다.\n1. 법 제78조제5항제2호가목2) 및 3)의 경감률에 추가하는 경감률은 100분의 25로 한다.\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률은 100분의 15로 한다.\n② 제1항에 대한 감면을 적용할 때 다음 각 호의 어느 하나에 해당하는 경우 그 해당 부분에 대해서는 감면된 취득세를 추징한다.\n1. 정당한 사유 없이 그 취득일부터 3년이 경과할 때까지 해당 용도로 직접 사용하지 아니하는 경우\n2. 해당 용도로 직접 사용한 기간이 2년 미만인 상태에서 매각(해당 산업단지관리기관 또는 산업기술단지관리기관이 환매하는 경우는 제외한다), 증여하거나 다른 용도로 사용하는 경우","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2137635","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2137635&type=XML","appliedToCalculation":false,"successorSource":{"note":"종전 소재지로 찾은 조회일 현재의 후속 조례입니다. 취득일과 납세지에 적용되는 규정은 제2조와 제정 부칙의 적용례·경과조치를 함께 확인하세요.","scopeText":"제2조(다른 법령과의 관계) \n① 이 조례에 따라 전남광주통합특별시 시세(이하 “시세”라고 한다)를 감면하는 경우 「전남광주통합특별시 설치를 위한 특별법」 제11조제8항에서 규정한 지방세 세목 기준을 준용한다.\n② 이 조례에서 사용하는 용어의 뜻은 별도의 규정이 없으면 「지방세특례제한법」(이하 “법”이라 한다), 「지방세특례제한법 시행령」(이하 “영”이라 한다) 및 「지방세특례제한법 시행규칙」(이하 “규칙”이라 한다)에서 정하는 바에 따른다.","addendumText":"제2조(다른 조례의 폐지) 이 조례 시행과 동시에 다음 각 호의 조례는 폐지한다.\n1. 전라남도 도세 감면 조례\n2. 광주광역시 시세 감면 조례\n제3조(지방세 감면에 관한 적용례) 이 조례의 규정은 2026년 7월 1일 이후 납세의무가 성립하는 경우부터 적용한다.\n제4조(법 조항이동에 따른 감면의 적용례) 제6조제1항 및 제8조제1항의 규정은 2026년 1월 1일 취득분부터 적용한다.\n제5조(감면에 대한 일반적 경과조치) 이 조례 시행 전에 종전의 「광주광역시 시세 감면 조례」 및 「전라남도 도세 감면 조례」에 따라 부과 또는 감면하였거나 부과 또는 감면하여야 할 시세에 대해서는 종전의 규정에 따른다.","repealSourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2137635"}},"대전광역시":{"region":"대전광역시","ordinanceName":"대전광역시 시세 감면 조례","ordinanceSerial":"2158509","ordinanceId":"2052383","effectiveDate":"20260807","promulgationDate":"20260807","promulgationNo":"6637","revisionInfo":"일부개정","articleLabel":"제4조","articleTitle":"산업단지에 대한 추가감경","articleText":"제4조(산업단지에 대한 추가감경) 법 제78조제6항에서 “조례로 정하는 율”이란 취득세의 100분의 25를 말한다. 다만, 법 제78조제5항제2호다목의 경우에는 100분의 15로 한다. <개정 2017.4.28., 2026. 8. 7.>\n\n[제목개정 2017.4.28.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2158509","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2158509&type=XML","appliedToCalculation":false},"울산광역시":{"region":"울산광역시","ordinanceName":"울산광역시 시세 감면 조례","ordinanceSerial":"2120851","ordinanceId":"2101740","effectiveDate":"20260409","promulgationDate":"20260409","promulgationNo":"3263","revisionInfo":"일부개정","articleLabel":"제7조","articleTitle":"산업단지 등에 대한 감면","articleText":"제7조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율“은 다음 각 호와 같다. <개정 2018.5.17., 2022. 4. 7., 2026. 4. 9.>\n1. 법 제78조제5항제2호가목2의 경감률에 추가하는 경감률은 100분의 25로 한다.\n2. 법 제78조제5항제2호가목3)의 경감률에 추가하는 경감률은 100분의 25로 한다.\n3. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률은 100분의 15로 한다.","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2120851","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2120851&type=XML","appliedToCalculation":false},"세종특별자치시":{"region":"세종특별자치시","ordinanceName":"세종특별자치시 시세 감면 조례","ordinanceSerial":"2122007","ordinanceId":"2144277","effectiveDate":"20260410","promulgationDate":"20260410","promulgationNo":"3003","revisionInfo":"일부개정","articleLabel":"제8조의3","articleTitle":"산업단지 등에 대한 추가감면","articleText":"제8조의3(산업단지 등에 대한 추가감면) 법 제78조제6항에서 “조례로 정하는 율”이란 다음 각 호와 같다.<개정, 2026. 4. 10.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률: 100분의 25<개정, 2026. 4. 10.>\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률: 100분의 15[전문개정, 2019. 12. 16.]<개정, 2026. 4. 10.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2122007","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2122007&type=XML","appliedToCalculation":false},"경기도":{"region":"경기도","ordinanceName":"경기도 도세 감면 조례","ordinanceSerial":"2114419","ordinanceId":"2023930","effectiveDate":"20260304","promulgationDate":"20260304","promulgationNo":"8852","revisionInfo":"일부개정","articleLabel":"제6조","articleTitle":"산업단지 등에 대한 감면","articleText":"제6조(산업단지 등에 대한 감면) \n① 법 제78조제6항에 따라 추가로 경감하는 율은 다음 각 호의 구분에 따른다. <개정 2025.12.31., 2026.3.4.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률: 100분의 25 <개정 2017.5.4., 2026.3.4.>\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률: 100분의 15 <개정 2026.3.4.>\n② 제1항에 따라 취득세를 경감받은 자가 법 제78조제7항에 따라 추징대상이 되는 경우에는 경감된 취득세를 추징한다. [신설 2025.12.31.] <개정 2026.3.4.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2114419","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2114419&type=XML","appliedToCalculation":false},"강원특별자치도":{"region":"강원특별자치도","ordinanceName":"강원특별자치도 도세 감면 조례","ordinanceSerial":"2124179","ordinanceId":"2230535","effectiveDate":"20260417","promulgationDate":"20260417","promulgationNo":"5789","revisionInfo":"일부개정","articleLabel":"제8조","articleTitle":"산업단지 등에 대한 감면","articleText":"제8조(산업단지 등에 대한 감면) 법 제78조제6항에서 “조례로 정하는 율”은 다음 각 호와 같다.\n1. 법 제78조제5항제2호가목에 따라 경감하는 경우에는 취득세의 100분의 25를 경감\n2. 법 제78조제5항제2호다목에 따라 경감하는 경우에는 취득세의 100분의 15를 경감\n\n[전문개정 2026. 4. 17.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2124179","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2124179&type=XML","appliedToCalculation":false},"충청북도":{"region":"충청북도","ordinanceName":"충청북도 도세 감면조례","ordinanceSerial":"2143331","ordinanceId":"2129413","effectiveDate":"20260703","promulgationDate":"20260703","promulgationNo":"5587","revisionInfo":"일부개정","articleLabel":"제11조","articleTitle":"산업단지 등에 대한 감면","articleText":"제11조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음 각 호와 같다.\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률은 100분의 25로 한다.\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률은 100분의 15로 한다.\n\n[전문개정 2026.7.3.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2143331","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2143331&type=XML","appliedToCalculation":false},"전북특별자치도":{"region":"전북특별자치도","ordinanceName":"전북특별자치도 도세 감면 조례","ordinanceSerial":"2148733","ordinanceId":"2153475","effectiveDate":"20260710","promulgationDate":"20260710","promulgationNo":"6005","revisionInfo":"일부개정","articleLabel":"제11조","articleTitle":"산업단지 등에 대한 감면","articleText":"제11조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음과 같다. <개정 2017. 12. 29., 2024. 3. 29.,2026. 7. 10.>\n1. 법 제78조제5항제2호가목의 경감율에 추가하는 경감율: 100분의 25\n2. 법 제78조제5항제2호다목의 경감율에 추가하는 경감율: 100분의 15","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2148733","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2148733&type=XML","appliedToCalculation":false},"전라남도":{"region":"전라남도","ordinanceName":"전남광주통합특별시 시세 감면 조례","ordinanceSerial":"2137635","ordinanceId":"2263510","effectiveDate":"20260701","promulgationDate":"20260701","promulgationNo":"75","revisionInfo":"제정","articleLabel":"제8조","articleTitle":"산업단지 등에 대한 감면","articleText":"제8조(산업단지 등에 대한 감면) \n① 법 제78조제6항에 따른 “조례로 정하는 율”은 다음 각 호와 같다.\n1. 법 제78조제5항제2호가목2) 및 3)의 경감률에 추가하는 경감률은 100분의 25로 한다.\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률은 100분의 15로 한다.\n② 제1항에 대한 감면을 적용할 때 다음 각 호의 어느 하나에 해당하는 경우 그 해당 부분에 대해서는 감면된 취득세를 추징한다.\n1. 정당한 사유 없이 그 취득일부터 3년이 경과할 때까지 해당 용도로 직접 사용하지 아니하는 경우\n2. 해당 용도로 직접 사용한 기간이 2년 미만인 상태에서 매각(해당 산업단지관리기관 또는 산업기술단지관리기관이 환매하는 경우는 제외한다), 증여하거나 다른 용도로 사용하는 경우","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2137635","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2137635&type=XML","appliedToCalculation":false,"successorSource":{"note":"종전 소재지로 찾은 조회일 현재의 후속 조례입니다. 취득일과 납세지에 적용되는 규정은 제2조와 제정 부칙의 적용례·경과조치를 함께 확인하세요.","scopeText":"제2조(다른 법령과의 관계) \n① 이 조례에 따라 전남광주통합특별시 시세(이하 “시세”라고 한다)를 감면하는 경우 「전남광주통합특별시 설치를 위한 특별법」 제11조제8항에서 규정한 지방세 세목 기준을 준용한다.\n② 이 조례에서 사용하는 용어의 뜻은 별도의 규정이 없으면 「지방세특례제한법」(이하 “법”이라 한다), 「지방세특례제한법 시행령」(이하 “영”이라 한다) 및 「지방세특례제한법 시행규칙」(이하 “규칙”이라 한다)에서 정하는 바에 따른다.","addendumText":"제2조(다른 조례의 폐지) 이 조례 시행과 동시에 다음 각 호의 조례는 폐지한다.\n1. 전라남도 도세 감면 조례\n2. 광주광역시 시세 감면 조례\n제3조(지방세 감면에 관한 적용례) 이 조례의 규정은 2026년 7월 1일 이후 납세의무가 성립하는 경우부터 적용한다.\n제4조(법 조항이동에 따른 감면의 적용례) 제6조제1항 및 제8조제1항의 규정은 2026년 1월 1일 취득분부터 적용한다.\n제5조(감면에 대한 일반적 경과조치) 이 조례 시행 전에 종전의 「광주광역시 시세 감면 조례」 및 「전라남도 도세 감면 조례」에 따라 부과 또는 감면하였거나 부과 또는 감면하여야 할 시세에 대해서는 종전의 규정에 따른다.","repealSourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2137635"}},"경상북도":{"region":"경상북도","ordinanceName":"경상북도 도세 감면 조례","ordinanceSerial":"2169769","ordinanceId":"2027008","effectiveDate":"20260921","promulgationDate":"20260921","promulgationNo":"5519","revisionInfo":"일부개정","articleLabel":"제10조","articleTitle":"산업단지 등에 대한 감면","articleText":"제10조(산업단지 등에 대한 감면) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음 각 호와 같다. <개정 2026. 4. 20.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감율은 100분의 25로 한다. <개정 2026. 4. 20.>\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감율은 100분의 15로 한다. <개정 2026. 4. 20.>","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2169769","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2169769&type=XML","appliedToCalculation":false},"경상남도":{"region":"경상남도","ordinanceName":"경상남도 도세 감면 조례","ordinanceSerial":"2139293","ordinanceId":"2025984","effectiveDate":"20260702","promulgationDate":"20260702","promulgationNo":"6136","revisionInfo":"일부개정","articleLabel":"제7조의2","articleTitle":"산업단지 등에 대한 감면","articleText":"제7조의2(산업단지 등에 대한 감면  <본조신설 2019.9.26.>) 법 제78조제6항에 따른 “조례로 정하는 율”은 다음 각 호와 같다. <개정 2026.7.2.>\n1. 법 제78조제5항제2호가목의 경감률에 추가하는 경감률 : 100분의 25\n2. 법 제78조제5항제2호다목의 경감률에 추가하는 경감률 : 100분의 15","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2139293","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2139293&type=XML","appliedToCalculation":false},"제주특별자치도":{"region":"제주특별자치도","ordinanceName":"제주특별자치도세 감면 조례","ordinanceSerial":"2142179","ordinanceId":"2117578","effectiveDate":"20260630","promulgationDate":"20260630","promulgationNo":"4309","revisionInfo":"일부개정","articleLabel":"제5조의2","articleTitle":"산업단지 등에 대한 감면","articleText":"제5조의2(산업단지 등에 대한 감면) 「지방세특례제한법」 제78조제6항에서 “조례로 정하는 율“이란 다음 각 호의 구분과 같다.\n<개정 2026.4.8.>\n1. 「지방세특례제한법」 제78조제5항제2호가목의 경감률에 추가하는 경감률: 100분의 25\n2. 「지방세특례제한법」 제78조제5항제2호다목의 경감률에 추가하는 경감률: 100분의 15\n\n[본조신설 2022.12.30.]","upstream":"지방세특례제한법 제78조","fetchedAt":"2026-11-15","sourceUrl":"https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2142179","apiUrl":"https://www.law.go.kr/DRF/lawService.do?target=ordin&MST=2142179&type=XML","appliedToCalculation":false}},"unavailable":{"충청남도":"법제처에서 조회한 제6197호의 부칙 원문을 확인하지 못해 카드를 보류했습니다."}};
@@ -3789,7 +3789,7 @@ function JTReportAppeal({ setRoute, onBack }) {
   const toggleMulti = (id, v) => setAnswers((a) => {
     const cur2 = Array.isArray(a[id]) ? a[id] : [];
     if (cur2.includes(v)) return __spreadProps(__spreadValues({}, a), { [id]: cur2.filter((x) => x !== v) });
-    return __spreadProps(__spreadValues({}, a), { [id]: [...cur2, v] });
+    return __spreadProps(__spreadValues({}, a), { [id]: v === "none" ? ["none"] : [...cur2.filter((x) => x !== "none"), v] });
   });
   const canNext = () => {
     if (cur.freeform) return true;
@@ -3801,7 +3801,7 @@ function JTReportAppeal({ setRoute, onBack }) {
   const dataFlow = aiAvailable ? "ai" : "local";
   const basicReport = () => {
     const hasValidTiming = answers.timing === "lt_5y" || answers.timing === "post_audit";
-    const reasonCount = Array.isArray(answers.reason) ? answers.reason.length : 0;
+    const reasonCount = Array.isArray(answers.reason) ? answers.reason.filter((v) => v !== "none").length : 0;
     const postAudit = answers.timing === "post_audit";
     let grade = "LOW";
     if (answers.timing === "never" || answers.timing === "gt_5y") grade = "NONE";
@@ -19212,8 +19212,22 @@ function JTReportProperty({ setRoute, onBack }) {
   React.useEffect(() => () => {
     ++jtReqSeq.current;
   }, []);
+  const lookupAuto = React.useRef({ standardValue: false, isUrbanArea: false });
+  const resetLookupValues = () => {
+    const prior = priorAutoRef.current;
+    const auto = lookupAuto.current;
+    if (!prior.opt && !prior.amt && !auto.standardValue && !auto.isUrbanArea) return;
+    const next = propPriorAutoReset(answersRef.current, prior);
+    if (auto.standardValue) delete next.answers.standardValue;
+    if (auto.isUrbanArea) delete next.answers.isUrbanArea;
+    priorAutoRef.current = next.auto;
+    lookupAuto.current = { standardValue: false, isUrbanArea: false };
+    answersRef.current = next.answers;
+    setAnswers(next.answers);
+  };
   const setLaddrSync = (v) => {
     cancelLookup();
+    if (v.trim() !== jtAddrRef.current.trim()) resetLookupValues();
     jtAddrRef.current = v;
     setLaddr(v);
   };
@@ -19235,19 +19249,23 @@ function JTReportProperty({ setRoute, onBack }) {
   const cur = visibleQs[safeStep];
   const isLast = safeStep === total - 1;
   const setAns = (id, v) => setAnswers((a) => __spreadProps(__spreadValues({}, a), { [id]: v }));
-  const canNext = () => {
-    if (!cur) return false;
-    if (cur.freeform) return true;
-    if (cur.numeric) {
-      if (cur.optional && !(cur.requiredIf && cur.requiredIf(answers))) return true;
-      const v = Number(answers[cur.id]);
+  const canNext = (cur2 = visibleQs[safeStep]) => {
+    if (!cur2) return false;
+    if (cur2.freeform) return true;
+    if (cur2.numeric) {
+      if (cur2.optional && !(cur2.requiredIf && cur2.requiredIf(answers))) return true;
+      const v = Number(answers[cur2.id]);
       return !isNaN(v) && v > 0;
     }
-    if (cur.amountId && answers[cur.id] === cur.amountWhen) {
-      const v = Number(answers[cur.amountId]);
+    if (cur2.amountId && answers[cur2.id] === cur2.amountWhen) {
+      const v = Number(answers[cur2.amountId]);
       return !isNaN(v) && v > 0;
     }
-    return !!answers[cur.id];
+    return !!answers[cur2.id];
+  };
+  const setAutoAnswer = (id, value) => {
+    lookupAuto.current[id] = true;
+    setAns(id, value);
   };
   const doAddrLookup = async (unit) => {
     if (!laddr.trim()) return;
@@ -19261,14 +19279,7 @@ function JTReportProperty({ setRoute, onBack }) {
     const stale = () => seqStale() || (jtAddrRef.current || "").trim() !== addrNow;
     setLbusy(true);
     setLinfo(null);
-    {
-      const before = answersRef.current || {};
-      const rs = propPriorAutoReset(before, priorAutoRef.current);
-      priorAutoRef.current = rs.auto;
-      answersRef.current = rs.answers;
-      if (before.priorYearStandardValueAmount !== void 0 && rs.answers.priorYearStandardValueAmount === void 0) setAns("priorYearStandardValueAmount", void 0);
-      if (before.priorYearStandardValue !== void 0 && rs.answers.priorYearStandardValue === void 0) setAns("priorYearStandardValue", void 0);
-    }
+    resetLookupValues();
     if (!unit) setUnitAsk(null);
     try {
       let r;
@@ -19295,8 +19306,8 @@ function JTReportProperty({ setRoute, onBack }) {
       if (r && r.status === "needs_unit") {
         setUnitAsk(__spreadProps(__spreadValues({}, r), { addr: addrNow }));
         const reg = r.region;
-        if (reg && reg.urban_area_likely === true) setAns("isUrbanArea", "yes");
-        else if (reg && reg.urban_area_likely === false) setAns("isUrbanArea", "no");
+        if (reg && reg.urban_area_likely === true) setAutoAnswer("isUrbanArea", "yes");
+        else if (reg && reg.urban_area_likely === false) setAutoAnswer("isUrbanArea", "no");
         return;
       }
       if (r && (r.status === "unit_not_found" || r.status === "unit_mismatch")) {
@@ -19316,7 +19327,7 @@ function JTReportProperty({ setRoute, onBack }) {
         }
         if (stale()) return;
         setUnitAsk(null);
-        setAns("standardValue", String(r.amount));
+        setAutoAnswer("standardValue", String(r.amount));
         const prevThis = (answersRef.current || {}).standardValue;
         const ap = propPriorAutoApply(answersRef.current || {}, priorAutoRef.current, priorAmt);
         if (ap.filled) {
@@ -19332,10 +19343,10 @@ function JTReportProperty({ setRoute, onBack }) {
         let msg = ml ? `${ml} \u2014 ${r.year ? r.year + "\uB144 " : ""}\uACF5\uC2DC\uAC00\uACA9 ${formatWon(r.amount)}\uC744 \uC790\uB3D9 \uC785\uB825\uD588\uC5B4\uC694.${looseNote} \uC774 \uC9D1\uC774 \uB9DE\uB294\uC9C0 \uD655\uC778\uD574 \uC8FC\uC138\uC694. \u26A0\uFE0F \uB300\uB2E8\uC9C0 \uC544\uD30C\uD2B8\uB294 \uB3D9\xB7\uD638\uC5D0 \uB530\uB77C \uACF5\uC2DC\uAC00\uACA9\uC774 \uD06C\uAC8C \uB2E4\uB985\uB2C8\uB2E4 \u2014 \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C \uB0B4 \uC138\uB300 \uAE08\uC561\uC744 \uAF2D \uB300\uC870\uD558\uC138\uC694.` : `${r.year ? r.year + "\uB144 " : ""}\uACF5\uC2DC\uAC00\uACA9 ${formatWon(r.amount)}\uC744 \uC790\uB3D9 \uC785\uB825\uD588\uC5B4\uC694 (${kindLabel}). \u26A0\uFE0F \uB300\uB2E8\uC9C0 \uC544\uD30C\uD2B8\uB294 \uB3D9\xB7\uD638\uC5D0 \uB530\uB77C \uACF5\uC2DC\uAC00\uACA9\uC774 \uD06C\uAC8C \uB2E4\uB985\uB2C8\uB2E4 \u2014 \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C \uB0B4 \uC138\uB300 \uAE08\uC561\uC744 \uAF2D \uB300\uC870\uD558\uC138\uC694.`;
         const reg = r.region;
         if (reg && reg.urban_area_likely === true) {
-          setAns("isUrbanArea", "yes");
+          setAutoAnswer("isUrbanArea", "yes");
           msg += ` ${reg.sigungu || "\uD574\uB2F9 \uC9C0\uC5ED"}\uC740 \uB3C4\uC2DC\uC9C0\uC5ED\uC73C\uB85C \uC790\uB3D9\uD310\uB2E8\uD588\uC5B4\uC694(\uB2E4\uB974\uBA74 \uB4A4 \uB2E8\uACC4\uC5D0\uC11C \uC218\uC815).`;
         } else if (reg && reg.urban_area_likely === false) {
-          setAns("isUrbanArea", "no");
+          setAutoAnswer("isUrbanArea", "no");
           msg += " \uBE44\uB3C4\uC2DC\uC9C0\uC5ED\uC73C\uB85C \uC790\uB3D9\uD310\uB2E8\uD588\uC5B4\uC694(\uB2E4\uB974\uBA74 \uC218\uC815).";
         }
         if (priorAmt > 0) msg += ` \uC791\uB144 \uACF5\uC2DC\uAC00\uACA9 ${formatWon(priorAmt)}\uB3C4 \uCC3E\uC558\uC5B4\uC694.`;
@@ -19344,8 +19355,8 @@ function JTReportProperty({ setRoute, onBack }) {
         setLinfo({ ok: true, msg });
       } else if (r && r.region) {
         const reg = r.region;
-        if (reg.urban_area_likely === true) setAns("isUrbanArea", "yes");
-        else if (reg.urban_area_likely === false) setAns("isUrbanArea", "no");
+        if (reg.urban_area_likely === true) setAutoAnswer("isUrbanArea", "yes");
+        else if (reg.urban_area_likely === false) setAutoAnswer("isUrbanArea", "no");
         setLinfo({ ok: false, msg: "\uC774 \uC8FC\uC18C\uC758 \uACF5\uC2DC\uAC00\uACA9\uC740 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694(\uC0C1\uAC00\xB7\uC624\uD53C\uC2A4\uD154\xB7\uC2E0\uCD95 \uB4F1). \uACF5\uC2DC\uAC00\uACA9\uC740 \uC9C1\uC811 \uC785\uB825\uD558\uC2DC\uACE0, \uB3C4\uC2DC\uC9C0\uC5ED \uC5EC\uBD80\uB294 \uC790\uB3D9\uD310\uB2E8\uD588\uC5B4\uC694." });
       } else {
         setLinfo({ ok: false, msg: "\uC774 \uC8FC\uC18C\uC758 \uACF5\uC2DC\uAC00\uACA9\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694(\uC0C1\uAC00\xB7\uC624\uD53C\uC2A4\uD154\xB7\uC2E0\uCD95 \uB4F1\uC740 \uBBF8\uC218\uB85D\uC77C \uC218 \uC788\uC5B4\uC694). \uACF5\uC2DC\uAC00\uACA9\uC744 \uC9C1\uC811 \uC785\uB825\uD574 \uC8FC\uC138\uC694." });
@@ -19357,6 +19368,12 @@ function JTReportProperty({ setRoute, onBack }) {
     }
   };
   const runAnalysis = async () => {
+    const missing = visibleQs.findIndex((q) => !canNext(q));
+    if (missing >= 0) {
+      setReport2(null);
+      setStep(missing);
+      return;
+    }
     const inputRequest = inputSession.begin();
     const setReport2 = inputSession.sink(inputRequest, rawSetReport);
     const setLoading2 = inputSession.sink(inputRequest, rawSetLoading);
@@ -19452,11 +19469,13 @@ function JTReportProperty({ setRoute, onBack }) {
     }
     onBack();
   };
+  const editQuestion = (index) => {
+    cancelLookup();
+    inputSession.invalidate();
+    setStep(index);
+  };
   if (loading) {
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
-      inputSession.invalidate();
-      setStep(index);
-    } }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: editQuestion }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: "\uAC80\uC99D \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0 \uC911\u2026", stepIdx: total, stepTotal: total, onBack: () => {
     }, tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-loading__spinner" }), "\uAC80\uC99D\uB41C \uC138\uAE08 \uC5D4\uC9C4\uC73C\uB85C \uACC4\uC0B0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, opacity: 0.7 } }, "\uCC98\uC74C \uC0AC\uC6A9 \uC2DC \uC5D4\uC9C4\uC744 \uAE68\uC6B0\uB290\uB77C \uCD5C\uB300 30\uCD08\uAE4C\uC9C0 \uAC78\uB9B4 \uC218 \uC788\uC5B4\uC694."))));
   }
   if (report) {
@@ -19466,20 +19485,14 @@ function JTReportProperty({ setRoute, onBack }) {
     if (propBlocked) {
       const propBlockReason = propFallbackGaps(answers, { precise: true }).length > 0 ? "input" : calc.engineState === "refused" ? "refused" : "down";
       const propBlockTag = propBlockReason === "input" ? "\uC815\uBC00 \uACC4\uC0B0 \uD544\uC694" : propBlockReason === "refused" ? "\uC785\uB825\uC774 \uB354 \uD544\uC694\uD569\uB2C8\uB2E4" : "\uACC4\uC0B0 \uC5D4\uC9C4 \uC5F0\uACB0 \uC2E4\uD328";
-      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
-        inputSession.invalidate();
-        setStep(index);
-      } }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: propBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: propBlockReason === "down" ? [] : propGaps, onRetry: runAnalysis, reason: propBlockReason }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: editQuestion }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: propBlockTag, stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTFallbackBlocked, { gaps: propBlockReason === "down" ? [] : propGaps, onRetry: runAnalysis, reason: propBlockReason }), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__nav", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
         setReport(null);
         setPhase("quick");
         setStep(0);
         setAnswers({});
       } }, "\uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"))));
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
-      inputSession.invalidate();
-      setStep(index);
-    } }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC7AC\uC0B0\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC7AC\uC0B0\uC138(\uC5F0\uAC04 \uCD1D\uC561)" : "\uC7AC\uC0B0\uC138\xB7\uBD80\uAC00\uC138\uBAA9 \uACC4\uC0B0 \uC18C\uACC4 (\uC9C0\uC6D0 \uBC94\uC704 \uD655\uC778 \uD544\uC694)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.appliedRate && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, opacity: 0.8 } }, answers.propertyKind, " \xB7 \uACF5\uC2DC\uAC00\uACA9 ", formatWon(Number(answers.standardValue) || 0), " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", calc.appliedRate, "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uB354 \uC815\uD655\uD788 \uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694. ", /* @__PURE__ */ React.createElement("strong", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84(0.14%)\uC740 \u300C\uB3C4\uC2DC\uC9C0\uC5ED\u300D\uC73C\uB85C \uAC00\uC815\uD574 \uC774\uBBF8 \uD3EC\uD568"), "\uD588\uC73C\uB2C8, \uBE44\uB3C4\uC2DC\uC9C0\uC5ED\uC774\uBA74 \uADF8\uB9CC\uD07C \uC904\uC5B4\uB4ED\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("br", null), answers.propertyKind === "\uC8FC\uD0DD" ? "\uC5EC\uB7EC \uCC44 \uD569\uC0B0 \uB4F1. 1\uC138\uB3001\uC8FC\uD0DD\uC774\uBA74 \uB0AE\uC740 \uACF5\uC815\uBE44\uC728(43~45%)\uC774 \uBC18\uC601\uB410\uC5B4\uC694 \u2014 \uACF5\uC2DC 9\uC5B5 \uC774\uD558\uBA74 \uC138\uC728 \uD2B9\uB840\uAE4C\uC9C0, 9\uC5B5 \uCD08\uACFC\uBA74 \uACF5\uC815\uBE44\uC728\uB9CC \uC801\uC6A9\uB429\uB2C8\uB2E4." : answers.propertyKind === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0 \uC885\uB958(\uC885\uD569/\uBCC4\uB3C4/\uBD84\uB9AC)\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)." : "\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900 (\uACF5\uC2DC\uAC00\uACA9 \xD7 \uACF5\uC815\uBE44\uC728 ", calc.fairRatio, ")"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728"), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7AC\uC0B0\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.mainTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138 (\uBCF8\uC138\uC758 20%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.urbanTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] ? "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uC138\uBD80\uB2F4 \uC0C1\uD55C \uC801\uC6A9 \uD6C4)" : "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uACFC\uD45C \xD7 0.14%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.urbanTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uC5F0\uAC04 \uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), (calc.firstHalf > 0 || calc.secondHalf > 0) && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uB0A9\uBD80 \uC2DC\uAE30:"), " ", calc.firstHalf > 0 && calc.secondHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} + 9\uC6D4 ${formatWon(calc.secondHalf)} (\uC808\uBC18\uC529 \uB098\uB220 \uB0A9\uBD80)` : calc.firstHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} (\uC804\uC561)` : `9\uC6D4 ${formatWon(calc.secondHalf)} (\uC804\uC561)`, " ", /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, "(\uC9C0\uBC29\uC138\uBC95 \xA7115)")), calc.baseCap && calc.baseCap["\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900\uC0C1\uD55C\uC561 \uC801\uC6A9(\xA7110\u2462):"), " \uACF5\uC2DC\uAC00\uACA9 \xD7 \uBE44\uC728 ", formatWon(calc.baseCap["\uC0C1\uD55C\uC804\uACFC\uC138\uD45C\uC900"]), " \u2192 \uC0C1\uD55C ", formatWon(calc.baseCap["\uC0C1\uD55C\uC561"])), calc.burdenApplied && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC138\uBD80\uB2F4 \uC0C1\uD55C\uC774 \uC801\uC6A9\uB418\uC5B4, \uC804\uB144 \uB300\uBE44 \uC77C\uC815 \uD55C\uB3C4\uAE4C\uC9C0\uB9CC \uC62C\uB790\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7122).", calc.burden && typeof calc.burden["\uADFC\uAC70"] === "string" && calc.burden["\uADFC\uAC70"] && /* @__PURE__ */ React.createElement("div", null, "\uADFC\uAC70: ", calc.burden["\uADFC\uAC70"], typeof calc.burden["\uC0C1\uD55C\uC728"] === "string" && calc.burden["\uC0C1\uD55C\uC728"] ? ` \xB7 \uC0C1\uD55C\uC728 ${calc.burden["\uC0C1\uD55C\uC728"]}` : ""), calc.burden && calc.burden["\uBCF8\uC138\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uBCF8\uC138 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uBCF8\uC138"]), " \u2192 ", formatWon(calc.mainTax)), calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uB3C4\uC2DC\uC9C0\uC5ED\uBD84"]), " \u2192 ", formatWon(calc.urbanTax))), calc.smallExempt && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, "2\uCC9C\uC6D0 \uBBF8\uB9CC\uC774\uB77C \uC9D5\uC218\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\xA7119)")), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement(JTCalculationStepLabel, { step: s, formatArticle: propFmtArticle })), /* @__PURE__ */ React.createElement("td", null, propFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 } }, "\uC7AC\uC0B0\uC138\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uB9E4\uB144 6\uC6D4 1\uC77C \uAE30\uC900 \uC18C\uC720\uC790"), "\uC5D0\uAC8C \uADF8 \uD574 \uC804\uC561 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7114). 6\uC6D4 1\uC77C \uC9C1\uC804 \uB9E4\uB3C4\xB7\uC9C1\uD6C4 \uB9E4\uC218\uAC00 \uADF8 \uD574 \uC7AC\uC0B0\uC138 \uBD80\uB2F4 \uBA74\uC5D0\uC11C \uC720\uB9AC\uD569\uB2C8\uB2E4. \uACF5\uC2DC\uAC00\uACA9\uC740 \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), commentary && commentary.headline && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC790\uB3D9 \uBD84\uC11D"), /* @__PURE__ */ React.createElement("p", { style: { fontWeight: 600 } }, commentary.headline), (commentary.cautions || []).map((c, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { marginBottom: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\xB7 ", c.title), " \u2014 ", c.detail))), typeof JTReportConvert === "function" && !propBlocked && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: editQuestion }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0 \uACB0\uACFC", subtitle: "\uC7AC\uC0B0\uC138 \uC815\uBC00 \uACC4\uC0B0", stepIdx: total, stepTotal: total, onBack: () => setReport(null), tag: "LIVE" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade jt-grade-mid" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-label" }, report.quick ? "\uBE60\uB978 \uC608\uC0C1 \uC7AC\uC0B0\uC138(\uC5F0\uAC04 \uCD1D\uC561)" : "\uC7AC\uC0B0\uC138\xB7\uBD80\uAC00\uC138\uBAA9 \uACC4\uC0B0 \uC18C\uACC4 (\uC9C0\uC6D0 \uBC94\uC704 \uD655\uC778 \uD544\uC694)"), /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__grade-val" }, formatWon(calc.totalTax))), report.quick && calc.appliedRate && /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", margin: "0 0 16px", fontSize: 14, opacity: 0.8 } }, answers.propertyKind, " \xB7 \uACF5\uC2DC\uAC00\uACA9 ", formatWon(Number(answers.standardValue) || 0), " \uAE30\uC900, \uC801\uC6A9\uC138\uC728 \uC57D ", calc.appliedRate, "\uB85C \uACC4\uC0B0\uD588\uC5B4\uC694."), report.quick && /* @__PURE__ */ React.createElement("div", { className: "jt-report-result__section", style: { background: "var(--bg-1,#f7f5f0)", borderLeft: "4px solid var(--accent,#2a6d4f)", padding: "14px 18px", marginBottom: 16 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "0 0 12px", lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("strong", null, "\uAE30\uBCF8 \uC815\uBCF4\uB85C \uB0B8 \uBE60\uB978 \uC608\uC0C1\uCE58\uC608\uC694."), " \uB354 \uC815\uD655\uD788 \uD558\uBA74 \uC138\uC561\uC774 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC5B4\uC694. ", /* @__PURE__ */ React.createElement("strong", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84(0.14%)\uC740 \u300C\uB3C4\uC2DC\uC9C0\uC5ED\u300D\uC73C\uB85C \uAC00\uC815\uD574 \uC774\uBBF8 \uD3EC\uD568"), "\uD588\uC73C\uB2C8, \uBE44\uB3C4\uC2DC\uC9C0\uC5ED\uC774\uBA74 \uADF8\uB9CC\uD07C \uC904\uC5B4\uB4ED\uB2C8\uB2E4 \u2014", /* @__PURE__ */ React.createElement("br", null), answers.propertyKind === "\uC8FC\uD0DD" ? "\uC5EC\uB7EC \uCC44 \uD569\uC0B0 \uB4F1. 1\uC138\uB3001\uC8FC\uD0DD\uC774\uBA74 \uB0AE\uC740 \uACF5\uC815\uBE44\uC728(43~45%)\uC774 \uBC18\uC601\uB410\uC5B4\uC694 \u2014 \uACF5\uC2DC 9\uC5B5 \uC774\uD558\uBA74 \uC138\uC728 \uD2B9\uB840\uAE4C\uC9C0, 9\uC5B5 \uCD08\uACFC\uBA74 \uACF5\uC815\uBE44\uC728\uB9CC \uC801\uC6A9\uB429\uB2C8\uB2E4." : answers.propertyKind === "\uD1A0\uC9C0" ? "\uD1A0\uC9C0 \uC885\uB958(\uC885\uD569/\uBCC4\uB3C4/\uBD84\uB9AC)\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)." : "\uC138\uBD80\uB2F4 \uC0C1\uD55C(\uC804\uB144\uC138\uC561)."), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", onClick: goDetail }, "\uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD558\uAE30 \u2192")), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC138\uAE08 \uAD6C\uC131"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uACFC\uC138\uD45C\uC900 (\uACF5\uC2DC\uAC00\uACA9 \xD7 \uACF5\uC815\uBE44\uC728 ", calc.fairRatio, ")"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.taxBase))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC801\uC6A9\uC138\uC728"), /* @__PURE__ */ React.createElement("td", null, calc.appliedRate)), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC7AC\uC0B0\uC138 \uBCF8\uC138"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.mainTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "\uC9C0\uBC29\uAD50\uC721\uC138 (\uBCF8\uC138\uC758 20%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.eduTax))), calc.urbanTax > 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] ? "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uC138\uBD80\uB2F4 \uC0C1\uD55C \uC801\uC6A9 \uD6C4)" : "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 (\uACFC\uD45C \xD7 0.14%)"), /* @__PURE__ */ React.createElement("td", null, formatWon(calc.urbanTax))), /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement("strong", null, "\uC5F0\uAC04 \uCD1D \uB0A9\uBD80\uC138\uC561")), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("strong", null, formatWon(calc.totalTax)))))), (calc.firstHalf > 0 || calc.secondHalf > 0) && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uB0A9\uBD80 \uC2DC\uAE30:"), " ", calc.firstHalf > 0 && calc.secondHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} + 9\uC6D4 ${formatWon(calc.secondHalf)} (\uC808\uBC18\uC529 \uB098\uB220 \uB0A9\uBD80)` : calc.firstHalf > 0 ? `7\uC6D4 ${formatWon(calc.firstHalf)} (\uC804\uC561)` : `9\uC6D4 ${formatWon(calc.secondHalf)} (\uC804\uC561)`, " ", /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, "(\uC9C0\uBC29\uC138\uBC95 \xA7115)")), calc.baseCap && calc.baseCap["\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, /* @__PURE__ */ React.createElement("strong", null, "\uACFC\uC138\uD45C\uC900\uC0C1\uD55C\uC561 \uC801\uC6A9(\xA7110\u2462):"), " \uACF5\uC2DC\uAC00\uACA9 \xD7 \uBE44\uC728 ", formatWon(calc.baseCap["\uC0C1\uD55C\uC804\uACFC\uC138\uD45C\uC900"]), " \u2192 \uC0C1\uD55C ", formatWon(calc.baseCap["\uC0C1\uD55C\uC561"])), calc.burdenApplied && /* @__PURE__ */ React.createElement("div", { style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", marginTop: 12, borderRadius: 8 } }, "\u26A0\uFE0F \uC138\uBD80\uB2F4 \uC0C1\uD55C\uC774 \uC801\uC6A9\uB418\uC5B4, \uC804\uB144 \uB300\uBE44 \uC77C\uC815 \uD55C\uB3C4\uAE4C\uC9C0\uB9CC \uC62C\uB790\uC2B5\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7122).", calc.burden && typeof calc.burden["\uADFC\uAC70"] === "string" && calc.burden["\uADFC\uAC70"] && /* @__PURE__ */ React.createElement("div", null, "\uADFC\uAC70: ", calc.burden["\uADFC\uAC70"], typeof calc.burden["\uC0C1\uD55C\uC728"] === "string" && calc.burden["\uC0C1\uD55C\uC728"] ? ` \xB7 \uC0C1\uD55C\uC728 ${calc.burden["\uC0C1\uD55C\uC728"]}` : ""), calc.burden && calc.burden["\uBCF8\uC138\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uBCF8\uC138 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uBCF8\uC138"]), " \u2192 ", formatWon(calc.mainTax)), calc.burden && calc.burden["\uB3C4\uC2DC\uC9C0\uC5ED\uBD84\uC801\uC6A9"] && /* @__PURE__ */ React.createElement("div", null, "\uB3C4\uC2DC\uC9C0\uC5ED\uBD84 ", formatWon(calc.burden["\uC0C1\uD55C\uC804\uB3C4\uC2DC\uC9C0\uC5ED\uBD84"]), " \u2192 ", formatWon(calc.urbanTax))), calc.smallExempt && /* @__PURE__ */ React.createElement("div", { style: { background: "var(--bg-1,#f7f5f0)", padding: "10px 16px", marginTop: 10, borderRadius: 8, fontSize: 14 } }, "2\uCC9C\uC6D0 \uBBF8\uB9CC\uC774\uB77C \uC9D5\uC218\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\xA7119)")), calc.steps && calc.steps.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uB2E8\uACC4\uBCC4 \uACC4\uC0B0 (\uBC95\uC870\uBB38 \uADFC\uAC70)"), /* @__PURE__ */ React.createElement("table", { className: "jt-report-calc" }, /* @__PURE__ */ React.createElement("tbody", null, calc.steps.map((s, i) => /* @__PURE__ */ React.createElement("tr", { key: i }, /* @__PURE__ */ React.createElement("th", null, /* @__PURE__ */ React.createElement(JTCalculationStepLabel, { step: s, formatArticle: propFmtArticle })), /* @__PURE__ */ React.createElement("td", null, propFormatStepValue(s["\uD56D\uBAA9"], s["\uAE08\uC561"]))))))), calc.engineWarnings && calc.engineWarnings.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#fff7ea", borderLeft: "4px solid #d08b00", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("h3", { style: { marginTop: 0 } }, "\uD655\uC778\uC774 \uD544\uC694\uD55C \uC810"), /* @__PURE__ */ React.createElement("ul", { style: { margin: 0, paddingLeft: 18 } }, calc.engineWarnings.map((w, i) => /* @__PURE__ */ React.createElement("li", { key: i, style: { marginBottom: 4 } }, w)))), /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section", style: { background: "#f0f7f3", borderLeft: "4px solid #2a6d4f", padding: "12px 16px", borderRadius: 8 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: 0, fontSize: 14, lineHeight: 1.6 } }, "\uC7AC\uC0B0\uC138\uB294 ", /* @__PURE__ */ React.createElement("strong", null, "\uB9E4\uB144 6\uC6D4 1\uC77C \uAE30\uC900 \uC18C\uC720\uC790"), "\uC5D0\uAC8C \uADF8 \uD574 \uC804\uC561 \uBD80\uACFC\uB429\uB2C8\uB2E4(\uC9C0\uBC29\uC138\uBC95 \xA7114). 6\uC6D4 1\uC77C \uC9C1\uC804 \uB9E4\uB3C4\xB7\uC9C1\uD6C4 \uB9E4\uC218\uAC00 \uADF8 \uD574 \uC7AC\uC0B0\uC138 \uBD80\uB2F4 \uBA74\uC5D0\uC11C \uC720\uB9AC\uD569\uB2C8\uB2E4. \uACF5\uC2DC\uAC00\uACA9\uC740 \uBD80\uB3D9\uC0B0\uACF5\uC2DC\uAC00\uACA9\uC54C\uB9AC\uBBF8(realtyprice.kr)\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.")), commentary && commentary.headline && /* @__PURE__ */ React.createElement("section", { className: "jt-report-result__section" }, /* @__PURE__ */ React.createElement("h3", null, "\uC790\uB3D9 \uBD84\uC11D"), /* @__PURE__ */ React.createElement("p", { style: { fontWeight: 600 } }, commentary.headline), (commentary.cautions || []).map((c, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { marginBottom: 8 } }, /* @__PURE__ */ React.createElement("strong", null, "\xB7 ", c.title), " \u2014 ", c.detail))), typeof JTReportConvert === "function" && !propBlocked && /* @__PURE__ */ React.createElement(
       JTReportConvert,
       {
         engineVersion: calc.engineVersion,
@@ -19507,13 +19520,18 @@ function JTReportProperty({ setRoute, onBack }) {
   }
   return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--ghost", onClick: () => {
     window.location.hash = "/report/workspace";
-  } }, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5 \uC791\uC5C5\uB300 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: (index) => {
-    inputSession.invalidate();
-    setStep(index);
-  } }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTVWorldAttributes, { propertyKind: answers.propertyKind, onApplyValue: (value) => {
+  } }, "\uBCF4\uC720\uC138 \uC0AC\uAC74 \uC785\uB825\xB7\uC800\uC7A5 \uC791\uC5C5\uB300 \uC5F4\uAE30"), /* @__PURE__ */ React.createElement(JTReportShell, { inputReview: { questions: visibleQs, answers, onEdit: editQuestion }, title: "\uC7AC\uC0B0\uC138 \uACC4\uC0B0", subtitle: phase === "quick" ? "\uC885\uB958\xB7\uACF5\uC2DC\uAC00\uACA9\uB9CC \uB123\uC73C\uBA74 \uC608\uC0C1 \uC7AC\uC0B0\uC138\uB97C \uBC14\uB85C \uBCF4\uC5EC\uB4DC\uB824\uC694." : "\uB3C4\uC2DC\uC9C0\uC5ED\xB7\uC138\uBD80\uB2F4 \uC0C1\uD55C\uAE4C\uC9C0 \uBC18\uC601\uD574 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "LIVE" }, /* @__PURE__ */ React.createElement(JTVWorldAttributes, { propertyKind: answers.propertyKind, onApplyValue: (value) => {
     cancelLookup();
+    resetLookupValues();
     setAns("standardValue", String(value));
   } }), err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.opts && /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__opts" }, cur.opts.map((o) => /* @__PURE__ */ React.createElement("button", { key: o[0], className: "jt-report-q__opt" + (answers[cur.id] === o[0] ? " is-selected" : ""), onClick: () => {
+    if (cur.id === "isUrbanArea") lookupAuto.current.isUrbanArea = false;
+    if (cur.id === "propertyKind" && answers.propertyKind !== o[0]) {
+      cancelLookup();
+      resetLookupValues();
+      setLaddr("");
+      jtAddrRef.current = "";
+    }
     if (cur.amountId) priorAutoRef.current = propPriorAutoUser(priorAutoRef.current, "option");
     setAns(cur.id, o[0]);
   } }, /* @__PURE__ */ React.createElement("span", { className: "jt-report-q__opt-mark" }, answers[cur.id] === o[0] ? "\u25CF" : "\u25CB"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", null, o[1]), o[2] ? /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.7 } }, " \xB7 ", o[2]) : null)))), cur.amountId && answers[cur.id] === cur.amountWhen && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 12 } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontSize: 13, marginBottom: 4 } }, "\uC791\uB144 \uACF5\uC2DC\uAC00\uACA9 (\uC6D0)"), /* @__PURE__ */ React.createElement(
@@ -19561,7 +19579,10 @@ function JTReportProperty({ setRoute, onBack }) {
       placeholder: cur.placeholder || "",
       value: answers[cur.id],
       onChange: (e) => {
-        if (cur.id === "standardValue") cancelLookup();
+        if (cur.id === "standardValue") {
+          cancelLookup();
+          lookupAuto.current.standardValue = false;
+        }
         window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money);
       }
     }
@@ -21513,6 +21534,11 @@ function JTReportInsurance({ setRoute, onBack }) {
   const setAns = (id, v) => setAnswers((a) => __spreadProps(__spreadValues({}, a), { [id]: v }));
   const canNext = () => {
     if (!cur) return false;
+    if (cur.id === "dependents" || cur.id === "children") {
+      const raw = answers[cur.id] || "";
+      const max = cur.id === "children" ? Number(answers.dependents || 0) : 100;
+      return raw === "" || /^\d+$/.test(raw) && Number(raw) <= max;
+    }
     if (cur.freeform) return true;
     if (cur.numeric) {
       if (cur.optional) return true;
@@ -21531,8 +21557,8 @@ function JTReportInsurance({ setRoute, onBack }) {
         setLoading(false);
         return;
       }
-      const deps = Math.max(0, Math.round(Number(answers.dependents) || 0));
-      const kids = Math.max(0, Math.round(Number(answers.children) || 0));
+      const deps = phase === "quick" ? 0 : Number(answers.dependents || 0);
+      const kids = phase === "quick" ? 0 : Number(answers.children || 0);
       const ins = calcInsurance(monthly);
       const calc = { monthly, ins, precise: false };
       try {
@@ -21580,6 +21606,7 @@ function JTReportInsurance({ setRoute, onBack }) {
     setStep(0);
   };
   const goNext = () => {
+    if (!canNext()) return;
     if (isLast) runAnalysis();
     else setStep((s) => s + 1);
   };
@@ -21627,7 +21654,19 @@ function JTReportInsurance({ setRoute, onBack }) {
     onBack();
     return null;
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC6D4\uAE09 \uC2E4\uC218\uB839\uC561 \uACC4\uC0B0\uAE30", subtitle: phase === "quick" ? "\uC6D4 \uAE09\uC5EC\uB9CC \uB123\uC73C\uBA74 4\uB300\uBCF4\uD5D8\xB7\uC138\uAE08 \uB5BC\uACE0 \uC2E4\uC218\uB839\uC561\uC744 \uBC14\uB85C \uACC4\uC0B0\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uC790\uB140\uAE4C\uC9C0 \uBC18\uC601\uD574 \uC138\uAE08\uC744 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.numeric && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "jt-container" }, /* @__PURE__ */ React.createElement(JTReportShell, { title: "\uC6D4\uAE09 \uC2E4\uC218\uB839\uC561 \uACC4\uC0B0\uAE30", subtitle: phase === "quick" ? "\uC6D4 \uAE09\uC5EC\uB9CC \uB123\uC73C\uBA74 4\uB300\uBCF4\uD5D8\xB7\uC138\uAE08 \uB5BC\uACE0 \uC2E4\uC218\uB839\uC561\uC744 \uBC14\uB85C \uACC4\uC0B0\uD574\uC694." : "\uBD80\uC591\uAC00\uC871\xB7\uC790\uB140\uAE4C\uC9C0 \uBC18\uC601\uD574 \uC138\uAE08\uC744 \uB354 \uC815\uD655\uD788 \uACC4\uC0B0\uD569\uB2C8\uB2E4.", stepIdx: safeStep, stepTotal: total, onBack: goPrev, tag: "BOOKKEEPING" }, err && /* @__PURE__ */ React.createElement("div", { style: { background: "#fdeeec", borderLeft: "4px solid #c0392b", padding: "12px 16px", marginBottom: 16, borderRadius: 8 } }, err), /* @__PURE__ */ React.createElement("div", { className: "jt-report-q" }, /* @__PURE__ */ React.createElement("div", { className: "jt-report-q__section" }, cur.section), /* @__PURE__ */ React.createElement("h2", null, cur.q), cur.sub && /* @__PURE__ */ React.createElement("p", { className: "jt-report-q__sub" }, cur.sub), cur.numeric && !cur.money && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      key: cur.id,
+      type: "text",
+      inputMode: "numeric",
+      className: "jt-report-q__input",
+      placeholder: cur.placeholder,
+      value: answers[cur.id] || "",
+      "aria-invalid": !canNext(),
+      onChange: (e) => setAns(cur.id, e.target.value.normalize("NFKC"))
+    }
+  ), !canNext() && /* @__PURE__ */ React.createElement("p", { role: "alert" }, cur.id === "children" ? "\uC790\uB140\xB7\uC190\uC790\uB140 \uC218\uB294 \uC55E\uC11C \uC785\uB825\uD55C \uBD80\uC591\uAC00\uC871 \uC218 \uC774\uD558\uC758 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694." : "\uBD80\uC591\uAC00\uC871 \uC218\uB294 0\uC5D0\uC11C 100 \uC0AC\uC774\uC758 \uC815\uC218\uB85C \uC785\uB825\uD574 \uC8FC\uC138\uC694.")), cur.numeric && cur.money && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
     JTNumericInput,
     {
       key: cur.id,
@@ -23716,7 +23755,7 @@ function mapAnswersToYouth(a, industryMatch, region) {
   }
   if (industryMatch && industryMatch.nts_code) body.industry_code = industryMatch.nts_code;
   if (a.existingBusinessAdd === "yes") body.has_existing_business_add = true;
-  if (a.priorBusinessCode) body.prior_business_code = a.priorBusinessCode;
+  if (a.priorBusinessCode && (a.businessType === "\uD3D0\uC5C5\uD6C4\uC7AC\uAC1C" || a.businessType === "\uC0AC\uC5C5\uC2B9\uACC4")) body.prior_business_code = a.priorBusinessCode;
   if (region) {
     body.is_overcrowding = !!region.is_overcrowding;
     body.is_sudogwon = !!region.is_sudogwon;
@@ -23724,12 +23763,12 @@ function mapAnswersToYouth(a, industryMatch, region) {
     body.overcrowding_uncertain = !!region.overcrowding_uncertain;
     if (region.sigungu_code) body.sigungu_code = region.sigungu_code;
   }
-  if (Number(a.annualRevenue) > 0) {
+  if (a.annualRevenue != null && a.annualRevenue !== "") {
     body.annual_revenue = Number(a.annualRevenue);
     if (a.entityType !== "\uBC95\uC778") body.tax_year = YS_REVENUE_YEAR;
   }
   if (a.employeeCount !== void 0 && a.employeeCount !== "") body.employee_count = Number(a.employeeCount);
-  if (Number(a.expectedTax) > 0) body.expected_annual_tax = Number(a.expectedTax);
+  if (a.expectedTax != null && a.expectedTax !== "") body.expected_annual_tax = Number(a.expectedTax);
   return body;
 }
 function buildYSDetail(a, calc, industryMatch, region) {
@@ -23742,7 +23781,7 @@ function buildYSDetail(a, calc, industryMatch, region) {
   if (region) L.push("  \xB7 \uCC3D\uC5C5\uC9C0\uC5ED: " + (region.sigungu || "") + " [" + calc.area + "]");
   if (a.businessType && a.businessType !== "\uC2E0\uADDC\uCC3D\uC5C5") L.push("  \xB7 \uCC3D\uC5C5\uC720\uD615: " + a.businessType);
   if (a.existingBusinessAdd === "yes") L.push("  \xB7 \uAE30\uC874 \uC0AC\uC5C5\uC790 \uC5C5\uC885\uCD94\uAC00: \uC608");
-  if (Number(a.annualRevenue) > 0) L.push("  \xB7 \uC5F0 \uC218\uC785\uAE08\uC561: " + formatWon(Number(a.annualRevenue)));
+  if (a.annualRevenue != null && a.annualRevenue !== "") L.push("  \xB7 \uC5F0 \uC218\uC785\uAE08\uC561: " + formatWon(Number(a.annualRevenue)));
   L.push("", "\u25A0 \uAC10\uBA74 \uD310\uC815 \uACB0\uACFC");
   if (calc.prospective) {
     L.push("  \xB7 [\uC608\uBE44\uCC3D\uC5C5 \uC9C4\uB2E8] \uC694\uAC74 \uCDA9\uC871 \uC2DC \uCD5C\uB300 \uAC10\uBA74\uC728: " + calc.best_case_rate + "%");
@@ -23852,9 +23891,13 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     if (!cur) return false;
     if (cur.custom === "industry") return !indBusy && (!!industryMatch || prospective && !(indMode === "code" ? indCodeInput : indKw).trim());
     if (cur.custom === "region") return !rbusy && (!!regionInfo || prospective && !raddr.trim());
-    if (cur.custom === "priorindustry") return true;
-    if (cur.id === "employeeCount" && answers.employeeCount) return /^\d+$/.test(answers.employeeCount);
-    if (cur.id === "ownershipPct" && answers.ownershipPct) return Number(answers.ownershipPct) <= 100;
+    if (cur.custom === "priorindustry") return !priorBusy && (!!priorMatch || !priorKw.trim());
+    if (cur.custom === "military") {
+      const { enlistDate, dischargeDate } = answers;
+      return !enlistDate && !dischargeDate || ysValidDate(enlistDate) && ysValidDate(dischargeDate) && enlistDate <= dischargeDate;
+    }
+    if (cur.id === "employeeCount" && answers.employeeCount) return /^\d+$/.test(answers.employeeCount) && Number.isSafeInteger(Number(answers.employeeCount));
+    if (cur.id === "ownershipPct" && answers.ownershipPct) return /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(answers.ownershipPct) && Number(answers.ownershipPct) <= 100;
     if (cur.freeform || cur.optional) return true;
     if (prospective && cur.optionalP && !answers[cur.id]) return true;
     if (cur.numeric) {
@@ -23900,10 +23943,12 @@ function JTReportYouthStartup({ setRoute, onBack }) {
   const doPriorSearch = () => {
     if (!priorKw.trim()) return;
     clearPrior();
-    priorLookup.run(
-      (signal) => window.jtLookupIndustry({ keyword: priorKw.trim(), signal }),
-      (result) => setPriorCands(result.candidates || [])
-    );
+    const value = priorKw.trim();
+    const query = /^\d{6}$/.test(value) ? { code: value } : { keyword: value };
+    priorLookup.run((signal) => window.jtLookupIndustry(__spreadProps(__spreadValues({}, query), { signal })), (result) => {
+      if (query.code && result.match) pickPrior(result.match);
+      else setPriorCands(result.candidates || []);
+    });
   };
   const pickPrior = (m) => {
     setPriorMatch(m);
@@ -24103,7 +24148,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
         if (e.key === "Enter" && !priorBusy) doPriorSearch();
       }
     }
-  ), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", style: { flex: "0 0 auto" }, disabled: priorBusy || !priorKw.trim(), onClick: doPriorSearch }, priorBusy ? "\uAC80\uC0C9 \uC911\u2026" : "\uAC80\uC0C9")), priorLookup.error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, priorLookup.error), priorCands && priorCands.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, maxHeight: 220, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 } }, priorCands.map((c) => /* @__PURE__ */ React.createElement("button", { key: c.nts_code, className: "jt-report-q__opt", style: { textAlign: "left" }, onClick: () => pickPrior(c) }, /* @__PURE__ */ React.createElement("strong", null, c.name), " ", /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.6, fontSize: 12 } }, "(", c.nts_code, ")")))), (priorCands == null ? void 0 : priorCands.length) === 0 && /* @__PURE__ */ React.createElement("p", null, "\uC77C\uCE58\uD558\uB294 \uC885\uC804 \uC5C5\uC885\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694."), priorMatch && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, fontSize: 13.5 } }, "\uC885\uC804 \uC5C5\uC885: ", /* @__PURE__ */ React.createElement("strong", null, priorMatch.name), " \u2014 \uC2E0\uADDC \uC5C5\uC885\uACFC \uC138\uBD84\uB958\uAC00 \uAC19\uC73C\uBA74 \uCC3D\uC5C5\uC73C\uB85C \uC778\uC815\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\uC790\uB3D9 \uBE44\uAD50).")), cur.custom === "region" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(
+  ), /* @__PURE__ */ React.createElement("button", { className: "jt-btn jt-btn--primary", style: { flex: "0 0 auto" }, disabled: priorBusy || !priorKw.trim(), onClick: doPriorSearch }, priorBusy ? "\uAC80\uC0C9 \uC911\u2026" : "\uAC80\uC0C9")), priorKw.trim() && !priorMatch && !priorBusy && /* @__PURE__ */ React.createElement("p", null, "\uAC80\uC0C9 \uACB0\uACFC\uC5D0\uC11C \uC885\uC804 \uC5C5\uC885\uC744 \uC120\uD0DD\uD558\uC138\uC694. \uAC74\uB108\uB6F0\uB824\uBA74 \uAC80\uC0C9\uC5B4\uB97C \uC9C0\uC6CC \uC8FC\uC138\uC694."), priorLookup.error && /* @__PURE__ */ React.createElement("p", { role: "alert" }, priorLookup.error), priorCands && priorCands.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, maxHeight: 220, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 } }, priorCands.map((c) => /* @__PURE__ */ React.createElement("button", { key: c.nts_code, className: "jt-report-q__opt", style: { textAlign: "left" }, onClick: () => pickPrior(c) }, /* @__PURE__ */ React.createElement("strong", null, c.name), " ", /* @__PURE__ */ React.createElement("span", { style: { opacity: 0.6, fontSize: 12 } }, "(", c.nts_code, ")")))), (priorCands == null ? void 0 : priorCands.length) === 0 && /* @__PURE__ */ React.createElement("p", null, "\uC77C\uCE58\uD558\uB294 \uC885\uC804 \uC5C5\uC885\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694."), priorMatch && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, fontSize: 13.5 } }, "\uC885\uC804 \uC5C5\uC885: ", /* @__PURE__ */ React.createElement("strong", null, priorMatch.name), " \u2014 \uC2E0\uADDC \uC5C5\uC885\uACFC \uC138\uBD84\uB958\uAC00 \uAC19\uC73C\uBA74 \uCC3D\uC5C5\uC73C\uB85C \uC778\uC815\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4(\uC790\uB3D9 \uBE44\uAD50).")), cur.custom === "region" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(
     "input",
     {
       className: "jt-report-q__input",
@@ -24132,11 +24177,23 @@ function JTReportYouthStartup({ setRoute, onBack }) {
         setAns(id, v);
       }
     }
-  )))), answers.enlistDate && answers.dischargeDate && ysValidDate(answers.enlistDate) && ysValidDate(answers.dischargeDate) && (() => {
+  )))), !canNext() && /* @__PURE__ */ React.createElement("p", { role: "alert" }, "\uC785\uB300\uC77C\uACFC \uC804\uC5ED\uC77C\uC744 \uBAA8\uB450 \uD655\uC778\uD574 \uC8FC\uC138\uC694. \uC804\uC5ED\uC77C\uC740 \uC785\uB300\uC77C\uACFC \uAC19\uAC70\uB098 \uB2A6\uC5B4\uC57C \uD569\uB2C8\uB2E4. \uBCD1\uC5ED\uC744 \uC81C\uC678\uD558\uB824\uBA74 \uB450 \uCE78\uC744 \uBE44\uC6CC \uC8FC\uC138\uC694."), answers.enlistDate && answers.dischargeDate && canNext() && (() => {
     const mm = ysMonthsBetween(answers.enlistDate, answers.dischargeDate);
     const y = Math.floor(mm / 12);
     return /* @__PURE__ */ React.createElement("div", { style: { marginTop: 10, fontSize: 13.5, padding: "9px 12px", borderRadius: 8, background: "#eaf5ee", borderLeft: "4px solid #2a6d4f" } }, "\uBCD1\uC5ED \uC774\uD589\uAE30\uAC04 ", /* @__PURE__ */ React.createElement("strong", null, y ? y + "\uB144 " : "", mm % 12, "\uAC1C\uC6D4"), mm > 72 ? " (\uCD5C\uB300 6\uB144\uAE4C\uC9C0 \uC778\uC815)" : "", " \u2014 \uC774 \uAE30\uAC04\uC744 \uCC3D\uC5C5 \uB2F9\uC2DC \uB098\uC774\uC5D0\uC11C \uBE7C\uACE0 \uCCAD\uB144 \uC5EC\uBD80\uB97C \uD310\uC815\uD569\uB2C8\uB2E4.");
-  })()), cur.numeric && !cur.custom && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+  })()), cur.numeric && !cur.money && !cur.custom && /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      key: cur.id,
+      className: "jt-report-q__input",
+      type: "text",
+      inputMode: cur.id === "ownershipPct" ? "decimal" : "numeric",
+      placeholder: cur.placeholder || "",
+      value: answers[cur.id] || "",
+      "aria-invalid": !canNext(),
+      onChange: (e) => setAns(cur.id, e.target.value.normalize("NFKC"))
+    }
+  ), cur.numeric && cur.money && !cur.custom && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
     JTNumericInput,
     {
       money: !!cur.money,

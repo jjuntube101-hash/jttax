@@ -223,7 +223,7 @@ function mapAnswersToYouth(a, industryMatch, region) {
   }
   if (industryMatch && industryMatch.nts_code) body.industry_code = industryMatch.nts_code;
   if (a.existingBusinessAdd === 'yes') body.has_existing_business_add = true;
-  if (a.priorBusinessCode) body.prior_business_code = a.priorBusinessCode;
+  if (a.priorBusinessCode && (a.businessType === '폐업후재개' || a.businessType === '사업승계')) body.prior_business_code = a.priorBusinessCode;
   if (region) {
     body.is_overcrowding = !!region.is_overcrowding;
     body.is_sudogwon = !!region.is_sudogwon;
@@ -231,14 +231,14 @@ function mapAnswersToYouth(a, industryMatch, region) {
     body.overcrowding_uncertain = !!region.overcrowding_uncertain;   // 과밀 부분지정(남양주·시흥·인천 경제자유구역 등)
     if (region.sigungu_code) body.sigungu_code = region.sigungu_code;
   }
-  if (Number(a.annualRevenue) > 0) {
+  if (a.annualRevenue != null && a.annualRevenue !== '') {
     body.annual_revenue = Number(a.annualRevenue);
     // 개인은 과세기간이 1.1~12.31 이라 «올해»가 곧 과세연도 개시 연도다. 법인은 사업연도가 역년이 아닐 수 있어 보내지 않는다
     // (엔진이 8천만 초과~1억4백만 구간을 보수적으로 판정하고 안내) — §6⑥ 한도는 과세연도 개시 시점으로 갈린다(부칙 제21223호 §2).
     if (a.entityType !== '법인') body.tax_year = YS_REVENUE_YEAR;
   }
   if (a.employeeCount !== undefined && a.employeeCount !== '') body.employee_count = Number(a.employeeCount);
-  if (Number(a.expectedTax) > 0) body.expected_annual_tax = Number(a.expectedTax);
+  if (a.expectedTax != null && a.expectedTax !== '') body.expected_annual_tax = Number(a.expectedTax);
   return body;
 }
 
@@ -252,7 +252,7 @@ function buildYSDetail(a, calc, industryMatch, region) {
   if (region) L.push('  · 창업지역: ' + (region.sigungu || '') + ' [' + calc.area + ']');
   if (a.businessType && a.businessType !== '신규창업') L.push('  · 창업유형: ' + a.businessType);
   if (a.existingBusinessAdd === 'yes') L.push('  · 기존 사업자 업종추가: 예');
-  if (Number(a.annualRevenue) > 0) L.push('  · 연 수입금액: ' + formatWon(Number(a.annualRevenue)));
+  if (a.annualRevenue != null && a.annualRevenue !== '') L.push('  · 연 수입금액: ' + formatWon(Number(a.annualRevenue)));
   L.push('', '■ 감면 판정 결과');
   if (calc.prospective) {
     L.push('  · [예비창업 진단] 요건 충족 시 최대 감면율: ' + calc.best_case_rate + '%');
@@ -359,9 +359,14 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     if (!cur) return false;
     if (cur.custom === 'industry') return !indBusy && (!!industryMatch || (prospective && !(indMode === 'code' ? indCodeInput : indKw).trim()));
     if (cur.custom === 'region') return !rbusy && (!!regionInfo || (prospective && !raddr.trim()));
-    if (cur.custom === 'priorindustry') return true; // optional
-    if (cur.id === 'employeeCount' && answers.employeeCount) return /^\d+$/.test(answers.employeeCount);
-    if (cur.id === 'ownershipPct' && answers.ownershipPct) return Number(answers.ownershipPct) <= 100;
+    if (cur.custom === 'priorindustry') return !priorBusy && (!!priorMatch || !priorKw.trim());
+    if (cur.custom === 'military') {
+      const { enlistDate, dischargeDate } = answers;
+      return (!enlistDate && !dischargeDate) ||
+        (ysValidDate(enlistDate) && ysValidDate(dischargeDate) && enlistDate <= dischargeDate);
+    }
+    if (cur.id === 'employeeCount' && answers.employeeCount) return /^\d+$/.test(answers.employeeCount) && Number.isSafeInteger(Number(answers.employeeCount));
+    if (cur.id === 'ownershipPct' && answers.ownershipPct) return /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(answers.ownershipPct) && Number(answers.ownershipPct) <= 100;
     if (cur.freeform || cur.optional) return true;
     if (prospective && cur.optionalP && !answers[cur.id]) return true;
     if (cur.numeric) { const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
@@ -400,8 +405,12 @@ function JTReportYouthStartup({ setRoute, onBack }) {
   const doPriorSearch = () => {
     if (!priorKw.trim()) return;
     clearPrior();
-    priorLookup.run(signal => window.jtLookupIndustry({ keyword: priorKw.trim(), signal }),
-      result => setPriorCands(result.candidates || []));
+    const value = priorKw.trim();
+    const query = /^\d{6}$/.test(value) ? { code: value } : { keyword: value };
+    priorLookup.run(signal => window.jtLookupIndustry({ ...query, signal }), result => {
+      if (query.code && result.match) pickPrior(result.match);
+      else setPriorCands(result.candidates || []);
+    });
   };
   const pickPrior = (m) => { setPriorMatch(m); setAns('priorBusinessCode', m.nts_code); setPriorCands(null); };
 
@@ -747,6 +756,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                   value={priorKw} onChange={e => { clearPrior(); setPriorKw(e.target.value); }} onKeyDown={e => { if (e.key === 'Enter' && !priorBusy) doPriorSearch(); }} />
                 <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={priorBusy || !priorKw.trim()} onClick={doPriorSearch}>{priorBusy ? '검색 중…' : '검색'}</button>
               </div>
+              {priorKw.trim() && !priorMatch && !priorBusy && <p>검색 결과에서 종전 업종을 선택하세요. 건너뛰려면 검색어를 지워 주세요.</p>}
               {priorLookup.error && <p role="alert">{priorLookup.error}</p>}
               {priorCands && priorCands.length > 0 && (
                 <div style={{ marginTop: 10, maxHeight: 220, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -796,7 +806,8 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                   </div>
                 ))}
               </div>
-              {answers.enlistDate && answers.dischargeDate && ysValidDate(answers.enlistDate) && ysValidDate(answers.dischargeDate) && (() => {
+              {!canNext() && <p role="alert">입대일과 전역일을 모두 확인해 주세요. 전역일은 입대일과 같거나 늦어야 합니다. 병역을 제외하려면 두 칸을 비워 주세요.</p>}
+              {answers.enlistDate && answers.dischargeDate && canNext() && (() => {
                 const mm = ysMonthsBetween(answers.enlistDate, answers.dischargeDate);
                 const y = Math.floor(mm / 12);
                 return (
@@ -808,7 +819,12 @@ function JTReportYouthStartup({ setRoute, onBack }) {
             </div>
           )}
 
-          {cur.numeric && !cur.custom && (
+          {cur.numeric && !cur.money && !cur.custom && (
+            <input key={cur.id} className="jt-report-q__input" type="text" inputMode={cur.id === 'ownershipPct' ? 'decimal' : 'numeric'}
+              placeholder={cur.placeholder || ''} value={answers[cur.id] || ''} aria-invalid={!canNext()}
+              onChange={e => setAns(cur.id, e.target.value.normalize('NFKC'))} />
+          )}
+          {cur.numeric && cur.money && !cur.custom && (
             <div>
               <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id]}

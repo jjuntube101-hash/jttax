@@ -178,6 +178,11 @@ function JTReportInsurance({ setRoute, onBack }) {
 
   const canNext = () => {
     if (!cur) return false;
+    if (cur.id === 'dependents' || cur.id === 'children') {
+      const raw = answers[cur.id] || '';
+      const max = cur.id === 'children' ? Number(answers.dependents || 0) : 100;
+      return raw === '' || (/^\d+$/.test(raw) && Number(raw) <= max);
+    }
     if (cur.freeform) return true;
     if (cur.numeric) { if (cur.optional) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
     return !!answers[cur.id];
@@ -188,8 +193,8 @@ function JTReportInsurance({ setRoute, onBack }) {
     try {
       const monthly = Math.max(0, Math.round(Number(answers.monthlySalary) || 0));
       if (monthly <= 0) { setErr('세전 월 급여를 입력해 주세요.'); setLoading(false); return; }
-      const deps = Math.max(0, Math.round(Number(answers.dependents) || 0));
-      const kids = Math.max(0, Math.round(Number(answers.children) || 0));
+      const deps = phase === 'quick' ? 0 : Number(answers.dependents || 0);
+      const kids = phase === 'quick' ? 0 : Number(answers.children || 0);
 
       const ins = calcInsurance(monthly);
       const calc = { monthly, ins, precise: false };
@@ -227,7 +232,7 @@ function JTReportInsurance({ setRoute, onBack }) {
   };
 
   const goDetail = () => { setReport(null); setPhase('detail'); setStep(0); };
-  const goNext = () => { if (isLast) runAnalysis(); else setStep(s => s + 1); };
+  const goNext = () => { if (!canNext()) return; if (isLast) runAnalysis(); else setStep(s => s + 1); };
   const goPrev = () => {
     if (safeStep > 0) { setStep(s => s - 1); return; }
     if (phase === 'detail') { setPhase('quick'); setStep(0); setReport(quickReport); return; }
@@ -344,7 +349,17 @@ function JTReportInsurance({ setRoute, onBack }) {
           <h2>{cur.q}</h2>
           {cur.sub && <p className="jt-report-q__sub">{cur.sub}</p>}
 
-          {cur.numeric && (
+          {cur.numeric && !cur.money && (
+            <div>
+              <input key={cur.id} type="text" inputMode="numeric" className="jt-report-q__input"
+                placeholder={cur.placeholder} value={answers[cur.id] || ''} aria-invalid={!canNext()}
+                onChange={e => setAns(cur.id, e.target.value.normalize('NFKC'))} />
+              {!canNext() && <p role="alert">{cur.id === 'children'
+                ? '자녀·손자녀 수는 앞서 입력한 부양가족 수 이하의 정수로 입력해 주세요.'
+                : '부양가족 수는 0에서 100 사이의 정수로 입력해 주세요.'}</p>}
+            </div>
+          )}
+          {cur.numeric && cur.money && (
             <div>
               <JTNumericInput key={cur.id} money={!!cur.money}
                 parseMoney={cur.money ? raw => /\d\s+\d/.test(raw) ? null : hcParse(raw) : undefined}

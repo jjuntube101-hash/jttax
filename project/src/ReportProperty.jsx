@@ -695,7 +695,25 @@ function JTReportProperty({ setRoute, onBack }) {
     setUnitAsk(null);
   };
   React.useEffect(() => () => { ++jtReqSeq.current; }, []);
-  const setLaddrSync = (v) => { cancelLookup(); jtAddrRef.current = v; setLaddr(v); };
+  const lookupAuto = React.useRef({ standardValue: false, isUrbanArea: false });
+  const resetLookupValues = () => {
+    const prior = priorAutoRef.current;
+    const auto = lookupAuto.current;
+    if (!prior.opt && !prior.amt && !auto.standardValue && !auto.isUrbanArea) return;
+    const next = propPriorAutoReset(answersRef.current, prior);
+    if (auto.standardValue) delete next.answers.standardValue;
+    if (auto.isUrbanArea) delete next.answers.isUrbanArea;
+    priorAutoRef.current = next.auto;
+    lookupAuto.current = { standardValue: false, isUrbanArea: false };
+    answersRef.current = next.answers;
+    setAnswers(next.answers);
+  };
+  const setLaddrSync = (v) => {
+    cancelLookup();
+    if (v.trim() !== jtAddrRef.current.trim()) resetLookupValues();
+    jtAddrRef.current = v;
+    setLaddr(v);
+  };
   // 주소 조회가 «작년 공시가격»을 자동으로 채웠는지 — 사용자가 손대면 꺼진다. 다른 주소 조회에서 작년 값을 못 찾았을 때
   // 자동으로 채운 낡은 값만 치우기 위한 표식이다(사용자가 직접 넣은 값은 건드리지 않는다).
   const priorAutoRef = React.useRef({ opt: false, amt: false });
@@ -718,7 +736,7 @@ function JTReportProperty({ setRoute, onBack }) {
   const isLast = safeStep === total - 1;
   const setAns = (id, v) => setAnswers(a => ({ ...a, [id]: v }));
 
-  const canNext = () => {
+  const canNext = (cur = visibleQs[safeStep]) => {
     if (!cur) return false;
     if (cur.freeform) return true;
     if (cur.numeric) { if (cur.optional && !(cur.requiredIf && cur.requiredIf(answers))) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
@@ -727,6 +745,10 @@ function JTReportProperty({ setRoute, onBack }) {
     return !!answers[cur.id];
   };
 
+  const setAutoAnswer = (id, value) => {
+    lookupAuto.current[id] = true;
+    setAns(id, value);
+  };
   const doAddrLookup = async (unit) => {
     if (!laddr.trim()) return;
     const addrNow = laddr.trim();
@@ -740,11 +762,7 @@ function JTReportProperty({ setRoute, onBack }) {
     const stale = () => seqStale() || (jtAddrRef.current || '').trim() !== addrNow;
     setLbusy(true); setLinfo(null);
     /* 새 주소 조회가 시작되면 자동 채움 표식이 있는 작년 값(이전 주소의 것)을 지운다 — 사용자가 직접 넣은 값은 보존한다 */
-    { const before = answersRef.current || {};
-      const rs = propPriorAutoReset(before, priorAutoRef.current);
-      priorAutoRef.current = rs.auto; answersRef.current = rs.answers;
-      if (before.priorYearStandardValueAmount !== undefined && rs.answers.priorYearStandardValueAmount === undefined) setAns('priorYearStandardValueAmount', undefined);
-      if (before.priorYearStandardValue !== undefined && rs.answers.priorYearStandardValue === undefined) setAns('priorYearStandardValue', undefined); }
+    resetLookupValues();
     if (!unit) setUnitAsk(null);   // 주소를 새로 조회하면 이전 되묻기는 닫는다
     try {
       let r;
@@ -772,8 +790,8 @@ function JTReportProperty({ setRoute, onBack }) {
       if (r && r.status === 'needs_unit') {
         setUnitAsk({ ...r, addr: addrNow });
         const reg = r.region;
-        if (reg && reg.urban_area_likely === true) setAns('isUrbanArea', 'yes');
-        else if (reg && reg.urban_area_likely === false) setAns('isUrbanArea', 'no');
+        if (reg && reg.urban_area_likely === true) setAutoAnswer('isUrbanArea', 'yes');
+        else if (reg && reg.urban_area_likely === false) setAutoAnswer('isUrbanArea', 'no');
         return;
       }
       if (r && (r.status === 'unit_not_found' || r.status === 'unit_mismatch')) {
@@ -800,7 +818,7 @@ function JTReportProperty({ setRoute, onBack }) {
         } catch (pe) { priorAmt = 0; }
         if (stale()) return;
         setUnitAsk(null);
-        setAns('standardValue', String(r.amount));
+        setAutoAnswer('standardValue', String(r.amount));
         /* 조회를 기다리는 사이 사용자가 작년 공시가격을 직접 골랐거나 넣었다면(자동 채움 표식이 없는 값) 덮어쓰지 않는다.
            올해 공시가격이 자동 조회로 «바뀌었는데» 작년 값이 사용자 것이면 다시 확인하라고 알린다. */
         const prevThis = (answersRef.current || {}).standardValue;
@@ -823,8 +841,8 @@ function JTReportProperty({ setRoute, onBack }) {
           : `${r.year ? r.year + '년 ' : ''}공시가격 ${formatWon(r.amount)}을 자동 입력했어요 (${kindLabel}). ⚠️ 대단지 아파트는 동·호에 따라 공시가격이 크게 다릅니다 — 부동산공시가격알리미(realtyprice.kr)에서 내 세대 금액을 꼭 대조하세요.`;
         // 도시지역 자동선택(근사) — 주소 기준. 재산세 도시지역분(0.14%) 판정용
         const reg = r.region;
-        if (reg && reg.urban_area_likely === true) { setAns('isUrbanArea', 'yes'); msg += ` ${reg.sigungu || '해당 지역'}은 도시지역으로 자동판단했어요(다르면 뒤 단계에서 수정).`; }
-        else if (reg && reg.urban_area_likely === false) { setAns('isUrbanArea', 'no'); msg += ' 비도시지역으로 자동판단했어요(다르면 수정).'; }
+        if (reg && reg.urban_area_likely === true) { setAutoAnswer('isUrbanArea', 'yes'); msg += ` ${reg.sigungu || '해당 지역'}은 도시지역으로 자동판단했어요(다르면 뒤 단계에서 수정).`; }
+        else if (reg && reg.urban_area_likely === false) { setAutoAnswer('isUrbanArea', 'no'); msg += ' 비도시지역으로 자동판단했어요(다르면 수정).'; }
         if (priorAmt > 0) msg += ` 작년 공시가격 ${formatWon(priorAmt)}도 찾았어요.`;
         else if (recheckPrior) msg += ' ⚠️ 올해 공시가격이 바뀌었으니 앞서 넣으신 작년 공시가격을 다시 확인하세요.';
         msg += ' 값이 맞는지 확인하고 다음으로 진행하세요.';
@@ -832,8 +850,8 @@ function JTReportProperty({ setRoute, onBack }) {
       } else if (r && r.region) {
         // 공시가격은 못 찾았지만 지역판별은 됨
         const reg = r.region;
-        if (reg.urban_area_likely === true) setAns('isUrbanArea', 'yes');
-        else if (reg.urban_area_likely === false) setAns('isUrbanArea', 'no');
+        if (reg.urban_area_likely === true) setAutoAnswer('isUrbanArea', 'yes');
+        else if (reg.urban_area_likely === false) setAutoAnswer('isUrbanArea', 'no');
         setLinfo({ ok: false, msg: '이 주소의 공시가격은 찾지 못했어요(상가·오피스텔·신축 등). 공시가격은 직접 입력하시고, 도시지역 여부는 자동판단했어요.' });
       } else {
         setLinfo({ ok: false, msg: '이 주소의 공시가격을 찾지 못했어요(상가·오피스텔·신축 등은 미수록일 수 있어요). 공시가격을 직접 입력해 주세요.' });
@@ -846,6 +864,8 @@ function JTReportProperty({ setRoute, onBack }) {
   };
 
   const runAnalysis = async () => {
+    const missing = visibleQs.findIndex(q => !canNext(q));
+    if (missing >= 0) { setReport(null); setStep(missing); return; }
     const inputRequest=inputSession.begin();
     const setReport=inputSession.sink(inputRequest,rawSetReport);
     const setLoading=inputSession.sink(inputRequest,rawSetLoading);
@@ -937,10 +957,16 @@ function JTReportProperty({ setRoute, onBack }) {
     onBack();
   };
 
+  const editQuestion = index => {
+    cancelLookup();
+    inputSession.invalidate();
+    setStep(index);
+  };
+
   if (loading) {
     return (
       <div className="jt-container">
-        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:editQuestion}} title="재산세 계산" subtitle="검증 엔진으로 계산 중…" stepIdx={total} stepTotal={total} onBack={() => {}} tag="LIVE">
           <div className="jt-report-loading"><div className="jt-report-loading__spinner" />검증된 세금 엔진으로 계산하고 있습니다…<br /><span style={{ fontSize: 13, opacity: 0.7 }}>처음 사용 시 엔진을 깨우느라 최대 30초까지 걸릴 수 있어요.</span></div>
         </JTReportShell>
       </div>
@@ -961,7 +987,7 @@ function JTReportProperty({ setRoute, onBack }) {
       const propBlockTag = propBlockReason === 'input' ? '정밀 계산 필요' : (propBlockReason === 'refused' ? '입력이 더 필요합니다' : '계산 엔진 연결 실패');
       return (
         <div className="jt-container">
-          <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산 결과" subtitle={propBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+          <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:editQuestion}} title="재산세 계산 결과" subtitle={propBlockTag} stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
             {/* 'down' 은 패널 본문이 사유를 이미 말한다 — 같은 뜻의 사유 목록을 한 번 더 내지 않는다 */}
             <JTFallbackBlocked gaps={propBlockReason === 'down' ? [] : propGaps} onRetry={runAnalysis} reason={propBlockReason} />
             <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
@@ -973,7 +999,7 @@ function JTReportProperty({ setRoute, onBack }) {
     }
     return (
       <div className="jt-container">
-        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산 결과" subtitle="재산세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
+        <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:editQuestion}} title="재산세 계산 결과" subtitle="재산세 정밀 계산" stepIdx={total} stepTotal={total} onBack={() => setReport(null)} tag="LIVE">
           <div className="jt-report-result__grade jt-grade-mid">
             <div className="jt-report-result__grade-label">{report.quick ? '빠른 예상 재산세(연간 총액)' : '재산세·부가세목 계산 소계 (지원 범위 확인 필요)'}</div>
             <div className="jt-report-result__grade-val">{formatWon(calc.totalTax)}</div>
@@ -1107,8 +1133,8 @@ function JTReportProperty({ setRoute, onBack }) {
   return (
     <div className="jt-container">
       <button className="jt-btn jt-btn--ghost" onClick={() => { window.location.hash = "/report/workspace"; }}>보유세 사건 입력·저장 작업대 열기</button>
-      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
-        <JTVWorldAttributes propertyKind={answers.propertyKind} onApplyValue={value => { cancelLookup(); setAns('standardValue', String(value)); }} />
+      <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:editQuestion}} title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
+        <JTVWorldAttributes propertyKind={answers.propertyKind} onApplyValue={value => { cancelLookup(); resetLookupValues(); setAns('standardValue', String(value)); }} />
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>
@@ -1118,7 +1144,9 @@ function JTReportProperty({ setRoute, onBack }) {
           {cur.opts && (
             <div className="jt-report-q__opts">
               {cur.opts.map(o => (
-                <button key={o[0]} className={'jt-report-q__opt' + (answers[cur.id] === o[0] ? ' is-selected' : '')} onClick={() => { if (cur.amountId) priorAutoRef.current = propPriorAutoUser(priorAutoRef.current, 'option'); setAns(cur.id, o[0]); }}>
+                <button key={o[0]} className={'jt-report-q__opt' + (answers[cur.id] === o[0] ? ' is-selected' : '')} onClick={() => { if (cur.id === 'isUrbanArea') lookupAuto.current.isUrbanArea = false;
+                  if (cur.id === 'propertyKind' && answers.propertyKind !== o[0]) { cancelLookup(); resetLookupValues(); setLaddr(''); jtAddrRef.current = ''; }
+                  if (cur.amountId) priorAutoRef.current = propPriorAutoUser(priorAutoRef.current, 'option'); setAns(cur.id, o[0]); }}>
                   <span className="jt-report-q__opt-mark">{answers[cur.id] === o[0] ? '●' : '○'}</span>
                   <span><strong>{o[1]}</strong>{o[2] ? <span style={{ opacity: 0.7 }}> · {o[2]}</span> : null}</span>
                 </button>
@@ -1174,7 +1202,7 @@ function JTReportProperty({ setRoute, onBack }) {
               <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id]}
                 onChange={e => {
-                  if (cur.id === 'standardValue') cancelLookup();
+                  if (cur.id === 'standardValue') { cancelLookup(); lookupAuto.current.standardValue = false; }
                   window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money);
                 }} />
               {cur.money && Number(answers[cur.id]) > 0 && (

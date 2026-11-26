@@ -80,7 +80,7 @@ function JTReportAppeal({ setRoute, onBack }) {
   const toggleMulti = (id, v) => setAnswers(a => {
     const cur = Array.isArray(a[id]) ? a[id] : [];
     if (cur.includes(v)) return { ...a, [id]: cur.filter(x => x !== v) };
-    return { ...a, [id]: [...cur, v] };
+    return { ...a, [id]: v === 'none' ? ['none'] : [...cur.filter(x => x !== 'none'), v] };
   });
 
   const canNext = () => {
@@ -94,7 +94,7 @@ function JTReportAppeal({ setRoute, onBack }) {
   const dataFlow = aiAvailable ? 'ai' : 'local';
   const basicReport = () => {
     const hasValidTiming = answers.timing === 'lt_5y' || answers.timing === 'post_audit';
-    const reasonCount = Array.isArray(answers.reason) ? answers.reason.length : 0;
+    const reasonCount = Array.isArray(answers.reason) ? answers.reason.filter(v => v !== 'none').length : 0;
     const postAudit = answers.timing === 'post_audit';
     let grade = 'LOW';
     if (answers.timing === 'never' || answers.timing === 'gt_5y') grade = 'NONE';

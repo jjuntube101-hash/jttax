@@ -51,3 +51,19 @@ test('reinherit off discards stale date',()=>assert.equal(inh.mapAnswersToInheri
 
 for(let year=2020;year<=2025;year++)test('historical reinheritance date '+year,()=>{const b=inh.mapAnswersToInheritance({...ia,deathDate:year+'-10-10',historicalChildAges:'30,35',priorInheritanceDate:(year-1)+'-10-10',burialFacilityExpenses:'0'});assert.equal(b.prior_inheritance_date,(year-1)+'-10-10');assert.equal(b.short_term_re_inheritance,true);});
 test('historical reinheritance requires exact prior date',()=>assert.throws(()=>inh.mapAnswersToInheritance({...ia,deathDate:'2020-10-10',historicalChildAges:'30,35',priorInheritanceDate:''})));
+
+const youth = load('YouthStartup', ['mapAnswersToYouth']);
+test('youth request distinguishes zero revenue and tax from blank fields', () => {
+  const paid = youth.mapAnswersToYouth({annualRevenue: '0', expectedTax: '0'});
+  assert.equal(paid.annual_revenue, 0);
+  assert.equal(paid.expected_annual_tax, 0);
+  const blank = youth.mapAnswersToYouth({annualRevenue: '', expectedTax: ''});
+  assert.equal(blank.annual_revenue, undefined);
+  assert.equal(blank.expected_annual_tax, undefined);
+});
+test('youth request only includes the previous industry for applicable business types', () => {
+  for (const businessType of ['폐업후재개', '사업승계', '신규창업', '법인전환']) {
+    const request = youth.mapAnswersToYouth({businessType, priorBusinessCode: '525103'});
+    assert.equal(request.prior_business_code, ['폐업후재개', '사업승계'].includes(businessType) ? '525103' : undefined);
+  }
+});

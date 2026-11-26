@@ -403,8 +403,8 @@ console.log('════ 엔진 호출 → 판정 (fetch 대역) ════')
     ok(/r2\.year && String\(r2\.year\) === String\(priorYear\)/.test(lk), '응답에 year 가 있고 작년과 같을 때만 채운다(year 없으면 채우지 않는다)');
     ok(!/!r2\.year \|\|/.test(lk), '「year 가 없으면 통과」 분기가 없다');
     ok(/const sameUnit = propPriorSameUnit\(r, r2\);/.test(lk), '같은 세대 판정은 propPriorSameUnit 한 곳이다');
-    ok(/propPriorAutoReset\(/.test(lk) && /propPriorAutoApply\(/.test(lk), '조회 시작에 reset, 응답 도착에 apply 를 쓴다');
-    ok(lk.indexOf('propPriorAutoReset(') < lk.indexOf('await window.jtLookupHousePrice'), 'reset 이 조회 await 보다 앞선다(새 주소 조회가 시작되면 지운다)');
+    ok(/resetLookupValues\(/.test(lk) && /propPriorAutoApply\(/.test(lk), '조회 시작에 reset, 응답 도착에 apply 를 쓴다');
+    ok(lk.indexOf('resetLookupValues(') < lk.indexOf('await window.jtLookupHousePrice'), 'reset 이 조회 await 보다 앞선다(새 주소 조회가 시작되면 지운다)');
     ok(/answersRef\.current/.test(lk), '최신 답은 ref 로 본다');
     ok(/recheckPrior/.test(lk) && /작년 공시가격을 다시 확인하세요/.test(lk), '올해 공시가격이 바뀌었는데 작년 값이 사용자 것이면 다시 확인 안내');
     const handlers = code.slice(code.indexOf('{cur.amountId && answers[cur.id] === cur.amountWhen'), code.indexOf("{cur.id === 'standardValue' && answers.propertyKind"));
