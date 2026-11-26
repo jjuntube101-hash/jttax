@@ -83,6 +83,22 @@ eq('clear stores blank', changes, ['']);
 eq('clear remains blank', el.value, '');
 props = render('1234'); el = element('0'); props.onChange({target: el});
 eq('zero stores zero', changes, ['0']);
+let rejected = 0;
+props = render('3500000', {onRejectedEdit: () => { rejected++; }});
+el = element('3,500,000', 0, 9);
+props.onPaste({target: el, preventDefault() {}, clipboardData: {getData: () => '-100'}});
+eq('salary can invalidate the previous amount on rejected paste', rejected, 1);
+
+let deferredCaret;
+sandbox.requestAnimationFrame = callback => { deferredCaret = callback; };
+props = render(''); el = element('3500000', 7);
+sandbox.document.activeElement = el;
+props.onChange({target: el});
+el.setSelectionRange(0, el.value.length);
+deferredCaret();
+eq('select-all made before the next frame remains selected', [el.selectionStart, el.selectionEnd], [0, 9]);
+sandbox.requestAnimationFrame = callback => callback();
+
 // Replace-all paste (currency suffix is clipboard content, not existing field content).
 props = render('1234'); el = element('1,234', 0, 5);
 props.onPaste({target: el, preventDefault: () => {}, clipboardData: {getData: () => ' ₩50,000,000.00원 '}});

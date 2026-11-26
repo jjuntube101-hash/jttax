@@ -8,11 +8,11 @@ const { useState: useYSState } = React;
 
 /* 업종 조회 공통함수 (window.jtLookupIndustry) — 업종코드/명 → KSIC + 감면적격 */
 if (typeof window !== 'undefined' && !window.jtLookupIndustry) {
-  window.jtLookupIndustry = async function ({ code, keyword, compareCode } = {}) {
+  window.jtLookupIndustry = async function ({ code, keyword, compareCode, signal } = {}) {
     const base = window.JT_ENGINE_BASE || 'http://127.0.0.1:8000';
     const res = await fetch(base + '/v1/lookup/industry', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: code || '', keyword: keyword || '', compare_code: compareCode || '' }),
+      signal, body: JSON.stringify({ code: code || '', keyword: keyword || '', compare_code: compareCode || '' }),
     });
     if (!res.ok) throw new Error('industry ' + res.status);
     return res.json();
@@ -21,11 +21,11 @@ if (typeof window !== 'undefined' && !window.jtLookupIndustry) {
 
 /* 지역 조회 경량함수 (window.jtLookupRegion) — 주소 → 지역규제만(공시가 생략, 렉 해결). RegionInfo 직접 반환 */
 if (typeof window !== 'undefined' && !window.jtLookupRegion) {
-  window.jtLookupRegion = async function (address) {
+  window.jtLookupRegion = async function (address, signal) {
     const base = window.JT_ENGINE_BASE || 'http://127.0.0.1:8000';
     const res = await fetch(base + '/v1/lookup/region', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ address: address || '' }),
+      signal, body: JSON.stringify({ address: address || '' }),
     });
     if (!res.ok) throw new Error('region ' + res.status);
     return res.json();   // RegionInfo (sigungu_code·is_overcrowding·overcrowding_uncertain·is_sudogwon·is_depopulation…)
@@ -180,20 +180,23 @@ function ysMonthsBetween(a, b) {
 
 async function callYouthEngine(body) {
   const base = (typeof window !== 'undefined' && window.JT_ENGINE_BASE) || 'http://127.0.0.1:8000';
-  const delays = [1000, 2000, 4000, 8000];
+  const delays = [1000];
   let lastErr;
   for (let attempt = 0; attempt <= delays.length; attempt++) {
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 15000);
     try {
-      const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-      const to = ctrl ? setTimeout(() => ctrl.abort(), 25000) : null;
       const res = await fetch(base + '/v1/calc/youth-startup', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined,
+        body: JSON.stringify(body), signal: ctrl.signal,
       });
-      if (to) clearTimeout(to);
       if (!res.ok) { const _err = new Error('engine ' + res.status); _err.status = res.status; throw _err; }
       return await res.json();
-    } catch (e) { lastErr = e; if (e && e.status >= 400 && e.status < 500) break; if (attempt < delays.length) await new Promise(r => setTimeout(r, delays[attempt])); }
+    } catch (e) {
+      lastErr = e;
+      if (e.status >= 400 && e.status < 500) break;
+    } finally { clearTimeout(to); }
+    if (attempt < delays.length) await new Promise(resolve => setTimeout(resolve, delays[attempt]));
   }
   throw lastErr;
 }
@@ -277,6 +280,37 @@ function buildYSKakao(a, calc, industryMatch) {
   return L.join('\n');
 }
 
+// 입력을 바꾸면 이전 조회를 취소한다. 늦게 도착한 응답은 현재 선택을 바꾸지 않는다.
+function useYSLookup() {
+  const active = React.useRef(null);
+  const [busy, setBusy] = useYSState(false);
+  const [error, setError] = useYSState('');
+  const cancel = () => {
+    active.current?.abort();
+    active.current = null;
+    setBusy(false);
+    setError('');
+  };
+  React.useEffect(() => () => { active.current?.abort(); active.current = null; }, []);
+  const run = async (request, apply) => {
+    cancel();
+    const controller = new AbortController();
+    active.current = controller;
+    setBusy(true);
+    const timer = setTimeout(() => controller.abort(), 20000);
+    try {
+      const result = await request(controller.signal);
+      if (active.current === controller) apply(result);
+    } catch (e) {
+      if (active.current === controller) setError('조회 서버의 응답을 받지 못했어요. 잠시 후 다시 조회해 주세요.');
+    } finally {
+      clearTimeout(timer);
+      if (active.current === controller) { active.current = null; setBusy(false); }
+    }
+  };
+  return { busy, error, cancel, run };
+}
+
 function JTReportYouthStartup({ setRoute, onBack }) {
   const [step, setStep] = useYSState(0);
   const [answers, setAnswers] = useYSState({});
@@ -288,18 +322,21 @@ function JTReportYouthStartup({ setRoute, onBack }) {
   // 업종 조회
   const [indMode, setIndMode] = useYSState('name');
   const [indKw, setIndKw] = useYSState('');
-  const [indBusy, setIndBusy] = useYSState(false);
+  const indLookup = useYSLookup();
+  const indBusy = indLookup.busy;
   const [indCands, setIndCands] = useYSState(null);
   const [industryMatch, setIndustryMatch] = useYSState(null);
   const [indCodeInput, setIndCodeInput] = useYSState('');
   // 종전 업종(세분류 비교)
   const [priorMatch, setPriorMatch] = useYSState(null);
   const [priorKw, setPriorKw] = useYSState('');
-  const [priorBusy, setPriorBusy] = useYSState(false);
+  const priorLookup = useYSLookup();
+  const priorBusy = priorLookup.busy;
   const [priorCands, setPriorCands] = useYSState(null);
   // 지역 조회
   const [raddr, setRaddr] = useYSState('');
-  const [rbusy, setRbusy] = useYSState(false);
+  const rLookup = useYSLookup();
+  const rbusy = rLookup.busy;
   const [regionInfo, setRegionInfo] = useYSState(null);
   const [rinfo, setRinfo] = useYSState(null);
 
@@ -320,51 +357,65 @@ function JTReportYouthStartup({ setRoute, onBack }) {
 
   const canNext = () => {
     if (!cur) return false;
-    if (cur.custom === 'industry') return prospective ? true : !!industryMatch;
-    if (cur.custom === 'region') return prospective ? true : !!regionInfo;
+    if (cur.custom === 'industry') return !indBusy && (!!industryMatch || (prospective && !(indMode === 'code' ? indCodeInput : indKw).trim()));
+    if (cur.custom === 'region') return !rbusy && (!!regionInfo || (prospective && !raddr.trim()));
     if (cur.custom === 'priorindustry') return true; // optional
+    if (cur.id === 'employeeCount' && answers.employeeCount) return /^\d+$/.test(answers.employeeCount);
+    if (cur.id === 'ownershipPct' && answers.ownershipPct) return Number(answers.ownershipPct) <= 100;
     if (cur.freeform || cur.optional) return true;
-    if (prospective && cur.optionalP) return true;
+    if (prospective && cur.optionalP && !answers[cur.id]) return true;
     if (cur.numeric) { const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
     if (cur.dateInput) return ysValidDate(answers[cur.id]);
     return !!answers[cur.id];
   };
 
-  const doIndustrySearch = async () => {
-    if (!indKw.trim()) return;
-    setIndBusy(true); setIndCands(null);
-    try {
-      const r = await window.jtLookupIndustry({ keyword: indKw.trim() });
-      setIndCands((r && r.candidates) || []);
-    } catch (e) { setIndCands([]); } finally { setIndBusy(false); }
+  const clearIndustry = () => {
+    indLookup.cancel();
+    setIndCands(null);
+    setIndustryMatch(null);
+    setAns('industryCode', '');
   };
-  const doIndustryCode = async () => {
-    const c = indCodeInput.trim();
-    if (!c) return;
-    setIndBusy(true);
-    try {
-      const r = await window.jtLookupIndustry({ code: c });
-      if (r && r.match) { setIndustryMatch(r.match); setAns('industryCode', r.match.nts_code); setIndCands(null); }
-      else { setIndustryMatch(null); setAns('industryCode', ''); setIndCands([]); }
-    } catch (e) { setIndustryMatch(null); setAns('industryCode', ''); } finally { setIndBusy(false); }
+  const doIndustrySearch = () => {
+    if (!indKw.trim()) return;
+    clearIndustry();
+    indLookup.run(signal => window.jtLookupIndustry({ keyword: indKw.trim(), signal }),
+      result => setIndCands(result.candidates || []));
+  };
+  const doIndustryCode = () => {
+    if (!/^\d{6}$/.test(indCodeInput)) return;
+    clearIndustry();
+    indLookup.run(signal => window.jtLookupIndustry({ code: indCodeInput, signal }), result => {
+      if (result.match) pickIndustry(result.match);
+      else setIndCands([]);
+    });
   };
   const pickIndustry = (m) => { setIndustryMatch(m); setAns('industryCode', m.nts_code); setIndCands(null); };
 
-  const doPriorSearch = async () => {
+  const clearPrior = () => {
+    priorLookup.cancel();
+    setPriorCands(null);
+    setPriorMatch(null);
+    setAns('priorBusinessCode', '');
+  };
+  const doPriorSearch = () => {
     if (!priorKw.trim()) return;
-    setPriorBusy(true); setPriorCands(null);
-    try {
-      const r = await window.jtLookupIndustry({ keyword: priorKw.trim() });
-      setPriorCands((r && r.candidates) || []);
-    } catch (e) { setPriorCands([]); } finally { setPriorBusy(false); }
+    clearPrior();
+    priorLookup.run(signal => window.jtLookupIndustry({ keyword: priorKw.trim(), signal }),
+      result => setPriorCands(result.candidates || []));
   };
   const pickPrior = (m) => { setPriorMatch(m); setAns('priorBusinessCode', m.nts_code); setPriorCands(null); };
 
-  const doRegionLookup = async () => {
+  const changeRegion = value => {
+    rLookup.cancel();
+    setRaddr(value);
+    setRegionInfo(null);
+    setRinfo(null);
+  };
+  const doRegionLookup = () => {
     if (!raddr.trim()) return;
-    setRbusy(true); setRinfo(null);
-    try {
-      const reg = await window.jtLookupRegion(raddr.trim());   // 지역만 경량 조회(공시가 생략 → 렉 해결)
+    setRinfo(null);
+    setRegionInfo(null);
+    rLookup.run(signal => window.jtLookupRegion(raddr.trim(), signal), reg => {
       if (reg && (reg.sigungu_code || reg.sigungu)) {
         setRegionInfo(reg);
         const parts = [];
@@ -378,9 +429,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
       } else {
         setRinfo({ ok: false, msg: '이 주소의 지역을 확인하지 못했어요. 도로명/지번 주소를 정확히 넣어 다시 시도해 주세요.' });
       }
-    } catch (e) {
-      setRinfo({ ok: false, msg: '조회 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.' });
-    } finally { setRbusy(false); }
+    });
   };
 
   const runAnalysis = async () => {
@@ -402,12 +451,14 @@ function JTReportYouthStartup({ setRoute, onBack }) {
       if (phase === 'quick') setQuickReport(rep);
     } catch (e) {
       console.error(e);
-      setErr('판정 서버 연결이 지연되고 있어요. 잠시 후 다시 시도하거나 상담으로 문의해 주세요.');
+      setErr(e.status === 422 ? '입력 형식을 확인해 주세요. 이전 단계에서 날짜와 숫자를 수정한 뒤 다시 진단할 수 있습니다.' :
+        e.status === 429 ? '현재 요청이 많습니다. 잠시 후 다시 진단해 주세요.' :
+        '판정 결과를 받지 못했어요. 입력 내용은 유지되어 있으니 다시 진단해 주세요.');
     } finally { setLoading(false); }
   };
 
   const goDetail = () => { setReport(null); setPhase('detail'); setStep(0); };
-  const goNext = () => { if (isLast) runAnalysis(); else setStep(s => s + 1); };
+  const goNext = () => { if (!canNext()) return; if (isLast) runAnalysis(); else setStep(s => s + 1); };
   const goPrev = () => {
     if (safeStep > 0) { setStep(s => s - 1); return; }
     if (phase === 'detail') { setPhase('quick'); setStep(0); setReport(quickReport); return; }
@@ -596,7 +647,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
           )}
 
           <div className="jt-report-q__nav" style={{ marginTop: 16 }}>
-            <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); setAnswers({}); setIndustryMatch(null); setRegionInfo(null); }}>처음부터 다시</button>
+            <button className="jt-btn jt-btn--ghost" onClick={() => { setReport(null); setPhase('quick'); setStep(0); clearIndustry(); clearPrior(); changeRegion(''); setIndMode('name'); setIndKw(''); setIndCodeInput(''); setPriorKw(''); setAnswers({}); setQuickReport(null); setErr(null); }}>처음부터 다시</button>
             <button className="jt-btn jt-btn--ghost" onClick={onBack}>← 세금 계산기</button>
           </div>
         </JTReportShell>
@@ -648,22 +699,23 @@ function JTReportYouthStartup({ setRoute, onBack }) {
           {cur.custom === 'industry' && (
             <div>
               <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                <button className={'jt-btn ' + (indMode === 'name' ? 'jt-btn--primary' : 'jt-btn--ghost')} onClick={() => { setIndMode('name'); setIndCands(null); }}>업종명으로 찾기</button>
-                <button className={'jt-btn ' + (indMode === 'code' ? 'jt-btn--primary' : 'jt-btn--ghost')} onClick={() => { setIndMode('code'); setIndCands(null); }}>업종코드로 입력</button>
+                <button className={'jt-btn ' + (indMode === 'name' ? 'jt-btn--primary' : 'jt-btn--ghost')} onClick={() => { if (indMode !== 'name') { clearIndustry(); setIndMode('name'); } }}>업종명으로 찾기</button>
+                <button className={'jt-btn ' + (indMode === 'code' ? 'jt-btn--primary' : 'jt-btn--ghost')} onClick={() => { if (indMode !== 'code') { clearIndustry(); setIndMode('code'); } }}>업종코드로 입력</button>
               </div>
               {indMode === 'name' ? (
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   <input className="jt-report-q__input" style={{ flex: '1 1 200px', margin: 0 }} type="text" placeholder="예: 온라인쇼핑몰, 제조, 음식점, 소프트웨어"
-                    value={indKw} onChange={e => setIndKw(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !indBusy) doIndustrySearch(); }} />
+                    value={indKw} onChange={e => { clearIndustry(); setIndKw(e.target.value); }} onKeyDown={e => { if (e.key === 'Enter' && !indBusy) doIndustrySearch(); }} />
                   <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={indBusy || !indKw.trim()} onClick={doIndustrySearch}>{indBusy ? '검색 중…' : '검색'}</button>
                 </div>
               ) : (
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   <input className="jt-report-q__input" style={{ flex: '1 1 160px', margin: 0 }} type="text" inputMode="numeric" placeholder="사업자등록증 업종코드 6자리 (예: 525103)"
-                    value={indCodeInput} onChange={e => setIndCodeInput(e.target.value.replace(/[^0-9]/g, ''))} onKeyDown={e => { if (e.key === 'Enter' && !indBusy) doIndustryCode(); }} />
-                  <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={indBusy || !indCodeInput.trim()} onClick={doIndustryCode}>{indBusy ? '조회 중…' : '조회'}</button>
+                    value={indCodeInput} maxLength={6} onChange={e => { clearIndustry(); setIndCodeInput(e.target.value.replace(/[^0-9]/g, '')); }} onKeyDown={e => { if (e.key === 'Enter' && !indBusy) doIndustryCode(); }} />
+                  <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={indBusy || indCodeInput.length !== 6} onClick={doIndustryCode}>{indBusy ? '조회 중…' : '조회'}</button>
                 </div>
               )}
+              {indLookup.error && <p role="alert">{indLookup.error}</p>}
               {indCands && indCands.length > 0 && (
                 <div style={{ marginTop: 12, maxHeight: 280, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {indCands.map(c => {
@@ -692,9 +744,10 @@ function JTReportYouthStartup({ setRoute, onBack }) {
             <div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <input className="jt-report-q__input" style={{ flex: '1 1 200px', margin: 0 }} type="text" placeholder="종전 업종명 또는 업종코드"
-                  value={priorKw} onChange={e => setPriorKw(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !priorBusy) doPriorSearch(); }} />
+                  value={priorKw} onChange={e => { clearPrior(); setPriorKw(e.target.value); }} onKeyDown={e => { if (e.key === 'Enter' && !priorBusy) doPriorSearch(); }} />
                 <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={priorBusy || !priorKw.trim()} onClick={doPriorSearch}>{priorBusy ? '검색 중…' : '검색'}</button>
               </div>
+              {priorLookup.error && <p role="alert">{priorLookup.error}</p>}
               {priorCands && priorCands.length > 0 && (
                 <div style={{ marginTop: 10, maxHeight: 220, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {priorCands.map(c => (
@@ -704,6 +757,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                   ))}
                 </div>
               )}
+              {priorCands?.length === 0 && <p>일치하는 종전 업종을 찾지 못했어요.</p>}
               {priorMatch && <div style={{ marginTop: 10, fontSize: 13.5 }}>종전 업종: <strong>{priorMatch.name}</strong> — 신규 업종과 세분류가 같으면 창업으로 인정되지 않습니다(자동 비교).</div>}
             </div>
           )}
@@ -713,10 +767,11 @@ function JTReportYouthStartup({ setRoute, onBack }) {
             <div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <input className="jt-report-q__input" style={{ flex: '1 1 220px', margin: 0 }} type="text" placeholder="예: 경기 화성시 동탄대로 / 강원 홍천군 ○○로"
-                  value={raddr} onChange={e => setRaddr(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !rbusy) doRegionLookup(); }} />
-                {window.JTAddressPick && <window.JTAddressPick onPick={setRaddr} disabled={rbusy} />}
+                  value={raddr} onChange={e => changeRegion(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !rbusy) doRegionLookup(); }} />
+                {window.JTAddressPick && <window.JTAddressPick onPick={changeRegion} disabled={rbusy} />}
                 <button className="jt-btn jt-btn--primary" style={{ flex: '0 0 auto' }} disabled={rbusy || !raddr.trim()} onClick={doRegionLookup}>{rbusy ? '판정 중…' : '지역 판정'}</button>
               </div>
+              {rLookup.error && <p role="alert">{rLookup.error}</p>}
               {rinfo && (
                 <div style={{ marginTop: 10, fontSize: 13.5, lineHeight: 1.55, padding: '9px 12px', borderRadius: 8, background: rinfo.ok ? '#eaf5ee' : '#fff7ea', borderLeft: '4px solid ' + (rinfo.ok ? '#2a6d4f' : '#d08b00') }}>{rinfo.msg}</div>
               )}
@@ -761,6 +816,9 @@ function JTReportYouthStartup({ setRoute, onBack }) {
             </div>
           )}
 
+          {cur.id === 'employeeCount' && !canNext() && <p role="alert">직원 수는 0 이상의 정수로 입력해 주세요.</p>}
+          {cur.id === 'ownershipPct' && !canNext() && <p role="alert">지분율은 0에서 100 사이로 입력해 주세요.</p>}
+
           {cur.freeform && (
             <textarea className="jt-report-q__input" rows={3} placeholder={cur.placeholder || ''} value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
           )}
@@ -771,7 +829,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
               {isLast ? (phase === 'quick' ? '빠른 진단 보기 →' : '정밀 결과 보기 →') : '다음 →'}
             </button>
           </div>
-          {cur.optional && <div style={{ textAlign: 'center', marginTop: 8 }}><button className="jt-btn jt-btn--ghost" style={{ fontSize: 13 }} onClick={goNext}>건너뛰기</button></div>}
+          {cur.optional && canNext() && <div style={{ textAlign: 'center', marginTop: 8 }}><button className="jt-btn jt-btn--ghost" style={{ fontSize: 13 }} onClick={goNext}>건너뛰기</button></div>}
         </div>
       </JTReportShell>
     </div>

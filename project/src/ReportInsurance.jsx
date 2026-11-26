@@ -346,7 +346,9 @@ function JTReportInsurance({ setRoute, onBack }) {
 
           {cur.numeric && (
             <div>
-              <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
+              <JTNumericInput key={cur.id} money={!!cur.money}
+                parseMoney={cur.money ? raw => /\d\s+\d/.test(raw) ? null : hcParse(raw) : undefined}
+                onRejectedEdit={cur.money ? () => setAns(cur.id, '') : undefined} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id] || ''} onChange={e => setAns(cur.id, e.target.value)} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {insKoreanAmount(Number(answers[cur.id]))}</div>

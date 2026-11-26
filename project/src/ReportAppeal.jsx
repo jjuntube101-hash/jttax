@@ -90,7 +90,34 @@ function JTReportAppeal({ setRoute, onBack }) {
     return !!v;
   };
 
+  const aiAvailable = typeof window.claude?.complete === 'function';
+  const dataFlow = aiAvailable ? 'ai' : 'local';
+  const basicReport = () => {
+    const hasValidTiming = answers.timing === 'lt_5y' || answers.timing === 'post_audit';
+    const reasonCount = Array.isArray(answers.reason) ? answers.reason.length : 0;
+    const postAudit = answers.timing === 'post_audit';
+    let grade = 'LOW';
+    if (answers.timing === 'never' || answers.timing === 'gt_5y') grade = 'NONE';
+    else if (postAudit || reasonCount >= 2) grade = 'HIGH';
+    else if (hasValidTiming && reasonCount >= 1) grade = 'MID';
+    return {
+      fallback: true,   // 260906 — 엔진 실패 폴백 표지: calc_complete 집계에서 제외(Codex R2-F1)
+      grade,
+      grade_label: {HIGH:'가능성 높음', MID:'검토 가치 있음', LOW:'가능성 낮음', NONE:'대상 아님'}[grade],
+      summary: '선택한 신고 시점과 사유를 기준으로 한 기본 판정입니다. 개별 자료를 검토받으려면 별도로 상담을 신청해 주세요.',
+      reasons: [
+        { title: '법정기한 검토', detail: '경정청구 원칙 기한은 법정신고기한으로부터 5년입니다. 결정·경정 통지를 받은 증액분은 통지받은 날부터 3개월(5년 내 한정), 후발적 사유(심판·소송 확정·귀속 변경·상호합의 등 한정 열거)는 그 사유를 안 날부터 3개월 이내 청구할 수 있습니다(90일 아님).', keyword: '국세기본법 §45의2①단서·②' },
+        { title: '사유 확정 필요', detail: '단순 오류·누락·특례 미적용·평가 과대 등 사유 유형에 따라 필요 증빙과 청구 방법이 달라집니다.', keyword: '기본법 §45의2·판례' },
+        { title: '리스크 검토', detail: '경정청구 자체에는 불이익이 없으나, 반사적으로 원 신고의 허점이 드러날 수 있어 사전 검토가 중요합니다.', keyword: '실무 주의' },
+      ],
+      checklist: ['당시 신고서·세액계산서 사본', '계약서·거래 증빙', '판례·예규 관련 자료', '당시 담당 세무사 연락처(있다면)'],
+      next_steps: ['담당 세무사에게 위 자료 공유', '법정기한 전 사유 확정 여부 판단', '인용 가능성 높은 순서로 청구 진행'],
+      caution: '경정청구는 반사적으로 원 신고를 전면 재검토 대상으로 만들 수 있어 반드시 전문가 검토 후 진행해야 합니다.',
+    };
+  };
+
   const runAnalysis = async () => {
+    if (!aiAvailable) { setReport(basicReport()); return; }
     setLoading(true);
     setErr(null);
     try {
@@ -135,28 +162,7 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
       setReport(data);
     } catch (e) {
       console.error(e);
-      // Claude 실패 시 입력값 기반 기본 등급 판정 폴백
-      const hasValidTiming = answers.timing === 'lt_5y' || answers.timing === 'post_audit';
-      const reasonCount = Array.isArray(answers.reason) ? answers.reason.length : 0;
-      const postAudit = answers.timing === 'post_audit';
-      let grade = 'LOW';
-      if (answers.timing === 'never' || answers.timing === 'gt_5y') grade = 'NONE';
-      else if (postAudit || reasonCount >= 2) grade = 'HIGH';
-      else if (hasValidTiming && reasonCount >= 1) grade = 'MID';
-      setReport({
-        fallback: true,   // 260906 — 엔진 실패 폴백 표지: calc_complete 집계에서 제외(Codex R2-F1)
-        grade,
-        grade_label: {HIGH:'가능성 높음', MID:'검토 가치 있음', LOW:'가능성 낮음', NONE:'대상 아님'}[grade],
-        summary: '분석 요청이 지연되어 입력값 기반 기본 판정을 먼저 안내드립니다. 정밀 검토는 담당 세무사가 이어받겠습니다.',
-        reasons: [
-          { title: '법정기한 검토', detail: '경정청구 원칙 기한은 법정신고기한으로부터 5년입니다. 결정·경정 통지를 받은 증액분은 통지받은 날부터 3개월(5년 내 한정), 후발적 사유(심판·소송 확정·귀속 변경·상호합의 등 한정 열거)는 그 사유를 안 날부터 3개월 이내 청구할 수 있습니다(90일 아님).', keyword: '국세기본법 §45의2①단서·②' },
-          { title: '사유 확정 필요', detail: '단순 오류·누락·특례 미적용·평가 과대 등 사유 유형에 따라 필요 증빙과 청구 방법이 달라집니다.', keyword: '기본법 §45의2·판례' },
-          { title: '리스크 검토', detail: '경정청구 자체에는 불이익이 없으나, 반사적으로 원 신고의 허점이 드러날 수 있어 사전 검토가 중요합니다.', keyword: '실무 주의' },
-        ],
-        checklist: ['당시 신고서·세액계산서 사본', '계약서·거래 증빙', '판례·예규 관련 자료', '당시 담당 세무사 연락처(있다면)'],
-        next_steps: ['담당 세무사에게 위 자료 공유', '법정기한 전 사유 확정 여부 판단', '인용 가능성 높은 순서로 청구 진행'],
-        caution: '경정청구는 반사적으로 원 신고를 전면 재검토 대상으로 만들 수 있어 반드시 전문가 검토 후 진행해야 합니다.',
-      });
+      setReport(basicReport());
     } finally {
       setLoading(false);
     }
@@ -188,7 +194,7 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
         </div>
 
         <div className={`jt-report-result__grade jt-grade-${(report.grade || 'MID').toLowerCase()}`}>
-          <div className="jt-report-result__grade-label">진단 결과</div>
+          <div className="jt-report-result__grade-label">{report.fallback ? '입력값 기반 기본 판정' : '진단 결과'}</div>
           <div className="jt-report-result__grade-val">{report.grade_label || report.grade}</div>
           <p>{report.summary}</p>
         </div>
@@ -235,7 +241,7 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
           </div>
         )}
 
-        <JTReportDisclaimer dataFlow="ai" variant="inline" />
+        <JTReportDisclaimer dataFlow={dataFlow} variant="inline" />
         <JTReportConvert
           setRoute={setRoute}
           calcId="appeal"
@@ -265,7 +271,7 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
         <p>입력하신 내용을 바탕으로 경정청구 가능성을 «간이 진단»하고 있습니다.</p>
         <p className="jt-report-loading__hint">약 10~20초 소요됩니다.</p>
         <p className="jt-report-loading__privacy" style={{ fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 }}>
-          {(window.JT_PRIVACY_NOTE || {})['ai'] || (window.JT_PRIVACY_NOTE || {}).engine}
+          {(window.JT_PRIVACY_NOTE || {})[dataFlow] || (window.JT_PRIVACY_NOTE || {}).engine}
         </p>
       </div>
     );
@@ -278,7 +284,7 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
         <h2>일시적인 오류입니다</h2>
         <p>{err}</p>
         <p className="jt-report-loading__privacy" style={{ fontSize: 12.5, opacity: 0.6, marginTop: 10, lineHeight: 1.6 }}>
-          {(window.JT_PRIVACY_NOTE || {})['ai'] || (window.JT_PRIVACY_NOTE || {}).engine}
+          {(window.JT_PRIVACY_NOTE || {})[dataFlow] || (window.JT_PRIVACY_NOTE || {}).engine}
         </p>
         <div style={{marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center'}}>
           <button className="jt-btn jt-btn--primary" onClick={() => { setErr(null); runAnalysis(); }}>다시 시도</button>
@@ -291,9 +297,9 @@ reasons는 최소 3개, 최대 5개. 응답이 NONE이면 "경정청구 대상�
   // ===== 문항 화면 =====
   return (
     <div className="jt-container">
-      <JTReportShell dataFlow="ai"
+      <JTReportShell dataFlow={dataFlow}
         title="경정청구 가능성 진단"
-        subtitle="이미 낸 세금, 다시 볼 수 있는지 5분 안에 살펴봅니다."
+        subtitle={aiAvailable ? "이미 낸 세금, 다시 볼 수 있는지 살펴봅니다." : "다섯 문항에 답하면 입력값에 따른 기본 판정을 바로 확인할 수 있습니다."}
         stepIdx={step}
         stepTotal={total}
         onBack={goPrev}

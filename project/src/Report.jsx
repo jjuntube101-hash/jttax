@@ -73,7 +73,7 @@ function acqKoreanAmount(raw) {
   return s.trim() + '원';
 }
 
-function JTNumericInput({ money = true, value, onChange, parseMoney, ...props }) {
+function JTNumericInput({ money = true, value, onChange, parseMoney, onRejectedEdit, ...props }) {
   const [error, setError] = useReportState('');
   const [fractionDraft, setFractionDraft] = useReportState(null);
   const shown = money && fractionDraft !== null ? fractionDraft :
@@ -87,6 +87,7 @@ function JTNumericInput({ money = true, value, onChange, parseMoney, ...props })
     if (normalized === null) {
       setError(money ? '원 단위 숫자를 넣어 주세요. 음수·지수표기는 입력할 수 없습니다.' : '숫자와 소수점 하나만 입력해 주세요.');
       event.target.value = shown;
+      if (onRejectedEdit) { setFractionDraft(null); onRejectedEdit(); }
       return;
     }
     setError('');
@@ -102,7 +103,8 @@ function JTNumericInput({ money = true, value, onChange, parseMoney, ...props })
     if (typeof el.setSelectionRange === 'function') {
       el.setSelectionRange(caret, caret);
       if (typeof requestAnimationFrame === 'function') requestAnimationFrame(function () {
-        if (el.value === formatted && (typeof document === 'undefined' || document.activeElement === el)) el.setSelectionRange(caret, caret);
+        if (el.value === formatted && el.selectionStart === el.selectionEnd && el.selectionEnd === formatted.length
+          && (typeof document === 'undefined' || document.activeElement === el)) el.setSelectionRange(caret, caret);
       });
     }
   };
@@ -158,7 +160,11 @@ function JTNumericInput({ money = true, value, onChange, parseMoney, ...props })
       const parsed = parseMoney(pasted);
       if (parsed !== null && Number.isSafeInteger(parsed) && parsed >= 0) normalized = String(parsed);
     }
-    if (normalized === null) { setError('붙여넣은 금액을 확인해 주세요. 예: 1,234,567원'); return; }
+    if (normalized === null) {
+      setError('붙여넣은 금액을 확인해 주세요. 예: 1,234,567원');
+      if (onRejectedEdit) { setFractionDraft(null); onRejectedEdit(); }
+      return;
+    }
     const el = event.target;
     const start = el.selectionStart == null ? 0 : el.selectionStart;
     const end = el.selectionEnd == null ? el.value.length : el.selectionEnd;

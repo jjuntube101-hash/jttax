@@ -467,6 +467,7 @@ if (typeof window !== 'undefined' && !window.jtLookupPublicPrice) {
         if (r && ['pending', 'upstream_error', 'not_configured', 'busy'].includes(r.status)) {
           const err = new Error(r.note || '자료 조회가 완료되지 않았습니다. 잠시 후 다시 조회하세요.');
           err.lookupStatus = r.status;
+          err.retryAfter = r.retry_after;
           throw err;
         }
         if (r && r.region) lastRegion = r.region;
@@ -687,7 +688,14 @@ function JTReportProperty({ setRoute, onBack }) {
   // ⚠️ 260720 3R (Codex P0): 종전엔 useEffect로 ref를 갱신했는데, effect는 **렌더 이후**에
   //    돌기 때문에 "주소 변경 렌더 ~ effect 실행" 사이에 응답이 도착하면 ref가 아직 옛 주소다.
   //    → 옛 응답이 반영되거나(위험) 최신 응답이 버려진다. 입력 시점에 **동기로** 갱신한다.
-  const setLaddrSync = (v) => { jtAddrRef.current = v; setLaddr(v); };
+  const cancelLookup = () => {
+    ++jtReqSeq.current;
+    setLbusy(false);
+    setLinfo(null);
+    setUnitAsk(null);
+  };
+  React.useEffect(() => () => { ++jtReqSeq.current; }, []);
+  const setLaddrSync = (v) => { cancelLookup(); jtAddrRef.current = v; setLaddr(v); };
   // 주소 조회가 «작년 공시가격»을 자동으로 채웠는지 — 사용자가 손대면 꺼진다. 다른 주소 조회에서 작년 값을 못 찾았을 때
   // 자동으로 채운 낡은 값만 치우기 위한 표식이다(사용자가 직접 넣은 값은 건드리지 않는다).
   const priorAutoRef = React.useRef({ opt: false, amt: false });
@@ -739,8 +747,27 @@ function JTReportProperty({ setRoute, onBack }) {
       if (before.priorYearStandardValue !== undefined && rs.answers.priorYearStandardValue === undefined) setAns('priorYearStandardValue', undefined); }
     if (!unit) setUnitAsk(null);   // 주소를 새로 조회하면 이전 되묻기는 닫는다
     try {
-      const r = await window.jtLookupHousePrice(addrNow, unit);
-      if (stale()) return;   // 더 새 요청이 진행 중 — 이 응답은 버린다
+      let r;
+      const deadline = Date.now() + 60000;
+      for (;;) {
+        try {
+          r = await window.jtLookupHousePrice(addrNow, unit);
+          break;
+        } catch (error) {
+          if (stale()) return;
+          if (error.lookupStatus !== 'pending') throw error;
+          const seconds = Math.max(2, Number(error.retryAfter) || 5);
+          if (Date.now() + seconds * 1000 > deadline) {
+            setLinfo({ ok: false, msg: '아직 자료를 받지 못했어요. 공시가격을 직접 입력하거나 잠시 후 다시 조회해 주세요.' });
+            return;
+          }
+          setLinfo({ ok: true, msg: '해당 연도 자료를 준비 중입니다. ' + seconds + '초 후 자동으로 다시 조회합니다. 공시가격을 직접 입력하셔도 됩니다.' });
+          await new Promise(resolve => setTimeout(resolve, seconds * 1000));
+          if (stale()) return;
+        }
+      }
+      if (stale()) return;
+      setLinfo(null);
       // 260720: 이 주소에 세대가 여럿 — 금액을 채우지 않고 동·호를 되묻는다
       if (r && r.status === 'needs_unit') {
         setUnitAsk({ ...r, addr: addrNow });
@@ -902,8 +929,9 @@ function JTReportProperty({ setRoute, onBack }) {
   };
 
   const goDetail = () => { setReport(null); setPhase('detail'); setStep(0); };
-  const goNext = () => { if (isLast) runAnalysis(); else setStep(s => s + 1); };
+  const goNext = () => { if (cur?.id === 'standardValue') cancelLookup(); if (isLast) runAnalysis(); else setStep(s => s + 1); };
   const goPrev = () => {
+    if (cur?.id === 'standardValue') cancelLookup();
     if (safeStep > 0) { setStep(s => s - 1); return; }
     if (phase === 'detail') { setPhase('quick'); setStep(0); setReport(quickReport); return; }
     onBack();
@@ -1080,7 +1108,7 @@ function JTReportProperty({ setRoute, onBack }) {
     <div className="jt-container">
       <button className="jt-btn jt-btn--ghost" onClick={() => { window.location.hash = "/report/workspace"; }}>보유세 사건 입력·저장 작업대 열기</button>
       <JTReportShell inputReview={{questions:visibleQs,answers,onEdit:index=>{inputSession.invalidate();setStep(index);}}} title="재산세 계산" subtitle={phase === 'quick' ? '종류·공시가격만 넣으면 예상 재산세를 바로 보여드려요.' : '도시지역·세부담 상한까지 반영해 더 정확히 계산합니다.'} stepIdx={safeStep} stepTotal={total} onBack={goPrev} tag="LIVE">
-        <JTVWorldAttributes propertyKind={answers.propertyKind} onApplyValue={value => setAnswers(prior => ({ ...prior, standardValue: String(value) }))} />
+        <JTVWorldAttributes propertyKind={answers.propertyKind} onApplyValue={value => { cancelLookup(); setAns('standardValue', String(value)); }} />
         {err && <div style={{ background: '#fdeeec', borderLeft: '4px solid #c0392b', padding: '12px 16px', marginBottom: 16, borderRadius: 8 }}>{err}</div>}
         <div className="jt-report-q">
           <div className="jt-report-q__section">{cur.section}</div>
@@ -1145,7 +1173,10 @@ function JTReportProperty({ setRoute, onBack }) {
             <div>
               <JTNumericInput money={!!cur.money} className="jt-report-q__input" type="text" inputMode="numeric" placeholder={cur.placeholder || ''}
                 value={answers[cur.id]}
-                onChange={e => window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money)} />
+                onChange={e => {
+                  if (cur.id === 'standardValue') cancelLookup();
+                  window.jtSetNumericAns(setAns, cur.id, e.target.value, !!cur.money);
+                }} />
               {cur.money && Number(answers[cur.id]) > 0 && (
                 <div style={{ fontSize: 14, color: 'var(--accent,#2a6d4f)', marginTop: 6 }}>= {propKoreanAmountOrWon(Number(answers[cur.id]))}</div>
               )}
