@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "acquisition-tax-land-category-change", tag: "INSIGHT · ACQUISITION TAX", date: "2026.11.26", title: "토지 지목이 바뀌면 매매 없이도 취득세를 내나요?", excerpt: "땅을 사거나 판 일이 없어도, 지목이 실제로 바뀌면서 토지가액이 늘면 취득세 대상이 될 수 있습니다. 변경일과 먼저 사용한 부분을 확인하는 자료를 살펴봅니다." },
+    { slug: "year-end-medical-expense-insurance-reimbursement-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.26", title: "2026년 연말정산 의료비, 실손보험금을 받았다면 어떤 자료를 대조할까요?", excerpt: "병원에 낸 의료비를 실손보험으로 보전받았다면 해당 보험금을 공제대상 의료비에서 제외합니다. 치료 기록과 보험사 지급내역을 건별로 확인하는 법을 정리했습니다." },
     { slug: "property-gift-tax-paid-by-donor", tag: "INSIGHT · GIFT TAX", date: "2026.11.25", title: "부동산 증여 뒤 부모가 증여세를 대신 냈다면, 어떤 지급 기록을 남기나요?", excerpt: "부동산 증여세를 부모가 냈다면 자녀가 부담할 세금을 대신 낸 것인지, 부모에게 법정 연대납부의무가 있었는지 확인합니다. 등기·납부·송금 자료를 구분해 정리했습니다." },
     { slug: "year-end-rent-tax-credit-midyear-move-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.25", title: "2026년 이사한 해의 월세 세액공제, 전·후 계약서는 어떻게 정리하나요?", excerpt: "같은 해 월세집을 옮겼다면 이전 집과 새 집의 임대차계약서, 주민등록 주소, 월세 이체내역을 각각 맞춰 봅니다. 2026년 연말정산에서 회사에 제출할 자료를 정리했습니다." },
     { slug: "real-estate-brokerage-fee-cash-receipt", tag: "INSIGHT · BOOKKEEPING", date: "2026.11.23", title: "부동산 중개보수를 계좌이체로 받을 때, 현금영수증은 누구에게 발급하나요?", excerpt: "부동산 중개보수를 이체로 받았다면 건당 거래금액과 실제 중개서비스를 받은 사람을 확인합니다. 요청 없이 발급해야 하는 기준과 자진발급 때 남길 기록을 정리했습니다." },
