@@ -180,6 +180,11 @@
     "mainPreserved": true
   },
   {
+    "path": "insights/acquisition-tax-land-permit-prepaid-balance.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
     "path": "insights/acquisition-tax-newlywed-reduction-ended.html",
     "h1": 1,
     "mainPreserved": true
@@ -711,6 +716,11 @@
   },
   {
     "path": "insights/year-end-medical-expense-insurance-reimbursement-2026.html",
+    "h1": 1,
+    "mainPreserved": true
+  },
+  {
+    "path": "insights/year-end-missing-donation-receipt-2026.html",
     "h1": 1,
     "mainPreserved": true
   },

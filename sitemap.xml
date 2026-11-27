@@ -224,6 +224,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.jttax.co.kr/insights/acquisition-tax-land-permit-prepaid-balance.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.jttax.co.kr/insights/acquisition-tax-newlywed-reduction-ended.html</loc>
     <lastmod>2026-09-21</lastmod>
     <changefreq>monthly</changefreq>
@@ -861,6 +867,12 @@
   <url>
     <loc>https://www.jttax.co.kr/insights/year-end-medical-expense-insurance-reimbursement-2026.html</loc>
     <lastmod>2026-11-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jttax.co.kr/insights/year-end-missing-donation-receipt-2026.html</loc>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

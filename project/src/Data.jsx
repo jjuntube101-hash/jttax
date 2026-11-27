@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "acquisition-tax-land-permit-prepaid-balance", tag: "INSIGHT · ACQUISITION TAX", date: "2026.11.27", title: "토지거래허가 전에 잔금을 모두 냈다면 취득세 신고기한은 언제부터인가요?", excerpt: "토지거래허가가 필요한 거래에서 허가 전에 거래대금을 완납했다면 취득세 신고기한을 세는 날이 달라집니다. 허가일과 지정 해제·축소일, 등기 접수 계획을 확인하는 순서를 정리했습니다." },
+    { slug: "year-end-missing-donation-receipt-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.27", title: "2026년 연말정산 간소화에 기부금이 안 보이면 어떤 영수증을 받아야 하나요?", excerpt: "간소화 자료에서 기부금이 보이지 않으면 먼저 전자기부금영수증의 발급 상태를 확인하세요. 나중에 발급받은 자료와 기존 간소화 내역을 대조하는 순서도 정리했습니다." },
     { slug: "acquisition-tax-land-category-change", tag: "INSIGHT · ACQUISITION TAX", date: "2026.11.26", title: "토지 지목이 바뀌면 매매 없이도 취득세를 내나요?", excerpt: "땅을 사거나 판 일이 없어도, 지목이 실제로 바뀌면서 토지가액이 늘면 취득세 대상이 될 수 있습니다. 변경일과 먼저 사용한 부분을 확인하는 자료를 살펴봅니다." },
     { slug: "year-end-medical-expense-insurance-reimbursement-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.26", title: "2026년 연말정산 의료비, 실손보험금을 받았다면 어떤 자료를 대조할까요?", excerpt: "병원에 낸 의료비를 실손보험으로 보전받았다면 해당 보험금을 공제대상 의료비에서 제외합니다. 치료 기록과 보험사 지급내역을 건별로 확인하는 법을 정리했습니다." },
     { slug: "property-gift-tax-paid-by-donor", tag: "INSIGHT · GIFT TAX", date: "2026.11.25", title: "부동산 증여 뒤 부모가 증여세를 대신 냈다면, 어떤 지급 기록을 남기나요?", excerpt: "부동산 증여세를 부모가 냈다면 자녀가 부담할 세금을 대신 낸 것인지, 부모에게 법정 연대납부의무가 있었는지 확인합니다. 등기·납부·송금 자료를 구분해 정리했습니다." },
