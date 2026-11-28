@@ -638,7 +638,12 @@ function giftEngineVerdict(c) {
 function giftCalcFromEngine(ej, inputValue) {
   const c = ej && ej.calc;
   const verdict = giftEngineVerdict(c);
-  if (verdict !== 'ok') return { precise: false, engineState: verdict };
+  if (verdict !== 'ok') {
+    if (verdict === 'refused' && c['상태'] === 'needs_input' && typeof c['오류'] === 'string') {
+      return { precise: false, engineState: verdict, engineMessage: c['오류'].trim() };
+    }
+    return { precise: false, engineState: verdict };
+  }
   const mj = c['주요공제'] || {};
   return {
     precise: true, engineVer: ej.version && ej.version.engine, engineVersion: ej.version || null, calculationReview: ej.review || null,

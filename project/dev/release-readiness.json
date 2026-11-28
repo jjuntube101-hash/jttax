@@ -25922,7 +25922,7 @@
   },
   "release_candidate": {
     "schema_version": "release-candidate/1",
-    "id": "rc-2f9243a275a47535c16d",
+    "id": "rc-4c8b140723147cb6fe73",
     "as_of_kst": "2026-11-28",
     "contract": {
       "schema_version": "calculation-contracts/1",
@@ -26424,8 +26424,8 @@
     },
     "frontend": {
       "schema_version": "frontend-build/1",
-      "build_id": "frontend-05c324954d44c9bfb496",
-      "payload_sha256": "05c324954d44c9bfb49624d371e224e41aa1dd800c08babf0cf8e2f04faf5608"
+      "build_id": "frontend-f873203da9df22141b9c",
+      "payload_sha256": "f873203da9df22141b9c3325bdbbf25ac1511c735924f17579b13238fca1927f"
     },
     "backend_source_base_commit": "4a292091b350f0e71399f7a8d276ebc3ec8e560e",
     "frontend_source_base_commit": "ad8b9ba02df24171ff0115bec5eb57fa2ae2560f",
@@ -26436,7 +26436,7 @@
     "workflow20_scope": "Historical UI20, UI9, NAS15 and support11 retain their original candidate/build identifiers. No full-case revalidation or deployment certification on this local candidate.",
     "supersedes_candidate_id": "rc-eb0b87ad7018352e639d",
     "merge_note": "Frontend calculator repairs based on ad8b9ba02df24171ff0115bec5eb57fa2ae2560f.",
-    "change_note": "Present explicit unsupported youth startup determinations and retain editable inputs.",
+    "change_note": "Display unsupported founding years and gift input validation reasons; accept explicit zero owner compensation.",
     "frontend_integration_main_commit": "ad8b9ba02df24171ff0115bec5eb57fa2ae2560f",
     "validation_status": {
       "nas15": {

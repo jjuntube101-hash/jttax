@@ -219,6 +219,20 @@ for (const [file, fixture] of cases) {
   assert.match(cgtSrc, /cgtCalcFromEngineError\(engErr\)/); checks++;
 }
 const corporate = guards('ReportCorporate.jsx')[0];
+{
+  const src = read('ReportCorporate.jsx');
+  let fn;
+  walk(parser.parse(src, {plugins:['jsx']}), n => {
+    if (n.type === 'VariableDeclarator' && n.id.name === 'canNext') fn = src.slice(n.init.start, n.init.end);
+  });
+  for (const [id, raw, expected] of [['ownerSalary', '', false], ['ownerSalary', '0', true],
+       ['businessIncome', '0', false], ['ownerSalary', '-1', false], ['businessIncome', '120000000', true]]) {
+    check(vm.runInNewContext('(' + fn + ')()', {cur:{id,numeric:true},answers:{[id]:raw}}), expected, 'corporate ' + id + ' ' + raw);
+  }
+  const message = '10년 내 공제받은 금액(30,000,000)이 이 관계의 한도(10,000,000원)를 넘는다';
+  const blocked = giftAccepts().raw({calc:{상태:'needs_input', 오류:message, 세액:0}});
+  assert.deepEqual([blocked.engineMessage, blocked.precise, blocked.totalTax], [message, false, undefined]); checks++;
+}
 check(guards('ReportCGT.jsx')[0]({ c: { ...cases[0][1], 양도차익: -100000000 } }), true, 'legitimate capital loss');
 const corpEnv = { pc: { 총세부담: 0 }, cc: { 총납부세액: 0 }, sc: { 총세부담: 0 }, salary: 10000000 };
 check(corporate(corpEnv), true, 'valid zero salary tax');

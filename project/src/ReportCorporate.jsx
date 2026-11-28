@@ -23,7 +23,7 @@ const CORP_QS = [
     q: '법인으로 전환하면 대표(본인) 연봉을 얼마로 가져갈까요? (원)',
     sub: '법인은 이익을 「대표 급여 + 법인 이익」으로 나눕니다. 급여는 법인 비용으로 빠져 법인세가 줄지만, 대표 개인에게 근로소득세가 붙습니다. 보통 생활비 수준으로 잡습니다(예: 이익의 30~50%). 모르면 이익의 절반 정도로 넣어 보세요.',
     numeric: true, money: true,
-    placeholder: '예: 100,000,000',
+    placeholder: '예: 100,000,000 (무급이면 0)',
   },
   {
     id: 'spouse',
@@ -264,7 +264,12 @@ function JTReportCorporate({ setRoute, onBack }) {
   const canNext = () => {
     if (!cur) return false;
     if (cur.freeform) return true;
-    if (cur.numeric) { if (cur.optional) return true; const v = Number(answers[cur.id]); return !isNaN(v) && v > 0; }
+    if (cur.numeric) {
+      if (cur.optional) return true;
+      const raw = answers[cur.id];
+      return /^\d+$/.test(String(raw)) && Number.isSafeInteger(Number(raw)) &&
+        (cur.id === 'ownerSalary' || Number(raw) > 0);
+    }
     return !!answers[cur.id];
   };
 
