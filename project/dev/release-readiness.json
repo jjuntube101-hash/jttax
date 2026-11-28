@@ -25922,7 +25922,7 @@
   },
   "release_candidate": {
     "schema_version": "release-candidate/1",
-    "id": "rc-256ca171bd77e1840c38",
+    "id": "rc-15a84039577e59ddd159",
     "as_of_kst": "2026-11-28",
     "contract": {
       "schema_version": "calculation-contracts/1",
@@ -25930,8 +25930,8 @@
         "engine": "jt-tax-engine/7.0.0",
         "calculation_revision": "rules-72219a85e1d5a71a1bf6",
         "ruleset_sha256": "72219a85e1d5a71a1bf6acbb219e41f6ab60ca7ecf8917cb5e497b0ffde3183b",
-        "build_id": "build-4acd552e20b071b0f007",
-        "build_sha256": "4acd552e20b071b0f007f26b03193b0ef1132facef4b8cf41edc3e6e0fc26fa8",
+        "build_id": "build-a0f76ddc41ea3c5f284d",
+        "build_sha256": "a0f76ddc41ea3c5f284d6871d35d0f1a4e00dd6b93a35f55c48068eba3b5879c",
         "tax_rates_version": "7.0.0",
         "tax_rates_effective_date": "2026-05-02"
       },
