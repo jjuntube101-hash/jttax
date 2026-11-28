@@ -26435,7 +26435,7 @@
     "historical181_regraded": false,
     "workflow20_scope": "Historical UI20, UI9, NAS15 and support11 retain their original candidate/build identifiers. No full-case revalidation or deployment certification on this local candidate.",
     "supersedes_candidate_id": "rc-4c8b140723147cb6fe73",
-    "merge_note": "Historical startup assessments; public engine image changes limited to four Python files.",
+    "merge_note": "Historical startup assessments; public engine image changes limited to three Python files.",
     "change_note": "Founding-date and filing-year startup relief schedules and annual estimates.",
     "frontend_integration_main_commit": "6279e4aa70e90be28bfb6635fd3591d80253a34a",
     "validation_status": {
