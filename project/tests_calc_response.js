@@ -258,6 +258,16 @@ walk(parser.parse(youthSrc, { plugins: ['jsx'] }), node => {
   }
 });
 assert.ok(rejectYouth);
+const scopeGuard = youthSrc.match(/if \(calc && calc.status === 'unsupported'\) \{([\s\S]*?)\n      \}/);
+assert.ok(scopeGuard, 'explicit unsupported branch before numeric result validation');
+assert.ok(scopeGuard.index < youthSrc.indexOf('if (!window.jtValidCalc(calc'), 'scope response precedes amount validation');
+for (const message of ['2025년 이전 창업의 연혁 규정은 미지원입니다.', '']) {
+  const scope = new Function('calc', 'window', 'setReport', scopeGuard[1]);
+  let outcome;
+  scope({status:'unsupported', message}, {jtEngineMessageForDisplay: v => v}, v => { outcome = v; });
+  assert.equal(outcome.scopeMessage, message || '이 조건은 현재 자동 진단 범위를 벗어납니다.');
+  assert.equal(outcome.calc, undefined);
+}
 const youth = { status: 'eligible', eligible: true, reduction_rate: 100, gates: [] };
 for (const calc of [null, {}, { 오류: '실패' }, { ...youth, reduction_rate: Infinity }, { ...youth, reduction_rate: 101 }, { ...youth, status: 'unknown' }, { ...youth, gates: null }]) {
   check(rejectYouth(calc), true, 'invalid youth response');

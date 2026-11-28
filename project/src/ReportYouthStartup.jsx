@@ -447,6 +447,11 @@ function JTReportYouthStartup({ setRoute, onBack }) {
       const body = mapAnswersToYouth(answers, industryMatch, regionInfo);
       const ej = await callYouthEngine(body);
       const calc = ej && ej.calc;
+      if (calc && calc.status === 'unsupported') {
+        const message = typeof calc.message === 'string' && window.jtEngineMessageForDisplay(calc.message);
+        setReport({ scopeMessage: message || '이 조건은 현재 자동 진단 범위를 벗어납니다.' });
+        return;
+      }
       if (calc && calc.status === 'input_required') {
         setErr(calc.message || '창업일 등 필수 입력을 확인해 주세요.');
         return;
@@ -484,6 +489,21 @@ function JTReportYouthStartup({ setRoute, onBack }) {
     );
   }
 
+  if (report?.scopeMessage) {
+    const editInputs = () => {
+      setReport(null);
+      setPhase('quick');
+      setStep(allVisible.filter(q => q.tier === 'quick').findIndex(q => q.id === 'foundingDate'));
+    };
+    return <div className="jt-container">
+      <JTReportShell title="청년창업 감면 자동 진단 범위" subtitle="입력하신 조건의 지원 범위를 확인해 주세요." stepIdx={total} stepTotal={total} onBack={editInputs} tag="NEW">
+        <div data-ys-scope role="status"><p>{report.scopeMessage}</p>
+          {answers.foundingDate && <p>입력한 창업일 · {answers.foundingDate}</p>}
+          <button className="jt-btn jt-btn--ghost" onClick={editInputs}>입력 다시 확인</button>
+        </div>
+      </JTReportShell>
+    </div>;
+  }
   if (report) {
     const { calc } = report;
     const isProspective = !!calc.prospective;
