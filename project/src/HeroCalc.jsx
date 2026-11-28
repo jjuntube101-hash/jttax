@@ -64,6 +64,7 @@ function hcReadable(v) {
 }
 
 function hcParse(raw) {
+  if (/\d\s+\d/.test(String(raw))) return null;
   const s = String(raw == null ? '' : raw).replace(/[\s,]/g, '').replace(/원$/, '');
   if (!s) return null;
   let v = null;
@@ -330,6 +331,7 @@ function JTHeroCalc() {
           <label className="jt-herocalc__label" htmlFor="hc-acq">취득가</label>
           <JTNumericInput parseMoney={hcParse} id="hc-acq" type="text" inputMode="numeric" placeholder="예: 500,000,000" className="jt-herocalc__field"
             value={shown(acqPrice, acq)}
+            onRejectedEdit={touched(() => setAcqPrice(''))}
             onChange={touched(e => setAcqPrice(e.target.value))} />
           {acqPrice && acq === null && <div className="jt-herocalc__hint">숫자로 적어 주세요 (「5억」·「5억 3000만」도 됩니다)</div>}
           {acq > 0 && <div className="jt-herocalc__read">{hcReadable(acq)}</div>}
@@ -338,6 +340,7 @@ function JTHeroCalc() {
           <label className="jt-herocalc__label" htmlFor="hc-sale">양도가</label>
           <JTNumericInput parseMoney={hcParse} id="hc-sale" type="text" inputMode="numeric" placeholder="예: 900,000,000" className="jt-herocalc__field"
             value={shown(salePrice, sale)}
+            onRejectedEdit={touched(() => setSalePrice(''))}
             onChange={touched(e => setSalePrice(e.target.value))} />
           {salePrice && sale === null && <div className="jt-herocalc__hint">숫자로 적어 주세요 (「9억」도 됩니다)</div>}
           {sale > 0 && <div className="jt-herocalc__read">{hcReadable(sale)}</div>}

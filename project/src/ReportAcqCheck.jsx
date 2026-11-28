@@ -84,7 +84,8 @@ const ACQ_CHECK_SITUATIONS = [                                                  
   '아직 취득 전인데 세금이 궁금하다',
 ];
 const ACQ_CHECK_NOTICE_TYPES = ['결정통지서', '경정통지서', '과세예고통지서', '추징통지서', '납세고지서'];
-const ACQ_CHECK_DOC_ITEMS = ['취득세 신고서·납부확인서', '등기사항전부증명서', '매매계약서', '구청 통지서', '없음·모르겠음'];   // B-1 ⑥
+const ACQ_CHECK_NO_DOCS = '없음·모르겠음';
+const ACQ_CHECK_DOC_ITEMS = ['취득세 신고서·납부확인서', '등기사항전부증명서', '매매계약서', '구청 통지서', ACQ_CHECK_NO_DOCS];   // B-1 ⑥
 const ACQ_CHECK_SOURCES = ['검색', '카페', '소개', '법무사·중개사', '유튜브', '그 밖'];                // B-1 ⑦ (G절 네 칸 ①)
 const ACQ_CHECK_CONTACT_METHODS = ['카카오톡 채널', '전화'];                                        // B-1 ①
 
@@ -134,7 +135,8 @@ function buildAcqCheckPayload(f, receiptId) {
   const noticeShown = situation === ACQ_CHECK_SITUATIONS[1];
   const rejectShown = situation === ACQ_CHECK_SITUATIONS[2];
   const docItems = Array.isArray(f.docItems) ? f.docItems : [];
-  const validDocItems = docItems.filter((x) => ACQ_CHECK_DOC_ITEMS.indexOf(x) >= 0);
+  const listed = docItems.filter(x => x !== ACQ_CHECK_NO_DOCS && ACQ_CHECK_DOC_ITEMS.includes(x));
+  const validDocItems = listed.length ? listed : docItems.filter(x => x === ACQ_CHECK_NO_DOCS).slice(0, 1);
 
   return {
     _subject: `[JT 취득세 1차 재검토 접수] ${receiptId}`,
@@ -203,8 +205,9 @@ function JTReportAcqCheck({ setRoute }) {
   const phoneCheck = f.contactMethod === '전화' ? validateAcqCheckPhone(f.contactPhone) : { ok: true, digits: '' };
   const toggleDocItem = (item) => setFRaw((prev) => {
     if (submittingRef.current) return prev;
-    const has = prev.docItems.includes(item);
-    return { ...prev, docItems: has ? prev.docItems.filter((x) => x !== item) : [...prev.docItems, item] };
+    if (prev.docItems.includes(item)) return { ...prev, docItems: prev.docItems.filter(x => x !== item) };
+    const docItems = item === ACQ_CHECK_NO_DOCS ? [item] : [...prev.docItems.filter(x => x !== ACQ_CHECK_NO_DOCS), item];
+    return { ...prev, docItems };
   });
 
   /* 최소 요건 — 두 동의와, «어떻게든 연락은 닿을 방법». 금액·날짜·서류 항목은 전부 비워도 된다

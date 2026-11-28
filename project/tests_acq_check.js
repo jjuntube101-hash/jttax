@@ -448,6 +448,10 @@ console.log('\n════ (m) 가진 서류는 고정 라벨 체크박스(보�
   eq('종전 사후이력·정보출처·명의지분 필드가 사라졌다', /postHistory|infoSource|ownership/.test(stripComments(acqCheckSrc)), false);
 
   // payload — 선택한 라벨만 고정 구분자로 실린다
+  const mixed = M.buildAcqCheckPayload({docItems: ['매매계약서', '없음·모르겠음']}, 'ACQCK-TEST0001');
+  eq('구체적인 보유서류가 있으면 없음과 중복 전송하지 않는다', mixed.가진서류, '매매계약서');
+  const none = M.buildAcqCheckPayload({docItems: ['없음·모르겠음']}, 'ACQCK-TEST0001');
+  eq('서류 없음 단독 선택을 보존한다', none.가진서류, '없음·모르겠음');
   const p1 = M.buildAcqCheckPayload({ docItems: ['등기사항전부증명서', '매매계약서'] }, 'ACQCK-TEST0001');
   eq('선택한 라벨이 「·」로 이어져 실린다', p1.가진서류, '등기사항전부증명서·매매계약서');
   const p2 = M.buildAcqCheckPayload({ docItems: [] }, 'ACQCK-TEST0001');
