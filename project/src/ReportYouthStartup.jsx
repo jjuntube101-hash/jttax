@@ -81,6 +81,16 @@ const YS_QS = [
     subP: '어디서 창업하느냐가 감면율을 좌우합니다. 후보 지역 주소를 넣으면 그 지역 감면율을 판정하고, 미정이면 건너뛰세요 — 지역별로 몇 %인지 비교표를 보여드릴게요.',
   },
   // ── 정밀(detail) ──
+  {id:'historyTaxYear', section:'감면 귀속연도', numeric:true, optional:true,
+    q:'어느 과세연도의 기본 감면액을 계산할까요?', sub:'그 해의 감면대상 사업소득에 대응하는 산출세액을 뒤에서 입력합니다.', placeholder:'예: 2024', showIf:ysHistorical},
+  {id:'historyCalendar', section:'사업연도', q:'12월 말 결산이며 감면기간 중 사업연도 변경이 없나요?',
+    opts:[['yes','예'],['no','아니오 또는 모름']], showIf:a=>ysHistorical(a) && a.entityType === '법인'},
+  {id:'historyFirst', section:'최초 소득', numeric:true, optional:true, q:'해당 사업에서 최초로 소득이 발생한 연도는 언제인가요?',
+    sub:'창업 후 5년이 되는 날이 속하는 연도까지 무소득이었으면 0, 모르면 비워 두세요.', placeholder:'예: 2021', showIf:ysHistorical},
+  {id:'historyArea', section:'창업 당시 사업장', q:'창업 당시 지번으로 과밀억제권역 여부를 별도 확인하셨나요?',
+    opts:[['auto','주소 판정 사용'],['yes','당시 과밀억제권역으로 확인'],['no','당시 과밀억제권역 밖으로 확인']], showIf:ysHistorical},
+  {id:'historyGrowth', section:'신성장서비스업', q:'귀속연도에 수입금액이 가장 큰 사업이 당시 신성장서비스업에 해당하나요?',
+    opts:[['unknown','미확인'],['yes','해당함을 확인'],['no','해당하지 않음을 확인']], showIf:a=>ysHistorical(a) && a.foundingDate >= '2018-01-01'},
   {
     id: 'isLargestShareholder', tier: 'detail', section: '법인 최대주주',
     q: '대표자가 이 법인의 최대주주(최대출자자)이자 지배주주인가요?',
@@ -162,6 +172,8 @@ const YS_STATUS_META = {
   input_required: { label: '입력 필요', color: '#666', bg: '#f2f2f2' },
 };
 
+function ysHistorical(a) { return !!a.foundingDate && a.foundingDate < '2025-01-01'; }
+
 function ysValidDate(s) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return false;
   const p = s.split('-').map(Number);
@@ -239,6 +251,15 @@ function mapAnswersToYouth(a, industryMatch, region) {
   }
   if (a.employeeCount !== undefined && a.employeeCount !== '') body.employee_count = Number(a.employeeCount);
   if (a.expectedTax != null && a.expectedTax !== '') body.expected_annual_tax = Number(a.expectedTax);
+  if (ysHistorical(a)) {
+    delete body.tax_year;
+    if (a.historyTaxYear) body.tax_year = Number(a.historyTaxYear);
+    if (a.historyFirst === '0') body.no_income_first_five_years = true;
+    else if (a.historyFirst) body.first_income_year = Number(a.historyFirst);
+    if (a.entityType === '법인') body.calendar_tax_period = a.historyCalendar === 'yes';
+    if (['yes','no'].includes(a.historyArea)) body.historical_overcrowding = a.historyArea === 'yes';
+    if (a.foundingDate >= '2018-01-01' && ['yes','no'].includes(a.historyGrowth)) body.historical_growth_business = a.historyGrowth === 'yes';
+  }
   return body;
 }
 
@@ -349,7 +370,23 @@ function JTReportYouthStartup({ setRoute, onBack }) {
   const visibleQs = phase === 'quick' ? allVisible.filter(q => q.tier === 'quick') : allVisible.filter(q => q.tier !== 'quick');
   const total = visibleQs.length;
   const safeStep = Math.min(step, total - 1);
-  const cur = visibleQs[safeStep];
+  let cur = visibleQs[safeStep];
+  if (cur && ysHistorical(answers)) {
+    const labels = {
+      birthDate:['창업 당시 대표자의 생년월일은 언제인가요?', '창업일에 적용되는 청년 연령 요건을 따릅니다.'],
+      military:['병역을 이행하셨나요? (선택)', '해당되는 병역 이행기간을 창업 당시 연령에서 차감합니다. 최대 6년까지 반영합니다.'],
+      existingBusinessAdd:['기존 사업자등록에 업종을 추가했나요?', '기존 사업에 업종을 추가한 경우와 독립적으로 창업한 경우를 구분합니다.'],
+      businessType:['어떤 방식으로 창업했나요?', '기존 사업의 전환·승계·재개라면 해당 방식을 골라 주세요.'],
+      priorBusinessCode:['종전 사업의 업종은 무엇인가요?', '창업 당시 분류와 실제 사업내용을 확인합니다.'],
+      isLargestShareholder:['법인 대표자가 지배주주이면서 최대주주였나요?', '창업 당시 주주명부로 확인하세요.'],
+      industry:['어떤 업종인가요?', '사업자등록증의 업종을 선택하면 창업 당시 법령으로 대상 여부를 판정합니다.'],
+      foundingRegion:['창업 당시 사업장 주소는 어디인가요?', '현재 주소로 조회됩니다. 창업 당시 권역이 달랐다면 정밀 입력에서 당시 지번 기준으로 정정할 수 있습니다.'],
+      annualRevenue:['선택한 귀속연도의 연환산 수입금액은 얼마인가요?', '과세기간이 1년 미만이면 연환산한 금액을 입력하세요. 미확인이면 비워 두세요.'],
+      expectedTax:['감면대상 사업소득에 대응하는 해당 연도 산출세액은 얼마인가요?', '해당 연도의 기본 감면율로 감면액을 계산합니다.'],
+      employeeCount:['해당 과세연도 상시근로자는 몇 명인가요?', '고용증가 추가감면은 기본 감면액과 별도로 확인합니다.'],
+    };
+    if (labels[cur.id]) cur = {...cur, q:labels[cur.id][0], sub:labels[cur.id][1]};
+  }
   const isLast = safeStep === total - 1;
   const setAns = (id, v) => setAnswers(a => ({ ...a, [id]: v }));
 
@@ -357,6 +394,11 @@ function JTReportYouthStartup({ setRoute, onBack }) {
 
   const canNext = () => {
     if (!cur) return false;
+    if (['historyTaxYear','historyFirst'].includes(cur.id) && answers[cur.id]) {
+      const val = answers[cur.id];
+      return (cur.id === 'historyFirst' && val === '0') || (/^\d{4}$/.test(val) &&
+        Number(val) >= Number(answers.foundingDate.slice(0,4)) && Number(val) <= 2100);
+    }
     if (cur.custom === 'industry') return !indBusy && (!!industryMatch || (prospective && !(indMode === 'code' ? indCodeInput : indKw).trim()));
     if (cur.custom === 'region') return !rbusy && (!!regionInfo || (prospective && !raddr.trim()));
     if (cur.custom === 'priorindustry') return !priorBusy && (!!priorMatch || !priorKw.trim());
@@ -503,6 +545,25 @@ function JTReportYouthStartup({ setRoute, onBack }) {
         </div>
       </JTReportShell>
     </div>;
+  }
+  if (report?.calc?.historical) {
+    const c = report.calc, h = c.historical;
+    const edit = () => { setReport(null); setPhase('quick'); setStep(allVisible.filter(q=>q.tier==='quick').findIndex(q=>q.id==='foundingDate')); };
+    return <div className="jt-container"><JTReportShell title="청년창업 감면 진단 결과" subtitle="창업 당시 법령에 따른 기본 감면" stepIdx={total} stepTotal={total} onBack={edit} tag="연혁">
+      <div className="jt-report-result__section" data-ys-historical>
+        <h2>{h.title}</h2><p>{h.founding_date} 창업 · {h.industry_name} · {c.area}</p>
+        {h.introduced && <p>{h.age_detail}</p>}
+        {Array.isArray(h.period_rates) && <><h3>{h.track} 기본 감면율</h3>
+          <p>{h.period_rates.every(v=>v===h.period_rates[0]) ? '1~5차 연도 '+h.period_rates[0]+'%' :
+            '1~3차 연도 '+h.period_rates[0]+'% · 4~5차 연도 '+h.period_rates[4]+'%'}</p>
+          <p>최초 소득 발생 과세연도부터 적용합니다. 사업 개시 후 5년이 되는 날이 속한 과세연도까지 소득이 없으면 그 연도부터 계산합니다.</p></>}
+        {h.annual_rate != null && <p>{h.tax_year}년 귀속 감면율 <strong>{h.annual_rate}%</strong></p>}
+        {c.estimated_annual_reduction != null && <p>예상 기본 감면액 <strong>{formatWon(c.estimated_annual_reduction)}</strong></p>}
+        {c.warnings?.map((w,i)=><p key={i}>{w}</p>)}
+        <p>대표자·사업장·중소기업 요건을 유지한 경우의 기본 감면입니다. 고용증가 추가감면은 별도 확인이 필요합니다.</p>
+        {h.introduced && <button className="jt-btn jt-btn--primary" onClick={goDetail}>귀속연도·감면액 입력</button>}
+        <button className="jt-btn jt-btn--ghost" onClick={edit}>창업일 다시 입력</button>
+      </div></JTReportShell></div>;
   }
   if (report) {
     const { calc } = report;
@@ -700,7 +761,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
               {cur.opts.map(o => (
                 <button key={o[0]} className={'jt-report-q__opt' + (answers[cur.id] === o[0] ? ' is-selected' : '')} onClick={() => setAns(cur.id, o[0])}>
                   <span className="jt-report-q__opt-mark">{answers[cur.id] === o[0] ? '●' : '○'}</span>
-                  <span><strong>{o[1]}</strong>{o[2] ? <span style={{ opacity: 0.7 }}> · {o[2]}</span> : null}</span>
+                  <span><strong>{o[1]}</strong>{o[2] && !ysHistorical(answers) ? <span style={{ opacity: 0.7 }}> · {o[2]}</span> : null}</span>
                 </button>
               ))}
             </div>
@@ -751,7 +812,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
                     const badge = c.status === 'eligible' ? { t: '감면대상', c: '#2a6d4f' } : c.status === 'review' ? { t: '확인필요', c: '#b07b3a' } : { t: '대상아님', c: '#c0392b' };
                     return (
                       <button key={c.nts_code} className="jt-report-q__opt" style={{ textAlign: 'left' }} onClick={() => pickIndustry(c)}>
-                        <span style={{ display: 'inline-block', minWidth: 62, padding: '2px 8px', borderRadius: 999, background: badge.c, color: '#fff', fontSize: 11, fontWeight: 700, marginRight: 8 }}>{badge.t}</span>
+                        {!ysHistorical(answers) && <span style={{ display: 'inline-block', minWidth: 62, padding: '2px 8px', borderRadius: 999, background: badge.c, color: '#fff', fontSize: 11, fontWeight: 700, marginRight: 8 }}>{badge.t}</span>}
                         <strong>{c.name}</strong> <span style={{ opacity: 0.6, fontSize: 12 }}>({c.nts_code} · KSIC {c.ksic5})</span>
                       </button>
                     );
@@ -762,7 +823,7 @@ function JTReportYouthStartup({ setRoute, onBack }) {
               {industryMatch && (
                 <div style={{ marginTop: 12, padding: '12px 14px', borderRadius: 10, background: industryMatch.status === 'eligible' ? '#eaf5ee' : industryMatch.status === 'review' ? '#fdf6ea' : '#fdeeec', border: '1px solid ' + (industryMatch.status === 'eligible' ? '#2a6d4f' : industryMatch.status === 'review' ? '#b07b3a' : '#c0392b') }}>
                   <strong>선택: {industryMatch.name}</strong> <span style={{ opacity: 0.7, fontSize: 12.5 }}>(KSIC {industryMatch.ksic5})</span>
-                  <div style={{ fontSize: 13, marginTop: 4 }}>{industryMatch.category || industryMatch.reason}</div>
+                  <div style={{ fontSize: 13, marginTop: 4 }}>{ysHistorical(answers) ? '선택한 업종의 창업 당시 요건은 결과에서 확인할 수 있습니다.' : industryMatch.category || industryMatch.reason}</div>
                 </div>
               )}
             </div>
