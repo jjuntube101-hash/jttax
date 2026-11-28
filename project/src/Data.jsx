@@ -352,6 +352,8 @@ window.JT_DATA = {
 
   // 인사이트 칼럼 (자동 생성 — build-insights.mjs로 재생성됨. 직접 수정하지 마세요)
   insights: [
+    { slug: "acquisition-tax-court-auction-payment-date", tag: "INSIGHT · ACQUISITION TAX", date: "2026.11.28", title: "법원 경매로 부동산을 낙찰받았다면 취득세는 어느 날짜부터 확인하나요?", excerpt: "일반적인 법원 부동산 경매에서는 매각대금을 모두 낸 날을 취득세 신고기한의 출발점으로 확인합니다. 매각허가결정일, 대금 완납일, 등기 접수일을 구분하는 방법을 정리했습니다." },
+    { slug: "year-end-elementary-arts-sports-education-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.28", title: "2026년 연말정산, 초등학생 예능학원·체육시설 수강료는 어떤 조건에서 공제되나요?", excerpt: "초등학생 예능학원·체육시설 수강료의 2026년 교육비 공제는 과세기간 종료일의 나이·학년과 기관·교습과정 요건을 함께 확인합니다. 수강료 납입 자료를 준비하는 순서를 정리했습니다." },
     { slug: "acquisition-tax-land-permit-prepaid-balance", tag: "INSIGHT · ACQUISITION TAX", date: "2026.11.27", title: "토지거래허가 전에 잔금을 모두 냈다면 취득세 신고기한은 언제부터인가요?", excerpt: "토지거래허가가 필요한 거래에서 허가 전에 거래대금을 완납했다면 취득세 신고기한을 세는 날이 달라집니다. 허가일과 지정 해제·축소일, 등기 접수 계획을 확인하는 순서를 정리했습니다." },
     { slug: "year-end-missing-donation-receipt-2026", tag: "INSIGHT · INCOME TAX", date: "2026.11.27", title: "2026년 연말정산 간소화에 기부금이 안 보이면 어떤 영수증을 받아야 하나요?", excerpt: "간소화 자료에서 기부금이 보이지 않으면 먼저 전자기부금영수증의 발급 상태를 확인하세요. 나중에 발급받은 자료와 기존 간소화 내역을 대조하는 순서도 정리했습니다." },
     { slug: "acquisition-tax-land-category-change", tag: "INSIGHT · ACQUISITION TAX", date: "2026.11.26", title: "토지 지목이 바뀌면 매매 없이도 취득세를 내나요?", excerpt: "땅을 사거나 판 일이 없어도, 지목이 실제로 바뀌면서 토지가액이 늘면 취득세 대상이 될 수 있습니다. 변경일과 먼저 사용한 부분을 확인하는 자료를 살펴봅니다." },
