@@ -206,7 +206,7 @@ function JTReportAcqCheck({ setRoute }) {
   const toggleDocItem = (item) => setFRaw((prev) => {
     if (submittingRef.current) return prev;
     if (prev.docItems.includes(item)) return { ...prev, docItems: prev.docItems.filter(x => x !== item) };
-    const docItems = item === ACQ_CHECK_NO_DOCS ? [item] : [...prev.docItems.filter(x => x !== ACQ_CHECK_NO_DOCS), item];
+    const docItems = item === ACQ_CHECK_NO_DOCS ? [item] : prev.docItems.filter(x => x !== ACQ_CHECK_NO_DOCS).concat(item);
     return { ...prev, docItems };
   });
 
