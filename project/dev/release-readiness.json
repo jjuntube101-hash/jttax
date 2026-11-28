@@ -25922,16 +25922,16 @@
   },
   "release_candidate": {
     "schema_version": "release-candidate/1",
-    "id": "rc-71ebd1f9c2edfd98939e",
+    "id": "rc-256ca171bd77e1840c38",
     "as_of_kst": "2026-11-28",
     "contract": {
       "schema_version": "calculation-contracts/1",
       "version": {
         "engine": "jt-tax-engine/7.0.0",
-        "calculation_revision": "rules-57275b4da94716898646",
-        "ruleset_sha256": "57275b4da94716898646c91ec2ed8429e47cff47ffa5804213ad568f33645633",
-        "build_id": "build-e48ad72316f7757912ca",
-        "build_sha256": "e48ad72316f7757912caf1668f84e61ec82a991c5169a3ae07805e4faaf896e7",
+        "calculation_revision": "rules-72219a85e1d5a71a1bf6",
+        "ruleset_sha256": "72219a85e1d5a71a1bf6acbb219e41f6ab60ca7ecf8917cb5e497b0ffde3183b",
+        "build_id": "build-4acd552e20b071b0f007",
+        "build_sha256": "4acd552e20b071b0f007f26b03193b0ef1132facef4b8cf41edc3e6e0fc26fa8",
         "tax_rates_version": "7.0.0",
         "tax_rates_effective_date": "2026-05-02"
       },
@@ -26427,7 +26427,7 @@
       "build_id": "frontend-0c040b950b430b0ba108",
       "payload_sha256": "0c040b950b430b0ba10884a9096af5f057ac8891899ddd30b66dd95436712fcd"
     },
-    "backend_source_base_commit": "a901f90b852da7f069f64a153e62b296d3862dc6",
+    "backend_source_base_commit": "cddd81b5334f297e1a6ff982e366fd1ae5e5f6b0",
     "frontend_source_base_commit": "6279e4aa70e90be28bfb6635fd3591d80253a34a",
     "commit_scope": "base commits identify review branch ancestry; candidate identity binds actual code payload; final commit receipts are separate",
     "live_installed_snapshot_promoted": false,
