@@ -189,6 +189,10 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   }
   const heroSeg = rootBlock.slice(rootBlock.indexOf(mod.MARKS.hero[0]), rootBlock.indexOf(mod.MARKS.hero[1]));
   if (!/<p class="rn-lead">[^<]{20,}<\/p>/.test(heroSeg)) bad.push('히어로 선렌더에 LCP 문단(p.rn-lead)이 없습니다');
+  if (!/<video\b[^>]*poster="\/project\/assets\/jt-welcome-poster\.webp"/.test(heroSeg)) bad.push('첫 화면 HTML에 환영 영상 대표 이미지가 없습니다');
+  for (const target of ['/calculators/capital-gains-tax.html', '/experts/kim-minseok.html', '/experts/lee-hyunjun.html', '/experts/kim-gahwan.html']) {
+    if (!heroSeg.includes('href="' + target + '"')) bad.push('영상 첫 화면에서 빠진 링크 ' + target);
+  }
   if (!heroSeg.includes('data-prerender="home"')) bad.push('히어로 선렌더에 data-prerender 표지가 없습니다 (head 안전판 규칙이 걸리지 않음)');
   if (/aria-controls=/.test(rootBlock.slice(rootBlock.indexOf(mod.MARKS.header[0]), rootBlock.indexOf(mod.MARKS.header[1])))) bad.push('헤더 선렌더에 aria-controls 가 남았습니다 (대상 메뉴 판은 넣지 않는다)');
 

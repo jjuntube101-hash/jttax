@@ -44,7 +44,10 @@ const PUBLIC_TYPE = /\.(html|js|css|png|jpe?g|webp|svg|gif|ico|avif|woff2?|xml|t
 const IMAGE_FONT = /\.(png|jpe?g|webp|svg|gif|ico|avif|woff2?)$/i;
 const ROOT_FIXED = ['CNAME', 'favicon.ico', 'manifest.json', 'robots.txt', 'sitemap.xml'];
 const VERIFY_FILE = /^(google[0-9a-f]{8,}\.html|naver[0-9a-f]{16,}\.html|[0-9a-f]{32}\.txt)$/i;
-const PUBLIC_EXACT = new Set(ROOT_FIXED);
+const PUBLIC_EXACT = new Set([...ROOT_FIXED,
+  'project/assets/jt-welcome-1280.mp4',
+  'project/assets/jt-welcome-768.mp4',
+]);
 
 /* ── 금지 규칙 (대소문자 무시) ───────────────────────────────────────────── */
 const DENY = [

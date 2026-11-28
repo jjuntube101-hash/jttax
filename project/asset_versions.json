@@ -1,7 +1,7 @@
 {
   "project/dist/app.js": {
-    "v": "198",
-    "sha256": "1d378408ebb3daff4e497a4a58255346d3eeb06358342dd73fe97532028082a8"
+    "v": "199",
+    "sha256": "64ad263085c6f0b0a1de5fbd741d5d0f7272301b3fb67eca93b015820076c806"
   },
   "project/src/styles.css": {
     "v": "34",
@@ -10,6 +10,10 @@
   "project/src/redesign.css": {
     "v": "54",
     "sha256": "deea2b11f70364be2c8de359dbea2fa694ca9c453203b3298310d15e29bc9f62"
+  },
+  "project/src/welcome-film.css": {
+    "v": "1",
+    "sha256": "84ce2b2d98f2e432f790158b43c1492e3a31f6c0982ca4030512b950f65323bc"
   },
   "project/src/renewal.css": {
     "v": "8",

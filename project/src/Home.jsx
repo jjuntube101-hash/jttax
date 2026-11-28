@@ -428,7 +428,54 @@ function JTRenewalLink({ href, route, setRoute, children, className = 'rn-link',
   }}>{children}</a>;
 }
 window.JTRenewalLink = JTRenewalLink;
+function JTWelcomeFilm() {
+  const film = useRefHome(null);
+  const [playing, setPlaying] = useStateHome(false);
+  const [ended, setEnded] = useStateHome(false);
+  const [failed, setFailed] = useStateHome(false);
+  const [source] = useStateHome(() => window.matchMedia('(max-width: 767px)').matches
+    ? '/project/assets/jt-welcome-768.mp4' : '/project/assets/jt-welcome-1280.mp4');
+
+  useEffectHome(() => {
+    const video = film.current;
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const pauseOnPreference = () => { if (motion.matches) video.pause(); };
+    // preload="none" keeps the MP4 off the network until a playback decision.
+    const frame = requestAnimationFrame(() => {
+      if (!motion.matches && !navigator.connection?.saveData && !document.hidden) {
+        video.play().catch(() => {});
+      }
+    });
+    motion.addEventListener('change', pauseOnPreference);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      motion.removeEventListener('change', pauseOnPreference);
+    };
+  }, []);
+
+  return (
+    <figure className="rn-welcome-film">
+      <video ref={film} src={source} width="1280" height="720" muted playsInline preload="none"
+        aria-label="제이티 세무법인 사무실 입구에서 상담 테이블까지 안내하는 무음 영상"
+        poster="/project/assets/jt-welcome-poster.webp"
+        onPlaying={() => { setPlaying(true); setEnded(false); }}
+        onPause={() => setPlaying(false)} onEnded={() => { setEnded(true); setPlaying(false); }}
+        onError={() => setFailed(true)} />
+      <figcaption>
+        <span>AI로 만든 장면이 포함되어 있습니다.</span>
+        {!failed && <button type="button" onClick={() => {
+          const video = film.current;
+          if (video.paused) video.play().catch(() => {});
+          else video.pause();
+        }}>{playing ? '일시정지' : ended ? '다시 재생' : '영상 재생'}</button>}
+      </figcaption>
+    </figure>
+  );
+}
+
 function JTRebuildHome({ setRoute }) {
+  const [quickOpen, setQuickOpen] = useStateHome(false);
+  const quick = useRefHome(null);
   const D = window.JT_DATA;
   const latest = D.insights[0];
   const picks = latest ? [latest] : [];
@@ -443,8 +490,22 @@ function JTRebuildHome({ setRoute }) {
       <div className="rn-hero-copy"><h1>근거 위에서,<br/>끝까지.</h1>
         <p className="rn-lead">서울 강남에 위치한 제이티 세무법인입니다. 세무기장·세금 신고부터 양도·상속·증여, 기업 자문과 세무조사 대응까지 함께 살핍니다.</p>
         <div className="rn-actions"><button className="rn-button" onClick={() => document.getElementById('rn-home-start')?.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}>내 상황에 맞는 업무 찾기 <span aria-hidden="true">↓</span></button><JTRenewalLink href="/#/booking" route="booking" setRoute={setRoute} origin="hero">상담 신청 →</JTRenewalLink></div>
+      <a className="rn-welcome-quick-link" href="/calculators/capital-gains-tax.html" onClick={e => {
+          if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0 || !quick.current) return;
+          e.preventDefault();
+          quick.current.open = true;
+          quick.current.querySelector('summary').focus();
+          quick.current.scrollIntoView({ block: 'start' });
+        }}>양도세 바로 계산 ↓</a>
       </div>
-      <div className="rn-hero-people" aria-label="제이티 세 대표세무사">{D.team.partners.map(p => <figure key={p.name}><img src={p.photo} alt={p.name + ' 대표세무사'} width="750" height="1000" fetchPriority="high" decoding="async"/><figcaption><a href={'/experts/' + JT_RENEWAL_PEOPLE[p.name] + '.html'}>{p.name}<span>대표세무사</span></a></figcaption></figure>)}</div>
+      <div className="rn-welcome-media"><JTWelcomeFilm />
+      <div className="rn-hero-people" aria-label="제이티 세 대표세무사">{D.team.partners.map(p => <figure key={p.name}><img src={p.photo} alt={p.name + ' 대표세무사'} width="750" height="1000"  decoding="async"/><figcaption><a href={'/experts/' + JT_RENEWAL_PEOPLE[p.name] + '.html'}>{p.name}<span>대표세무사</span></a></figcaption></figure>)}</div></div>
+      <details className="rn-quick-calc" ref={quick} onToggle={e => setQuickOpen(e.currentTarget.open)}>
+        <summary>양도세 간이 계산기</summary>
+        <div className="jt-brandmoment__tool">{quickOpen && window.JTHeroCalc && <window.JTHeroCalc />}
+          <a className="rn-link" href="/calculators/capital-gains-tax.html">양도소득세 계산기 열기 →</a>
+        </div>
+      </details>
     </section>
     <section className="rn-shell rn-section" id="rn-home-start"><div className="rn-section-heading"><h2>어떤 일을 앞두고 계신가요?</h2><p>세목을 몰라도 괜찮습니다. 지금 상황에서 시작하세요.</p></div>
       <div className="rn-situation-list">{JT_RENEWAL_GROUPS.map(g => <a key={g.id} className="rn-situation" href={g.href}><span>{g.name}</span><h3>{g.question}</h3><span aria-hidden="true">→</span></a>)}</div>
